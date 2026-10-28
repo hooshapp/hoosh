@@ -1,0 +1,74 @@
+# Disconnect pending decisions. Status is deliberately unresolved.
+# Copy approved choices into a versioned ADR and revise PRD/TSD before shipping.
+version: 1
+updated_at: '2026-10-28'
+decisions:
+  - id: PD-01
+    topic: sessions_accounting_scope
+    status: unresolved
+    options: [combined_selected_apps, per_app, global]
+    recommendation: combined_selected_apps
+  - id: PD-02
+    topic: session_start_end_and_inactivity_grace
+    status: unresolved
+    recommendation: define_state_machine_and_day_boundary
+  - id: PD-03
+    topic: open_anyway_allowance_and_max_extensions
+    status: unresolved
+    recommendation: bounded_reason_scoped_allowance_with_no_reward
+  - id: PD-04
+    topic: quest_vs_session_precedence
+    status: unresolved
+    recommendation: quest_takes_precedence
+  - id: PD-05
+    topic: quest_completion_evidence
+    status: unresolved
+    recommendation: explicit_self_report
+  - id: PD-06
+    topic: credit_ledger_rules
+    status: unresolved
+    recommendation: do_not_assume_figma_example_values_are_final
+  - id: PD-07
+    topic: dino_health_formula
+    status: unresolved
+    recommendation: versioned_formula_without_shame_or_moral_labeling
+  - id: PD-08
+    topic: home_feed_feature_behavior
+    status: unresolved
+    recommendation: define_before_shipping
+  - id: PD-09
+    topic: login_requirements
+    status: unresolved
+    recommendation: allow_permission_deferral
+  - id: PD-10
+    topic: google_sign_in_launch_support
+    status: unresolved
+    recommendation: implement_only_if_provider_configured
+  - id: PD-11
+    topic: available_usage_measurements_by_os
+    status: unresolved
+    recommendation: platform_capability_map_and_coverage_labels
+  - id: PD-12
+    topic: gender_based_life_year_forecast
+    status: unresolved
+    recommendation: omit_until_ethically_and_statistically_reviewed
+  - id: PD-13
+    topic: calendar_connections
+    status: unresolved
+    recommendation: post_launch_feature_flag
+  - id: PD-14
+    topic: android_monitoring_and_intervention
+    status: unresolved
+    recommendation: prototype_and_policy_review_before_parity_claims
+  - id: PD-15
+    topic: existing_ios_to_react_native_migration
+    status: unresolved
+    recommendation: preserve_existing_native_code_and_app_identity
+  - id: PD-16
+    topic: reminder_tone
+    status: unresolved
+    recommendation: supportive_default_opt_in_stronger_tone
+  - id: PD-17
+    topic: minimum_supported_age_and_distribution_rating
+    status: unresolved
+    recommendation: confirm_privacy_and_store_policy

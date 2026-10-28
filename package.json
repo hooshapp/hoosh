@@ -1,0 +1,23 @@
+{
+  "name": "disconnect",
+  "version": "0.0.0",
+  "private": true,
+  "packageManager": "npm@11.19.0",
+  "engines": {
+    "node": ">=24.3.0 <25",
+    "npm": ">=11 <12"
+  },
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "mobile": "npm run start --workspace @disconnect/mobile --",
+    "mobile:web": "npm run web --workspace @disconnect/mobile --",
+    "mobile:export": "npm run export:web --workspace @disconnect/mobile --",
+    "api:dev": "uv run --project services/api uvicorn app.main:app --app-dir services/api --reload --reload-dir services/api/app --host 127.0.0.1 --port 8000",
+    "api:test": "uv run --project services/api pytest services/api/tests",
+    "api:lint": "uv run --project services/api ruff check services/api",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "check": "npm run typecheck && npm run lint && npm test && npm run api:lint && npm run api:test"
+  }
+}

@@ -1,0 +1,41 @@
+# Dependencies and generated output
+node_modules/
+.expo/
+dist/
+web-build/
+coverage/
+*.tsbuildinfo
+expo-env.d.ts
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+
+# Local configuration; examples are safe to commit
+.env
+.env.*
+!.env.example
+
+# Signing and local native build files (native source must be tracked)
+*.p8
+*.p12
+*.pem
+*.key
+*.jks
+*.keystore
+*.mobileprovision
+**/Pods/
+**/build/
+**/.gradle/
+**/.kotlin/
+**/local.properties
+**/xcuserdata/
+
+# Editor / OS / logs
+.DS_Store
+*.log
+.idea/
