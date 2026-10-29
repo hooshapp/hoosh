@@ -1,0 +1,1246 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0C08605B2FBFABD9001B9C60 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 0C08605A2FBFABD9001B9C60 /* FirebaseAnalytics */; };
+		0C08605D2FBFABD9001B9C60 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 0C08605C2FBFABD9001B9C60 /* FirebaseAuth */; };
+		0C08605F2FBFABD9001B9C60 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 0C08605E2FBFABD9001B9C60 /* FirebaseFirestore */; };
+		0C08606B2FBFAF98001B9C60 /* OpenAI in Frameworks */ = {isa = PBXBuildFile; productRef = 0C08606A2FBFAF98001B9C60 /* OpenAI */; };
+		0C85A4082FE0DE450097BC0D /* Disconnect.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = 0C85A3FC2FE0DE450097BC0D /* Disconnect.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		AA0000130000000000000013 /* DisconnectShieldConfigurationExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = AA0000030000000000000003 /* DisconnectShieldConfigurationExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		AA0000140000000000000014 /* DisconnectShieldActionExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = AA0000040000000000000004 /* DisconnectShieldActionExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		BB0000100000000000000010 /* DisconnectDeviceActivityMonitorExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = BB0000020000000000000002 /* DisconnectDeviceActivityMonitorExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		0C08603B2FBFA949001B9C60 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0C0860252FBFA948001B9C60 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0C08602C2FBFA948001B9C60;
+			remoteInfo = DisconnectApp;
+		};
+		0C0860452FBFA949001B9C60 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0C0860252FBFA948001B9C60 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0C08602C2FBFA948001B9C60;
+			remoteInfo = DisconnectApp;
+		};
+		0C85A4062FE0DE450097BC0D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0C0860252FBFA948001B9C60 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0C85A3FB2FE0DE450097BC0D;
+			remoteInfo = Disconnect;
+		};
+		AA0000150000000000000015 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0C0860252FBFA948001B9C60 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AA0000100000000000000010;
+			remoteInfo = DisconnectShieldConfigurationExtension;
+		};
+		AA0000170000000000000017 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0C0860252FBFA948001B9C60 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AA0000110000000000000011;
+			remoteInfo = DisconnectShieldActionExtension;
+		};
+		BB0000080000000000000008 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0C0860252FBFA948001B9C60 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BB0000070000000000000007;
+			remoteInfo = DisconnectDeviceActivityMonitorExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		0C85A40D2FE0DE450097BC0D /* Embed ExtensionKit Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(EXTENSIONS_FOLDER_PATH)";
+			dstSubfolderSpec = 16;
+			files = (
+				0C85A4082FE0DE450097BC0D /* Disconnect.appex in Embed ExtensionKit Extensions */,
+			);
+			name = "Embed ExtensionKit Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA0000120000000000000012 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				AA0000130000000000000013 /* DisconnectShieldConfigurationExtension.appex in Embed App Extensions */,
+				AA0000140000000000000014 /* DisconnectShieldActionExtension.appex in Embed App Extensions */,
+				BB0000100000000000000010 /* DisconnectDeviceActivityMonitorExtension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		0C08602D2FBFA948001B9C60 /* DisconnectApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DisconnectApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0C08603A2FBFA949001B9C60 /* DisconnectAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DisconnectAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		0C0860442FBFA949001B9C60 /* DisconnectAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DisconnectAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		0C85A3FC2FE0DE450097BC0D /* Disconnect.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.extensionkit-extension"; includeInIndex = 0; path = Disconnect.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA0000030000000000000003 /* DisconnectShieldConfigurationExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = DisconnectShieldConfigurationExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA0000040000000000000004 /* DisconnectShieldActionExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = DisconnectShieldActionExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		BB0000020000000000000002 /* DisconnectDeviceActivityMonitorExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = DisconnectDeviceActivityMonitorExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		0C85A4092FE0DE450097BC0D /* Exceptions for "Disconnect" folder in "Disconnect" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 0C85A3FB2FE0DE450097BC0D /* Disconnect */;
+		};
+		AA0000210000000000000021 /* Exceptions for "DisconnectShieldConfigurationExtension" folder in "DisconnectShieldConfigurationExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = AA0000100000000000000010 /* DisconnectShieldConfigurationExtension */;
+		};
+		AA0000220000000000000022 /* Exceptions for "DisconnectShieldActionExtension" folder in "DisconnectShieldActionExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = AA0000110000000000000011 /* DisconnectShieldActionExtension */;
+		};
+		BB0000030000000000000003 /* Exceptions for "DisconnectDeviceActivityMonitorExtension" folder in "DisconnectDeviceActivityMonitorExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = BB0000070000000000000007 /* DisconnectDeviceActivityMonitorExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		0C08602F2FBFA948001B9C60 /* DisconnectApp */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = DisconnectApp;
+			sourceTree = "<group>";
+		};
+		0C08603D2FBFA949001B9C60 /* DisconnectAppTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = DisconnectAppTests;
+			sourceTree = "<group>";
+		};
+		0C0860472FBFA949001B9C60 /* DisconnectAppUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = DisconnectAppUITests;
+			sourceTree = "<group>";
+		};
+		0C85A3FD2FE0DE450097BC0D /* Disconnect */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				0C85A4092FE0DE450097BC0D /* Exceptions for "Disconnect" folder in "Disconnect" target */,
+			);
+			path = Disconnect;
+			sourceTree = "<group>";
+		};
+		AA0000010000000000000001 /* DisconnectShieldConfigurationExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				AA0000210000000000000021 /* Exceptions for "DisconnectShieldConfigurationExtension" folder in "DisconnectShieldConfigurationExtension" target */,
+			);
+			path = DisconnectShieldConfigurationExtension;
+			sourceTree = "<group>";
+		};
+		AA0000020000000000000002 /* DisconnectShieldActionExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				AA0000220000000000000022 /* Exceptions for "DisconnectShieldActionExtension" folder in "DisconnectShieldActionExtension" target */,
+			);
+			path = DisconnectShieldActionExtension;
+			sourceTree = "<group>";
+		};
+		BB0000010000000000000001 /* DisconnectDeviceActivityMonitorExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				BB0000030000000000000003 /* Exceptions for "DisconnectDeviceActivityMonitorExtension" folder in "DisconnectDeviceActivityMonitorExtension" target */,
+			);
+			path = DisconnectDeviceActivityMonitorExtension;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		0C08602A2FBFA948001B9C60 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0C08605B2FBFABD9001B9C60 /* FirebaseAnalytics in Frameworks */,
+				0C08605D2FBFABD9001B9C60 /* FirebaseAuth in Frameworks */,
+				0C08606B2FBFAF98001B9C60 /* OpenAI in Frameworks */,
+				0C08605F2FBFABD9001B9C60 /* FirebaseFirestore in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0C0860372FBFA949001B9C60 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0C0860412FBFA949001B9C60 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0C85A3F92FE0DE450097BC0D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA0000060000000000000006 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA0000090000000000000009 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BB0000050000000000000005 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0C0860242FBFA948001B9C60 = {
+			isa = PBXGroup;
+			children = (
+				0C08602F2FBFA948001B9C60 /* DisconnectApp */,
+				AA0000010000000000000001 /* DisconnectShieldConfigurationExtension */,
+				AA0000020000000000000002 /* DisconnectShieldActionExtension */,
+				0C08603D2FBFA949001B9C60 /* DisconnectAppTests */,
+				0C0860472FBFA949001B9C60 /* DisconnectAppUITests */,
+				0C85A3FD2FE0DE450097BC0D /* Disconnect */,
+				BB0000010000000000000001 /* DisconnectDeviceActivityMonitorExtension */,
+				0C08602E2FBFA948001B9C60 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		0C08602E2FBFA948001B9C60 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0C08602D2FBFA948001B9C60 /* DisconnectApp.app */,
+				AA0000030000000000000003 /* DisconnectShieldConfigurationExtension.appex */,
+				AA0000040000000000000004 /* DisconnectShieldActionExtension.appex */,
+				0C08603A2FBFA949001B9C60 /* DisconnectAppTests.xctest */,
+				0C0860442FBFA949001B9C60 /* DisconnectAppUITests.xctest */,
+				0C85A3FC2FE0DE450097BC0D /* Disconnect.appex */,
+				BB0000020000000000000002 /* DisconnectDeviceActivityMonitorExtension.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0C08602C2FBFA948001B9C60 /* DisconnectApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0C08604E2FBFA949001B9C60 /* Build configuration list for PBXNativeTarget "DisconnectApp" */;
+			buildPhases = (
+				0C0860292FBFA948001B9C60 /* Sources */,
+				0C08602A2FBFA948001B9C60 /* Frameworks */,
+				0C08602B2FBFA948001B9C60 /* Resources */,
+				AA0000120000000000000012 /* Embed App Extensions */,
+				0C85A40D2FE0DE450097BC0D /* Embed ExtensionKit Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				AA0000160000000000000016 /* PBXTargetDependency */,
+				AA0000180000000000000018 /* PBXTargetDependency */,
+				0C85A4072FE0DE450097BC0D /* PBXTargetDependency */,
+				BB0000090000000000000009 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				0C08602F2FBFA948001B9C60 /* DisconnectApp */,
+			);
+			name = DisconnectApp;
+			packageProductDependencies = (
+				0C08605A2FBFABD9001B9C60 /* FirebaseAnalytics */,
+				0C08605C2FBFABD9001B9C60 /* FirebaseAuth */,
+				0C08605E2FBFABD9001B9C60 /* FirebaseFirestore */,
+				0C08606A2FBFAF98001B9C60 /* OpenAI */,
+			);
+			productName = DisconnectApp;
+			productReference = 0C08602D2FBFA948001B9C60 /* DisconnectApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+		0C0860392FBFA949001B9C60 /* DisconnectAppTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0C0860512FBFA949001B9C60 /* Build configuration list for PBXNativeTarget "DisconnectAppTests" */;
+			buildPhases = (
+				0C0860362FBFA949001B9C60 /* Sources */,
+				0C0860372FBFA949001B9C60 /* Frameworks */,
+				0C0860382FBFA949001B9C60 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0C08603C2FBFA949001B9C60 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				0C08603D2FBFA949001B9C60 /* DisconnectAppTests */,
+			);
+			name = DisconnectAppTests;
+			packageProductDependencies = (
+			);
+			productName = DisconnectAppTests;
+			productReference = 0C08603A2FBFA949001B9C60 /* DisconnectAppTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		0C0860432FBFA949001B9C60 /* DisconnectAppUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0C0860542FBFA949001B9C60 /* Build configuration list for PBXNativeTarget "DisconnectAppUITests" */;
+			buildPhases = (
+				0C0860402FBFA949001B9C60 /* Sources */,
+				0C0860412FBFA949001B9C60 /* Frameworks */,
+				0C0860422FBFA949001B9C60 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0C0860462FBFA949001B9C60 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				0C0860472FBFA949001B9C60 /* DisconnectAppUITests */,
+			);
+			name = DisconnectAppUITests;
+			packageProductDependencies = (
+			);
+			productName = DisconnectAppUITests;
+			productReference = 0C0860442FBFA949001B9C60 /* DisconnectAppUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		0C85A3FB2FE0DE450097BC0D /* Disconnect */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0C85A40A2FE0DE450097BC0D /* Build configuration list for PBXNativeTarget "Disconnect" */;
+			buildPhases = (
+				0C85A3F82FE0DE450097BC0D /* Sources */,
+				0C85A3F92FE0DE450097BC0D /* Frameworks */,
+				0C85A3FA2FE0DE450097BC0D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				0C85A3FD2FE0DE450097BC0D /* Disconnect */,
+			);
+			name = Disconnect;
+			packageProductDependencies = (
+			);
+			productName = Disconnect;
+			productReference = 0C85A3FC2FE0DE450097BC0D /* Disconnect.appex */;
+			productType = "com.apple.product-type.extensionkit-extension";
+		};
+		AA0000100000000000000010 /* DisconnectShieldConfigurationExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA00000B000000000000000B /* Build configuration list for PBXNativeTarget "DisconnectShieldConfigurationExtension" */;
+			buildPhases = (
+				AA0000050000000000000005 /* Sources */,
+				AA0000060000000000000006 /* Frameworks */,
+				AA0000070000000000000007 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				AA0000010000000000000001 /* DisconnectShieldConfigurationExtension */,
+			);
+			name = DisconnectShieldConfigurationExtension;
+			packageProductDependencies = (
+			);
+			productName = DisconnectShieldConfigurationExtension;
+			productReference = AA0000030000000000000003 /* DisconnectShieldConfigurationExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		AA0000110000000000000011 /* DisconnectShieldActionExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AA00000E000000000000000E /* Build configuration list for PBXNativeTarget "DisconnectShieldActionExtension" */;
+			buildPhases = (
+				AA0000080000000000000008 /* Sources */,
+				AA0000090000000000000009 /* Frameworks */,
+				AA00000A000000000000000A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				AA0000020000000000000002 /* DisconnectShieldActionExtension */,
+			);
+			name = DisconnectShieldActionExtension;
+			packageProductDependencies = (
+			);
+			productName = DisconnectShieldActionExtension;
+			productReference = AA0000040000000000000004 /* DisconnectShieldActionExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		BB0000070000000000000007 /* DisconnectDeviceActivityMonitorExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BB0000130000000000000013 /* Build configuration list for PBXNativeTarget "DisconnectDeviceActivityMonitorExtension" */;
+			buildPhases = (
+				BB0000040000000000000004 /* Sources */,
+				BB0000050000000000000005 /* Frameworks */,
+				BB0000060000000000000006 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				BB0000010000000000000001 /* DisconnectDeviceActivityMonitorExtension */,
+			);
+			name = DisconnectDeviceActivityMonitorExtension;
+			packageProductDependencies = (
+			);
+			productName = DisconnectDeviceActivityMonitorExtension;
+			productReference = BB0000020000000000000002 /* DisconnectDeviceActivityMonitorExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0C0860252FBFA948001B9C60 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1640;
+				LastUpgradeCheck = 1640;
+				TargetAttributes = {
+					0C08602C2FBFA948001B9C60 = {
+						CreatedOnToolsVersion = 16.4;
+					};
+					0C0860392FBFA949001B9C60 = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = 0C08602C2FBFA948001B9C60;
+					};
+					0C0860432FBFA949001B9C60 = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = 0C08602C2FBFA948001B9C60;
+					};
+					0C85A3FB2FE0DE450097BC0D = {
+						CreatedOnToolsVersion = 16.4;
+					};
+					AA0000100000000000000010 = {
+						CreatedOnToolsVersion = 16.4;
+					};
+					AA0000110000000000000011 = {
+						CreatedOnToolsVersion = 16.4;
+					};
+					BB0000070000000000000007 = {
+						CreatedOnToolsVersion = 16.4;
+					};
+				};
+			};
+			buildConfigurationList = 0C0860282FBFA948001B9C60 /* Build configuration list for PBXProject "DisconnectApp" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 0C0860242FBFA948001B9C60;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				0C0860592FBFABD9001B9C60 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				0C0860692FBFAF98001B9C60 /* XCRemoteSwiftPackageReference "OpenAI" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 0C08602E2FBFA948001B9C60 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0C08602C2FBFA948001B9C60 /* DisconnectApp */,
+				AA0000100000000000000010 /* DisconnectShieldConfigurationExtension */,
+				AA0000110000000000000011 /* DisconnectShieldActionExtension */,
+				0C0860392FBFA949001B9C60 /* DisconnectAppTests */,
+				0C0860432FBFA949001B9C60 /* DisconnectAppUITests */,
+				0C85A3FB2FE0DE450097BC0D /* Disconnect */,
+				BB0000070000000000000007 /* DisconnectDeviceActivityMonitorExtension */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		0C08602B2FBFA948001B9C60 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0C0860382FBFA949001B9C60 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0C0860422FBFA949001B9C60 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0C85A3FA2FE0DE450097BC0D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA0000070000000000000007 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA00000A000000000000000A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BB0000060000000000000006 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		0C0860292FBFA948001B9C60 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0C0860362FBFA949001B9C60 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0C0860402FBFA949001B9C60 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0C85A3F82FE0DE450097BC0D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA0000050000000000000005 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AA0000080000000000000008 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BB0000040000000000000004 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		0C08603C2FBFA949001B9C60 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0C08602C2FBFA948001B9C60 /* DisconnectApp */;
+			targetProxy = 0C08603B2FBFA949001B9C60 /* PBXContainerItemProxy */;
+		};
+		0C0860462FBFA949001B9C60 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0C08602C2FBFA948001B9C60 /* DisconnectApp */;
+			targetProxy = 0C0860452FBFA949001B9C60 /* PBXContainerItemProxy */;
+		};
+		0C85A4072FE0DE450097BC0D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0C85A3FB2FE0DE450097BC0D /* Disconnect */;
+			targetProxy = 0C85A4062FE0DE450097BC0D /* PBXContainerItemProxy */;
+		};
+		AA0000160000000000000016 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AA0000100000000000000010 /* DisconnectShieldConfigurationExtension */;
+			targetProxy = AA0000150000000000000015 /* PBXContainerItemProxy */;
+		};
+		AA0000180000000000000018 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AA0000110000000000000011 /* DisconnectShieldActionExtension */;
+			targetProxy = AA0000170000000000000017 /* PBXContainerItemProxy */;
+		};
+		BB0000090000000000000009 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BB0000070000000000000007 /* DisconnectDeviceActivityMonitorExtension */;
+			targetProxy = BB0000080000000000000008 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		0C08604C2FBFA949001B9C60 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = KBW8M9TJN2;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		0C08604D2FBFA949001B9C60 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = KBW8M9TJN2;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		0C08604F2FBFA949001B9C60 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = DisconnectApp/DisconnectApp.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 6;
+				DEVELOPMENT_TEAM = KBW8M9TJN2;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_AI_NUDGE_ENDPOINT = "https://us-central1-disconnectapp-72a72.cloudfunctions.net/generateNudgePack";
+				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Disconnect uses your calendar to make nudges reflect what you planned to do next.";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "Disconnect uses your calendar to make nudges reflect what you planned to do next.";
+				INFOPLIST_KEY_NSRemindersFullAccessUsageDescription = "Disconnect uses reminders to point nudges back to your next task.";
+				INFOPLIST_KEY_NSRemindersUsageDescription = "Disconnect uses reminders to point nudges back to your next task.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.AnishaDasgupta.DisconnectApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		0C0860502FBFA949001B9C60 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = DisconnectApp/DisconnectApp.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 6;
+				DEVELOPMENT_TEAM = KBW8M9TJN2;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_AI_NUDGE_ENDPOINT = "https://us-central1-disconnectapp-72a72.cloudfunctions.net/generateNudgePack";
+				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Disconnect uses your calendar to make nudges reflect what you planned to do next.";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "Disconnect uses your calendar to make nudges reflect what you planned to do next.";
+				INFOPLIST_KEY_NSRemindersFullAccessUsageDescription = "Disconnect uses reminders to point nudges back to your next task.";
+				INFOPLIST_KEY_NSRemindersUsageDescription = "Disconnect uses reminders to point nudges back to your next task.";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.AnishaDasgupta.DisconnectApp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		0C0860522FBFA949001B9C60 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 6;
+				DEVELOPMENT_TEAM = KBW8M9TJN2;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Disconnect.DisconnectAppTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DisconnectApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/DisconnectApp";
+			};
+			name = Debug;
+		};
+		0C0860532FBFA949001B9C60 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 6;
+				DEVELOPMENT_TEAM = KBW8M9TJN2;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Disconnect.DisconnectAppTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DisconnectApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/DisconnectApp";
+			};
+			name = Release;
+		};
+		0C0860552FBFA949001B9C60 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 6;
+				DEVELOPMENT_TEAM = KBW8M9TJN2;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Disconnect.DisconnectAppUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = DisconnectApp;
+			};
+			name = Debug;
+		};
+		0C0860562FBFA949001B9C60 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 6;
+				DEVELOPMENT_TEAM = KBW8M9TJN2;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.Disconnect.DisconnectAppUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = DisconnectApp;
+			};
+			name = Release;
+		};
+		0C85A40B2FE0DE450097BC0D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Disconnect/Disconnect.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 6;
+				DEVELOPMENT_TEAM = KBW8M9TJN2;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Disconnect/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Disconnect;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.AnishaDasgupta.DisconnectApp.Disconnect;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		0C85A40C2FE0DE450097BC0D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = Disconnect/Disconnect.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 6;
+				DEVELOPMENT_TEAM = KBW8M9TJN2;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Disconnect/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Disconnect;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.AnishaDasgupta.DisconnectApp.Disconnect;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		AA00000C000000000000000C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = DisconnectShieldConfigurationExtension/DisconnectShieldConfigurationExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 6;
+				DEVELOPMENT_TEAM = KBW8M9TJN2;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = DisconnectShieldConfigurationExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.AnishaDasgupta.DisconnectApp.DisconnectShieldConfigurationExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AA00000D000000000000000D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = DisconnectShieldConfigurationExtension/DisconnectShieldConfigurationExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 6;
+				DEVELOPMENT_TEAM = KBW8M9TJN2;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = DisconnectShieldConfigurationExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.AnishaDasgupta.DisconnectApp.DisconnectShieldConfigurationExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		AA00000F000000000000000F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = DisconnectShieldActionExtension/DisconnectShieldActionExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 6;
+				DEVELOPMENT_TEAM = KBW8M9TJN2;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = DisconnectShieldActionExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.AnishaDasgupta.DisconnectApp.DisconnectShieldActionExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		AA0000200000000000000020 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = DisconnectShieldActionExtension/DisconnectShieldActionExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 6;
+				DEVELOPMENT_TEAM = KBW8M9TJN2;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = DisconnectShieldActionExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.AnishaDasgupta.DisconnectApp.DisconnectShieldActionExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		BB0000110000000000000011 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = DisconnectDeviceActivityMonitorExtension/DisconnectDeviceActivityMonitorExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 6;
+				DEVELOPMENT_TEAM = KBW8M9TJN2;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = DisconnectDeviceActivityMonitorExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.AnishaDasgupta.DisconnectApp.DisconnectDeviceActivityMonitorExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		BB0000120000000000000012 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = DisconnectDeviceActivityMonitorExtension/DisconnectDeviceActivityMonitorExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 6;
+				DEVELOPMENT_TEAM = KBW8M9TJN2;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = DisconnectDeviceActivityMonitorExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.AnishaDasgupta.DisconnectApp.DisconnectDeviceActivityMonitorExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0C0860282FBFA948001B9C60 /* Build configuration list for PBXProject "DisconnectApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0C08604C2FBFA949001B9C60 /* Debug */,
+				0C08604D2FBFA949001B9C60 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0C08604E2FBFA949001B9C60 /* Build configuration list for PBXNativeTarget "DisconnectApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0C08604F2FBFA949001B9C60 /* Debug */,
+				0C0860502FBFA949001B9C60 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0C0860512FBFA949001B9C60 /* Build configuration list for PBXNativeTarget "DisconnectAppTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0C0860522FBFA949001B9C60 /* Debug */,
+				0C0860532FBFA949001B9C60 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0C0860542FBFA949001B9C60 /* Build configuration list for PBXNativeTarget "DisconnectAppUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0C0860552FBFA949001B9C60 /* Debug */,
+				0C0860562FBFA949001B9C60 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0C85A40A2FE0DE450097BC0D /* Build configuration list for PBXNativeTarget "Disconnect" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0C85A40B2FE0DE450097BC0D /* Debug */,
+				0C85A40C2FE0DE450097BC0D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA00000B000000000000000B /* Build configuration list for PBXNativeTarget "DisconnectShieldConfigurationExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA00000C000000000000000C /* Debug */,
+				AA00000D000000000000000D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		AA00000E000000000000000E /* Build configuration list for PBXNativeTarget "DisconnectShieldActionExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA00000F000000000000000F /* Debug */,
+				AA0000200000000000000020 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BB0000130000000000000013 /* Build configuration list for PBXNativeTarget "DisconnectDeviceActivityMonitorExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BB0000110000000000000011 /* Debug */,
+				BB0000120000000000000012 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		0C0860592FBFABD9001B9C60 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.13.0;
+			};
+		};
+		0C0860692FBFAF98001B9C60 /* XCRemoteSwiftPackageReference "OpenAI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/MacPaw/OpenAI.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.4.9;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		0C08605A2FBFABD9001B9C60 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0C0860592FBFABD9001B9C60 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		0C08605C2FBFABD9001B9C60 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0C0860592FBFABD9001B9C60 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		0C08605E2FBFABD9001B9C60 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0C0860592FBFABD9001B9C60 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		0C08606A2FBFAF98001B9C60 /* OpenAI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 0C0860692FBFAF98001B9C60 /* XCRemoteSwiftPackageReference "OpenAI" */;
+			productName = OpenAI;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 0C0860252FBFA948001B9C60 /* Project object */;
+}

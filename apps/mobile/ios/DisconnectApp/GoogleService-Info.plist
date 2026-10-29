@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyBvv9j9BmRCV5G4WKi8MYLGLjK9IiJx_BQ</string>
+	<key>GCM_SENDER_ID</key>
+	<string>898470599480</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.AnishaDasgupta.DisconnectApp</string>
+	<key>PROJECT_ID</key>
+	<string>disconnectapp-72a72</string>
+	<key>STORAGE_BUCKET</key>
+	<string>disconnectapp-72a72.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:898470599480:ios:d20f85666d1ed0cfd57fcd</string>
+</dict>
+</plist>
