@@ -257,7 +257,7 @@ These parts are planned handoffs, not permission to fill in missing product rule
 
 ### AUTH-10 — Landing and agreed preference questions
 
-**Intro-only split AUTH-10a:** User-approved first increment: three Figma introduction screens, easy scroll progression with a five-gesture cap per section, first-launch-only local presentation, accessible Skip/reduced-motion paths and signup-placeholder navigation. Implemented on `landing-page`; [scope and validation](../implementation/landing-intro.md). This slice does not collect demographics, depend on account drafts, or complete preference/native onboarding. AUTH-09, Q19/PD-17 and remaining AUTH-10 prerequisites remain gates for their dependent features. Signed-device acceptance is still pending.
+**Intro-only split AUTH-10a:** User-approved first increment: three Figma introduction screens, easy scroll progression with a five-gesture cap per section, first-launch-only local presentation, accessible Skip/reduced-motion paths and signup-placeholder navigation. Implemented on `landing-page` in `a9feec4`; [scope and validation](../implementation/landing-intro.md). This slice does not collect demographics, depend on account drafts, or complete preference/native onboarding. AUTH-09, Q19/PD-17 and remaining AUTH-10 prerequisites remain gates for their dependent features. Signed-device acceptance is still pending.
 
 - **Commit:** `feat(onboarding): build introduction and preference steps`
 - **Prerequisites:** AUTH-09; Q19/PD-17 demographic collection decision; reviewed original assets and shared accessible controls. App-selection preference vs actual native control is explicitly distinguished.
@@ -345,7 +345,7 @@ Each commit includes its relevant tests and honest UI states. Avoid snapshot-onl
 | AUTH-07 | A; AUTH-02/03 + RN-01/04; callback regression checks later | Not started | Pending | Pending |
 | AUTH-08 | A; Auth/API/RN handoff, native evidence separately | Not started | Pending | Pending |
 | AUTH-09 | B; draft contract + profile increment | Awaiting prerequisite scope | Pending | Pending |
-| AUTH-10 | B; AUTH-09 + collection decisions | Awaiting prerequisite scope | Pending | Pending |
+| AUTH-10 | B; AUTH-09 + collection decisions | Intro-only AUTH-10a implemented; preferences gated | `a9feec4` (intro only) | [Scope/checks](../implementation/landing-intro.md); signed-device acceptance pending |
 | AUTH-11 | C; audited/measured native adapters | Awaiting native evidence | Pending | Pending |
 | AUTH-12 | C; approved policy and future plan API/native plans | Awaiting product/implementation contracts | Pending | Pending |
 | AUTH-13 | D; selected provider/store/native configuration | Conditional; not part of initial email slice | Pending | Pending |
