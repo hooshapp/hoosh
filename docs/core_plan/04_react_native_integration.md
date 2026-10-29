@@ -45,7 +45,7 @@ These are repository observations at planning time, not desired future behavior:
 | `packages/contracts` | `AccessTokenProvider`, liveness type, draft native port | Consume agreed types; generated HTTP types become authoritative for HTTP shapes |
 | Main routes | Explicit placeholders; no accounts, app metrics, or successful native adapter | Keep unavailable states truthful throughout incremental integration |
 | Installed mobile packages | Expo/Router, React Native, fonts, animation dependencies, pure-TS Vitest | Add only packages used by a planned part and lock the compatible versions |
-| Native projects | Existing released Swift source is absent; no native adapters are connected | Device integration cannot be claimed from web or JavaScript export success |
+| Native projects | Provided Swift source is preserved in `apps/mobile/ios/`; no React Native adapters are connected | Device integration cannot be claimed from web or JavaScript export success |
 
 Source paths in this document are relative to `apps/mobile/` unless explicitly prefixed with a repository path.
 

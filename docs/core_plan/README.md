@@ -53,7 +53,7 @@ These are dependency waves, not fixed dates or equal-workload requirements. Ishm
 | Wave | Ishmum | Anisha | Handoff / gate |
 |---|---|---|---|
 | 0 — complete | SC-01–04 decisions, fixtures, ports and handoffs implemented, validated and committed as `0b50900`; sync the shared foundation | Consume accepted port; review Auth/iOS impact during integration | Integrate shared contracts through `main`; no guessed product policy or independent review claim |
-| 1 | RN-01 shared UI/testing; API-01–05 with local test keys; Android investigation | SB-01–03 Supabase Auth/project setup; AUTH-01/02 with controlled adapters; AUTH-03 consumes RN-01 and her SB-03 for live tests; obtain/audit Swift source | Callback configuration follows the contract, not completed callback code. API producers do not wait for mobile acceptance. |
+| 1 | RN-01 shared UI/testing; API-01–05 with local test keys; Android investigation | SB-01–03 Supabase Auth/project setup; AUTH-01/02 with controlled adapters; AUTH-03 consumes RN-01 and her SB-03 for live tests; use the legacy source audit; qualify bridge/signing | Callback configuration follows the contract, not completed callback code. API producers do not wait for mobile acceptance. |
 | 2 | RN-03 client, RN-04 lifecycle; RN-02 assets/navigation independently | Supply AUTH-02 real provider; integrate AUTH-07 guards/sign-out with RN-04 cleanup hooks | Producer ports first; AUTH-08/RN-06 are downstream evidence, not inputs. |
 | 3 — when producers are ready to wire | RN-05 identity surface → RN-06 joint M1 | Exercise sign-in/sign-out/recovery handshake; AUTH-04–06 can progress alongside this proof | Needs AUTH-01/02/03/07, SB-03, API-04/05; not all future Auth work |
 | 4 | SB-04/05 → API-06–09 → RN-07 profile | Finish AUTH-04–06, then AUTH-08; AUTH-09 consumes the profile/draft contract when agreed | SB-06 records M1/Auth evidence without blocking earlier producers. M2 uses real PostgreSQL and separate runtime/migration identities. |
@@ -95,7 +95,7 @@ When blocked, name the exact missing input for that part and continue independen
 | Launch account/provider/age choices | Final login policy, demographics, provider/store promises | Controlled development email flow and minimal profile |
 | Session/override/quest decisions | Enforcement and dependent data contracts | Non-enforcing forms and honest empty states |
 | Rewards/Dino/measurement rules | Real credits, scoring, streaks, saved-time/forecast claims | Original assets, layouts, unavailable states |
-| Released Swift source/signing | iOS migration/signed integration acceptance | Shared UI, backend, development web Auth, Android investigation |
+| Legacy Swift bridge/signing validation | iOS migration/signed integration acceptance | Shared UI, backend, development web Auth, Android investigation |
 | Android capability evidence | Android enforcement/parity claims | Shared UI and feasibility work |
 | Native sign-out/deletion ownership | Shipping account transitions with installed rules/events | Credential/cache teardown without native rules |
 | Later onboarding/plan schema | Server completion, cross-device resume, plan installation | Minimal profile and explicitly local draft preparation |

@@ -4,7 +4,7 @@
 **Read in order:** `PRD.md` → `TSD.md` → current Figma design → existing source repository.  
 **Design:** https://www.figma.com/design/ukmD2ZidJ9UR2XxUkvdPoJ/App-UI?node-id=0-1
 
-**Checkout status (2026-10-28):** A shared Expo/React Native shell, accepted type-only Auth/native interfaces with synthetic HTTP fixtures (Plan 00 committed as `0b50900`), and a FastAPI health foundation now exist. See [`../README.md`](../README.md) for actual setup/check commands. Auth, database access, and native protection are not connected. The released Swift source is not present in this checkout; its audit and reuse remain prerequisites for iOS integration. The shell opens Home as a development preview and does not claim active protection.
+**Checkout status (2026-10-28):** A shared Expo/React Native shell, accepted type-only Auth/native interfaces with synthetic HTTP fixtures (Plan 00 committed as `0b50900`), and a FastAPI health foundation now exist. See [`../README.md`](../README.md) for actual setup/check commands. Auth, database access, and native protection are not connected. The provided legacy Swift source is preserved in `apps/mobile/ios/`; read [the source audit](architecture/existing-ios-audit.md). React Native wiring and signed/device validation remain prerequisites for iOS integration. The shell opens Home as a development preview and does not claim active protection.
 
 **Engineering ownership:** Ishmum owns main/shared React Native UI, Android, backend/product database and shared testing. Anisha owns all Supabase Auth/project setup (SB-01–03), mobile Auth/onboarding and iOS. Ishmum owns only the Supabase product database work (SB-04/05), not Auth administration. Build against the shared contracts independently, then wire real outputs when ready; mark integration-dependent parts complete only after joint validation. Read [the accepted decisions](architecture/identity-foundation.md) and [core execution order](core_plan/README.md) before foundation work.
 
@@ -14,7 +14,7 @@
 - The team already has Apple's Family Controls **distribution entitlement**.
 - The team has **tested iOS blocking, native nudges, timers, and continued restriction of apps**.
 - Team reports monitoring and native nudges continue even after the host app is terminated and behave reliably through lock/unlock, restarts and time-zone changes.
-- Existing nudges are **generic**; AI-generated personalization has not been implemented yet.
+- The new React Native/FastAPI application has no AI nudge integration. The imported Swift app includes cached AI/Firebase nudge and EventKit Calendar/Reminders source; current deployment and live delivery remain unverified.
 - Research has evolved: **80+ potential-user interviews (team-reported, current), 3–4 full design iterations**. An early PDF describes only 11 interviews and an early survey spreadsheet has 80 responses. Different dates and denominators: do not combine or misstate.
 - The Figma file is a **design** and does not prove every screen/feature is implemented.
 - The team wants a **shared React Native iOS/Android app**, native Swift/Kotlin integrations, a custom **FastAPI backend**, managed Supabase PostgreSQL/Auth, and near-zero cloud spending until necessary.
@@ -31,7 +31,7 @@ Build the Figma-designed Disconnect app with React Native + TypeScript for share
 You are the senior full-stack/mobile engineer implementing Disconnect.
 
 READ: PRD.md, TSD.md, AGENT_START_HERE.md, and the Figma design.
-FIRST ACTION: inspect the affected repository code. For iOS native changes, obtain/audit the existing Swift source before changing targets; its absence does not block independent shared UI/Auth/backend foundation work.
+FIRST ACTION: inspect the affected repository code. For iOS native changes, start with the imported legacy source audit before changing targets; remaining native integration does not block independent shared UI/Auth/backend foundation work.
 
 Goals:
 - Preserve existing approved and tested iOS native Screen Time implementation.
@@ -111,7 +111,7 @@ npm run api:lint
 ```
 
 These are actual scaffold scripts, not evidence they passed in a particular change.
-No database migrations/native project are present yet. Add Alembic and actual DB
+No database migrations or React Native native integration are present yet; the standalone legacy Xcode project is preserved separately. Add Alembic and actual DB
 checks through Plan 03. Signed iOS builds on a physical device and Android device
 capability tests remain separate; a web export does not establish native behavior.
 

@@ -39,3 +39,10 @@ __pycache__/
 .DS_Store
 *.log
 .idea/
+
+# Legacy Xcode/Firebase build and personal state
+*.xcuserstate
+Build/
+DerivedData/
+.build/
+.firebase/

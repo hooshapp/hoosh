@@ -46,7 +46,7 @@ updated with this decision; there is no `PATCH /v1/me` in the M1/M2 contract.
   lockfile together. Review consumer effects and integrate through `main` early.
   Do not create a second migration authority or credential manager.
 
-The released Swift source/build configuration is absent here. Team reports of
+The provided Swift source/build configuration is preserved under `apps/mobile/ios/`; see [the source audit](existing-ios-audit.md). React Native bridging and signed/device acceptance remain pending. Team reports of
 working iOS behavior remain context, not a completed source/signed-device audit.
 Android capabilities also require measured device evidence before parity claims.
 
@@ -90,7 +90,7 @@ the pinned SDK's offline/late-write behavior instead of relying on FIFO alone.
 - Q19/PD-17: age/demographic collection and eligibility. Not in the M2 profile.
 - Q02–Q08: actual session accounting, allowance/override and overlapping rules.
 - Q09–Q16/Q21: quest/reward/Dino/measurement semantics and dependent product claims.
-- Existing Swift access and Android evidence: actual native methods/build integration.
+- Legacy Swift bridge/signing validation and Android evidence: actual native methods/build integration.
 
 The draft `ProtectionService` supports future adapter discussion, not approved
 policy. Auth sign-out does not invoke restriction clearing. The combined release
