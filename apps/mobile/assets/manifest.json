@@ -1,0 +1,127 @@
+{
+  "fileKey": "ukmD2ZidJ9UR2XxUkvdPoJ",
+  "capturedOn": "2026-10-29",
+  "sourceVersion": "No immutable Figma version supplied; node IDs and original-byte checksums identify this capture.",
+  "assets": [
+    {
+      "file": "icons/navigation/home-active.svg",
+      "nodeId": "84:135",
+      "width": "20.5",
+      "height": "20.7758",
+      "viewBox": "0 0 20.5 20.7758",
+      "sizeBytes": 549,
+      "sha256": "05f855e9403285c86ba2bd10481d040d1c5368c85c348e05a5c553c2d1740bdd",
+      "usage": "navigation"
+    },
+    {
+      "file": "icons/navigation/home-inactive.svg",
+      "nodeId": "10573:366",
+      "width": "20.5",
+      "height": "20.7758",
+      "viewBox": "0 0 20.5 20.7758",
+      "sizeBytes": 549,
+      "sha256": "db2269ac9d9cd546a6849072a17c90d91a29009e46ea12ef919ba18ba8156573",
+      "usage": "navigation"
+    },
+    {
+      "file": "icons/navigation/quests-active.svg",
+      "nodeId": "10491:103",
+      "width": "20",
+      "height": "20",
+      "viewBox": "0 0 20 20",
+      "sizeBytes": 1508,
+      "sha256": "1f9d87b27f3d97ab7bc82c58a171b21261d64b5d37bab2aa069b72a7caca1527",
+      "usage": "navigation"
+    },
+    {
+      "file": "icons/navigation/quests-inactive.svg",
+      "nodeId": "84:151",
+      "width": "20",
+      "height": "20",
+      "viewBox": "0 0 20 20",
+      "sizeBytes": 1508,
+      "sha256": "26072fc5ddefe0b3c59b1c58d0025c82eb09086be597f6f3da4caf3a6d3459f8",
+      "usage": "navigation"
+    },
+    {
+      "file": "icons/navigation/history-active.svg",
+      "nodeId": "10573:381",
+      "width": "20",
+      "height": "20",
+      "viewBox": "0 0 20 20",
+      "sizeBytes": 594,
+      "sha256": "0eea9601594e12a8a55bf0ed220e68f60c4c827b164df415593c62b4fca85e7f",
+      "usage": "navigation"
+    },
+    {
+      "file": "icons/navigation/history-inactive.svg",
+      "nodeId": "84:154",
+      "width": "20",
+      "height": "20",
+      "viewBox": "0 0 20 20",
+      "sizeBytes": 594,
+      "sha256": "56744ea272833fea6e17dd927518877e316116d3ef2b998684965f418f5f7375",
+      "usage": "navigation"
+    },
+    {
+      "file": "icons/navigation/settings-active.svg",
+      "nodeId": "10601:231",
+      "width": "20",
+      "height": "20",
+      "viewBox": "0 0 20 20",
+      "sizeBytes": 2764,
+      "sha256": "bb03d0e98151c3631286445ae00b25d9378cd6640d5bd9c8ae504f14761b1242",
+      "usage": "navigation"
+    },
+    {
+      "file": "icons/navigation/settings-inactive.svg",
+      "nodeId": "84:148",
+      "width": "20",
+      "height": "20",
+      "viewBox": "0 0 20 20",
+      "sizeBytes": 2764,
+      "sha256": "3a61128f61cfb1b0e74eb6c681b0630fa3c4bf31550a819bd16cb97e58d75d40",
+      "usage": "navigation"
+    },
+    {
+      "file": "mascot/dino-happy.svg",
+      "nodeId": "84:77",
+      "width": "110",
+      "height": "110",
+      "viewBox": "0 0 110 110",
+      "sizeBytes": 1654,
+      "sha256": "f59719c9ad6b75b7e8cf98d4444fe9322aa5768d2429814c37f01ea4ae54fa11",
+      "usage": "inventory-only"
+    },
+    {
+      "file": "mascot/dino-needs-care.svg",
+      "nodeId": "88:68",
+      "width": "110",
+      "height": "110",
+      "viewBox": "0 0 110 110",
+      "sizeBytes": 1708,
+      "sha256": "0b2d7260f524f8b6f6741d45863ac6a47f67f7c723b80de93bc2ce6d0139ba08",
+      "usage": "inventory-only"
+    },
+    {
+      "file": "mascot/dino-feeling-low.svg",
+      "nodeId": "88:77",
+      "width": "110",
+      "height": "110",
+      "viewBox": "0 0 110 110",
+      "sizeBytes": 1624,
+      "sha256": "5d169291dd58db4e7d065e619fdc48419b837c98176a964a1b3597f503447eab",
+      "usage": "inventory-only"
+    },
+    {
+      "file": "mascot/dino-doing-okay.svg",
+      "nodeId": "88:86",
+      "width": "110",
+      "height": "110",
+      "viewBox": "0 0 110 110",
+      "sizeBytes": 1808,
+      "sha256": "f8e3d8db47b359c5e53d312844c0ce58b0a11ef67c3b2ceb71ccd74293590d09",
+      "usage": "inventory-only"
+    }
+  ]
+}

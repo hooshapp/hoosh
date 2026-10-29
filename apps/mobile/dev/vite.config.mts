@@ -28,6 +28,7 @@ export default defineConfig({
   oxc: { jsx: { runtime: 'automatic' } },
   server: { host: '127.0.0.1', port: 8091, strictPort: true },
   build: {
+    assetsInlineLimit: 0,
     outDir: '../dist',
     emptyOutDir: true,
     rolldownOptions: {

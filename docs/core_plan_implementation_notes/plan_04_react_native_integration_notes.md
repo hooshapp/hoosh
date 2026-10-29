@@ -4,11 +4,11 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN-01 implemented and validated for its shared UI/testing scope. RN-02–11 remain not started.
+**Current part:** RN-02 implemented and validated for its asset/navigation scope; RN-01 committed as `2f88102`; RN-03–11 remain not started.
 
-**Implementation branch:** `task/react-native/rn-01`, created from `area/react-native`; the shared starting point for this change is `6a64e98`.
+**Implementation branch:** `task/react-native/rn-02`, created after fast-forwarding local `area/react-native` to RN-01 (`2f88102`). Main has not been merged or pushed by this task.
 
-**Commit reference:** The RN-01 entry below travels with its implementation commit. Its unique subject is `feat(mobile): add shared accessible screen state primitives`; resolve the actual hash from Git until it is added in a subsequent normal notes update. Do not confuse a pending hash at write time with missing implementation.
+**Commit reference:** RN-01 is `2f88102`. RN-02 travels with its code under the unique subject `feat(mobile): add authentic assets and floating main navigation`; resolve its hash from Git until the next normal notes update records it. A pending self-hash at write time is not missing implementation.
 
 **Last updated:** 2026-10-29.
 
@@ -16,12 +16,14 @@
 
 ## Resume here
 
-- RN-01 now provides `Screen`, themed `EmptyCard`, controlled `Button`, Router-preserving `RouteButton`, raw-value `Field` and typed `InlineStatus`, with small presentation/accessibility helpers. See the [component API and controller contract](../../apps/mobile/src/components/ui/README.md).
-- Validation passed: 40 component/hook checks across iOS/Android Jest presets, 5 portable Vitest checks, 3 existing API checks, workspace types/lint, SDK dependency compatibility, specimen build and the real Expo web export/isolation guard. Browser checks covered 393/320 px frames, large text, keyboard order, error/busy/retry states and actual exported-app navigation.
-- Anisha can consume the shared controls and Jest harness in AUTH-03/04/07. She still owns the Auth client/controllers/guards; Ishmum's components do not sign in, refresh credentials, persist a profile or authorize a user.
-- For the next Plan 04 part, start RN-02 (authentic asset inventory and main navigation) in a fresh task branch from the updated shared/area branch. API-01 remains an independent Ishmum backend task if switching lanes. No later part was implemented here.
-- Native signed builds, real iOS/Android keyboard behavior, VoiceOver/TalkBack, native Dynamic Type and adapter/enforcement acceptance remain unverified. These screenshots and mocks do not complete RN-10 or native/Auth acceptance.
-- Legacy Swift import `fe8f262`, root routing/guard files, native signing, backend and domain contracts are unchanged. Shared context relocation is recorded under [the documentation setup entry](README.md#documentation-setup-commit--context-relocation-and-knowledge-base-workflow).
+- RN-01 (`2f88102`) supplies shared UI/controllers' presentation contract and the Jest harness. RN-02 adds the original floating four-tab navigation, scoped web panel/keyboard semantics and measured safe-area clearance. Start with the [navigation contract](../../apps/mobile/src/components/navigation/README.md) and [component API](../../apps/mobile/src/components/ui/README.md).
+- Latest checks pass: 62 component/hook cases in 18 iOS/Android suites, 5 portable Vitest checks, 3 existing API checks, workspace types/lint, original asset integrity, SDK compatibility, specimen build, web export/isolation and both native JS/Hermes exports. Native asset metadata contains all eight original nav SVG byte hashes on each platform.
+- The [asset provenance](../../apps/mobile/assets/README.md) records eight nav variants and four 110×110 Dino sources, their Figma nodes and original-byte hashes. The four Dino variants are inventory/gallery only; release Home does not infer a mood, score, credits or protection.
+- Browser evidence covers 320×568, 393×852 and 430×932 actual viewports, plus a 280 px compact stress case, image failure, keyboard/manual tab activation, direct links/Back/reselect, visible Auth-stack separation, scroll clearance and transitions offline after route/asset warming. It is not cold offline web reload or native Dynamic Type acceptance.
+- Anisha can consume the shared UI/tests and keep her Auth/onboarding groups outside the main tabs. Native builds must integrate/link the new SDK-compatible `expo-image` dependency in the audited project before device QA. No legacy Swift, signing, entitlement, root Auth guard, backend or contract implementation was changed here.
+- Next Plan 04 part: RN-03 HTTP client hardening, from the updated shared/area branch after review/integration; API-01 remains an independent Ishmum lane. RN-03–11 have not been implemented by this change.
+- Signed iOS/Android SVG decoding, native keyboard/safe-area variants, VoiceOver/TalkBack and Dynamic Type remain unverified. The existing web app/preview have no favicon; the two baseline 404s are recorded separately from unexpected browser errors. Native module export is not an installed-app build.
+- Branch checkpoint: RN-01 was already committed when this request began. Local `area/react-native` was fast-forwarded to `2f88102`, then `task/react-native/rn-02` was created. This task does not merge/push `main` automatically. RN-02's own hash is resolved by its subject until a later normal notes update.
 - Context: [agent entry](<../Context (AGENT)/AGENT_START_HERE.md>), [PRD](<../Context (AGENT)/PRD.md>), [TSD](<../Context (AGENT)/TSD.md>), [PM questions](<../Context (AGENT)/PM_QUESTIONS.md>), [execution order](../core_plan/README.md), [Plan 00](../core_plan/00_shared_contracts.md).
 
 ## Recording rules
@@ -41,7 +43,7 @@
 
 **Commit message:** `feat(mobile): add shared accessible screen state primitives`.
 
-**Hash:** Pending at entry write time; this entry and its code are committed together. Locate it with `git log --oneline --all --grep='^feat(mobile): add shared accessible screen state primitives$'`. Record that real hash on the next normal notes update, without a recursive notes-only commit.
+**Hash:** `2f88102` (recorded during RN-02; this entry originally traveled with that commit). Its historical file/line ranges and evidence below refer to RN-01, including the then-existing footer fallback. RN-02 changes are recorded separately.
 
 **Date:** 2026-10-29. **Owner:** Ishmum. **Branch:** `task/react-native/rn-01`. **Parent/shared base:** `6a64e98`.
 
@@ -175,6 +177,151 @@ The JPEGs are original browser captures, each 1512×1045 pixels, containing both
 - Root README records the actual dependency advisory state; recheck compatible fixes before release. The audit is not a release/security sign-off.
 - Anisha can use the [component contract](../../apps/mobile/src/components/ui/README.md), `jest.config.cjs`/setup and disjoint test conventions. Coordinate shared package/lock/root-file changes as before. She owns her actual controllers and live provider checks.
 - Next Plan 04 action: RN-02 source assets/navigation; or explicitly switch to API-01 for the independent backend lane. First review/integrate this RN-01 task commit through the agreed branch flow; do not mark later parts complete.
+
+### RN-02 — Authentic assets and floating main navigation
+
+**Commit message:** `feat(mobile): add authentic assets and floating main navigation`.
+
+**Hash:** Pending at entry write time; this entry and implementation are committed together. Resolve with `git log --oneline --all --grep='^feat(mobile): add authentic assets and floating main navigation$'`; record the real hash on the next normal notes update.
+
+**Date:** 2026-10-29. **Owner:** Ishmum. **Branch:** `task/react-native/rn-02`. **Parent/shared base:** `2f88102`.
+
+**Status:** Implemented and validated for RN-02 scope. Signed-device rendering/accessibility gates remain unverified. No later RN part or real Auth/native enforcement milestone is complete.
+
+**Scope:** FR-028/029/034 supporting original asset inventory and canonical four-tab navigation; NFR-008/011. Preserve the existing screen placeholders, route groups and Auth/root guard ownership. PD-07/08/Q13–14 (Dino scoring/feed/streak) and native/Auth gates remain unresolved; no user score or mood is inferred from artwork.
+
+#### Every changed file and logical change
+
+Ranges below refer to RN-02. RN-01's earlier ranges remain historical to `2f88102`. The original SVGs are unchanged source artifacts; their line counts are recorded without rewriting paths. Screenshots use dimensions/bytes rather than line numbers. Generated lock/manifest/evidence records are summarized without pretending each resolution or measurement is a new product feature.
+
+| File and exact lines in RN-02 | Change and reason |
+|---|---|
+| `.github/workflows/checks.yml`: lines 22–23 | Run the original design-asset integrity guard explicitly in mobile CI before tests/builds; export also verifies bundled nav assets. |
+| `README.md`: lines 11–11 | Advertise implemented RN-02 navigation and link the consumer geometry contract and original-asset provenance. |
+| `README.md`: lines 99–99 | Document the asset-integrity command alongside existing build/test/preview commands. |
+| `README.md`: lines 102–102 | Explain source-byte verification in check/export while retaining separate signed-device acceptance and release-preview isolation. |
+| `README.md`: lines 120–120 | Advance the next-work guidance to RN-03/API-01/Android investigation and require inspection of current branch/notes before starting. |
+| `apps/mobile/README.md`: lines 17–17 | Replace the obsolete text-only statement with local authentic nav assets, inventory-only Dino boundaries and the navigation/provenance links. Keep font binaries package-managed. |
+| `apps/mobile/app.config.ts`: lines 12–12 | Register the Expo-requested image plugin in the dynamic configuration without generating or altering native projects/signing. Formatting compacts the existing plugin array. |
+| `apps/mobile/assets/README.md`: lines 1–30 | Create human-readable provenance for every original glyph/Dino source: Figma file/node/date, view bounds, purposes, exact-source preservation, image-renderer/device limits and original-byte/export verification. Distinguish inventory-only Dino and future app/provider logos. |
+| `apps/mobile/assets/manifest.json`: lines 1–127 | Record the 12 source assets with node IDs, capture/version limits, intrinsic dimensions/viewBox, bytes, SHA-256 and release-navigation versus inventory-only usage. This is the guard's immutable-source comparison baseline. |
+| `apps/mobile/assets/icons/navigation/home-active.svg`: lines 1–3 | Add the untouched original Figma SVG from node 84:135; 20.5×20.7758 px, viewBox 0 0 20.5 20.7758, 549 bytes. Use this exact active/inactive navigation source without tint/path changes; preserve intrinsic stroke bounds. |
+| `apps/mobile/assets/icons/navigation/home-inactive.svg`: lines 1–3 | Add the untouched original Figma SVG from node 10573:366; 20.5×20.7758 px, viewBox 0 0 20.5 20.7758, 549 bytes. Use this exact active/inactive navigation source without tint/path changes; preserve intrinsic stroke bounds. |
+| `apps/mobile/assets/icons/navigation/quests-active.svg`: lines 1–5 | Add the untouched original Figma SVG from node 10491:103; 20×20 px, viewBox 0 0 20 20, 1,508 bytes. Use this exact active/inactive navigation source without tint/path changes; preserve intrinsic stroke bounds. |
+| `apps/mobile/assets/icons/navigation/quests-inactive.svg`: lines 1–5 | Add the untouched original Figma SVG from node 84:151; 20×20 px, viewBox 0 0 20 20, 1,508 bytes. Use this exact active/inactive navigation source without tint/path changes; preserve intrinsic stroke bounds. |
+| `apps/mobile/assets/icons/navigation/history-active.svg`: lines 1–10 | Add the untouched original Figma SVG from node 10573:381; 20×20 px, viewBox 0 0 20 20, 594 bytes. Use this exact active/inactive navigation source without tint/path changes; preserve intrinsic stroke bounds. |
+| `apps/mobile/assets/icons/navigation/history-inactive.svg`: lines 1–10 | Add the untouched original Figma SVG from node 84:154; 20×20 px, viewBox 0 0 20 20, 594 bytes. Use this exact active/inactive navigation source without tint/path changes; preserve intrinsic stroke bounds. |
+| `apps/mobile/assets/icons/navigation/settings-active.svg`: lines 1–5 | Add the untouched original Figma SVG from node 10601:231; 20×20 px, viewBox 0 0 20 20, 2,764 bytes. Use this exact active/inactive navigation source without tint/path changes; preserve intrinsic stroke bounds. |
+| `apps/mobile/assets/icons/navigation/settings-inactive.svg`: lines 1–5 | Add the untouched original Figma SVG from node 84:148; 20×20 px, viewBox 0 0 20 20, 2,764 bytes. Use this exact active/inactive navigation source without tint/path changes; preserve intrinsic stroke bounds. |
+| `apps/mobile/assets/mascot/dino-happy.svg`: lines 1–15 | Add the untouched original Figma SVG from node 84:77; 110×110 px, viewBox 0 0 110 110, 1,654 bytes. Preserve Dino expression/colors for the source inventory/gallery; no release Home consumer or real user score is introduced. |
+| `apps/mobile/assets/mascot/dino-needs-care.svg`: lines 1–15 | Add the untouched original Figma SVG from node 88:68; 110×110 px, viewBox 0 0 110 110, 1,708 bytes. Preserve Dino expression/colors for the source inventory/gallery; no release Home consumer or real user score is introduced. |
+| `apps/mobile/assets/mascot/dino-feeling-low.svg`: lines 1–14 | Add the untouched original Figma SVG from node 88:77; 110×110 px, viewBox 0 0 110 110, 1,624 bytes. Preserve Dino expression/colors for the source inventory/gallery; no release Home consumer or real user score is introduced. |
+| `apps/mobile/assets/mascot/dino-doing-okay.svg`: lines 1–12 | Add the untouched original Figma SVG from node 88:86; 110×110 px, viewBox 0 0 110 110, 1,808 bytes. Preserve Dino expression/colors for the source inventory/gallery; no release Home consumer or real user score is introduced. |
+| `apps/mobile/dev/ui/asset-gallery.tsx`: lines 1–42 | Render all eight glyph variants and four named, unscored Dino sources at original image bounds in the isolated developer entry. Active/inactive swatches preserve each asset's source contrast; no user state or service is consulted. |
+| `apps/mobile/dev/ui/main.tsx`: lines 13–13 | Import the separate artwork gallery only into the existing isolated specimen entry. |
+| `apps/mobile/dev/ui/main.tsx`: lines 112–112 | Mount the artwork inventory below the existing warm/dark UI specimens; production routes never import it. |
+| `apps/mobile/dev/ui/styles.css`: lines 64–90 | Add wrapping source-asset swatches, labels and original active/inactive contrast surfaces to the developer gallery without changing app geometry. |
+| `apps/mobile/dev/vite.config.mts`: lines 31–31 | Disable build-time data-URI inlining so the preview emits individually inspectable original SVG files. |
+| `apps/mobile/package.json`: lines 13–13 | Add only SDK-compatible expo-image ~58.0.18 as the local SVG image renderer; leave the existing RN/Expo/test versions unchanged. |
+| `apps/mobile/src/app/(tabs)/_layout.tsx`: lines 1–24 | Replace scaffold text-only styling with the custom bar, local measurement/ID provider and real screen-panel association. Retain the four canonical routes and router ownership; choose visited-tab history and keep Auth/onboarding outside this layout. |
+| `apps/mobile/src/components/navigation/README.md`: lines 1–100 | Document SDK 58 adapter/event/history ownership, native/web semantics, exact source geometry, measured clearance, large-text/narrow reflow, original asset/error behavior, test commands and concrete Anisha/device handoff. |
+| `apps/mobile/src/components/navigation/floating-tab-bar-metrics.tsx`: lines 1–31 | Centralize the source minimum/margins and safe bottom-gap rule; provide measured height, clearance and scoped IDs through a presentation-only context. Preserve a first-layout minimum fallback and count the safe inset once. |
+| `apps/mobile/src/components/navigation/main-tab-bar.tsx`: lines 1–89 | Define canonical visual labels and render a shared accessible tab target with explicit native/web role/selection, original static SVG variant/bounds, growing labels, roving web Tab index, focus outline and readable image-error fallback. |
+| `apps/mobile/src/components/navigation/main-tab-bar.tsx`: lines 90–164 | Adapt the actual SDK emitter/navigateToTab/link-builder/height APIs. Measure bar layout, place it from safe insets, reflow for font/width changes, connect panels and preserve canceled/long/reselected presses and source-specific spacer behavior. |
+| `apps/mobile/src/components/navigation/main-tab-bar.tsx`: lines 166–218 | Implement source bar/pill typography, 44 px minimum targets, shadow/rounding and adaptive two-column/focus styles without resizing original glyphs or imposing a universal screen height. |
+| `apps/mobile/src/components/navigation/main-tab-panel.tsx`: lines 1–25 | Use the navigator screen layout to associate a real web panel with its scoped tab ID and make its content reachable. Keep native accessibility on actual screen elements and retain flexible layout. |
+| `apps/mobile/src/components/navigation/tab-list-keyboard.ts`: lines 1–41 | Isolate web manual keyboard activation at the RN event boundary: wrapping RTL-aware arrows and Home/End move focus; Space activates the existing real link. Guard DOM access; native Pressable interaction remains unchanged. |
+| `apps/mobile/src/components/navigation/main-tab-bar.test.tsx`: lines 1–166 | Exercise actual route components/layout in both native presets: four destinations and direct links, selection/history/reselect, Auth-stack separation/back, cancellable/long presses, live font-scale and measured-clearance updates, image failure and zero/horizontal safe insets. A minimal root wrapper omits only unrelated font loading. |
+| `apps/mobile/src/components/ui/README.md`: lines 90–97 | Replace the temporary 88 px reserve guidance with measured navigator clearance, standalone safe spacing and explicit-footer override semantics; link the actual geometry contract. |
+| `apps/mobile/src/components/ui/screen.tsx`: lines 6–31 | Read optional navigator presentation metrics; preserve explicit caller clearance, use measured reservation under main tabs and remove the phantom tab estimate outside that provider. |
+| `apps/mobile/src/components/ui/screen.tsx`: lines 51–51 | Apply the resolved clearance with content spacing and the actual safe inset, preserving keyboard/scroll behavior. |
+| `apps/mobile/src/components/ui/screen.test.tsx`: lines 51–64 | Prove a standalone form with bottom inset 34 reserves exactly 58 px rather than a phantom navigator. Existing explicit-footer checks remain in the same suite. |
+| `apps/mobile/src/design/mascot-assets.ts`: lines 1–8 | Create a static four-variant source inventory and exact 110×110 bounds with no default mood or score mapping. Only the developer gallery consumes this inventory at this stage. |
+| `apps/mobile/src/design/navigation-assets.ts`: lines 1–38 | Statically import all eight unmodified local variants for Metro/Vite and record exact root image dimensions plus Home stroke-overhang slot offsets. Export the canonical tab-name type without duplicating routes. |
+| `apps/mobile/src/types/assets.d.ts`: lines 1–5 | Type local SVG imports as Metro asset IDs or Vite local URLs, avoiding transformers, inline SVG components or unsafe consumer casts. |
+| `docs/Context (AGENT)/AGENT_START_HERE.md`: lines 11–11 | Point replacement agents at the current RN-01/02 checkpoint and evidence. |
+| `docs/Context (AGENT)/AGENT_START_HERE.md`: lines 130–130 | Update the artifact index to 6 implemented/38 future parts while preserving the 44 stable IDs and cross-plan gates. |
+| `docs/core_plan/04_react_native_integration.md`: lines 4–4 | Record RN-01/02 implementation and native-JS-versus-signed-device evidence boundaries. |
+| `docs/core_plan/04_react_native_integration.md`: lines 37–38 | Label scaffold observations as the starting baseline so they are not mistaken for current RN-02 behavior. |
+| `docs/core_plan/04_react_native_integration.md`: lines 184–189 | Advance only RN-02 in the ledger with its actual subject/evidence and record RN-01's known hash. Keep RN-03–11 unstarted. |
+| `docs/core_plan/04_react_native_integration.md`: lines 256–256 | Link detailed implementation/navigation/provenance evidence and retain Dino/Auth/native acceptance limits. |
+| `docs/core_plan/README.md`: lines 3–12 | Advance current status/counts to RN-01/02 plus SC-01–04 (6 implemented, 38 future) without promoting Auth/API/database/native adapters. |
+| `docs/core_plan/README.md`: lines 115–115 | Distinguish asset/navigation/UI evidence from all remaining implementation and live cloud/device acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-02/bar-history.png`: binary, no line numbers | Idle source navbar state capture: 353×62 px, 4,259 bytes. Preserve actual browser evidence only; not an app asset or signed-device acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-02/bar-home.png`: binary, no line numbers | Idle source navbar state capture: 353×62 px, 3,937 bytes. Preserve actual browser evidence only; not an app asset or signed-device acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-02/bar-quests.png`: binary, no line numbers | Idle source navbar state capture: 353×62 px, 4,338 bytes. Preserve actual browser evidence only; not an app asset or signed-device acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-02/bar-settings.png`: binary, no line numbers | Idle source navbar state capture: 353×62 px, 4,554 bytes. Preserve actual browser evidence only; not an app asset or signed-device acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-02/navigation-320.png`: binary, no line numbers | Real app portrait viewport capture: 320×568 px, 36,704 bytes. Preserve actual browser evidence only; not an app asset or signed-device acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-02/navigation-393.png`: binary, no line numbers | Real app portrait viewport capture: 393×852 px, 26,384 bytes. Preserve actual browser evidence only; not an app asset or signed-device acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-02/navigation-430.png`: binary, no line numbers | Real app portrait viewport capture: 430×932 px, 34,880 bytes. Preserve actual browser evidence only; not an app asset or signed-device acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-02/navigation-compact-280.png`: binary, no line numbers | Compact two-column responsive stress capture: 280×568 px, 33,977 bytes. Preserve actual browser evidence only; not an app asset or signed-device acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-02/original-asset-gallery.png`: binary, no line numbers | Original artwork gallery capture: 1152×344 px, 34,039 bytes. Preserve actual browser evidence only; not an app asset or signed-device acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-02/browser-check.mjs`: lines 1–301 | Retain an optional executable Playwright evidence runner with explicit local tool/server prerequisites and an isolated Chrome context. Exercise actual app viewports, geometry, assets, browser history, direct links, warmed offline routing, Auth/scroll separation, keyboard control, compact reflow and image failures; record baseline favicon warnings separately. |
+| `docs/core_plan_implementation_notes/artifacts/rn-02/browser-results.json`: lines 1–1281 | Preserve the actual 21 passing case groups and per-viewport bar/target/image/padding measurements, browser version, original-gallery decode results, zero unexpected errors, five deliberate image failures and two known favicon 404s. This is observed evidence, not product data. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1–358 | Record RN-01's actual hash, refresh the live checkpoint and add the complete RN-02 inventory/decisions/checks/evidence/gates/handoff in this commit. Preserve RN-01's historical ranges and distinguish self-hash lookup from uncommitted preparation. |
+| `package-lock.json`: lines 30–30 | Record the mobile workspace's expo-image dependency in npm's single generated lock history. |
+| `package-lock.json`: lines 9705–9724 | Pin expo-image 58.0.18 with original registry integrity, dependency/peer metadata; no existing locked package version changes. |
+| `package.json`: lines 17–17 | Require exact bundled navigation assets after the real web export and existing developer-isolation check. |
+| `package.json`: lines 24–24 | Add original source-asset integrity to ordinary workspace checks before tests. |
+| `package.json`: lines 27–28 | Expose one reusable root asset-integrity command; preserve the existing specimen guard. |
+| `scripts/check-design-assets.mjs`: lines 1–45 | Reject an empty inventory, verify every source SVG against exact bytes/hash/root dimensions, and optionally require all navigation hashes in the real web export. Reuse the same guard locally/CI without network access or asset rewriting. |
+
+#### Design, architecture and compatibility decisions
+
+- Read-only Figma session `5ba1f272-e404-4b64-a5be-27dafd073f1f`. High-fidelity contexts and screenshots were obtained for Home `22:4`, Quests `27:155`, History `27:153`, Settings `27:157`, navbar children `84:133`, `10491:97`, `10573:364`, `10601:221`, and Dino `88:96` with its individual variants. Metadata identified the inactive Home vector `10573:366`, followed by its actual design context before implementation. No Figma nodes were edited.
+- Downloaded the original SVG URLs exposed by those contexts as instructed; no transient URL survives in app code or asset metadata. The provenance manifest records file/node IDs, capture date, intrinsic width/height/viewBox, size and SHA-256. No immutable Figma version was supplied, so none is invented. Home active/inactive retain 20.5×20.7758 px stroke bounds around the 18 px slot and its offset; other glyphs are 20×20; all four Dino sources are 110×110.
+- Match the actual requested navbar, leaving the pre-existing placeholder screen bodies for their future parts. At 393×852, the real app bar is exactly x=20, y=762, width=353, height=62; radius 31, 12/8 px padding, 44 px minimum targets and active-only icon/label pill. Settings centers all items; the other three source states have the source spacer after Home. All artwork/colors remain original; focus feedback and readable image-failure labels are deliberate functional additions.
+- Use SDK-compatible `expo-image` 58.0.18 for untouched bundled SVGs; no `react-native-svg`, transformer, rewritten paths or runtime tinting. Its SDK docs note a native iOS SVG decoder limitation; signed-device visual verification remains required. [SDK 58 image reference](https://docs.expo.dev/versions/v58.0.0/sdk/image/). The install added one package; the only lock additions are the workspace dependency and its resolved entry. Existing locked versions did not change.
+- Expo install could not edit dynamic `app.config.ts` and exited after dependency installation with its explicit plugin instruction. Added `expo-image` to the existing plugin list manually, then verified public config, SDK compatibility, typechecks, web and native JS exports. No prebuild, Pod install, native source regeneration, entitlement or signing changes were run.
+- Expo Router 58's installed public JS tabs API uses `emitter`/`navigateToTab`, rather than the older tutorial `navigation` prop. Adapt that actual API and its public height callback/context. Use its public link builder and platform pressable to retain valid hrefs, browser modified clicks, cancellable tab presses, long presses and reselect behavior. The tab navigator owns history with `backBehavior="history"`; there is no second route implementation or Auth coordinator.
+- A small provider owns bar height and scoped accessibility IDs only. Placement uses horizontal safe insets + 20 px and bottom `max(safeInset, 28)`. Screen reserves 24 px plus the measured occupied bottom extent, counting the safe inset once. The first-layout fallback is the 62 px source minimum; layout measurement replaces it. Standalone screens no longer reserve RN-01's temporary 88 px tab estimate; explicit footer clearance still overrides the provider.
+- At font scale >1.3 or usable bar width <280 px, use two wrapping columns and visible labels. Glyph bounds stay unchanged; text and height can grow. Native tests change the actual Dimensions subscription to font scale 2 and feed changing bar layout measurements, proving reservation updates. They do not establish native pixel layout or Dynamic Type acceptance. The 280 px browser stress case separately verifies an actual 108 px two-row bar with no horizontal overflow.
+- Native/web selected state and explicit tab roles prevent the platform pressable's default button/link role from winning. Web has one active Tab stop, Left/Right (RTL-aware), Home/End focus and manual Space/Enter activation, plus real panel associations via the navigator's screen layout. Focus changes alone do not navigate. The keyboard adapter is typed at RN's event boundary and only accesses DOM objects after a web guard. [WAI tabs pattern](https://www.w3.org/WAI/ARIA/apg/patterns/tabs/).
+- Dino source variants remain in the isolated gallery/inventory; they are not a scored release Home component. No neutral state or "85% happy" user default was invented. Third-party app/provider logos are separate future assets, not replacements using these line icons. Gallery labels explicitly say the artwork is unscored; its active swatches use the source action surface for contrast.
+- Keep the developer gallery outside Router/release imports. Vite emits individual local SVGs rather than data-URI inlining. Root checks/CI enforce source-byte integrity; the real Expo export additionally must contain all eight original nav hashes and no developer markers. A missing-export probe was rejected and its ignored exported file restored in `finally`; checked-in original SVGs were never modified for testing.
+- The optional browser evidence runner uses an ephemeral Playwright installation, not an app dependency, existing personal browser session or automatic CI device gate. It captures real viewport/asset/clearance measurements and records expected deliberately failed SVG requests separately. The baseline missing `/favicon.ico` requests on app/preview are identified, not silently relabeled as app failures or fixed with invented artwork.
+
+#### Actual validation and observed results
+
+Environment: Node 24.20.0, npm 11.19.0, Expo 58.0.21, React 19.3.0, RN 0.88.1, expo-image 58.0.18, Python 3.12.14. Browser: separate headless Chrome 156.0.8078.49 via ephemeral Playwright 1.64.1. No signed-device result is claimed.
+
+| Actual command/check | Result / scope |
+|---|---|
+| `npm run check` | Passed: workspace TypeScript/ESLint, original asset integrity, 5 portable checks, 62 component/hook checks in 18 iOS/Android suites, Ruff and 3 existing pytest checks. RN-02 adds 22 component cases across the two presets; RN-01's 40 remain covered. |
+| `npm run mobile:ui:build` | Passed; local gallery includes all 12 original SVG files and existing packaged fonts, with generated output ignored. |
+| `npm run mobile:export` | Passed; same 16 static routes; developer isolation passed across 32 JS/HTML files; exact original bytes of all 8 nav SVGs present. |
+| `npx expo install --check` (mobile directory) | Passed: dependencies up to date after adding SDK-compatible expo-image. |
+| `npx expo config --type public --json` (mobile directory) | Passed with expo-image plugin present; no native project generation. Output was local verification, not a committed configuration/secret artifact. |
+| `npm ci --ignore-scripts --dry-run --json` | Passed with zero added/removed/changed installation actions; manifest and lock agree. |
+| `npx expo export --platform ios --platform android --output-dir /tmp/hoosh-rn02-native-export` (mobile directory) | Passed for both OSes. Hermes bundles: iOS 2,578,892 bytes, Android 2,915,814 bytes. Per-platform metadata verification found all 8 original SVG SHA-256 values in each platform's asset entries. This is JS/assets export, not a signed/native module build. |
+| `node scripts/check-design-assets.mjs --export` | Passed. A one-off Python probe temporarily withheld an ignored exported Home SVG, observed the expected rejection, restored it in `finally`, then reran the positive check. |
+| `npm exec --yes --package @playwright/test -- playwright --version` | Ephemeral validation tool reported 1.64.1; no Playwright package/lock dependency was added. |
+| `PLAYWRIGHT_MODULE=<local ephemeral Playwright ESM entry> node docs/core_plan_implementation_notes/artifacts/rn-02/browser-check.mjs` | Passed 21 cases; the environment variable identifies a machine-local module path, not app configuration. Actual browser/data/results are retained below. Serve the real export with `npm exec --workspace @disconnect/mobile -- vite preview --host 127.0.0.1 --port 8092 --strictPort --outDir dist` and the gallery with `npm run mobile:ui`. |
+| `git diff --check` and file/link/range/scope audit | Run before commit; every changed file and logical addition is inventoried in this entry; no legacy native, root Auth guard, backend or contract changes. |
+
+Browser assertions covered all four active states at actual 320×568, 393×852 and 430×932 viewports: correct canonical route/heading, one selected tab, active-only visible label, panel association, 44 px targets, exact intrinsic glyph geometry, decoded local assets, measured 114 px content padding for the normal 62 px bar + 28 px bottom gap + 24 px content gap, and no horizontal overflow. Also checked Back/reselect history, four fresh direct links, Auth-stack hidden-tab separation and return, final Settings action scrolled above the bar, keyboard focus/activation, 280 px two-row reflow and actual asset-error fallback. All eight glyphs and four Dino variants decoded in the source gallery at their original bounds.
+
+Offline assertions apply after all route modules/assets have been visited in the **current document**, then networking is disabled and all four tab transitions still work. They do not assert a fresh offline web load. The JSON records zero unexpected app/console errors, five deliberate SVG request failures and two pre-existing missing-favicon 404s. No new product function was inferred from these checks.
+
+During development, assertions caught the pressable role override and native preset Dimensions behavior; explicit roles and real dimension-subscription changes corrected them. Router fixtures now account for hidden-but-mounted back-stack screens, and the source sign-in heading is correctly asserted as "Welcome back". Native export assets have extensionless hash filenames, so verification follows their metadata `ext` entries. Intermediate failures were corrected and are not counted as passing evidence.
+
+#### Visual and machine-readable evidence
+
+All PNGs are actual browser captures, not generated artwork or implementation assets. Standard frame screenshots show the existing placeholder bodies with the new source navbar; a small initial fold can scroll beneath the floating bar, and the measured padding lets its final content clear the bar. Source bar captures are taken after pressed/hover opacity settles. Native pixel rendering remains unverified.
+
+- [320×568 viewport](artifacts/rn-02/navigation-320.png), [393×852 viewport](artifacts/rn-02/navigation-393.png), [430×932 viewport](artifacts/rn-02/navigation-430.png).
+- 353×62 source state captures: [Home](artifacts/rn-02/bar-home.png), [Quests](artifacts/rn-02/bar-quests.png), [History](artifacts/rn-02/bar-history.png), [Settings](artifacts/rn-02/bar-settings.png).
+- [280 px compact stress](artifacts/rn-02/navigation-compact-280.png), [all original glyphs/Dino source variants](artifacts/rn-02/original-asset-gallery.png).
+- [Executable browser evidence runner](artifacts/rn-02/browser-check.mjs), [measured browser results](artifacts/rn-02/browser-results.json).
+
+#### Remaining gates and next handoff
+
+- Signed iOS/Android builds must link the new native image module and verify untouched SVG decoding, stroke bounds, font scaling/RTL, VoiceOver/TalkBack, keyboard interaction, real safe-area variants and app upgrade behavior. Exporting Hermes/asset files does not execute these native behaviors or audit imported Swift targets.
+- Actual Auth bootstrap/deep-link guards remain Anisha's AUTH-07 work. The direct-link tests prove current shell routing, not future unauthorized-access protection. Shared contracts, session storage, backend/API/database and native enforcement are unchanged.
+- Dino scoring/feed/reward/streak policies and full Home/Quests/History/Settings content remain future producer/PM-dependent work. The 4 prepared Dino assets are absent from the release import graph until a legitimate consumer exists. App/provider logos must come from their own source inventory later.
+- The existing missing web favicon is recorded as baseline cosmetic evidence. The 16 existing npm findings (3 high, 13 low) reported by installation remain tracked in the root README; no forced incompatible downgrade was applied.
+- Anisha can reuse the UI/test contract and integrate native image linking during her audited iOS work. Root guards stay outside the main tab provider. Coordinate the package/lock/app-config changes before overlapping work.
+- Next: review/integrate RN-02 through the agreed area/main flow, then begin RN-03 on a new task branch, or deliberately switch to independent API-01. Keep all remaining plan parts pending. This task commits locally and does not push/merge main automatically.
 
 ### Entry template
 

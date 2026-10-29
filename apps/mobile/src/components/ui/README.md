@@ -87,12 +87,14 @@ the dark outline contrasts 7.09:1 with the dark canvas. These are measured color
 ratios, not a claim of complete WCAG or device acceptance. See
 [W3C non-text contrast guidance](https://www.w3.org/WAI/WCAG22/Understanding/non-text-contrast.html).
 
-`Screen.bottomClearance` is caller-supplied space for an overlapping footer/tab bar.
-Its default 88 px preserves the original shell's 112 px plus safe-inset bottom
-spacing (24 + 88); standalone forms should pass zero. RN-02 owns replacing shell
-navigation estimates with actual tab geometry. `keyboardVerticalOffset` supports
-future visible headers. Avoid stacking another keyboard-avoidance owner around the
-screen. Signed iOS/Android keyboard behavior still requires device QA.
+RN-02 connects `Screen` to the main navigator's measured floating-bar clearance.
+Outside that provider, standalone screens reserve ordinary spacing plus the safe
+inset. An explicit `bottomClearance` still overrides the provider for a different
+overlapping footer; pass zero when intentionally reserving none. Do not add a second
+tab reserve. See the [navigation geometry contract](../navigation/README.md).
+`keyboardVerticalOffset` supports future visible headers. Avoid stacking another
+keyboard-avoidance owner around the screen. Signed iOS/Android keyboard behavior
+still requires device QA.
 
 ## Shared test and specimen commands
 

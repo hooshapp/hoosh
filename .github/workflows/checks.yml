@@ -19,6 +19,8 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm run lint
+      - name: Original local design asset integrity
+        run: npm run mobile:check-assets
       - name: Portable unit and iOS/Android component tests
         run: npm test
       - name: Isolated shared UI specimen build

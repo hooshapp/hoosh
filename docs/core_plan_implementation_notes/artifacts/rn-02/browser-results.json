@@ -1,0 +1,1281 @@
+{
+  "browser": "156.0.8078.49",
+  "cases": [
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "tab": "Home",
+      "bar": {
+        "x": 20,
+        "y": 478,
+        "width": 280,
+        "height": 62,
+        "bottom": 540,
+        "right": 300
+      },
+      "targets": [
+        {
+          "x": 32,
+          "y": 487,
+          "width": 97.09375,
+          "height": 44,
+          "bottom": 531,
+          "right": 129.09375
+        },
+        {
+          "x": 148,
+          "y": 487,
+          "width": 44,
+          "height": 44,
+          "bottom": 531,
+          "right": 192
+        },
+        {
+          "x": 196,
+          "y": 487,
+          "width": 44,
+          "height": 44,
+          "bottom": 531,
+          "right": 240
+        },
+        {
+          "x": 244,
+          "y": 487,
+          "width": 44,
+          "height": 44,
+          "bottom": 531,
+          "right": 288
+        }
+      ],
+      "icons": [
+        {
+          "x": 46.75,
+          "y": 498.484375,
+          "width": 20.5,
+          "height": 20.765625,
+          "bottom": 519.25,
+          "right": 67.25,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/home-active.0b40fe5dfba17da3bdfa0a325786f6df.svg"
+        },
+        {
+          "x": 160,
+          "y": 499,
+          "width": 20,
+          "height": 20,
+          "bottom": 519,
+          "right": 180,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/quests-inactive.8ffc5842648b5b1a559a357d5fb4841f.svg"
+        },
+        {
+          "x": 208,
+          "y": 499,
+          "width": 20,
+          "height": 20,
+          "bottom": 519,
+          "right": 228,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/history-inactive.ca32ed93660dd3f1038cf017c60c72f8.svg"
+        },
+        {
+          "x": 256,
+          "y": 499,
+          "width": 20,
+          "height": 20,
+          "bottom": 519,
+          "right": 276,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/settings-inactive.d1bf16c4b32432438854e4a37a3ed785.svg"
+        }
+      ],
+      "label": "Home",
+      "contentPadding": 114,
+      "horizontalOverflow": false
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "tab": "Quests",
+      "bar": {
+        "x": 20,
+        "y": 478,
+        "width": 280,
+        "height": 62,
+        "bottom": 540,
+        "right": 300
+      },
+      "targets": [
+        {
+          "x": 32,
+          "y": 487,
+          "width": 44,
+          "height": 44,
+          "bottom": 531,
+          "right": 76
+        },
+        {
+          "x": 84.265625,
+          "y": 487,
+          "width": 107.734375,
+          "height": 44,
+          "bottom": 531,
+          "right": 192
+        },
+        {
+          "x": 196,
+          "y": 487,
+          "width": 44,
+          "height": 44,
+          "bottom": 531,
+          "right": 240
+        },
+        {
+          "x": 244,
+          "y": 487,
+          "width": 44,
+          "height": 44,
+          "bottom": 531,
+          "right": 288
+        }
+      ],
+      "icons": [
+        {
+          "x": 43.75,
+          "y": 498.484375,
+          "width": 20.5,
+          "height": 20.765625,
+          "bottom": 519.25,
+          "right": 64.25,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/home-inactive.33a2e915c0dfe1cdd025759de8960b94.svg"
+        },
+        {
+          "x": 100.265625,
+          "y": 499,
+          "width": 20,
+          "height": 20,
+          "bottom": 519,
+          "right": 120.265625,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/quests-active.92a8f7c31b2c621dcf50c3544f14d46e.svg"
+        },
+        {
+          "x": 208,
+          "y": 499,
+          "width": 20,
+          "height": 20,
+          "bottom": 519,
+          "right": 228,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/history-inactive.ca32ed93660dd3f1038cf017c60c72f8.svg"
+        },
+        {
+          "x": 256,
+          "y": 499,
+          "width": 20,
+          "height": 20,
+          "bottom": 519,
+          "right": 276,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/settings-inactive.d1bf16c4b32432438854e4a37a3ed785.svg"
+        }
+      ],
+      "label": "Quests",
+      "contentPadding": 114,
+      "horizontalOverflow": false
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "tab": "History",
+      "bar": {
+        "x": 20,
+        "y": 478,
+        "width": 280,
+        "height": 62,
+        "bottom": 540,
+        "right": 300
+      },
+      "targets": [
+        {
+          "x": 31.265625,
+          "y": 487,
+          "width": 44,
+          "height": 44,
+          "bottom": 531,
+          "right": 75.265625
+        },
+        {
+          "x": 83.265625,
+          "y": 487,
+          "width": 44,
+          "height": 44,
+          "bottom": 531,
+          "right": 127.265625
+        },
+        {
+          "x": 131.265625,
+          "y": 487,
+          "width": 109.484375,
+          "height": 44,
+          "bottom": 531,
+          "right": 240.75
+        },
+        {
+          "x": 244.75,
+          "y": 487,
+          "width": 44,
+          "height": 44,
+          "bottom": 531,
+          "right": 288.75
+        }
+      ],
+      "icons": [
+        {
+          "x": 43.015625,
+          "y": 498.484375,
+          "width": 20.5,
+          "height": 20.765625,
+          "bottom": 519.25,
+          "right": 63.515625,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/home-inactive.33a2e915c0dfe1cdd025759de8960b94.svg"
+        },
+        {
+          "x": 95.265625,
+          "y": 499,
+          "width": 20,
+          "height": 20,
+          "bottom": 519,
+          "right": 115.265625,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/quests-inactive.8ffc5842648b5b1a559a357d5fb4841f.svg"
+        },
+        {
+          "x": 147.265625,
+          "y": 499,
+          "width": 20,
+          "height": 20,
+          "bottom": 519,
+          "right": 167.265625,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/history-active.40630869e161088001517b0698b9d0d8.svg"
+        },
+        {
+          "x": 256.75,
+          "y": 499,
+          "width": 20,
+          "height": 20,
+          "bottom": 519,
+          "right": 276.75,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/settings-inactive.d1bf16c4b32432438854e4a37a3ed785.svg"
+        }
+      ],
+      "label": "History",
+      "contentPadding": 114,
+      "horizontalOverflow": false
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "tab": "Settings",
+      "bar": {
+        "x": 20,
+        "y": 478,
+        "width": 280,
+        "height": 62,
+        "bottom": 540,
+        "right": 300
+      },
+      "targets": [
+        {
+          "x": 29.9375,
+          "y": 487,
+          "width": 44,
+          "height": 44,
+          "bottom": 531,
+          "right": 73.9375
+        },
+        {
+          "x": 77.9375,
+          "y": 487,
+          "width": 44,
+          "height": 44,
+          "bottom": 531,
+          "right": 121.9375
+        },
+        {
+          "x": 125.9375,
+          "y": 487,
+          "width": 44,
+          "height": 44,
+          "bottom": 531,
+          "right": 169.9375
+        },
+        {
+          "x": 173.9375,
+          "y": 487,
+          "width": 116.125,
+          "height": 44,
+          "bottom": 531,
+          "right": 290.0625
+        }
+      ],
+      "icons": [
+        {
+          "x": 41.6875,
+          "y": 498.484375,
+          "width": 20.5,
+          "height": 20.765625,
+          "bottom": 519.25,
+          "right": 62.1875,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/home-inactive.33a2e915c0dfe1cdd025759de8960b94.svg"
+        },
+        {
+          "x": 89.9375,
+          "y": 499,
+          "width": 20,
+          "height": 20,
+          "bottom": 519,
+          "right": 109.9375,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/quests-inactive.8ffc5842648b5b1a559a357d5fb4841f.svg"
+        },
+        {
+          "x": 137.9375,
+          "y": 499,
+          "width": 20,
+          "height": 20,
+          "bottom": 519,
+          "right": 157.9375,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/history-inactive.ca32ed93660dd3f1038cf017c60c72f8.svg"
+        },
+        {
+          "x": 189.9375,
+          "y": 499,
+          "width": 20,
+          "height": 20,
+          "bottom": 519,
+          "right": 209.9375,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/settings-active.ab354c525054889d85245b6dfa94c914.svg"
+        }
+      ],
+      "label": "Settings",
+      "contentPadding": 114,
+      "horizontalOverflow": false
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "checks": "browser back, reselect, four fresh direct links, warmed offline tabs, auth isolation/back, last action scroll clearance passed"
+    },
+    {
+      "viewport": {
+        "width": 320,
+        "height": 568
+      },
+      "checks": "Keyboard roving tab stop, Home/End/Arrow focus, manual Space/Enter activation passed."
+    },
+    {
+      "viewport": {
+        "width": 393,
+        "height": 852
+      },
+      "tab": "Home",
+      "bar": {
+        "x": 20,
+        "y": 762,
+        "width": 353,
+        "height": 62,
+        "bottom": 824,
+        "right": 373
+      },
+      "targets": [
+        {
+          "x": 32,
+          "y": 771,
+          "width": 97.09375,
+          "height": 44,
+          "bottom": 815,
+          "right": 129.09375
+        },
+        {
+          "x": 221,
+          "y": 771,
+          "width": 44,
+          "height": 44,
+          "bottom": 815,
+          "right": 265
+        },
+        {
+          "x": 269,
+          "y": 771,
+          "width": 44,
+          "height": 44,
+          "bottom": 815,
+          "right": 313
+        },
+        {
+          "x": 317,
+          "y": 771,
+          "width": 44,
+          "height": 44,
+          "bottom": 815,
+          "right": 361
+        }
+      ],
+      "icons": [
+        {
+          "x": 46.75,
+          "y": 782.484375,
+          "width": 20.5,
+          "height": 20.765625,
+          "bottom": 803.25,
+          "right": 67.25,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/home-active.0b40fe5dfba17da3bdfa0a325786f6df.svg"
+        },
+        {
+          "x": 233,
+          "y": 783,
+          "width": 20,
+          "height": 20,
+          "bottom": 803,
+          "right": 253,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/quests-inactive.8ffc5842648b5b1a559a357d5fb4841f.svg"
+        },
+        {
+          "x": 281,
+          "y": 783,
+          "width": 20,
+          "height": 20,
+          "bottom": 803,
+          "right": 301,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/history-inactive.ca32ed93660dd3f1038cf017c60c72f8.svg"
+        },
+        {
+          "x": 329,
+          "y": 783,
+          "width": 20,
+          "height": 20,
+          "bottom": 803,
+          "right": 349,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/settings-inactive.d1bf16c4b32432438854e4a37a3ed785.svg"
+        }
+      ],
+      "label": "Home",
+      "contentPadding": 114,
+      "horizontalOverflow": false
+    },
+    {
+      "viewport": {
+        "width": 393,
+        "height": 852
+      },
+      "tab": "Quests",
+      "bar": {
+        "x": 20,
+        "y": 762,
+        "width": 353,
+        "height": 62,
+        "bottom": 824,
+        "right": 373
+      },
+      "targets": [
+        {
+          "x": 32,
+          "y": 771,
+          "width": 44,
+          "height": 44,
+          "bottom": 815,
+          "right": 76
+        },
+        {
+          "x": 157.265625,
+          "y": 771,
+          "width": 107.734375,
+          "height": 44,
+          "bottom": 815,
+          "right": 265
+        },
+        {
+          "x": 269,
+          "y": 771,
+          "width": 44,
+          "height": 44,
+          "bottom": 815,
+          "right": 313
+        },
+        {
+          "x": 317,
+          "y": 771,
+          "width": 44,
+          "height": 44,
+          "bottom": 815,
+          "right": 361
+        }
+      ],
+      "icons": [
+        {
+          "x": 43.75,
+          "y": 782.484375,
+          "width": 20.5,
+          "height": 20.765625,
+          "bottom": 803.25,
+          "right": 64.25,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/home-inactive.33a2e915c0dfe1cdd025759de8960b94.svg"
+        },
+        {
+          "x": 173.265625,
+          "y": 783,
+          "width": 20,
+          "height": 20,
+          "bottom": 803,
+          "right": 193.265625,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/quests-active.92a8f7c31b2c621dcf50c3544f14d46e.svg"
+        },
+        {
+          "x": 281,
+          "y": 783,
+          "width": 20,
+          "height": 20,
+          "bottom": 803,
+          "right": 301,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/history-inactive.ca32ed93660dd3f1038cf017c60c72f8.svg"
+        },
+        {
+          "x": 329,
+          "y": 783,
+          "width": 20,
+          "height": 20,
+          "bottom": 803,
+          "right": 349,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/settings-inactive.d1bf16c4b32432438854e4a37a3ed785.svg"
+        }
+      ],
+      "label": "Quests",
+      "contentPadding": 114,
+      "horizontalOverflow": false
+    },
+    {
+      "viewport": {
+        "width": 393,
+        "height": 852
+      },
+      "tab": "History",
+      "bar": {
+        "x": 20,
+        "y": 762,
+        "width": 353,
+        "height": 62,
+        "bottom": 824,
+        "right": 373
+      },
+      "targets": [
+        {
+          "x": 32,
+          "y": 771,
+          "width": 44,
+          "height": 44,
+          "bottom": 815,
+          "right": 76
+        },
+        {
+          "x": 155.515625,
+          "y": 771,
+          "width": 44,
+          "height": 44,
+          "bottom": 815,
+          "right": 199.515625
+        },
+        {
+          "x": 203.515625,
+          "y": 771,
+          "width": 109.484375,
+          "height": 44,
+          "bottom": 815,
+          "right": 313
+        },
+        {
+          "x": 317,
+          "y": 771,
+          "width": 44,
+          "height": 44,
+          "bottom": 815,
+          "right": 361
+        }
+      ],
+      "icons": [
+        {
+          "x": 43.75,
+          "y": 782.484375,
+          "width": 20.5,
+          "height": 20.765625,
+          "bottom": 803.25,
+          "right": 64.25,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/home-inactive.33a2e915c0dfe1cdd025759de8960b94.svg"
+        },
+        {
+          "x": 167.515625,
+          "y": 783,
+          "width": 20,
+          "height": 20,
+          "bottom": 803,
+          "right": 187.515625,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/quests-inactive.8ffc5842648b5b1a559a357d5fb4841f.svg"
+        },
+        {
+          "x": 219.515625,
+          "y": 783,
+          "width": 20,
+          "height": 20,
+          "bottom": 803,
+          "right": 239.515625,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/history-active.40630869e161088001517b0698b9d0d8.svg"
+        },
+        {
+          "x": 329,
+          "y": 783,
+          "width": 20,
+          "height": 20,
+          "bottom": 803,
+          "right": 349,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/settings-inactive.d1bf16c4b32432438854e4a37a3ed785.svg"
+        }
+      ],
+      "label": "History",
+      "contentPadding": 114,
+      "horizontalOverflow": false
+    },
+    {
+      "viewport": {
+        "width": 393,
+        "height": 852
+      },
+      "tab": "Settings",
+      "bar": {
+        "x": 20,
+        "y": 762,
+        "width": 353,
+        "height": 62,
+        "bottom": 824,
+        "right": 373
+      },
+      "targets": [
+        {
+          "x": 66.4375,
+          "y": 771,
+          "width": 44,
+          "height": 44,
+          "bottom": 815,
+          "right": 110.4375
+        },
+        {
+          "x": 114.4375,
+          "y": 771,
+          "width": 44,
+          "height": 44,
+          "bottom": 815,
+          "right": 158.4375
+        },
+        {
+          "x": 162.4375,
+          "y": 771,
+          "width": 44,
+          "height": 44,
+          "bottom": 815,
+          "right": 206.4375
+        },
+        {
+          "x": 210.4375,
+          "y": 771,
+          "width": 116.125,
+          "height": 44,
+          "bottom": 815,
+          "right": 326.5625
+        }
+      ],
+      "icons": [
+        {
+          "x": 78.1875,
+          "y": 782.484375,
+          "width": 20.5,
+          "height": 20.765625,
+          "bottom": 803.25,
+          "right": 98.6875,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/home-inactive.33a2e915c0dfe1cdd025759de8960b94.svg"
+        },
+        {
+          "x": 126.4375,
+          "y": 783,
+          "width": 20,
+          "height": 20,
+          "bottom": 803,
+          "right": 146.4375,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/quests-inactive.8ffc5842648b5b1a559a357d5fb4841f.svg"
+        },
+        {
+          "x": 174.4375,
+          "y": 783,
+          "width": 20,
+          "height": 20,
+          "bottom": 803,
+          "right": 194.4375,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/history-inactive.ca32ed93660dd3f1038cf017c60c72f8.svg"
+        },
+        {
+          "x": 226.4375,
+          "y": 783,
+          "width": 20,
+          "height": 20,
+          "bottom": 803,
+          "right": 246.4375,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/settings-active.ab354c525054889d85245b6dfa94c914.svg"
+        }
+      ],
+      "label": "Settings",
+      "contentPadding": 114,
+      "horizontalOverflow": false
+    },
+    {
+      "viewport": {
+        "width": 393,
+        "height": 852
+      },
+      "checks": "browser back, reselect, four fresh direct links, warmed offline tabs, auth isolation/back, last action scroll clearance passed"
+    },
+    {
+      "viewport": {
+        "width": 393,
+        "height": 852
+      },
+      "checks": "Keyboard roving tab stop, Home/End/Arrow focus, manual Space/Enter activation passed."
+    },
+    {
+      "viewport": {
+        "width": 430,
+        "height": 932
+      },
+      "tab": "Home",
+      "bar": {
+        "x": 20,
+        "y": 842,
+        "width": 390,
+        "height": 62,
+        "bottom": 904,
+        "right": 410
+      },
+      "targets": [
+        {
+          "x": 32,
+          "y": 851,
+          "width": 97.09375,
+          "height": 44,
+          "bottom": 895,
+          "right": 129.09375
+        },
+        {
+          "x": 258,
+          "y": 851,
+          "width": 44,
+          "height": 44,
+          "bottom": 895,
+          "right": 302
+        },
+        {
+          "x": 306,
+          "y": 851,
+          "width": 44,
+          "height": 44,
+          "bottom": 895,
+          "right": 350
+        },
+        {
+          "x": 354,
+          "y": 851,
+          "width": 44,
+          "height": 44,
+          "bottom": 895,
+          "right": 398
+        }
+      ],
+      "icons": [
+        {
+          "x": 46.75,
+          "y": 862.484375,
+          "width": 20.5,
+          "height": 20.765625,
+          "bottom": 883.25,
+          "right": 67.25,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/home-active.0b40fe5dfba17da3bdfa0a325786f6df.svg"
+        },
+        {
+          "x": 270,
+          "y": 863,
+          "width": 20,
+          "height": 20,
+          "bottom": 883,
+          "right": 290,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/quests-inactive.8ffc5842648b5b1a559a357d5fb4841f.svg"
+        },
+        {
+          "x": 318,
+          "y": 863,
+          "width": 20,
+          "height": 20,
+          "bottom": 883,
+          "right": 338,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/history-inactive.ca32ed93660dd3f1038cf017c60c72f8.svg"
+        },
+        {
+          "x": 366,
+          "y": 863,
+          "width": 20,
+          "height": 20,
+          "bottom": 883,
+          "right": 386,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/settings-inactive.d1bf16c4b32432438854e4a37a3ed785.svg"
+        }
+      ],
+      "label": "Home",
+      "contentPadding": 114,
+      "horizontalOverflow": false
+    },
+    {
+      "viewport": {
+        "width": 430,
+        "height": 932
+      },
+      "tab": "Quests",
+      "bar": {
+        "x": 20,
+        "y": 842,
+        "width": 390,
+        "height": 62,
+        "bottom": 904,
+        "right": 410
+      },
+      "targets": [
+        {
+          "x": 32,
+          "y": 851,
+          "width": 44,
+          "height": 44,
+          "bottom": 895,
+          "right": 76
+        },
+        {
+          "x": 194.265625,
+          "y": 851,
+          "width": 107.734375,
+          "height": 44,
+          "bottom": 895,
+          "right": 302
+        },
+        {
+          "x": 306,
+          "y": 851,
+          "width": 44,
+          "height": 44,
+          "bottom": 895,
+          "right": 350
+        },
+        {
+          "x": 354,
+          "y": 851,
+          "width": 44,
+          "height": 44,
+          "bottom": 895,
+          "right": 398
+        }
+      ],
+      "icons": [
+        {
+          "x": 43.75,
+          "y": 862.484375,
+          "width": 20.5,
+          "height": 20.765625,
+          "bottom": 883.25,
+          "right": 64.25,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/home-inactive.33a2e915c0dfe1cdd025759de8960b94.svg"
+        },
+        {
+          "x": 210.265625,
+          "y": 863,
+          "width": 20,
+          "height": 20,
+          "bottom": 883,
+          "right": 230.265625,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/quests-active.92a8f7c31b2c621dcf50c3544f14d46e.svg"
+        },
+        {
+          "x": 318,
+          "y": 863,
+          "width": 20,
+          "height": 20,
+          "bottom": 883,
+          "right": 338,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/history-inactive.ca32ed93660dd3f1038cf017c60c72f8.svg"
+        },
+        {
+          "x": 366,
+          "y": 863,
+          "width": 20,
+          "height": 20,
+          "bottom": 883,
+          "right": 386,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/settings-inactive.d1bf16c4b32432438854e4a37a3ed785.svg"
+        }
+      ],
+      "label": "Quests",
+      "contentPadding": 114,
+      "horizontalOverflow": false
+    },
+    {
+      "viewport": {
+        "width": 430,
+        "height": 932
+      },
+      "tab": "History",
+      "bar": {
+        "x": 20,
+        "y": 842,
+        "width": 390,
+        "height": 62,
+        "bottom": 904,
+        "right": 410
+      },
+      "targets": [
+        {
+          "x": 32,
+          "y": 851,
+          "width": 44,
+          "height": 44,
+          "bottom": 895,
+          "right": 76
+        },
+        {
+          "x": 192.515625,
+          "y": 851,
+          "width": 44,
+          "height": 44,
+          "bottom": 895,
+          "right": 236.515625
+        },
+        {
+          "x": 240.515625,
+          "y": 851,
+          "width": 109.484375,
+          "height": 44,
+          "bottom": 895,
+          "right": 350
+        },
+        {
+          "x": 354,
+          "y": 851,
+          "width": 44,
+          "height": 44,
+          "bottom": 895,
+          "right": 398
+        }
+      ],
+      "icons": [
+        {
+          "x": 43.75,
+          "y": 862.484375,
+          "width": 20.5,
+          "height": 20.765625,
+          "bottom": 883.25,
+          "right": 64.25,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/home-inactive.33a2e915c0dfe1cdd025759de8960b94.svg"
+        },
+        {
+          "x": 204.515625,
+          "y": 863,
+          "width": 20,
+          "height": 20,
+          "bottom": 883,
+          "right": 224.515625,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/quests-inactive.8ffc5842648b5b1a559a357d5fb4841f.svg"
+        },
+        {
+          "x": 256.515625,
+          "y": 863,
+          "width": 20,
+          "height": 20,
+          "bottom": 883,
+          "right": 276.515625,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/history-active.40630869e161088001517b0698b9d0d8.svg"
+        },
+        {
+          "x": 366,
+          "y": 863,
+          "width": 20,
+          "height": 20,
+          "bottom": 883,
+          "right": 386,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/settings-inactive.d1bf16c4b32432438854e4a37a3ed785.svg"
+        }
+      ],
+      "label": "History",
+      "contentPadding": 114,
+      "horizontalOverflow": false
+    },
+    {
+      "viewport": {
+        "width": 430,
+        "height": 932
+      },
+      "tab": "Settings",
+      "bar": {
+        "x": 20,
+        "y": 842,
+        "width": 390,
+        "height": 62,
+        "bottom": 904,
+        "right": 410
+      },
+      "targets": [
+        {
+          "x": 84.9375,
+          "y": 851,
+          "width": 44,
+          "height": 44,
+          "bottom": 895,
+          "right": 128.9375
+        },
+        {
+          "x": 132.9375,
+          "y": 851,
+          "width": 44,
+          "height": 44,
+          "bottom": 895,
+          "right": 176.9375
+        },
+        {
+          "x": 180.9375,
+          "y": 851,
+          "width": 44,
+          "height": 44,
+          "bottom": 895,
+          "right": 224.9375
+        },
+        {
+          "x": 228.9375,
+          "y": 851,
+          "width": 116.125,
+          "height": 44,
+          "bottom": 895,
+          "right": 345.0625
+        }
+      ],
+      "icons": [
+        {
+          "x": 96.6875,
+          "y": 862.484375,
+          "width": 20.5,
+          "height": 20.765625,
+          "bottom": 883.25,
+          "right": 117.1875,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/home-inactive.33a2e915c0dfe1cdd025759de8960b94.svg"
+        },
+        {
+          "x": 144.9375,
+          "y": 863,
+          "width": 20,
+          "height": 20,
+          "bottom": 883,
+          "right": 164.9375,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/quests-inactive.8ffc5842648b5b1a559a357d5fb4841f.svg"
+        },
+        {
+          "x": 192.9375,
+          "y": 863,
+          "width": 20,
+          "height": 20,
+          "bottom": 883,
+          "right": 212.9375,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/history-inactive.ca32ed93660dd3f1038cf017c60c72f8.svg"
+        },
+        {
+          "x": 244.9375,
+          "y": 863,
+          "width": 20,
+          "height": 20,
+          "bottom": 883,
+          "right": 264.9375,
+          "loaded": true,
+          "source": "/assets/assets/icons/navigation/settings-active.ab354c525054889d85245b6dfa94c914.svg"
+        }
+      ],
+      "label": "Settings",
+      "contentPadding": 114,
+      "horizontalOverflow": false
+    },
+    {
+      "viewport": {
+        "width": 430,
+        "height": 932
+      },
+      "checks": "browser back, reselect, four fresh direct links, warmed offline tabs, auth isolation/back, last action scroll clearance passed"
+    },
+    {
+      "viewport": {
+        "width": 430,
+        "height": 932
+      },
+      "checks": "Keyboard roving tab stop, Home/End/Arrow focus, manual Space/Enter activation passed."
+    },
+    {
+      "viewport": {
+        "width": 280,
+        "height": 568
+      },
+      "compactGeometry": {
+        "height": 108,
+        "wrap": "wrap",
+        "label": "Home\nQuests\nHistory\nSettings",
+        "overflow": false
+      },
+      "note": "Compact responsive stress only, not native font scaling."
+    },
+    {
+      "checks": "Deliberately blocked local SVGs expose readable destination labels and retain navigation."
+    },
+    {
+      "artwork": [
+        {
+          "alt": "index active source icon",
+          "width": 21,
+          "height": 21,
+          "loaded": true
+        },
+        {
+          "alt": "index inactive source icon",
+          "width": 21,
+          "height": 21,
+          "loaded": true
+        },
+        {
+          "alt": "quests active source icon",
+          "width": 20,
+          "height": 20,
+          "loaded": true
+        },
+        {
+          "alt": "quests inactive source icon",
+          "width": 20,
+          "height": 20,
+          "loaded": true
+        },
+        {
+          "alt": "history active source icon",
+          "width": 20,
+          "height": 20,
+          "loaded": true
+        },
+        {
+          "alt": "history inactive source icon",
+          "width": 20,
+          "height": 20,
+          "loaded": true
+        },
+        {
+          "alt": "settings active source icon",
+          "width": 20,
+          "height": 20,
+          "loaded": true
+        },
+        {
+          "alt": "settings inactive source icon",
+          "width": 20,
+          "height": 20,
+          "loaded": true
+        },
+        {
+          "alt": "Dino source: needsCare",
+          "width": 110,
+          "height": 110,
+          "loaded": true
+        },
+        {
+          "alt": "Dino source: feelingLow",
+          "width": 110,
+          "height": 110,
+          "loaded": true
+        },
+        {
+          "alt": "Dino source: doingOkay",
+          "width": 110,
+          "height": 110,
+          "loaded": true
+        },
+        {
+          "alt": "Dino source: happy",
+          "width": 110,
+          "height": 110,
+          "loaded": true
+        }
+      ],
+      "checks": "All eight original nav glyphs and four unscored Dino variants decoded at source bounds."
+    }
+  ],
+  "errors": [],
+  "expectedImageFailures": 5,
+  "baselineWarnings": [
+    {
+      "url": "http://127.0.0.1:8092/favicon.ico",
+      "issue": "Pre-existing web favicon is absent."
+    },
+    {
+      "url": "http://127.0.0.1:8091/favicon.ico",
+      "issue": "Pre-existing web favicon is absent."
+    }
+  ],
+  "result": "passed"
+}

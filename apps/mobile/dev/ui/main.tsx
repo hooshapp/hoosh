@@ -10,6 +10,7 @@ import { InlineStatus } from '@/components/ui/inline-status';
 import { Screen } from '@/components/ui/screen';
 
 import './styles.css';
+import { AssetGallery } from './asset-gallery';
 
 function Specimen({ dark, width }: { dark: boolean; width: number }) {
   const [name, setName] = useState('Evening reading');
@@ -108,5 +109,6 @@ createRoot(root).render(
       <Specimen width={width} dark={false} />
       <Specimen width={width} dark />
     </div>
+    <AssetGallery />
   </main>,
 );

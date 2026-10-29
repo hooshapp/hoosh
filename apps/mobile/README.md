@@ -14,6 +14,6 @@ See [the root README](../../README.md) for setup, current limitations, ownership
 
 Shared fields/buttons/screen states, controlled busy handling, test discovery and the isolated specimen workflow are documented in [the component README](src/components/ui/README.md). Anisha can reuse these primitives; their form controllers still own validation, submission, cancellation and safe error mapping.
 
-Use the original Figma mascot/icons when implementing full screens. The initial shell is text-only and contains no fabricated usage, reward, or protection data. The font dependency provides Space Grotesk; no font binaries are copied into this repository.
+RN-02 supplies the [floating navigation contract](src/components/navigation/README.md) and [original asset provenance](assets/README.md). Navigation uses locally bundled Figma SVGs; the four Dino variants are inventory-only until a real Home consumer is approved. Screen bodies retain truthful feature placeholders. The font dependency provides Space Grotesk; no font binaries are copied into this repository.
 
 Native source is not ignored by Git. Preserve the released iOS project when integrating it; do not generate a replacement identity or discard extension targets.

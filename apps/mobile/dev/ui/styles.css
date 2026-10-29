@@ -61,3 +61,30 @@ h2 {
   font-size: 48px !important;
   line-height: 58px !important;
 }
+/* Original asset inspection stays outside the production app entry. */
+.asset-gallery {
+  margin-top: 32px;
+}
+.asset-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.asset-grid figure {
+  margin: 0;
+  padding: 16px;
+  border-radius: 16px;
+  background: #fffaf2;
+}
+.asset-grid figcaption {
+  margin-top: 8px;
+  font-size: 12px;
+}
+.asset-grid .icon-swatch {
+  background: #1a1a1a;
+  color: #fff;
+}
+.asset-grid .icon-swatch-active {
+  background: #33c659;
+  color: #0b3320;
+}

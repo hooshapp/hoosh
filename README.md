@@ -8,6 +8,7 @@ Shared React Native app and FastAPI service for Disconnect. Product context star
 - Figma-derived colors and Space Grotesk 300/400/500/700. Screens are explicit placeholders, not completed Figma implementations.
 - Shared native-protection types and a tested API client with an injectable access-token provider.
 - RN-01 shared screen/form/state primitives, iOS/Android component tests and an isolated developer UI specimen entry; see [component usage](apps/mobile/src/components/ui/README.md).
+- RN-02 original local icon/Dino inventory and floating four-tab navigation with measured safe-area clearance; see [navigation](apps/mobile/src/components/navigation/README.md) and [asset provenance](apps/mobile/assets/README.md).
 - FastAPI process health endpoint, OpenAPI documentation, explicit browser CORS configuration, and tests.
 - Reproducible npm and uv lockfiles, linting, type checking, and CI checks.
 
@@ -95,9 +96,10 @@ npm run check
 npm run mobile:export
 npm run mobile:ui:build
 npm run mobile:ui
+npm run mobile:check-assets
 ```
 
-`check` runs TypeScript, ESLint, portable API-client tests, iOS/Android component tests, Ruff, and API tests. `mobile:export` verifies the web bundle/routes and rejects leaked developer specimen markers. `mobile:ui` serves the separate developer preview on port 8091; it is not an app route. Generated output and local environments are ignored by Git. Signed native builds and physical-device tests remain separate release requirements.
+`check` runs TypeScript, ESLint, portable API-client tests, iOS/Android component tests, original asset integrity, Ruff, and API tests. `mobile:export` verifies the web bundle/routes and rejects leaked developer specimen markers and missing original navigation assets. `mobile:ui` serves the separate developer preview on port 8091; it is not an app route. Generated output and local environments are ignored by Git. Signed native builds and physical-device tests remain separate release requirements.
 
 ### Dependency notes
 
@@ -115,7 +117,7 @@ Coordinate edits to the root navigation, `app.config.ts`, dependency lockfiles, 
 
 ## Next integration
 
-1. Start from the committed Plan 00 contracts (`0b50900`). Ishmum starts shared RN primitives/tests (RN-01), API foundation (API-01), and Android investigation as separate parts.
+1. Start from the committed Plan 00 contracts (`0b50900`) and RN-01/02 shared UI/navigation foundation. Ishmum can continue RN-03 client hardening, API foundation (API-01), and Android investigation as separate parts; inspect the current plan notes/branch before starting.
 2. Anisha owns Supabase Auth/project setup (SB-01–03) and builds the single Auth/session producer (AUTH-01/02); both sides use controlled tests before live integration. Audit the imported Swift source and investigate Android feasibility independently.
 3. When the producer outputs are ready, connect real sign-in → identity-only `GET /v1/me` → matching account UI (M1), without requiring a product database.
 4. Add isolated PostgreSQL persistence and `GET/PATCH /v1/profile` with revision/conflict handling (M2). Full onboarding/plans/native installation follow their approved contracts and evidence.

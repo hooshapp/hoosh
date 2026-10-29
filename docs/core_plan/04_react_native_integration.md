@@ -1,7 +1,7 @@
 # 04 — React Native Integration and Shared Frontend Plan
 
 **Date:** 2026-10-28\
-**Status:** RN-01 implemented with automated and browser evidence on `task/react-native/rn-01`; RN-02–11 remain not started. Signed-device keyboard/screen-reader acceptance remains separate.\
+**Status:** RN-01/02 implemented with recorded automated/browser evidence; RN-03–11 remain not started. RN-02 also has native JS/Hermes exports; signed-device rendering/keyboard/screen-reader acceptance remains separate.\
 **Primary owner:** Ishmum — shared post-onboarding React Native application.\
 **Required reviewer / collaborator:** Anisha — authentication, onboarding, iOS integration, and root navigation.\
 **Area branch:** `area/react-native`; create each task branch from the updated area branch and integrate working increments into `main`.\
@@ -33,6 +33,8 @@ Alongside that integration, build reusable Figma-derived UI and the four main ta
 - A general offline mutation queue, calendar synchronization, push campaign system, AI message generation, payments, or a production release.
 
 ## 2. Current code baseline to preserve
+
+The observations below describe the starting scaffold; RN-01/02 additions and current evidence are recorded in the ledger and implementation notes.
 
 These are repository observations at planning time, not desired future behavior:
 
@@ -179,12 +181,12 @@ This is application-data cleanup, not approval to remove native restrictions. Wh
 
 ## 6. Commit sequence and dependencies
 
-RN-01 is implemented with evidence linked below; other rows remain **Not started**. A part is not complete merely because its task branch exists. Proposed messages are suggestions for the actual implementation commits, not instructions to commit this planning document under those messages.
+RN-01/02 are implemented with evidence linked below; other rows remain **Not started**. A part is not complete merely because its task branch exists. Proposed messages are suggestions for the actual implementation commits, not instructions to commit this planning document under those messages.
 
 | Part | Coherent proposed commit | Prerequisites | Exit evidence | Status | Actual commit |
 |---|---|---|---|---|---|
-| RN-01 | `feat(mobile): add shared accessible screen state primitives` | Plan 00 UI/state boundary; existing scaffold | 40 iOS/Android component checks, separate 5-test Vitest suite, 393/320 px + large-text specimens, export isolation; see notes | Complete for RN-01 scope | See RN-01 Git reference in notes |
-| RN-02 | `feat(mobile): add source assets and Figma main navigation` | RN-01; verified source asset inventory | Asset manifest, mobile baseline screenshots, navigation checks | Not started | — |
+| RN-01 | `feat(mobile): add shared accessible screen state primitives` | Plan 00 UI/state boundary; existing scaffold | 40 iOS/Android component checks, separate 5-test Vitest suite, 393/320 px + large-text specimens, export isolation; see notes | Complete for RN-01 scope | `2f88102` (notes record historical evidence) |
+| RN-02 | `feat(mobile): add authentic assets and floating main navigation` | RN-01; verified source asset inventory | 12 original SVGs; 62 iOS/Android checks overall; 21 browser cases; web/native bundle and asset/isolation evidence | Complete for RN-02 scope | See RN-02 Git reference in notes |
 | RN-03 | `feat(api-client): add typed failures cancellation and bounded requests` | Plan 00 HTTP/error contract; current client | Focused HTTP-boundary tests including abort/account races | Not started | — |
 | RN-04 | `feat(mobile): scope server state to the authenticated account` | RN-03; auth snapshot/token-provider contract | Cache-isolation/lifecycle tests; coordinated root provider change | Not started | — |
 | RN-05 | `feat(account): connect verified API identity to settings` | RN-01/04; AUTH-01/02/03/07; SB-03; API-04/05 | Real sign-in → `/v1/me` account screen evidence | Not started | — |
@@ -250,6 +252,8 @@ If a part grows beyond one reviewable behavior change, split it into suffixed pa
 **Edge cases:** Asset accidentally includes surrounding Figma annotations; clipped vector stroke; raster image larger than intended bounds; missing font/image; inactive tab accessibility name; deep link to a tab before auth bootstrap; large text causing active label overflow. Auth guard behavior itself remains Anisha's change.
 
 **Commit done when:** Main navigation uses authentic assets and works with both placeholder and future data-driven screens. **Recovery:** revert the asset/navigation commit; retain canonical route paths so other work is not broken.
+
+**Implementation evidence (2026-10-29):** [RN-02 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md#rn-02--authentic-assets-and-floating-main-navigation), [navigation contract](../../apps/mobile/src/components/navigation/README.md) and [asset provenance](../../apps/mobile/assets/README.md) record original SVGs, measured/reflowing geometry, real Router/history/keyboard behavior and exact automated/browser/native-bundle checks. Native exports are not signed-device rendering or Auth acceptance. Dino assets remain unscored inventory; real Home composition belongs to RN-09.
 
 ### RN-03 — HTTP client hardening for the first protected request
 

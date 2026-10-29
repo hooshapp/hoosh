@@ -47,4 +47,19 @@ describe('Screen', () => {
       Platform.OS === 'ios' ? 'interactive' : 'on-drag',
     );
   });
+
+  it('does not reserve a phantom tab bar outside the main navigator', async () => {
+    await render(
+      <SafeAreaProvider
+        initialMetrics={{
+          frame: { x: 0, y: 0, width: 393, height: 852 },
+          insets: { top: 44, right: 0, bottom: 34, left: 0 },
+        }}>
+        <Screen title="Standalone form" testID="standalone-content" />
+      </SafeAreaProvider>,
+    );
+    expect(screen.getByTestId('standalone-content').props.contentContainerStyle).toEqual(
+      expect.arrayContaining([{ paddingBottom: 58 }]),
+    );
+  });
 });

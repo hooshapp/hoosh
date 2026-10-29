@@ -1,0 +1,15 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="110" height="110" viewBox="0 0 110 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Dino &#226;&#128;&#148; Needs care">
+<path id="Vector" d="M40.3361 43.9992L27.5018 33L29.3352 53.1653L12.8339 49.4989L22.0013 67.8309L5.5 73.3306L29.3352 86.163L51.337 67.8309L40.3361 43.9992Z" fill="#248D40"/>
+<path id="Vector_2" d="M44.0022 49.5021V25.6698C44.0022 17.1146 48.8909 12.837 58.6683 12.837H86.1672C94.7224 12.837 99 17.1146 99 25.6698V44.0023C99 50.1132 95.3335 53.1686 88.0004 53.1686H69.6678V64.1681C69.6678 75.1677 66.0013 83.1118 58.6683 88.0005V99H42.1689V84.334H33.0026C25.6696 84.334 20.1698 80.6675 16.5033 73.3344L7.337 55.0019C18.3366 61.1127 26.8918 63.5571 33.0026 62.3349L44.0022 49.5021Z" fill="#33C659"/>
+<path id="Vector_3" d="M53.163 55H69.663V67.8333C69.663 77.6111 64.7741 84.3333 54.9963 88H42.163V75.1667C49.4963 72.7222 53.163 66 53.163 55Z" fill="#9CEAAE"/>
+<path id="Vector_4" d="M64.163 58.663H80.663V67.837H64.163V58.663Z" fill="#33C659"/>
+<mask id="stroke0_0_4" fill="white">
+<path d="M75 28C78 30.6667 81 31.6667 84 31Z"/>
+</mask>
+<path id="Eye &#226;&#128;&#148; Needs care" d="M75 28C78 30.6667 81 31.6667 84 31" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" stroke="#172C1C" mask="url(#stroke0_0_4)"/>
+<path id="Mouth &#226;&#128;&#148; Needs care" d="M80 43C84 37.6667 88.3333 37.6667 93 43" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" stroke="#172C1C"/>
+<path id="Vector_5" d="M42.163 93.5H60.5V100.837H42.163V93.5Z" fill="#248D40"/>
+<path id="Tear" d="M80 34C80 34 77 38 77 40C77 44 83 44 83 40C83 38 80 34 80 34Z" fill="#D7F4FF"/>
+</g>
+</svg>

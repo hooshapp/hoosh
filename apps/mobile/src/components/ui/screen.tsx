@@ -3,6 +3,7 @@ import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text } from 're
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { fonts, uiRecipes } from '@/design/tokens';
+import { useFloatingTabBarMetrics } from '@/components/navigation/floating-tab-bar-metrics';
 
 import { UiThemeProvider } from './theme';
 
@@ -20,12 +21,14 @@ export function Screen({
   title,
   subtitle,
   dark = false,
-  bottomClearance = 88,
+  bottomClearance,
   keyboardVerticalOffset = 0,
   testID,
   children,
 }: ScreenProps) {
   const insets = useSafeAreaInsets();
+  const tabBarMetrics = useFloatingTabBarMetrics();
+  const clearance = bottomClearance ?? tabBarMetrics?.clearance ?? 0;
   const theme = uiRecipes[dark ? 'dark' : 'warm'];
   return (
     <UiThemeProvider theme={dark ? 'dark' : 'warm'}>
@@ -45,7 +48,7 @@ export function Screen({
             contentInsetAdjustmentBehavior="never"
             contentContainerStyle={[
               styles.content,
-              { paddingBottom: insets.bottom + 24 + bottomClearance },
+              { paddingBottom: insets.bottom + 24 + clearance },
             ]}>
             <Text accessibilityRole="header" style={[styles.title, { color: theme.foreground }]}>
               {title}
