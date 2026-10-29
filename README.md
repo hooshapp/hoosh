@@ -1,6 +1,6 @@
 # Disconnect
 
-Shared React Native app and FastAPI service for Disconnect. Product context starts in [docs/AGENT_START_HERE.md](docs/AGENT_START_HERE.md); pending product answers belong in [docs/PM_QUESTIONS.md](docs/PM_QUESTIONS.md).
+Shared React Native app and FastAPI service for Disconnect. Product context starts in [docs/AGENT_START_HERE.md](docs/AGENT_START_HERE.md); pending product answers belong in [docs/PM_QUESTIONS.md](docs/PM_QUESTIONS.md). Detailed development plans and their execution order are in [docs/core_plan/README.md](docs/core_plan/README.md).
 
 ## What works now
 
@@ -17,9 +17,9 @@ Authentication, profiles, database tables, saved plans, native protection, rewar
 ```text
 apps/mobile/
   src/app/                  Expo Router routes; route groups separate ownership
-    (auth)/                 Teammate: sign-in / account flows
-    (onboarding)/           Teammate: onboarding and plan setup
-    (tabs)/                 You: Home, Quests, History, Settings
+    (auth)/                 Anisha: sign-in / account flows
+    (onboarding)/           Anisha: onboarding and plan setup
+    (tabs)/                 Ishmum: Home, Quests, History, Settings
   src/components/ui/        Shared UI primitives
   src/design/               Figma-derived tokens
   src/features/             Feature integration notes and future domain modules
@@ -102,17 +102,19 @@ The initial SDK 58 dependency tree reports 8 npm audit findings (3 high, 5 low),
 
 ## Working independently
 
-Agree on shared interfaces before separate feature implementations. The auth owner supplies `AccessTokenProvider`; the API owner verifies Supabase tokens server-side when protected endpoints are added. Onboarding and Settings must use one approved plan contract. Both native adapters implement `ProtectionService` and report real capabilities/status. No native adapter is registered by the current scaffold.
+Agree on shared interfaces before separate feature implementations. Anisha supplies `AuthSessionPort`/`AccessTokenProvider`; Ishmum verifies Supabase access tokens server-side when protected endpoints are added. The [accepted contracts](docs/architecture/identity-foundation.md) and [handoffs](docs/architecture/foundation-handoffs.md) are recorded; Plan 00 is implemented locally. Onboarding and Settings must use one approved plan contract. Both native adapters implement `ProtectionService` and report real capabilities/status. No native adapter is registered by the current scaffold.
 
-Use the agreed area branches (`area/auth-onboarding`, `area/react-native`, `area/android`, `area/ios`, `area/backend`) with task branches such as `task/auth/login`. Merge working increments into `main` frequently, then bring `main` back into each active area. This repository currently has no commits; create the shared foundation commit before branching from it.
+Use the agreed area branches (`area/auth-onboarding`, `area/react-native`, `area/android`, `area/ios`, `area/backend`) with task branches such as `task/auth/login`. Create area branches from the shared foundation on `main`, merge working increments back frequently, and bring updated `main` into each active area.
 
-Coordinate edits to the root navigation, `app.config.ts`, dependency lockfiles, and shared contracts. The backend/database owner authors migrations; the iOS owner retains control of Xcode targets and signing. All product rules in the PM log remain unresolved until explicitly answered.
+Anisha owns Supabase Auth end to end: development project setup, providers, confirmation/email delivery, redirects, test accounts and mobile sessions (SB-01–03 and Plan 02). Ishmum owns Supabase product database roles/test infrastructure (SB-04/05), migrations and backend API verification. Both build against the contracts, then wire real outputs when ready; integration acceptance remains pending until tested.
+
+Coordinate edits to the root navigation, `app.config.ts`, dependency lockfiles, and shared contracts. Ishmum authors backend/database migrations; Anisha controls Xcode targets and signing. All product rules in the PM log remain unresolved until explicitly answered.
 
 ## Next integration
 
-1. Obtain and audit the existing iOS source; separately investigate Android feasibility.
-2. Configure a development Supabase project and implement mobile auth with session persistence.
-3. Agree on the onboarding/plan contract and add authenticated profile/plan APIs and migrations.
-4. Connect onboarding → saved plan → Home → confirmed native installation status.
+1. Review/commit the Plan 00 contracts. Ishmum starts shared RN primitives/tests (RN-01), API foundation (API-01), and Android investigation as separate parts.
+2. Anisha owns Supabase Auth/project setup (SB-01–03) and builds the single Auth/session producer (AUTH-01/02); both sides use controlled tests before live integration. Obtain/audit Swift source and investigate Android feasibility independently.
+3. When the producer outputs are ready, connect real sign-in → identity-only `GET /v1/me` → matching account UI (M1), without requiring a product database.
+4. Add isolated PostgreSQL persistence and `GET/PATCH /v1/profile` with revision/conflict handling (M2). Full onboarding/plans/native installation follow their approved contracts and evidence.
 
 Native restrictions must remain independent of React Native timers, backend availability, and AI generation.

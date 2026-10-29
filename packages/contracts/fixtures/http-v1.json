@@ -1,0 +1,577 @@
+{
+  "fixtureVersion": 1,
+  "synthetic": true,
+  "note": "Design examples, not an implemented API. Credentials are scenario labels; no real JWTs. Case preconditions are described by case names.",
+  "examples": [
+    {
+      "case": "identity",
+      "request": {
+        "method": "GET",
+        "path": "/v1/me"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Cache-Control": "no-store",
+          "X-Request-ID": "a46e48ad-c742-4e18-b57d-2c9a56544945"
+        },
+        "body": {
+          "user_id": "a46e48ad-c742-4e18-b57d-2c9a56544944",
+          "email": "student@example.invalid"
+        }
+      }
+    },
+    {
+      "case": "identity-without-email",
+      "request": {
+        "method": "GET",
+        "path": "/v1/me"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Cache-Control": "no-store",
+          "X-Request-ID": "a46e48ad-c742-4e18-b57d-2c9a56544945"
+        },
+        "body": {
+          "user_id": "a46e48ad-c742-4e18-b57d-2c9a56544944",
+          "email": null
+        }
+      }
+    },
+    {
+      "case": "profile-absent",
+      "request": {
+        "method": "GET",
+        "path": "/v1/profile"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Cache-Control": "no-store",
+          "X-Request-ID": "a46e48ad-c742-4e18-b57d-2c9a56544945"
+        },
+        "body": {
+          "profile": null
+        }
+      }
+    },
+    {
+      "case": "profile-existing",
+      "request": {
+        "method": "GET",
+        "path": "/v1/profile"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Cache-Control": "no-store",
+          "X-Request-ID": "a46e48ad-c742-4e18-b57d-2c9a56544945"
+        },
+        "body": {
+          "profile": {
+            "user_id": "a46e48ad-c742-4e18-b57d-2c9a56544944",
+            "display_name": "Jordan",
+            "revision": 1,
+            "created_at": "2026-10-28T18:00:00Z",
+            "updated_at": "2026-10-28T18:00:00Z"
+          }
+        }
+      }
+    },
+    {
+      "case": "profile-first-save",
+      "request": {
+        "method": "PATCH",
+        "path": "/v1/profile",
+        "body": {
+          "expected_revision": 0,
+          "display_name": "  Jordan  "
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Cache-Control": "no-store",
+          "X-Request-ID": "a46e48ad-c742-4e18-b57d-2c9a56544945"
+        },
+        "body": {
+          "profile": {
+            "user_id": "a46e48ad-c742-4e18-b57d-2c9a56544944",
+            "display_name": "Jordan",
+            "revision": 1,
+            "created_at": "2026-10-28T18:00:00Z",
+            "updated_at": "2026-10-28T18:00:00Z"
+          }
+        }
+      }
+    },
+    {
+      "case": "profile-update",
+      "request": {
+        "method": "PATCH",
+        "path": "/v1/profile",
+        "body": {
+          "expected_revision": 1,
+          "display_name": "Jordan Rivera"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Cache-Control": "no-store",
+          "X-Request-ID": "a46e48ad-c742-4e18-b57d-2c9a56544945"
+        },
+        "body": {
+          "profile": {
+            "user_id": "a46e48ad-c742-4e18-b57d-2c9a56544944",
+            "display_name": "Jordan Rivera",
+            "revision": 2,
+            "created_at": "2026-10-28T18:00:00Z",
+            "updated_at": "2026-10-28T18:01:00Z"
+          }
+        }
+      }
+    },
+    {
+      "case": "profile-clear-name",
+      "request": {
+        "method": "PATCH",
+        "path": "/v1/profile",
+        "body": {
+          "expected_revision": 2,
+          "display_name": null
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Cache-Control": "no-store",
+          "X-Request-ID": "a46e48ad-c742-4e18-b57d-2c9a56544945"
+        },
+        "body": {
+          "profile": {
+            "user_id": "a46e48ad-c742-4e18-b57d-2c9a56544944",
+            "display_name": null,
+            "revision": 3,
+            "created_at": "2026-10-28T18:00:00Z",
+            "updated_at": "2026-10-28T18:02:00Z"
+          }
+        }
+      }
+    },
+    {
+      "case": "missing-bearer",
+      "request": {
+        "method": "GET",
+        "path": "/v1/me",
+        "credentialScenario": "missing"
+      },
+      "response": {
+        "status": 401,
+        "headers": {
+          "Cache-Control": "no-store",
+          "X-Request-ID": "a46e48ad-c742-4e18-b57d-2c9a56544945",
+          "WWW-Authenticate": "Bearer"
+        },
+        "body": {
+          "error": {
+            "code": "AUTH_REQUIRED",
+            "message": "Authentication is required.",
+            "retryable": false,
+            "request_id": "a46e48ad-c742-4e18-b57d-2c9a56544945"
+          }
+        }
+      }
+    },
+    {
+      "case": "invalid-token",
+      "request": {
+        "method": "GET",
+        "path": "/v1/me",
+        "credentialScenario": "invalid-token"
+      },
+      "response": {
+        "status": 401,
+        "headers": {
+          "Cache-Control": "no-store",
+          "X-Request-ID": "a46e48ad-c742-4e18-b57d-2c9a56544945",
+          "WWW-Authenticate": "Bearer"
+        },
+        "body": {
+          "error": {
+            "code": "INVALID_TOKEN",
+            "message": "Your credentials could not be verified.",
+            "retryable": false,
+            "request_id": "a46e48ad-c742-4e18-b57d-2c9a56544945"
+          }
+        }
+      }
+    },
+    {
+      "case": "expired-token",
+      "request": {
+        "method": "GET",
+        "path": "/v1/me",
+        "credentialScenario": "expired-token"
+      },
+      "response": {
+        "status": 401,
+        "headers": {
+          "Cache-Control": "no-store",
+          "X-Request-ID": "a46e48ad-c742-4e18-b57d-2c9a56544945",
+          "WWW-Authenticate": "Bearer"
+        },
+        "body": {
+          "error": {
+            "code": "TOKEN_EXPIRED",
+            "message": "Your credentials have expired.",
+            "retryable": false,
+            "request_id": "a46e48ad-c742-4e18-b57d-2c9a56544945"
+          }
+        }
+      }
+    },
+    {
+      "case": "anonymous-excluded",
+      "request": {
+        "method": "GET",
+        "path": "/v1/me",
+        "credentialScenario": "verified-anonymous"
+      },
+      "response": {
+        "status": 403,
+        "headers": {
+          "Cache-Control": "no-store",
+          "X-Request-ID": "a46e48ad-c742-4e18-b57d-2c9a56544945"
+        },
+        "body": {
+          "error": {
+            "code": "FORBIDDEN",
+            "message": "This operation is not available for this account.",
+            "retryable": false,
+            "request_id": "a46e48ad-c742-4e18-b57d-2c9a56544945"
+          }
+        }
+      }
+    },
+    {
+      "case": "trust-unavailable",
+      "request": {
+        "method": "GET",
+        "path": "/v1/me"
+      },
+      "response": {
+        "status": 503,
+        "headers": {
+          "Cache-Control": "no-store",
+          "X-Request-ID": "a46e48ad-c742-4e18-b57d-2c9a56544945"
+        },
+        "body": {
+          "error": {
+            "code": "AUTH_UNAVAILABLE",
+            "message": "Authentication is temporarily unavailable.",
+            "retryable": true,
+            "request_id": "a46e48ad-c742-4e18-b57d-2c9a56544945"
+          }
+        }
+      }
+    },
+    {
+      "case": "database-unavailable",
+      "request": {
+        "method": "PATCH",
+        "path": "/v1/profile",
+        "body": {
+          "expected_revision": 1,
+          "display_name": "Jordan"
+        }
+      },
+      "response": {
+        "status": 503,
+        "headers": {
+          "Cache-Control": "no-store",
+          "X-Request-ID": "a46e48ad-c742-4e18-b57d-2c9a56544945"
+        },
+        "body": {
+          "error": {
+            "code": "DEPENDENCY_UNAVAILABLE",
+            "message": "Your profile is temporarily unavailable.",
+            "retryable": true,
+            "request_id": "a46e48ad-c742-4e18-b57d-2c9a56544945"
+          }
+        }
+      }
+    },
+    {
+      "case": "unexpected-failure",
+      "request": {
+        "method": "GET",
+        "path": "/v1/me"
+      },
+      "response": {
+        "status": 500,
+        "headers": {
+          "Cache-Control": "no-store",
+          "X-Request-ID": "a46e48ad-c742-4e18-b57d-2c9a56544945"
+        },
+        "body": {
+          "error": {
+            "code": "INTERNAL_ERROR",
+            "message": "The request could not be completed.",
+            "retryable": false,
+            "request_id": "a46e48ad-c742-4e18-b57d-2c9a56544945"
+          }
+        }
+      }
+    },
+    {
+      "case": "profile-conflict",
+      "request": {
+        "method": "PATCH",
+        "path": "/v1/profile",
+        "body": {
+          "expected_revision": 1,
+          "display_name": "Jordan"
+        }
+      },
+      "response": {
+        "status": 409,
+        "headers": {
+          "Cache-Control": "no-store",
+          "X-Request-ID": "a46e48ad-c742-4e18-b57d-2c9a56544945"
+        },
+        "body": {
+          "error": {
+            "code": "PROFILE_CONFLICT",
+            "message": "Your profile changed. Review the latest version before saving.",
+            "retryable": false,
+            "request_id": "a46e48ad-c742-4e18-b57d-2c9a56544945",
+            "details": {
+              "current_revision": 2
+            }
+          }
+        }
+      }
+    },
+    {
+      "case": "profile-absent-conflict",
+      "request": {
+        "method": "PATCH",
+        "path": "/v1/profile",
+        "body": {
+          "expected_revision": 2,
+          "display_name": "Jordan"
+        }
+      },
+      "response": {
+        "status": 409,
+        "headers": {
+          "Cache-Control": "no-store",
+          "X-Request-ID": "a46e48ad-c742-4e18-b57d-2c9a56544945"
+        },
+        "body": {
+          "error": {
+            "code": "PROFILE_CONFLICT",
+            "message": "Your profile changed. Review the latest version before saving.",
+            "retryable": false,
+            "request_id": "a46e48ad-c742-4e18-b57d-2c9a56544945",
+            "details": {
+              "current_revision": 0
+            }
+          }
+        }
+      }
+    },
+    {
+      "case": "oversized-body",
+      "request": {
+        "method": "PATCH",
+        "path": "/v1/profile",
+        "bodyScenario": "more-than-16384-UTF8-bytes"
+      },
+      "response": {
+        "status": 413,
+        "headers": {
+          "Cache-Control": "no-store",
+          "X-Request-ID": "a46e48ad-c742-4e18-b57d-2c9a56544945"
+        },
+        "body": {
+          "error": {
+            "code": "REQUEST_TOO_LARGE",
+            "message": "The request body is too large.",
+            "retryable": false,
+            "request_id": "a46e48ad-c742-4e18-b57d-2c9a56544945"
+          }
+        }
+      }
+    },
+    {
+      "case": "blank-name",
+      "request": {
+        "method": "PATCH",
+        "path": "/v1/profile",
+        "body": {
+          "expected_revision": 1,
+          "display_name": "   "
+        }
+      },
+      "response": {
+        "status": 422,
+        "headers": {
+          "Cache-Control": "no-store",
+          "X-Request-ID": "a46e48ad-c742-4e18-b57d-2c9a56544945"
+        },
+        "body": {
+          "error": {
+            "code": "VALIDATION_ERROR",
+            "message": "Check the highlighted fields.",
+            "retryable": false,
+            "request_id": "a46e48ad-c742-4e18-b57d-2c9a56544945",
+            "details": {
+              "fields": [
+                {
+                  "field": "display_name",
+                  "code": "blank"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "case": "revision-only",
+      "request": {
+        "method": "PATCH",
+        "path": "/v1/profile",
+        "body": {
+          "expected_revision": 1
+        }
+      },
+      "response": {
+        "status": 422,
+        "headers": {
+          "Cache-Control": "no-store",
+          "X-Request-ID": "a46e48ad-c742-4e18-b57d-2c9a56544945"
+        },
+        "body": {
+          "error": {
+            "code": "VALIDATION_ERROR",
+            "message": "Check the highlighted fields.",
+            "retryable": false,
+            "request_id": "a46e48ad-c742-4e18-b57d-2c9a56544945",
+            "details": {
+              "fields": [
+                {
+                  "field": "display_name",
+                  "code": "required"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "case": "owner-injection",
+      "request": {
+        "method": "PATCH",
+        "path": "/v1/profile",
+        "body": {
+          "expected_revision": 1,
+          "display_name": "Jordan",
+          "user_id": "a46e48ad-c742-4e18-b57d-2c9a56544944"
+        }
+      },
+      "response": {
+        "status": 422,
+        "headers": {
+          "Cache-Control": "no-store",
+          "X-Request-ID": "a46e48ad-c742-4e18-b57d-2c9a56544945"
+        },
+        "body": {
+          "error": {
+            "code": "VALIDATION_ERROR",
+            "message": "Check the highlighted fields.",
+            "retryable": false,
+            "request_id": "a46e48ad-c742-4e18-b57d-2c9a56544945",
+            "details": {
+              "fields": [
+                {
+                  "field": "body",
+                  "code": "extra_field"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "case": "boolean-revision",
+      "request": {
+        "method": "PATCH",
+        "path": "/v1/profile",
+        "body": {
+          "expected_revision": true,
+          "display_name": "Jordan"
+        }
+      },
+      "response": {
+        "status": 422,
+        "headers": {
+          "Cache-Control": "no-store",
+          "X-Request-ID": "a46e48ad-c742-4e18-b57d-2c9a56544945"
+        },
+        "body": {
+          "error": {
+            "code": "VALIDATION_ERROR",
+            "message": "Check the highlighted fields.",
+            "retryable": false,
+            "request_id": "a46e48ad-c742-4e18-b57d-2c9a56544945",
+            "details": {
+              "fields": [
+                {
+                  "field": "expected_revision",
+                  "code": "invalid_type"
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "case": "invalid-json",
+      "request": {
+        "method": "PATCH",
+        "path": "/v1/profile",
+        "rawBody": "{"
+      },
+      "response": {
+        "status": 422,
+        "headers": {
+          "Cache-Control": "no-store",
+          "X-Request-ID": "a46e48ad-c742-4e18-b57d-2c9a56544945"
+        },
+        "body": {
+          "error": {
+            "code": "VALIDATION_ERROR",
+            "message": "Check the highlighted fields.",
+            "retryable": false,
+            "request_id": "a46e48ad-c742-4e18-b57d-2c9a56544945",
+            "details": {
+              "fields": [
+                {
+                  "field": "body",
+                  "code": "invalid_json"
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ]
+}

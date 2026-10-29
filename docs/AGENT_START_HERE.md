@@ -4,7 +4,9 @@
 **Read in order:** `PRD.md` → `TSD.md` → current Figma design → existing source repository.  
 **Design:** https://www.figma.com/design/ukmD2ZidJ9UR2XxUkvdPoJ/App-UI?node-id=0-1
 
-**Checkout status (2026-10-28):** A shared Expo/React Native shell, type-only integration contracts, and a FastAPI foundation now exist. See [`../README.md`](../README.md) for actual setup/check commands. Auth, database access, and native protection are not connected. The released Swift source is not present in this checkout; its audit and reuse remain prerequisites for iOS integration. The shell opens Home as a development preview and does not claim active protection.
+**Checkout status (2026-10-28):** A shared Expo/React Native shell, accepted type-only Auth/native interfaces with synthetic HTTP fixtures (Plan 00 implemented locally), and a FastAPI health foundation now exist. See [`../README.md`](../README.md) for actual setup/check commands. Auth, database access, and native protection are not connected. The released Swift source is not present in this checkout; its audit and reuse remain prerequisites for iOS integration. The shell opens Home as a development preview and does not claim active protection.
+
+**Engineering ownership:** Ishmum owns main/shared React Native UI, Android, backend/product database and shared testing. Anisha owns all Supabase Auth/project setup (SB-01–03), mobile Auth/onboarding and iOS. Ishmum owns only the Supabase product database work (SB-04/05), not Auth administration. Build against the shared contracts independently, then wire real outputs when ready; mark integration-dependent parts complete only after joint validation. Read [the accepted decisions](architecture/identity-foundation.md) and [core execution order](core_plan/README.md) before foundation work.
 
 ## 1. Founder-provided facts that override generic assumptions
 
@@ -29,7 +31,7 @@ Build the Figma-designed Disconnect app with React Native + TypeScript for share
 You are the senior full-stack/mobile engineer implementing Disconnect.
 
 READ: PRD.md, TSD.md, AGENT_START_HERE.md, and the Figma design.
-FIRST ACTION: inspect the existing repository and current iOS native source before changing anything.
+FIRST ACTION: inspect the affected repository code. For iOS native changes, obtain/audit the existing Swift source before changing targets; its absence does not block independent shared UI/Auth/backend foundation work.
 
 Goals:
 - Preserve existing approved and tested iOS native Screen Time implementation.
@@ -97,31 +99,29 @@ Previous rough planning estimate after reusing iOS native features: **780–1,54
 
 Bootstrapped cash planning estimate discussed: roughly **$150–$500 first year excluding founder labor and devices** at very low usage, subject to existing Apple membership and provider changes. Services can often start near $0 monthly if free-tier eligible, but **no guarantee of $0**, particularly for production uptime, backups, email and API traffic. Review current prices before purchase. Keep detailed usage local and sync only permissible aggregate/events in batches.
 
-## 7. Core test commands — adapt to actual repository
+## 7. Current foundation checks
+
+From the repository root:
 
 ```bash
-# JavaScript/TypeScript workspace, after dependencies installed:
-pnpm typecheck
-pnpm lint
-pnpm test
-
-# Python API, after environment created:
-pytest -q
-alembic upgrade head
-
-# iOS: open native project in Xcode and validate extension targets
-# plus an actual signed TestFlight build on a physical device.
-# Android: test on physical Pixel and Samsung, including permitted
-# background behavior; no simulator-only compliance sign-off.
+npm run check          # workspace types (including contract consumers), lint, tests + API checks
+npm run mobile:export  # web export; separate from signed native acceptance
+npm run api:test
+npm run api:lint
 ```
 
-These are **suggested** commands; do not report that they passed until they actually run in the real repo.
+These are actual scaffold scripts, not evidence they passed in a particular change.
+No database migrations/native project are present yet. Add Alembic and actual DB
+checks through Plan 03. Signed iOS builds on a physical device and Android device
+capability tests remain separate; a web export does not establish native behavior.
 
 ## 8. Artifact index
 
 - **`PRD.md`** — problem, interview/survey evidence, all Figma flows, functional/nonfunctional requirements, user acceptance criteria, platform parity, product decisions.
+- **[`architecture/identity-foundation.md`](architecture/identity-foundation.md)** — adopted M1/M2 interfaces and named ownership; links to the wire contract and fixture/handoff rules.
 - **`TSD.md`** — architecture, native boundaries, Swift/Android requirements, TypeScript interfaces, FastAPI endpoints, Pydantic/SQL examples, event sync, security, database, tests, infra, agent work packages.
 - **`OPEN_DECISIONS.yaml`** — machine-readable unresolved founder choices, intentionally unapproved.
 - **[`PM_QUESTIONS.md`](PM_QUESTIONS.md)** — 22 PM questions with stable IDs and space to append dated answers, clarifications, and agreed decisions.
+- **[`core_plan/README.md`](core_plan/README.md)** — execution order and index for five detailed foundation plans, with 44 parts (Plan 00 implemented locally, 40 future parts), cross-plan dependencies, implementation/commit ledgers, and explicit PM/native gates.
 
 **Source of truth:** This is a context-rich implementation baseline. A full repo audit and explicit product policy answers may require updates before coding core session/reward rules. The documents must be revised whenever founder decisions, platform behavior, or existing code evidence contradicts assumptions.

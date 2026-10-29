@@ -1,6 +1,7 @@
 # Disconnect — Technical Specification Document (TSD)
 
-**Version:** 1.0 — actionable engineering baseline  
+**Version:** 1.1 — adopted M1/M2 foundation contracts; later domains remain proposed
+
 **Date:** 2026-10-28  
 **Companion:** `PRD.md`, `AGENT_START_HERE.md`  
 **Design:** [Figma App-UI](https://www.figma.com/design/ukmD2ZidJ9UR2XxUkvdPoJ/App-UI?node-id=0-1)  
@@ -152,7 +153,7 @@ disconnect/
 │       ├── pyproject.toml
 │       └── Dockerfile
 ├── packages/
-│   ├── contracts/                    # API OpenAPI TS client and JSON Schema
+│   ├── contracts/                    # Type-only domain ports; generated OpenAPI HTTP types in API-05
 │   └── product-config/               # Versioned non-secret policy & copy
 ├── infra/
 │   ├── cloud-run/
@@ -167,7 +168,7 @@ disconnect/
 └── .github/workflows/
 ```
 
-**Source control recommendation:** npm/pnpm workspace for RN/contracts; `uv` or `pip` + locked dependencies for Python; maintain source + migrations in one repository unless there is a clear organizational reason to split.
+**Selected foundation tooling:** npm workspace for RN/contracts; `uv` + committed `uv.lock` for Python; maintain source + migrations in one repository unless there is a clear organizational reason to split.
 
 ### 2.2 Why keep a modular monolith?
 
@@ -179,139 +180,57 @@ disconnect/
 
 ## 3. Platform abstraction: strongly typed bridge contract
 
-All app-facing code should use a single TypeScript interface, whether the adapter is Swift or Kotlin. Distinguish whether a feature is supported, not only whether a user granted permissions.
+The type-only [contracts package](../packages/contracts/README.md) is authoritative
+for the shared boundary. Anisha owns the Swift adapter; Ishmum owns Kotlin and
+shared status UI. The [accepted identity decisions](architecture/identity-foundation.md)
+and [Plan 00](core_plan/00_shared_contracts.md) distinguish bridge availability,
+OS authorization, and installed-rule status. No native adapter exists in this checkout.
 
 ```ts
-// apps/mobile/src/features/protection/types.ts
-export type Platform = 'ios' | 'android';
-export type AuthorizationState =
-  | 'not_requested'
-  | 'authorized'
-  | 'denied'
-  | 'revoked'
-  | 'unavailable'
-  | 'error';
+import type {
+  AuthSessionPort,
+  ProtectionIntegration,
+  ProtectionService,
+  NativeProtectionStatus,
+} from '@disconnect/contracts';
+```
 
-export type ProtectionState =
-  | 'inactive'
-  | 'pending_install'
-  | 'active'
-  | 'needs_permission'
-  | 'degraded'
-  | 'failed';
+`ProtectionIntegration` is `not_connected`, `unsupported`, or `connected`. Only
+`connected` exposes a `ProtectionService`; connection itself does not prove permission
+or installation. An `active` `NativeProtectionStatus` requires `authorized` permission
+and a numeric installed revision. Native adapters must validate the actual revision,
+capabilities, permissions and native method results before reporting that state.
 
-export type InterventionMode =
-  | 'system_shield'
-  | 'overlay'
-  | 'notification_only'
-  | 'unsupported';
+The draft policy port is maintained in
+[`packages/contracts/src/protection.ts`](../packages/contracts/src/protection.ts).
+It is not finalized session/override/quest policy. App selection returns only a
+summary/device-local handle; original iOS selection tokens stay native. Calling a
+React Native temporary-allowance method does not substitute for a shield-action
+extension callback: the extension updates local rule state independently of JS startup.
 
-export interface ProtectionCapabilities {
-  platform: Platform;
-  selectionUI: 'native_picker' | 'package_list' | 'unavailable';
-  mode: InterventionMode;
-  supportsUsageThreshold: boolean;
-  supportsScheduledRestriction: boolean;
-  supportsTemporaryAllowance: boolean;
-  supportsAdvanceWarning: boolean;
-  supportsUsageSummary: boolean;
-  notes: string[];                    // accurately explain limitations
-}
+### 3.1 Bridge integration sketch (Expo Modules)
 
-// iOS tokens never leave native secure/shared storage.
-export interface SelectedAppsSummary {
-  selectionRevision: number;
-  selectedAppCount: number;
-  selectedCategoryCount?: number;
-  selectedWebDomainCount?: number;
-  displayNames?: string[];           // only when legally/permitted and locally available
-}
+This is a consumer sketch, not a registered module or successful native implementation:
 
-export interface LocalRuleSpec {
-  reasonId: string;                 // stable across retries, e.g. 'plan:abc:session'
-  kind: 'intentional_pause' | 'usage_limit' | 'quest' | 'scheduled_block';
-  priority: number;
-  ruleRevision: number;
-  schedule: {
-    timezoneId: string;             // IANA time zone
-    weekdays: number[];             // ISO 1=Monday ... 7=Sunday
-    startLocal: string;             // HH:mm
-    endLocal: string;               // HH:mm, may cross midnight if policy allows
-  } | null;
-  thresholdSeconds?: number;       // user-approved; verify SDK granularity
-  selectedAppsGroupId: string;      // device-local handle, not server app tokens
-  expiresAt?: string;
-}
+```ts
+import type { ProtectionIntegration } from '@disconnect/contracts';
 
-export interface NativeProtectionStatus {
-  authorization: AuthorizationState;
-  state: ProtectionState;
-  installedRevision: number | null;
-  installedReasonIds: string[];
-  lastReconciledAt?: string;
-  lastErrorCode?: string;
-}
-
-export interface NativeInterventionEvent {
-  eventId: string;                  // UUID stable across retries
-  occurredAt: string;
-  kind:
-    | 'threshold_reached'
-    | 'shield_presented'             // only if truly observable
-    | 'quit_selected'
-    | 'override_selected'
-    | 'rule_activated'
-    | 'rule_deactivated'
-    | 'native_error';
-  reasonId?: string;
-  configRevision: number;
-  evidence: 'native_callback' | 'native_action' | 'app_ui' | 'self_report';
-  metadata?: Record<string, string | number | boolean | null>;
-}
-
-export interface ProtectionService {
-  getCapabilities(): Promise<ProtectionCapabilities>;
-  getAuthorization(): Promise<AuthorizationState>;
-  requestAuthorization(): Promise<AuthorizationState>;
-  pickApps(): Promise<SelectedAppsSummary>;     // launches native UI
-  getSelectedApps(): Promise<SelectedAppsSummary>;
-  applyRules(rules: LocalRuleSpec[], revision: number): Promise<NativeProtectionStatus>;
-  getStatus(): Promise<NativeProtectionStatus>;
-  requestTemporaryAllowance(reasonId: string, seconds: number): Promise<{
-    accepted: boolean; expiresAt?: string; failureReason?: string;
-  }>;
-  cancelReason(reasonId: string): Promise<NativeProtectionStatus>;
-  drainEvents(limit: number): Promise<NativeInterventionEvent[]>;
-  acknowledgeEvents(eventIds: string[]): Promise<void>;
+export async function confirmedForRevision(
+  integration: ProtectionIntegration,
+  revision: number,
+): Promise<boolean> {
+  if (integration.availability !== 'connected') return false;
+  const status = await integration.service.getStatus();
+  return status.state === 'active' && status.installedRevision === revision;
 }
 ```
 
-**Notes:** `pickApps()` can't return original iOS tokens into JS. A summary/handle is sufficient. A bridge `requestTemporaryAllowance` called from React Native **does not substitute** for a shield-action extension callback; the extension must update local rule state without waiting for RN startup, and any bridge API acts as an app-facing administrative equivalent when allowed.
-
-### 3.1 Bridge implementation sketch (Expo Modules)
-
-```ts
-// apps/mobile/src/infrastructure/native/protection.ts
-import { requireNativeModule } from 'expo-modules-core';
-import type { ProtectionService } from '../../features/protection/types';
-
-// Export platform adapter contract; implementation must be supplied by native target.
-// Use a mock with deterministic fixtures for JS tests; never silently mock in production.
-export const protection = requireNativeModule<ProtectionService>(
-  'DisconnectProtection'
-);
-
-export async function assertProtectionInstalled(revision: number) {
-  const status = await protection.getStatus();
-  if (status.authorization !== 'authorized' ||
-      status.installedRevision !== revision ||
-      status.state !== 'active') {
-    throw new Error(`Native protection not active: ${status.state}`);
-  }
-}
-```
-
-**Agent implementation note:** The Expo Modules API uses its own `Module` definition in Swift/Kotlin to register functions and events. Read current Expo docs and inspect the existing iOS project first. The example above defines the TypeScript contract, **not** a guarantee of matching native method export names or return types. If using Expo CNG, app-extension targets require a config plugin and explicit credentials mapping; if keeping native `ios/` checked in, do not regenerate away working targets. See §5.7.
+Anisha audits the existing Swift module/targets before choosing actual export names;
+Ishmum verifies Android capabilities before claiming equivalent behavior. Handle
+bridge initialization failures truthfully as unavailable, never a successful mock.
+Read the pinned Expo Modules API when implementing. If using Expo CNG, extension
+targets require a config plugin and explicit credentials mapping; if keeping native
+`ios/` checked in, do not regenerate away working targets. See §5.7.
 
 ## 4. Native restriction policy and state machine
 
@@ -664,10 +583,15 @@ Each screen must distinguish `loading`, `ready`, `empty`, `permission_required`,
 
 ### 8.3 Endpoint contract
 
+The M1/M2 rows follow the adopted [HTTP contract](../packages/contracts/HTTP_API.md).
+They are not runtime endpoints yet. Other rows below are later domain proposals,
+gated by PM decisions/native evidence; they are not part of the first profile schema.
+
 | Method | Path | Request | Response / notes |
 |---|---|---|---|
-| GET | `/v1/me` | JWT | Profile + onboarding status |
-| PATCH | `/v1/me` | Name, optional age/gender, goal metadata | Validated profile; demographic fields optional |
+| GET | `/v1/me` | JWT | M1: verified `{user_id, email}` only; no product DB |
+| GET | `/v1/profile` | JWT | M2: `{profile:null}` when absent; otherwise minimal revisioned profile |
+| PATCH | `/v1/profile` | `expected_revision`, `display_name` string/null | M2: explicit create/CAS update; 200 profile envelope or 409 conflict |
 | GET | `/v1/capabilities` | OS/build header | Server feature flags; device capabilities still authoritative from native |
 | GET | `/v1/plans/current` | JWT | Current plan spec, revision, redirection activities |
 | PUT | `/v1/plans/current` | Plan + expected revision | New config revision; native still needs to install |
@@ -732,45 +656,34 @@ class CurrentPlanResponse(BaseModel):
 
 This is a reference API contract, not finalized validation. Pydantic's numeric limits are initial safeguards and should be reviewed with real user requirements.
 
-### 8.5 Auth dependency sketch
+### 8.5 Authentication implementation boundary
 
-```python
-# services/api/app/api/v1/dependencies.py
-# Reference implementation outline; use pinned compatible PyJWT/httpx or Supabase SDK.
-import jwt
-from jwt import PyJWKClient
-from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+[Plan 03](core_plan/03_backend_foundation.md) implements verification; it is absent
+today. Anisha owns the mobile SDK/session/refresh; Ishmum owns a testable server
+`TokenVerifier` producing an immutable verified identity. Mobile calls Supabase Auth
+directly. FastAPI receives access JWTs only, never passwords or refresh tokens.
 
-security = HTTPBearer(auto_error=True)
+Validate one configured issuer/audience, exact project-specific asymmetric algorithm
+allowlist, timestamps and UUID subject. Resolve keys only from the fixed issuer's
+JWKS URL; never follow token-supplied URLs, fall back to unsigned/symmetric verification,
+or treat public/service keys as users. Anonymous scope is excluded initially; launch
+provider/guest rules remain PM decisions. Legacy symmetric projects need an explicit
+reviewed adaptation.
 
-# Settings must be validated at application startup and sourced from secrets/env.
-SUPABASE_ISSUER = "https://<PROJECT-REF>.supabase.co/auth/v1"
-JWKS_URL = f"{SUPABASE_ISSUER}/.well-known/jwks.json"
-JWKS = PyJWKClient(JWKS_URL)
+Use an asynchronous resolver with the pinned `httpx2.AsyncClient`, an overall
+`asyncio.timeout` fetch budget, single-flight lock and bounded monotonic key cache;
+PyJWT plus cryptography handles local signature/claim checks. Do not call synchronous
+JWKS network fetching inside an async FastAPI dependency. Exact cache/deadline/key
+bounds and trust-outage versus invalid-token tests are defined in Plan 03. A 401
+means credential failure under available trust; a necessary unavailable trust source
+is 503 `AUTH_UNAVAILABLE`, not a fabricated signed-out identity.
 
-async def current_user_id(
-    token: HTTPAuthorizationCredentials = Depends(security),
-) -> str:
-    try:
-        signing_key = JWKS.get_signing_key_from_jwt(token.credentials)
-        payload = jwt.decode(
-            token.credentials,
-            signing_key.key,
-            algorithms=["ES256", "RS256"],  # allowlist matches actual project config
-            issuer=SUPABASE_ISSUER,
-            audience="authenticated",         # confirm provider audience
-            options={"require": ["exp", "iat", "sub"]},
-        )
-        return str(payload["sub"])
-    except jwt.PyJWTError as exc:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid or expired access token",
-        ) from exc
-```
-
-**Important:** This is an illustrative signature verification skeleton, not production-complete. It intentionally needs startup config validation, issuer/audience inspection, caching/network error handling and explicit project-specific algorithm support. If the Supabase project uses a symmetric JWT secret instead of JWKS-backed asymmetric signing, adapt verification correctly; never accept unsigned tokens or use the `anon`/`service_role` keys as user identity proofs. Never let clients choose their own signing algorithm.
+Separate side-effect-free route/application assembly from configured runtime startup
+for API-05 OpenAPI export. Tests inject controlled verifiers/keys, never a production
+Auth bypass. The local unconfigured shell can stay live for `/healthz`; future private
+routes must honestly fail unavailable until configured. Partial configuration fails
+clearly; deployment uses complete validated settings. Use the shared error envelope,
+server-generated request UUID, no-store private responses and 401 Bearer challenge.
 
 ## 9. Relational data model
 
@@ -778,7 +691,7 @@ async def current_user_id(
 
 | Table | Primary columns | Key constraints |
 |---|---|---|
-| `profiles` | `user_id`, `display_name`, optional age/gender, `created_at` | `user_id` references Supabase auth user |
+| `profiles` | M2: `user_id`, nullable `display_name`, `revision`, `created_at`, `updated_at` | UUID references Supabase Auth user; one owner row; revision-checked writes. Demographics/onboarding are later gated extensions |
 | `activities` | `id`, `user_id`, `label`, `kind` | User-scoped; optional custom activity |
 | `user_plans` | `id`, `user_id`, `revision`, schedule JSONB, budget JSONB, `selected_apps_count` | One current plan/user, revision monotonic |
 | `plan_changes` | `id`, `plan_id`, `revision`, `payload_hash`, `created_at` | Unique `(plan_id,revision)` for audit |
@@ -792,97 +705,29 @@ async def current_user_id(
 
 **Schema privacy:** no default `raw_app_history` or iOS `ApplicationToken` table. Detailed app selection stays local. No storing device advertising IDs for user tracking.
 
-### 9.2 PostgreSQL migration starter
+### 9.2 Migration and runtime database boundary
 
-```sql
--- Illustrative starter migration; adapt to Supabase auth schema and deployment.
-CREATE EXTENSION IF NOT EXISTS pgcrypto;
+Ishmum owns one Alembic history for product tables; Supabase owns its `auth` schema.
+In Plan 01, Anisha owns Supabase Auth/project setup (SB-01–03); Ishmum owns
+separate runtime and migration identities/test infrastructure (SB-04/05);
+Plan 03 creates only the minimal M2 profile first. Do not create all future tables
+or store demographic/onboarding blobs while waiting for their product contracts.
 
-CREATE TABLE public.profiles (
-  user_id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
-  display_name TEXT,
-  age SMALLINT CHECK (age IS NULL OR age BETWEEN 13 AND 120),
-  gender TEXT,
-  onboarding_completed_at TIMESTAMPTZ,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
+The M2 profile has `user_id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE
+CASCADE`, nullable `display_name TEXT`, positive server-assigned `revision`, and UTC
+created/updated timestamps. Name validation and atomic revision semantics follow the
+[HTTP contract](../packages/contracts/HTTP_API.md). This description is not an executed
+migration; the real Alembic change includes reviewed constraints, grants and RLS tests.
 
-CREATE TABLE public.user_plans (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  revision INTEGER NOT NULL DEFAULT 1 CHECK (revision > 0),
-  schedule JSONB NOT NULL,
-  session_budget JSONB NOT NULL,
-  selected_apps_count INTEGER NOT NULL DEFAULT 0 CHECK (selected_apps_count >= 0),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  UNIQUE (user_id)
-);
-
-CREATE TABLE public.quests (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  title TEXT NOT NULL CHECK (char_length(title) BETWEEN 1 AND 160),
-  activity_label TEXT,
-  schedule JSONB NOT NULL,
-  status TEXT NOT NULL CHECK (status IN ('draft','active','paused','cancelled','completed')),
-  revision INTEGER NOT NULL DEFAULT 1,
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-CREATE INDEX quests_user_status_idx ON public.quests(user_id, status);
-
-CREATE TABLE public.native_events (
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  event_id UUID NOT NULL,
-  device_id UUID NOT NULL,
-  kind TEXT NOT NULL,
-  evidence_type TEXT NOT NULL,
-  occurred_at TIMESTAMPTZ NOT NULL,
-  received_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  config_revision INTEGER,
-  metadata JSONB NOT NULL DEFAULT '{}'::jsonb,
-  PRIMARY KEY(user_id, event_id)
-);
-CREATE INDEX events_user_occurred_idx
-  ON public.native_events(user_id, occurred_at DESC);
-
-CREATE TABLE public.reward_ledger (
-  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
-  source_event_id UUID NOT NULL,
-  reward_rule TEXT NOT NULL,
-  delta INTEGER NOT NULL CHECK (delta BETWEEN -10000 AND 10000),
-  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
-  UNIQUE(user_id, source_event_id, reward_rule),
-  FOREIGN KEY(user_id, source_event_id)
-    REFERENCES public.native_events(user_id, event_id)
-);
-CREATE INDEX rewards_user_created_idx
-  ON public.reward_ledger(user_id, created_at DESC);
-
--- If using Supabase direct client access, enable and define appropriate RLS
--- on EVERY public table; only backend-managed writes should be authoritative.
-ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.user_plans ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.quests ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.native_events ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.reward_ledger ENABLE ROW LEVEL SECURITY;
-
-CREATE POLICY profiles_read_self ON public.profiles
-  FOR SELECT USING (auth.uid() = user_id);
-CREATE POLICY plans_read_self ON public.user_plans
-  FOR SELECT USING (auth.uid() = user_id);
-CREATE POLICY quests_read_self ON public.quests
-  FOR SELECT USING (auth.uid() = user_id);
-CREATE POLICY events_read_self ON public.native_events
-  FOR SELECT USING (auth.uid() = user_id);
-CREATE POLICY rewards_read_self ON public.reward_ledger
-  FOR SELECT USING (auth.uid() = user_id);
--- NO generic UPDATE/INSERT policies for server-authoritative rewards/events.
-```
-
-**Security note:** If FastAPI connects as an elevated Postgres role, it may bypass RLS; enforce user scoping in service queries and test cross-user isolation explicitly. Never embed elevated database credentials in RN. For active users, implement `created_at`, retention/deletion policies, indices and appropriate migration strategy before production scale.
+Runtime uses a restricted nonowner `NOBYPASSRLS` role with no inherited migration
+privileges. Product tables deny direct mobile `anon`/`authenticated` access. FastAPI
+sets verified UUID context using parameterized transaction-local `app.user_id`, uses
+explicit owner predicates in repositories, and enables RLS with matching read/write
+policies (`USING` and `WITH CHECK`) for the runtime role. No automatic `auth.uid()`
+context exists on an ordinary SQL connection. Missing context denies access. Actual
+PostgreSQL tests prove cross-user isolation and no pool/rollback context carryover;
+SQLite or a privileged connection is insufficient evidence. Never embed elevated
+credentials in RN or use a service-role key as the routine database identity.
 
 ### 9.3 Data retention, privacy
 
@@ -1245,7 +1090,7 @@ async def test_duplicate_native_event_does_not_duplicate_reward(client, bearer_t
 
 1. **PR-01:** `audit/ios-native-baseline` — read-only inventory + reproducible baseline TestFlight test notes (no rewriting).
 2. **PR-02:** `contracts/protection-service` — TS port, capability states, native fixtures/mocks, ADR placeholders, design tokens.
-3. **PR-03:** `backend/auth-profile-plan` — migrations + JWT verifier + `/v1/me` and current-plan APIs with tests.
+3. **PR-03:** `backend/auth-profile-plan` — JWT verifier + identity-only `/v1/me`; then Alembic minimal-profile `/v1/profile` and isolation tests. Current-plan APIs follow approved policy in a later increment.
 4. **PR-04:** `mobile/onboarding-shell` — Expo Router auth/onboarding/home tab scaffold from Figma; permission status adapters.
 5. **PR-05:** `native/ios-bridge` — first direct RN→existing Swift read status and apply selected native monitoring, with TestFlight smoke test.
 

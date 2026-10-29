@@ -1,0 +1,242 @@
+{
+  "fixtureVersion": 1,
+  "synthetic": true,
+  "normalizer": "Python 3.12 str.strip; reject NUL/unpaired surrogates first; max 80 Unicode code points; no Unicode normalization",
+  "cases": [
+    {
+      "case": "explicit-clear",
+      "input": null,
+      "expected": {
+        "valid": true,
+        "normalized": null
+      }
+    },
+    {
+      "case": "ordinary-space",
+      "input": "  Jordan  ",
+      "expected": {
+        "valid": true,
+        "normalized": "Jordan"
+      }
+    },
+    {
+      "case": "nonbreaking-space",
+      "input": "\u00a0Jordan\u00a0",
+      "expected": {
+        "valid": true,
+        "normalized": "Jordan"
+      }
+    },
+    {
+      "case": "next-line-space",
+      "input": "\u0085Jordan\u0085",
+      "expected": {
+        "valid": true,
+        "normalized": "Jordan"
+      }
+    },
+    {
+      "case": "python-space-U+001C",
+      "input": "\u001cJordan\u001c",
+      "expected": {
+        "valid": true,
+        "normalized": "Jordan"
+      }
+    },
+    {
+      "case": "python-space-U+001D",
+      "input": "\u001dJordan\u001d",
+      "expected": {
+        "valid": true,
+        "normalized": "Jordan"
+      }
+    },
+    {
+      "case": "python-space-U+001E",
+      "input": "\u001eJordan\u001e",
+      "expected": {
+        "valid": true,
+        "normalized": "Jordan"
+      }
+    },
+    {
+      "case": "python-space-U+001F",
+      "input": "\u001fJordan\u001f",
+      "expected": {
+        "valid": true,
+        "normalized": "Jordan"
+      }
+    },
+    {
+      "case": "bom-is-not-python-whitespace",
+      "input": "\ufeffJordan\ufeff",
+      "expected": {
+        "valid": true,
+        "normalized": "\ufeffJordan\ufeff"
+      }
+    },
+    {
+      "case": "bom-alone-is-not-empty",
+      "input": "\ufeff",
+      "expected": {
+        "valid": true,
+        "normalized": "\ufeff"
+      }
+    },
+    {
+      "case": "combining-preserved",
+      "input": " e\u0301 ",
+      "expected": {
+        "valid": true,
+        "normalized": "e\u0301"
+      }
+    },
+    {
+      "case": "composed-preserved",
+      "input": " \u00e9 ",
+      "expected": {
+        "valid": true,
+        "normalized": "\u00e9"
+      }
+    },
+    {
+      "case": "internal-space-preserved",
+      "input": " Jordan  Rivera ",
+      "expected": {
+        "valid": true,
+        "normalized": "Jordan  Rivera"
+      }
+    },
+    {
+      "case": "eighty-code-points",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "expected": {
+        "valid": true,
+        "normalized": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    },
+    {
+      "case": "padded-eighty",
+      "input": "          aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa          ",
+      "expected": {
+        "valid": true,
+        "normalized": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      }
+    },
+    {
+      "case": "astral-eighty",
+      "input": "\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95",
+      "expected": {
+        "valid": true,
+        "normalized": "\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95"
+      }
+    },
+    {
+      "case": "combining-eighty",
+      "input": "e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301",
+      "expected": {
+        "valid": true,
+        "normalized": "e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301"
+      }
+    },
+    {
+      "case": "empty",
+      "input": "",
+      "expected": {
+        "valid": false,
+        "field": "display_name",
+        "code": "blank"
+      }
+    },
+    {
+      "case": "whitespace-only",
+      "input": " \t\n\u00a0\u0085\u001c\u001d\u001e\u001f ",
+      "expected": {
+        "valid": false,
+        "field": "display_name",
+        "code": "blank"
+      }
+    },
+    {
+      "case": "eighty-one-code-points",
+      "input": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "expected": {
+        "valid": false,
+        "field": "display_name",
+        "code": "too_long"
+      }
+    },
+    {
+      "case": "astral-eighty-one",
+      "input": "\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95\ud83e\udd95",
+      "expected": {
+        "valid": false,
+        "field": "display_name",
+        "code": "too_long"
+      }
+    },
+    {
+      "case": "combining-eighty-two",
+      "input": "e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301",
+      "expected": {
+        "valid": false,
+        "field": "display_name",
+        "code": "too_long"
+      }
+    },
+    {
+      "case": "nul",
+      "input": "Jor\u0000dan",
+      "expected": {
+        "valid": false,
+        "field": "display_name",
+        "code": "invalid_text"
+      }
+    },
+    {
+      "case": "unpaired-high-surrogate",
+      "input": "\ud800",
+      "expected": {
+        "valid": false,
+        "field": "display_name",
+        "code": "invalid_text"
+      }
+    },
+    {
+      "case": "unpaired-low-surrogate",
+      "input": "\udfff",
+      "expected": {
+        "valid": false,
+        "field": "display_name",
+        "code": "invalid_text"
+      }
+    },
+    {
+      "case": "number",
+      "input": 123,
+      "expected": {
+        "valid": false,
+        "field": "display_name",
+        "code": "invalid_type"
+      }
+    },
+    {
+      "case": "boolean",
+      "input": true,
+      "expected": {
+        "valid": false,
+        "field": "display_name",
+        "code": "invalid_type"
+      }
+    },
+    {
+      "case": "array",
+      "input": [],
+      "expected": {
+        "valid": false,
+        "field": "display_name",
+        "code": "invalid_type"
+      }
+    }
+  ]
+}
