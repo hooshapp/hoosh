@@ -5,7 +5,7 @@ Shared React Native app and FastAPI service for Disconnect. Product context star
 ## What works now
 
 - Expo / React Native / TypeScript workspace with Home, Quests, History, Settings, auth, and onboarding routes.
-- Figma-derived colors and Space Grotesk 300/400/500/700. Screens are explicit placeholders, not completed Figma implementations.
+- Figma-derived colors and Space Grotesk 300/400/500/700. The three first-launch intro screens are implemented; main tabs and Auth screens remain explicit placeholders.
 - Shared native-protection types and a tested API client with an injectable access-token provider.
 - FastAPI process health endpoint, OpenAPI documentation, explicit browser CORS configuration, and tests.
 - Reproducible npm and uv lockfiles, linting, type checking, and CI checks.
@@ -118,6 +118,10 @@ Coordinate edits to the root navigation, `app.config.ts`, dependency lockfiles, 
 4. Add isolated PostgreSQL persistence and `GET/PATCH /v1/profile` with revision/conflict handling (M2). Full onboarding/plans/native installation follow their approved contracts and evidence.
 
 Native restrictions must remain independent of React Native timers, backend availability, and AI generation.
+
+## Landing introduction increment
+
+On `landing-page`, first launch shows the original three-screen scrolling introduction with a five-gesture fallback, Skip/reduced-motion paths and a local seen flag. Later launches open the existing signup placeholder; no account/protection status is inferred. See [AUTH-10a scope and validation](docs/implementation/landing-intro.md). Actual authentication and the remaining onboarding screens are separate work.
 
 ## Existing iOS reuse source
 

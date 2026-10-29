@@ -8,6 +8,8 @@
 
 **Engineering ownership:** Ishmum owns main/shared React Native UI, Android, backend/product database and shared testing. Anisha owns all Supabase Auth/project setup (SB-01–03), mobile Auth/onboarding and iOS. Ishmum owns only the Supabase product database work (SB-04/05), not Auth administration. Build against the shared contracts independently, then wire real outputs when ready; mark integration-dependent parts complete only after joint validation. Read [the accepted decisions](architecture/identity-foundation.md) and [core execution order](core_plan/README.md) before foundation work.
 
+**Landing-page increment:** The three FR-001 intro screens are implemented on this branch, separately from Auth/preferences. First launch is remembered locally, scrolling advances by the fifth intentional gesture, and Skip/reduced-motion controls remain available. Later launches reach the existing signup placeholder. See [AUTH-10a scope and validation](implementation/landing-intro.md); full Auth/onboarding and native integration remain pending. The Home preview description above records the original scaffold baseline.
+
 ## 1. Founder-provided facts that override generic assumptions
 
 - Disconnect is an existing, released iOS app, not a brand-new proof of concept.

@@ -257,6 +257,8 @@ These parts are planned handoffs, not permission to fill in missing product rule
 
 ### AUTH-10 — Landing and agreed preference questions
 
+**Intro-only split AUTH-10a:** User-approved first increment: three Figma introduction screens, easy scroll progression with a five-gesture cap per section, first-launch-only local presentation, accessible Skip/reduced-motion paths and signup-placeholder navigation. Implemented on `landing-page`; [scope and validation](../implementation/landing-intro.md). This slice does not collect demographics, depend on account drafts, or complete preference/native onboarding. AUTH-09, Q19/PD-17 and remaining AUTH-10 prerequisites remain gates for their dependent features. Signed-device acceptance is still pending.
+
 - **Commit:** `feat(onboarding): build introduction and preference steps`
 - **Prerequisites:** AUTH-09; Q19/PD-17 demographic collection decision; reviewed original assets and shared accessible controls. App-selection preference vs actual native control is explicitly distinguished.
 - **Files:** `(onboarding)` route steps; feature components/validation/tests; source assets exported through the design workflow, not substitutes.

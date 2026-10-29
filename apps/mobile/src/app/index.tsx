@@ -1,6 +1,6 @@
-import { Redirect } from 'expo-router';
+import { Introduction } from '@/features/intro/Introduction';
 
-/** Preview entry point only. Auth/onboarding guards belong to the auth integration. */
+/** Local first-launch presentation only; real Auth guards remain a separate integration. */
 export default function Index() {
-  return <Redirect href="/(tabs)" />;
+  return <Introduction />;
 }
