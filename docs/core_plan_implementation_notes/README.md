@@ -37,9 +37,9 @@ and appropriate decision/product documents.
 4. Work through the plan's parts one commit-sized change at a time. Use the accepted
    interfaces and coordinate shared files with the other developer.
 
-Plan 04's prepared record is
+Plan 04's record is
 [plan_04_react_native_integration_notes.md](plan_04_react_native_integration_notes.md).
-RN-01 implementation has **not** started. When Anisha starts Plan 02, she creates
+Read its current resume checkpoint and the plan ledger for actual implementation status. When Anisha starts Plan 02, she creates
 `plan_02_auth_onboarding_notes.md`; when either developer starts Plan 01, use
 `plan_01_supabase_foundation_notes.md` and label each entry's owner/part. Shared plans
 still have one notes file and one named author per overlapping change. Create the

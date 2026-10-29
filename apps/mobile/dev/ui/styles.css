@@ -1,0 +1,63 @@
+@font-face {
+  font-family: SpaceGrotesk_300Light;
+  src: url('@expo-google-fonts/space-grotesk/300Light/SpaceGrotesk_300Light.ttf');
+}
+@font-face {
+  font-family: SpaceGrotesk_400Regular;
+  src: url('@expo-google-fonts/space-grotesk/400Regular/SpaceGrotesk_400Regular.ttf');
+}
+@font-face {
+  font-family: SpaceGrotesk_500Medium;
+  src: url('@expo-google-fonts/space-grotesk/500Medium/SpaceGrotesk_500Medium.ttf');
+}
+@font-face {
+  font-family: SpaceGrotesk_700Bold;
+  src: url('@expo-google-fonts/space-grotesk/700Bold/SpaceGrotesk_700Bold.ttf');
+}
+html,
+body,
+#root {
+  margin: 0;
+  min-height: 100%;
+}
+body {
+  background: #ececec;
+  color: #222;
+  font-family: SpaceGrotesk_400Regular, sans-serif;
+}
+main {
+  padding: 24px;
+}
+h1 {
+  font-family: SpaceGrotesk_700Bold, sans-serif;
+  font-size: 24px;
+}
+h2 {
+  font-family: SpaceGrotesk_500Medium, sans-serif;
+  font-size: 16px;
+}
+.specimens {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+}
+.phone {
+  display: flex;
+  height: 852px;
+  overflow: hidden;
+  outline: 1px solid #aaa;
+}
+.phone > div {
+  flex: 1;
+  min-width: 0;
+}
+/* Deliberate browser layout stress, not a claim of native Dynamic Type acceptance. */
+.large-text .phone [dir='auto'],
+.large-text .phone input {
+  font-size: 24px !important;
+  line-height: 36px !important;
+}
+.large-text .phone [role='heading'] {
+  font-size: 48px !important;
+  line-height: 58px !important;
+}

@@ -7,6 +7,7 @@ Shared React Native app and FastAPI service for Disconnect. Product context star
 - Expo / React Native / TypeScript workspace with Home, Quests, History, Settings, auth, and onboarding routes.
 - Figma-derived colors and Space Grotesk 300/400/500/700. Screens are explicit placeholders, not completed Figma implementations.
 - Shared native-protection types and a tested API client with an injectable access-token provider.
+- RN-01 shared screen/form/state primitives, iOS/Android component tests and an isolated developer UI specimen entry; see [component usage](apps/mobile/src/components/ui/README.md).
 - FastAPI process health endpoint, OpenAPI documentation, explicit browser CORS configuration, and tests.
 - Reproducible npm and uv lockfiles, linting, type checking, and CI checks.
 
@@ -92,13 +93,15 @@ Never put database passwords, service-role keys, signing credentials, or AI prov
 ```bash
 npm run check
 npm run mobile:export
+npm run mobile:ui:build
+npm run mobile:ui
 ```
 
-`check` runs TypeScript, ESLint, API-client tests, Ruff, and API tests. `mobile:export` verifies the web bundle and routes. Generated output and local environments are ignored by Git. Signed native builds and physical-device tests remain separate release requirements.
+`check` runs TypeScript, ESLint, portable API-client tests, iOS/Android component tests, Ruff, and API tests. `mobile:export` verifies the web bundle/routes and rejects leaked developer specimen markers. `mobile:ui` serves the separate developer preview on port 8091; it is not an app route. Generated output and local environments are ignored by Git. Signed native builds and physical-device tests remain separate release requirements.
 
 ### Dependency notes
 
-The initial SDK 58 dependency tree reports 8 npm audit findings (3 high, 5 low), inherited from Expo tooling: Zod 3 in `@expo/cli` and `deepmerge` in `@expo/config`, plus their parent packages. The installed stable Expo CLI still requires Zod 3, and `deepmerge` has no newer published version at setup time. Do not apply `npm audit fix --force`: the suggested change downgrades the Expo SDK. Recheck upstream compatible fixes before release. ESLint 9 is retained because the Expo React plugin's current peer range excludes ESLint 10.
+The SDK 58 + RN-01 test-tooling tree reports 16 npm audit findings on 2026-10-29 (3 high, 13 low). The high findings remain in the existing Expo CLI/Zod chain; low findings include `deepmerge` and added Jest/testing-tool ancestors. The reported automatic fixes downgrade Expo, Jest or compatible testing packages. Do not apply `npm audit fix --force`; recheck compatible upstream fixes before release. React Native is aligned to the SDK-recommended 0.88.1 patch. ESLint 9 is retained because the Expo React plugin's current peer range excludes ESLint 10.
 
 ## Working independently
 

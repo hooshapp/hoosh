@@ -1,13 +1,13 @@
 # 04 — React Native Integration and Shared Frontend Plan
 
 **Date:** 2026-10-28\
-**Status:** Draft implementation plan; no part below is implemented or verified by writing this document.\
+**Status:** RN-01 implemented with automated and browser evidence on `task/react-native/rn-01`; RN-02–11 remain not started. Signed-device keyboard/screen-reader acceptance remains separate.\
 **Primary owner:** Ishmum — shared post-onboarding React Native application.\
 **Required reviewer / collaborator:** Anisha — authentication, onboarding, iOS integration, and root navigation.\
 **Area branch:** `area/react-native`; create each task branch from the updated area branch and integrate working increments into `main`.\
 **Companions:** [Shared contracts](00_shared_contracts.md), [Supabase foundation](01_supabase_foundation.md), [Auth/onboarding](02_auth_onboarding.md), [Backend foundation](03_backend_foundation.md), [PM questions](<../Context (AGENT)/PM_QUESTIONS.md>).
 
-**Implementation record:** Follow the [knowledge-base workflow](../core_plan_implementation_notes/README.md) and maintain [Plan 04 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md). Each commit needs its own file/line change record, reasoning, checks and handoff. RN-01 is not started by creating those notes.
+**Implementation record:** Follow the [knowledge-base workflow](../core_plan_implementation_notes/README.md) and maintain [Plan 04 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md). Each commit needs its own file/line change record, reasoning, checks and handoff. Preparation alone does not complete a part; RN-01's actual evidence is recorded below and in its notes.
 
 ## 1. Outcome and deliberate scope
 
@@ -179,11 +179,11 @@ This is application-data cleanup, not approval to remove native restrictions. Wh
 
 ## 6. Commit sequence and dependencies
 
-All rows start **Not started**. A part is not complete merely because its task branch exists. Proposed messages are suggestions for the actual implementation commits, not instructions to commit this planning document under those messages.
+RN-01 is implemented with evidence linked below; other rows remain **Not started**. A part is not complete merely because its task branch exists. Proposed messages are suggestions for the actual implementation commits, not instructions to commit this planning document under those messages.
 
 | Part | Coherent proposed commit | Prerequisites | Exit evidence | Status | Actual commit |
 |---|---|---|---|---|---|
-| RN-01 | `feat(mobile): add shared accessible screen state primitives` | Plan 00 UI/state boundary; existing scaffold | Independent component behavior checks + visual specimens | Not started | — |
+| RN-01 | `feat(mobile): add shared accessible screen state primitives` | Plan 00 UI/state boundary; existing scaffold | 40 iOS/Android component checks, separate 5-test Vitest suite, 393/320 px + large-text specimens, export isolation; see notes | Complete for RN-01 scope | See RN-01 Git reference in notes |
 | RN-02 | `feat(mobile): add source assets and Figma main navigation` | RN-01; verified source asset inventory | Asset manifest, mobile baseline screenshots, navigation checks | Not started | — |
 | RN-03 | `feat(api-client): add typed failures cancellation and bounded requests` | Plan 00 HTTP/error contract; current client | Focused HTTP-boundary tests including abort/account races | Not started | — |
 | RN-04 | `feat(mobile): scope server state to the authenticated account` | RN-03; auth snapshot/token-provider contract | Cache-isolation/lifecycle tests; coordinated root provider change | Not started | — |
@@ -224,6 +224,8 @@ If a part grows beyond one reviewable behavior change, split it into suffixed pa
 **Edge cases:** Missing labels; very long custom activity names; long localization-ready strings; screen-reader cursor after an error; reduced motion; keyboard covering a footer; font-load error; Android gesture area and iOS bottom inset.
 
 **Commit done when:** Reused primitives render without changing product policy, their interactive behavior checks pass, and Anisha can use the same field/button recipes in auth. **Recovery:** revert the new recipe/component or hide its consumer; no persisted data change exists.
+
+**Implementation evidence (2026-10-29):** [RN-01 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md) record every changed file/line range, design/compatibility decisions, actual checks and browser screenshots. [Component usage](../../apps/mobile/src/components/ui/README.md) documents the controlled form/busy contract and isolated preview. Native iOS/Android keyboard, VoiceOver/TalkBack and Dynamic Type remain explicitly unverified on signed devices; this does not complete RN-10 or native/Auth acceptance.
 
 ### RN-02 — Authentic asset inventory and main navigation
 

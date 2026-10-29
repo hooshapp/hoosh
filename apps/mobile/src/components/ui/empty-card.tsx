@@ -1,12 +1,20 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 
-import { colors, fonts } from '@/design/tokens';
+import { fonts } from '@/design/tokens';
+
+import { useUiTheme } from './theme';
 
 export function EmptyCard({ title, description }: { title: string; description: string }) {
+  const theme = useUiTheme();
   return (
-    <View style={styles.card}>
-      <Text accessibilityRole="header" style={styles.title}>{title}</Text>
-      <Text style={styles.description}>{description}</Text>
+    <View style={[styles.card, { borderColor: theme.outline, backgroundColor: theme.surface }]}>
+      <Text
+        {...(Platform.OS === 'web' ? { 'aria-level': 2 } : {})}
+        accessibilityRole="header"
+        style={[styles.title, { color: theme.foreground }]}>
+        {title}
+      </Text>
+      <Text style={[styles.description, { color: theme.muted }]}>{description}</Text>
     </View>
   );
 }
@@ -17,9 +25,7 @@ const styles = StyleSheet.create({
     gap: 10,
     borderRadius: 24,
     borderWidth: 1,
-    borderColor: colors.warmOutline,
-    backgroundColor: colors.warmCard,
   },
-  title: { fontFamily: fonts.bold, fontSize: 19, color: colors.warmForeground },
-  description: { fontFamily: fonts.regular, fontSize: 15, lineHeight: 23, color: colors.muted },
+  title: { fontFamily: fonts.bold, fontSize: 19 },
+  description: { fontFamily: fonts.regular, fontSize: 15, lineHeight: 23 },
 });
