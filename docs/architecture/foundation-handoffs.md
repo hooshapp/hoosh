@@ -3,6 +3,8 @@
 **Owners:** Ishmum (shared infrastructure/API/RN/Android) and Anisha (Auth/onboarding/iOS).
 See [accepted decisions](identity-foundation.md) and [execution waves](../core_plan/README.md).
 
+**Implementation knowledge base:** Both developers follow the [per-plan/per-commit notes workflow](../core_plan_implementation_notes/README.md). Before coding a new plan, create its notes file; keep every commit's file/line changes, reasons, validation and next step there so another agent can resume.
+
 ## Producer outputs
 
 | Producer / owner | Output consumed by the other work | Ready when |
@@ -82,8 +84,9 @@ parts into `main`, then sync all active areas before touching shared files. Git 
 names express ownership, not a separate dependency/inheritance mechanism. One named
 author per shared-file change and Alembic revision; review impacts with the consumer.
 
-Use each plan's existing ledger for status, actual commit hashes, commands/results,
-and missing input. Plan 00 SC-01–04 landed together in foundation commit `0b50900`;
+Use each plan's existing ledger for summary status, actual commit hashes, evidence
+and missing input. Maintain the corresponding implementation-notes file for every
+commit's detailed file/line changes, reasons, checks and resume checkpoint. Plan 00 SC-01–04 landed together in foundation commit `0b50900`;
 its ledger records that actual hash. The planned per-part messages were suggested
 boundaries, not separate commits. Keep future part histories and reviews accurate.
 

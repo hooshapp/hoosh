@@ -46,9 +46,10 @@ updated with this decision; there is no `PATCH /v1/me` in the M1/M2 contract.
   lockfile together. Review consumer effects and integrate through `main` early.
   Do not create a second migration authority or credential manager.
 
-The released Swift source/build configuration is absent here. Team reports of
-working iOS behavior remain context, not a completed source/signed-device audit.
-Android capabilities also require measured device evidence before parity claims.
+Legacy iOS source/build configuration is now present under `apps/mobile/ios/` from
+commit `fe8f262`. Its import does not complete the source/signing/signed-device audit
+or RN bridge integration. Team reports remain context until that acceptance is
+recorded. Android capabilities also require measured device evidence before parity claims.
 
 ## Independent work and later wiring
 

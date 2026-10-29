@@ -3,11 +3,11 @@
 **Status:** Plan 00 is complete and validated (foundation commit `0b50900`, recorded in its ledger); Plans 01–04 remain implementation drafts. Auth, private API endpoints, database and native adapters are not implemented.\
 **Baseline inspected:** `c7a8f73` — `Set up mobile and API foundation`.\
 **Reviewed:** 2026-10-28.\
-**Product answers:** [PM_QUESTIONS.md](../PM_QUESTIONS.md); no PM question is answered by an engineering default in these plans.
+**Product answers:** [PM_QUESTIONS.md](<../Context (AGENT)/PM_QUESTIONS.md>); no PM question is answered by an engineering default in these plans.
 
 ## 1. Start here
 
-Read [Plan 00](00_shared_contracts.md) first, then your area plan and the specific part you are about to implement. Build on the scaffold; do not reinstall it, rewrite the tested Swift core, create every future table, or complete an entire area before integrating.
+Read [Plan 00](00_shared_contracts.md) first, then your area plan and the specific part you are about to implement. Before coding, read the [implementation knowledge-base workflow](../core_plan_implementation_notes/README.md), create that plan's notes file if absent, and read any existing entries. Build on the scaffold; do not reinstall it, rewrite the tested Swift core, create every future table, or complete an entire area before integrating.
 
 There are **44 parts**: 4 shared-contract parts implemented and committed and 40 future implementation parts. They are reviewable work boundaries, not 44 completed commits or immediately unblocked tasks. Some onboarding/provider/native presentation parts are conditional. Split a concrete part further if its diff is too large, preserving stable IDs and dependencies.
 
@@ -53,7 +53,7 @@ These are dependency waves, not fixed dates or equal-workload requirements. Ishm
 | Wave | Ishmum | Anisha | Handoff / gate |
 |---|---|---|---|
 | 0 — complete | SC-01–04 decisions, fixtures, ports and handoffs implemented, validated and committed as `0b50900`; sync the shared foundation | Consume accepted port; review Auth/iOS impact during integration | Integrate shared contracts through `main`; no guessed product policy or independent review claim |
-| 1 | RN-01 shared UI/testing; API-01–05 with local test keys; Android investigation | SB-01–03 Supabase Auth/project setup; AUTH-01/02 with controlled adapters; AUTH-03 consumes RN-01 and her SB-03 for live tests; obtain/audit Swift source | Callback configuration follows the contract, not completed callback code. API producers do not wait for mobile acceptance. |
+| 1 | RN-01 shared UI/testing; API-01–05 with local test keys; Android investigation | SB-01–03 Supabase Auth/project setup; AUTH-01/02 with controlled adapters; AUTH-03 consumes RN-01 and her SB-03 for live tests; audit the imported Swift source | Callback configuration follows the contract, not completed callback code. API producers do not wait for mobile acceptance. |
 | 2 | RN-03 client, RN-04 lifecycle; RN-02 assets/navigation independently | Supply AUTH-02 real provider; integrate AUTH-07 guards/sign-out with RN-04 cleanup hooks | Producer ports first; AUTH-08/RN-06 are downstream evidence, not inputs. |
 | 3 — when producers are ready to wire | RN-05 identity surface → RN-06 joint M1 | Exercise sign-in/sign-out/recovery handshake; AUTH-04–06 can progress alongside this proof | Needs AUTH-01/02/03/07, SB-03, API-04/05; not all future Auth work |
 | 4 | SB-04/05 → API-06–09 → RN-07 profile | Finish AUTH-04–06, then AUTH-08; AUTH-09 consumes the profile/draft contract when agreed | SB-06 records M1/Auth evidence without blocking earlier producers. M2 uses real PostgreSQL and separate runtime/migration identities. |
@@ -84,7 +84,7 @@ The identity-only `/v1/me` plus separate `/v1/profile` is adopted in [SC-01's de
 3. Implement one coherent change with relevant tests. Keep unavailable integrations honest and fixtures outside release entry/import paths.
 4. Run focused and applicable shared checks. Record mock, actual database, live provider, browser, emulator, and signed-device evidence separately.
 5. Review shared contracts/files with Anisha and integrate working increments into `main` frequently.
-6. Update that part's existing ledger with actual commit hash, evidence, limitations, and next unlocked part. Avoid competing completion trackers.
+6. Update that part's existing ledger with actual commit hash, evidence, limitations, and next unlocked part. Maintain the plan's implementation-notes file with a separate section per commit covering every changed file/line range, what/why, actual validation and remaining work. The ledger summarizes status; notes preserve implementation detail and handoff context. Do not claim completion in either until supported by code/evidence.
 
 When blocked, name the exact missing input for that part and continue independent work. Corrective commits are allowed; record them rather than pretending checks passed first time. Production publishing is a separate action/gate, not an automatic consequence of merging a foundation part.
 
@@ -95,7 +95,7 @@ When blocked, name the exact missing input for that part and continue independen
 | Launch account/provider/age choices | Final login policy, demographics, provider/store promises | Controlled development email flow and minimal profile |
 | Session/override/quest decisions | Enforcement and dependent data contracts | Non-enforcing forms and honest empty states |
 | Rewards/Dino/measurement rules | Real credits, scoring, streaks, saved-time/forecast claims | Original assets, layouts, unavailable states |
-| Released Swift source/signing | iOS migration/signed integration acceptance | Shared UI, backend, development web Auth, Android investigation |
+| Imported Swift source/signing audit and signed-build evidence | iOS migration/signed integration acceptance; source import `fe8f262` alone is insufficient | Shared UI, backend, development web Auth, Android investigation |
 | Android capability evidence | Android enforcement/parity claims | Shared UI and feasibility work |
 | Native sign-out/deletion ownership | Shipping account transitions with installed rules/events | Credential/cache teardown without native rules |
 | Later onboarding/plan schema | Server completion, cross-device resume, plan installation | Minimal profile and explicitly local draft preparation |

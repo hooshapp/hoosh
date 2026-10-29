@@ -5,7 +5,9 @@
 **Primary owner:** Ishmum — shared post-onboarding React Native application.\
 **Required reviewer / collaborator:** Anisha — authentication, onboarding, iOS integration, and root navigation.\
 **Area branch:** `area/react-native`; create each task branch from the updated area branch and integrate working increments into `main`.\
-**Companions:** [Shared contracts](00_shared_contracts.md), [Supabase foundation](01_supabase_foundation.md), [Auth/onboarding](02_auth_onboarding.md), [Backend foundation](03_backend_foundation.md), [PM questions](../PM_QUESTIONS.md).
+**Companions:** [Shared contracts](00_shared_contracts.md), [Supabase foundation](01_supabase_foundation.md), [Auth/onboarding](02_auth_onboarding.md), [Backend foundation](03_backend_foundation.md), [PM questions](<../Context (AGENT)/PM_QUESTIONS.md>).
+
+**Implementation record:** Follow the [knowledge-base workflow](../core_plan_implementation_notes/README.md) and maintain [Plan 04 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md). Each commit needs its own file/line change record, reasoning, checks and handoff. RN-01 is not started by creating those notes.
 
 ## 1. Outcome and deliberate scope
 
@@ -45,7 +47,7 @@ These are repository observations at planning time, not desired future behavior:
 | `packages/contracts` | `AccessTokenProvider`, liveness type, draft native port | Consume agreed types; generated HTTP types become authoritative for HTTP shapes |
 | Main routes | Explicit placeholders; no accounts, app metrics, or successful native adapter | Keep unavailable states truthful throughout incremental integration |
 | Installed mobile packages | Expo/Router, React Native, fonts, animation dependencies, pure-TS Vitest | Add only packages used by a planned part and lock the compatible versions |
-| Native projects | Existing released Swift source is absent; no native adapters are connected | Device integration cannot be claimed from web or JavaScript export success |
+| Native projects | Legacy iOS source imported in `fe8f262`; audit/build/RN integration pending; no shared protection adapter connected | Device integration cannot be claimed from web or JavaScript export success |
 
 Source paths in this document are relative to `apps/mobile/` unless explicitly prefixed with a repository path.
 

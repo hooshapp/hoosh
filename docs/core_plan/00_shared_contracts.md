@@ -25,9 +25,9 @@ M1/M2 do not claim a finished onboarding journey, app blocking, Android parity, 
 - `apps/mobile/src/app/index.tsx` redirects into the tab preview without an auth guard.
 - Auth/onboarding routes contain explicit placeholders; there is no Supabase SDK/session manager.
 - `apps/mobile/src/infrastructure/api/client.ts` already accepts an `AccessTokenProvider`, rejects absent credentials for protected requests, and prevents cross-origin paths. It lacks the full error/cancellation/lifecycle handling planned in Plan 04.
-- `packages/contracts/src/index.ts` exports accepted Auth lifecycle types from `auth.ts` and draft native policy/availability types from `protection.ts`. Consumer compile scenarios check the public port. Runtime Auth/native implementations are absent.
+- `packages/contracts/src/index.ts` exports accepted Auth lifecycle types from `auth.ts` and draft native policy/availability types from `protection.ts`. Consumer compile scenarios check the public port. The shared RN Auth/native adapters are absent. Legacy Swift source is available from `fe8f262`; audit and RN/native integration are still pending.
 - `services/api/app/main.py` serves process health/OpenAPI only. JWT verification, database connections, migrations, and product endpoints are absent.
-- `docs/OPEN_DECISIONS.yaml` and the PM answer log still contain unresolved product decisions.
+- `docs/Context (AGENT)/OPEN_DECISIONS.yaml` and the PM answer log still contain unresolved product decisions.
 
 ### Figma recheck
 

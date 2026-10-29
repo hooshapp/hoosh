@@ -86,7 +86,6 @@ flowchart TD
 ```text
 disconnect/
 ├── README.md
-├── AGENT_START_HERE.md
 ├── apps/
 │   └── mobile/
 │       ├── app/                      # Expo Router; onboarding, tabs and modal routes
@@ -159,6 +158,9 @@ disconnect/
 │   ├── cloud-run/
 │   └── github-actions/
 ├── docs/
+│   ├── Context (AGENT)/             # PRD, TSD, agent entry point and PM decisions
+│   ├── core_plan/                   # Part scope, dependencies and status ledgers
+│   ├── core_plan_implementation_notes/ # Per-plan/per-commit what, why and validation
 │   ├── architecture/
 │   ├── adrs/
 │   ├── figma-map.md
@@ -180,10 +182,10 @@ disconnect/
 
 ## 3. Platform abstraction: strongly typed bridge contract
 
-The type-only [contracts package](../packages/contracts/README.md) is authoritative
+The type-only [contracts package](../../packages/contracts/README.md) is authoritative
 for the shared boundary. Anisha owns the Swift adapter; Ishmum owns Kotlin and
-shared status UI. The [accepted identity decisions](architecture/identity-foundation.md)
-and [Plan 00](core_plan/00_shared_contracts.md) distinguish bridge availability,
+shared status UI. The [accepted identity decisions](../architecture/identity-foundation.md)
+and [Plan 00](../core_plan/00_shared_contracts.md) distinguish bridge availability,
 OS authorization, and installed-rule status. No native adapter exists in this checkout.
 
 ```ts
@@ -202,7 +204,7 @@ and a numeric installed revision. Native adapters must validate the actual revis
 capabilities, permissions and native method results before reporting that state.
 
 The draft policy port is maintained in
-[`packages/contracts/src/protection.ts`](../packages/contracts/src/protection.ts).
+[`packages/contracts/src/protection.ts`](../../packages/contracts/src/protection.ts).
 It is not finalized session/override/quest policy. App selection returns only a
 summary/device-local handle; original iOS selection tokens stay native. Calling a
 React Native temporary-allowance method does not substitute for a shield-action
@@ -583,7 +585,7 @@ Each screen must distinguish `loading`, `ready`, `empty`, `permission_required`,
 
 ### 8.3 Endpoint contract
 
-The M1/M2 rows follow the adopted [HTTP contract](../packages/contracts/HTTP_API.md).
+The M1/M2 rows follow the adopted [HTTP contract](../../packages/contracts/HTTP_API.md).
 They are not runtime endpoints yet. Other rows below are later domain proposals,
 gated by PM decisions/native evidence; they are not part of the first profile schema.
 
@@ -658,7 +660,7 @@ This is a reference API contract, not finalized validation. Pydantic's numeric l
 
 ### 8.5 Authentication implementation boundary
 
-[Plan 03](core_plan/03_backend_foundation.md) implements verification; it is absent
+[Plan 03](../core_plan/03_backend_foundation.md) implements verification; it is absent
 today. Anisha owns the mobile SDK/session/refresh; Ishmum owns a testable server
 `TokenVerifier` producing an immutable verified identity. Mobile calls Supabase Auth
 directly. FastAPI receives access JWTs only, never passwords or refresh tokens.
@@ -716,7 +718,7 @@ or store demographic/onboarding blobs while waiting for their product contracts.
 The M2 profile has `user_id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE
 CASCADE`, nullable `display_name TEXT`, positive server-assigned `revision`, and UTC
 created/updated timestamps. Name validation and atomic revision semantics follow the
-[HTTP contract](../packages/contracts/HTTP_API.md). This description is not an executed
+[HTTP contract](../../packages/contracts/HTTP_API.md). This description is not an executed
 migration; the real Alembic change includes reviewed constraints, grants and RLS tests.
 
 Runtime uses a restricted nonowner `NOBYPASSRLS` role with no inherited migration

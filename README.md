@@ -1,6 +1,6 @@
 # Disconnect
 
-Shared React Native app and FastAPI service for Disconnect. Product context starts in [docs/AGENT_START_HERE.md](docs/AGENT_START_HERE.md); pending product answers belong in [docs/PM_QUESTIONS.md](docs/PM_QUESTIONS.md). Detailed development plans and their execution order are in [docs/core_plan/README.md](docs/core_plan/README.md).
+Shared React Native app and FastAPI service for Disconnect. Product context starts in [project context](<docs/Context (AGENT)/AGENT_START_HERE.md>); pending product answers belong in [PM questions](<docs/Context (AGENT)/PM_QUESTIONS.md>). Detailed development plans and their execution order are in [docs/core_plan/README.md](docs/core_plan/README.md). The [implementation knowledge base](docs/core_plan_implementation_notes/README.md) records the required per-plan, per-commit change notes and how to resume work across agents/chats.
 
 ## What works now
 
@@ -10,7 +10,7 @@ Shared React Native app and FastAPI service for Disconnect. Product context star
 - FastAPI process health endpoint, OpenAPI documentation, explicit browser CORS configuration, and tests.
 - Reproducible npm and uv lockfiles, linting, type checking, and CI checks.
 
-Authentication, profiles, database tables, saved plans, native protection, rewards, usage measurements, and AI are not implemented. The shell has no auth guard and exposes no private data. Do not publish this preview as a working protection app.
+The shared React Native/FastAPI foundation does not yet implement authentication, profiles, database tables, saved plans, native protection, rewards, usage measurements or AI. Imported legacy iOS behavior is separate and still requires audit/integration. The shell has no auth guard and exposes no private data. Do not publish this preview as a working protection app.
 
 ## Structure
 
@@ -62,7 +62,7 @@ Expo prints the local URL, normally `http://localhost:8081`. Web is a convenient
 npm run mobile
 ```
 
-This starts Metro for an Expo development client. An actual device requires a matching native development build. Native directories and signing are intentionally not generated yet: first obtain and audit the released Swift source, production identifiers, extension targets, and App Groups. Do not run `expo prebuild --clean` over that working project.
+This starts Metro for an Expo development client. An actual device requires a matching native development build. The legacy iOS source is now present under `apps/mobile/ios/` from commit `fe8f262`; its identifiers, extension targets, App Groups and signing still need auditing before RN integration. A matching Expo native build has not been established by importing that source. Do not run `expo prebuild --clean` over that working project.
 
 ### Run the API
 
@@ -113,7 +113,7 @@ Coordinate edits to the root navigation, `app.config.ts`, dependency lockfiles, 
 ## Next integration
 
 1. Start from the committed Plan 00 contracts (`0b50900`). Ishmum starts shared RN primitives/tests (RN-01), API foundation (API-01), and Android investigation as separate parts.
-2. Anisha owns Supabase Auth/project setup (SB-01–03) and builds the single Auth/session producer (AUTH-01/02); both sides use controlled tests before live integration. Obtain/audit Swift source and investigate Android feasibility independently.
+2. Anisha owns Supabase Auth/project setup (SB-01–03) and builds the single Auth/session producer (AUTH-01/02); both sides use controlled tests before live integration. Audit the imported Swift source and investigate Android feasibility independently.
 3. When the producer outputs are ready, connect real sign-in → identity-only `GET /v1/me` → matching account UI (M1), without requiring a product database.
 4. Add isolated PostgreSQL persistence and `GET/PATCH /v1/profile` with revision/conflict handling (M2). Full onboarding/plans/native installation follow their approved contracts and evidence.
 
