@@ -1,6 +1,6 @@
 # Plan 00 — Shared Contracts and Integration Boundaries
 
-**Status:** Complete locally: SC-01–04 implemented and validated at Ishmum's direction; commits pending. M1/M2 runtime work has not started.\
+**Status:** Complete: SC-01–04 implemented, validated and committed together as `0b50900` at Ishmum's direction. M1/M2 runtime work has not started.\
 **Owner:** Ishmum owns this foundation implementation; Anisha owns its Auth/iOS producers in subsequent plans. One author per commit.\
 **Area:** Shared changes enter `main` early and are merged into the active area branches.\
 **Baseline inspected:** `c7a8f73` — `Set up mobile and API foundation`.\
@@ -280,7 +280,7 @@ No hard-coded demo values enter real user caches, ledger rows, profiles, protect
 
 ## 8. Commit-sized implementation parts
 
-SC-01–04 are implemented locally in this increment. Messages below remain suggested commit boundaries until committed; actual hashes must not be invented. One part is a coherent review unit, not a prohibition on a corrective follow-up or one reviewed foundation-contract commit for the local increment.
+SC-01–04 were implemented together in foundation commit `0b50900`. Messages below record the original suggested per-part boundaries; they are not four separate commits. Future parts remain coherent review units and may have small corrective follow-ups.
 
 ### SC-01 — Record the initial architecture contract and scope
 
@@ -390,16 +390,16 @@ SC-01–04 are implemented locally in this increment. Messages below remain sugg
 
 ## 10. Completion and tracking
 
-Plan 00's local implementation is complete when the authorized engineering decisions, stable types, fixtures/ownership and dependent references agree and the checks pass. Ishmum explicitly authorized choosing the defaults; Anisha's separate review has not occurred and is not claimed. This does not complete M1/M2, commit the patch, or implement Anisha's Auth/iOS producers.
+Plan 00 is complete: its authorized engineering decisions, stable types, fixtures/ownership and dependent references agree and the checks pass. Ishmum explicitly authorized choosing the defaults; Anisha's separate review has not occurred and is not claimed. This contract completion does not complete M1/M2 or implement Anisha's Auth/iOS producers.
 
 | Part | Status | Actual commit | Validation / remaining evidence |
 |---|---|---|---|
-| SC-01 | Complete locally | Pending | See implementation evidence below |
-| SC-02 | Complete locally | Pending | See implementation evidence below |
-| SC-03 | Complete locally | Pending | See implementation evidence below |
-| SC-04 | Complete locally | Pending | See implementation evidence below |
+| SC-01 | Complete | `0b50900` | See implementation evidence below |
+| SC-02 | Complete | `0b50900` | See implementation evidence below |
+| SC-03 | Complete | `0b50900` | See implementation evidence below |
+| SC-04 | Complete | `0b50900` | See implementation evidence below |
 
-### Local implementation evidence (2026-10-28)
+### Implementation evidence (2026-10-28)
 
 - Ownership clarification (2026-10-28, Ishmum): Anisha owns Supabase Auth/project
   setup SB-01–03; Ishmum owns application database roles/test infrastructure SB-04/05.

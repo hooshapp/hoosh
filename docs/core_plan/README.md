@@ -1,6 +1,6 @@
 # Disconnect — Core Development Plans
 
-**Status:** Plan 00 is complete and validated locally (commits pending in its ledger); Plans 01–04 remain implementation drafts. Auth, private API endpoints, database and native adapters are not implemented.\
+**Status:** Plan 00 is complete and validated (foundation commit `0b50900`, recorded in its ledger); Plans 01–04 remain implementation drafts. Auth, private API endpoints, database and native adapters are not implemented.\
 **Baseline inspected:** `c7a8f73` — `Set up mobile and API foundation`.\
 **Reviewed:** 2026-10-28.\
 **Product answers:** [PM_QUESTIONS.md](../PM_QUESTIONS.md); no PM question is answered by an engineering default in these plans.
@@ -9,7 +9,7 @@
 
 Read [Plan 00](00_shared_contracts.md) first, then your area plan and the specific part you are about to implement. Build on the scaffold; do not reinstall it, rewrite the tested Swift core, create every future table, or complete an entire area before integrating.
 
-There are **44 parts**: 4 shared-contract parts implemented locally and 40 future implementation parts. They are reviewable work boundaries, not 44 completed commits or immediately unblocked tasks. Some onboarding/provider/native presentation parts are conditional. Split a concrete part further if its diff is too large, preserving stable IDs and dependencies.
+There are **44 parts**: 4 shared-contract parts implemented and committed and 40 future implementation parts. They are reviewable work boundaries, not 44 completed commits or immediately unblocked tasks. Some onboarding/provider/native presentation parts are conditional. Split a concrete part further if its diff is too large, preserving stable IDs and dependencies.
 
 | Plan | Parts | Main owner | Initial result |
 |---|---:|---|---|
@@ -52,7 +52,7 @@ These are dependency waves, not fixed dates or equal-workload requirements. Ishm
 
 | Wave | Ishmum | Anisha | Handoff / gate |
 |---|---|---|---|
-| 0 — local work complete | SC-01–04 decisions, fixtures, ports and handoffs implemented and validated; review/commit | Consume accepted port; review Auth/iOS impact during integration | Integrate shared contracts through `main`; no guessed product policy or independent review claim |
+| 0 — complete | SC-01–04 decisions, fixtures, ports and handoffs implemented, validated and committed as `0b50900`; sync the shared foundation | Consume accepted port; review Auth/iOS impact during integration | Integrate shared contracts through `main`; no guessed product policy or independent review claim |
 | 1 | RN-01 shared UI/testing; API-01–05 with local test keys; Android investigation | SB-01–03 Supabase Auth/project setup; AUTH-01/02 with controlled adapters; AUTH-03 consumes RN-01 and her SB-03 for live tests; obtain/audit Swift source | Callback configuration follows the contract, not completed callback code. API producers do not wait for mobile acceptance. |
 | 2 | RN-03 client, RN-04 lifecycle; RN-02 assets/navigation independently | Supply AUTH-02 real provider; integrate AUTH-07 guards/sign-out with RN-04 cleanup hooks | Producer ports first; AUTH-08/RN-06 are downstream evidence, not inputs. |
 | 3 — when producers are ready to wire | RN-05 identity surface → RN-06 joint M1 | Exercise sign-in/sign-out/recovery handshake; AUTH-04–06 can progress alongside this proof | Needs AUTH-01/02/03/07, SB-03, API-04/05; not all future Auth work |
@@ -114,4 +114,4 @@ Each plan includes goals, files, owners, proposed commits, dependencies, tests/a
 
 Documentation checks cover local links, stable part IDs, matching ledgers, dependency ordering, canonical contract names/paths, and scaffold boundaries. Plan 00 additionally checks its actual type-only package and consumer compile scenarios. These are not execution of the 40 remaining parts; no live Auth/cloud/database/device result is claimed from contract work.
 
-**Next work after reviewing/committing Plan 00:** Ishmum starts RN-01 (shared UI/test harness) and/or API-01 (testable API configuration/errors), with Android investigation independently. Anisha owns SB-01–03 (Supabase Auth/project setup) and AUTH-01/02 (mobile Auth). She can develop configuration/storage tests against injected settings before live setup is complete. Ishmum owns SB-04/05 when adding product database persistence. Wire M1/M2 when their producer outputs are ready; record actual integration evidence separately from module completion.
+**Next work from the committed Plan 00 foundation:** Ishmum starts RN-01 (shared UI/test harness) and/or API-01 (testable API configuration/errors), with Android investigation independently. Anisha owns SB-01–03 (Supabase Auth/project setup) and AUTH-01/02 (mobile Auth). She can develop configuration/storage tests against injected settings before live setup is complete. Ishmum owns SB-04/05 when adding product database persistence. Wire M1/M2 when their producer outputs are ready; record actual integration evidence separately from module completion.

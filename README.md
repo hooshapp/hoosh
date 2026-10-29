@@ -102,7 +102,7 @@ The initial SDK 58 dependency tree reports 8 npm audit findings (3 high, 5 low),
 
 ## Working independently
 
-Agree on shared interfaces before separate feature implementations. Anisha supplies `AuthSessionPort`/`AccessTokenProvider`; Ishmum verifies Supabase access tokens server-side when protected endpoints are added. The [accepted contracts](docs/architecture/identity-foundation.md) and [handoffs](docs/architecture/foundation-handoffs.md) are recorded; Plan 00 is implemented locally. Onboarding and Settings must use one approved plan contract. Both native adapters implement `ProtectionService` and report real capabilities/status. No native adapter is registered by the current scaffold.
+Agree on shared interfaces before separate feature implementations. Anisha supplies `AuthSessionPort`/`AccessTokenProvider`; Ishmum verifies Supabase access tokens server-side when protected endpoints are added. The [accepted contracts](docs/architecture/identity-foundation.md) and [handoffs](docs/architecture/foundation-handoffs.md) are recorded; Plan 00 is implemented in foundation commit `0b50900`. Onboarding and Settings must use one approved plan contract. Both native adapters implement `ProtectionService` and report real capabilities/status. No native adapter is registered by the current scaffold.
 
 Use the agreed area branches (`area/auth-onboarding`, `area/react-native`, `area/android`, `area/ios`, `area/backend`) with task branches such as `task/auth/login`. Create area branches from the shared foundation on `main`, merge working increments back frequently, and bring updated `main` into each active area.
 
@@ -112,7 +112,7 @@ Coordinate edits to the root navigation, `app.config.ts`, dependency lockfiles, 
 
 ## Next integration
 
-1. Review/commit the Plan 00 contracts. Ishmum starts shared RN primitives/tests (RN-01), API foundation (API-01), and Android investigation as separate parts.
+1. Start from the committed Plan 00 contracts (`0b50900`). Ishmum starts shared RN primitives/tests (RN-01), API foundation (API-01), and Android investigation as separate parts.
 2. Anisha owns Supabase Auth/project setup (SB-01–03) and builds the single Auth/session producer (AUTH-01/02); both sides use controlled tests before live integration. Obtain/audit Swift source and investigate Android feasibility independently.
 3. When the producer outputs are ready, connect real sign-in → identity-only `GET /v1/me` → matching account UI (M1), without requiring a product database.
 4. Add isolated PostgreSQL persistence and `GET/PATCH /v1/profile` with revision/conflict handling (M2). Full onboarding/plans/native installation follow their approved contracts and evidence.

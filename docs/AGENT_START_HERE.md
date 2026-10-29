@@ -4,7 +4,7 @@
 **Read in order:** `PRD.md` → `TSD.md` → current Figma design → existing source repository.  
 **Design:** https://www.figma.com/design/ukmD2ZidJ9UR2XxUkvdPoJ/App-UI?node-id=0-1
 
-**Checkout status (2026-10-28):** A shared Expo/React Native shell, accepted type-only Auth/native interfaces with synthetic HTTP fixtures (Plan 00 implemented locally), and a FastAPI health foundation now exist. See [`../README.md`](../README.md) for actual setup/check commands. Auth, database access, and native protection are not connected. The released Swift source is not present in this checkout; its audit and reuse remain prerequisites for iOS integration. The shell opens Home as a development preview and does not claim active protection.
+**Checkout status (2026-10-28):** A shared Expo/React Native shell, accepted type-only Auth/native interfaces with synthetic HTTP fixtures (Plan 00 committed as `0b50900`), and a FastAPI health foundation now exist. See [`../README.md`](../README.md) for actual setup/check commands. Auth, database access, and native protection are not connected. The released Swift source is not present in this checkout; its audit and reuse remain prerequisites for iOS integration. The shell opens Home as a development preview and does not claim active protection.
 
 **Engineering ownership:** Ishmum owns main/shared React Native UI, Android, backend/product database and shared testing. Anisha owns all Supabase Auth/project setup (SB-01–03), mobile Auth/onboarding and iOS. Ishmum owns only the Supabase product database work (SB-04/05), not Auth administration. Build against the shared contracts independently, then wire real outputs when ready; mark integration-dependent parts complete only after joint validation. Read [the accepted decisions](architecture/identity-foundation.md) and [core execution order](core_plan/README.md) before foundation work.
 
@@ -122,6 +122,6 @@ capability tests remain separate; a web export does not establish native behavio
 - **`TSD.md`** — architecture, native boundaries, Swift/Android requirements, TypeScript interfaces, FastAPI endpoints, Pydantic/SQL examples, event sync, security, database, tests, infra, agent work packages.
 - **`OPEN_DECISIONS.yaml`** — machine-readable unresolved founder choices, intentionally unapproved.
 - **[`PM_QUESTIONS.md`](PM_QUESTIONS.md)** — 22 PM questions with stable IDs and space to append dated answers, clarifications, and agreed decisions.
-- **[`core_plan/README.md`](core_plan/README.md)** — execution order and index for five detailed foundation plans, with 44 parts (Plan 00 implemented locally, 40 future parts), cross-plan dependencies, implementation/commit ledgers, and explicit PM/native gates.
+- **[`core_plan/README.md`](core_plan/README.md)** — execution order and index for five detailed foundation plans, with 44 parts (Plan 00 committed as `0b50900`, 40 future parts), cross-plan dependencies, implementation/commit ledgers, and explicit PM/native gates.
 
 **Source of truth:** This is a context-rich implementation baseline. A full repo audit and explicit product policy answers may require updates before coding core session/reward rules. The documents must be revised whenever founder decisions, platform behavior, or existing code evidence contradicts assumptions.

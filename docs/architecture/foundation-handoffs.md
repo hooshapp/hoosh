@@ -83,9 +83,9 @@ names express ownership, not a separate dependency/inheritance mechanism. One na
 author per shared-file change and Alembic revision; review impacts with the consumer.
 
 Use each plan's existing ledger for status, actual commit hashes, commands/results,
-and missing input. Plan 00's current changes are local until committed; do not invent
-hashes or independent reviews. Use the planned per-part messages if splitting commits,
-or one coherent foundation-contract commit if reviewing this local increment together.
+and missing input. Plan 00 SC-01–04 landed together in foundation commit `0b50900`;
+its ledger records that actual hash. The planned per-part messages were suggested
+boundaries, not separate commits. Keep future part histories and reviews accurate.
 
 When M1/M2 are exercised, their QA record (RN-06/RN-11, AUTH-08, API-10/SB-06 as
 applicable) includes:
