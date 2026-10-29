@@ -1,0 +1,10 @@
+*.DS_Store
+*.xcuserstate
+xcuserdata/
+project.xcworkspace/
+Build/
+DerivedData/
+firebase-debug.log
+firebase-debug.*.log
+functions/node_modules/
+DisconnectApp/Secrets.plist

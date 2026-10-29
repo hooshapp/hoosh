@@ -1,0 +1,411 @@
+{
+  "source_commit": "a5fb309dc3728427d756bac4088524aa38f158ca",
+  "source_branch": "pre-main",
+  "import_date": "2026-10-29",
+  "files": [
+    {
+      "source": ".firebaserc",
+      "destination": ".firebaserc",
+      "sha256": "9cd23f56178ece9d843a631f692d4572b8c5f9ab2824a3314fb816a22f74dcd9"
+    },
+    {
+      "source": ".gitignore",
+      "destination": "apps/mobile/ios/LEGACY.gitignore",
+      "sha256": "b3cc3f56f377f46ca9055c583b5bf5b2c9598f7f774f1475bb322f3c6ad57c00"
+    },
+    {
+      "source": "AppStoreScreenshots/iPad-13-01-shield.png",
+      "destination": "AppStoreScreenshots/iPad-13-01-shield.png",
+      "sha256": "00b7a0c2b20b360ea539ec6b6a10501234ee736af43fb6341dbf10e31ebbd416"
+    },
+    {
+      "source": "AppStoreScreenshots/iPad-13-02-dashboard.png",
+      "destination": "AppStoreScreenshots/iPad-13-02-dashboard.png",
+      "sha256": "fca413a4d163c1b182aee06307bafa8002ff1dbd3d56cf0e48a13b28374d5fa0"
+    },
+    {
+      "source": "AppStoreScreenshots/iPad-13-03-settings.png",
+      "destination": "AppStoreScreenshots/iPad-13-03-settings.png",
+      "sha256": "da20c356c7a8ddd86e46bb63cc40fa33377b8f0a6a4c33622a23e1b55b6d7382"
+    },
+    {
+      "source": "AppStoreScreenshots/iPhone-6.5-01-shield.png",
+      "destination": "AppStoreScreenshots/iPhone-6.5-01-shield.png",
+      "sha256": "0a05610fed5cf0e6384cae481ef1cc1af059b6090a6a11716737e84e8210a36f"
+    },
+    {
+      "source": "AppStoreScreenshots/iPhone-6.5-02-dashboard.png",
+      "destination": "AppStoreScreenshots/iPhone-6.5-02-dashboard.png",
+      "sha256": "815d48fb01777e15e79c3f9e7a675f6d5d1019efdc231e4bdfba28df3538b3aa"
+    },
+    {
+      "source": "AppStoreScreenshots/iPhone-6.5-03-settings.png",
+      "destination": "AppStoreScreenshots/iPhone-6.5-03-settings.png",
+      "sha256": "20cdaf57064bae999c1fb039763042bc055f8c121f02195f23c74f380819752a"
+    },
+    {
+      "source": "Disconnect/Disconnect.entitlements",
+      "destination": "apps/mobile/ios/Disconnect/Disconnect.entitlements",
+      "sha256": "97704a8960b4facceef54397a08fb5d0a456247c3627359215aa2a27df22656c"
+    },
+    {
+      "source": "Disconnect/Disconnect.swift",
+      "destination": "apps/mobile/ios/Disconnect/Disconnect.swift",
+      "sha256": "4a9aec3addf3b98671997bb5ee87a8635c04afcb680e669613cd629bfb7da202"
+    },
+    {
+      "source": "Disconnect/Info.plist",
+      "destination": "apps/mobile/ios/Disconnect/Info.plist",
+      "sha256": "05791b505c0b1f228c2dda7815a00306800d7e307100b5a8a63db087f777e20a"
+    },
+    {
+      "source": "Disconnect/TotalActivityReport.swift",
+      "destination": "apps/mobile/ios/Disconnect/TotalActivityReport.swift",
+      "sha256": "afc5a92ae8810a23de002de63e2c32ed05828e293af818685073a3a2bec7ffa8"
+    },
+    {
+      "source": "Disconnect/TotalActivityView.swift",
+      "destination": "apps/mobile/ios/Disconnect/TotalActivityView.swift",
+      "sha256": "3d44454a19a2f1da06b9bc37d6c6383e6aad466dd0a5f34cb9d59b863ae1ccb6"
+    },
+    {
+      "source": "DisconnectApp.xcodeproj/project.pbxproj",
+      "destination": "apps/mobile/ios/DisconnectApp.xcodeproj/project.pbxproj",
+      "sha256": "2d9b2b2812c60261e97971817183fc902f3ef6e571bacfdae6e136518794c421"
+    },
+    {
+      "source": "DisconnectApp.xcodeproj/project.xcworkspace/contents.xcworkspacedata",
+      "destination": "apps/mobile/ios/DisconnectApp.xcodeproj/project.xcworkspace/contents.xcworkspacedata",
+      "sha256": "7f3b00b5c3fdb45242d7b87e1e5c4e25d1fa8129a16c94295ecc4e8ea2235c5f"
+    },
+    {
+      "source": "DisconnectApp.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+      "destination": "apps/mobile/ios/DisconnectApp.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved",
+      "sha256": "ae41832e1828603931127a4612689ccb4f40fd5a0cf2c305a6b5bb9e1528b763"
+    },
+    {
+      "source": "DisconnectApp/AIGeneratedNudgeStore.swift",
+      "destination": "apps/mobile/ios/DisconnectApp/AIGeneratedNudgeStore.swift",
+      "sha256": "ba2a42b77de695c4b3579c63ae1107edaddad56739e7536ab9603539edc2dd0a"
+    },
+    {
+      "source": "DisconnectApp/AIService.swift",
+      "destination": "apps/mobile/ios/DisconnectApp/AIService.swift",
+      "sha256": "8db37c1fe1ea8f5e22c7f3997eb3f62d912841bed088a5183f7a67a2b36d684d"
+    },
+    {
+      "source": "DisconnectApp/AppSelectionStore.swift",
+      "destination": "apps/mobile/ios/DisconnectApp/AppSelectionStore.swift",
+      "sha256": "0fd23c791435456ec32d7fc2d6b7c9a3302e85b35e5df3f6e07f1735527cf805"
+    },
+    {
+      "source": "DisconnectApp/AppSelectionView.swift",
+      "destination": "apps/mobile/ios/DisconnectApp/AppSelectionView.swift",
+      "sha256": "d0541ff8ca7c71710b104a9e00492782f8521b50870f3babc17d8813ac7569d5"
+    },
+    {
+      "source": "DisconnectApp/AppleProductivityContextService.swift",
+      "destination": "apps/mobile/ios/DisconnectApp/AppleProductivityContextService.swift",
+      "sha256": "517b512af0951fe39350f73b527116a6a4801d8174e27c36aa155b705f85cd9e"
+    },
+    {
+      "source": "DisconnectApp/Assets.xcassets/AccentColor.colorset/Contents.json",
+      "destination": "apps/mobile/ios/DisconnectApp/Assets.xcassets/AccentColor.colorset/Contents.json",
+      "sha256": "9af65086fa30b49252fae1a1225731691de794f7775af74d71befeb507d12b7c"
+    },
+    {
+      "source": "DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-1024.png",
+      "destination": "apps/mobile/ios/DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-1024.png",
+      "sha256": "e0303517a4ac0e3d2ee5a1eb0a513f9cfd38462120231f852608e073ee7661ad"
+    },
+    {
+      "source": "DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-20@2x.png",
+      "destination": "apps/mobile/ios/DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-20@2x.png",
+      "sha256": "2c7328a131c2a6aff153f0a51f3417c2b78fcf344933e57adc2401bfa4b9a870"
+    },
+    {
+      "source": "DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-20@2x~ipad.png",
+      "destination": "apps/mobile/ios/DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-20@2x~ipad.png",
+      "sha256": "2c7328a131c2a6aff153f0a51f3417c2b78fcf344933e57adc2401bfa4b9a870"
+    },
+    {
+      "source": "DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-20@3x.png",
+      "destination": "apps/mobile/ios/DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-20@3x.png",
+      "sha256": "86d1f5f1064142870d13e9df7f9b19ef8cadf9021c96440c4f6f38c6cb8964ae"
+    },
+    {
+      "source": "DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-20~ipad.png",
+      "destination": "apps/mobile/ios/DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-20~ipad.png",
+      "sha256": "f9e41143f430f5b228155065c81c8ed0865d46aea10564d4050a1b9aa1cf734b"
+    },
+    {
+      "source": "DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-29@2x.png",
+      "destination": "apps/mobile/ios/DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-29@2x.png",
+      "sha256": "ed7a608c1c6863bae7ced10e17146ec651ff5cc823deed89d7db5dcf4c6a66e6"
+    },
+    {
+      "source": "DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-29@2x~ipad.png",
+      "destination": "apps/mobile/ios/DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-29@2x~ipad.png",
+      "sha256": "ed7a608c1c6863bae7ced10e17146ec651ff5cc823deed89d7db5dcf4c6a66e6"
+    },
+    {
+      "source": "DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-29@3x.png",
+      "destination": "apps/mobile/ios/DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-29@3x.png",
+      "sha256": "0e38085f1b65e11defa324188c7e74c27e3b27175e0f5e2d9b6ef2dd34f63ba6"
+    },
+    {
+      "source": "DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-29~ipad.png",
+      "destination": "apps/mobile/ios/DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-29~ipad.png",
+      "sha256": "7e386c47c2ca77f99627dd9691a2000f87cf1502f7d65989b67ae80222d29b23"
+    },
+    {
+      "source": "DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-40@2x.png",
+      "destination": "apps/mobile/ios/DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-40@2x.png",
+      "sha256": "e8b3820f3bcab81fabc631aa6e30b69daadfd0379909481331f948c36e1f43c5"
+    },
+    {
+      "source": "DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-40@2x~ipad.png",
+      "destination": "apps/mobile/ios/DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-40@2x~ipad.png",
+      "sha256": "e8b3820f3bcab81fabc631aa6e30b69daadfd0379909481331f948c36e1f43c5"
+    },
+    {
+      "source": "DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-40@3x.png",
+      "destination": "apps/mobile/ios/DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-40@3x.png",
+      "sha256": "dcaaffbe6bb8c52df3177136ec32138ae7355ffb77191643c65885a2892526ef"
+    },
+    {
+      "source": "DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-40~ipad.png",
+      "destination": "apps/mobile/ios/DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-40~ipad.png",
+      "sha256": "2c7328a131c2a6aff153f0a51f3417c2b78fcf344933e57adc2401bfa4b9a870"
+    },
+    {
+      "source": "DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-60@2x.png",
+      "destination": "apps/mobile/ios/DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-60@2x.png",
+      "sha256": "dcaaffbe6bb8c52df3177136ec32138ae7355ffb77191643c65885a2892526ef"
+    },
+    {
+      "source": "DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-60@3x.png",
+      "destination": "apps/mobile/ios/DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-60@3x.png",
+      "sha256": "cffb64eea7efef147cf4c859315b732567873d60b245c3536c9376b14ebc75aa"
+    },
+    {
+      "source": "DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-76@2x~ipad.png",
+      "destination": "apps/mobile/ios/DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-76@2x~ipad.png",
+      "sha256": "0963e21f9d25fc045e8cee135ee717ea91007fe28c26f27295580e3a5a5b6e5c"
+    },
+    {
+      "source": "DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-76~ipad.png",
+      "destination": "apps/mobile/ios/DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-76~ipad.png",
+      "sha256": "81d180fb20f0c55d31ddab0864ad607c0d9be5e3abc1a6bf81c40cbd6495dc30"
+    },
+    {
+      "source": "DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-83.5@2x~ipad.png",
+      "destination": "apps/mobile/ios/DisconnectApp/Assets.xcassets/AppIcon.appiconset/AppIcon-83.5@2x~ipad.png",
+      "sha256": "1ce94d7bbe96074b3cfeada6b67129b842c24c8d8d73afeb1bab08fe3e3c1b09"
+    },
+    {
+      "source": "DisconnectApp/Assets.xcassets/AppIcon.appiconset/Contents.json",
+      "destination": "apps/mobile/ios/DisconnectApp/Assets.xcassets/AppIcon.appiconset/Contents.json",
+      "sha256": "e1dcc8ac517b42a1ef44d071251dcf90f0b381b32bfd621b7b7d3afc4a099b30"
+    },
+    {
+      "source": "DisconnectApp/Assets.xcassets/Contents.json",
+      "destination": "apps/mobile/ios/DisconnectApp/Assets.xcassets/Contents.json",
+      "sha256": "0fd49ba3c3585c709678e0046a821c3c60685ec7063720d30d3a3448be3a208b"
+    },
+    {
+      "source": "DisconnectApp/AuthService.swift",
+      "destination": "apps/mobile/ios/DisconnectApp/AuthService.swift",
+      "sha256": "59952e36ee6f9e13c89e683f4e5d66ee5559a7265f1a5f20ba8e5deda5bddbb8"
+    },
+    {
+      "source": "DisconnectApp/BreakReminderScheduler.swift",
+      "destination": "apps/mobile/ios/DisconnectApp/BreakReminderScheduler.swift",
+      "sha256": "c4d985484f4c8a74b46de4f4aa148300ce5b283e567356f1d2d7982a02a6cfe4"
+    },
+    {
+      "source": "DisconnectApp/CheckpointOnboardingView.swift",
+      "destination": "apps/mobile/ios/DisconnectApp/CheckpointOnboardingView.swift",
+      "sha256": "68e1f799a004e9afc989d6e40182240169cc5eba8a3aae36f76266b9814aa960"
+    },
+    {
+      "source": "DisconnectApp/CheckpointStore.swift",
+      "destination": "apps/mobile/ios/DisconnectApp/CheckpointStore.swift",
+      "sha256": "d63e388abaefadb3450fb71d684bb73f92859156baf783938f62e6a084a981a8"
+    },
+    {
+      "source": "DisconnectApp/CheckpointUnlockView.swift",
+      "destination": "apps/mobile/ios/DisconnectApp/CheckpointUnlockView.swift",
+      "sha256": "a4273604c85cd108f75c25d90eb5f587d74930cceaaa186a9a43ccd6fa515289"
+    },
+    {
+      "source": "DisconnectApp/ContentView.swift",
+      "destination": "apps/mobile/ios/DisconnectApp/ContentView.swift",
+      "sha256": "34480b82b88924ace6728ecc9be85b7ed230f0de2564f44011035cbb1d641ae6"
+    },
+    {
+      "source": "DisconnectApp/DashboardMetrics.swift",
+      "destination": "apps/mobile/ios/DisconnectApp/DashboardMetrics.swift",
+      "sha256": "5ca80bd0128b25915ea87ec019423eab766b0dc04baa47840769354365c64414"
+    },
+    {
+      "source": "DisconnectApp/DatabaseService.swift",
+      "destination": "apps/mobile/ios/DisconnectApp/DatabaseService.swift",
+      "sha256": "df3983c1fb55b594408995c61c43fa35c68850b8cbd2579295f66ecc54d29009"
+    },
+    {
+      "source": "DisconnectApp/DisconnectApp.entitlements",
+      "destination": "apps/mobile/ios/DisconnectApp/DisconnectApp.entitlements",
+      "sha256": "02d0a7c681860d2ed081f2bb7f537b959761bda8c436b49c4f42d2639a3975dc"
+    },
+    {
+      "source": "DisconnectApp/DisconnectAppApp.swift",
+      "destination": "apps/mobile/ios/DisconnectApp/DisconnectAppApp.swift",
+      "sha256": "9dd9e634a923be1942772f20ab48a9d450a5a7d1e73d045adfd8536ecc1b13af"
+    },
+    {
+      "source": "DisconnectApp/GoogleService-Info.plist",
+      "destination": "apps/mobile/ios/DisconnectApp/GoogleService-Info.plist",
+      "sha256": "503d2aec907519d3adbce061eddf79514861395ed09e2ffcdbcf092578fe0eb8"
+    },
+    {
+      "source": "DisconnectApp/IdentityCheckpoint.swift",
+      "destination": "apps/mobile/ios/DisconnectApp/IdentityCheckpoint.swift",
+      "sha256": "8238fccb1173fb2502342492ef4ddd4c559a2953a71376f52d6bdee391195bcb"
+    },
+    {
+      "source": "DisconnectApp/InterventionHistoryStore.swift",
+      "destination": "apps/mobile/ios/DisconnectApp/InterventionHistoryStore.swift",
+      "sha256": "695fa36311a380cc6e15b8816e9e381af9ad4f1d1a37112251e46211b9d18f01"
+    },
+    {
+      "source": "DisconnectApp/OnboardingResponseStore.swift",
+      "destination": "apps/mobile/ios/DisconnectApp/OnboardingResponseStore.swift",
+      "sha256": "f6cd703061ff5b341e6f25f58dc30cb1319e7b19a5ba75b6988b4898f17e4ed6"
+    },
+    {
+      "source": "DisconnectApp/OnboardingView.swift",
+      "destination": "apps/mobile/ios/DisconnectApp/OnboardingView.swift",
+      "sha256": "65de31465c5ba4cdd18dbe89b4c6b1cc3a3c48eb26592880282624f630e29f7c"
+    },
+    {
+      "source": "DisconnectApp/ProductivityContextStore.swift",
+      "destination": "apps/mobile/ios/DisconnectApp/ProductivityContextStore.swift",
+      "sha256": "b6cf3d0247a322229bc4bf7d80cbf7a362969fa95e70f9f6e355adbd6bbc9c40"
+    },
+    {
+      "source": "DisconnectApp/ScreenTimeAuthorizationService.swift",
+      "destination": "apps/mobile/ios/DisconnectApp/ScreenTimeAuthorizationService.swift",
+      "sha256": "f1411db0fa761a602f2e51c948fce435636aada45c5f375e11a158c0aec7bc96"
+    },
+    {
+      "source": "DisconnectApp/ShieldStoreController.swift",
+      "destination": "apps/mobile/ios/DisconnectApp/ShieldStoreController.swift",
+      "sha256": "380eb0f1eaab78b7ae0f11a77bbcd9ee52ca061dcb9abef8822cdc9cfc244f7b"
+    },
+    {
+      "source": "DisconnectApp/TestDashboardView.swift",
+      "destination": "apps/mobile/ios/DisconnectApp/TestDashboardView.swift",
+      "sha256": "795a1b89c2cf5599f0cb6164a85508f9ee61a67c84bf890ea4748d142b284b9e"
+    },
+    {
+      "source": "DisconnectApp/User.swift",
+      "destination": "apps/mobile/ios/DisconnectApp/User.swift",
+      "sha256": "1d38d9245e0234efcd17513948bf66a6ac128c9f8780ce4650cf98d77aab4274"
+    },
+    {
+      "source": "DisconnectAppTests/DisconnectAppTests.swift",
+      "destination": "apps/mobile/ios/DisconnectAppTests/DisconnectAppTests.swift",
+      "sha256": "e9dd177ffea71eae8966b773d832ae4a05645cc0176b669600b57c03ed30894e"
+    },
+    {
+      "source": "DisconnectAppUITests/DisconnectAppUITests.swift",
+      "destination": "apps/mobile/ios/DisconnectAppUITests/DisconnectAppUITests.swift",
+      "sha256": "9e7f304afb0c211ec2e0b0088a4bb1077a85485a402485a8b17659d224b10d69"
+    },
+    {
+      "source": "DisconnectAppUITests/DisconnectAppUITestsLaunchTests.swift",
+      "destination": "apps/mobile/ios/DisconnectAppUITests/DisconnectAppUITestsLaunchTests.swift",
+      "sha256": "5c869ae358d5c3a3b814a1c2e0e32301b00653a4fe7cb265b60ed049b92df919"
+    },
+    {
+      "source": "DisconnectDeviceActivityMonitorExtension/DeviceActivityMonitorExtension.swift",
+      "destination": "apps/mobile/ios/DisconnectDeviceActivityMonitorExtension/DeviceActivityMonitorExtension.swift",
+      "sha256": "3a0fa70e58ff54a6fad6c0c5cca920234aa88c1e33ec488e71a2c2bdddb91800"
+    },
+    {
+      "source": "DisconnectDeviceActivityMonitorExtension/DisconnectDeviceActivityMonitorExtension.entitlements",
+      "destination": "apps/mobile/ios/DisconnectDeviceActivityMonitorExtension/DisconnectDeviceActivityMonitorExtension.entitlements",
+      "sha256": "02d0a7c681860d2ed081f2bb7f537b959761bda8c436b49c4f42d2639a3975dc"
+    },
+    {
+      "source": "DisconnectDeviceActivityMonitorExtension/Info.plist",
+      "destination": "apps/mobile/ios/DisconnectDeviceActivityMonitorExtension/Info.plist",
+      "sha256": "4434a8d34df1f54fd9665cfbe6274da984e99517d52aba0f23be2b2b0352fd7e"
+    },
+    {
+      "source": "DisconnectShieldActionExtension/DisconnectShieldActionExtension.entitlements",
+      "destination": "apps/mobile/ios/DisconnectShieldActionExtension/DisconnectShieldActionExtension.entitlements",
+      "sha256": "02d0a7c681860d2ed081f2bb7f537b959761bda8c436b49c4f42d2639a3975dc"
+    },
+    {
+      "source": "DisconnectShieldActionExtension/Info.plist",
+      "destination": "apps/mobile/ios/DisconnectShieldActionExtension/Info.plist",
+      "sha256": "cf08a46113cb8a224d5a7153216b0de35b05626fdf065f9246958fc030e3c9cc"
+    },
+    {
+      "source": "DisconnectShieldActionExtension/ShieldActionExtension.swift",
+      "destination": "apps/mobile/ios/DisconnectShieldActionExtension/ShieldActionExtension.swift",
+      "sha256": "1284dcd4531b66ef547b93a4acaf8f3dcdb43bf38301f97164ea8a4b0a44bb96"
+    },
+    {
+      "source": "DisconnectShieldConfigurationExtension/DisconnectShieldConfigurationExtension.entitlements",
+      "destination": "apps/mobile/ios/DisconnectShieldConfigurationExtension/DisconnectShieldConfigurationExtension.entitlements",
+      "sha256": "02d0a7c681860d2ed081f2bb7f537b959761bda8c436b49c4f42d2639a3975dc"
+    },
+    {
+      "source": "DisconnectShieldConfigurationExtension/Info.plist",
+      "destination": "apps/mobile/ios/DisconnectShieldConfigurationExtension/Info.plist",
+      "sha256": "ffd546997c6b9a5bd852b0a0638a8a804231cc6213bfb52268cdf7e2f56d8c5d"
+    },
+    {
+      "source": "DisconnectShieldConfigurationExtension/ShieldConfigurationExtension.swift",
+      "destination": "apps/mobile/ios/DisconnectShieldConfigurationExtension/ShieldConfigurationExtension.swift",
+      "sha256": "062da120feb464f8e45a03c65214d1b7b0bfb71a3d520c980fc622cb9ed00e0e"
+    },
+    {
+      "source": "README.md",
+      "destination": "apps/mobile/ios/LEGACY_README.md",
+      "sha256": "54a9c2c545992ad488ad8f88bf80f1658ec5fb4c75af4c7d8fc9d34813d3a242"
+    },
+    {
+      "source": "firebase.json",
+      "destination": "firebase.json",
+      "sha256": "b4dc871685b5435469476461d3294b4dbed0543d0cb4358ceca01fbd07b02698"
+    },
+    {
+      "source": "functions/index.js",
+      "destination": "functions/index.js",
+      "sha256": "ec67ff6c179d719f7526796f4b6bf50746ab2c04de786e8141a1ccebdb5d2856"
+    },
+    {
+      "source": "functions/package-lock.json",
+      "destination": "functions/package-lock.json",
+      "sha256": "e3376f08c1c682d588d96d92978a37e6d8425b128ed51fd25c1ac9e7a9f5e1d8"
+    },
+    {
+      "source": "functions/package.json",
+      "destination": "functions/package.json",
+      "sha256": "91a366d6645a6220cb63b212914e1e22b238e6ab259bf660fc5370d2bbe831f4"
+    },
+    {
+      "source": "scripts/verify_shield_bundle.sh",
+      "destination": "scripts/verify_shield_bundle.sh",
+      "sha256": "11644de4eae7f4a640aba1d67412e48eb412a87148235794743cff8ac7b7cb61"
+    }
+  ],
+  "excluded": [
+    "DisconnectApp.xcodeproj/xcuserdata/**",
+    "untracked/ignored local configuration, dependencies, build output and .git history"
+  ]
+}

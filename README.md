@@ -10,7 +10,7 @@ Shared React Native app and FastAPI service for Disconnect. Product context star
 - FastAPI process health endpoint, OpenAPI documentation, explicit browser CORS configuration, and tests.
 - Reproducible npm and uv lockfiles, linting, type checking, and CI checks.
 
-Authentication, profiles, database tables, saved plans, native protection, rewards, usage measurements, and AI are not implemented. The shell has no auth guard and exposes no private data. Do not publish this preview as a working protection app.
+Authentication, profiles, database tables, saved plans, native protection, rewards, usage measurements, and AI are not implemented in the new React Native/FastAPI application. The shell has no auth guard and exposes no private data. Do not publish this preview as a working protection app.
 
 ## Structure
 
@@ -62,7 +62,7 @@ Expo prints the local URL, normally `http://localhost:8081`. Web is a convenient
 npm run mobile
 ```
 
-This starts Metro for an Expo development client. An actual device requires a matching native development build. Native directories and signing are intentionally not generated yet: first obtain and audit the released Swift source, production identifiers, extension targets, and App Groups. Do not run `expo prebuild --clean` over that working project.
+This starts Metro for an Expo development client. An actual device requires a matching native development build. The provided Swift project is preserved separately in `apps/mobile/ios/`; see [its source audit](docs/architecture/existing-ios-audit.md). React Native native directories and signing remain unconfigured; qualify the original identifiers, extension targets and App Groups before integration. Do not run `expo prebuild --clean` over that working project.
 
 ### Run the API
 
@@ -113,8 +113,12 @@ Coordinate edits to the root navigation, `app.config.ts`, dependency lockfiles, 
 ## Next integration
 
 1. Start from the committed Plan 00 contracts (`0b50900`). Ishmum starts shared RN primitives/tests (RN-01), API foundation (API-01), and Android investigation as separate parts.
-2. Anisha owns Supabase Auth/project setup (SB-01–03) and builds the single Auth/session producer (AUTH-01/02); both sides use controlled tests before live integration. Obtain/audit Swift source and investigate Android feasibility independently.
+2. Anisha owns Supabase Auth/project setup (SB-01–03) and builds the single Auth/session producer (AUTH-01/02); both sides use controlled tests before live integration. Use the imported Swift source audit to plan bridge/signing validation and investigate Android feasibility independently.
 3. When the producer outputs are ready, connect real sign-in → identity-only `GET /v1/me` → matching account UI (M1), without requiring a product database.
 4. Add isolated PostgreSQL persistence and `GET/PATCH /v1/profile` with revision/conflict handling (M2). Full onboarding/plans/native installation follow their approved contracts and evidence.
 
 Native restrictions must remain independent of React Native timers, backend availability, and AI generation.
+
+## Existing iOS reuse source
+
+The owner-provided standalone Swift project is retained in [apps/mobile/ios](apps/mobile/ios/IMPORT.md). See [its source audit](docs/architecture/existing-ios-audit.md) for reuse boundaries. It is not yet wired to React Native; copying it does not establish a signed build, device behavior or live Firebase/AI health.

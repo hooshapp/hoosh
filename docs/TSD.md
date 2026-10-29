@@ -37,7 +37,7 @@
 | Android native restriction | [UNPROVEN] | Dedicated feasibility spike and Play-policy assessment |
 | Full React Native UI | [DESIGNED] See PRD Figma ID inventory | Build shared screens, navigation, forms and feedback |
 | FastAPI/backend | [PROPOSED] May not exist in current codebase | Inspect and reuse existing services first; only build missing modules |
-| AI nudge generation | [NOT YET IMPLEMENTED] Existing nudges generic | Rules/templates in V1, behind feature flag for LLM later |
+| AI nudge generation | Legacy Swift/Firebase source imported; no new RN/FastAPI integration or fresh live validation | Audit/reuse cached source and fallback; keep new integration separately gated |
 | Server analytics | [UNKNOWN] | Add measured event taxonomy and privacy-safe sync |
 
 ## 2. Target system topology
@@ -325,6 +325,8 @@ To avoid stale locks, keep a **versioned desired-state registry**, reconcile it 
 ## 5. iOS native implementation — preserve existing Swift
 
 ### 5.1 Existing code audit (first engineering ticket)
+
+The provided project is preserved at `apps/mobile/ios/`; begin with [the source audit](architecture/existing-ios-audit.md). Importing source has not connected it to React Native or revalidated signed/device behavior.
 
 Identify in the real repo:
 
