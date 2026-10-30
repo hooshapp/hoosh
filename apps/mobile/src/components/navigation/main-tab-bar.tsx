@@ -122,7 +122,6 @@ export function MainTabBar({
           right: insets.right + floatingBarGeometry.sideGap,
           bottom,
         },
-        expanded && styles.expandedBar,
       ]}>
       {state.routes.map((route, index) => {
         if (!Object.hasOwn(labels, route.name) || descriptors[route.key].options.hidden)
@@ -130,7 +129,9 @@ export function MainTabBar({
         const name = route.name as MainTabName;
         const selected = index === state.index;
         return (
-          <Fragment key={route.key}>
+          // Router can replace route keys during activation; the four tab names are
+          // stable. Keep the focused control mounted instead of dropping focus to body.
+          <Fragment key={route.name}>
             <View style={expanded && styles.expandedTarget}>
               <TabItem
                 name={name}
@@ -166,6 +167,7 @@ export function MainTabBar({
 const styles = StyleSheet.create({
   bar: {
     position: 'absolute',
+    zIndex: 1,
     minHeight: floatingBarGeometry.minHeight,
     paddingHorizontal: 12,
     paddingVertical: 8,
@@ -173,12 +175,14 @@ const styles = StyleSheet.create({
     backgroundColor: colors.darkNav,
     boxShadow: '0px 8px 24px rgba(0,0,0,0.25)',
     flexDirection: 'row',
+    // Browser text-only scaling does not update RN Web's fontScale. Let the real
+    // intrinsic label width wrap too; onLayout reports the resulting footer height.
+    flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 4,
   },
   spacer: { flex: 1 },
-  expandedBar: { flexWrap: 'wrap' },
   target: {
     minWidth: 44,
     minHeight: 44,

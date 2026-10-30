@@ -2,6 +2,7 @@ import { StyleSheet, Text, View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
 import { InlineStatus } from '@/components/ui/inline-status';
+import { useAnnouncement } from '@/components/ui/use-announcement';
 import { useUiTheme } from '@/components/ui/theme';
 import { colors, fonts } from '@/design/tokens';
 
@@ -23,6 +24,8 @@ export function ProtectionStatus({
   busy = false,
 }: Props) {
   const theme = useUiTheme();
+  // Checking already announces through InlineStatus; do not queue it twice on iOS.
+  useAnnouncement(model.kind === 'checking' ? undefined : `${model.title}. ${model.message}`);
   const action =
     model.action === 'retry'
       ? onRetry

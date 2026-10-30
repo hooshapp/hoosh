@@ -98,3 +98,18 @@ audited iOS project before native QA. No prebuild, entitlement or legacy Swift
 rewrite was performed. Verify the original SVGs on signed iOS/Android builds,
 including the SDK's documented iOS SVG decoder limitation, screen readers and
 keyboard/safe-area behavior before release.
+
+## RN-10 accessibility hardening
+
+Web uses the public top tab-bar position for DOM order while this absolute custom
+bar remains physically at the bottom. The active panel follows the tab list in
+keyboard order. Stable tab-name React keys retain focused controls through Router
+route-key replacement; route keys still identify events/navigation. Public route
+focus excludes inactive panels from the accessibility tree and web keyboard order
+without unmounting their React subtrees/drafts. This is presentation visibility,
+not Auth authorization or a substitute for RN-04 account cleanup.
+
+Intrinsic bar content can wrap even when RN Web reports fontScale 1 during browser
+text-only scaling. Existing native large-font columns and measured footer reserve
+remain authoritative. See [the actual QA record](../../../../../docs/qa/mobile-accessibility.md)
+for browser results and separate native/device gates.

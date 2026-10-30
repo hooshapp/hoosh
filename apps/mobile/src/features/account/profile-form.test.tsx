@@ -1,5 +1,6 @@
 import { fireEvent, render, screen, userEvent } from '@testing-library/react-native';
 import { useState } from 'react';
+import { AccessibilityInfo, Platform } from 'react-native';
 
 import { AccountHeader } from './account-header';
 import { ProfileForm, type ProfileFormProps, type ProfileNameDraft } from './profile-form';
@@ -14,6 +15,28 @@ function props(overrides: Partial<ProfileFormProps> = {}): ProfileFormProps {
     ...overrides,
   };
 }
+test('requests confirmation focus only for explicit open/close intents and announces its purpose', async () => {
+  const focus = jest
+    .spyOn(AccessibilityInfo, 'sendAccessibilityEvent')
+    .mockImplementation(() => {});
+  const announce = jest.spyOn(AccessibilityInfo, 'announceForAccessibilityWithOptions');
+  const input = props({ onSave: jest.fn() });
+  const view = await render(<ProfileForm {...input} />);
+  expect(focus).not.toHaveBeenCalled();
+  await userEvent.press(screen.getByRole('button', { name: 'Remove display name' }));
+  expect(focus).toHaveBeenCalledTimes(1);
+  if (Platform.OS === 'ios')
+    expect(announce).toHaveBeenLastCalledWith(
+      'Remove your display name? This takes effect only after you save.',
+      { queue: true },
+    );
+  await view.rerender(<ProfileForm {...input} state={{ kind: 'error' }} />);
+  expect(focus).toHaveBeenCalledTimes(1);
+  await userEvent.press(screen.getByRole('button', { name: 'Keep name' }));
+  expect(focus).toHaveBeenCalledTimes(2);
+  focus.mockRestore();
+  announce.mockRestore();
+});
 test('never enables a pretend save when no persistence callback is supplied', async () => {
   await render(<ProfileForm {...props()} />);
   expect(screen.getByRole('button', { name: 'Save changes' })).toBeDisabled();

@@ -12,20 +12,36 @@ export function attachQueryLifecycle(source: QueryLifecycleSource) {
   if (installed && installed.source !== source)
     throw new Error('Query lifecycle already has a different event owner.');
   if (!installed) {
-    const focus = source.focus((value) => focusManager.setFocused(value));
+    let receiving = true;
+    let focus: (() => void) | undefined;
     let online: () => void;
     try {
-      online = source.online((value) => onlineManager.setOnline(value));
+      focus = source.focus((value) => {
+        if (receiving) focusManager.setFocused(value);
+      });
+      online = source.online((value) => {
+        if (receiving) onlineManager.setOnline(value);
+      });
     } catch (error) {
-      focus();
+      receiving = false;
+      try {
+        focus?.();
+      } finally {
+        focusManager.setFocused(undefined);
+        onlineManager.setOnline(true);
+      }
       throw error;
     }
     installed = {
       source,
       references: 0,
       dispose: () => {
-        focus();
-        online();
+        receiving = false;
+        try {
+          focus?.();
+        } finally {
+          online();
+        }
       },
     };
   }
@@ -36,10 +52,13 @@ export function attachQueryLifecycle(source: QueryLifecycleSource) {
     if (!active) return;
     active = false;
     if (--owner.references === 0) {
-      owner.dispose();
-      installed = undefined;
-      focusManager.setFocused(undefined);
-      onlineManager.setOnline(true);
+      try {
+        owner.dispose();
+      } finally {
+        installed = undefined;
+        focusManager.setFocused(undefined);
+        onlineManager.setOnline(true);
+      }
     }
   };
 }

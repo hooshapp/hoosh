@@ -1,6 +1,7 @@
 import type { ProtectionService } from '@disconnect/contracts';
 import { StrictMode } from 'react';
 import { act, render, screen, userEvent } from '@testing-library/react-native';
+import { AccessibilityInfo, Platform } from 'react-native';
 
 import { capabilities, connected, status } from './__tests__/fixtures';
 import { ProtectionStatus } from './protection-status';
@@ -56,6 +57,36 @@ const read = (): Extract<ProtectionRead, { phase: 'ready' }> => ({
 });
 
 describe('protection summary presentation', () => {
+  it('announces current status changes once on iOS without duplicating the checking notice or moving focus', async () => {
+    const announce = jest.spyOn(AccessibilityInfo, 'announceForAccessibilityWithOptions');
+    const focus = jest.spyOn(AccessibilityInfo, 'sendAccessibilityEvent');
+    const checking = {
+      kind: 'checking',
+      title: 'Checking protection',
+      message: 'Reading the current device status…',
+      tone: 'neutral',
+    } as const;
+    const view = await render(<ProtectionStatus model={checking} />);
+    await view.rerender(<ProtectionStatus model={{ ...checking }} />);
+    expect(announce).toHaveBeenCalledTimes(Platform.OS === 'ios' ? 1 : 0);
+    await view.rerender(
+      <ProtectionStatus
+        model={{
+          kind: 'permission',
+          title: 'Permission needed',
+          message: 'Review device access.',
+          tone: 'attention',
+        }}
+      />,
+    );
+    if (Platform.OS === 'ios')
+      expect(announce).toHaveBeenLastCalledWith('Permission needed. Review device access.', {
+        queue: true,
+      });
+    expect(focus).not.toHaveBeenCalled();
+    announce.mockRestore();
+    focus.mockRestore();
+  });
   it('never renders a working permission/setup/retry action without the matching callback', async () => {
     const native = service();
     const integration = connected(native);

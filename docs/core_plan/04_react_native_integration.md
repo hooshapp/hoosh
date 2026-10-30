@@ -1,7 +1,7 @@
 # 04 — React Native Integration and Shared Frontend Plan
 
 **Date:** 2026-10-28\
-**Status:** RN-01/02/03 and RN-04 producer implemented with recorded evidence; RN-04 real root wiring remains coordinated/pending, RN-05 has an independently prepared consumer with live acceptance pending, RN-07 has UI-only preparation, RN-08 presentation/read-consumer preparation is implemented, RN-09a Home presentation is implemented, and RN-06/10–11 plus RN-09b/c/d remain not started. RN-02 also has native JS/Hermes exports; signed-device rendering/keyboard/screen-reader acceptance remains separate.\
+**Status:** RN-01/02/03 and RN-04 producer implemented with recorded evidence; RN-04 real root wiring remains coordinated/pending, RN-05 has an independently prepared consumer with live acceptance pending, RN-07 has UI-only preparation, RN-08 presentation/read-consumer preparation is implemented, RN-09a Home presentation is implemented, RN-10 shared UI/lifecycle hardening is implemented with device/live checks pending, and RN-06/11 plus RN-09b/c/d await their prerequisites. RN-02 also has native JS/Hermes exports; signed-device rendering/keyboard/screen-reader acceptance remains separate.\
 **Primary owner:** Ishmum — shared post-onboarding React Native application.\
 **Required reviewer / collaborator:** Anisha — authentication, onboarding, iOS integration, and root navigation.\
 **Area branch:** `area/react-native`; create each task branch from the updated area branch and integrate working increments into `main`.\
@@ -181,7 +181,7 @@ This is application-data cleanup, not approval to remove native restrictions. Wh
 
 ## 6. Commit sequence and dependencies
 
-RN-01/02/03 and the RN-04 producer are implemented with evidence linked below; RN-04 real root wiring is pending, RN-05 consumer preparation is recorded separately, RN-07 has user-requested UI-only preparation, RN-08 presentation/read-consumer preparation is recorded separately, RN-09a Home presentation is implemented, and RN-06/10–11 plus RN-09b/c/d remain **Not started**. A part is not complete merely because its task branch exists. Proposed messages are suggestions for the actual implementation commits, not instructions to commit this planning document under those messages.
+RN-01/02/03 and the RN-04 producer are implemented with evidence linked below; RN-04 real root wiring is pending, RN-05 consumer preparation is recorded separately, RN-07 has user-requested UI-only preparation, RN-08 presentation/read-consumer preparation is recorded separately, RN-09a Home presentation is implemented, RN-10 now has shared UI/lifecycle hardening and a reproducible QA record, while its device/live acceptance, RN-06/11 and RN-09b/c/d remain pending. A part is not complete merely because its task branch exists. Proposed messages are suggestions for the actual implementation commits, not instructions to commit this planning document under those messages.
 
 | Part | Coherent proposed commit | Prerequisites | Exit evidence | Status | Actual commit |
 |---|---|---|---|---|---|
@@ -193,9 +193,9 @@ RN-01/02/03 and the RN-04 producer are implemented with evidence linked below; R
 | RN-06 | `test(mobile): cover authenticated round trip and recovery` | RN-05; auth guards/recovery integrated | M1 acceptance matrix, no development bypass, build evidence | Not started | — |
 | RN-07 | `feat(account): integrate versioned profile reads and edits` | RN-04/05; approved profile contract/API/migration | Real profile round trip, conflict and ambiguous-save handling | UI prepared only; real profile/data integration pending | `5790302` (UI only) |
 | RN-08 | `feat(protection-ui): show native capability and installation states` | RN-01; agreed native read boundary; actual adapters for integration | Status mapper tests; device evidence only where adapter exists | Presentation/read consumer prepared; native wiring/device acceptance pending | `71da2d5` (presentation/read preparation only) |
-| RN-09 | `feat(mobile): compose main app surfaces with explicit feature states` | RN-01/02; RN-07/08 where live data is used | Figma comparisons + no invented production data | RN-09a Home presentation implemented; RN-09b/c/d and live integration pending | See RN-09a notes / unique subject |
-| RN-10 | `fix(mobile): complete accessibility layout and lifecycle handling` | Implemented RN parts; relevant device build access | Accessibility/device-size checks and targeted regression tests | Not started | — |
-| RN-11 | `test(integration): document profile and platform handoff acceptance` | RN-06/07/10; RN-08/09 evidence as applicable | M2 matrix, native capability handoff, reproducible runbook | Not started | — |
+| RN-09 | `feat(mobile): compose main app surfaces with explicit feature states` | RN-01/02; RN-07/08 where live data is used | Figma comparisons + no invented production data | RN-09a Home presentation implemented; RN-09b/c/d and live integration pending | `ff75039` (Home presentation only) |
+| RN-10 | `fix(mobile): complete accessibility layout and lifecycle handling` | Implemented RN parts; relevant device build access | Accessibility/device-size checks and targeted regression tests | Shared UI/lifecycle hardening implemented; device/live acceptance pending | See RN-10 notes / unique subject |
+| RN-11 | `test(integration): document profile and platform handoff acceptance` | RN-06/07/10; RN-08/09 evidence as applicable | M2 matrix, native capability handoff, reproducible runbook | Awaiting live Auth/API/profile prerequisites; not executed | — |
 
 Independent UI work RN-01/02 may start while Supabase/Auth/backend are being built. RN-03 can use deterministic test responses once the HTTP contract is agreed. RN-04 can use injected test auth snapshots, but no production fixture mode. RN-05/06 are the first real identity milestone. RN-07 is a later profile milestone. RN-08 must not block M1 when no native adapter exists; only its pure presentation boundary can proceed without one. RN-09 is bounded presentation work, not completion of all app business logic.
 
@@ -520,6 +520,29 @@ all existing Root/Auth/iOS/Android ownership boundaries.
 
 **Commit done when:** Known failures affecting implemented flows are fixed or explicitly tracked with release gates; no unsupported claim that the entire design is accessible is made. **Recovery:** revert the local layout/animation change, retaining the accessible fallback and account cleanup invariant.
 
+**RN-10 implementation checkpoint (2026-10-30):** Shared UI and lifecycle
+hardening is implemented under `fix(mobile): improve accessible feedback layout
+and lifecycle cleanup`. See [the QA record](../qa/mobile-accessibility.md) and
+[per-file implementation notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md)
+for exact evidence and limits. Fixes cover Home text contrast, status/confirmation
+announcements, explicit confirmation focus/return, retained keyboard tab focus,
+active-panel visibility without dropping drafts, web tab-to-panel DOM order,
+intrinsic footer reflow and late lifecycle callback/cleanup suppression. All
+original assets remain unchanged; icon-pack rewiring is deferred by the user.
+
+The following checks remain pending; these IDs match the QA record. RN-10 is not
+full signed-device/live acceptance, and unimplemented RN-09b/c/d were not audited
+as completed screens.
+
+| Ref | Remaining acceptance | Owner / required evidence |
+|---|---|---|
+| RN10-D01 | VoiceOver/TalkBack traversal, announcements and focus | Platform owners; actual signed-device steps/results. |
+| RN10-D02 | Native font scale, keyboard, safe areas, focus scrolling and SVG rendering | Platform owners; supported devices and configured portrait behavior. |
+| RN10-D03 | Real Auth/account/profile lifecycle and root integration | Anisha + Ishmum; live RN-05/06/07 round trips and account transitions. |
+| RN10-D04 | Native authorization/status foreground reconciliation | Native owners; RN08-D01–D06 with actual adapters. |
+| RN10-D05 | Accessibility of future Quests/History/Settings composition | Ishmum; repeat checks when RN-09b/c/d exist. |
+| RN10-D06 | Cold start, memory pressure, background/termination/offline restoration and responsiveness | Integration/platform owners; measured device evidence without invented SLAs. |
+
 ### RN-11 — Profile milestone and platform handoff evidence
 
 **Owner:** Ishmum and Anisha execute the shared flow; you author frontend evidence.\
@@ -533,6 +556,17 @@ all existing Root/Auth/iOS/Android ownership boundaries.
 **Validation and acceptance:** All relevant root checks and platform JS exports pass; no private fixture/dev bypass ships; no account data crosses a session boundary; real profile save is confirmed; unavailable metrics and native capabilities remain unavailable. Native functionality is signed/device-tested where actually implemented; anything else is recorded unverified, not implicitly passed because the shared UI works.
 
 **Commit done when:** Ishmum and Anisha can continue from a documented, reproducible M1/M2 integration with no hidden dependency on another unmerged task branch. **Recovery:** revert the affected live feature while retaining tested authentication/account-isolation foundations; do not roll back database data from a frontend PR.
+
+**RN-11 prerequisite audit (2026-10-30):** The user conditionally requested
+RN-11 after RN-10. Its live milestone cannot execute in this checkout: backend
+OpenAPI exposes only `/healthz`; mobile sign-in/root guards are placeholders;
+generated foundation API types, database migrations and real profile endpoints
+are absent. RN-05/06 M1 and RN-07 M2 are therefore still pending. The
+[QA readiness table](../qa/mobile-accessibility.md#rn-11-readiness--live-milestone-cannot-run-yet)
+names the owners and required outputs. This is a dependency audit, not RN-11
+implementation or integration evidence. Ishmum can start API-01 independently;
+Anisha supplies Auth/Supabase and coordinated root wiring. Native absence does
+not block identity-only M1, but cannot support claims about enabled protection.
 
 ## 8. Product and platform gates
 

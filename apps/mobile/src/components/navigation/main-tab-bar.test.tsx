@@ -2,6 +2,7 @@ import { act, fireEvent, screen, userEvent } from '@testing-library/react-native
 import { router, Stack, Tabs } from 'expo-router';
 import { renderRouter } from 'expo-router/testing-library';
 import { Dimensions } from 'react-native';
+import { useState } from 'react';
 import { SafeAreaProvider, type EdgeInsets } from 'react-native-safe-area-context';
 
 import TabsLayout from '@/app/(tabs)/_layout';
@@ -11,6 +12,7 @@ import History from '@/app/(tabs)/history';
 import Settings from '@/app/(tabs)/settings';
 import SignIn from '@/app/(auth)/sign-in';
 import { Screen } from '@/components/ui/screen';
+import { Field } from '@/components/ui/field';
 
 import { FloatingTabBarProvider } from './floating-tab-bar-metrics';
 import { MainTabBar } from './main-tab-bar';
@@ -46,6 +48,22 @@ describe('Main navigation', () => {
   beforeEach(() => Dimensions.set({ window: { width: 393, height: 852, scale: 3, fontScale: 1 } }));
   afterEach(async () => {
     await act(() => Dimensions.set({ window: originalWindow }));
+  });
+  it('hides an inactive panel from accessibility without discarding its unsaved input', async () => {
+    function DraftHome() {
+      const [draft, setDraft] = useState('');
+      return (
+        <Screen title="Draft screen">
+          <Field label="Local draft" value={draft} onChangeText={setDraft} />
+        </Screen>
+      );
+    }
+    await renderRouter({ ...actualRoutes, '(tabs)/index': DraftHome });
+    await fireEvent.changeText(screen.getByLabelText('Local draft'), 'Retained task draft');
+    await userEvent.press(screen.getByRole('tab', { name: 'Quests' }));
+    expect(screen.queryByLabelText('Local draft')).toBeNull();
+    await userEvent.press(screen.getByRole('tab', { name: 'Home' }));
+    expect(screen.getByLabelText('Local draft')).toHaveDisplayValue('Retained task draft');
   });
 
   it('navigates every actual tab, labels only the active tab and preserves visited-tab back history', async () => {

@@ -2,6 +2,8 @@
 export const colors = {
   action: '#33C659',
   success: '#0B9968',
+  // Small text / white-label badges need more contrast than the decorative source green.
+  readableSuccess: '#08734E',
   warmForeground: '#3D2800',
   warmCanvas: '#FFF1DD',
   warmCard: '#FFFAF2',

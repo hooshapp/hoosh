@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState, type ComponentRef } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/field';
 import { InlineStatus } from '@/components/ui/inline-status';
+import { focusControl } from '@/components/ui/focus-control';
+import { useAnnouncement } from '@/components/ui/use-announcement';
 import { fonts } from '@/design/tokens';
 import { useUiTheme } from '@/components/ui/theme';
 
@@ -26,6 +28,7 @@ const fieldErrors = {
   too_long: 'Use a shorter display name.',
   invalid_text: 'This name contains unsupported characters.',
 } as const;
+const clearPrompt = 'Remove your display name? This takes effect only after you save.';
 
 /** Controlled UI only: host owns canonical data, dirty state, validation and all persistence. */
 export function ProfileForm({
@@ -38,6 +41,23 @@ export function ProfileForm({
   onReviewLatest,
 }: ProfileFormProps) {
   const [confirmClear, setConfirmClear] = useState(false);
+  const keepName = useRef<ComponentRef<typeof Button>>(null);
+  const removeName = useRef<ComponentRef<typeof Button>>(null);
+  const nameField = useRef<ComponentRef<typeof Field>>(null);
+  const focusIntent = useRef<'keep' | 'remove' | 'field' | undefined>(undefined);
+  useAnnouncement(confirmClear ? clearPrompt : undefined);
+  useEffect(() => {
+    const intent = focusIntent.current;
+    focusIntent.current = undefined;
+    if (intent)
+      focusControl(
+        intent === 'keep'
+          ? keepName.current
+          : intent === 'remove'
+            ? removeName.current
+            : nameField.current,
+      );
+  }, [confirmClear]);
   const theme = useUiTheme();
   const busy = state.kind === 'saving';
   const blocked = busy || ['unavailable', 'conflict', 'unconfirmed'].includes(state.kind);
@@ -45,6 +65,7 @@ export function ProfileForm({
   return (
     <View style={styles.form}>
       <Field
+        ref={nameField}
         label="Display name"
         value={draft.kind === 'text' ? draft.value : ''}
         editable={!busy}
@@ -88,30 +109,39 @@ export function ProfileForm({
       {confirmClear ? (
         <View style={styles.confirmation}>
           <Text accessibilityRole="alert" style={[styles.note, { color: theme.foreground }]}>
-            Remove your display name? This takes effect only after you save.
+            {clearPrompt}
           </Text>
           <Button
             label="Remove name"
             variant="secondary"
             disabled={busy}
             onPress={() => {
+              focusIntent.current = 'field';
               setConfirmClear(false);
               onDraftChange({ kind: 'clear' });
             }}
           />
           <Button
+            ref={keepName}
             label="Keep name"
             variant="secondary"
             disabled={busy}
-            onPress={() => setConfirmClear(false)}
+            onPress={() => {
+              focusIntent.current = 'remove';
+              setConfirmClear(false);
+            }}
           />
         </View>
       ) : (
         <Button
+          ref={removeName}
           label="Remove display name"
           variant="secondary"
           disabled={busy || draft.kind === 'clear'}
-          onPress={() => setConfirmClear(true)}
+          onPress={() => {
+            focusIntent.current = 'keep';
+            setConfirmClear(true);
+          }}
         />
       )}
     </View>

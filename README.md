@@ -15,6 +15,7 @@ Shared React Native app and FastAPI service for Disconnect. Product context star
 - RN-07 display-name editor UI is prepared with a developer-only Figma example; [implemented presentation and deferred data work](apps/mobile/src/features/account/PROFILE_UI.md). No profile persistence or live integration is claimed.
 - RN-08 protection status mapper/UI and read-only native-port consumer are prepared; [native evidence rules and deferred integration](apps/mobile/src/features/protection/README.md). No native adapter is registered or active protection claimed for this checkout.
 - RN-09a [Home presentation](apps/mobile/src/features/home/README.md) is routed with honest unavailable states; its interactive Figma sample stays in `mobile:ui`. Quests/History/Settings composition and live Home data remain pending.
+- RN-10 shared accessibility/layout/lifecycle hardening with [QA evidence and RN-11 prerequisites](docs/qa/mobile-accessibility.md); signed-device/live acceptance remains pending.
 - FastAPI process health endpoint, OpenAPI documentation, explicit browser CORS configuration, and tests.
 - Reproducible npm and uv lockfiles, linting, type checking, and CI checks.
 

@@ -35,6 +35,11 @@ test('native focus follows AppState and removes the change listener', () => {
   expect(notify).toHaveBeenLastCalledWith(true);
   stop();
   expect(remove).toHaveBeenCalledTimes(1);
+  notify.mockClear();
+  changed('background');
+  stop();
+  expect(notify).not.toHaveBeenCalled();
+  expect(remove).toHaveBeenCalledTimes(1);
 });
 test('native network listener wins over a late initial read and stops delivery after cleanup', async () => {
   const initial = deferred<Network.NetworkState>();

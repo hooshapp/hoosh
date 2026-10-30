@@ -141,3 +141,11 @@ specimen routes or marker text. The root `mobile:export` command runs
 if it finds the specimen markers or no real application export. Build outputs/fonts remain ignored; screenshots and
 actual validation are recorded in the
 [Plan 04 implementation notes](../../../../../docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md).
+
+RN-10 adds an internal `focusControl` helper for explicit confirmation intents:
+ordinary focus, then the installed RN public `sendAccessibilityEvent(..., 'focus')`
+on native. Missing/detached targets are ignored without retrying into a new screen.
+Status updates do not request focus. InlineStatus keeps errors as alerts and names
+non-error web messages as status regions; queued native announcements remain
+separate. [QA evidence and device limits](../../../../../docs/qa/mobile-accessibility.md)
+are recorded independently of successful component/browser checks.

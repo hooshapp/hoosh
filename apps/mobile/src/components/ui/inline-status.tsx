@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 
 import { fonts } from '@/design/tokens';
 
@@ -36,6 +36,7 @@ export function InlineStatus({
         {busy ? <ProgressIndicator color={theme.foreground} /> : null}
         <Text
           accessibilityRole={state === 'error' ? 'alert' : 'text'}
+          {...(Platform.OS === 'web' && state !== 'error' ? { role: 'status' as const } : {})}
           accessibilityLiveRegion="polite"
           aria-live="polite"
           aria-busy={busy}

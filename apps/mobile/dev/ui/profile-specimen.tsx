@@ -9,6 +9,7 @@ import {
   type ProfileNameDraft,
 } from '@/features/account/profile-form';
 import { Screen } from '@/components/ui/screen';
+import { colors, fonts } from '@/design/tokens';
 
 const exampleName = 'Jordan Rivera';
 /** Figma sample lives only here. No Auth, HTTP, database or persistent browser storage. */
@@ -41,18 +42,36 @@ export function ProfileSpecimen({ width }: { width: number }) {
             frame: { x: 0, y: 0, width, height: 852 },
             insets: { top: 0, right: 0, bottom: 0, left: 0 },
           }}>
-          <View>
-            <AccountHeader
-              identity={{
-                user_id: 'a46e48ad-c742-4e18-b57d-2c9a56544944',
-                email: 'jord@gmail.com',
-              }}
-              displayName={baseline}
-            />
-          </View>
           <Screen
             title="Edit profile"
-            subtitle="Preview only — nothing is saved to an account."
+            contentStyle={{ paddingTop: 0 }}
+            header={
+              <View style={{ gap: 20 }}>
+                <View style={{ marginHorizontal: -20 }}>
+                  <AccountHeader
+                    identity={{
+                      user_id: 'a46e48ad-c742-4e18-b57d-2c9a56544944',
+                      email: 'jord@gmail.com',
+                    }}
+                    displayName={baseline}
+                  />
+                </View>
+                <Text
+                  accessibilityRole="header"
+                  style={{ fontFamily: fonts.bold, fontSize: 30, color: colors.warmForeground }}>
+                  Edit profile
+                </Text>
+                <Text
+                  style={{
+                    fontFamily: fonts.regular,
+                    fontSize: 15,
+                    lineHeight: 22,
+                    color: colors.muted,
+                  }}>
+                  Preview only — nothing is saved to an account.
+                </Text>
+              </View>
+            }
             bottomClearance={0}>
             <Text accessibilityLiveRegion="polite">{notice}</Text>
             <ProfileForm

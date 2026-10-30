@@ -5,6 +5,20 @@ import { ProgressIndicator } from './progress-indicator';
 
 describe('ProgressIndicator', () => {
   afterEach(() => jest.restoreAllMocks());
+  it('stays nonanimated when the OS preference read fails', async () => {
+    jest
+      .spyOn(AccessibilityInfo, 'isReduceMotionEnabled')
+      .mockRejectedValue(new Error('Unavailable'));
+    jest.spyOn(AccessibilityInfo, 'addEventListener').mockReturnValue({ remove: jest.fn() });
+    await render(<ProgressIndicator color="#111111" />);
+    await act(async () => {
+      await Promise.resolve();
+    });
+    expect(screen.getByTestId('progress-indicator', { includeHiddenElements: true })).toHaveProp(
+      'animating',
+      false,
+    );
+  });
 
   it('does not animate with reduced motion and removes its preference listener', async () => {
     jest.spyOn(AccessibilityInfo, 'isReduceMotionEnabled').mockResolvedValue(true);

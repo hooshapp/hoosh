@@ -1,0 +1,65 @@
+{
+  "part": "RN-10 shared UI and lifecycle hardening",
+  "parentCommit": "ff75039",
+  "node": "v24.20.0",
+  "liveAuthProfileAcceptance": false,
+  "nativeAssistiveTechnologyTested": false,
+  "signedDeviceAcceptance": false,
+  "runtimeSourceSha256": {
+    "apps/mobile/src/app/(tabs)/_layout.tsx": "026d048d2c6824488d25f909f44639096ad840eae2b8aabddf39e16236b7b941",
+    "apps/mobile/src/components/navigation/main-tab-bar.tsx": "b978fe19d50c271c14ce9ebd56c114c1f808e7a11f59629e0900e9e8a82614b1",
+    "apps/mobile/src/components/navigation/main-tab-panel.tsx": "1a6f7e9072ff8fc3dbda931d4a26330fb2704272b6f33462bcca6637b288c439",
+    "apps/mobile/src/components/ui/inline-status.tsx": "aa082cd64209fdc1be61f747415b02984a355d93cfab9bad313c76516071c9a4",
+    "apps/mobile/src/components/ui/use-announcement.ts": "65775e942aceafa1e4ead7a78627add632fa9120aff273299ba7e4138c76a212",
+    "apps/mobile/src/design/tokens.ts": "edc4a869b758df6a2940d61dc50390f5ef9d04700a3c05731974c1d7ae4848b8",
+    "apps/mobile/src/features/home/home-overview.tsx": "7849293033b57f28d7b14f3718547d4c898a677d888dd192570eb9b4a0bad9fa",
+    "apps/mobile/src/features/home/home-recommendation.tsx": "d78b0d2f28d251a778fbe63fa77e993797573a3a33d0b53156758b020a993ca8",
+    "apps/mobile/src/features/account/profile-form.tsx": "43b282b3eb9a7b081c38495aba860bd73871588bc871ed06011c50f3e57b96a2",
+    "apps/mobile/src/components/ui/focus-control.ts": "95595dc75dc4f110dcbe6634f19c66c77d477cbd40071d3d2cb7fccbf6d9a9b4",
+    "apps/mobile/src/features/protection/protection-status.tsx": "1c39e3b0524242db7244d07d9b87e97850c7382ee433759fc5377f192ba019de",
+    "apps/mobile/src/infrastructure/query/lifecycle.ts": "d6c18facf1b2f257607c04e2bba61cd07053c0e29d775f7eb4ed241562080cce",
+    "apps/mobile/src/infrastructure/query/platform-lifecycle.native.ts": "8a13dfd89711991a6bd6e1aa99db58c2e9ee710e5c54925e6dc697418a0beb97"
+  },
+  "exports": {
+    "application": {
+      "ios": {
+        "bytes": 2113088,
+        "sha256": "11ddc0d3bc2213558434c0752c67a647c05bd6c1775351ec011244b1f7830a37",
+        "sourceMapEntries": 1194,
+        "finalRuntimeSourcesVerified": 8,
+        "fixtureSources": 0,
+        "privateApiConsumerSources": 0,
+        "executedOnDevice": false
+      },
+      "android": {
+        "bytes": 2402940,
+        "sha256": "a5771e1f2c65689b0367c4511680c7eed8f2a84b7b68470382b4689a85f37f5e",
+        "sourceMapEntries": 1333,
+        "finalRuntimeSourcesVerified": 8,
+        "fixtureSources": 0,
+        "privateApiConsumerSources": 0,
+        "executedOnDevice": false
+      }
+    },
+    "preparedConsumers": {
+      "ios": {
+        "bytes": 1073638,
+        "sha256": "5bb478b5418f344592a2ad009a4371866f0c7643d93891cf7c99f7653cbc3094",
+        "sourceMapEntries": 684,
+        "finalRuntimeSourcesVerified": 8,
+        "fixtureSources": 0,
+        "privateApiConsumerSources": 0,
+        "executedOnDevice": false
+      },
+      "android": {
+        "bytes": 1078566,
+        "sha256": "6a4a8883a428dc416804fce376eb6d6718776ee1f0b252bae094ef82bca4186d",
+        "sourceMapEntries": 682,
+        "finalRuntimeSourcesVerified": 8,
+        "fixtureSources": 0,
+        "privateApiConsumerSources": 0,
+        "executedOnDevice": false
+      }
+    }
+  }
+}

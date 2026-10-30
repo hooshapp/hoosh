@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   badge: {
-    backgroundColor: colors.success,
+    backgroundColor: colors.readableSuccess,
     borderRadius: 12,
     paddingHorizontal: 10,
     paddingVertical: 4,

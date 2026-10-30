@@ -33,6 +33,59 @@ function source() {
   };
 }
 describe('query lifecycle registration', () => {
+  it('ignores callbacks from a disposed owner after another owner takes over', () => {
+    const old = source();
+    const stop = attachQueryLifecycle(old.adapter);
+    cleanups.push(stop);
+    stop();
+    const current = source();
+    cleanups.push(attachQueryLifecycle(current.adapter));
+    current.focus(true);
+    current.online(true);
+    old.focus(false);
+    old.online(false);
+    expect(focusManager.isFocused()).toBe(true);
+    expect(onlineManager.isOnline()).toBe(true);
+  });
+  it.each(['focus', 'online'] as const)(
+    'ignores callbacks after %s registration fails and permits a clean retry',
+    (stage) => {
+      const events = source();
+      let late!: (value: boolean) => void;
+      events.adapter[stage] = (notify) => {
+        late = notify;
+        notify(false);
+        throw new Error('registration failed');
+      };
+      expect(() => attachQueryLifecycle(events.adapter)).toThrow('registration failed');
+      const current = source();
+      cleanups.push(attachQueryLifecycle(current.adapter));
+      current.focus(true);
+      current.online(true);
+      late(false);
+      expect(focusManager.isFocused()).toBe(true);
+      expect(onlineManager.isOnline()).toBe(true);
+    },
+  );
+  it('releases both listeners and resets ownership even when a disposer throws', () => {
+    const events = source();
+    events.stopFocus.mockImplementation(() => {
+      throw new Error('cleanup failed');
+    });
+    const stop = attachQueryLifecycle(events.adapter);
+    cleanups.push(stop);
+    expect(stop).toThrow('cleanup failed');
+    expect(events.stopOnline).toHaveBeenCalledTimes(1);
+    expect(onlineManager.isOnline()).toBe(true);
+    const current = source();
+    cleanups.push(attachQueryLifecycle(current.adapter));
+    current.focus(true);
+    current.online(true);
+    events.focus(false);
+    events.online(false);
+    expect(focusManager.isFocused()).toBe(true);
+    expect(onlineManager.isOnline()).toBe(true);
+  });
   it('installs once, forwards hints, ref-counts cleanup and allows a clean remount', () => {
     const events = source();
     const stop1 = attachQueryLifecycle(events.adapter);

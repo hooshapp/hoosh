@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
+import { useAnnouncement } from '@/components/ui/use-announcement';
 import { homeAssets, homeDinoAssets } from '@/design/home-assets';
 import { colors, fonts } from '@/design/tokens';
 
@@ -26,6 +27,7 @@ export function HomeOverview({
 }: Props) {
   const [failedDino, setFailedDino] = useState<unknown>();
   const dinoSource = dino.state === 'ready' ? homeDinoAssets[dino.value.artwork] : undefined;
+  useAnnouncement(feeding ? 'Feeding Dino…' : undefined);
   return (
     <View style={[styles.overview, stacked && styles.stacked]} testID="home-overview">
       <View style={[styles.dinoCard, !stacked && styles.dinoColumn]} testID="home-dino-card">
@@ -74,9 +76,11 @@ export function HomeOverview({
         <Button
           label="🍃 Feed"
           accessibilityLabel={
-            dino.state === 'ready' && dino.value.feedCost !== null
-              ? `Feed Dino for ${dino.value.feedCost} credits`
-              : 'Feed Dino'
+            feeding
+              ? 'Feeding Dino…'
+              : dino.state === 'ready' && dino.value.feedCost !== null
+                ? `Feed Dino for ${dino.value.feedCost} credits`
+                : 'Feed Dino'
           }
           disabled={
             !onFeed ||
@@ -180,7 +184,7 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   fill: { height: 7, borderRadius: 4, backgroundColor: colors.action },
-  percent: { fontFamily: fonts.bold, fontSize: 9, color: colors.success },
+  percent: { fontFamily: fonts.bold, fontSize: 9, color: colors.readableSuccess },
   habitat: { height: 110, width: 110, justifyContent: 'center', alignItems: 'center' },
   dino: { width: 110, height: 110 },
   dinoUnavailable: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 8, padding: 14 },
@@ -208,7 +212,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     paddingHorizontal: 6,
     borderRadius: 10,
-    backgroundColor: colors.success,
+    backgroundColor: colors.readableSuccess,
   },
   costText: { fontFamily: fonts.bold, fontSize: 10, lineHeight: 13, color: colors.white },
   statsColumn: { minWidth: 0, gap: 12 },
@@ -247,7 +251,7 @@ const styles = StyleSheet.create({
   },
   ellipse: { position: 'absolute', left: 80, top: -30 },
   period: { fontFamily: fonts.medium, fontSize: 11, color: colors.onAction, opacity: 0.8 },
-  hours: { fontFamily: fonts.bold, fontSize: 38, color: colors.warmCanvas },
+  hours: { fontFamily: fonts.bold, fontSize: 38, color: colors.onAction },
   unit: { fontFamily: fonts.bold, fontSize: 17, color: colors.onAction },
   saved: {
     fontFamily: fonts.medium,

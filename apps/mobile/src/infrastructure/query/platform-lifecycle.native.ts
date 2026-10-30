@@ -5,9 +5,16 @@ import { connectivityOnline, type QueryLifecycleSource } from './lifecycle';
 
 export const platformQueryLifecycle: QueryLifecycleSource = {
   focus(notify) {
+    let active = true;
     notify(AppState.currentState === null || AppState.currentState === 'active');
-    const listener = AppState.addEventListener('change', (state) => notify(state === 'active'));
-    return () => listener.remove();
+    const listener = AppState.addEventListener('change', (state) => {
+      if (active) notify(state === 'active');
+    });
+    return () => {
+      if (!active) return;
+      active = false;
+      listener.remove();
+    };
   },
   online(notify) {
     let active = true;

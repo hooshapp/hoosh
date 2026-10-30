@@ -74,3 +74,11 @@ track the same remaining work:
 UI tests and preview simulations prove none of these server/Auth/device outcomes.
 Another agent should implement these items in later RN-07 integration commits,
 preserving this UI-only history rather than marking it complete retroactively.
+
+RN-10 confirmation accessibility: opening focuses Keep name; cancel returns to
+Remove display name; staging clear focuses the field. Only explicit intents move
+focus, and status updates do not. The purpose is announced through the existing
+native announcement helper. Compose account headers and the editor under one
+scroll owner when wiring Settings; the developer specimen now does this for long
+names. Actual keyboard/VoiceOver/TalkBack acceptance remains in
+[RN-10 QA](../../../../../docs/qa/mobile-accessibility.md).

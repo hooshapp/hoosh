@@ -94,7 +94,7 @@ test('blocks controlled busy actions and does not render an actionable check dec
       recommendationBusy
     />,
   );
-  expect(screen.getByRole('button', { name: 'Feed Dino for 3 credits' })).toBeBusy();
+  expect(screen.getByRole('button', { name: 'Feeding Dino…' })).toBeBusy();
   for (const button of screen.getAllByRole('button')) {
     expect(button).toBeDisabled();
     await userEvent.press(button);

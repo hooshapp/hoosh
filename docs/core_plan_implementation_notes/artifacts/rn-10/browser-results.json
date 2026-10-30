@@ -1,0 +1,1330 @@
+{
+  "part": "RN-10 shared UI hardening",
+  "browser": "156.0.8078.76",
+  "cases": [
+    {
+      "keyboard": "manual tab activation, forward into panel/link, backward to tab",
+      "passed": true
+    },
+    {
+      "browserAccessibilityTree": true,
+      "namedTabs": [
+        "Home",
+        "Quests",
+        "History",
+        "Settings"
+      ],
+      "oneSelectedTab": true
+    },
+    {
+      "width": 280,
+      "textSize": "default",
+      "tab": "Home",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 108,
+        "paddingBottom": 160,
+        "lastBottom": 692,
+        "navTop": 716,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 106,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 106,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 106,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 106,
+            "height": 44,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 280,
+      "textSize": "default",
+      "tab": "Quests",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 108,
+        "paddingBottom": 160,
+        "lastBottom": 293,
+        "navTop": 716,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 106,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 106,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 106,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 106,
+            "height": 44,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 280,
+      "textSize": "default",
+      "tab": "History",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 108,
+        "paddingBottom": 160,
+        "lastBottom": 293,
+        "navTop": 716,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 106,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 106,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 106,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 106,
+            "height": 44,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 280,
+      "textSize": "default",
+      "tab": "Settings",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 108,
+        "paddingBottom": 160,
+        "lastBottom": 484,
+        "navTop": 716,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 106,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 106,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 106,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 106,
+            "height": 44,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 280,
+      "textSize": 24,
+      "tab": "Home",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 132,
+        "paddingBottom": 184,
+        "lastBottom": 668,
+        "navTop": 692,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 106,
+            "height": 56,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 106,
+            "height": 56,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 106,
+            "height": 56,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 106,
+            "height": 56,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 280,
+      "textSize": 24,
+      "tab": "Quests",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 132,
+        "paddingBottom": 184,
+        "lastBottom": 440,
+        "navTop": 692,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 106,
+            "height": 56,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 106,
+            "height": 56,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 106,
+            "height": 56,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 106,
+            "height": 56,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 280,
+      "textSize": 24,
+      "tab": "History",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 132,
+        "paddingBottom": 184,
+        "lastBottom": 476,
+        "navTop": 692,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 106,
+            "height": 56,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 106,
+            "height": 56,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 106,
+            "height": 56,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 106,
+            "height": 56,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 280,
+      "textSize": 24,
+      "tab": "Settings",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 132,
+        "paddingBottom": 184,
+        "lastBottom": 668,
+        "navTop": 692,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 106,
+            "height": 56,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 106,
+            "height": 56,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 106,
+            "height": 56,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 106,
+            "height": 56,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 320,
+      "textSize": "default",
+      "tab": "Home",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 62,
+        "paddingBottom": 114,
+        "lastBottom": 454,
+        "navTop": 478,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 97.09375,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 320,
+      "textSize": "default",
+      "tab": "Quests",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 62,
+        "paddingBottom": 114,
+        "lastBottom": 248,
+        "navTop": 478,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 107.734375,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 320,
+      "textSize": "default",
+      "tab": "History",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 108,
+        "paddingBottom": 160,
+        "lastBottom": 248,
+        "navTop": 432,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 109.484375,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 320,
+      "textSize": "default",
+      "tab": "Settings",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 108,
+        "paddingBottom": 160,
+        "lastBottom": 408,
+        "navTop": 432,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 116.125,
+            "height": 44,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 320,
+      "textSize": 24,
+      "tab": "Home",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 120,
+        "paddingBottom": 172,
+        "lastBottom": 396,
+        "navTop": 420,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 126.78125,
+            "height": 56,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 320,
+      "textSize": 24,
+      "tab": "Quests",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 120,
+        "paddingBottom": 172,
+        "lastBottom": 396,
+        "navTop": 420,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 144.71875,
+            "height": 56,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 320,
+      "textSize": 24,
+      "tab": "History",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 120,
+        "paddingBottom": 172,
+        "lastBottom": 396,
+        "navTop": 420,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 147.953125,
+            "height": 56,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 320,
+      "textSize": 24,
+      "tab": "Settings",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 120,
+        "paddingBottom": 172,
+        "lastBottom": 396,
+        "navTop": 420,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 160.21875,
+            "height": 56,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 393,
+      "textSize": "default",
+      "tab": "Home",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 62,
+        "paddingBottom": 114,
+        "lastBottom": 604,
+        "navTop": 762,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 97.09375,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 393,
+      "textSize": "default",
+      "tab": "Quests",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 62,
+        "paddingBottom": 114,
+        "lastBottom": 248,
+        "navTop": 762,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 107.734375,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 393,
+      "textSize": "default",
+      "tab": "History",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 62,
+        "paddingBottom": 114,
+        "lastBottom": 248,
+        "navTop": 762,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 109.484375,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 393,
+      "textSize": "default",
+      "tab": "Settings",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 62,
+        "paddingBottom": 114,
+        "lastBottom": 415,
+        "navTop": 762,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 116.125,
+            "height": 44,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 393,
+      "textSize": 24,
+      "tab": "Home",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 72,
+        "paddingBottom": 124,
+        "lastBottom": 728,
+        "navTop": 752,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 126.78125,
+            "height": 56,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 393,
+      "textSize": 24,
+      "tab": "Quests",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 72,
+        "paddingBottom": 124,
+        "lastBottom": 368,
+        "navTop": 752,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 144.71875,
+            "height": 56,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 393,
+      "textSize": 24,
+      "tab": "History",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 72,
+        "paddingBottom": 124,
+        "lastBottom": 368,
+        "navTop": 752,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 147.953125,
+            "height": 56,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 393,
+      "textSize": 24,
+      "tab": "Settings",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 72,
+        "paddingBottom": 124,
+        "lastBottom": 608,
+        "navTop": 752,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 160.21875,
+            "height": 56,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 430,
+      "textSize": "default",
+      "tab": "Home",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 62,
+        "paddingBottom": 114,
+        "lastBottom": 588.5,
+        "navTop": 762,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 97.09375,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 430,
+      "textSize": "default",
+      "tab": "Quests",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 62,
+        "paddingBottom": 114,
+        "lastBottom": 248,
+        "navTop": 762,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 107.734375,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 430,
+      "textSize": "default",
+      "tab": "History",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 62,
+        "paddingBottom": 114,
+        "lastBottom": 248,
+        "navTop": 762,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 109.484375,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 430,
+      "textSize": "default",
+      "tab": "Settings",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 62,
+        "paddingBottom": 114,
+        "lastBottom": 415,
+        "navTop": 762,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 116.125,
+            "height": 44,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 430,
+      "textSize": 24,
+      "tab": "Home",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 72,
+        "paddingBottom": 124,
+        "lastBottom": 728,
+        "navTop": 752,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 126.78125,
+            "height": 56,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 430,
+      "textSize": 24,
+      "tab": "Quests",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 72,
+        "paddingBottom": 124,
+        "lastBottom": 368,
+        "navTop": 752,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 144.71875,
+            "height": 56,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 430,
+      "textSize": 24,
+      "tab": "History",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 72,
+        "paddingBottom": 124,
+        "lastBottom": 332,
+        "navTop": 752,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 147.953125,
+            "height": 56,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 430,
+      "textSize": 24,
+      "tab": "Settings",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "barHeight": 72,
+        "paddingBottom": 124,
+        "lastBottom": 572,
+        "navTop": 752,
+        "targets": [
+          {
+            "name": "Home",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Quests",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "History",
+            "width": 44,
+            "height": 44,
+            "insideBar": true
+          },
+          {
+            "name": "Settings",
+            "width": 160.21875,
+            "height": 56,
+            "insideBar": true
+          }
+        ]
+      }
+    },
+    {
+      "profileConfirmation": "safe initial focus, cancel return, explicit clear focuses field",
+      "noAccountWrite": true
+    },
+    {
+      "fieldError": true,
+      "associatedHintAndError": true,
+      "noStatusFocusSteal": true
+    },
+    {
+      "conflictReviewRetainsDraft": true
+    },
+    {
+      "reducedMotion": true,
+      "runningAnimations": 0,
+      "busyControlsDisabled": true
+    },
+    {
+      "longDisplayName": 80,
+      "browserTextStress": true,
+      "singleScrollOwner": {
+        "width": 320,
+        "height": 852,
+        "scrollHeight": 3415,
+        "overflow": false
+      }
+    },
+    {
+      "contrast": "Dino percentage",
+      "foreground": "rgb(8, 115, 78)",
+      "background": "rgb(255, 250, 242)",
+      "ratio": 5.656450289836323,
+      "minimum": 4.5
+    },
+    {
+      "contrast": "Weekly hours",
+      "foreground": "rgb(11, 51, 32)",
+      "background": "rgb(51, 198, 89)",
+      "ratio": 6.206113844092643,
+      "minimum": 4.5
+    },
+    {
+      "contrast": "Quest badge",
+      "foreground": "rgb(255, 255, 255)",
+      "background": "rgb(8, 115, 78)",
+      "ratio": 5.87802268318056,
+      "minimum": 4.5
+    },
+    {
+      "contrast": "Feed price badge",
+      "foreground": "rgb(255, 255, 255)",
+      "background": "rgb(8, 115, 78)",
+      "ratio": 5.87802268318056,
+      "minimum": 4.5
+    },
+    {
+      "nonErrorStatusRole": true,
+      "nativeSpeechNotInferred": true
+    }
+  ],
+  "pageErrors": [],
+  "privateRequests": [],
+  "nativeAssistiveTechnologyTested": false
+}
