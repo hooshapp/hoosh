@@ -2,6 +2,7 @@
 
 - Auth and onboarding: Anisha owns Supabase Auth/project/provider/email/redirect/test-account setup (SB-01–03), plus routes in `src/app/(auth)` and `src/app/(onboarding)`, session persistence, token access, and resumable onboarding.
 - Main app: Ishmum owns routes in `src/app/(tabs)`, quests/history/settings behavior, and server data integration.
+- [Home presentation](home/README.md) is RN-09a: the real route composes original cards with explicit unavailable inputs, while illustrative outcomes stay in the isolated developer specimen. RN-09b/c/d (Quests/History/Settings) and live Home policy/data/native/account wiring remain pending.
 - Keep route files small as features grow; place domain logic and feature components here.
 - Auth supplies the full shared `AuthSessionPort` to one stable `createApiClient` instance per environment/producer. RN-03 uses snapshots/generation as well as fresh tokens, delegates bounded revalidation to Auth, and never implements login, refresh or sign-out. Read [the HTTP client contract](../infrastructure/api/README.md) before RN-04/05 wiring.
 - Account features use the [RN-04 query/provider contract](../infrastructure/query/README.md). Keep private forms/toasts within its keyed subtree, forward signals through RN-03, and use guarded synchronous mutation callbacks. Root Auth/guard wiring stays coordinated with Anisha.

@@ -14,7 +14,7 @@ See [the root README](../../README.md) for setup, current limitations, ownership
 
 Shared fields/buttons/screen states, controlled busy handling, test discovery and the isolated specimen workflow are documented in [the component README](src/components/ui/README.md). Anisha can reuse these primitives; their form controllers still own validation, submission, cancellation and safe error mapping.
 
-RN-02 supplies the [floating navigation contract](src/components/navigation/README.md) and [original asset provenance](assets/README.md). Navigation uses locally bundled Figma SVGs; the four Dino variants are inventory-only until a real Home consumer is approved. Screen bodies retain truthful feature placeholders. The font dependency provides Space Grotesk; no font binaries are copied into this repository.
+RN-02 supplies the [floating navigation contract](src/components/navigation/README.md) and [original asset provenance](assets/README.md). Navigation uses locally bundled Figma SVGs. RN-09a adds a Home presentation consumer, but the actual route has no health/metric producer and selects no Dino artwork. Other screen bodies retain truthful feature placeholders. The font dependency provides Space Grotesk; no font binaries are copied into this repository.
 
 Native source is not ignored by Git. Preserve the released iOS project when integrating it; do not generate a replacement identity or discard extension targets.
 
@@ -27,3 +27,5 @@ RN-05 has a prepared [account region](src/features/account/README.md), with an o
 RN-07 adds a controlled [profile editor UI](src/features/account/PROFILE_UI.md). Run `npm run mobile:ui` and scroll to “Profile editor — UI-only Figma example” to edit the local Jordan Rivera sample. It resets on reload; Auth/API/profile persistence and live route wiring remain deferred in the original plan and notes.
 
 RN-08 provides [protection status presentation](src/features/protection/README.md) with a bounded read-only consumer. `npm run mobile:ui` includes “Device protection — simulated evidence only”. Real native adapters, foreground/route integration, permission/setup actions and signed-device acceptance remain tracked as RN08-D01–D06.
+
+RN-09a composes the [Home cards](src/features/home/README.md) in the real Home route with unavailable values and disabled/omitted product actions. `npm run mobile:ui` includes “Home — presentation-only Figma example” for the original sample and state matrix. RN-09b/c/d cover the remaining three tab bodies; RN09-D01–D06 track approved policy, live producers and device acceptance.

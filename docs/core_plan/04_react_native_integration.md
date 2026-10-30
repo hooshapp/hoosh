@@ -1,7 +1,7 @@
 # 04 — React Native Integration and Shared Frontend Plan
 
 **Date:** 2026-10-28\
-**Status:** RN-01/02/03 and RN-04 producer implemented with recorded evidence; RN-04 real root wiring remains coordinated/pending, RN-05 has an independently prepared consumer with live acceptance pending, RN-07 has UI-only preparation, RN-08 presentation/read-consumer preparation is implemented, and RN-06/09–11 remain not started. RN-02 also has native JS/Hermes exports; signed-device rendering/keyboard/screen-reader acceptance remains separate.\
+**Status:** RN-01/02/03 and RN-04 producer implemented with recorded evidence; RN-04 real root wiring remains coordinated/pending, RN-05 has an independently prepared consumer with live acceptance pending, RN-07 has UI-only preparation, RN-08 presentation/read-consumer preparation is implemented, RN-09a Home presentation is implemented, and RN-06/10–11 plus RN-09b/c/d remain not started. RN-02 also has native JS/Hermes exports; signed-device rendering/keyboard/screen-reader acceptance remains separate.\
 **Primary owner:** Ishmum — shared post-onboarding React Native application.\
 **Required reviewer / collaborator:** Anisha — authentication, onboarding, iOS integration, and root navigation.\
 **Area branch:** `area/react-native`; create each task branch from the updated area branch and integrate working increments into `main`.\
@@ -181,7 +181,7 @@ This is application-data cleanup, not approval to remove native restrictions. Wh
 
 ## 6. Commit sequence and dependencies
 
-RN-01/02/03 and the RN-04 producer are implemented with evidence linked below; RN-04 real root wiring is pending, RN-05 consumer preparation is recorded separately, RN-07 has user-requested UI-only preparation, RN-08 presentation/read-consumer preparation is recorded separately, and RN-06/09–11 remain **Not started**. A part is not complete merely because its task branch exists. Proposed messages are suggestions for the actual implementation commits, not instructions to commit this planning document under those messages.
+RN-01/02/03 and the RN-04 producer are implemented with evidence linked below; RN-04 real root wiring is pending, RN-05 consumer preparation is recorded separately, RN-07 has user-requested UI-only preparation, RN-08 presentation/read-consumer preparation is recorded separately, RN-09a Home presentation is implemented, and RN-06/10–11 plus RN-09b/c/d remain **Not started**. A part is not complete merely because its task branch exists. Proposed messages are suggestions for the actual implementation commits, not instructions to commit this planning document under those messages.
 
 | Part | Coherent proposed commit | Prerequisites | Exit evidence | Status | Actual commit |
 |---|---|---|---|---|---|
@@ -192,8 +192,8 @@ RN-01/02/03 and the RN-04 producer are implemented with evidence linked below; R
 | RN-05 | `feat(account): connect verified API identity to settings` | RN-01/04; AUTH-01/02/03/07; SB-03; API-04/05 | Real sign-in → `/v1/me` account screen evidence | Consumer prepared/tested; real integration and acceptance pending | `0c6e4db` (preparation only) |
 | RN-06 | `test(mobile): cover authenticated round trip and recovery` | RN-05; auth guards/recovery integrated | M1 acceptance matrix, no development bypass, build evidence | Not started | — |
 | RN-07 | `feat(account): integrate versioned profile reads and edits` | RN-04/05; approved profile contract/API/migration | Real profile round trip, conflict and ambiguous-save handling | UI prepared only; real profile/data integration pending | `5790302` (UI only) |
-| RN-08 | `feat(protection-ui): show native capability and installation states` | RN-01; agreed native read boundary; actual adapters for integration | Status mapper tests; device evidence only where adapter exists | Presentation/read consumer prepared; native wiring/device acceptance pending | See RN-08 preparation notes |
-| RN-09 | `feat(mobile): compose main app surfaces with explicit feature states` | RN-01/02; RN-07/08 where live data is used | Figma comparisons + no invented production data | Not started | — |
+| RN-08 | `feat(protection-ui): show native capability and installation states` | RN-01; agreed native read boundary; actual adapters for integration | Status mapper tests; device evidence only where adapter exists | Presentation/read consumer prepared; native wiring/device acceptance pending | `71da2d5` (presentation/read preparation only) |
+| RN-09 | `feat(mobile): compose main app surfaces with explicit feature states` | RN-01/02; RN-07/08 where live data is used | Figma comparisons + no invented production data | RN-09a Home presentation implemented; RN-09b/c/d and live integration pending | See RN-09a notes / unique subject |
 | RN-10 | `fix(mobile): complete accessibility layout and lifecycle handling` | Implemented RN parts; relevant device build access | Accessibility/device-size checks and targeted regression tests | Not started | — |
 | RN-11 | `test(integration): document profile and platform handoff acceptance` | RN-06/07/10; RN-08/09 evidence as applicable | M2 matrix, native capability handoff, reproducible runbook | Not started | — |
 
@@ -458,6 +458,53 @@ If a part grows beyond one reviewable behavior change, split it into suffixed pa
 **Validation and acceptance:** Source-aligned visual comparisons at the baseline width, actual component behavior checks, overflow/accessibility checks, and explicit tests that failed/missing data never selects a demo fixture. Every activated control has a real handler and defined persistence/failure behavior; otherwise it is omitted or explicitly unavailable. Record which parts are presentation-only, backed by real server data, backed by native evidence, or gated.
 
 **Commit done when:** The selected bounded main-screen presentation increment is visually faithful and its displayed data is honest. Do not mark all FR-022–034 complete from this commit. Split per screen if the composition diff is too large. **Recovery:** hide/revert the affected feature presentation; preserve existing account/protection behavior and persisted user data.
+
+### RN-09 implementation checkpoint — bounded screen increments
+
+RN-09a supplies the independent Home presentation slice; this is not acceptance
+of all FR-022–034 or of live scoring/rewards/quest/native/insights behavior. The
+original 44-part count remains a count of top-level plan parts; these are RN-09
+subparts, not a redefinition of earlier work or its dependencies.
+
+| Subpart | Scope / commit boundary | Actual status |
+|---|---|---|
+| RN-09a | Home composition, source assets, local display model, explicit feature states, isolated Figma specimen and tests | Implemented under `feat(mobile): compose Home with explicit feature availability`; self-hash recorded in the next normal notes update. The real Home route receives unavailable inputs; no live producer/action is connected. |
+| RN-09b | Quests presentation; suggestions distinct from accepted/saved occurrences; editors only against the agreed schema | Not started. Original PM/policy/native/backend gates apply before actual quest actions. |
+| RN-09c | History presentation with honest unavailable states and isolated source examples | Not started. Real metrics require period/source/coverage and comparison eligibility; forecasts remain gated. |
+| RN-09d | Settings composition reusing RN-07 profile and genuine availability for plan/app/activity editors | Not started. RN07-D01–D07 and native selection/shared onboarding-schema gates apply before persistence/actions. |
+
+**RN-09a evidence:** Read-only Home `22:4` context/screenshot, original source asset
+bounds/bytes, 19 new portable cases and 34 new iOS/Android component cases (including
+shared Screen regression), 30 browser cases, real four-tab route/clearance, web export
+isolation and full iOS/Android Router/Hermes exports. Exact results, captures and
+per-file line ranges are in [the implementation record](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md).
+These establish presentation/compilation only, not account/measurement/native device acceptance.
+
+**RN-09a adaptations:** Source 16 px insets and card/gutter/radius hierarchy;
+responsive stacking based on actual content width and native font scale, with
+full-width compact headings/actions. Feed/History targets are at least 44 px;
+health fill follows the explicitly supplied percentage instead of the source's
+fixed 85 px fill. Ready measurements display range/source/coverage. Unknown health
+renders no mood/score; unavailable data never becomes zero or the Figma sample.
+OS status bars remain OS-owned; real navigation is reused rather than recreated.
+
+The following Home integration work is deliberately deferred. Keep these IDs in
+sync with the notes; none is completed by the developer specimen or static exports.
+
+| Ref | Home work intentionally deferred | Owner / required evidence |
+|---|---|---|
+| RN09-D01 | Approve and implement Dino health/artwork, Feed pricing/transactions, credit ledger and streak producers | PM PD-06–08/Q12–14 and feature/backend owners; current display inputs do not define policy or prove an outcome. |
+| RN09-D02 | Provide valid weekly saved-time measurements with range/source/coverage and any comparison eligibility | PM PD-11/12/Q15/16 plus permitted native measurement and insights contracts; no usage or savings are calculated here. |
+| RN09-D03 | Define and wire temporary recommendation generation, Skip/Accept lifecycle, persistence/failure and any reward/restriction notices | PM/native/backend feature owners; no saved quest, installed restriction, completion or reward follows from a UI callback. |
+| RN09-D04 | Connect actual native status and supported permission/setup/recovery actions into the Home protection region | Native owners and RN08-D01–D06; scores, profiles and API acknowledgments are never installation evidence. |
+| RN09-D05 | Wire real account-scoped Home producers, freshness/errors, cancellation and guarded mutations | Auth/backend/RN owners using RN-04 scope/generation rules; no A-to-B data, stale action or uncertain write may be accepted. |
+| RN09-D06 | Execute signed-device rendering, native SVG, font/screen-reader/focus and lifecycle acceptance | Platform owners with RN-10 evidence; browser reflow and Hermes compilation do not establish device behavior. |
+
+Next bounded frontend commit: **RN-09b Quests presentation**, consulting fresh
+high-fidelity Figma context. RN-06, RN-07 persistence and RN-08 native integration
+remain independently pending under their earlier gates. Roll back RN-09a by
+reverting the Home presentation/route slice, preserving account/native data and
+all existing Root/Auth/iOS/Android ownership boundaries.
 
 ### RN-10 — Accessibility, responsive layout, and lifecycle completion
 

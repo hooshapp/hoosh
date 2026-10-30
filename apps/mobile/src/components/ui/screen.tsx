@@ -1,5 +1,13 @@
-import type { PropsWithChildren } from 'react';
-import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text } from 'react-native';
+import type { PropsWithChildren, ReactNode } from 'react';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { fonts, uiRecipes } from '@/design/tokens';
@@ -15,6 +23,9 @@ type ScreenProps = PropsWithChildren<{
   bottomClearance?: number;
   keyboardVerticalOffset?: number;
   testID?: string;
+  /** Undefined keeps the standard heading; null is for a source layout without one. */
+  header?: ReactNode;
+  contentStyle?: StyleProp<ViewStyle>;
 }>;
 
 export function Screen({
@@ -24,6 +35,8 @@ export function Screen({
   bottomClearance,
   keyboardVerticalOffset = 0,
   testID,
+  header,
+  contentStyle,
   children,
 }: ScreenProps) {
   const insets = useSafeAreaInsets();
@@ -43,19 +56,30 @@ export function Screen({
           keyboardVerticalOffset={keyboardVerticalOffset}>
           <ScrollView
             testID={testID}
+            accessibilityLabel={title}
+            {...(Platform.OS === 'web' ? { role: 'region' as const } : {})}
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
             contentInsetAdjustmentBehavior="never"
             contentContainerStyle={[
               styles.content,
+              contentStyle,
               { paddingBottom: insets.bottom + 24 + clearance },
             ]}>
-            <Text accessibilityRole="header" style={[styles.title, { color: theme.foreground }]}>
-              {title}
-            </Text>
-            {subtitle ? (
-              <Text style={[styles.subtitle, { color: theme.muted }]}>{subtitle}</Text>
-            ) : null}
+            {header === undefined ? (
+              <>
+                <Text
+                  accessibilityRole="header"
+                  style={[styles.title, { color: theme.foreground }]}>
+                  {title}
+                </Text>
+                {subtitle ? (
+                  <Text style={[styles.subtitle, { color: theme.muted }]}>{subtitle}</Text>
+                ) : null}
+              </>
+            ) : (
+              header
+            )}
             {children}
           </ScrollView>
         </KeyboardAvoidingView>

@@ -10,10 +10,19 @@ implementation in this directory.
 - **`Screen`** provides an accessible heading, safe-area edges, a keyboard-aware
   scrolling container and the local warm/dark recipe. Existing `dark` callers still
   work; children inherit that presentation through `UiThemeProvider`.
+  `header={null}` supports source compositions without a visible page heading;
+  the scroll region retains its `title` as its accessible name. An optional custom
+  header replaces the default heading/subtitle, and `contentStyle` sets source
+  insets/flow. Computed bottom clearance is applied last so content styling cannot
+  remove the real footer/safe-area reserve.
 - **`Button`** is a controlled action with required `onPress`, optional `busy`,
   `busyLabel`, `disabled`, and `variant="primary" | "secondary"`. It blocks same-turn
   duplicate presses before React renders the controller's new busy state. Neutral
   secondary styling does not imply disabled behavior.
+  `leadingVisual` / `trailingVisual` are decorative slots hidden from accessibility;
+  `labelStyle` supports a source-specific label recipe. Keep the visible/accessibility
+  label meaningful without those decorations. Defaults and busy/press guards remain
+  the same; busy replaces decorations with the progress indicator and busy label.
 - **`RouteButton`** keeps real Expo Router link semantics/navigation and reuses the
   internal `ButtonSurface` presentation. Action buttons do not implement routing.
 - **`Field`** has a persistent required label, optional hint/error, raw value/change

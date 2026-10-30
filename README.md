@@ -5,7 +5,7 @@ Shared React Native app and FastAPI service for Disconnect. Product context star
 ## What works now
 
 - Expo / React Native / TypeScript workspace with Home, Quests, History, Settings, auth, and onboarding routes.
-- Figma-derived colors and Space Grotesk 300/400/500/700. Screens are explicit placeholders, not completed Figma implementations.
+- Figma-derived colors and Space Grotesk 300/400/500/700. Home has a composed Figma-derived layout with unavailable data; other screen bodies remain placeholders.
 - Shared native-protection types and a tested API client with an injectable access-token provider.
 - RN-01 shared screen/form/state primitives, iOS/Android component tests and an isolated developer UI specimen entry; see [component usage](apps/mobile/src/components/ui/README.md).
 - RN-02 original local icon/Dino inventory and floating four-tab navigation with measured safe-area clearance; see [navigation](apps/mobile/src/components/navigation/README.md) and [asset provenance](apps/mobile/assets/README.md).
@@ -14,6 +14,7 @@ Shared React Native app and FastAPI service for Disconnect. Product context star
 - RN-05 account identity/header consumer is prepared and tested independently; [handoff and missing live prerequisites](apps/mobile/src/features/account/README.md). Settings/root wiring and real identity acceptance remain pending.
 - RN-07 display-name editor UI is prepared with a developer-only Figma example; [implemented presentation and deferred data work](apps/mobile/src/features/account/PROFILE_UI.md). No profile persistence or live integration is claimed.
 - RN-08 protection status mapper/UI and read-only native-port consumer are prepared; [native evidence rules and deferred integration](apps/mobile/src/features/protection/README.md). No native adapter is registered or active protection claimed for this checkout.
+- RN-09a [Home presentation](apps/mobile/src/features/home/README.md) is routed with honest unavailable states; its interactive Figma sample stays in `mobile:ui`. Quests/History/Settings composition and live Home data remain pending.
 - FastAPI process health endpoint, OpenAPI documentation, explicit browser CORS configuration, and tests.
 - Reproducible npm and uv lockfiles, linting, type checking, and CI checks.
 

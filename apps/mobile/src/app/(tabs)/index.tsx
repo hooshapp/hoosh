@@ -1,17 +1,17 @@
 import { EmptyCard } from '@/components/ui/empty-card';
-import { Screen } from '@/components/ui/screen';
+import { HomeScreen } from '@/features/home/home-screen';
+import { unavailableHome } from '@/features/home/home-model';
 
 export default function Home() {
   return (
-    <Screen title="Disconnect" subtitle="Less scrolling. More you.">
-      <EmptyCard
-        title="Protection is not connected"
-        description="This preview does not restrict apps. Protection setup will be available in a later build."
-      />
-      <EmptyCard
-        title="Make room for what you love"
-        description="Your activities and recommendations will appear here after setup is connected."
-      />
-    </Screen>
+    <HomeScreen
+      model={unavailableHome}
+      protection={
+        <EmptyCard
+          title="Protection unavailable"
+          description="We can’t confirm protection on this device right now."
+        />
+      }
+    />
   );
 }

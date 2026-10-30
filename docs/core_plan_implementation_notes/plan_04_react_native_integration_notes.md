@@ -4,24 +4,24 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN-08 presentation/read-consumer preparation implemented. RN-07 UI is `5790302`; live Auth/profile/native integration remains pending; RN-09–11 remain unstarted.
+**Current part:** RN-09a Home presentation implemented and validated. RN-09b/c/d (Quests/History/Settings) remain pending; RN-05/06, RN-07 persistence and RN-08 native integration remain gated.
 
-**Implementation branch:** `task/react-native/rn-08-ui`, parent RN-07 UI `5790302`. No push/main merge is implied.
+**Implementation branch:** `task/react-native/rn-09-home`, stacked on RN-08 preparation `71da2d5`. No push/main merge is implied.
 
-**Commit reference:** RN-01 is `2f88102`; RN-02 is `2d5c0d1`. RN-03 is `0741758`. RN-04 is `610f570`. RN-05 preparation is `0c6e4db`. RN-07 UI preparation is `5790302`; RN-08 preparation has its own pending self-hash.
+**Commit reference:** RN-01 `2f88102`; RN-02 `2d5c0d1`; RN-03 `0741758`; RN-04 `610f570`; RN-05 preparation `0c6e4db`; RN-07 UI `5790302`; RN-08 preparation `71da2d5`. RN-09a has its own pending self-hash; resolve by the unique subject below until the next normal update.
 
-**Last updated:** 2026-10-29.
+**Last updated:** 2026-10-30.
 
 **Shared workflow:** [Implementation knowledge base](README.md).
 
 ## Resume here
 
-- Foundations: RN-01 `2f88102`, RN-02 `2d5c0d1`, RN-03 `0741758`, RN-04 `610f570`; RN-05 consumer preparation `0c6e4db`; RN-07 UI-only preparation `5790302`. RN-08 now supplies independent protection presentation/read-consumer preparation under `feat(mobile): prepare capability-aware protection status UI`; resolve its own hash from Git until the next normal notes update records it.
-- Run `npm run mobile:ui` and find **Device protection — simulated evidence only**. All positive device labels there are simulated and visibly labeled. No native adapter, permission prompt, restriction write or live route is registered. Read [the native consumer contract](../../apps/mobile/src/features/protection/README.md) and original **RN08-D01–D06** checklist before real integration.
-- RN-08 maps availability/capability/permission/current installation separately. It never promotes notifications/overlays to shield claims, stale/failed reads to active, or saved API/profile revisions to native installation. Its read-only hook requires explicit route/foreground visibility, invalidates old tickets, bounds reads to 10 seconds including elapsed wall time, and ignores late results. Host lifecycle/native action wiring remains deferred.
-- Latest checks: 216 portable cases in 8 files (47 new RN-08), 184 component cases in 28 iOS/Android suites (34 new), 3 backend tests, workspace types/lint, 13 original SVGs and supported web export/isolation. Built browser preview passes 21 cases without private requests. Direct iOS/Android graphs match final mapper/card/hook and exclude test/example/API/query/account imports; not installed native acceptance.
-- RN-05/06 identity, RN-07 persistence and RN-08 live/device work remain pending. Existing RN07-D01–D07 and RN08-D01–D06 IDs identify skipped work. Next independent frontend part is a bounded RN-09 screen-composition increment; do not fabricate profile, protection, quest or usage outcomes while composing it.
-- Anisha retains Auth/iOS and coordinated guards; Ishmum owns Android/shared UI/backend. Native rule/event ownership at account changes remains a PM/native release gate. Existing untracked icon folders are untouched; this task does not push or merge main.
+- RN-09a composes Home in the real route, with original card geometry/assets and explicit unavailable inputs. No Dino mood, sample values, recommendations or functional transaction is selected in the actual app. Run `npm run mobile:ui` and find **Home — presentation-only Figma example** for nine isolated presentation scenarios. Read [Home's consumer contract](../../apps/mobile/src/features/home/README.md).
+- The per-screen split is explicit in the original plan: RN-09a Home, RN-09b Quests, RN-09c History, RN-09d Settings. Only Home presentation is implemented here; the other three tab bodies remain placeholders. Next independent frontend commit: RN-09b, after fresh high-fidelity Figma inspection.
+- Latest RN-09a checks: 235 portable cases (19 new), 218 component cases in 30 iOS/Android suites (34 new), 3 backend tests, types/lint, 18 original assets; web export with 32-file isolation. Thirty browser cases cover nine states, callbacks without business mutations, exact served artwork/slots, 393/320/280 px, enlarged text and the actual four-tab app/clearance. Full iOS/Android Router/Hermes exports match final sources and retain all 16 required navigation/Home assets; neither is signed/device execution.
+- Stable RN09-D01–D06 record skipped Home policy/measurement/recommendation/native/account/device work. RN07-D01–D07 and RN08-D01–D06 remain pending as before. RN-05/06 live identity and RN-07 persistence still need actual Auth/API/generated types and coordinated root wiring.
+- RN-08 `71da2d5` supplies independently tested protection mapping/read presentation: fresh native permission/state/desired-vs-installed revision evidence is required for active claims. Notifications/overlays are distinct from shields. Its 10-second read deadline is UI waiting only; restrictions never depend on JS/cloud timers. No adapter/actions/lifecycle is wired by RN-09a.
+- Anisha owns all Auth/onboarding/iOS and coordinated guards; Ishmum owns shared UI/Android/backend. Account/native ownership and cleanup remain PM/native gates. Existing `icon pack/`, `scripts/icon pack/` and `docs/core_plan/hoosh.code-workspace` are user-owned untracked items left untouched. No task push/merge or native/cloud/database action occurred.
 
 ## Recording rules
 
@@ -665,7 +665,7 @@ Future RN-07 integration commits must complete RN07-D01–D07 and original M2 ac
 ### RN-08 preparation — Evidence-based protection presentation
 
 **Commit message:** `feat(mobile): prepare capability-aware protection status UI`.
-**Hash:** Pending. **Date:** 2026-10-29. **Owner:** Ishmum. **Branch:** `task/react-native/rn-08-ui`. **Parent:** `5790302`.
+**Hash:** `71da2d5` (recorded during RN-09a; ranges/evidence below remain historical to RN-08). **Date:** 2026-10-29. **Owner:** Ishmum. **Branch:** `task/react-native/rn-08-ui`. **Parent:** `5790302`.
 **Status:** Independent presentation/read consumer implemented/tested; live native wiring/device acceptance remains pending.
 **Scope:** Map shared native availability/capability/authorization/revision evidence, render honest status/actions, provide a bounded read-only hook and isolated simulated preview, and document skipped native integration/device acceptance in this record and the original plan. No permission prompts/writes or fake adapter is wired into the app.
 **Figma:** Read-only session `d5c91295-9bd7-435c-957b-f2b5d1a63107`, Home `22:4` and permission `50:85`. Home has no complete protection-status card/state set; the image-free status summary adapts its existing warm card recipes. The actual onboarding permission screen remains Anisha's scope; its artwork and OS bar are not copied into this new summary.
@@ -761,6 +761,145 @@ Use android paths for the other platform; run `node docs/core_plan_implementatio
 #### Next handoff
 
 Use these producer components for independent RN-09 presentation while keeping unsupported/unavailable states truthful. Complete RN08-D01–D06 with the native owners before live/device acceptance, preserve UI/installed restrictions during rollbacks, and never infer account ownership or clear rules/events from Auth sign-out. RN-05/06 and RN-07 data integration stay pending under their own recorded gates. Local task commit only; no push/main merge.
+
+### RN-09a — Home composition with explicit feature availability
+
+**Hash:** Pending; resolve by `feat(mobile): compose Home with explicit feature availability` until the next normal notes update.
+**Date:** 2026-10-30. **Owner:** Ishmum. **Branch:** `task/react-native/rn-09-home`. **Parent:** `71da2d5`.
+**Status:** Implemented and validated; local commit pending. This entry travels with that commit. RN-09 remains partial until its other bounded screen increments and relevant integration acceptance exist.
+
+**Scope:** Plan 04 RN-09a, the bounded Home increment allowed by RN-09's commit-done condition and per-screen split rule. FR-022/028/029/030 presentation; NFR-005/008/011. No auth/onboarding/native/backend implementation or reward/measurement policy is added. The cumulative task branch retains earlier unmerged producer work; it is not a main/area merge.
+
+#### Every changed file and logical change
+
+Line ranges are from this implementation commit. SVG ranges describe untouched original download bytes; PNGs have actual dimensions/sizes rather than invented line numbers. Historical RN-01–08 ranges remain tied to their earlier commits.
+
+| File and exact lines in RN-09a | Change and reason |
+|---|---|
+| `apps/mobile/src/features/home/home-model.ts`: lines 1–40 | Define independent readonly display inputs for health/artwork/cost, credits, weekly provenance, streak evidence and temporary recommendations. These are local UI shapes, not approved HTTP/policy contracts or a new account store. |
+| `apps/mobile/src/features/home/home-model.ts`: lines 41–50 | Supply the real route with explicit unavailable regions. No sample account, default mood, fabricated statistics or successful quest is present. |
+| `apps/mobile/src/features/home/home-model.ts`: lines 51–101 | Validate displayed numbers/required context per region and map fixed safe availability copy. Preserve genuine supplied zeroes/decimals while rejecting invalid values without clamping or borrowing a fixture. |
+| `apps/mobile/src/features/home/home-overview.tsx`: lines 1–150 | Compose explicit health/artwork, conditional Feed price/handler/balance gates, credits and weekly regions. Image failure preserves semantic values; optional History navigation never activates protection or invents a measurement. |
+| `apps/mobile/src/features/home/home-overview.tsx`: lines 151–272 | Preserve upper-card widths/gutter/source slots and warm recipes; grow/stack by available content. Keep 44 px targets, original ellipse layer and proportional health fill instead of absolute screen canvases. |
+| `apps/mobile/src/features/home/home-recommendation.tsx`: lines 1–103 | Keep ready/loading/error/unavailable/empty recommendations distinct. Omit missing reward/restriction claims, delegate only explicit ID intents, disable absent/busy actions, and perform no optimistic quest/reward/install transition. |
+| `apps/mobile/src/features/home/home-recommendation.tsx`: lines 104–195 | Preserve source card/header/chip/notice/control hierarchy. Compact headers use a full constrained text line, no wrapping column layout, and stacked actions; large-text words remain visible instead of clipping. |
+| `apps/mobile/src/features/home/home-screen.tsx`: lines 1–85 | Compose the independent regions, explicit recent-week streak dots, visible measurement provenance and separate native-owned presentation slot. Actual content measurement/native font scale controls reflow; model data never grants native protection. |
+| `apps/mobile/src/features/home/home-screen.tsx`: lines 86–109 | Use the source Home insets/card spacing and flexible streak/provenance styling while retaining Screen safe areas, scrolling and measured tab clearance. |
+| `apps/mobile/src/features/home/home-artwork.tsx`: lines 1–32 | Render decorative original source assets at their exact bounds through expo-image. Failed decorations disappear without substitute glyphs, while their fixed slot remains stable and hidden from accessibility. |
+| `apps/mobile/src/features/home/home-model.test.ts`: lines 1–75 | Nineteen portable cases cover independent availability, explicit zeroes/artwork, invalid percentages/credits/hours, required measurement context and malformed regional display inputs; no Auth or API test fixture is introduced. |
+| `apps/mobile/src/features/home/home-screen.test.tsx`: lines 1–248 | Sixteen logical component cases run on both iOS/Android presets: actual unavailable route, source bounds, optional/explicit handlers, busy, ready-to-unavailable transitions, empty vs failure, Feed gates, omitted claims, week evidence, image failure, width/font reflow and independent native presentation. Decorative-image queries and real ExpoImage error payloads respect the native boundary. |
+| `apps/mobile/src/features/home/__tests__/fixtures.ts`: lines 1–28 | Keep a marked synthetic display fixture isolated under tests. It is neither a fake account/native service nor the production default, and its unique marker is rejected by release guards. |
+| `apps/mobile/src/features/home/README.md`: lines 1–108 | Document display-vs-producer authority, controlled callbacks, account/freshness/native gates, exact source geometry, image failure, layout adaptations, preview reproduction and RN09-D01–D06 handoff. |
+| `apps/mobile/src/design/home-assets.ts`: lines 1–16 | Expose unchanged local Home assets with original bounds and explicitly named Dino variants. The fresh Home happy export occupies its actual source slot; no percentage-to-mood rule is implemented. |
+| `apps/mobile/src/app/(tabs)/index.tsx`: lines 1–17 | Replace only the Home placeholder body with HomeScreen plus explicit unavailable inputs and an independent unavailable protection card. No root/guard/session/native/API connection or private example is added. |
+| `apps/mobile/src/components/ui/screen.tsx`: lines 1–41 | Add optional custom/null header and source-specific content-style inputs; existing callers keep the standard heading/subtitle without changes. |
+| `apps/mobile/src/components/ui/screen.tsx`: lines 57–83 | Name the scroll region, allow source content insets and apply computed bottom reserve last. Home can match a design without a duplicate heading while retaining real safe-area/keyboard/navigation ownership. |
+| `apps/mobile/src/components/ui/button-surface.tsx`: lines 1–39 | Add optional decorative visual slots and label styling so Home composes the shared action/Router-link surface rather than duplicating its focus/busy/disabled behavior. |
+| `apps/mobile/src/components/ui/button-surface.tsx`: lines 90–112 | Hide decorative slots from accessibility and replace them during busy state; preserve an explicit text/action name and apply source label typography. Default buttons/links and press guards are unchanged. |
+| `apps/mobile/src/components/ui/screen.test.tsx`: lines 1–82 | Add the named custom-header/null-header/footer-clearance regression on both platforms, retaining earlier standard heading/theme/safe-area tests. Styling cannot erase an actual footer reserve. |
+| `apps/mobile/dev/ui/home-specimen.tsx`: lines 1–151 | Add nine visibly labeled developer-only Home scenarios, including original Figma values, missing handlers, busy, long content and mixed availability. Example callbacks update a notice only; values/quests/rewards/restrictions never change or persist. |
+| `README.md`: lines 8–8 | Update current behavior and link Home handoff; distinguish composed unavailable Home from remaining placeholders and live functionality. |
+| `README.md`: lines 17–17 | Update current behavior and link Home handoff; distinguish composed unavailable Home from remaining placeholders and live functionality. |
+| `apps/mobile/README.md`: lines 17–17 | Describe the real unavailable Home route, isolated example command and remaining screen/data/native gates; update the earlier inventory-only description to match the current consumer. |
+| `apps/mobile/README.md`: lines 30–31 | Describe the real unavailable Home route, isolated example command and remaining screen/data/native gates; update the earlier inventory-only description to match the current consumer. |
+| `apps/mobile/assets/README.md`: lines 3–3 | Record both capture dates, fresh Home node/bounds provenance, retained earlier original bytes, actual variant use and 18-asset integrity/compilation limits. |
+| `apps/mobile/assets/README.md`: lines 17–25 | Record both capture dates, fresh Home node/bounds provenance, retained earlier original bytes, actual variant use and 18-asset integrity/compilation limits. |
+| `apps/mobile/assets/README.md`: lines 33–40 | Record both capture dates, fresh Home node/bounds provenance, retained earlier original bytes, actual variant use and 18-asset integrity/compilation limits. |
+| `apps/mobile/assets/manifest.json`: lines 104–104 | Record the three existing variant usage changes and five new original Home SVGs with node IDs, exact bounds, capture date, lengths and hashes. Earlier artwork bytes and hashes are preserved. |
+| `apps/mobile/assets/manifest.json`: lines 114–114 | Record the three existing variant usage changes and five new original Home SVGs with node IDs, exact bounds, capture date, lengths and hashes. Earlier artwork bytes and hashes are preserved. |
+| `apps/mobile/assets/manifest.json`: lines 124–124 | Record the three existing variant usage changes and five new original Home SVGs with node IDs, exact bounds, capture date, lengths and hashes. Earlier artwork bytes and hashes are preserved. |
+| `apps/mobile/assets/manifest.json`: lines 135–189 | Record the three existing variant usage changes and five new original Home SVGs with node IDs, exact bounds, capture date, lengths and hashes. Earlier artwork bytes and hashes are preserved. |
+| `apps/mobile/dev/ui/main.tsx`: lines 14–14 | Mount the Home specimen only in the separate Vite developer entry, outside Expo Router and release/native graphs. |
+| `apps/mobile/dev/ui/main.tsx`: lines 120–120 | Mount the Home specimen only in the separate Vite developer entry, outside Expo Router and release/native graphs. |
+| `apps/mobile/src/components/ui/README.md`: lines 13–17 | Document the optional header/content inputs, invariant footer reserve and decorative/busy button slots; presentation extensions do not add business-state ownership. |
+| `apps/mobile/src/components/ui/README.md`: lines 22–25 | Document the optional header/content inputs, invariant footer reserve and decorative/busy button slots; presentation extensions do not add business-state ownership. |
+| `apps/mobile/src/features/README.md`: lines 5–5 | Index Home and its explicit unavailable production inputs, remaining tab increments and future producer/account/native integration. |
+| `docs/Context (AGENT)/AGENT_START_HERE.md`: lines 7–7 | Refresh checkout/implementation entry context so a new agent sees Home progress and the pending live/other-tab boundary. |
+| `docs/Context (AGENT)/AGENT_START_HERE.md`: lines 11–11 | Refresh checkout/implementation entry context so a new agent sees Home progress and the pending live/other-tab boundary. |
+| `docs/Context (AGENT)/AGENT_START_HERE.md`: lines 130–130 | Refresh checkout/implementation entry context so a new agent sees Home progress and the pending live/other-tab boundary. |
+| `docs/core_plan/04_react_native_integration.md`: lines 4–4 | Record the actual RN-08 hash, partial RN-09 ledger and explicit RN-09a/b/c/d checkpoints, Home evidence/adaptations and stable RN09-D01–D06 deferred work; do not advance unrelated live acceptance. |
+| `docs/core_plan/04_react_native_integration.md`: lines 184–184 | Record the actual RN-08 hash, partial RN-09 ledger and explicit RN-09a/b/c/d checkpoints, Home evidence/adaptations and stable RN09-D01–D06 deferred work; do not advance unrelated live acceptance. |
+| `docs/core_plan/04_react_native_integration.md`: lines 195–196 | Record the actual RN-08 hash, partial RN-09 ledger and explicit RN-09a/b/c/d checkpoints, Home evidence/adaptations and stable RN09-D01–D06 deferred work; do not advance unrelated live acceptance. |
+| `docs/core_plan/04_react_native_integration.md`: lines 462–508 | Record the actual RN-08 hash, partial RN-09 ledger and explicit RN-09a/b/c/d checkpoints, Home evidence/adaptations and stable RN09-D01–D06 deferred work; do not advance unrelated live acceptance. |
+| `docs/core_plan/README.md`: lines 3–3 | Keep the 44 top-level parts and 8 accepted/36 awaiting counts; report partial Home composition and outstanding tab/live work without treating preparation as full completion. |
+| `docs/core_plan/README.md`: lines 12–12 | Keep the 44 top-level parts and 8 accepted/36 awaiting counts; report partial Home composition and outstanding tab/live work without treating preparation as full completion. |
+| `docs/core_plan/README.md`: lines 115–115 | Keep the 44 top-level parts and 8 accepted/36 awaiting counts; report partial Home composition and outstanding tab/live work without treating preparation as full completion. |
+| `scripts/check-ui-preview-isolation.mjs`: lines 12–15 | Reject Home specimen, sample/long recommendation and test fixture markers in real exported JS/HTML; existing export prerequisite and earlier guards remain intact. |
+| `apps/mobile/assets/icons/home/heart.svg`: lines 1–10 | Download the unmodified original SVG for 84:145; 12×12 health-row heart. No root/path/color edits or runtime Figma URL; record integrity in the manifest. |
+| `apps/mobile/assets/icons/home/check.svg`: lines 1–5 | Download the unmodified original SVG for 10605:227; 16×16 Accept decoration. No root/path/color edits or runtime Figma URL; record integrity in the manifest. |
+| `apps/mobile/assets/icons/home/saved-time-ellipse.svg`: lines 1–3 | Download the unmodified original SVG for 84:97; 110×110 weekly-card layer at left 80/top −30. No root/path/color edits or runtime Figma URL; record integrity in the manifest. |
+| `apps/mobile/assets/icons/home/streak-dots.svg`: lines 1–11 | Download the unmodified original SVG for 84:125; 86×8 streak indicators with explicit recent-week evidence. No root/path/color edits or runtime Figma URL; record integrity in the manifest. |
+| `apps/mobile/assets/mascot/home-dino-happy.svg`: lines 1–15 | Download the unmodified original SVG for 84:77; fresh 110×110 Home Dino export retained separately from RN-02 original capture. No root/path/color edits or runtime Figma URL; record integrity in the manifest. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09a/browser-check.mjs`: lines 1–258 | Reproducible built-preview and real-app browser checks: state matrix, callbacks without business changes, five exact asset slots/served bytes, source geometry, narrow/large text including outer text bounds, actual four-tab navigation and clearance. Wait for actual Router selection, not the click promise alone. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09a/browser-results.json`: lines 1–370 | Record 30 passing Chrome browser cases, actual source/layout/target geometry, zero page errors/private requests and false device-execution status. This is presentation evidence, not an authenticated/native acceptance run. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09a/verify-native.mjs`: lines 1–94 | Verify full iOS/Android Expo Router/Hermes source maps against final route/components, exclude fixture/test/private producer imports and check all 16 required navigation/Home original asset hashes. Explicitly separate static compilation from live/device behavior. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09a/native-results.json`: lines 1–39 | Record actual Node version, parent commit, final runtime hashes, full-app bytecode sizes/digests, map entry counts, 16 verified assets/platform and false live/signed/device acceptance flags. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09a/home-figma-example.png`: binary PNG, 393×885, 49694 bytes | Source-layout comparison, visibly labeled example; no OS/navigation replica. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09a/home-320-unavailable.png`: binary PNG, 320×901, 38788 bytes | 320 px unavailable layout with no mood/score/outcomes. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09a/home-320-large-text.png`: binary PNG, 320×901, 46952 bytes | 320 px/24 px text and 48 px heading stress after compact-header constraints. The phone scrolls; this capture shows its initial viewport. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09a/home-real-app.png`: binary PNG, 393×852, 51943 bytes | Actual 393 px app Home with unavailable inputs and the existing floating navigation; focus styling remains visible. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1–25 | Refresh the resume checkpoint, branch/parent, actual prior hashes, latest checks and next bounded screen; identify user-owned untracked files without staging them. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 668–668 | Record RN-08’s actual implementation hash during this next normal notes update, preserving its historical line ranges and evidence. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 765–903 | Record every RN-09a change, decision, actual validation, skipped-work IDs and next handoff in the same implementation commit with an honest pending self-hash. |
+
+#### Decisions, behavior and scope
+
+- RN-09 explicitly permits a bounded selected-screen commit and per-screen splits. Home plus its source assets/model/states is one coherent increment; Quests, History and Settings remain RN-09b/c/d. The 44 top-level plan parts/counts do not change. RN-09 as a whole is not marked accepted, and no FR-022–034 business behavior is claimed complete.
+- The real Home route uses unavailableHome and exposes no private account or functional transaction. Regions distinguish loading/error/unavailable; an empty recommendation is a separate successful state. Valid zeroes remain zeroes only when explicitly supplied. Invalid health/counts or incomplete measurement context become unavailable per region without changing other ready inputs. No fallback fixture, HTTP/native mock, local persistence, new endpoint, inferred score bands or dynamic reward formula exists.
+- Feed requires an explicit handler, ready health/cost/balance and sufficient displayed credits. Recommendation handlers receive only the supplied temporary ID. Busy is controller-owned; no success, debit, accepted quest, native rule or completion is inferred. A future live controller must serialize conflicting actions, handle errors/uncertain writes and enforce idempotency/authorization. The UI model is not a wire schema or approval of product policy.
+- Read-only Figma session 6e843e23-fbc5-4280-8931-aba6891fbef6 inspected full Home 22:4 context and screenshot. Downloaded all five source SVGs with curl -L as instructed by that context. Existing variants/assets/shared components were inspected first. The fresh Home Dino export differs in bytes from the earlier same-node capture, so both originals are retained rather than rewriting historical bytes. No Figma file was edited and no SVG paths/root dimensions/colors were changed.
+- Preserve source insets/cards/slots/typography and reuse the real floating navigation, Screen, Button and expo-image. The iPhone Code Connect status-bar reference cannot be used as an RN app component: the OS/root already owns it, so no static status bar or fake device chrome is drawn. Measured content width/native fontScale controls reflow instead of fixed full-screen coordinates. Health fill follows the supplied percentage rather than the source's inconsistent fixed 85 px fill; Feed/History get 44 px minimum targets and source/coverage are visible. These adaptations and unknown states are explicit, not pixel-identical claims for absent functionality.
+- Applied the Figma design-to-code workflow and React best-practices review: feature-scoped components, direct imports, render-time derived values, no duplicate global listeners/cache/state manager, stable original assets, controlled semantic actions and no network/native effects. No dependency, lockfile, app config, Auth guard/provider, native target or backend changes are required.
+- Visual review caught both narrow-column wrapping and a later long-heading clip under extreme browser text stress. Compact headers now disable column wrapping and constrain heading width to the available line. Browser regressions check outer text bounds as well as internal scroll overflow; the final screenshots were re-viewed. Initial image tests incorrectly queried hidden decorations/omitted ExpoImage nativeEvent payloads, and default test fontScale forced stacking; corrected the harness, exercised the actual image boundary and restored Dimensions after tests. A browser request URL and immediate Router-selection assertion were likewise fixed in the evidence runner, without changing routing behavior.
+
+#### Work intentionally deferred
+
+The original RN-09 plan contains the same stable checklist. RN-09b/c/d also remain unstarted. Earlier RN07-D01–D07 and RN08-D01–D06 remain pending; UI or export success does not satisfy those gates.
+
+| Ref | Home work intentionally deferred | Owner / required evidence |
+|---|---|---|
+| RN09-D01 | Approve and implement Dino health/artwork, Feed pricing/transactions, credit ledger and streak producers | PM PD-06–08/Q12–14 and feature/backend owners; current display inputs do not define policy or prove an outcome. |
+| RN09-D02 | Provide valid weekly saved-time measurements with range/source/coverage and any comparison eligibility | PM PD-11/12/Q15/16 plus permitted native measurement and insights contracts; no usage or savings are calculated here. |
+| RN09-D03 | Define and wire temporary recommendation generation, Skip/Accept lifecycle, persistence/failure and any reward/restriction notices | PM/native/backend feature owners; no saved quest, installed restriction, completion or reward follows from a UI callback. |
+| RN09-D04 | Connect actual native status and supported permission/setup/recovery actions into the Home protection region | Native owners and RN08-D01–D06; scores, profiles and API acknowledgments are never installation evidence. |
+| RN09-D05 | Wire real account-scoped Home producers, freshness/errors, cancellation and guarded mutations | Auth/backend/RN owners using RN-04 scope/generation rules; no A-to-B data, stale action or uncertain write may be accepted. |
+| RN09-D06 | Execute signed-device rendering, native SVG, font/screen-reader/focus and lifecycle acceptance | Platform owners with RN-10 evidence; browser reflow and Hermes compilation do not establish device behavior. |
+
+#### Actual validation and reproducible evidence
+
+| Check | Actual result / limits |
+|---|---|
+| `npm run check` | Passed workspace TypeScript/ESLint, 235 portable cases in 9 files (19 new), 218 component cases in 30 iOS/Android suites (34 new), 18 original SVGs, Ruff and 3 pytest cases. No live data/device involved. |
+| `npm run mobile:ui:build` | Passed isolated real-component preview. Existing nonfatal upstream Expo eval warning remains visible; no build/SDK patch or dependency change added. |
+| `npm run mobile:export` | Passed all 16 existing routes, 32 JS/HTML isolation files and eight original navigation assets. The actual Home route has unavailable values and no specimen imports. |
+| Isolation negative/positive probes | An intentional ignored JS file with RN09_HOME_SPECIMEN_ONLY was rejected, removed in finally, then the real 32-file guard passed. The added sample/test/long-sample markers are also checked. |
+| Browser runner | Passed 30 cases: nine states, four callback/no-business-mutation checks, five exact served SVG bytes/bounds, baseline source card geometry, nine 393/320/280 px availability/long-content cases, enlarged-text bounds/scroll, and actual four-tab app/clearance. Zero page errors or /v1 requests. |
+| Full iOS/Android application export + `verify-native.mjs` | Passed actual Expo Router/Hermes graphs: 2112904 / 2402756 bytes; 1194 / 1333 source-map entries. All nine final runtime sources match; 16 required original navigation/Home assets per platform; no developer/test/fixture or account/API/query producer sources. Static bytecode, not signing/install/device evidence. |
+| Final file/line/link/deferral/scope audit and `git diff --cached --check` | Run before the local commit; every changed file is covered below its actual part, and pending live/other-screen work remains explicit. User icon folders and workspace file are excluded. |
+
+Browser evidence: [runner](artifacts/rn-09a/browser-check.mjs), [actual results](artifacts/rn-09a/browser-results.json), [labeled source example](artifacts/rn-09a/home-figma-example.png), [320 px unavailable](artifacts/rn-09a/home-320-unavailable.png), [320 px enlarged text](artifacts/rn-09a/home-320-large-text.png), and [actual app with navigation](artifacts/rn-09a/home-real-app.png). Chrome 156.0.8078.49 / existing ephemeral Playwright 1.64.1 were used. The large-text CSS uses 24 px ordinary text and 48 px headings; it is deliberate browser layout stress, not native Dynamic Type evidence. Component preview omits OS status bar/navigation; the actual app capture separately includes real navigation. The longest text scrolls rather than fitting a fixed phone canvas.
+
+Reproduce from root after building both previews:
+
+```bash
+npm exec --workspace @disconnect/mobile -- vite preview --config dev/vite.config.mts --host 127.0.0.1 --port 8093 --strictPort
+# In another terminal:
+python3 -m http.server 8094 --bind 127.0.0.1 --directory apps/mobile/dist
+# In another terminal; point this variable at an installed Playwright ESM entry:
+PLAYWRIGHT_MODULE=<local-entry> node docs/core_plan_implementation_notes/artifacts/rn-09a/browser-check.mjs
+```
+
+Full native application compilation, from apps/mobile:
+
+```bash
+npx expo export --platform ios --platform android --output-dir .expo/rn09-native --source-maps
+```
+
+Then from root run `node docs/core_plan_implementation_notes/artifacts/rn-09a/verify-native.mjs`. [The actual report](artifacts/rn-09a/native-results.json) contains final source/bundle hashes and false live/signed/device flags. Ignored output stays local. There was no native regeneration, signing, permission prompt, cloud/database write, credential handling or device execution. Local preview servers are stopped after verification.
+
+#### Next handoff
+
+RN-09b Quests presentation is the next bounded frontend commit. Read its real Figma context and preserve suggested-vs-saved distinction, unapproved editor/lifecycle/reward/selection gates and sample isolation. RN-09c/d follow in their own screen-sized commits. Complete RN09-D01–D06 with approved producers before live Home acceptance; coordinate Anisha's root/Auth/iOS work and use RN-04 account scopes. This task is a local commit only, with no push/area/main merge or changes to user-owned untracked files.
 
 ### Entry template
 

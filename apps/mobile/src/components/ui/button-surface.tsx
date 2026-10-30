@@ -1,5 +1,13 @@
-import { forwardRef, useState, type ComponentRef } from 'react';
-import { Pressable, StyleSheet, Text, type PressableProps } from 'react-native';
+import { forwardRef, useState, type ComponentRef, type ReactNode } from 'react';
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  type PressableProps,
+  type StyleProp,
+  type TextStyle,
+} from 'react-native';
 
 import { colors, fonts } from '@/design/tokens';
 
@@ -11,6 +19,10 @@ export type ButtonSurfaceProps = Omit<PressableProps, 'children' | 'accessibilit
   busy?: boolean;
   busyLabel?: string;
   variant?: 'primary' | 'secondary';
+  /** Decorative slots only; the text/accessibility label still names the action. */
+  leadingVisual?: ReactNode;
+  trailingVisual?: ReactNode;
+  labelStyle?: StyleProp<TextStyle>;
 };
 
 /** Internal presentation shared by action buttons and Router links. */
@@ -22,6 +34,9 @@ export const ButtonSurface = forwardRef<ComponentRef<typeof Pressable>, ButtonSu
       busyLabel = label,
       disabled = false,
       variant = 'primary',
+      leadingVisual,
+      trailingVisual,
+      labelStyle,
       accessibilityLabel,
       accessibilityRole = 'button',
       style,
@@ -73,9 +88,28 @@ export const ButtonSurface = forwardRef<ComponentRef<typeof Pressable>, ButtonSu
           typeof style === 'function' ? style(state) : style,
         ]}>
         {busy ? <ProgressIndicator color={foreground} /> : null}
-        <Text style={[styles.label, { color: foreground, fontSize: primary ? 18 : 16 }]}>
+        {!busy && leadingVisual ? (
+          <View
+            accessible={false}
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
+            aria-hidden>
+            {leadingVisual}
+          </View>
+        ) : null}
+        <Text
+          style={[styles.label, { color: foreground, fontSize: primary ? 18 : 16 }, labelStyle]}>
           {busy ? busyLabel : label}
         </Text>
+        {!busy && trailingVisual ? (
+          <View
+            accessible={false}
+            accessibilityElementsHidden
+            importantForAccessibility="no-hide-descendants"
+            aria-hidden>
+            {trailingVisual}
+          </View>
+        ) : null}
       </Pressable>
     );
   },

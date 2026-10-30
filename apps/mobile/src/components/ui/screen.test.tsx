@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react-native';
-import { Platform } from 'react-native';
+import { Platform, Text } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { Button } from './button';
@@ -8,6 +8,23 @@ import { Field } from './field';
 import { Screen } from './screen';
 
 describe('Screen', () => {
+  it('supports source-specific content without losing its name or footer reserve', async () => {
+    await render(
+      <Screen
+        title="Home"
+        header={null}
+        contentStyle={{ paddingHorizontal: 16, paddingTop: 8, paddingBottom: 0 }}
+        bottomClearance={90}
+        testID="custom-screen">
+        <Text>Home content</Text>
+      </Screen>,
+    );
+    expect(screen.queryByRole('header', { name: 'Home' })).toBeNull();
+    expect(screen.getByTestId('custom-screen')).toHaveAccessibleName('Home');
+    expect(screen.getByTestId('custom-screen').props.contentContainerStyle.at(-1)).toEqual({
+      paddingBottom: 114,
+    });
+  });
   it.each([false, true])('composes readable, ordered form content in dark=%s', async (dark) => {
     await render(
       <Screen title="Account details" subtitle="Edit your name." dark={dark} bottomClearance={0}>

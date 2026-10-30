@@ -1,0 +1,39 @@
+{
+  "part": "RN-09a Home presentation",
+  "parentCommit": "71da2d5",
+  "node": "v24.20.0",
+  "fullExpoRouterApplication": true,
+  "liveDataAcceptance": false,
+  "signedDeviceAcceptance": false,
+  "runtimeSourceSha256": {
+    "apps/mobile/src/app/(tabs)/index.tsx": "d5006d86995a0779eec6ea274ce50195e4af1c4d326cfb2d01da22ec0dd5c561",
+    "apps/mobile/src/design/home-assets.ts": "c8396e5cab6424ba2c5cf39e11fa6d77e50f8b773a433fe49a1e145752b0a856",
+    "apps/mobile/src/components/ui/screen.tsx": "9231c1b2f09557046dea6ac89cd164e4d94c3ea6e05ed6c61e4a6e759c01e17b",
+    "apps/mobile/src/components/ui/button-surface.tsx": "9de3ad3f703feb4ec53d1a90cd7cd8380ca1dbd7fd79668704d3de8c09bf6b7b",
+    "apps/mobile/src/features/home/home-artwork.tsx": "8c0de84b7c810ed719d8b05dd415e39fa649d9d82d3e9df377b84540e7293493",
+    "apps/mobile/src/features/home/home-model.ts": "5546a5b6dc2b56702f8f90f01e355d605ef638215010d4a221d7e052557f09eb",
+    "apps/mobile/src/features/home/home-overview.tsx": "694b2e53d566ae35b103d3ca66b8513a833305d36aa8ccc69fff7c7d34b460ae",
+    "apps/mobile/src/features/home/home-recommendation.tsx": "7f93eb11bbd05138823f506162498529bddd3ee1d48a665447792257b3d4d761",
+    "apps/mobile/src/features/home/home-screen.tsx": "00ce541fdff812b5fef61d0a6c5f03839b56e2d4538d39f40457e9afad29d841"
+  },
+  "bundles": {
+    "ios": {
+      "bytes": 2112904,
+      "sha256": "d299a145d4eda8630a4d22fa2eef6e66066648e7c9a5a385ef19fa95b11252d4",
+      "sourceMapEntries": 1194,
+      "verifiedNavigationAndHomeAssets": 16,
+      "exampleOrTestSources": 0,
+      "privateApiOrAccountSources": 0,
+      "executedOnDevice": false
+    },
+    "android": {
+      "bytes": 2402756,
+      "sha256": "1ed362eec8cd52c0ecfa17cc4c771b81e5f0c17e919f90eab2ef3a62392a2d46",
+      "sourceMapEntries": 1333,
+      "verifiedNavigationAndHomeAssets": 16,
+      "exampleOrTestSources": 0,
+      "privateApiOrAccountSources": 0,
+      "executedOnDevice": false
+    }
+  }
+}

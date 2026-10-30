@@ -1,0 +1,370 @@
+{
+  "part": "RN-09a Home presentation",
+  "browser": "156.0.8078.76",
+  "cases": [
+    {
+      "state": "Unavailable",
+      "neverFallsBackToSample": true
+    },
+    {
+      "state": "Loading",
+      "neverFallsBackToSample": true
+    },
+    {
+      "state": "Read errors",
+      "neverFallsBackToSample": true
+    },
+    {
+      "state": "Empty recommendations",
+      "neverFallsBackToSample": true
+    },
+    {
+      "state": "Figma example",
+      "neverFallsBackToSample": true
+    },
+    {
+      "state": "No action handlers",
+      "neverFallsBackToSample": true
+    },
+    {
+      "state": "Busy actions",
+      "neverFallsBackToSample": true
+    },
+    {
+      "state": "Long content",
+      "neverFallsBackToSample": true
+    },
+    {
+      "state": "Mixed availability",
+      "neverFallsBackToSample": true
+    },
+    {
+      "action": "Feed Dino for 10 credits",
+      "noSimulatedBusinessMutation": true
+    },
+    {
+      "action": "Accept",
+      "noSimulatedBusinessMutation": true
+    },
+    {
+      "action": "✕ Skip",
+      "noSimulatedBusinessMutation": true
+    },
+    {
+      "action": "View time saved in History",
+      "noSimulatedBusinessMutation": true
+    },
+    {
+      "asset": "icons/home/heart.svg",
+      "width": 12,
+      "height": 12,
+      "originalBytes": true
+    },
+    {
+      "asset": "mascot/home-dino-happy.svg",
+      "width": 110,
+      "height": 110,
+      "originalBytes": true
+    },
+    {
+      "asset": "icons/home/saved-time-ellipse.svg",
+      "width": 110,
+      "height": 110,
+      "originalBytes": true
+    },
+    {
+      "asset": "icons/home/check.svg",
+      "width": 16,
+      "height": 16,
+      "originalBytes": true
+    },
+    {
+      "asset": "icons/home/streak-dots.svg",
+      "width": 86,
+      "height": 8,
+      "originalBytes": true
+    },
+    {
+      "baseline": 393,
+      "geometry": {
+        "home-dino-card": {
+          "x": 16,
+          "y": 8,
+          "width": 195.5625,
+          "height": 210
+        },
+        "home-weekly-card": {
+          "x": 227.5625,
+          "y": 60,
+          "width": 149.4375,
+          "height": 158
+        },
+        "home-recommendation": {
+          "x": 16,
+          "y": 236,
+          "width": 361,
+          "height": 227
+        },
+        "home-streak": {
+          "x": 16,
+          "y": 475,
+          "width": 361,
+          "height": 66
+        }
+      },
+      "sourceOrigin": "Home 22:4 content begins 62 px above the source iPhone card origin; no fake OS status bar",
+      "adaptations": [
+        "44 px action targets",
+        "health fill follows supplied percentage",
+        "measurement provenance"
+      ]
+    },
+    {
+      "width": 393,
+      "state": "Unavailable",
+      "layout": {
+        "overflow": false,
+        "textOverflow": [],
+        "buttons": [
+          {
+            "name": "Feed Dino",
+            "width": 130,
+            "height": 44
+          }
+        ]
+      }
+    },
+    {
+      "width": 393,
+      "state": "Figma example",
+      "layout": {
+        "overflow": false,
+        "textOverflow": [],
+        "buttons": [
+          {
+            "name": "Feed Dino for 10 credits",
+            "width": 130,
+            "height": 44
+          },
+          {
+            "name": "View time saved in History",
+            "width": 44,
+            "height": 44
+          },
+          {
+            "name": "✕ Skip",
+            "width": 160,
+            "height": 44
+          },
+          {
+            "name": "Accept",
+            "width": 160,
+            "height": 44
+          }
+        ]
+      }
+    },
+    {
+      "width": 393,
+      "state": "Long content",
+      "layout": {
+        "overflow": false,
+        "textOverflow": [],
+        "buttons": [
+          {
+            "name": "Feed Dino for 10 credits",
+            "width": 130,
+            "height": 44
+          },
+          {
+            "name": "View time saved in History",
+            "width": 44,
+            "height": 44
+          },
+          {
+            "name": "✕ Skip",
+            "width": 160,
+            "height": 44
+          },
+          {
+            "name": "Accept",
+            "width": 160,
+            "height": 44
+          }
+        ]
+      }
+    },
+    {
+      "width": 320,
+      "state": "Unavailable",
+      "layout": {
+        "overflow": false,
+        "textOverflow": [],
+        "buttons": [
+          {
+            "name": "Feed Dino",
+            "width": 130,
+            "height": 44
+          }
+        ]
+      }
+    },
+    {
+      "width": 320,
+      "state": "Figma example",
+      "layout": {
+        "overflow": false,
+        "textOverflow": [],
+        "buttons": [
+          {
+            "name": "Feed Dino for 10 credits",
+            "width": 130,
+            "height": 44
+          },
+          {
+            "name": "View time saved in History",
+            "width": 44,
+            "height": 44
+          },
+          {
+            "name": "✕ Skip",
+            "width": 257,
+            "height": 44
+          },
+          {
+            "name": "Accept",
+            "width": 257,
+            "height": 44
+          }
+        ]
+      }
+    },
+    {
+      "width": 320,
+      "state": "Long content",
+      "layout": {
+        "overflow": false,
+        "textOverflow": [],
+        "buttons": [
+          {
+            "name": "Feed Dino for 10 credits",
+            "width": 130,
+            "height": 44
+          },
+          {
+            "name": "View time saved in History",
+            "width": 44,
+            "height": 44
+          },
+          {
+            "name": "✕ Skip",
+            "width": 257,
+            "height": 44
+          },
+          {
+            "name": "Accept",
+            "width": 257,
+            "height": 44
+          }
+        ]
+      }
+    },
+    {
+      "width": 280,
+      "state": "Unavailable",
+      "layout": {
+        "overflow": false,
+        "textOverflow": [],
+        "buttons": [
+          {
+            "name": "Feed Dino",
+            "width": 130,
+            "height": 44
+          }
+        ]
+      }
+    },
+    {
+      "width": 280,
+      "state": "Figma example",
+      "layout": {
+        "overflow": false,
+        "textOverflow": [],
+        "buttons": [
+          {
+            "name": "Feed Dino for 10 credits",
+            "width": 130,
+            "height": 44
+          },
+          {
+            "name": "View time saved in History",
+            "width": 44,
+            "height": 44
+          },
+          {
+            "name": "✕ Skip",
+            "width": 217,
+            "height": 44
+          },
+          {
+            "name": "Accept",
+            "width": 217,
+            "height": 44
+          }
+        ]
+      }
+    },
+    {
+      "width": 280,
+      "state": "Long content",
+      "layout": {
+        "overflow": false,
+        "textOverflow": [],
+        "buttons": [
+          {
+            "name": "Feed Dino for 10 credits",
+            "width": 130,
+            "height": 44
+          },
+          {
+            "name": "View time saved in History",
+            "width": 44,
+            "height": 44
+          },
+          {
+            "name": "✕ Skip",
+            "width": 217,
+            "height": 44
+          },
+          {
+            "name": "Accept",
+            "width": 217,
+            "height": 44
+          }
+        ]
+      }
+    },
+    {
+      "width": 320,
+      "fontSize": 24,
+      "browserTextStress": {
+        "overflow": false,
+        "textOverflow": [],
+        "scrollable": true
+      }
+    },
+    {
+      "realApp": true,
+      "fourTabsNavigate": true,
+      "noExampleData": true,
+      "clearance": {
+        "lastBottom": 604,
+        "navTop": 762,
+        "paddingBottom": "114px"
+      }
+    }
+  ],
+  "pageErrors": [],
+  "privateRequests": [],
+  "executedOnDevice": false
+}
