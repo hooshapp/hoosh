@@ -3,7 +3,7 @@
 - Auth and onboarding: Anisha owns Supabase Auth/project/provider/email/redirect/test-account setup (SB-01–03), plus routes in `src/app/(auth)` and `src/app/(onboarding)`, session persistence, token access, and resumable onboarding.
 - Main app: Ishmum owns routes in `src/app/(tabs)`, quests/history/settings behavior, and server data integration.
 - Keep route files small as features grow; place domain logic and feature components here.
-- Auth supplies the shared `AccessTokenProvider` to `createApiClient`. The HTTP client never implements its own login or refresh logic.
+- Auth supplies the full shared `AuthSessionPort` to one stable `createApiClient` instance per environment/producer. RN-03 uses snapshots/generation as well as fresh tokens, delegates bounded revalidation to Auth, and never implements login, refresh or sign-out. Read [the HTTP client contract](../infrastructure/api/README.md) before RN-04/05 wiring.
 - Plan authoring in onboarding and Settings must reuse the same approved schema and validation. That policy contract is not finalized by this scaffold.
 - Native rule/session state remains authoritative in Swift/Kotlin; do not duplicate timers in feature stores.
 

@@ -1,7 +1,7 @@
 # 04 — React Native Integration and Shared Frontend Plan
 
 **Date:** 2026-10-28\
-**Status:** RN-01/02 implemented with recorded automated/browser evidence; RN-03–11 remain not started. RN-02 also has native JS/Hermes exports; signed-device rendering/keyboard/screen-reader acceptance remains separate.\
+**Status:** RN-01/02/03 implemented with recorded evidence; RN-04–11 remain not started. RN-02 also has native JS/Hermes exports; signed-device rendering/keyboard/screen-reader acceptance remains separate.\
 **Primary owner:** Ishmum — shared post-onboarding React Native application.\
 **Required reviewer / collaborator:** Anisha — authentication, onboarding, iOS integration, and root navigation.\
 **Area branch:** `area/react-native`; create each task branch from the updated area branch and integrate working increments into `main`.\
@@ -181,13 +181,13 @@ This is application-data cleanup, not approval to remove native restrictions. Wh
 
 ## 6. Commit sequence and dependencies
 
-RN-01/02 are implemented with evidence linked below; other rows remain **Not started**. A part is not complete merely because its task branch exists. Proposed messages are suggestions for the actual implementation commits, not instructions to commit this planning document under those messages.
+RN-01/02/03 are implemented with evidence linked below; other rows remain **Not started**. A part is not complete merely because its task branch exists. Proposed messages are suggestions for the actual implementation commits, not instructions to commit this planning document under those messages.
 
 | Part | Coherent proposed commit | Prerequisites | Exit evidence | Status | Actual commit |
 |---|---|---|---|---|---|
 | RN-01 | `feat(mobile): add shared accessible screen state primitives` | Plan 00 UI/state boundary; existing scaffold | 40 iOS/Android component checks, separate 5-test Vitest suite, 393/320 px + large-text specimens, export isolation; see notes | Complete for RN-01 scope | `2f88102` (notes record historical evidence) |
-| RN-02 | `feat(mobile): add authentic assets and floating main navigation` | RN-01; verified source asset inventory | 12 original SVGs; 62 iOS/Android checks overall; 21 browser cases; web/native bundle and asset/isolation evidence | Complete for RN-02 scope | See RN-02 Git reference in notes |
-| RN-03 | `feat(api-client): add typed failures cancellation and bounded requests` | Plan 00 HTTP/error contract; current client | Focused HTTP-boundary tests including abort/account races | Not started | — |
+| RN-02 | `feat(mobile): add authentic assets and floating main navigation` | RN-01; verified source asset inventory | 12 original SVGs; 62 iOS/Android checks overall; 21 browser cases; web/native bundle and asset/isolation evidence | Complete for RN-02 scope | `2d5c0d1` (notes record historical evidence) |
+| RN-03 | `feat(mobile): harden account-scoped HTTP requests` | Plan 00 HTTP/error contract; current client | 121 HTTP-boundary cases; 62 UI regressions; local Fetch redirect/body tests; direct native client bundles and fixture isolation | Complete for RN-03 scope | See RN-03 Git reference in notes |
 | RN-04 | `feat(mobile): scope server state to the authenticated account` | RN-03; auth snapshot/token-provider contract | Cache-isolation/lifecycle tests; coordinated root provider change | Not started | — |
 | RN-05 | `feat(account): connect verified API identity to settings` | RN-01/04; AUTH-01/02/03/07; SB-03; API-04/05 | Real sign-in → `/v1/me` account screen evidence | Not started | — |
 | RN-06 | `test(mobile): cover authenticated round trip and recovery` | RN-05; auth guards/recovery integrated | M1 acceptance matrix, no development bypass, build evidence | Not started | — |
@@ -280,6 +280,8 @@ If a part grows beyond one reviewable behavior change, split it into suffixed pa
 **Edge cases:** Fetch resolves after cancellation; `AbortSignal` support differs on pinned native/web runtimes; an app resumes after sleeping past the timeout; response loses network after headers; SDK/session refresh is pending; a `Retry-After` value is invalid. Treat connectivity signals as hints; a connected network does not prove API reachability.
 
 **Commit done when:** Pure TS tests establish the HTTP boundary without a live Supabase project, and existing same-origin/fresh-token protections still pass. **Recovery:** revert client helpers and their consumers together; do not weaken auth/path validation to get a feature through.
+
+**Implementation evidence (2026-10-29):** [RN-03 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md#rn-03--bounded-account-scoped-http-client) and [client contract](../../apps/mobile/src/infrastructure/api/README.md) document validated configuration, runtime decoding, whole-operation deadlines/cancellation, account/generation guards, safe typed errors and bounded GET recovery/pause. Pure/local HTTP tests and direct iOS/Android client compilation passed. Live Auth/private API/query wiring and signed-device HTTP acceptance remain future gates.
 
 ### RN-04 — Account-scoped server state and lifecycle
 

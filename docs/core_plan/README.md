@@ -1,6 +1,6 @@
 # Disconnect — Core Development Plans
 
-**Status:** Plan 00 is complete and validated (foundation commit `0b50900`, recorded in its ledger); Plan 04 RN-01/02 now supply shared UI/testing and authentic-asset navigation with recorded evidence; Plans 01–03 and RN-03–11 remain pending. Auth, private API endpoints, database and native adapters are not implemented.\
+**Status:** Plan 00 is complete and validated (foundation commit `0b50900`, recorded in its ledger); Plan 04 RN-01–03 now supply shared UI/testing, authentic-asset navigation and a bounded account-scoped HTTP producer with recorded evidence; Plans 01–03 and RN-04–11 remain pending. Auth, private API endpoints, database and native adapters are not implemented.\
 **Baseline inspected:** `c7a8f73` — `Set up mobile and API foundation`.\
 **Reviewed:** 2026-10-28.\
 **Product answers:** [PM_QUESTIONS.md](<../Context (AGENT)/PM_QUESTIONS.md>); no PM question is answered by an engineering default in these plans.
@@ -9,7 +9,7 @@
 
 Read [Plan 00](00_shared_contracts.md) first, then your area plan and the specific part you are about to implement. Before coding, read the [implementation knowledge-base workflow](../core_plan_implementation_notes/README.md), create that plan's notes file if absent, and read any existing entries. Build on the scaffold; do not reinstall it, rewrite the tested Swift core, create every future table, or complete an entire area before integrating.
 
-There are **44 parts**: 6 implemented parts (SC-01–04 and RN-01/02) and 38 future implementation parts. See each ledger/Git reference for commit and validation details. They are reviewable work boundaries, not 44 completed commits or immediately unblocked tasks. Some onboarding/provider/native presentation parts are conditional. Split a concrete part further if its diff is too large, preserving stable IDs and dependencies.
+There are **44 parts**: 7 implemented parts (SC-01–04 and RN-01–03) and 37 future implementation parts. See each ledger/Git reference for commit and validation details. They are reviewable work boundaries, not 44 completed commits or immediately unblocked tasks. Some onboarding/provider/native presentation parts are conditional. Split a concrete part further if its diff is too large, preserving stable IDs and dependencies.
 
 | Plan | Parts | Main owner | Initial result |
 |---|---:|---|---|
@@ -112,6 +112,6 @@ After local M1, a small **development deployment plan** can provide one shared H
 
 Each plan includes goals, files, owners, proposed commits, dependencies, tests/acceptance, edge cases, recovery, and an implementation ledger. Plan 00 records its local implementation; the others remain pending. Linked technical guidance must be rechecked against the package/project versions selected during implementation.
 
-Documentation checks cover local links, stable part IDs, matching ledgers, dependency ordering, canonical contract names/paths, and scaffold boundaries. Plan 00 additionally checks its actual type-only package and consumer compile scenarios. RN-01/02 add the UI, asset/navigation and test evidence recorded in their notes. The 38 remaining parts are still pending; no live Auth/cloud/database/device result is claimed from contract or UI primitive work.
+Documentation checks cover local links, stable part IDs, matching ledgers, dependency ordering, canonical contract names/paths, and scaffold boundaries. Plan 00 additionally checks its actual type-only package and consumer compile scenarios. RN-01–03 add the UI, asset/navigation, HTTP producer and test evidence recorded in their notes. The 37 remaining parts are still pending; no live Auth/cloud/database/device result is claimed from contract or UI primitive work.
 
 **Next work from the committed Plan 00 foundation:** Ishmum starts RN-01 (shared UI/test harness) and/or API-01 (testable API configuration/errors), with Android investigation independently. Anisha owns SB-01–03 (Supabase Auth/project setup) and AUTH-01/02 (mobile Auth). She can develop configuration/storage tests against injected settings before live setup is complete. Ishmum owns SB-04/05 when adding product database persistence. Wire M1/M2 when their producer outputs are ready; record actual integration evidence separately from module completion.

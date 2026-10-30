@@ -17,3 +17,5 @@ Shared fields/buttons/screen states, controlled busy handling, test discovery an
 RN-02 supplies the [floating navigation contract](src/components/navigation/README.md) and [original asset provenance](assets/README.md). Navigation uses locally bundled Figma SVGs; the four Dino variants are inventory-only until a real Home consumer is approved. Screen bodies retain truthful feature placeholders. The font dependency provides Space Grotesk; no font binaries are copied into this repository.
 
 Native source is not ignored by Git. Preserve the released iOS project when integrating it; do not generate a replacement identity or discard extension targets.
+
+RN-03 provides the [account-scoped HTTP boundary](src/infrastructure/api/README.md). Compose it with Anisha's real AuthSessionPort during RN-04/05 integration; this producer is not connected to the placeholder screens yet.

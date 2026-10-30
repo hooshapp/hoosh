@@ -4,11 +4,13 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN-02 implemented and validated for its asset/navigation scope; RN-01 committed as `2f88102`; RN-03–11 remain not started.
+**Current part:** RN-03 implemented; RN-01 is `2f88102`, RN-02 is `2d5c0d1`; RN-04–11 remain not started.
 
-**Implementation branch:** `task/react-native/rn-02`, created after fast-forwarding local `area/react-native` to RN-01 (`2f88102`). Main has not been merged or pushed by this task.
+**Implementation branch:** `task/react-native/rn-03`, created after fast-forwarding local `area/react-native` to RN-02 (`2d5c0d1`). Main has not been merged or pushed by this task.
 
-**Commit reference:** RN-01 is `2f88102`. RN-02 travels with its code under the unique subject `feat(mobile): add authentic assets and floating main navigation`; resolve its hash from Git until the next normal notes update records it. A pending self-hash at write time is not missing implementation.
+**Commit reference:** RN-01 is `2f88102`; RN-02 is `2d5c0d1`. RN-03 is resolved by the unique subject `feat(mobile): harden account-scoped HTTP requests` until the next normal notes update records its hash.
+
+Historical reference: RN-01 is `2f88102`. RN-02 travels with its code under the unique subject `feat(mobile): add authentic assets and floating main navigation`; resolve its hash from Git until the next normal notes update records it. A pending self-hash at write time is not missing implementation.
 
 **Last updated:** 2026-10-29.
 
@@ -16,15 +18,10 @@
 
 ## Resume here
 
-- RN-01 (`2f88102`) supplies shared UI/controllers' presentation contract and the Jest harness. RN-02 adds the original floating four-tab navigation, scoped web panel/keyboard semantics and measured safe-area clearance. Start with the [navigation contract](../../apps/mobile/src/components/navigation/README.md) and [component API](../../apps/mobile/src/components/ui/README.md).
-- Latest checks pass: 62 component/hook cases in 18 iOS/Android suites, 5 portable Vitest checks, 3 existing API checks, workspace types/lint, original asset integrity, SDK compatibility, specimen build, web export/isolation and both native JS/Hermes exports. Native asset metadata contains all eight original nav SVG byte hashes on each platform.
-- The [asset provenance](../../apps/mobile/assets/README.md) records eight nav variants and four 110×110 Dino sources, their Figma nodes and original-byte hashes. The four Dino variants are inventory/gallery only; release Home does not infer a mood, score, credits or protection.
-- Browser evidence covers 320×568, 393×852 and 430×932 actual viewports, plus a 280 px compact stress case, image failure, keyboard/manual tab activation, direct links/Back/reselect, visible Auth-stack separation, scroll clearance and transitions offline after route/asset warming. It is not cold offline web reload or native Dynamic Type acceptance.
-- Anisha can consume the shared UI/tests and keep her Auth/onboarding groups outside the main tabs. Native builds must integrate/link the new SDK-compatible `expo-image` dependency in the audited project before device QA. No legacy Swift, signing, entitlement, root Auth guard, backend or contract implementation was changed here.
-- Next Plan 04 part: RN-03 HTTP client hardening, from the updated shared/area branch after review/integration; API-01 remains an independent Ishmum lane. RN-03–11 have not been implemented by this change.
-- Signed iOS/Android SVG decoding, native keyboard/safe-area variants, VoiceOver/TalkBack and Dynamic Type remain unverified. The existing web app/preview have no favicon; the two baseline 404s are recorded separately from unexpected browser errors. Native module export is not an installed-app build.
-- Branch checkpoint: RN-01 was already committed when this request began. Local `area/react-native` was fast-forwarded to `2f88102`, then `task/react-native/rn-02` was created. This task does not merge/push `main` automatically. RN-02's own hash is resolved by its subject until a later normal notes update.
-- Context: [agent entry](<../Context (AGENT)/AGENT_START_HERE.md>), [PRD](<../Context (AGENT)/PRD.md>), [TSD](<../Context (AGENT)/TSD.md>), [PM questions](<../Context (AGENT)/PM_QUESTIONS.md>), [execution order](../core_plan/README.md), [Plan 00](../core_plan/00_shared_contracts.md).
+- RN-01/02 supply shared UI and authentic navigation. RN-03 supplies the [HTTP producer](../../apps/mobile/src/infrastructure/api/README.md); it is not composed into root routes yet.
+- Latest RN-03 checks passed: 121 portable HTTP tests, 62 component cases across 18 suites, 3 API tests, workspace types/lint/assets, web export (16 routes, 32 isolation files), and direct iOS/Android client compilation. See the RN-03 evidence below for limits.
+- Next is RN-04 account query scope/lifecycle, using Anisha's public AuthSessionPort. Anisha owns real Auth and coordinated root guards; no live Supabase/private API, signed native HTTP or installed protection is claimed.
+- Keep caches memory-only, generations Auth-owned, and sustained-401 recovery bounded. Do not invent profile DTOs ahead of API-05 or sign-out native cleanup policy.
 
 ## Recording rules
 
@@ -182,7 +179,7 @@ The JPEGs are original browser captures, each 1512×1045 pixels, containing both
 
 **Commit message:** `feat(mobile): add authentic assets and floating main navigation`.
 
-**Hash:** Pending at entry write time; this entry and implementation are committed together. Resolve with `git log --oneline --all --grep='^feat(mobile): add authentic assets and floating main navigation$'`; record the real hash on the next normal notes update.
+**Hash:** `2d5c0d1` (recorded during RN-03; ranges/evidence below are historical to RN-02). Resolve with `git log --oneline --all --grep='^feat(mobile): add authentic assets and floating main navigation$'`; record the real hash on the next normal notes update.
 
 **Date:** 2026-10-29. **Owner:** Ishmum. **Branch:** `task/react-native/rn-02`. **Parent/shared base:** `2f88102`.
 
@@ -322,6 +319,70 @@ All PNGs are actual browser captures, not generated artwork or implementation as
 - The existing missing web favicon is recorded as baseline cosmetic evidence. The 16 existing npm findings (3 high, 13 low) reported by installation remain tracked in the root README; no forced incompatible downgrade was applied.
 - Anisha can reuse the UI/test contract and integrate native image linking during her audited iOS work. Root guards stay outside the main tab provider. Coordinate the package/lock/app-config changes before overlapping work.
 - Next: review/integrate RN-02 through the agreed area/main flow, then begin RN-03 on a new task branch, or deliberately switch to independent API-01. Keep all remaining plan parts pending. This task commits locally and does not push/merge main automatically.
+
+### RN-03 — Bounded account-scoped HTTP client
+
+**Commit message:** `feat(mobile): harden account-scoped HTTP requests`.
+
+**Hash:** Pending. **Date:** 2026-10-29. **Owner:** Ishmum. **Branch:** `task/react-native/rn-03`. **Parent:** `2d5c0d1`.
+
+**Status:** Implemented. Shared HTTP/client producer only; no live Auth/API integration, query cache or screen wiring.
+
+**Scope:** Plan 00 AuthSessionPort and HTTP contracts, NFR-005/006/009/010. Add validated configuration, whole-operation cancellation/deadline, safe typed errors, runtime decoders, account-generation guards and bounded 401 recovery/pause. API-05 remains the future generated schema authority; no handwritten replacement DTO package or generator is introduced.
+
+**Initial decisions:** Keep credential/session ownership in Auth. Require the full public port for protected calls, not an unscoped token callback. Never replay writes. Resume a paused scope with an explicit identity GET verification, not a health request or token-refresh event. Keep all tests deterministic/local and all test doubles outside release routes.
+
+#### Every changed file and logical change
+
+Ranges refer to this RN-03 commit. Runtime modules separate transport, decoding, errors, cancellation and account ownership.
+
+| File and exact lines in RN-03 | Change and reason |
+|---|---|
+| `README.md`: lines 1–126 | Document the HTTP producer/consumer contract and synchronize plan status, ownership and the next integration step. |
+| `apps/mobile/README.md`: lines 1–21 | Document the HTTP producer/consumer contract and synchronize plan status, ownership and the next integration step. |
+| `apps/mobile/src/features/README.md`: lines 1–10 | Document the HTTP producer/consumer contract and synchronize plan status, ownership and the next integration step. |
+| `apps/mobile/src/infrastructure/api/README.md`: lines 1–144 | Document the HTTP producer/consumer contract and synchronize plan status, ownership and the next integration step. |
+| `apps/mobile/src/infrastructure/api/__tests__/support.ts`: lines 1–97 | Supply isolated synthetic public Auth and response helpers for tests; never import into release code. |
+| `apps/mobile/src/infrastructure/api/client-lifecycle.test.ts`: lines 1–330 | Verify HTTP boundary behavior, ownership/recovery races, cancellation and safe failures using deterministic fixtures or loopback HTTP. |
+| `apps/mobile/src/infrastructure/api/client-recovery.test.ts`: lines 1–236 | Verify HTTP boundary behavior, ownership/recovery races, cancellation and safe failures using deterministic fixtures or loopback HTTP. |
+| `apps/mobile/src/infrastructure/api/client-transport.test.ts`: lines 1–64 | Verify HTTP boundary behavior, ownership/recovery races, cancellation and safe failures using deterministic fixtures or loopback HTTP. |
+| `apps/mobile/src/infrastructure/api/client.test.ts`: lines 1–287 | Verify HTTP boundary behavior, ownership/recovery races, cancellation and safe failures using deterministic fixtures or loopback HTTP. |
+| `apps/mobile/src/infrastructure/api/client.ts`: lines 1–153 | Orchestrate safe dispatch, account checks, deadlines, runtime validation and bounded GET recovery; never replay writes. |
+| `apps/mobile/src/infrastructure/api/config.ts`: lines 1–43 | Validate explicit origin/path/timeout and expose unavailable configuration. |
+| `apps/mobile/src/infrastructure/api/decoders.ts`: lines 1–20 | Validate existing health and canonical same-owner identity responses. |
+| `apps/mobile/src/infrastructure/api/errors.ts`: lines 1–201 | Define safe typed errors and strict canonical envelope/Retry-After parsing without exposing raw server text. |
+| `apps/mobile/src/infrastructure/api/operation.ts`: lines 1–61 | Own one cancellable deadline and dispose timers/listeners; discard late response bodies. |
+| `apps/mobile/src/infrastructure/api/protocol.ts`: lines 1–59 | Prepare safe headers and JSON bodies; enforce response origin/media type and safe body failures. |
+| `apps/mobile/src/infrastructure/api/session-scope.ts`: lines 1–157 | Guard UUID/generation and recovery leases using the public Auth port; clean temporary subscriptions. |
+| `apps/mobile/src/infrastructure/api/transport.native.ts`: lines 1–4 | Select Expo native Fetch explicitly without another dependency. |
+| `apps/mobile/src/infrastructure/api/transport.ts`: lines 1–3 | Use standard Fetch outside native. |
+| `apps/mobile/src/infrastructure/api/types.ts`: lines 1–26 | Require runtime JSON decoders or explicit empty responses; expose typed injection options. |
+| `docs/Context (AGENT)/AGENT_START_HERE.md`: lines 1–132 | Document the HTTP producer/consumer contract and synchronize plan status, ownership and the next integration step. |
+| `docs/core_plan/04_react_native_integration.md`: lines 1–546 | Document the HTTP producer/consumer contract and synchronize plan status, ownership and the next integration step. |
+| `docs/core_plan/README.md`: lines 1–117 | Document the HTTP producer/consumer contract and synchronize plan status, ownership and the next integration step. |
+| `docs/core_plan_implementation_notes/artifacts/rn-03/validation-results.json`: lines 1–75 | Record actual check counts, runtime/bundle hashes and static compilation limitations for reproducible handoff. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1–419 | Record current checkpoint, prior hashes and every RN-03 file, decision, check and remaining integration gate. |
+
+#### Decisions, behavior and edge cases
+
+- The client now consumes the full AuthSessionPort rather than an unscoped token callback. Protected requests capture UUID/generation, obtain fresh credentials per attempt, check immediately before dispatch and before delivering decoded data, and cancel on ownership changes. No production caller existed to migrate. Routine credential rotation preserves ownership; temporary unavailability never signs out.
+- Configuration accepts an explicit HTTP(S) origin only, with no fallback URL, credentials, prefix, query or fragment. Paths stay same-origin. Caller credentials/cookies/correlation headers are stripped. Native dispatch explicitly uses expo/fetch; redirects are refused. Development HTTP remains possible; deployed origins must use HTTPS.
+- One 15-second operation budget covers token acquisition, recovery, dispatch, body reading and runtime decoding, including elapsed wall time after suspension. Abort listeners/timers are cleaned up and late work is discarded. Synchronous CPU parsing cannot be preempted mid-call. Cancelling a consumer does not cancel Auth's shared refresh or undo a server write.
+- JSON requires a decoder; explicit empty responses accept 204 only. Identity decoding reuses canonical AuthIdentity and requires the captured owner. API-05 remains the generated DTO authority. Raw profile input is not normalized by transport.
+- Errors expose fixed client copy and allowlisted metadata only. Canonical fixture envelopes validate status/code/details/request IDs; raw server/SDK text cannot escape. Retry-After accepts valid hints up to 60 seconds; longer hints disable automatic retry rather than being shortened. The HTTP client schedules no generic retries.
+- A GET 401 delegates one revalidation to Auth and allows one same-owner replay. Sustained 401 pauses automatic work across credential rotation. Explicit recovery permits one identity probe; only a valid matching identity clears the pause. A local epoch rejects older in-flight recovery results. Writes never replay or refresh automatically; uncertain dispatched writes report requestMayHaveCommitted for future authoritative reconciliation.
+
+#### Actual validation
+
+- `npm run check` passed: 121 portable tests in four files, 62 component/hook tests in 18 suites, workspace TypeScript/ESLint, source asset integrity, Ruff and 3 pytest checks. Tests include account switches, same-UUID new generations, body/token/recovery delays, cleanup, mutation uncertainty, safe errors and concurrency.
+- Two loopback HTTP server tests use real Fetch: redirect target receives no bearer/request, and a never-ending response body reaches its deadline. Test servers close in finally; no remote credentials are used.
+- `npm run mobile:export` passed: 16 static routes, 32 JS/HTML isolation files, original nav asset integrity. This existing app does not yet import the producer.
+- From apps/mobile, `npx expo export:embed --entry-file src/infrastructure/api/client.ts --platform ios --dev false --bundle-output /tmp/hoosh-rn03-client/ios.js --sourcemap-output /tmp/hoosh-rn03-client/ios.map` and the corresponding android command passed. Direct bundles are 896659 / 901330 bytes; indexed maps have 548 / 546 entries and select transport.native.ts plus Expo's fetch implementation. Neither maps nor bundles contain test fixtures. These are static JS compilations, not installed/signed app execution.
+- [Machine-readable evidence](artifacts/rn-03/validation-results.json) records runtime source and bundle SHA-256 values, exact counts and limitations. Release JS/HTML and both direct bundles exclude the synthetic Auth/server-copy test markers.
+
+#### Remaining and handoff
+
+RN-04 owns query scope, guarded mutation callbacks and platform lifecycle integration. Anisha supplies live Auth and coordinates root wiring. RN-05/API-04/05 own the real identity round trip and generated response types. Real Supabase/private API, signed native HTTP/abort/redirect behavior and platform device acceptance remain unverified. No backend, contracts, lockfile, app config, routes, native targets or enforcement policy changed. No new visual assets or screenshots were needed. This commit is local; no push/main merge is implied.
 
 ### Entry template
 

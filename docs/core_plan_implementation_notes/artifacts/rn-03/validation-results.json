@@ -1,0 +1,75 @@
+{
+  "plan": "RN-03",
+  "parentCommit": "2d5c0d1",
+  "owner": "Ishmum",
+  "node": "v24.20.0",
+  "npm": "11.19.0",
+  "checks": {
+    "workspace": "passed",
+    "portableTests": 121,
+    "portableFiles": 4,
+    "componentTests": 62,
+    "componentSuites": 18,
+    "apiTests": 3,
+    "webStaticRoutes": 16,
+    "webIsolationFiles": 32
+  },
+  "nativeClientBundles": {
+    "ios": {
+      "bytes": 896659,
+      "sha256": "56d853a77dc25587732eaef2ce4a2d1821678104fd37ce1632c44282d137cd98",
+      "sourceMapEntries": 548,
+      "selectedSources": [
+        "/apps/mobile/src/infrastructure/api/client.ts",
+        "/apps/mobile/src/infrastructure/api/config.ts",
+        "/apps/mobile/src/infrastructure/api/errors.ts",
+        "/apps/mobile/src/infrastructure/api/decoders.ts",
+        "/apps/mobile/src/infrastructure/api/operation.ts",
+        "/apps/mobile/src/infrastructure/api/protocol.ts",
+        "/apps/mobile/src/infrastructure/api/session-scope.ts",
+        "/apps/mobile/src/infrastructure/api/transport.native.ts",
+        "/node_modules/expo/build/winter/fetch/fetch.js",
+        "/node_modules/expo/build/winter/fetch/fetch.types.js"
+      ],
+      "testOrFixtureSources": 0,
+      "executedOnDevice": false
+    },
+    "android": {
+      "bytes": 901330,
+      "sha256": "5d482baf9603cca00ce9f00ca8aa559d8123a6dbb4ef7dffbbdfcb7d5007c630",
+      "sourceMapEntries": 546,
+      "selectedSources": [
+        "/apps/mobile/src/infrastructure/api/client.ts",
+        "/apps/mobile/src/infrastructure/api/config.ts",
+        "/apps/mobile/src/infrastructure/api/errors.ts",
+        "/apps/mobile/src/infrastructure/api/decoders.ts",
+        "/apps/mobile/src/infrastructure/api/operation.ts",
+        "/apps/mobile/src/infrastructure/api/protocol.ts",
+        "/apps/mobile/src/infrastructure/api/session-scope.ts",
+        "/apps/mobile/src/infrastructure/api/transport.native.ts",
+        "/node_modules/expo/build/winter/fetch/fetch.js",
+        "/node_modules/expo/build/winter/fetch/fetch.types.js"
+      ],
+      "testOrFixtureSources": 0,
+      "executedOnDevice": false
+    }
+  },
+  "runtimeSourceSha256": {
+    "apps/mobile/src/infrastructure/api/client.ts": "d2b1519da12a2515f07dcc36765f64555999ca710b9f6cd63bd55c0cdab9659f",
+    "apps/mobile/src/infrastructure/api/config.ts": "5b3fc71990f9b1aea2c77c7c96497114c046c1815049f729cdaff1a43b10877e",
+    "apps/mobile/src/infrastructure/api/decoders.ts": "a5ce561ca425ee983befded1d8f4646b68842ddb443970727b43087c9baf961a",
+    "apps/mobile/src/infrastructure/api/errors.ts": "b5999cae22342a7e6b5c1b37f3f3bd12d769a66086c89d5da64486737e1e36c9",
+    "apps/mobile/src/infrastructure/api/operation.ts": "f85ff8c65ed4622f502cc6473dd21a5c5c6c0ff1c2563f3358c67cdc2fef63b2",
+    "apps/mobile/src/infrastructure/api/protocol.ts": "2e25259d4e826c56654df0c87233fcd11f048d5fb0098a7caf65bbf96f490b36",
+    "apps/mobile/src/infrastructure/api/session-scope.ts": "a8d9011ced69662aab887c2a3a23582f40f0c4db23f9375d9349b008148af350",
+    "apps/mobile/src/infrastructure/api/transport.native.ts": "d130ec35182db19783641f00ae1d4a76350bdbe19673f6786f31f0acf08eebe5",
+    "apps/mobile/src/infrastructure/api/transport.ts": "f77a3d3f80398028fb3934690b3b807a6a1229f7b5f7514bc050b29f55149793",
+    "apps/mobile/src/infrastructure/api/types.ts": "2d19001ac11105cf2db35275336d884f0ddb72fc1094c8e4f5196add3e719848"
+  },
+  "releaseFixtureMarkersAbsent": true,
+  "limitations": [
+    "No real Supabase or private API endpoints were exercised.",
+    "Native bundles are static compilation, not device HTTP/abort/redirect acceptance.",
+    "Main app has not imported/composed this producer; RN-04/05 own that wiring."
+  ]
+}
