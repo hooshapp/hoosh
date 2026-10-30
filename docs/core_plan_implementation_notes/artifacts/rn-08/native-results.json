@@ -1,0 +1,29 @@
+{
+  "part": "RN-08 presentation/read-consumer preparation",
+  "parentCommit": "5790302",
+  "node": "v24.20.0",
+  "liveNativeAcceptance": false,
+  "runtimeSourceSha256": {
+    "apps/mobile/src/features/protection/status-model.ts": "f0a81d3ddd56285a5f3e460b60f08cee2b1875206d68a52c9730e60e970eb582",
+    "apps/mobile/src/features/protection/protection-status.tsx": "a92f73eb0d05e64b3006f8783a6e21819f87e993ed18fe9ae08742f8959c1727",
+    "apps/mobile/src/features/protection/use-protection-status.ts": "0bab75d96df91f12ed0750284e93320ff090df50c0279b57dcaade44ea2833d9"
+  },
+  "bundles": {
+    "ios": {
+      "bytes": 867401,
+      "sha256": "7926df0db712d63b0f8eec954474decd7854701f846d73a750ea275130e28edc",
+      "sourceMapEntries": 508,
+      "testFixtureSources": 0,
+      "privateApiOrAccountSources": 0,
+      "executedOnDevice": false
+    },
+    "android": {
+      "bytes": 871762,
+      "sha256": "427c1b8c2314fea6ad4d81c65a713e92baeebabcc9d2e42810ba45d467c249d3",
+      "sourceMapEntries": 506,
+      "testFixtureSources": 0,
+      "privateApiOrAccountSources": 0,
+      "executedOnDevice": false
+    }
+  }
+}

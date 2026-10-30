@@ -11,3 +11,5 @@
 Ishmum and Anisha review shared contracts and root routing changes. Development fixtures must stay explicit and must never imply authenticated accounts, installed restrictions, or measured progress in production.
 
 The [account consumer](account/README.md) is prepared for RN-05 but not routed into the current app. It consumes the shared ports; real Auth/guards, protected API identity and generated types must land before live acceptance. Never install a synthetic session to enable the region in release.
+
+[Protection presentation](protection/README.md) consumes the shared native read contract independently of Auth/API. Only fresh matching native evidence may yield an active claim; simulated evidence stays outside app routes. Native adapters/actions, lifecycle wiring and account/native ownership remain separate work.

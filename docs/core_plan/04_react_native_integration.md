@@ -1,7 +1,7 @@
 # 04 — React Native Integration and Shared Frontend Plan
 
 **Date:** 2026-10-28\
-**Status:** RN-01/02/03 and RN-04 producer implemented with recorded evidence; RN-04 real root wiring remains coordinated/pending, RN-05 has an independently prepared consumer with live acceptance pending, RN-07 has UI-only preparation, and RN-06/08–11 remain not started. RN-02 also has native JS/Hermes exports; signed-device rendering/keyboard/screen-reader acceptance remains separate.\
+**Status:** RN-01/02/03 and RN-04 producer implemented with recorded evidence; RN-04 real root wiring remains coordinated/pending, RN-05 has an independently prepared consumer with live acceptance pending, RN-07 has UI-only preparation, RN-08 presentation/read-consumer preparation is implemented, and RN-06/09–11 remain not started. RN-02 also has native JS/Hermes exports; signed-device rendering/keyboard/screen-reader acceptance remains separate.\
 **Primary owner:** Ishmum — shared post-onboarding React Native application.\
 **Required reviewer / collaborator:** Anisha — authentication, onboarding, iOS integration, and root navigation.\
 **Area branch:** `area/react-native`; create each task branch from the updated area branch and integrate working increments into `main`.\
@@ -181,7 +181,7 @@ This is application-data cleanup, not approval to remove native restrictions. Wh
 
 ## 6. Commit sequence and dependencies
 
-RN-01/02/03 and the RN-04 producer are implemented with evidence linked below; RN-04 real root wiring is pending, RN-05 consumer preparation is recorded separately, RN-07 has user-requested UI-only preparation, and RN-06/08–11 remain **Not started**. A part is not complete merely because its task branch exists. Proposed messages are suggestions for the actual implementation commits, not instructions to commit this planning document under those messages.
+RN-01/02/03 and the RN-04 producer are implemented with evidence linked below; RN-04 real root wiring is pending, RN-05 consumer preparation is recorded separately, RN-07 has user-requested UI-only preparation, RN-08 presentation/read-consumer preparation is recorded separately, and RN-06/09–11 remain **Not started**. A part is not complete merely because its task branch exists. Proposed messages are suggestions for the actual implementation commits, not instructions to commit this planning document under those messages.
 
 | Part | Coherent proposed commit | Prerequisites | Exit evidence | Status | Actual commit |
 |---|---|---|---|---|---|
@@ -191,8 +191,8 @@ RN-01/02/03 and the RN-04 producer are implemented with evidence linked below; R
 | RN-04 | `feat(mobile): isolate account server state and lifecycle` | RN-01/03, SC-03; AUTH-02 for real root integration | 42 new portable cases + 26 iOS/Android cases; two-account/draft/callback/retry/event cleanup; direct native compilation | Complete for producer scope; real root wiring pending | `610f570` (producer; real root wiring pending) |
 | RN-05 | `feat(account): connect verified API identity to settings` | RN-01/04; AUTH-01/02/03/07; SB-03; API-04/05 | Real sign-in → `/v1/me` account screen evidence | Consumer prepared/tested; real integration and acceptance pending | `0c6e4db` (preparation only) |
 | RN-06 | `test(mobile): cover authenticated round trip and recovery` | RN-05; auth guards/recovery integrated | M1 acceptance matrix, no development bypass, build evidence | Not started | — |
-| RN-07 | `feat(account): integrate versioned profile reads and edits` | RN-04/05; approved profile contract/API/migration | Real profile round trip, conflict and ambiguous-save handling | UI prepared only; real profile/data integration pending | See RN-07 UI preparation notes |
-| RN-08 | `feat(protection-ui): show native capability and installation states` | RN-01; agreed native read boundary; actual adapters for integration | Status mapper tests; device evidence only where adapter exists | Not started | — |
+| RN-07 | `feat(account): integrate versioned profile reads and edits` | RN-04/05; approved profile contract/API/migration | Real profile round trip, conflict and ambiguous-save handling | UI prepared only; real profile/data integration pending | `5790302` (UI only) |
+| RN-08 | `feat(protection-ui): show native capability and installation states` | RN-01; agreed native read boundary; actual adapters for integration | Status mapper tests; device evidence only where adapter exists | Presentation/read consumer prepared; native wiring/device acceptance pending | See RN-08 preparation notes |
 | RN-09 | `feat(mobile): compose main app surfaces with explicit feature states` | RN-01/02; RN-07/08 where live data is used | Figma comparisons + no invented production data | Not started | — |
 | RN-10 | `fix(mobile): complete accessibility layout and lifecycle handling` | Implemented RN parts; relevant device build access | Accessibility/device-size checks and targeted regression tests | Not started | — |
 | RN-11 | `test(integration): document profile and platform handoff acceptance` | RN-06/07/10; RN-08/09 evidence as applicable | M2 matrix, native capability handoff, reproducible runbook | Not started | — |
@@ -402,6 +402,17 @@ If a part grows beyond one reviewable behavior change, split it into suffixed pa
 **Commit done when:** A real permitted profile edit persists through API reload and restart, rejects stale/wrong-user writes, and does not activate protection. **Recovery:** disable editing while retaining safe reads; use a forward-compatible UI fallback instead of destructive profile/schema rollback.
 
 ### RN-08 — Capability-aware native protection presentation
+
+**Independent preparation checkpoint (2026-10-29):** [Protection presentation](../../apps/mobile/src/features/protection/README.md) now supplies an evidence-based mapper, accessible status/action card, bounded read-only consumer and isolated state preview. No native adapter or live route is registered. [RN-08 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md#rn-08-preparation--evidence-based-protection-presentation) record exact source/tests/browser/native compilation evidence. This completes the independent presentation slice, not native/device integration. Existing Auth/profile gates remain separate.
+
+| Ref | Native work intentionally deferred | Owner / required evidence |
+|---|---|---|
+| RN08-D01 | Audit and implement real Swift/Kotlin adapters and register the shared native port with truthful per-device capabilities | Anisha iOS; Ishmum Android. Source/entitlement/signing audit and Android feasibility are not established by UI or mock-service tests. |
+| RN08-D02 | Wire actual AppState + route focus/native changes into the required visibility input, refresh after real actions, and supply the authoritative device-native desired revision | Coordinated main/native host integration. The hook accepts these inputs but does not register lifecycle listeners or infer revision from a backend/profile save. |
+| RN08-D03 | Supply actual permission/recovery/selection/setup handlers and complete async busy/error flows | Native owners' supported platform flows. Presentation callbacks/preview notices do not prompt or grant permission, and a read refresh cannot reinitialize an absent adapter. |
+| RN08-D04 | Confirm real installation/revision reconciliation and approved overlapping restriction behavior | Real native coordinator and approved policy. Old installed state stays distinct from a new desired plan; UI/API success is not installation evidence. |
+| RN08-D05 | Decide and implement account/sign-out ownership, event attribution and any restriction transfer/cleanup | PM/native migration protocol. This module does not clear, reassign or drain native rules/events on Auth changes or unmount. |
+| RN08-D06 | Execute signed-device revocation/install-failure/foreground/offline/host-termination and accessibility checks | Platform owners' reproducible device evidence. Browser typography/layout and JS compilation do not establish OS protection or Android/iOS parity. |
 
 **Owner:** Ishmum for presentation; native owners supply/validate their adapters.\
 **Dependencies:** Native read contract reviewed in Plan 00; source audit/feasibility and native implementation for live integration. Pure status mappers/specimens can proceed earlier.\

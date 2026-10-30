@@ -1,0 +1,160 @@
+{
+  "browser": "156.0.8078.76",
+  "cases": [
+    {
+      "state": "No adapter",
+      "title": "Protection status unavailable",
+      "actionDoesNotActivate": true
+    },
+    {
+      "state": "Unsupported",
+      "title": "Protection unavailable here",
+      "actionDoesNotActivate": true
+    },
+    {
+      "state": "Checking",
+      "title": "Checking protection",
+      "actionDoesNotActivate": true
+    },
+    {
+      "state": "Permission revoked",
+      "title": "Permission needed",
+      "actionDoesNotActivate": true
+    },
+    {
+      "state": "Inactive",
+      "title": "Protection inactive",
+      "actionDoesNotActivate": true
+    },
+    {
+      "state": "Installing first plan",
+      "title": "Applying your plan",
+      "actionDoesNotActivate": true
+    },
+    {
+      "state": "Older installed plan",
+      "title": "Plan update not confirmed",
+      "actionDoesNotActivate": true
+    },
+    {
+      "state": "Read error",
+      "title": "Protection status unknown",
+      "actionDoesNotActivate": true
+    },
+    {
+      "state": "Degraded",
+      "title": "Protection needs attention",
+      "actionDoesNotActivate": true
+    },
+    {
+      "state": "Failed",
+      "title": "Protection needs attention",
+      "actionDoesNotActivate": true
+    },
+    {
+      "state": "Confirmed shield",
+      "title": "Protection active",
+      "actionDoesNotActivate": true
+    },
+    {
+      "state": "Reminder only",
+      "title": "Reminders active",
+      "actionDoesNotActivate": true
+    },
+    {
+      "state": "App interventions",
+      "title": "App interventions active",
+      "actionDoesNotActivate": true
+    },
+    {
+      "state": "Unknown desired plan",
+      "title": "Protection status unknown",
+      "actionDoesNotActivate": true
+    },
+    {
+      "width": 393,
+      "dark": false,
+      "geometry": {
+        "width": 393,
+        "height": 292,
+        "overflow": false,
+        "button": {
+          "width": 327,
+          "height": 48
+        }
+      }
+    },
+    {
+      "width": 393,
+      "dark": true,
+      "geometry": {
+        "width": 393,
+        "height": 292,
+        "overflow": false,
+        "button": {
+          "width": 327,
+          "height": 48
+        }
+      }
+    },
+    {
+      "width": 320,
+      "dark": false,
+      "geometry": {
+        "width": 320,
+        "height": 315,
+        "overflow": false,
+        "button": {
+          "width": 254,
+          "height": 48
+        }
+      }
+    },
+    {
+      "width": 320,
+      "dark": true,
+      "geometry": {
+        "width": 320,
+        "height": 315,
+        "overflow": false,
+        "button": {
+          "width": 254,
+          "height": 48
+        }
+      }
+    },
+    {
+      "width": 280,
+      "dark": false,
+      "geometry": {
+        "width": 280,
+        "height": 331,
+        "overflow": false,
+        "button": {
+          "width": 214,
+          "height": 48
+        }
+      }
+    },
+    {
+      "width": 280,
+      "dark": true,
+      "geometry": {
+        "width": 280,
+        "height": 331,
+        "overflow": false,
+        "button": {
+          "width": 214,
+          "height": 48
+        }
+      }
+    },
+    {
+      "width": 320,
+      "largeText": 24,
+      "overflow": false
+    }
+  ],
+  "pageErrors": [],
+  "privateRequests": []
+}

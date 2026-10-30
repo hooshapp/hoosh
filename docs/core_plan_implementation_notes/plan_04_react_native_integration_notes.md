@@ -4,11 +4,11 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN-07 UI-only preparation implemented by Ishmum’s explicit request. RN-05 preparation is `0c6e4db`; RN-05/06 live acceptance and RN-07 data integration remain pending; RN-08–11 remain unstarted.
+**Current part:** RN-08 presentation/read-consumer preparation implemented. RN-07 UI is `5790302`; live Auth/profile/native integration remains pending; RN-09–11 remain unstarted.
 
-**Implementation branch:** `task/react-native/rn-07-ui`, parent RN-05 preparation `0c6e4db`. No push/main merge is implied.
+**Implementation branch:** `task/react-native/rn-08-ui`, parent RN-07 UI `5790302`. No push/main merge is implied.
 
-**Commit reference:** RN-01 is `2f88102`; RN-02 is `2d5c0d1`. RN-03 is `0741758`. RN-04 is `610f570`. RN-05 preparation is `0c6e4db`. RN-07 UI preparation has its own pending self-hash.
+**Commit reference:** RN-01 is `2f88102`; RN-02 is `2d5c0d1`. RN-03 is `0741758`. RN-04 is `610f570`. RN-05 preparation is `0c6e4db`. RN-07 UI preparation is `5790302`; RN-08 preparation has its own pending self-hash.
 
 **Last updated:** 2026-10-29.
 
@@ -16,12 +16,12 @@
 
 ## Resume here
 
-- Committed foundations: RN-01 `2f88102`, RN-02 `2d5c0d1`, RN-03 `0741758`, RN-04 `610f570`; RN-05 consumer preparation `0c6e4db`. RN-07 now has **UI-only preparation**, under `feat(mobile): prepare profile editor UI without persistence`; resolve its self-hash from Git until the next normal notes update records it.
-- Ishmum explicitly chose to continue frontend UI without waiting for Auth/backend. Run `npm run mobile:ui` and scroll to **Profile editor — UI-only Figma example**. The controlled field/buttons/clear confirmation and simulated feedback are available; Jordan Rivera is only an isolated Figma example and reload resets it. Real Settings/root routes are unchanged.
-- RN-05/06 live identity and RN-07 live profile acceptance remain pending. Read the original plan's **RN07-D01–D07** table and [profile UI contract](../../apps/mobile/src/features/account/PROFILE_UI.md) before later integration. Do not mark profile APIs, generated DTOs, revisions, normalization, reconciliation, account guards, persistent drafts or M2 acceptance done from this UI commit.
-- Latest checks: 169 portable cases, 150 component cases in 26 iOS/Android suites (30 new RN-07), 3 backend tests, types/lint, 13 original assets and supported web export/isolation. Built browser preview passes 12 interaction/geometry cases without private requests; direct native bundles include current UI and exact original artwork without API/query clients or test/example imports. Device/live behavior remains unverified.
-- Next independent frontend work can be RN-08 status presentation or bounded RN-09 screen composition. Live RN-07 work resumes when real RN-04/05/Auth and API-05/06–09 outputs exist. Anisha retains Auth/iOS ownership; Ishmum owns backend and shared main UI. Do not enable unapproved demographic/plan fields or fake native protection.
-- Existing untracked icon folders remain untouched. This task does not push or merge main.
+- Foundations: RN-01 `2f88102`, RN-02 `2d5c0d1`, RN-03 `0741758`, RN-04 `610f570`; RN-05 consumer preparation `0c6e4db`; RN-07 UI-only preparation `5790302`. RN-08 now supplies independent protection presentation/read-consumer preparation under `feat(mobile): prepare capability-aware protection status UI`; resolve its own hash from Git until the next normal notes update records it.
+- Run `npm run mobile:ui` and find **Device protection — simulated evidence only**. All positive device labels there are simulated and visibly labeled. No native adapter, permission prompt, restriction write or live route is registered. Read [the native consumer contract](../../apps/mobile/src/features/protection/README.md) and original **RN08-D01–D06** checklist before real integration.
+- RN-08 maps availability/capability/permission/current installation separately. It never promotes notifications/overlays to shield claims, stale/failed reads to active, or saved API/profile revisions to native installation. Its read-only hook requires explicit route/foreground visibility, invalidates old tickets, bounds reads to 10 seconds including elapsed wall time, and ignores late results. Host lifecycle/native action wiring remains deferred.
+- Latest checks: 216 portable cases in 8 files (47 new RN-08), 184 component cases in 28 iOS/Android suites (34 new), 3 backend tests, workspace types/lint, 13 original SVGs and supported web export/isolation. Built browser preview passes 21 cases without private requests. Direct iOS/Android graphs match final mapper/card/hook and exclude test/example/API/query/account imports; not installed native acceptance.
+- RN-05/06 identity, RN-07 persistence and RN-08 live/device work remain pending. Existing RN07-D01–D07 and RN08-D01–D06 IDs identify skipped work. Next independent frontend part is a bounded RN-09 screen-composition increment; do not fabricate profile, protection, quest or usage outcomes while composing it.
+- Anisha retains Auth/iOS and coordinated guards; Ishmum owns Android/shared UI/backend. Native rule/event ownership at account changes remains a PM/native release gate. Existing untracked icon folders are untouched; this task does not push or merge main.
 
 ## Recording rules
 
@@ -567,7 +567,7 @@ RN-05 **remains incomplete** until SB-03 + real AUTH-01/02/03/07 and API-04/05 e
 ### RN-07 UI preparation — Controlled display-name editor
 
 **Commit message:** `feat(mobile): prepare profile editor UI without persistence`.
-**Hash:** Pending. **Date:** 2026-10-29. **Owner:** Ishmum. **Branch:** `task/react-native/rn-07-ui`. **Parent:** `0c6e4db`.
+**Hash:** `5790302` (recorded during RN-08). **Date:** 2026-10-29. **Owner:** Ishmum. **Branch:** `task/react-native/rn-07-ui`. **Parent:** `0c6e4db`.
 **Status:** Implemented/tested as UI preparation only; not RN-07 integration acceptance.
 **User-directed scope:** Build buttons/profile editing presentation without real data or API/Auth work, using one clearly labeled Figma example in an isolated developer preview. Record all skipped work here and in the original plan.
 **Design:** Read-only Figma session `381e60fc-0a09-464f-a2a3-6114fb62a179`; Settings card `10562:136` and primary/secondary recipes `10611:13017`, `10611:13022`. No dedicated display-name edit frame is established; the controlled editor is an engineering adaptation using existing Field/Button/Screen primitives, not a claim that age/gender editors are approved.
@@ -661,6 +661,106 @@ Use android paths for the second command. From root run `node docs/core_plan_imp
 #### Handoff
 
 Future RN-07 integration commits must complete RN07-D01–D07 and original M2 acceptance using actual Auth/API/DB outputs; preserve this UI-only historical entry. Do not enable a sample-backed profile route, infer onboarding completion from a preview, attach old drafts to a new account, or treat UI feedback simulations as real reconciliation. Independent RN-08/RN-09 frontend work can proceed while those producers are built. Local commit only; no push or main merge.
+
+### RN-08 preparation — Evidence-based protection presentation
+
+**Commit message:** `feat(mobile): prepare capability-aware protection status UI`.
+**Hash:** Pending. **Date:** 2026-10-29. **Owner:** Ishmum. **Branch:** `task/react-native/rn-08-ui`. **Parent:** `5790302`.
+**Status:** Independent presentation/read consumer implemented/tested; live native wiring/device acceptance remains pending.
+**Scope:** Map shared native availability/capability/authorization/revision evidence, render honest status/actions, provide a bounded read-only hook and isolated simulated preview, and document skipped native integration/device acceptance in this record and the original plan. No permission prompts/writes or fake adapter is wired into the app.
+**Figma:** Read-only session `d5c91295-9bd7-435c-957b-f2b5d1a63107`, Home `22:4` and permission `50:85`. Home has no complete protection-status card/state set; the image-free status summary adapts its existing warm card recipes. The actual onboarding permission screen remains Anisha's scope; its artwork and OS bar are not copied into this new summary.
+
+#### Every changed file and logical change
+
+Ranges refer to this RN-08 preparation commit. PNG evidence records binary dimensions/bytes; historical entries retain their original commit context.
+
+| File and exact lines in RN-08 preparation | Change and reason |
+|---|---|
+| `README.md`: lines 16–16 | Link the new protection consumer/preview contract and clearly distinguish prepared status UI from real adapter registration, permission/actions and native/device acceptance. |
+| `apps/mobile/README.md`: lines 28–29 | Link the new protection consumer/preview contract and clearly distinguish prepared status UI from real adapter registration, permission/actions and native/device acceptance. |
+| `apps/mobile/dev/ui/main.tsx`: lines 13–13 | Mount the protection evidence specimen only in the existing developer gallery, alongside earlier UI examples and outside Router imports. |
+| `apps/mobile/dev/ui/main.tsx`: lines 118–118 | Mount the protection evidence specimen only in the existing developer gallery, alongside earlier UI examples and outside Router imports. |
+| `apps/mobile/dev/ui/protection-specimen.tsx`: lines 1–143 | Add a clearly labeled isolated evidence selector for fourteen status cases, warm/dark rendering and preview-only recovery notices. Construct presentation inputs only, not a native service; capture the simulated-evidence label inside every screenshot and never grant permission or activate restrictions. |
+| `apps/mobile/src/features/README.md`: lines 14–15 | Link the new protection consumer/preview contract and clearly distinguish prepared status UI from real adapter registration, permission/actions and native/device acceptance. |
+| `apps/mobile/src/features/protection/README.md`: lines 1–111 | Define trusted native inputs, positive-claim requirements, revision/account-ownership limits, stable integration/explicit visibility, bounded read semantics and action ownership. Document the image-free Figma adaptation, simulated preview and all six deferred live/device gates. |
+| `apps/mobile/src/features/protection/__tests__/fixtures.ts`: lines 1–31 | Supply test-only native capability/status values and connection wrappers with unique marker strings. No SDK/native service implementation or fixture is imported by the actual producer or app routes. |
+| `apps/mobile/src/features/protection/protection-status.test.tsx`: lines 1–285 | Exercise 17 cases on both OS presets for callback matching/busy, no permission or write side effects, strict repeated effects, producer/revision/visibility invalidation and deliberate retry. Verify cleanup, stopped/late results and both timer expiry and overdue success after suspension. |
+| `apps/mobile/src/features/protection/protection-status.tsx`: lines 1–80 | Render a warm/dark accessible status summary through existing typography, Button and InlineStatus recipes. Show recovery/setup actions only when both the model and matching owner callback permit them, with controlled busy state; add no imagery, native writes or automatic activation. |
+| `apps/mobile/src/features/protection/status-model.test.ts`: lines 1–209 | Exercise 47 pure mapping cases for independent bridge/permission/capability states, native errors, revision validity/mismatch, missing reasons and diagnostic privacy. Verify fresh matching shield evidence only, distinct reminder/overlay labels and truthful earlier/same/newer installation copy. |
+| `apps/mobile/src/features/protection/status-model.ts`: lines 1–228 | Project native availability/capability/authorization/installation evidence into fixed-copy status states, validating basic platform/shape/revision constraints before positive claims. Preserve installed-versus-desired state, distinguish shields/overlays/reminders and suppress raw diagnostic/identity data without mutating native state. |
+| `apps/mobile/src/features/protection/use-protection-status.ts`: lines 1–78 | Provide an explicit-visibility, read-only native consumer with stable request tickets across producer/revision/focus changes. Read capabilities/authorization/status only; bound UI waiting to ten seconds including wall-clock suspension, clean own timers and ignore overdue/replaced/unmounted results without cancelling rules or prompting. |
+| `apps/mobile/src/infrastructure/native/README.md`: lines 11–12 | Link the shared read-only status consumer and specify real adapter identity, device-native desired revision and lifecycle inputs that native owners must still provide. |
+| `docs/Context (AGENT)/AGENT_START_HERE.md`: lines 11–11 | Make the new protection presentation/read-consumer checkpoint discoverable to future agents while retaining pending live/native status. |
+| `docs/Context (AGENT)/AGENT_START_HERE.md`: lines 130–130 | Make the new protection presentation/read-consumer checkpoint discoverable to future agents while retaining pending live/native status. |
+| `docs/core_plan/04_react_native_integration.md`: lines 4–4 | Record RN-07’s actual UI commit and RN-08 presentation status/evidence. Add stable RN08-D01–D06 native deferrals while retaining original live/native dependencies, implementation requirements and device acceptance criteria. |
+| `docs/core_plan/04_react_native_integration.md`: lines 184–184 | Record RN-07’s actual UI commit and RN-08 presentation status/evidence. Add stable RN08-D01–D06 native deferrals while retaining original live/native dependencies, implementation requirements and device acceptance criteria. |
+| `docs/core_plan/04_react_native_integration.md`: lines 194–195 | Record RN-07’s actual UI commit and RN-08 presentation status/evidence. Add stable RN08-D01–D06 native deferrals while retaining original live/native dependencies, implementation requirements and device acceptance criteria. |
+| `docs/core_plan/04_react_native_integration.md`: lines 406–416 | Record RN-07’s actual UI commit and RN-08 presentation status/evidence. Add stable RN08-D01–D06 native deferrals while retaining original live/native dependencies, implementation requirements and device acceptance criteria. |
+| `docs/core_plan/README.md`: lines 3–3 | Expose RN-08 preparation alongside RN-05/RN-07 without converting pending live acceptance into a completed milestone; preserve eight accepted parts/producers and 36 awaiting acceptance. |
+| `docs/core_plan/README.md`: lines 12–12 | Expose RN-08 preparation alongside RN-05/RN-07 without converting pending live acceptance into a completed milestone; preserve eight accepted parts/producers and 36 awaiting acceptance. |
+| `docs/core_plan/README.md`: lines 115–115 | Expose RN-08 preparation alongside RN-05/RN-07 without converting pending live acceptance into a completed milestone; preserve eight accepted parts/producers and 36 awaiting acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-08/browser-check.mjs`: lines 1–104 | Validate fourteen state/action cases, six warm/dark width/target geometries and enlarged-text reflow in actual Chrome. Save source-independent screenshots/results and fail on page errors or private API requests; simulated callbacks must not silently activate protection. |
+| `docs/core_plan_implementation_notes/artifacts/rn-08/browser-results.json`: lines 1–160 | Record 21 real browser presentation cases with 393/320/280 component widths, minimum targets, dark/large-text checks, no page errors and no private requests. This is not a report of actual OS permission or protection. |
+| `docs/core_plan_implementation_notes/artifacts/rn-08/native-results.json`: lines 1–29 | Preserve final source/bundle hashes and direct native graph sizes: 867401/871762 bytes and 508/506 indexed map entries. Explicitly record zero fixture/private imports and false live/device acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-08/status-320-dark.png`: binary PNG, 320×316, 17806 bytes | Preserve an actual browser status-summary capture with an embedded simulated-evidence label: unavailable, confirmed example, dark permission state or enlarged text. No actual device state is implied. |
+| `docs/core_plan_implementation_notes/artifacts/rn-08/status-320-large-text.png`: binary PNG, 320×551, 35776 bytes | Preserve an actual browser status-summary capture with an embedded simulated-evidence label: unavailable, confirmed example, dark permission state or enlarged text. No actual device state is implied. |
+| `docs/core_plan_implementation_notes/artifacts/rn-08/status-confirmed-example.png`: binary PNG, 393×210, 14583 bytes | Preserve an actual browser status-summary capture with an embedded simulated-evidence label: unavailable, confirmed example, dark permission state or enlarged text. No actual device state is implied. |
+| `docs/core_plan_implementation_notes/artifacts/rn-08/status-unavailable.png`: binary PNG, 393×210, 14930 bytes | Preserve an actual browser status-summary capture with an embedded simulated-evidence label: unavailable, confirmed example, dark permission state or enlarged text. No actual device state is implied. |
+| `docs/core_plan_implementation_notes/artifacts/rn-08/verify-native.mjs`: lines 1–74 | Audit direct iOS/Android exports against final mapper/card/hook source contents and SHA-256 values. Reject test/example/account/API/query imports and markers, and record static compilation separately from device execution. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1–797 | Record RN-07’s actual commit and update the resume checkpoint for RN-08. Append every changed file/range, design/read-only decisions, actual checks/source evidence and the exact RN08-D01–D06 deferred native checklist, preserving historical entries and an honest pending self-hash. |
+| `scripts/check-ui-preview-isolation.mjs`: lines 11–11 | Reject RN08_PROTECTION_SPECIMEN_ONLY in real exported app JS/HTML; the intentional ignored-file leak probe was rejected and cleaned before the positive check. |
+
+#### Decisions, behavior and integration boundary
+
+- RN-08 is implemented as the independent presentation/read-consumer slice allowed by the plan and the user's request to continue similarly to RN-07. There is no registered native adapter in this checkout. No live protection, Android parity, permission grant, native installation or full platform acceptance is inferred from this commit. All device examples are outside the release import graph.
+- The pure mapper separates bridge availability, supported mode, current authorization, native state, desired configuration and installed revision. It checks basic evidence shape/platform and nonnegative safe-integer revisions before positive claims. Active shield status requires a fresh authorized native active state, reasons, matching expected device-native revision and no reported error. Notifications say Reminders active and explicitly do not claim blocking; overlays say App interventions active. Unsupported/absent/checking/permission/inactive/installing/pending/degraded/failed/unknown remain distinct.
+- The desired revision is the device-native coordinator's expectation, never a backend/profile row revision or API acknowledgment. Fresh earlier installed metadata survives pending updates without claiming the new plan is installed. Same/newer pending revisions are not mislabeled older. Null desired config, stale/error/inconsistent evidence or missing installed reasons cannot produce positive status. Native notes/error codes/reason IDs/raw exceptions are never rendered or logged by these components.
+- The hook calls only getCapabilities, getAuthorization and getStatus. It requires an explicit visibility input from the future foreground AND route-focus owner, plus stable integration identity. Integration/revision/visibility-cycle/manual-refresh tickets suppress old results even before effects run. Reads have one 10-second deadline and wall-clock check after suspension, with own-timer cleanup and ignored late/uncancellable native work. It does not poll, install, request permission, pick apps, allow usage, cancel reasons, drain events, subscribe to Auth or make restrictions depend on JS/cloud.
+- The card reuses existing warm/dark recipes, fonts, shared Button and InlineStatus. Only a matching supplied native-owner callback exposes a permission/setup/retry action; its async busy/errors remain owner-controlled. Read refresh alone cannot reinitialize a missing adapter. There is no default action that grants permission or turns the state active. Header/descriptions use fixed ordinary copy; internal revisions stay out of product text.
+- Read-only Figma session `d5c91295-9bd7-435c-957b-f2b5d1a63107` inspected Home `22:4` and permission `50:85`. Neither contains the complete protection-status state set, so this image-free summary is an engineering adaptation of the warm 24 px card surface and existing dark/action recipes. It does not implement Anisha's onboarding permission screen or copy that screen's Dino/glow/OS bars; no new artwork or source assets were necessary. Existing Home, metrics and policy-dependent features are untouched.
+- The isolated developer specimen constructs presentation evidence only, not a ProtectionService/SDK mock. Every card capture carries “Simulated evidence — no device connected”. Selecting states and clicking example recovery controls changes only preview notices and cannot enable real permission/restrictions. No private API request is made. Actual app/root/native source, contract/package/lockfile/config and backend/Auth code are unchanged.
+
+#### Work intentionally deferred
+
+The original RN-08 plan contains this same checklist. These remain **pending live/native integration** despite completion of the independent presentation slice. Append new implementation records and update the live plan as evidence is actually obtained.
+
+| Ref | Native work intentionally deferred | Owner / required evidence |
+|---|---|---|
+| RN08-D01 | Audit and implement real Swift/Kotlin adapters and register the shared native port with truthful per-device capabilities | Anisha iOS; Ishmum Android. Source/entitlement/signing audit and Android feasibility are not established by UI or mock-service tests. |
+| RN08-D02 | Wire actual AppState + route focus/native changes into the required visibility input, refresh after real actions, and supply the authoritative device-native desired revision | Coordinated main/native host integration. The hook accepts these inputs but does not register lifecycle listeners or infer revision from a backend/profile save. |
+| RN08-D03 | Supply actual permission/recovery/selection/setup handlers and complete async busy/error flows | Native owners' supported platform flows. Presentation callbacks/preview notices do not prompt or grant permission, and a read refresh cannot reinitialize an absent adapter. |
+| RN08-D04 | Confirm real installation/revision reconciliation and approved overlapping restriction behavior | Real native coordinator and approved policy. Old installed state stays distinct from a new desired plan; UI/API success is not installation evidence. |
+| RN08-D05 | Decide and implement account/sign-out ownership, event attribution and any restriction transfer/cleanup | PM/native migration protocol. This module does not clear, reassign or drain native rules/events on Auth changes or unmount. |
+| RN08-D06 | Execute signed-device revocation/install-failure/foreground/offline/host-termination and accessibility checks | Platform owners' reproducible device evidence. Browser typography/layout and JS compilation do not establish OS protection or Android/iOS parity. |
+
+#### Actual validation and evidence
+
+| Check | Actual result / limits |
+|---|---|
+| `npm run check` | Passed: 216 portable cases in 8 files (47 new mapper cases), 184 component cases in 28 iOS/Android suites (34 new), workspace TypeScript/ESLint, 13 original assets, Ruff and 3 pytest cases. No live API/native device involved. |
+| Focused component/type checks during implementation | Passed after requiring explicit visibility and fixing own-timer assertions. Final full check includes the later suspension-deadline regression. |
+| `npm run mobile:ui:build` | Passed real isolated developer UI. Existing nonfatal upstream Metro-runtime eval warning remains visible; no SDK/bundler change in RN-08. |
+| `npm run mobile:export` | Passed 16 existing app routes, 32 JS/HTML isolation files and original navigation assets. No status specimen or native adapter is imported into app routes. |
+| Browser runner | Passed 21 cases: 14 mapped states with explicit simulated evidence and no activation from callbacks; six warm/dark geometry cases at 393/320/280 component widths with 48 px minimum targets; 320 px/24 px text reflow. Zero page errors or private /v1 requests. |
+| Isolation negative probe | The real export guard rejected an intentional ignored JS file containing RN08_PROTECTION_SPECIMEN_ONLY. Removed in finally; subsequent positive 32-file scan passed. |
+| Direct iOS/Android consumer compilation and verify-native.mjs | Passed: bundles 867401 / 871762 bytes, 508 / 506 indexed map entries. All final runtime source contents match; no test/example/account/private API/query sources or markers. These are static JS bundles, not signed/installed native module execution. |
+| File/line/link/deferral/scope audit and `git diff --cached --check` | Performed before local commit. No unrelated icon folders, legacy native, routes, backend, shared contracts, package/lock or app-config changes are staged. |
+
+Mapper tests cover all availability/authorization/capability/status classes, unsupported/malformed evidence, desired/installed revision comparisons including zero/unknown/invalid values, absent reasons, safe native error copy and distinct shield/overlay/notification claims. Component/hook tests cover explicit matching callbacks, controlled busy, no native writes, strict-effect remount, integration replacement, visibility invalidation/reentry, desired-plan changes, retry, unmount, deadline and overdue success after suspension. An initial global timer-count assertion included framework timers; it was corrected to assert cleanup of the hook's own captured deadline timer. Final results do not claim zero unrelated renderer timers or native cancellation support.
+
+Serve the built UI with `npm exec --workspace @disconnect/mobile -- vite preview --config dev/vite.config.mts --host 127.0.0.1 --port 8093 --strictPort`, then run `PLAYWRIGHT_MODULE=<local Playwright ESM entry> node docs/core_plan_implementation_notes/artifacts/rn-08/browser-check.mjs`. Existing ephemeral Playwright 1.64.1/headless Chrome 156.0.8078.49 produced [the actual results](artifacts/rn-08/browser-results.json) and [executable runner](artifacts/rn-08/browser-check.mjs). Captures: [unavailable](artifacts/rn-08/status-unavailable.png), [confirmed simulated example](artifacts/rn-08/status-confirmed-example.png), [320 px dark permission state](artifacts/rn-08/status-320-dark.png), [320 px enlarged text](artifacts/rn-08/status-320-large-text.png). These are component widths, not whole-app/device screenshots or native assistive acceptance.
+
+For direct compilation, create ignored apps/mobile/.expo/rn08-validation.ts exporting ProtectionStatus, mapProtectionStatus and useProtectionStatus from their corresponding ../src/features/protection modules. From apps/mobile run per ios/android platform:
+
+```bash
+npx expo export:embed --entry-file .expo/rn08-validation.ts --platform ios --dev false --bundle-output /tmp/hoosh-rn08-ui/ios.js --sourcemap-output /tmp/hoosh-rn08-ui/ios.map
+```
+
+Use android paths for the other platform; run `node docs/core_plan_implementation_notes/artifacts/rn-08/verify-native.mjs` from root. [Native source/bundle report](artifacts/rn-08/native-results.json) records exact hashes and false live/device flags. The temporary entry was removed after compilation. No native build/regeneration/signing, permission prompt, cloud/database action or real credentials were used.
+
+#### Next handoff
+
+Use these producer components for independent RN-09 presentation while keeping unsupported/unavailable states truthful. Complete RN08-D01–D06 with the native owners before live/device acceptance, preserve UI/installed restrictions during rollbacks, and never infer account ownership or clear rules/events from Auth sign-out. RN-05/06 and RN-07 data integration stay pending under their own recorded gates. Local task commit only; no push/main merge.
 
 ### Entry template
 

@@ -8,3 +8,5 @@ There is no native adapter or successful mock in the current shell. Only `connec
 - UI owners: read actual native status before displaying active protection; a saved server plan does not prove installation.
 
 Do not put enforcement timers in React Native or depend on API/AI calls to enforce native rules. Native callbacks and expiry must operate independently of the JS process. Final session, override, and quest policies remain pending in `docs/Context (AGENT)/PM_QUESTIONS.md`.
+
+RN-08 now supplies the [read-only status consumer and presentation contract](../../features/protection/README.md). It does not register an adapter or call native writes. Native owners must provide stable integration identity, actual foreground/route visibility and the desired device-native revision, and execute RN08-D01–D06 before live acceptance.

@@ -8,6 +8,7 @@ const forbiddenMarkers = [
   'RN-01 component specimen',
   'RN05_ACCOUNT_SPECIMEN_ONLY',
   'RN07_PROFILE_SPECIMEN_ONLY',
+  'RN08_PROTECTION_SPECIMEN_ONLY',
 ];
 
 async function exportedFiles(directory) {
