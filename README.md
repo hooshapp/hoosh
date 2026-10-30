@@ -12,6 +12,7 @@ Shared React Native app and FastAPI service for Disconnect. Product context star
 - RN-03 account-scoped HTTP producer with safe typed errors, whole-operation deadlines and bounded Auth-owned GET recovery; see [client contract](apps/mobile/src/infrastructure/api/README.md).
 - RN-04 memory-only account query scopes, guarded mutations and native/web lifecycle adapters; see [integration contract](apps/mobile/src/infrastructure/query/README.md). Real Auth/root wiring remains coordinated work.
 - RN-05 account identity/header consumer is prepared and tested independently; [handoff and missing live prerequisites](apps/mobile/src/features/account/README.md). Settings/root wiring and real identity acceptance remain pending.
+- RN-07 display-name editor UI is prepared with a developer-only Figma example; [implemented presentation and deferred data work](apps/mobile/src/features/account/PROFILE_UI.md). No profile persistence or live integration is claimed.
 - FastAPI process health endpoint, OpenAPI documentation, explicit browser CORS configuration, and tests.
 - Reproducible npm and uv lockfiles, linting, type checking, and CI checks.
 

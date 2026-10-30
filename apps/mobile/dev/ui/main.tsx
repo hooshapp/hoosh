@@ -10,6 +10,7 @@ import { InlineStatus } from '@/components/ui/inline-status';
 import { Screen } from '@/components/ui/screen';
 
 import './styles.css';
+import { ProfileSpecimen } from './profile-specimen';
 import { AccountSpecimen } from './account-specimen';
 import { AssetGallery } from './asset-gallery';
 
@@ -112,5 +113,6 @@ createRoot(root).render(
     </div>
     <AssetGallery />
     <AccountSpecimen width={width} />
+    <ProfileSpecimen width={width} />
   </main>,
 );

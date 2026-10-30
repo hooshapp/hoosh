@@ -85,3 +85,5 @@ Before RN-05 can be marked complete:
    a request. Record safe web/native evidence; never store credentials in artifacts.
 5. Execute native builds/device and Auth link/storage tests separately; a compiled
    bundle and deterministic Auth doubles do not satisfy live M1 acceptance.
+
+RN-07 now supplies [controlled profile presentation](PROFILE_UI.md) independently. AccountHeader accepts an optional supplied validated display name; absent/null remains neutral. The sample name lives only in the isolated developer UI, and actual profile API/query/controller integration remains deferred.

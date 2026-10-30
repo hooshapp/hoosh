@@ -1,0 +1,55 @@
+{
+  "browser": "156.0.8078.49",
+  "cases": [
+    "Initial Figma sample is explicitly labeled, unchanged Save disabled, avatar decoded.",
+    {
+      "width": 393,
+      "geometry": {
+        "width": 393,
+        "height": 852,
+        "overflow": false,
+        "image": [
+          52,
+          52
+        ],
+        "saveHeight": 52
+      }
+    },
+    {
+      "width": 320,
+      "geometry": {
+        "width": 320,
+        "height": 852,
+        "overflow": false,
+        "image": [
+          52,
+          52
+        ],
+        "saveHeight": 52
+      }
+    },
+    {
+      "width": 280,
+      "geometry": {
+        "width": 280,
+        "height": 852,
+        "overflow": false,
+        "image": [
+          52,
+          52
+        ],
+        "saveHeight": 52
+      }
+    },
+    "Discard restores only the local preview baseline.",
+    "Apply updates only local preview; reload resets the Figma sample.",
+    "Remove requires explicit confirmation and stages clear without applying.",
+    "Simulate conflict: Save blocked until explicit preview review; draft retained.",
+    "Simulate unconfirmed save: Save blocked until explicit preview review; draft retained.",
+    "Saving locks input/save/discard.",
+    "Validation presentation retains unsaved input and associates the error.",
+    "320px with 24px text reflows without horizontal component overflow (browser stress only)."
+  ],
+  "pageErrors": [],
+  "privateRequests": []
+}

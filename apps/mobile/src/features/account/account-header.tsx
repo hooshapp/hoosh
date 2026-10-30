@@ -8,7 +8,14 @@ import { colors, fonts } from '@/design/tokens';
 import avatar from '../../../assets/account/settings-avatar.svg';
 
 /** Figma 10562:136. Decorative brand artwork, never a gender/mood/health assertion. */
-export function AccountHeader({ identity }: { identity: AuthIdentity }) {
+export function AccountHeader({
+  identity,
+  displayName,
+}: {
+  identity: AuthIdentity;
+  /** Validated profile name from the owning feature; never inferred from email. */
+  displayName?: string | null;
+}) {
   const [imageFailed, setImageFailed] = useState(false);
   return (
     <View style={styles.card}>
@@ -30,7 +37,7 @@ export function AccountHeader({ identity }: { identity: AuthIdentity }) {
       </View>
       <View style={styles.info}>
         <Text accessibilityRole="header" style={styles.title}>
-          Your account
+          {displayName ?? 'Your account'}
         </Text>
         <View style={styles.emailRow}>
           <Text selectable style={styles.email}>

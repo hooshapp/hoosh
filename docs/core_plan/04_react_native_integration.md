@@ -1,7 +1,7 @@
 # 04 — React Native Integration and Shared Frontend Plan
 
 **Date:** 2026-10-28\
-**Status:** RN-01/02/03 and RN-04 producer implemented with recorded evidence; RN-04 real root wiring remains coordinated/pending, RN-05 has an independently prepared consumer with live acceptance pending, and RN-06–11 remain not started. RN-02 also has native JS/Hermes exports; signed-device rendering/keyboard/screen-reader acceptance remains separate.\
+**Status:** RN-01/02/03 and RN-04 producer implemented with recorded evidence; RN-04 real root wiring remains coordinated/pending, RN-05 has an independently prepared consumer with live acceptance pending, RN-07 has UI-only preparation, and RN-06/08–11 remain not started. RN-02 also has native JS/Hermes exports; signed-device rendering/keyboard/screen-reader acceptance remains separate.\
 **Primary owner:** Ishmum — shared post-onboarding React Native application.\
 **Required reviewer / collaborator:** Anisha — authentication, onboarding, iOS integration, and root navigation.\
 **Area branch:** `area/react-native`; create each task branch from the updated area branch and integrate working increments into `main`.\
@@ -181,7 +181,7 @@ This is application-data cleanup, not approval to remove native restrictions. Wh
 
 ## 6. Commit sequence and dependencies
 
-RN-01/02/03 and the RN-04 producer are implemented with evidence linked below; RN-04 real root wiring is pending, RN-05 consumer preparation is recorded separately, and RN-06–11 remain **Not started**. A part is not complete merely because its task branch exists. Proposed messages are suggestions for the actual implementation commits, not instructions to commit this planning document under those messages.
+RN-01/02/03 and the RN-04 producer are implemented with evidence linked below; RN-04 real root wiring is pending, RN-05 consumer preparation is recorded separately, RN-07 has user-requested UI-only preparation, and RN-06/08–11 remain **Not started**. A part is not complete merely because its task branch exists. Proposed messages are suggestions for the actual implementation commits, not instructions to commit this planning document under those messages.
 
 | Part | Coherent proposed commit | Prerequisites | Exit evidence | Status | Actual commit |
 |---|---|---|---|---|---|
@@ -189,9 +189,9 @@ RN-01/02/03 and the RN-04 producer are implemented with evidence linked below; R
 | RN-02 | `feat(mobile): add authentic assets and floating main navigation` | RN-01; verified source asset inventory | 12 original SVGs; 62 iOS/Android checks overall; 21 browser cases; web/native bundle and asset/isolation evidence | Complete for RN-02 scope | `2d5c0d1` (notes record historical evidence) |
 | RN-03 | `feat(mobile): harden account-scoped HTTP requests` | Plan 00 HTTP/error contract; current client | 121 HTTP-boundary cases; 62 UI regressions; local Fetch redirect/body tests; direct native client bundles and fixture isolation | Complete for RN-03 scope | `0741758` (historical evidence in notes) |
 | RN-04 | `feat(mobile): isolate account server state and lifecycle` | RN-01/03, SC-03; AUTH-02 for real root integration | 42 new portable cases + 26 iOS/Android cases; two-account/draft/callback/retry/event cleanup; direct native compilation | Complete for producer scope; real root wiring pending | `610f570` (producer; real root wiring pending) |
-| RN-05 | `feat(account): connect verified API identity to settings` | RN-01/04; AUTH-01/02/03/07; SB-03; API-04/05 | Real sign-in → `/v1/me` account screen evidence | Consumer prepared/tested; real integration and acceptance pending | See RN-05 preparation entry in notes |
+| RN-05 | `feat(account): connect verified API identity to settings` | RN-01/04; AUTH-01/02/03/07; SB-03; API-04/05 | Real sign-in → `/v1/me` account screen evidence | Consumer prepared/tested; real integration and acceptance pending | `0c6e4db` (preparation only) |
 | RN-06 | `test(mobile): cover authenticated round trip and recovery` | RN-05; auth guards/recovery integrated | M1 acceptance matrix, no development bypass, build evidence | Not started | — |
-| RN-07 | `feat(account): integrate versioned profile reads and edits` | RN-04/05; approved profile contract/API/migration | Real profile round trip, conflict and ambiguous-save handling | Not started | — |
+| RN-07 | `feat(account): integrate versioned profile reads and edits` | RN-04/05; approved profile contract/API/migration | Real profile round trip, conflict and ambiguous-save handling | UI prepared only; real profile/data integration pending | See RN-07 UI preparation notes |
 | RN-08 | `feat(protection-ui): show native capability and installation states` | RN-01; agreed native read boundary; actual adapters for integration | Status mapper tests; device evidence only where adapter exists | Not started | — |
 | RN-09 | `feat(mobile): compose main app surfaces with explicit feature states` | RN-01/02; RN-07/08 where live data is used | Figma comparisons + no invented production data | Not started | — |
 | RN-10 | `fix(mobile): complete accessibility layout and lifecycle handling` | Implemented RN parts; relevant device build access | Accessibility/device-size checks and targeted regression tests | Not started | — |
@@ -355,6 +355,26 @@ If a part grows beyond one reviewable behavior change, split it into suffixed pa
 **Commit done when:** Ishmum and Anisha can reproduce M1 from a fresh checkout using documented public/server environment variables, and no account leak or auth bypass remains. **Recovery:** revert feature wiring without reverting account isolation; leave a truthful unavailable screen while fixing provider/API compatibility.
 
 ### RN-07 — Minimal profile read/update integration
+
+**Explicit scope split (2026-10-29, requested by Ishmum):** Build the reusable buttons/editor UI now, with the Figma example only in an isolated developer preview. This is **UI preparation, not RN-07 completion**. The live dependencies and original exit criteria below still apply to the later integration work. [Consumer contract](../../apps/mobile/src/features/account/PROFILE_UI.md) and [implementation record](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md#rn-07-ui-preparation--controlled-display-name-editor) explain what exists and how to resume.
+
+| Slice | Status | What it means |
+|---|---|---|
+| Profile editing presentation | Prepared and tested independently | Controlled display-name field, Save/Discard, confirmed clear intent, pending/error/validation/conflict/unconfirmed UI; optional supplied profile name in existing header. |
+| Sample content | Developer preview only | One Jordan Rivera Figma example, local-only interactions and simulated statuses; never a production fallback or real account. |
+| Live RN-07 integration | Deferred; remains incomplete | Complete the checklist below using real Auth/API/DB outputs and record new implementation commits. |
+
+**Work intentionally skipped now — required before RN-07 can be completed:**
+
+| Ref | Deferred work | Required producer / future evidence |
+|---|---|---|
+| RN07-D01 | Generated profile DTOs, actual authenticated GET/PATCH, missing-row/null-name semantics and persistence | Ishmum API-05/06–09; real RN-05/Auth handoff. No profile API/query module is implemented by this UI commit. |
+| RN07-D02 | Canonical snapshot/revision vs draft, expected-revision create/update and adopting the server-normalized success | Real backend/DB, approved HTTP contract and guarded query/mutation controller. No optimistic saved badge. |
+| RN07-D03 | Authoritative validation, Unicode/Python normalization, approved length/body bounds and real field errors | API validation/schema tests and actual mapped server responses; UI only forwards raw text or explicit clear intent. |
+| RN07-D04 | 409 fetch-latest/review/resolution and preserving dirty input across background reads | Actual revision conflict responses and deliberate reconciliation. Prepared buttons do not perform reconciliation. |
+| RN07-D05 | Timeout/disconnect ambiguity, authoritative reload/compare and safe deliberate retry | Real GET after an uncertain write; no blind write replay/offline queue. UI currently only blocks Save and exposes a callback. |
+| RN07-D06 | Account/generation guards, cancellation, keyed form reset, Settings/detail route/guard wiring and dirty-navigation behavior | RN-04/05 real composition with Anisha. No sample session or unguarded profile route is introduced. |
+| RN07-D07 | Any durable/offline draft storage, restart/reload persistence, two-account security and live/device M2 acceptance | Shared draft ownership/storage contract, real DB/Auth, documented tests and physical-device keyboard/assistive evidence. UI tests are not persistence evidence. |
 
 **Owner:** Ishmum; Anisha reviews shared onboarding/draft behavior.\
 **Dependencies:** RN-04/05 and API-06–09; approved Plan 00 minimal profile contract. No demographic/onboarding field is enabled by this part; those require their own later decisions/contracts.\

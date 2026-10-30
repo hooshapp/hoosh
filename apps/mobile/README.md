@@ -23,3 +23,5 @@ RN-03 provides the [account-scoped HTTP boundary](src/infrastructure/api/README.
 RN-04 provides [account query scopes, guarded mutations and lifecycle adapters](src/infrastructure/query/README.md). Its public-port tests run independently of live Auth. Root composition remains Anisha’s coordinated change; native Expo Network linking/device acceptance is still required.
 
 RN-05 has a prepared [account region](src/features/account/README.md), with an original Settings avatar and verified-identity consumer. It is tested with isolated doubles, not connected to placeholder Settings. Real Auth/API/generated types and guarded root wiring are still required. The developer UI gallery includes a clearly labeled presentation-only account specimen.
+
+RN-07 adds a controlled [profile editor UI](src/features/account/PROFILE_UI.md). Run `npm run mobile:ui` and scroll to “Profile editor — UI-only Figma example” to edit the local Jordan Rivera sample. It resets on reload; Auth/API/profile persistence and live route wiring remain deferred in the original plan and notes.

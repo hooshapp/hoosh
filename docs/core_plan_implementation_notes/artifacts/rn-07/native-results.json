@@ -1,0 +1,29 @@
+{
+  "part": "RN-07 UI preparation",
+  "parentCommit": "0c6e4db",
+  "node": "v24.20.0",
+  "liveAcceptance": false,
+  "assetSha256": "af9693838be4af8b5157b1c08308fc8f7a8e3e11803f4fc228a12e310fdf7d33",
+  "runtimeSourceSha256": {
+    "apps/mobile/src/features/account/profile-form.tsx": "561ca223c06c8425c9800361482336ce62928c184bbe8c2414f8d6116f0e5a52",
+    "apps/mobile/src/features/account/account-header.tsx": "1c285dea59139a21793991f3abe799671bc96d37bb99014b83bc647608faa5d8"
+  },
+  "bundles": {
+    "ios": {
+      "bytes": 1009941,
+      "sha256": "8c3f734e32c0f163fcbf361af613296d1d57f183a62f60970da75cb808e22ded",
+      "sourceMapEntries": 646,
+      "originalAvatarBytesPresent": true,
+      "testFixtureSources": 0,
+      "executedOnDevice": false
+    },
+    "android": {
+      "bytes": 1014967,
+      "sha256": "ac1393fbd090a56839cd54833c3aade2482f91096d4fda18903adc15199f8adb",
+      "sourceMapEntries": 644,
+      "originalAvatarBytesPresent": true,
+      "testFixtureSources": 0,
+      "executedOnDevice": false
+    }
+  }
+}

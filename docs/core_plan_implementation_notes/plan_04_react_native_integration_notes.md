@@ -4,13 +4,11 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN-05 consumer preparation implemented; live integration blocked by missing Auth/API producers. RN-04 is `610f570`; RN-06–11 remain not started.
+**Current part:** RN-07 UI-only preparation implemented by Ishmum’s explicit request. RN-05 preparation is `0c6e4db`; RN-05/06 live acceptance and RN-07 data integration remain pending; RN-08–11 remain unstarted.
 
-**Implementation branch:** `task/react-native/rn-05`, parent RN-04 `610f570`. No push/main merge is implied.
+**Implementation branch:** `task/react-native/rn-07-ui`, parent RN-05 preparation `0c6e4db`. No push/main merge is implied.
 
-**Commit reference:** RN-01 is `2f88102`; RN-02 is `2d5c0d1`. RN-03 is `0741758`. RN-04 is `610f570`. RN-05 preparation will have its own unique subject and pending self-hash.
-
-Historical reference: RN-01 is `2f88102`. RN-02 travels with its code under the unique subject `feat(mobile): add authentic assets and floating main navigation`; resolve its hash from Git until the next normal notes update records it. A pending self-hash at write time is not missing implementation.
+**Commit reference:** RN-01 is `2f88102`; RN-02 is `2d5c0d1`. RN-03 is `0741758`. RN-04 is `610f570`. RN-05 preparation is `0c6e4db`. RN-07 UI preparation has its own pending self-hash.
 
 **Last updated:** 2026-10-29.
 
@@ -18,11 +16,12 @@ Historical reference: RN-01 is `2f88102`. RN-02 travels with its code under the 
 
 ## Resume here
 
-- RN-01 `2f88102`, RN-02 `2d5c0d1`, RN-03 `0741758`, RN-04 `610f570`. RN-05 now has **consumer preparation only**, under `feat(mobile): prepare guarded identity account surface`. Its own hash is pending at write time; resolve it from Git. RN-05 live completion is not accepted.
-- Read [the account handoff](../../apps/mobile/src/features/account/README.md). This checkout has no real Auth provider/guards, protected identity endpoint or generated wire types. Finish Anisha's SB-03/AUTH-01/02/03/07 and Ishmum's API-04/05, then coordinate RN-04/root + Settings wiring. Ishmum's next independent prerequisite lane is backend API-01 onward; do not install a release mock session to continue RN-05.
-- Latest checks passed: 169 portable tests (6 new), 120 component cases across 24 iOS/Android suites (32 new), 3 backend tests, types/lint, 13 original assets, supported app web export/isolation, isolated UI build, 10 actual browser component cases plus development-server smoke, and direct native consumer/asset/source audits. These are deterministic/local checks, not real Auth/API or signed-device evidence.
-- Settings still displays the existing development placeholder/links; replacing them without real guards would conceal the missing integration. AccountSurface is ready to mount inside the real keyed provider later. Its sign-out action is optional, delegated to Auth and absent from the source design; live placement needs PM/design review.
-- Native restriction ownership at sign-out remains unresolved. No native rules, source targets, credentials, cloud configuration, backend or shared contract changes were made. Existing untracked icon folders are excluded; no push or main merge is implied.
+- Committed foundations: RN-01 `2f88102`, RN-02 `2d5c0d1`, RN-03 `0741758`, RN-04 `610f570`; RN-05 consumer preparation `0c6e4db`. RN-07 now has **UI-only preparation**, under `feat(mobile): prepare profile editor UI without persistence`; resolve its self-hash from Git until the next normal notes update records it.
+- Ishmum explicitly chose to continue frontend UI without waiting for Auth/backend. Run `npm run mobile:ui` and scroll to **Profile editor — UI-only Figma example**. The controlled field/buttons/clear confirmation and simulated feedback are available; Jordan Rivera is only an isolated Figma example and reload resets it. Real Settings/root routes are unchanged.
+- RN-05/06 live identity and RN-07 live profile acceptance remain pending. Read the original plan's **RN07-D01–D07** table and [profile UI contract](../../apps/mobile/src/features/account/PROFILE_UI.md) before later integration. Do not mark profile APIs, generated DTOs, revisions, normalization, reconciliation, account guards, persistent drafts or M2 acceptance done from this UI commit.
+- Latest checks: 169 portable cases, 150 component cases in 26 iOS/Android suites (30 new RN-07), 3 backend tests, types/lint, 13 original assets and supported web export/isolation. Built browser preview passes 12 interaction/geometry cases without private requests; direct native bundles include current UI and exact original artwork without API/query clients or test/example imports. Device/live behavior remains unverified.
+- Next independent frontend work can be RN-08 status presentation or bounded RN-09 screen composition. Live RN-07 work resumes when real RN-04/05/Auth and API-05/06–09 outputs exist. Anisha retains Auth/iOS ownership; Ishmum owns backend and shared main UI. Do not enable unapproved demographic/plan fields or fake native protection.
+- Existing untracked icon folders remain untouched. This task does not push or merge main.
 
 ## Recording rules
 
@@ -470,7 +469,7 @@ Anisha must wire the real Auth/root provider and route policy, confirm the singl
 ### RN-05 preparation — Identity consumer and account region
 
 **Commit message:** `feat(mobile): prepare guarded identity account surface`.
-**Hash:** Pending. **Date:** 2026-10-29. **Owner:** Ishmum. **Branch:** `task/react-native/rn-05`. **Parent:** `610f570`.
+**Hash:** `0c6e4db` (recorded during RN-07 UI preparation). **Date:** 2026-10-29. **Owner:** Ishmum. **Branch:** `task/react-native/rn-05`. **Parent:** `610f570`.
 **Status:** Consumer preparation implemented/tested; RN-05 live completion remains blocked and is not accepted.
 **Missing outputs:** SB-03, real AUTH-01/02/03/07, protected API-04 identity, API-05 generated types, coordinated RN-04/root wiring. The repository contains only public health and test Auth doubles.
 **Independent scope:** Prepare the canonical identity read/query and Figma account-region consumer with safe failure/recovery/sign-out delegation, deterministic tests and isolated visual evidence. Do not add mock Auth to the release tree, replace generated schemas, edit Anisha's guards or claim M1.
@@ -564,6 +563,104 @@ Replace ios with android for the second command. From root, run `node docs/core_
 #### Remaining work and next handoff
 
 RN-05 **remains incomplete** until SB-03 + real AUTH-01/02/03/07 and API-04/05 exist, generated schema types are consumed, coordinated root/Settings integration removes preview links, PM/design reviews sign-out placement, and a disposable development user completes the documented identity/error/sign-out acceptance matrix. Wrong project, missing/invalid live JWT, real Supabase storage/link flows, 503 integration and physical-device HTTP/SVG/assistive behavior are unverified. The current tests use explicit isolated doubles and local transport fixtures only. Backend API-01 onward is Ishmum's next prerequisite lane; Anisha retains Auth/iOS ownership. This preparation commit is local and does not push or merge main.
+
+### RN-07 UI preparation — Controlled display-name editor
+
+**Commit message:** `feat(mobile): prepare profile editor UI without persistence`.
+**Hash:** Pending. **Date:** 2026-10-29. **Owner:** Ishmum. **Branch:** `task/react-native/rn-07-ui`. **Parent:** `0c6e4db`.
+**Status:** Implemented/tested as UI preparation only; not RN-07 integration acceptance.
+**User-directed scope:** Build buttons/profile editing presentation without real data or API/Auth work, using one clearly labeled Figma example in an isolated developer preview. Record all skipped work here and in the original plan.
+**Design:** Read-only Figma session `381e60fc-0a09-464f-a2a3-6114fb62a179`; Settings card `10562:136` and primary/secondary recipes `10611:13017`, `10611:13022`. No dedicated display-name edit frame is established; the controlled editor is an engineering adaptation using existing Field/Button/Screen primitives, not a claim that age/gender editors are approved.
+
+#### Every changed file and logical change
+
+Ranges refer to this UI-only preparation commit. PNGs record actual binary dimensions/size. Historical entries remain tied to their earlier commits.
+
+| File and exact lines in RN-07 UI preparation | Change and reason |
+|---|---|
+| `README.md`: lines 15–15 | Advertise the prepared profile editor and the developer-preview command, clearly preserving pending Auth/API/profile persistence and route wiring. |
+| `apps/mobile/README.md`: lines 26–27 | Advertise the prepared profile editor and the developer-preview command, clearly preserving pending Auth/API/profile persistence and route wiring. |
+| `apps/mobile/dev/ui/main.tsx`: lines 13–13 | Mount the labeled profile specimen alongside existing UI/account galleries outside the Expo Router import graph. |
+| `apps/mobile/dev/ui/main.tsx`: lines 116–116 | Mount the labeled profile specimen alongside existing UI/account galleries outside the Expo Router import graph. |
+| `apps/mobile/dev/ui/profile-specimen.tsx`: lines 1–107 | Provide one clearly labeled, developer-only Jordan Rivera Figma sample with ephemeral draft/baseline and local apply/discard/clear/status simulations. Use the existing fixed phone frame for stable SafeAreaProvider scrolling; keep blockers during edits and reset sample on reload without Auth, private HTTP or storage. |
+| `apps/mobile/src/features/account/PROFILE_UI.md`: lines 1–76 | Publish the controlled UI/event contract, how to view/interact with the isolated example, source design adaptations and the full deferred integration checklist. Distinguish UI events from API DTOs and local preview behavior from actual M2 acceptance. |
+| `apps/mobile/src/features/account/README.md`: lines 88–89 | Link the prepared profile UI contract and describe AccountHeader’s additive name input, developer-only sample and deferred data/controller work. |
+| `apps/mobile/src/features/account/account-header.tsx`: lines 11–18 | Accept an optional supplied validated display name, preserving the neutral title for absent/null values and all existing identity/avatar geometry. Never infer a profile name from email or embed a production example. |
+| `apps/mobile/src/features/account/account-header.tsx`: lines 40–40 | Accept an optional supplied validated display name, preserving the neutral title for absent/null values and all existing identity/avatar geometry. Never infer a profile name from email or embed a production example. |
+| `apps/mobile/src/features/account/profile-form.test.tsx`: lines 1–152 | Exercise 15 presentation cases under both OS presets: missing-handler/unchanged Save, raw Unicode/whitespace, busy locks, deliberate clear versus blank text, discard, validation association, failure retention and blocked conflict/uncertain saves. Verify the additive supplied-name header preserves RN-05 neutral fallback; no test claims a real profile write. |
+| `apps/mobile/src/features/account/profile-form.tsx`: lines 1–170 | Add controlled display-name editing with raw-text vs explicit-clear intents, dirty/busy state and optional Save/review callbacks. Reuse shared controls for validation, confirmed removal, discard, unavailable/conflict/unconfirmed states; do not own data, normalization, requests, revisions, persisted success or account state. |
+| `docs/Context (AGENT)/AGENT_START_HERE.md`: lines 11–11 | Make RN-07’s UI-only checkpoint discoverable alongside RN-05 preparation so future agents do not mistake presentation for completed profile integration. |
+| `docs/Context (AGENT)/AGENT_START_HERE.md`: lines 130–130 | Make RN-07’s UI-only checkpoint discoverable alongside RN-05 preparation so future agents do not mistake presentation for completed profile integration. |
+| `docs/core_plan/04_react_native_integration.md`: lines 4–4 | Record RN-05’s actual preparation commit and RN-07 UI-only ledger status. Add the user-authorized scope split and stable RN07-D01–D07 checklist while preserving original live dependencies, implementation steps and M2 exit criteria. |
+| `docs/core_plan/04_react_native_integration.md`: lines 184–184 | Record RN-05’s actual preparation commit and RN-07 UI-only ledger status. Add the user-authorized scope split and stable RN07-D01–D07 checklist while preserving original live dependencies, implementation steps and M2 exit criteria. |
+| `docs/core_plan/04_react_native_integration.md`: lines 192–192 | Record RN-05’s actual preparation commit and RN-07 UI-only ledger status. Add the user-authorized scope split and stable RN07-D01–D07 checklist while preserving original live dependencies, implementation steps and M2 exit criteria. |
+| `docs/core_plan/04_react_native_integration.md`: lines 194–194 | Record RN-05’s actual preparation commit and RN-07 UI-only ledger status. Add the user-authorized scope split and stable RN07-D01–D07 checklist while preserving original live dependencies, implementation steps and M2 exit criteria. |
+| `docs/core_plan/04_react_native_integration.md`: lines 359–378 | Record RN-05’s actual preparation commit and RN-07 UI-only ledger status. Add the user-authorized scope split and stable RN07-D01–D07 checklist while preserving original live dependencies, implementation steps and M2 exit criteria. |
+| `docs/core_plan/README.md`: lines 3–3 | Expose RN-07 UI preparation without increasing the accepted-part count: eight completed producers/parts and 36 still awaiting acceptance, including both prepared RN-05/RN-07 work. |
+| `docs/core_plan/README.md`: lines 12–12 | Expose RN-07 UI preparation without increasing the accepted-part count: eight completed producers/parts and 36 still awaiting acceptance, including both prepared RN-05/RN-07 work. |
+| `docs/core_plan/README.md`: lines 115–115 | Expose RN-07 UI preparation without increasing the accepted-part count: eight completed producers/parts and 36 still awaiting acceptance, including both prepared RN-05/RN-07 work. |
+| `docs/core_plan_implementation_notes/artifacts/rn-07/browser-check.mjs`: lines 1–128 | Exercise real preview edit/discard/apply/reload/clear and simulated review/busy/validation behavior. Measure original SVG/Save geometry and three widths plus enlarged-text reflow; capture real evidence and reject private API requests/page errors. |
+| `docs/core_plan_implementation_notes/artifacts/rn-07/browser-results.json`: lines 1–55 | Record actual Chrome version and 12 UI/geometry cases, including component widths 393/320/280, 52 px artwork/button measurements, local-only interactions, no private requests and no page errors. These are browser presentation results, not live/device acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-07/native-results.json`: lines 1–29 | Preserve final UI source/bundle SHA-256 values, 646/644 indexed source-map entries, 1,009,941/1,014,967 byte native JS bundles and exact avatar inclusion. Explicitly mark live RN-07 acceptance/device execution false. |
+| `docs/core_plan_implementation_notes/artifacts/rn-07/profile-320-large-text.png`: binary PNG, 320×853, 56049 bytes | Preserve an actual browser profile-frame capture (initial example, validation or enlarged text). The sample and local-only notices are deliberate preview content, not evidence of a signed-in or persisted profile. |
+| `docs/core_plan_implementation_notes/artifacts/rn-07/profile-393-initial.png`: binary PNG, 393×853, 38194 bytes | Preserve an actual browser profile-frame capture (initial example, validation or enlarged text). The sample and local-only notices are deliberate preview content, not evidence of a signed-in or persisted profile. |
+| `docs/core_plan_implementation_notes/artifacts/rn-07/profile-validation.png`: binary PNG, 393×853, 42213 bytes | Preserve an actual browser profile-frame capture (initial example, validation or enlarged text). The sample and local-only notices are deliberate preview content, not evidence of a signed-in or persisted profile. |
+| `docs/core_plan_implementation_notes/artifacts/rn-07/verify-native.mjs`: lines 1–90 | Check direct iOS/Android UI bundles against final runtime source contents and exact original avatar bytes. Reject private API/query clients, tests and Figma sample/preview markers in the compiled producer graph; record actual hashes and false live/device flags. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1–697 | Record RN-05’s actual preparation hash and the current UI-only resume checkpoint; append all RN-07 file/line changes, user-directed scope, Figma decisions, real checks/evidence and matching RN07-D01–D07 deferred work. Preserve earlier implementation history and honest pending self-hash. |
+| `scripts/check-ui-preview-isolation.mjs`: lines 10–10 | Reject RN07_PROFILE_SPECIMEN_ONLY in real app export files; an intentional ignored-file leak probe was rejected and cleaned before the positive scan. |
+
+#### Decisions and behavior implemented
+
+- This is the explicit UI-only split requested by Ishmum. RN-07's original completion criteria still require an actual persisted, authorized profile edit through API reload/restart. No prerequisite was silently waived and no live profile/API/Auth result is claimed. The original plan and this entry retain the same stable deferred-work IDs below for future agents.
+- ProfileForm is controlled presentation over raw text or explicit clear intent. Its local union is a UI event model, not a generated wire DTO. The owning future controller supplies dirty/busy/snapshot/revision and callbacks. No callback means Save is disabled; unchanged input cannot submit. The form does not trim, normalize, cap raw Unicode input, call HTTP, create a profile, assume success or persist drafts.
+- The user deliberately confirms removal before the form emits clear intent. Empty/whitespace text remains text, distinct from future null. Busy state locks input and mutable actions. Conflict and unconfirmed states retain the draft and block Save; review buttons are callbacks only and absent without handlers. Real read/compare/conflict resolution is deferred rather than simulated as accepted server behavior.
+- Reuse RN-01 Field/Button/InlineStatus/Screen, packaged Space Grotesk and warm tokens. AccountHeader gets an additive optional validated displayName prop while preserving RN-05's neutral fallback for absent/null names. Default production presentation contains no Jordan/example identity. Figma profile card `10562:136`, original avatar `10562:244` and primary/secondary recipes `10611:13017` / `10611:13022` were inspected read-only. The fresh 52×52 asset has the same SHA-256 as the existing local source, so no duplicate artwork was added. All existing avatar geometry remains exact.
+- No dedicated display-name edit frame is established in the source design. The form is an engineering adaptation of the approved minimal display-name contract and existing control recipes, not a claim to implement an undocumented Figma frame or the separate age/gender/activity/plan editors. The sample header faithfully supplies the source Jordan Rivera / jord@gmail.com only inside the isolated specimen.
+- The developer host keeps one ephemeral local baseline/draft, labels all changes as preview-only, and offers explicit saving/validation/failure/conflict/unconfirmed/unavailable simulations. Apply updates only that component's React state; reload resets the sample. Conflict/unavailable/unconfirmed blockers persist while editing until an explicit preview review/reset, without any private API request. The preview uses the existing fixed-height phone frame so its SafeAreaProvider/ScrollView layout is stable; the first auto-height attempt revealed a resize feedback loop and was corrected before passing browser evidence.
+- No real Settings/detail/root route, Auth SDK/store, generated schema, backend/database, native project/config, storage, package or lockfile is changed. Existing development Settings links remain until real guards land. Future integration must put the form under RN-04's keyed private subtree and define dirty navigation handling; this UI component cannot guard arbitrary external state.
+
+#### Work intentionally skipped at this commit
+
+The original RN-07 plan contains this same checklist. All seven entries remain **deferred** here; update the live plan and append new implementation history as they are actually completed.
+
+| Ref | Deferred work | Required producer / future evidence |
+|---|---|---|
+| RN07-D01 | Generated profile DTOs, actual authenticated GET/PATCH, missing-row/null-name semantics and persistence | Ishmum API-05/06–09; real RN-05/Auth handoff. No profile API/query module is implemented by this UI commit. |
+| RN07-D02 | Canonical snapshot/revision vs draft, expected-revision create/update and adopting the server-normalized success | Real backend/DB, approved HTTP contract and guarded query/mutation controller. No optimistic saved badge. |
+| RN07-D03 | Authoritative validation, Unicode/Python normalization, approved length/body bounds and real field errors | API validation/schema tests and actual mapped server responses; UI only forwards raw text or explicit clear intent. |
+| RN07-D04 | 409 fetch-latest/review/resolution and preserving dirty input across background reads | Actual revision conflict responses and deliberate reconciliation. Prepared buttons do not perform reconciliation. |
+| RN07-D05 | Timeout/disconnect ambiguity, authoritative reload/compare and safe deliberate retry | Real GET after an uncertain write; no blind write replay/offline queue. UI currently only blocks Save and exposes a callback. |
+| RN07-D06 | Account/generation guards, cancellation, keyed form reset, Settings/detail route/guard wiring and dirty-navigation behavior | RN-04/05 real composition with Anisha. No sample session or unguarded profile route is introduced. |
+| RN07-D07 | Any durable/offline draft storage, restart/reload persistence, two-account security and live/device M2 acceptance | Shared draft ownership/storage contract, real DB/Auth, documented tests and physical-device keyboard/assistive evidence. UI tests are not persistence evidence. |
+
+#### Actual validation and evidence
+
+| Check | Actual result and scope |
+|---|---|
+| `npm run check` | Passed: 169 portable tests in 7 files; 150 component cases in 26 iOS/Android suites (30 new RN-07); workspace TypeScript/ESLint, 13 original assets, Ruff and 3 backend pytest cases. No new live integration tests were run. |
+| Final `npm run typecheck` / `npm run lint` | Passed after the final fixed-frame preview change; no warnings. |
+| `npm run mobile:ui:build` | Passed actual isolated component/preview build; existing SDK Metro-runtime eval warning remains visible, with no bundler/SDK changes in this task. |
+| `npm run mobile:export` | Passed existing 16 routes, 32 JS/HTML isolation files and all 8 original navigation SVGs. Prepared profile UI/sample is not in Router imports. |
+| Browser evidence runner | Passed 12 cases: initial labeled example, exact 52×52 asset, 52 px Save height, 393/320/280 component widths, edit/discard/local apply/reload reset, confirmed clear, conflict/unconfirmed blocking, busy lock, validation and 320 px/24 px text stress. No page errors and no /v1 private requests. |
+| Isolation negative probe | A temporary ignored app-export JS file containing RN07_PROFILE_SPECIMEN_ONLY was rejected. Removed in finally, then the positive real 32-file scan passed. |
+| Direct iOS/Android UI compilation and source/asset audit | Passed. Bundles 1,009,941 / 1,014,967 bytes; indexed maps 646 / 644 entries. Runtime source contents match final ProfileForm/AccountHeader, the exact avatar occurs once in each asset directory, and test/sample/API/query client imports are absent. Static JS/assets, not installed/native execution. |
+| File/line/link/scope and `git diff --cached --check` | Performed before local commit; unrelated untracked icon folders excluded. No real profile/identity/guard/persistence or native enforcement claim is made. |
+
+The 30 new component cases cover absent-handler/unchanged Save, raw whitespace/combining/astral values without an authoritative client cap, saving locks, deliberate clear vs text, discard, associated validation, conflict/uncertainty callbacks, unavailable editing, failure retention and supplied/null header names under both OS presets. The initial label assertion assumed identical iOS/Android accessible naming; it was corrected to respect RN-01's existing platform-specific label association. Final suites pass; UI callbacks do not establish server correctness.
+
+Run `npm run mobile:ui:build`, serve with `npm exec --workspace @disconnect/mobile -- vite preview --config dev/vite.config.mts --host 127.0.0.1 --port 8093 --strictPort`, then `PLAYWRIGHT_MODULE=<local Playwright ESM entry> node docs/core_plan_implementation_notes/artifacts/rn-07/browser-check.mjs`. Evidence uses existing ephemeral Playwright 1.64.1 / headless Chrome 156.0.8078.49, not a new runtime dependency. [Runner](artifacts/rn-07/browser-check.mjs), [measured results](artifacts/rn-07/browser-results.json), [initial 393 px UI](artifacts/rn-07/profile-393-initial.png), [validation](artifacts/rn-07/profile-validation.png) and [320 px enlarged text](artifacts/rn-07/profile-320-large-text.png) are retained. These are actual component-frame captures, not native/device acceptance. The source account-card reference is retained in [RN-05 evidence](artifacts/rn-05/figma-account-reference.png).
+
+For direct compilation, create ignored apps/mobile/.expo/rn07-validation.ts exporting ProfileForm and AccountHeader from their ../src/features/account modules. From apps/mobile, run once for each ios/android platform:
+
+```bash
+npx expo export:embed --entry-file .expo/rn07-validation.ts --platform ios --dev false --bundle-output /tmp/hoosh-rn07-ui/ios.js --sourcemap-output /tmp/hoosh-rn07-ui/ios.map --assets-dest /tmp/hoosh-rn07-ui/ios-assets
+```
+
+Use android paths for the second command. From root run `node docs/core_plan_implementation_notes/artifacts/rn-07/verify-native.mjs`. [Source/bundle/asset report](artifacts/rn-07/native-results.json) records exact hashes and unverified device/live status. The temporary entry was removed. No native rebuild, Pod install, signing, cloud/DB mutation or real credentials were involved.
+
+#### Handoff
+
+Future RN-07 integration commits must complete RN07-D01–D07 and original M2 acceptance using actual Auth/API/DB outputs; preserve this UI-only historical entry. Do not enable a sample-backed profile route, infer onboarding completion from a preview, attach old drafts to a new account, or treat UI feedback simulations as real reconciliation. Independent RN-08/RN-09 frontend work can proceed while those producers are built. Local commit only; no push or main merge.
 
 ### Entry template
 
