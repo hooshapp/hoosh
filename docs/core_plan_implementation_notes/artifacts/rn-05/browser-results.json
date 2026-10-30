@@ -1,0 +1,278 @@
+{
+  "browser": "156.0.8078.49",
+  "cases": [
+    {
+      "width": 393,
+      "variant": "email",
+      "card": {
+        "width": 393,
+        "height": 114,
+        "x": 24,
+        "y": 1672.71875
+      },
+      "image": {
+        "width": 52,
+        "height": 52,
+        "x": 50,
+        "y": 1703.71875
+      },
+      "avatar": {
+        "width": 64,
+        "height": 64,
+        "x": 44,
+        "y": 1697.71875
+      },
+      "intrinsic": [
+        52,
+        52
+      ],
+      "overflow": false,
+      "title": "Your account",
+      "imageUrl": "/assets/settings-avatar-DSSwrGzD.svg"
+    },
+    {
+      "width": 393,
+      "variant": "null-email",
+      "card": {
+        "width": 393,
+        "height": 114,
+        "x": 24,
+        "y": 591.71875
+      },
+      "image": {
+        "width": 52,
+        "height": 52,
+        "x": 50,
+        "y": 622.71875
+      },
+      "avatar": {
+        "width": 64,
+        "height": 64,
+        "x": 44,
+        "y": 616.71875
+      },
+      "intrinsic": [
+        52,
+        52
+      ],
+      "overflow": false,
+      "title": "Your account",
+      "imageUrl": "/assets/settings-avatar-DSSwrGzD.svg"
+    },
+    {
+      "width": 393,
+      "variant": "long-email",
+      "card": {
+        "width": 393,
+        "height": 138,
+        "x": 24,
+        "y": 721.71875
+      },
+      "image": {
+        "width": 52,
+        "height": 52,
+        "x": 50,
+        "y": 764.71875
+      },
+      "avatar": {
+        "width": 64,
+        "height": 64,
+        "x": 44,
+        "y": 758.71875
+      },
+      "intrinsic": [
+        52,
+        52
+      ],
+      "overflow": false,
+      "title": "Your account",
+      "imageUrl": "/assets/settings-avatar-DSSwrGzD.svg"
+    },
+    {
+      "width": 320,
+      "variant": "email",
+      "card": {
+        "width": 320,
+        "height": 114,
+        "x": 24,
+        "y": 1672.71875
+      },
+      "image": {
+        "width": 52,
+        "height": 52,
+        "x": 50,
+        "y": 1703.71875
+      },
+      "avatar": {
+        "width": 64,
+        "height": 64,
+        "x": 44,
+        "y": 1697.71875
+      },
+      "intrinsic": [
+        52,
+        52
+      ],
+      "overflow": false,
+      "title": "Your account",
+      "imageUrl": "/assets/settings-avatar-DSSwrGzD.svg"
+    },
+    {
+      "width": 320,
+      "variant": "null-email",
+      "card": {
+        "width": 320,
+        "height": 114,
+        "x": 24,
+        "y": 1802.71875
+      },
+      "image": {
+        "width": 52,
+        "height": 52,
+        "x": 50,
+        "y": 1833.71875
+      },
+      "avatar": {
+        "width": 64,
+        "height": 64,
+        "x": 44,
+        "y": 1827.71875
+      },
+      "intrinsic": [
+        52,
+        52
+      ],
+      "overflow": false,
+      "title": "Your account",
+      "imageUrl": "/assets/settings-avatar-DSSwrGzD.svg"
+    },
+    {
+      "width": 320,
+      "variant": "long-email",
+      "card": {
+        "width": 320,
+        "height": 155,
+        "x": 24,
+        "y": 1932.71875
+      },
+      "image": {
+        "width": 52,
+        "height": 52,
+        "x": 50,
+        "y": 1984.21875
+      },
+      "avatar": {
+        "width": 64,
+        "height": 64,
+        "x": 44,
+        "y": 1978.21875
+      },
+      "intrinsic": [
+        52,
+        52
+      ],
+      "overflow": false,
+      "title": "Your account",
+      "imageUrl": "/assets/settings-avatar-DSSwrGzD.svg"
+    },
+    {
+      "width": 280,
+      "variant": "email",
+      "card": {
+        "width": 280,
+        "height": 114,
+        "x": 24,
+        "y": 1672.71875
+      },
+      "image": {
+        "width": 52,
+        "height": 52,
+        "x": 50,
+        "y": 1703.71875
+      },
+      "avatar": {
+        "width": 64,
+        "height": 64,
+        "x": 44,
+        "y": 1697.71875
+      },
+      "intrinsic": [
+        52,
+        52
+      ],
+      "overflow": false,
+      "title": "Your account",
+      "imageUrl": "/assets/settings-avatar-DSSwrGzD.svg"
+    },
+    {
+      "width": 280,
+      "variant": "null-email",
+      "card": {
+        "width": 280,
+        "height": 114,
+        "x": 24,
+        "y": 1802.71875
+      },
+      "image": {
+        "width": 52,
+        "height": 52,
+        "x": 50,
+        "y": 1833.71875
+      },
+      "avatar": {
+        "width": 64,
+        "height": 64,
+        "x": 44,
+        "y": 1827.71875
+      },
+      "intrinsic": [
+        52,
+        52
+      ],
+      "overflow": false,
+      "title": "Your account",
+      "imageUrl": "/assets/settings-avatar-DSSwrGzD.svg"
+    },
+    {
+      "width": 280,
+      "variant": "long-email",
+      "card": {
+        "width": 280,
+        "height": 172,
+        "x": 24,
+        "y": 1932.71875
+      },
+      "image": {
+        "width": 52,
+        "height": 52,
+        "x": 50,
+        "y": 1992.71875
+      },
+      "avatar": {
+        "width": 64,
+        "height": 64,
+        "x": 44,
+        "y": 1986.71875
+      },
+      "intrinsic": [
+        52,
+        52
+      ],
+      "overflow": false,
+      "title": "Your account",
+      "imageUrl": "/assets/settings-avatar-DSSwrGzD.svg"
+    },
+    {
+      "variant": "image-failure",
+      "readableIdentity": true,
+      "replacementArtwork": false
+    }
+  ],
+  "pageErrors": [],
+  "expectedImageFailures": 1,
+  "development": {
+    "accountCards": 3,
+    "originalAvatarDecoded": true,
+    "pageErrors": []
+  }
+}

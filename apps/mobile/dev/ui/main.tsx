@@ -10,6 +10,7 @@ import { InlineStatus } from '@/components/ui/inline-status';
 import { Screen } from '@/components/ui/screen';
 
 import './styles.css';
+import { AccountSpecimen } from './account-specimen';
 import { AssetGallery } from './asset-gallery';
 
 function Specimen({ dark, width }: { dark: boolean; width: number }) {
@@ -110,5 +111,6 @@ createRoot(root).render(
       <Specimen width={width} dark />
     </div>
     <AssetGallery />
+    <AccountSpecimen width={width} />
   </main>,
 );

@@ -21,3 +21,5 @@ Native source is not ignored by Git. Preserve the released iOS project when inte
 RN-03 provides the [account-scoped HTTP boundary](src/infrastructure/api/README.md). Compose it with Anisha's real AuthSessionPort during coordinated RN-04/05 integration; this producer is not connected to the placeholder screens yet.
 
 RN-04 provides [account query scopes, guarded mutations and lifecycle adapters](src/infrastructure/query/README.md). Its public-port tests run independently of live Auth. Root composition remains Anisha’s coordinated change; native Expo Network linking/device acceptance is still required.
+
+RN-05 has a prepared [account region](src/features/account/README.md), with an original Settings avatar and verified-identity consumer. It is tested with isolated doubles, not connected to placeholder Settings. Real Auth/API/generated types and guarded root wiring are still required. The developer UI gallery includes a clearly labeled presentation-only account specimen.

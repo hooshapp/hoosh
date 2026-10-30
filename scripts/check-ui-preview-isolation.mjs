@@ -3,7 +3,11 @@ import { extname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const exportRoot = fileURLToPath(new URL('../apps/mobile/dist/', import.meta.url));
-const forbiddenMarkers = ['disconnect-ui-specimens', 'RN-01 component specimen'];
+const forbiddenMarkers = [
+  'disconnect-ui-specimens',
+  'RN-01 component specimen',
+  'RN05_ACCOUNT_SPECIMEN_ONLY',
+];
 
 async function exportedFiles(directory) {
   const entries = await readdir(directory, { withFileTypes: true });

@@ -1,0 +1,32 @@
+{
+  "part": "RN-05 consumer preparation",
+  "parentCommit": "610f570",
+  "node": "v24.20.0",
+  "liveAcceptance": false,
+  "assetSha256": "af9693838be4af8b5157b1c08308fc8f7a8e3e11803f4fc228a12e310fdf7d33",
+  "runtimeSourceSha256": {
+    "apps/mobile/src/features/account/account-header.tsx": "9c118bbe84560b2c5fe99db40f528c9908b4ff95d7c67e236690c1941160f26e",
+    "apps/mobile/src/features/account/account-surface.tsx": "7fba3f1d6ff07423bb669c4ff91d218cd2970fd30961432daa79a0dc3666810e",
+    "apps/mobile/src/features/account/api.ts": "00d4dd9595fb6229424748708df375032432b65d0c9aca0c7561ffdc228cd818",
+    "apps/mobile/src/features/account/identity-query.ts": "4bc1b71f3f77fb564709c4abf82dd4dcdfe901d86eb4f4a4ad3a2daaf5a44730",
+    "apps/mobile/src/features/account/use-account-action.ts": "43c5ed2c2479e184f995d261fe3dfab7b0c3163a1de454a569ffae14a7723f71"
+  },
+  "bundles": {
+    "ios": {
+      "bytes": 1100031,
+      "sha256": "4e3e0b4f2bae3224274e2eea7895c5305160220ebabb61ecfa637e0526c062f7",
+      "sourceMapEntries": 706,
+      "originalAvatarBytesPresent": true,
+      "testFixtureSources": 0,
+      "executedOnDevice": false
+    },
+    "android": {
+      "bytes": 1105021,
+      "sha256": "c9ec0419639ffe5b5b66f72ca2f27c7e867cd64551cedaccb42c621c6405558d",
+      "sourceMapEntries": 704,
+      "originalAvatarBytesPresent": true,
+      "testFixtureSources": 0,
+      "executedOnDevice": false
+    }
+  }
+}

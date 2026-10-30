@@ -1,7 +1,7 @@
 # 04 — React Native Integration and Shared Frontend Plan
 
 **Date:** 2026-10-28\
-**Status:** RN-01/02/03 and RN-04 producer implemented with recorded evidence; RN-04 real root wiring remains coordinated/pending, and RN-05–11 remain not started. RN-02 also has native JS/Hermes exports; signed-device rendering/keyboard/screen-reader acceptance remains separate.\
+**Status:** RN-01/02/03 and RN-04 producer implemented with recorded evidence; RN-04 real root wiring remains coordinated/pending, RN-05 has an independently prepared consumer with live acceptance pending, and RN-06–11 remain not started. RN-02 also has native JS/Hermes exports; signed-device rendering/keyboard/screen-reader acceptance remains separate.\
 **Primary owner:** Ishmum — shared post-onboarding React Native application.\
 **Required reviewer / collaborator:** Anisha — authentication, onboarding, iOS integration, and root navigation.\
 **Area branch:** `area/react-native`; create each task branch from the updated area branch and integrate working increments into `main`.\
@@ -181,15 +181,15 @@ This is application-data cleanup, not approval to remove native restrictions. Wh
 
 ## 6. Commit sequence and dependencies
 
-RN-01/02/03 and the RN-04 producer are implemented with evidence linked below; RN-04 real root wiring is pending and RN-05–11 remain **Not started**. A part is not complete merely because its task branch exists. Proposed messages are suggestions for the actual implementation commits, not instructions to commit this planning document under those messages.
+RN-01/02/03 and the RN-04 producer are implemented with evidence linked below; RN-04 real root wiring is pending, RN-05 consumer preparation is recorded separately, and RN-06–11 remain **Not started**. A part is not complete merely because its task branch exists. Proposed messages are suggestions for the actual implementation commits, not instructions to commit this planning document under those messages.
 
 | Part | Coherent proposed commit | Prerequisites | Exit evidence | Status | Actual commit |
 |---|---|---|---|---|---|
 | RN-01 | `feat(mobile): add shared accessible screen state primitives` | Plan 00 UI/state boundary; existing scaffold | 40 iOS/Android component checks, separate 5-test Vitest suite, 393/320 px + large-text specimens, export isolation; see notes | Complete for RN-01 scope | `2f88102` (notes record historical evidence) |
 | RN-02 | `feat(mobile): add authentic assets and floating main navigation` | RN-01; verified source asset inventory | 12 original SVGs; 62 iOS/Android checks overall; 21 browser cases; web/native bundle and asset/isolation evidence | Complete for RN-02 scope | `2d5c0d1` (notes record historical evidence) |
 | RN-03 | `feat(mobile): harden account-scoped HTTP requests` | Plan 00 HTTP/error contract; current client | 121 HTTP-boundary cases; 62 UI regressions; local Fetch redirect/body tests; direct native client bundles and fixture isolation | Complete for RN-03 scope | `0741758` (historical evidence in notes) |
-| RN-04 | `feat(mobile): isolate account server state and lifecycle` | RN-01/03, SC-03; AUTH-02 for real root integration | 42 new portable cases + 26 iOS/Android cases; two-account/draft/callback/retry/event cleanup; direct native compilation | Complete for producer scope; real root wiring pending | See RN-04 Git reference in notes |
-| RN-05 | `feat(account): connect verified API identity to settings` | RN-01/04; AUTH-01/02/03/07; SB-03; API-04/05 | Real sign-in → `/v1/me` account screen evidence | Not started | — |
+| RN-04 | `feat(mobile): isolate account server state and lifecycle` | RN-01/03, SC-03; AUTH-02 for real root integration | 42 new portable cases + 26 iOS/Android cases; two-account/draft/callback/retry/event cleanup; direct native compilation | Complete for producer scope; real root wiring pending | `610f570` (producer; real root wiring pending) |
+| RN-05 | `feat(account): connect verified API identity to settings` | RN-01/04; AUTH-01/02/03/07; SB-03; API-04/05 | Real sign-in → `/v1/me` account screen evidence | Consumer prepared/tested; real integration and acceptance pending | See RN-05 preparation entry in notes |
 | RN-06 | `test(mobile): cover authenticated round trip and recovery` | RN-05; auth guards/recovery integrated | M1 acceptance matrix, no development bypass, build evidence | Not started | — |
 | RN-07 | `feat(account): integrate versioned profile reads and edits` | RN-04/05; approved profile contract/API/migration | Real profile round trip, conflict and ambiguous-save handling | Not started | — |
 | RN-08 | `feat(protection-ui): show native capability and installation states` | RN-01; agreed native read boundary; actual adapters for integration | Status mapper tests; device evidence only where adapter exists | Not started | — |
@@ -332,6 +332,8 @@ If a part grows beyond one reviewable behavior change, split it into suffixed pa
 **Edge cases:** Email changed after token issue; user has no email; no profile row exists; authenticated SDK session while backend rejects issuer/audience; development API pointed at another Supabase environment; stale account header on tab focus.
 
 **Commit done when:** A real session reaches the protected backend and the account UI shows only that identity. **Recovery:** keep the error/unavailable account surface and disable the live account feature; never substitute a mock user or relax backend authentication.
+
+**Preparation checkpoint (2026-10-29):** [Account consumer](../../apps/mobile/src/features/account/README.md) and [detailed notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md#rn-05-preparation--identity-consumer-and-account-region) provide a tested identity query, same-subject validation/cache suppression, original Settings avatar/neutral account header, local failure/recovery states and delegated optional sign-out. This is **not RN-05 completion**: real AUTH/SB outputs, protected API-04, generated API-05 types, coordinated root/Settings wiring, design review of sign-out placement and actual disposable-user acceptance remain pending. The current route's developer links remain until guards land. No fake Auth or wire DTO generator was added.
 
 ### RN-06 — First milestone acceptance and session recovery integration
 

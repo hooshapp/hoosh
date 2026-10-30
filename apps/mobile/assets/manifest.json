@@ -122,6 +122,16 @@
       "sizeBytes": 1808,
       "sha256": "f8e3d8db47b359c5e53d312844c0ce58b0a11ef67c3b2ceb71ccd74293590d09",
       "usage": "inventory-only"
+    },
+    {
+      "file": "account/settings-avatar.svg",
+      "nodeId": "10562:244",
+      "width": "52",
+      "height": "52",
+      "viewBox": "0 0 52 52",
+      "sizeBytes": 1929,
+      "sha256": "af9693838be4af8b5157b1c08308fc8f7a8e3e11803f4fc228a12e310fdf7d33",
+      "usage": "account-inventory"
     }
   ]
 }

@@ -9,3 +9,5 @@
 - Native rule/session state remains authoritative in Swift/Kotlin; do not duplicate timers in feature stores.
 
 Ishmum and Anisha review shared contracts and root routing changes. Development fixtures must stay explicit and must never imply authenticated accounts, installed restrictions, or measured progress in production.
+
+The [account consumer](account/README.md) is prepared for RN-05 but not routed into the current app. It consumes the shared ports; real Auth/guards, protected API identity and generated types must land before live acceptance. Never install a synthetic session to enable the region in release.

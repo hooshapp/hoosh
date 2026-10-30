@@ -4,11 +4,11 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN-04 producer implemented; real Auth/root wiring pending. RN-03 is `0741758`; RN-05–11 remain not started.
+**Current part:** RN-05 consumer preparation implemented; live integration blocked by missing Auth/API producers. RN-04 is `610f570`; RN-06–11 remain not started.
 
-**Implementation branch:** `task/react-native/rn-04`, parent RN-03 `0741758`. No push/main merge is implied.
+**Implementation branch:** `task/react-native/rn-05`, parent RN-04 `610f570`. No push/main merge is implied.
 
-**Commit reference:** RN-01 is `2f88102`; RN-02 is `2d5c0d1`. RN-03 is `0741758`. RN-04 travels with its code under the unique subject `feat(mobile): isolate account server state and lifecycle`; resolve its self-hash from Git until the next normal notes update.
+**Commit reference:** RN-01 is `2f88102`; RN-02 is `2d5c0d1`. RN-03 is `0741758`. RN-04 is `610f570`. RN-05 preparation will have its own unique subject and pending self-hash.
 
 Historical reference: RN-01 is `2f88102`. RN-02 travels with its code under the unique subject `feat(mobile): add authentic assets and floating main navigation`; resolve its hash from Git until the next normal notes update records it. A pending self-hash at write time is not missing implementation.
 
@@ -18,12 +18,11 @@ Historical reference: RN-01 is `2f88102`. RN-02 travels with its code under the 
 
 ## Resume here
 
-- RN-01 `2f88102`, RN-02 `2d5c0d1`, RN-03 `0741758`; RN-04 now supplies the independently consumable [query/provider contract](../../apps/mobile/src/infrastructure/query/README.md). Its self-hash is resolved by the unique commit subject above.
-- Latest checks: 163 portable tests (42 new RN-04), 88 component/native cases in 22 suites (26 new across iOS/Android), 3 API tests; workspace types/lint/assets, supported web export (16 routes/32 isolation files), SDK dependency compatibility and lockfile dry-run passed. Direct native compilation imports all new producers/adapters; see RN-04 source-map/hash evidence.
-- Anisha composes the stable AuthSessionPort + API client + account controller and lifecycle boundary in her coordinated root/guard change. The current placeholder app does not consume the producer. Native Expo Network must be autolinked and tested in audited signed builds. No Supabase SDK, private endpoint, generated API DTO, Auth guard or native enforcement is implemented here.
-- RN-05 needs real AUTH-02/03/07 and API-04/05 outputs; do not claim M1 or start live identity with a mock account. Ishmum can independently start API-01/backend or Android investigation while those producers are built. RN-05–11 remain unstarted.
-- Scope replacement clears private caches and remounts forms; same-owner temporary unavailability preserves drafts/data while blocking requests. Keep all private toasts/drafts inside the keyed boundary. No persisted cache, automatic mutation replay or sign-out native cleanup policy is introduced.
-- The unrelated untracked icon folders present at RN-04 start are excluded. Main is neither merged nor pushed by this task.
+- RN-01 `2f88102`, RN-02 `2d5c0d1`, RN-03 `0741758`, RN-04 `610f570`. RN-05 now has **consumer preparation only**, under `feat(mobile): prepare guarded identity account surface`. Its own hash is pending at write time; resolve it from Git. RN-05 live completion is not accepted.
+- Read [the account handoff](../../apps/mobile/src/features/account/README.md). This checkout has no real Auth provider/guards, protected identity endpoint or generated wire types. Finish Anisha's SB-03/AUTH-01/02/03/07 and Ishmum's API-04/05, then coordinate RN-04/root + Settings wiring. Ishmum's next independent prerequisite lane is backend API-01 onward; do not install a release mock session to continue RN-05.
+- Latest checks passed: 169 portable tests (6 new), 120 component cases across 24 iOS/Android suites (32 new), 3 backend tests, types/lint, 13 original assets, supported app web export/isolation, isolated UI build, 10 actual browser component cases plus development-server smoke, and direct native consumer/asset/source audits. These are deterministic/local checks, not real Auth/API or signed-device evidence.
+- Settings still displays the existing development placeholder/links; replacing them without real guards would conceal the missing integration. AccountSurface is ready to mount inside the real keyed provider later. Its sign-out action is optional, delegated to Auth and absent from the source design; live placement needs PM/design review.
+- Native restriction ownership at sign-out remains unresolved. No native rules, source targets, credentials, cloud configuration, backend or shared contract changes were made. Existing untracked icon folders are excluded; no push or main merge is implied.
 
 ## Recording rules
 
@@ -389,7 +388,7 @@ RN-04 owns query scope, guarded mutation callbacks and platform lifecycle integr
 ### RN-04 — Account-scoped server state and lifecycle
 
 **Commit message:** `feat(mobile): isolate account server state and lifecycle`.
-**Hash:** Pending. **Date:** 2026-10-29. **Owner:** Ishmum. **Branch:** `task/react-native/rn-04`.
+**Hash:** `610f570` (recorded during RN-05). **Date:** 2026-10-29. **Owner:** Ishmum. **Branch:** `task/react-native/rn-04`.
 **Status:** Implemented for producer scope; independently tested. Real Auth/root wiring stays Anisha's coordinated integration.
 
 **Scope:** Memory-only account QueryClients, same-generation readiness gating, query cancellation, guarded mutations/callbacks, bounded read retries and native/web focus/connectivity adapters. No profile/identity screen, persisted cache, Auth implementation or native restriction cleanup.
@@ -467,6 +466,104 @@ Use android and android.js/map for the other platform. Then from root run `node 
 #### Remaining gates and next handoff
 
 Anisha must wire the real Auth/root provider and route policy, confirm the single Auth refresh owner, and verify Expo Network autolinking in audited native builds. RN-05/API-04/05 then supply real identity and generated DTOs, followed by joint M1 acceptance. No real Supabase/private API, signed-device focus/network/abort/redirect behavior, accessibility acceptance or native protection ownership transition was executed. Cancellation cannot undo a committed server mutation; profile controllers must reconcile uncertain writes rather than repeat them blindly. No persisted cache/offline write replay is permitted. This is a local implementation commit on the RN-04 task branch, not a push/main merge.
+
+### RN-05 preparation — Identity consumer and account region
+
+**Commit message:** `feat(mobile): prepare guarded identity account surface`.
+**Hash:** Pending. **Date:** 2026-10-29. **Owner:** Ishmum. **Branch:** `task/react-native/rn-05`. **Parent:** `610f570`.
+**Status:** Consumer preparation implemented/tested; RN-05 live completion remains blocked and is not accepted.
+**Missing outputs:** SB-03, real AUTH-01/02/03/07, protected API-04 identity, API-05 generated types, coordinated RN-04/root wiring. The repository contains only public health and test Auth doubles.
+**Independent scope:** Prepare the canonical identity read/query and Figma account-region consumer with safe failure/recovery/sign-out delegation, deterministic tests and isolated visual evidence. Do not add mock Auth to the release tree, replace generated schemas, edit Anisha's guards or claim M1.
+
+#### Every changed file and logical change
+
+Ranges refer to this preparation commit, not a completed RN-05 milestone. PNG evidence records dimensions/bytes instead of text line numbers.
+
+| File and exact lines in RN-05 preparation | Change and reason |
+|---|---|
+| `README.md`: lines 14–14 | Link the prepared account consumer and its handoff, making the missing live Auth/API/generated-type/guard outputs visible rather than presenting a completed account feature. |
+| `apps/mobile/README.md`: lines 24–25 | Link the prepared account consumer and its handoff, making the missing live Auth/API/generated-type/guard outputs visible rather than presenting a completed account feature. |
+| `apps/mobile/assets/README.md`: lines 5–5 | Link exact Settings-avatar provenance and update the integrity inventory count to 13, while retaining the eight required release nav assets and deferred live account consumer. |
+| `apps/mobile/assets/README.md`: lines 28–28 | Link exact Settings-avatar provenance and update the integrity inventory count to 13, while retaining the eight required release nav assets and deferred live account consumer. |
+| `apps/mobile/assets/README.md`: lines 31–32 | Link exact Settings-avatar provenance and update the integrity inventory count to 13, while retaining the eight required release nav assets and deferred live account consumer. |
+| `apps/mobile/assets/account/README.md`: lines 1–22 | Record read-only Figma session/node provenance, exact source dimensions/hash, source slot geometry, decorative semantics and pending live/native integration. |
+| `apps/mobile/assets/account/settings-avatar.svg`: lines 1–13 | Add the untouched 52×52 original Settings avatar (1,929 bytes; source 10562:244). Preserve root/viewBox/paths and manifest hash instead of resizing the Home artwork or inventing a user avatar. |
+| `apps/mobile/assets/manifest.json`: lines 125–134 | Register original account SVG node, byte count, SHA-256 and unchanged 52×52 root/viewBox so the existing asset checker validates all 13 originals. Keep its consumer inventory separate from required release navigation assets. |
+| `apps/mobile/dev/ui/account-specimen.tsx`: lines 1–30 | Render actual AccountHeader components with explicitly synthetic presentation props in the isolated developer entry. Include ordinary/null/long Unicode email and a unique release-isolation marker; no Auth producer or API is instantiated. |
+| `apps/mobile/dev/ui/main.tsx`: lines 13–13 | Mount the clearly labeled account presentation specimen alongside existing isolated UI/assets; keep it outside all Router/production imports. |
+| `apps/mobile/dev/ui/main.tsx`: lines 114–114 | Mount the clearly labeled account presentation specimen alongside existing isolated UI/assets; keep it outside all Router/production imports. |
+| `apps/mobile/dev/vite.config.mts`: lines 6–23 | Make actual expo-image rendering work in the isolated built/development Vite specimen: source/core re-export resolution, declaration-only type import correction, web platform define and browser dependency preoptimization. Preserve the real component/library functions; do not edit SDK files or Expo’s app bundler. |
+| `apps/mobile/dev/vite.config.mts`: lines 25–25 | Make actual expo-image rendering work in the isolated built/development Vite specimen: source/core re-export resolution, declaration-only type import correction, web platform define and browser dependency preoptimization. Preserve the real component/library functions; do not edit SDK files or Expo’s app bundler. |
+| `apps/mobile/dev/vite.config.mts`: lines 27–30 | Make actual expo-image rendering work in the isolated built/development Vite specimen: source/core re-export resolution, declaration-only type import correction, web platform define and browser dependency preoptimization. Preserve the real component/library functions; do not edit SDK files or Expo’s app bundler. |
+| `apps/mobile/dev/vite.config.mts`: lines 32–34 | Make actual expo-image rendering work in the isolated built/development Vite specimen: source/core re-export resolution, declaration-only type import correction, web platform define and browser dependency preoptimization. Preserve the real component/library functions; do not edit SDK files or Expo’s app bundler. |
+| `apps/mobile/dev/vite.config.mts`: lines 37–38 | Make actual expo-image rendering work in the isolated built/development Vite specimen: source/core re-export resolution, declaration-only type import correction, web platform define and browser dependency preoptimization. Preserve the real component/library functions; do not edit SDK files or Expo’s app bundler. |
+| `apps/mobile/src/features/README.md`: lines 12–13 | Link the prepared account consumer and its handoff, making the missing live Auth/API/generated-type/guard outputs visible rather than presenting a completed account feature. |
+| `apps/mobile/src/features/account/README.md`: lines 1–87 | Specify the consumer’s prepared-only status, required same-controller/guard composition, identity trust/cache/error rules, optional Auth-owned actions and Figma adaptations. List real generated-type/Auth/API/root/device outputs needed before RN-05 completion. |
+| `apps/mobile/src/features/account/account-header.tsx`: lines 1–62 | Translate Figma 10562:136 into the source 20 px/16 px card layout and exact 64 px container/52 px original avatar. Use neutral title, backend email/null fallback, wrapping/selectable text, hidden decorative semantics and a text-preserving image-failure state. |
+| `apps/mobile/src/features/account/account-surface.test.tsx`: lines 1–294 | Verify all consumer states under both OS presets: safe email/null display, refreshed/stale data, manual retry, mismatch cache removal, explicit recovery, offline/reconnect and account switching. Also cover optional/delegated sign-out, duplicate taps, safe errors and sign-out during an identity request with a late response. |
+| `apps/mobile/src/features/account/account-surface.tsx`: lines 1–145 | Compose account-local loading, refresh/stale, offline, Auth/API unavailable, protocol/error, explicit recovery and optional sign-out UI using shared primitives. Keep actions Auth-owned, disable duplicate taps, and never infer profile/protection or navigate around guards. |
+| `apps/mobile/src/features/account/api.test.ts`: lines 1–58 | Exercise the actual RN-03 identity consumer with local fixtures: nullable/real email, strict subject/schema checks, abort forwarding and 503 preservation without Auth invalidation. No real Supabase credentials or endpoint is involved. |
+| `apps/mobile/src/features/account/api.ts`: lines 1–7 | Read authenticated /v1/me using RN-03’s existing canonical runtime decoder and forwarded query/account cancellation. Do not introduce handwritten generated wire types or use SDK/health data as verified identity. |
+| `apps/mobile/src/features/account/identity-query.ts`: lines 1–20 | Share RN-04’s account-prefixed identity query. Immediately mask old data on protocol/mismatched-subject failure, then remove that identity cache entry without an automatic reset/refetch loop. |
+| `apps/mobile/src/features/account/use-account-action.ts`: lines 1–46 | Run owner-provided account actions separately from protected server writes so API pause does not prevent local sign-out. Guard same-turn duplicates and mounted/scope ownership before setting busy/error state; ignore raw/late exception content. |
+| `docs/Context (AGENT)/AGENT_START_HERE.md`: lines 11–11 | Expose the RN-05 preparation checkpoint and remaining acceptance count to new agents without implying real Auth/API/root integration. |
+| `docs/Context (AGENT)/AGENT_START_HERE.md`: lines 130–130 | Expose the RN-05 preparation checkpoint and remaining acceptance count to new agents without implying real Auth/API/root integration. |
+| `docs/core_plan/04_react_native_integration.md`: lines 4–4 | Record RN-04’s actual hash and RN-05’s prepared consumer/evidence while leaving the real identity round trip, generated types, guarded Settings/root wiring and live acceptance pending. Preserve other part IDs and prerequisites. |
+| `docs/core_plan/04_react_native_integration.md`: lines 184–184 | Record RN-04’s actual hash and RN-05’s prepared consumer/evidence while leaving the real identity round trip, generated types, guarded Settings/root wiring and live acceptance pending. Preserve other part IDs and prerequisites. |
+| `docs/core_plan/04_react_native_integration.md`: lines 191–192 | Record RN-04’s actual hash and RN-05’s prepared consumer/evidence while leaving the real identity round trip, generated types, guarded Settings/root wiring and live acceptance pending. Preserve other part IDs and prerequisites. |
+| `docs/core_plan/04_react_native_integration.md`: lines 336–337 | Record RN-04’s actual hash and RN-05’s prepared consumer/evidence while leaving the real identity round trip, generated types, guarded Settings/root wiring and live acceptance pending. Preserve other part IDs and prerequisites. |
+| `docs/core_plan/README.md`: lines 3–3 | Retain eight accepted parts/producers and 36 awaiting acceptance, explicitly distinguishing RN-05 consumer preparation from completion. |
+| `docs/core_plan/README.md`: lines 12–12 | Retain eight accepted parts/producers and 36 awaiting acceptance, explicitly distinguishing RN-05 consumer preparation from completion. |
+| `docs/core_plan/README.md`: lines 115–115 | Retain eight accepted parts/producers and 36 awaiting acceptance, explicitly distinguishing RN-05 consumer preparation from completion. |
+| `docs/core_plan_implementation_notes/artifacts/rn-05/account-280-long-email.png`: binary PNG, 280×173, 11889 bytes | Preserve an actual browser capture of the prepared account component or deliberate image-failure state; synthetic text is explicitly presentation-only. |
+| `docs/core_plan_implementation_notes/artifacts/rn-05/account-393-email.png`: binary PNG, 393×115, 7945 bytes | Preserve an actual browser capture of the prepared account component or deliberate image-failure state; synthetic text is explicitly presentation-only. |
+| `docs/core_plan_implementation_notes/artifacts/rn-05/account-393-null-email.png`: binary PNG, 393×115, 7561 bytes | Preserve an actual browser capture of the prepared account component or deliberate image-failure state; synthetic text is explicitly presentation-only. |
+| `docs/core_plan_implementation_notes/artifacts/rn-05/account-image-failure.png`: binary PNG, 393×115, 6911 bytes | Preserve an actual browser capture of the prepared account component or deliberate image-failure state; synthetic text is explicitly presentation-only. |
+| `docs/core_plan_implementation_notes/artifacts/rn-05/browser-check.mjs`: lines 1–97 | Measure original SVG decoding and effective slot/container/inset geometry, wrapping and load-error fallback at three component widths. Save real captures/results, assert zero page errors and also smoke-test the actual Vite development entry. |
+| `docs/core_plan_implementation_notes/artifacts/rn-05/browser-results.json`: lines 1–278 | Record actual Chrome version, ten built-preview component/asset cases, deliberate image failures and clean development-mode rendering. Measurements are component-width evidence, not native/device acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-05/figma-account-reference.png`: binary PNG, 393×114, 7555 bytes | Preserve the read-only Figma profile-card render as the visual reference; never use it as a runtime implementation asset. |
+| `docs/core_plan_implementation_notes/artifacts/rn-05/native-results.json`: lines 1–32 | Record final runtime/bundle SHA-256 values, source-map counts and original avatar inclusion for iOS/Android. Explicitly mark live acceptance and device execution false. |
+| `docs/core_plan_implementation_notes/artifacts/rn-05/verify-native.mjs`: lines 1–82 | Audit both direct consumer bundles against final runtime source contents, synthetic-marker exclusion and exact original-avatar hashes in copied native assets. Write measured output without claiming native code/device execution. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1–600 | Advance the resume checkpoint, record RN-04’s actual hash and append RN-05 preparation history with all file/line changes, Figma provenance, actual checks, observed preview compatibility fixes and unfulfilled live acceptance prerequisites. |
+| `scripts/check-ui-preview-isolation.mjs`: lines 6–10 | Reject RN-05’s unique developer-account marker in real exported JS/HTML, alongside existing specimen markers. Verify the guard with an intentional ignored-file leak and cleanup. |
+
+#### Decisions and implementation boundary
+
+- RN-05's original completion condition requires a real session reaching a protected backend and the UI showing only that verified identity. Repository inspection found none of the real AUTH/SB/API outputs, so this commit deliberately prepares the independent consumer and leaves the milestone incomplete. No fixture Auth is wired into routes and no handwritten wire DTO/generator replaces API-05. readIdentity reuses the existing canonical AuthIdentity projection/runtime decoder; the real generated schema binding is a remaining task.
+- readIdentity forwards the query/account AbortSignal into authenticated /v1/me through RN-03/04. SDK email and /healthz cannot populate the surface. Protocol/mismatched-owner errors suppress prior identity immediately, then remove that identity cache entry without reset/invalidation retry loops. Other same-user transient failures retain data with honest stale/offline messaging. Ownership cancellation/remount remains RN-04's authority.
+- High-fidelity read-only Figma session `59e9e8d6-3a5f-40c5-9f5a-45f17ee62e97` inspected Settings `27:157` and profile card `10562:136`, including screenshot renders. Source text nodes are `10562:139–142`, avatar `10562:244`. The exact source SVG is 52×52 (not a resized Home Dino), rendered inside the source 64×64 container with 20 px card padding/16 px gap. Packaged Space Grotesk, RN-01 controls and RN-04 data ownership are reused. The neutral heading and actual/nullable email intentionally replace the design's fictional person; decorative brand artwork infers no gender, score, mood or protection. An image failure leaves readable text and no replacement illustration.
+- Account status is local to the region, separate from navigation/native protection. Explicit recovery delegates once to controller.recoverSession and never runs passively. Optional sign-out delegates only to AuthAccountActions, works independently of a paused API gate, blocks repeated taps and suppresses late busy/error updates by mounted/scope checks. Auth still owns generation advance, credential erasure, guards and storage-error recovery. Sign-out's placement is a proposed functional design addition, not an approved Figma control.
+- No Settings/root route was changed because the real guard/provider does not exist. Existing preview links must be removed when guarded integration lands. No personal/profile defaults, database row, native restriction release, policy answer, new dependency or configuration secret is introduced.
+- The Vite specimen now imports the actual Expo image component. SDK 58 exposes declaration-only imports and Metro bootstrap assumptions that plain Vite cannot execute. Preview-only resolution selects official source/core re-exports used by expo-image, corrects four imports to type imports in the SDK declaration-only module, supplies EXPO_OS=web, excludes platform-sensitive Expo packages from preoptimization and prebundles their CommonJS browser dependencies. SDK files and the Expo production bundler are untouched. Both built preview and development rendering were actually verified; a nonfatal SDK Metro-runtime eval build warning remains visible. Failed intermediate preview attempts are not passing evidence.
+
+#### Actual validation and evidence
+
+| Check | Actual result / limit |
+|---|---|
+| `npm run check` | Passed: 169 portable tests in 7 files (6 new), 120 component/native cases in 24 iOS/Android suites (32 new), workspace TypeScript/ESLint, 13 original asset checks, Ruff and 3 pytest tests. No live backend/Auth project. |
+| Final `npm run typecheck` and `npm run lint` | Passed after final preview changes; the earlier unused test import was removed. No final lint warning. |
+| `npm run mobile:export` | Passed supported web export, 16 routes/32 JS-HTML isolation files and original nav bytes. This is regression evidence, not account routing integration. |
+| `npm run mobile:ui:build` | Passed with actual account component and original SVG. Nonfatal upstream Metro-runtime eval warning is recorded; not suppressed or labeled production app code. |
+| Browser runner below | Passed 10 built-preview cases: actual card widths 393/320/280, nullable/ordinary/long email, exact decoded 52×52 artwork inside 64×64 container, 20 px inset, no component overflow and load-failure fallback. Development server also renders all three cases and decodes the original SVG with zero page errors. |
+| Developer marker negative probe | An ignored exported JS file containing RN05_ACCOUNT_SPECIMEN_ONLY caused the isolation guard to reject; removed in finally, then the real 32-file positive guard passed. No original assets were altered. |
+| Direct native consumer compile + verify-native.mjs | iOS/Android passed. Bundles 1,100,031 / 1,105,021 bytes; indexed maps 706 / 704 entries. Every runtime source content matches the final file, each native asset output contains the original avatar SHA-256 exactly once, and test/preview markers are absent. Static JS/assets only; no installed/signed app execution. |
+| Git/file/range/link/scope audit | Performed before local commit; every changed file is inventoried below. Unrelated icon folders remain untracked. No production routes/native/backend/contracts/package/lockfile changes. |
+
+Browser evidence uses an isolated headless Chrome 156.0.8078.49 via existing ephemeral Playwright 1.64.1, not an added application dependency. Serve built UI with `npm exec --workspace @disconnect/mobile -- vite preview --config dev/vite.config.mts --host 127.0.0.1 --port 8093 --strictPort`, and development UI with `npm run mobile:ui -- --port 8094`. Run `PLAYWRIGHT_MODULE=<local Playwright ESM entry> node docs/core_plan_implementation_notes/artifacts/rn-05/browser-check.mjs`.
+
+[Browser measurements](artifacts/rn-05/browser-results.json), [executable runner](artifacts/rn-05/browser-check.mjs), [Figma account reference](artifacts/rn-05/figma-account-reference.png), [actual ordinary email](artifacts/rn-05/account-393-email.png), [nullable email](artifacts/rn-05/account-393-null-email.png), [280 px long email](artifacts/rn-05/account-280-long-email.png) and [image failure](artifacts/rn-05/account-image-failure.png) are retained. Standard actual card geometry is 393×114, matching the reference; account text differs intentionally. These are component-width stress cases, not whole-app/device screenshots or screen-reader acceptance.
+
+For direct compilation create ignored apps/mobile/.expo/rn05-validation.ts exporting AccountSurface, createAccountDataController, AccountDataProvider and createApiClient from their corresponding ../src/features/account or ../src/infrastructure modules. From apps/mobile, run per platform ios/android:
+
+```bash
+npx expo export:embed --entry-file .expo/rn05-validation.ts --platform ios --dev false --bundle-output /tmp/hoosh-rn05-client/ios.js --sourcemap-output /tmp/hoosh-rn05-client/ios.map --assets-dest /tmp/hoosh-rn05-client/ios-assets
+```
+
+Replace ios with android for the second command. From root, run `node docs/core_plan_implementation_notes/artifacts/rn-05/verify-native.mjs`; [the report](artifacts/rn-05/native-results.json) records hashes/source/bundle/asset evidence. The ignored entry was removed after validation. No full native project generation, Pod/signing change, cloud mutation or real credentials were used.
+
+#### Remaining work and next handoff
+
+RN-05 **remains incomplete** until SB-03 + real AUTH-01/02/03/07 and API-04/05 exist, generated schema types are consumed, coordinated root/Settings integration removes preview links, PM/design reviews sign-out placement, and a disposable development user completes the documented identity/error/sign-out acceptance matrix. Wrong project, missing/invalid live JWT, real Supabase storage/link flows, 503 integration and physical-device HTTP/SVG/assistive behavior are unverified. The current tests use explicit isolated doubles and local transport fixtures only. Backend API-01 onward is Ishmum's next prerequisite lane; Anisha retains Auth/iOS ownership. This preparation commit is local and does not push or merge main.
 
 ### Entry template
 

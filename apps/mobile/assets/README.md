@@ -2,7 +2,7 @@
 
 Source: [App UI](https://www.figma.com/design/ukmD2ZidJ9UR2XxUkvdPoJ/App-UI?node-id=0-1), captured 2026-10-29. No immutable Figma version was supplied; the manifest records node IDs, original dimensions, byte counts and SHA-256 hashes for this capture.
 
-These SVGs are unmodified downloads from high-fidelity Figma design contexts. Do not redraw, tint, minify, edit paths/root bounds or save transient asset URLs in code. Refresh the source and manifest together when design changes. The larger Home SVG bounds include its stroke overhang around the 18 px layout slot; render it at its original 20.5×20.7758 px bounds with the recorded offset. Other nav glyphs are 20×20 px; Dino artwork is 110×110 px.
+These SVGs are unmodified downloads from high-fidelity Figma design contexts. Do not redraw, tint, minify, edit paths/root bounds or save transient asset URLs in code. Refresh the source and manifest together when design changes. The larger Home SVG bounds include its stroke overhang around the 18 px layout slot; render it at its original 20.5×20.7758 px bounds with the recorded offset. Other nav glyphs are 20×20 px; Home Dino artwork is 110×110 px. The separately exported [Settings avatar](account/README.md) retains its original 52×52 bounds.
 
 | Local file | Source node | Format / native view bounds | Purpose |
 |---|---|---|---|
@@ -25,6 +25,8 @@ These SVGs are unmodified downloads from high-fidelity Figma design contexts. Do
 
 Navigation uses both original color variants, decorative image semantics and text labels if an image fails. All targets retain accessible names and selected state. [Navigation contract](../src/components/navigation/README.md) explains layout, history and clearance.
 
-`npm run mobile:check-assets` verifies all 12 local files against the manifest, including unchanged bytes and root dimensions. `npm run mobile:export` additionally verifies that all eight nav SVGs exist byte-for-byte in the release export. The four Dino variants are deliberately inventory-only until an approved Home consumer exists; they can be inspected locally through `npm run mobile:ui` and are not evidence of a working health model.
+`npm run mobile:check-assets` verifies all 13 local files against the manifest, including unchanged bytes and root dimensions. `npm run mobile:export` additionally verifies that all eight nav SVGs exist byte-for-byte in the release export. The four Dino variants are deliberately inventory-only until an approved Home consumer exists; they can be inspected locally through `npm run mobile:ui` and are not evidence of a working health model.
 
 Third-party app/provider logos are not line icons and are not included in this navigation-only scope. Future auth/app-picker work must export authentic source logos separately with provenance. No emoji, generated art, external CDN or icon-font substitution is used here.
+
+RN-05 preparation adds the original Settings avatar to the manifest and isolated account specimen. Its consumer is not routed into the live app yet; no account gender/mood is inferred from the decorative artwork.
