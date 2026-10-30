@@ -1,7 +1,7 @@
 # 04 — React Native Integration and Shared Frontend Plan
 
 **Date:** 2026-10-28\
-**Status:** RN-01/02/03 implemented with recorded evidence; RN-04–11 remain not started. RN-02 also has native JS/Hermes exports; signed-device rendering/keyboard/screen-reader acceptance remains separate.\
+**Status:** RN-01/02/03 and RN-04 producer implemented with recorded evidence; RN-04 real root wiring remains coordinated/pending, and RN-05–11 remain not started. RN-02 also has native JS/Hermes exports; signed-device rendering/keyboard/screen-reader acceptance remains separate.\
 **Primary owner:** Ishmum — shared post-onboarding React Native application.\
 **Required reviewer / collaborator:** Anisha — authentication, onboarding, iOS integration, and root navigation.\
 **Area branch:** `area/react-native`; create each task branch from the updated area branch and integrate working increments into `main`.\
@@ -181,14 +181,14 @@ This is application-data cleanup, not approval to remove native restrictions. Wh
 
 ## 6. Commit sequence and dependencies
 
-RN-01/02/03 are implemented with evidence linked below; other rows remain **Not started**. A part is not complete merely because its task branch exists. Proposed messages are suggestions for the actual implementation commits, not instructions to commit this planning document under those messages.
+RN-01/02/03 and the RN-04 producer are implemented with evidence linked below; RN-04 real root wiring is pending and RN-05–11 remain **Not started**. A part is not complete merely because its task branch exists. Proposed messages are suggestions for the actual implementation commits, not instructions to commit this planning document under those messages.
 
 | Part | Coherent proposed commit | Prerequisites | Exit evidence | Status | Actual commit |
 |---|---|---|---|---|---|
 | RN-01 | `feat(mobile): add shared accessible screen state primitives` | Plan 00 UI/state boundary; existing scaffold | 40 iOS/Android component checks, separate 5-test Vitest suite, 393/320 px + large-text specimens, export isolation; see notes | Complete for RN-01 scope | `2f88102` (notes record historical evidence) |
 | RN-02 | `feat(mobile): add authentic assets and floating main navigation` | RN-01; verified source asset inventory | 12 original SVGs; 62 iOS/Android checks overall; 21 browser cases; web/native bundle and asset/isolation evidence | Complete for RN-02 scope | `2d5c0d1` (notes record historical evidence) |
-| RN-03 | `feat(mobile): harden account-scoped HTTP requests` | Plan 00 HTTP/error contract; current client | 121 HTTP-boundary cases; 62 UI regressions; local Fetch redirect/body tests; direct native client bundles and fixture isolation | Complete for RN-03 scope | See RN-03 Git reference in notes |
-| RN-04 | `feat(mobile): scope server state to the authenticated account` | RN-03; auth snapshot/token-provider contract | Cache-isolation/lifecycle tests; coordinated root provider change | Not started | — |
+| RN-03 | `feat(mobile): harden account-scoped HTTP requests` | Plan 00 HTTP/error contract; current client | 121 HTTP-boundary cases; 62 UI regressions; local Fetch redirect/body tests; direct native client bundles and fixture isolation | Complete for RN-03 scope | `0741758` (historical evidence in notes) |
+| RN-04 | `feat(mobile): isolate account server state and lifecycle` | RN-01/03, SC-03; AUTH-02 for real root integration | 42 new portable cases + 26 iOS/Android cases; two-account/draft/callback/retry/event cleanup; direct native compilation | Complete for producer scope; real root wiring pending | See RN-04 Git reference in notes |
 | RN-05 | `feat(account): connect verified API identity to settings` | RN-01/04; AUTH-01/02/03/07; SB-03; API-04/05 | Real sign-in → `/v1/me` account screen evidence | Not started | — |
 | RN-06 | `test(mobile): cover authenticated round trip and recovery` | RN-05; auth guards/recovery integrated | M1 acceptance matrix, no development bypass, build evidence | Not started | — |
 | RN-07 | `feat(account): integrate versioned profile reads and edits` | RN-04/05; approved profile contract/API/migration | Real profile round trip, conflict and ambiguous-save handling | Not started | — |
@@ -306,6 +306,8 @@ If a part grows beyond one reviewable behavior change, split it into suffixed pa
 **Edge cases:** Fast sign-out/sign-in to the same user; a token refresh event that should not reset valid same-user data; account switching during a mutation; background app restoration; React strict/development repeated effects; multiple consumers observing the same query; offline paused retry resumed after logout.
 
 **Commit done when:** The query layer can be integrated with a real or deterministic test auth service through one public interface, with no session-store duplication. **Recovery:** disable the dependent live screen and revert query provider wiring with the auth owner; do not restore a public protected-screen bypass.
+
+**Implementation evidence (2026-10-29):** The independently consumable [query boundary](../../apps/mobile/src/infrastructure/query/README.md) implements memory-only per-owner caches, cancellation, guarded callbacks, bounded read retries, and native/browser lifecycle adapters. [RN-04 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md#rn-04--account-scoped-server-state-and-lifecycle) record deterministic tests and direct compilation. Real AUTH-02 provider/root wiring is deliberately pending with Anisha; no live identity, guards, persisted cache or native ownership policy is implied. Retention uses scope lifetime rather than five-minute per-entry timers, with explicit teardown; future large feeds need bounded cardinality.
 
 ### RN-05 — Real identity and account surface
 

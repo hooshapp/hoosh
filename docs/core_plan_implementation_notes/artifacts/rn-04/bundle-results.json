@@ -1,0 +1,59 @@
+{
+  "plan": "RN-04",
+  "parentCommit": "0741758",
+  "node": "v24.20.0",
+  "runtimeSourceSha256": {
+    "apps/mobile/src/infrastructure/query/account-controller.ts": "57098f09364d93fd5e44d238d07df54a1716f4189047d74f1ceaee2bccafe211",
+    "apps/mobile/src/infrastructure/query/account-data-provider.tsx": "f61759577955348941fbf18de20c22147ab68ddd909bb3aacaf498433e628f79",
+    "apps/mobile/src/infrastructure/query/account-scope.ts": "834badc70e4a02dfbb62d6388433c1eb4317344574c4760b07282af49e08e5f0",
+    "apps/mobile/src/infrastructure/query/lifecycle.ts": "bed8adb367a1d355a915f1fd2a84eaf0b34617ee60c37b6330c9d2716220b801",
+    "apps/mobile/src/infrastructure/query/platform-lifecycle.native.ts": "12aebd4803b20cfa516216c8653efd453839cad87d71fe3cd48564445f5065bf",
+    "apps/mobile/src/infrastructure/query/platform-lifecycle.ts": "5bba9f4beeb86f43623970031878944ce21a87e924cff4a0a0b8100424be710b",
+    "apps/mobile/src/infrastructure/query/query-client.ts": "7e68539a4aa523a7092261111bebabb62b0f0507df64655e207d090018b06d64",
+    "apps/mobile/src/infrastructure/query/query-lifecycle-boundary.tsx": "7c1e5f3168fea087c6ef34e9a553079bf09e28b526ff9352209536e1ae1e163a"
+  },
+  "bundles": {
+    "ios": {
+      "bytes": 1079372,
+      "sha256": "908e278a1bc66bf11e397e795c11f543a5818eba97efe41551f6924957b5db46",
+      "sourceMapEntries": 685,
+      "selectedSources": [
+        "/apps/mobile/src/infrastructure/query/account-controller.ts",
+        "/apps/mobile/src/infrastructure/query/account-scope.ts",
+        "/apps/mobile/src/infrastructure/query/query-client.ts",
+        "/apps/mobile/src/infrastructure/query/account-data-provider.tsx",
+        "/apps/mobile/src/infrastructure/query/query-lifecycle-boundary.tsx",
+        "/apps/mobile/src/infrastructure/query/lifecycle.ts",
+        "/apps/mobile/src/infrastructure/query/platform-lifecycle.native.ts",
+        "/node_modules/expo-network/build/Network.js",
+        "/node_modules/expo-network/build/ExpoNetwork.js",
+        "/node_modules/expo-network/build/Network.types.js"
+      ],
+      "testOrFixtureSources": 0,
+      "executedOnDevice": false
+    },
+    "android": {
+      "bytes": 1084333,
+      "sha256": "8fe774307f2fbdc249e5ed51265f62f1e72d0380b79ba9744f73846dfa845ba6",
+      "sourceMapEntries": 683,
+      "selectedSources": [
+        "/apps/mobile/src/infrastructure/query/account-controller.ts",
+        "/apps/mobile/src/infrastructure/query/account-scope.ts",
+        "/apps/mobile/src/infrastructure/query/query-client.ts",
+        "/apps/mobile/src/infrastructure/query/account-data-provider.tsx",
+        "/apps/mobile/src/infrastructure/query/query-lifecycle-boundary.tsx",
+        "/apps/mobile/src/infrastructure/query/lifecycle.ts",
+        "/apps/mobile/src/infrastructure/query/platform-lifecycle.native.ts",
+        "/node_modules/expo-network/build/Network.js",
+        "/node_modules/expo-network/build/ExpoNetwork.js",
+        "/node_modules/expo-network/build/Network.types.js"
+      ],
+      "testOrFixtureSources": 0,
+      "executedOnDevice": false
+    }
+  },
+  "limitations": [
+    "Static JS compilation only; no installed/signed device execution.",
+    "App root does not compose this producer yet; real Auth/API integration remains pending."
+  ]
+}

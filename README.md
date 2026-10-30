@@ -10,6 +10,7 @@ Shared React Native app and FastAPI service for Disconnect. Product context star
 - RN-01 shared screen/form/state primitives, iOS/Android component tests and an isolated developer UI specimen entry; see [component usage](apps/mobile/src/components/ui/README.md).
 - RN-02 original local icon/Dino inventory and floating four-tab navigation with measured safe-area clearance; see [navigation](apps/mobile/src/components/navigation/README.md) and [asset provenance](apps/mobile/assets/README.md).
 - RN-03 account-scoped HTTP producer with safe typed errors, whole-operation deadlines and bounded Auth-owned GET recovery; see [client contract](apps/mobile/src/infrastructure/api/README.md).
+- RN-04 memory-only account query scopes, guarded mutations and native/web lifecycle adapters; see [integration contract](apps/mobile/src/infrastructure/query/README.md). Real Auth/root wiring remains coordinated work.
 - FastAPI process health endpoint, OpenAPI documentation, explicit browser CORS configuration, and tests.
 - Reproducible npm and uv lockfiles, linting, type checking, and CI checks.
 
@@ -118,7 +119,7 @@ Coordinate edits to the root navigation, `app.config.ts`, dependency lockfiles, 
 
 ## Next integration
 
-1. Start from the committed Plan 00 contracts (`0b50900`) and RN-01–03 UI/navigation/HTTP foundation. Ishmum can continue RN-04 account query scope, API foundation (API-01), and Android investigation as separate parts; inspect the current plan notes/branch before starting.
+1. Start from the committed Plan 00 contracts (`0b50900`) and RN-01–04 UI/navigation/HTTP/query foundation. Ishmum can continue API foundation (API-01) and Android investigation; RN-05 waits for the real Auth/API producers and coordinated root wiring; inspect the current plan notes/branch before starting.
 2. Anisha owns Supabase Auth/project setup (SB-01–03) and builds the single Auth/session producer (AUTH-01/02); both sides use controlled tests before live integration. Audit the imported Swift source and investigate Android feasibility independently.
 3. When the producer outputs are ready, connect real sign-in → identity-only `GET /v1/me` → matching account UI (M1), without requiring a product database.
 4. Add isolated PostgreSQL persistence and `GET/PATCH /v1/profile` with revision/conflict handling (M2). Full onboarding/plans/native installation follow their approved contracts and evidence.

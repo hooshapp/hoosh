@@ -18,4 +18,6 @@ RN-02 supplies the [floating navigation contract](src/components/navigation/READ
 
 Native source is not ignored by Git. Preserve the released iOS project when integrating it; do not generate a replacement identity or discard extension targets.
 
-RN-03 provides the [account-scoped HTTP boundary](src/infrastructure/api/README.md). Compose it with Anisha's real AuthSessionPort during RN-04/05 integration; this producer is not connected to the placeholder screens yet.
+RN-03 provides the [account-scoped HTTP boundary](src/infrastructure/api/README.md). Compose it with Anisha's real AuthSessionPort during coordinated RN-04/05 integration; this producer is not connected to the placeholder screens yet.
+
+RN-04 provides [account query scopes, guarded mutations and lifecycle adapters](src/infrastructure/query/README.md). Its public-port tests run independently of live Auth. Root composition remains Anisha’s coordinated change; native Expo Network linking/device acceptance is still required.

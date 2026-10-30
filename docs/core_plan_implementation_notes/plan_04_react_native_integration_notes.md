@@ -4,11 +4,11 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN-03 implemented; RN-01 is `2f88102`, RN-02 is `2d5c0d1`; RN-04–11 remain not started.
+**Current part:** RN-04 producer implemented; real Auth/root wiring pending. RN-03 is `0741758`; RN-05–11 remain not started.
 
-**Implementation branch:** `task/react-native/rn-03`, created after fast-forwarding local `area/react-native` to RN-02 (`2d5c0d1`). Main has not been merged or pushed by this task.
+**Implementation branch:** `task/react-native/rn-04`, parent RN-03 `0741758`. No push/main merge is implied.
 
-**Commit reference:** RN-01 is `2f88102`; RN-02 is `2d5c0d1`. RN-03 is resolved by the unique subject `feat(mobile): harden account-scoped HTTP requests` until the next normal notes update records its hash.
+**Commit reference:** RN-01 is `2f88102`; RN-02 is `2d5c0d1`. RN-03 is `0741758`. RN-04 travels with its code under the unique subject `feat(mobile): isolate account server state and lifecycle`; resolve its self-hash from Git until the next normal notes update.
 
 Historical reference: RN-01 is `2f88102`. RN-02 travels with its code under the unique subject `feat(mobile): add authentic assets and floating main navigation`; resolve its hash from Git until the next normal notes update records it. A pending self-hash at write time is not missing implementation.
 
@@ -18,10 +18,12 @@ Historical reference: RN-01 is `2f88102`. RN-02 travels with its code under the 
 
 ## Resume here
 
-- RN-01/02 supply shared UI and authentic navigation. RN-03 supplies the [HTTP producer](../../apps/mobile/src/infrastructure/api/README.md); it is not composed into root routes yet.
-- Latest RN-03 checks passed: 121 portable HTTP tests, 62 component cases across 18 suites, 3 API tests, workspace types/lint/assets, web export (16 routes, 32 isolation files), and direct iOS/Android client compilation. See the RN-03 evidence below for limits.
-- Next is RN-04 account query scope/lifecycle, using Anisha's public AuthSessionPort. Anisha owns real Auth and coordinated root guards; no live Supabase/private API, signed native HTTP or installed protection is claimed.
-- Keep caches memory-only, generations Auth-owned, and sustained-401 recovery bounded. Do not invent profile DTOs ahead of API-05 or sign-out native cleanup policy.
+- RN-01 `2f88102`, RN-02 `2d5c0d1`, RN-03 `0741758`; RN-04 now supplies the independently consumable [query/provider contract](../../apps/mobile/src/infrastructure/query/README.md). Its self-hash is resolved by the unique commit subject above.
+- Latest checks: 163 portable tests (42 new RN-04), 88 component/native cases in 22 suites (26 new across iOS/Android), 3 API tests; workspace types/lint/assets, supported web export (16 routes/32 isolation files), SDK dependency compatibility and lockfile dry-run passed. Direct native compilation imports all new producers/adapters; see RN-04 source-map/hash evidence.
+- Anisha composes the stable AuthSessionPort + API client + account controller and lifecycle boundary in her coordinated root/guard change. The current placeholder app does not consume the producer. Native Expo Network must be autolinked and tested in audited signed builds. No Supabase SDK, private endpoint, generated API DTO, Auth guard or native enforcement is implemented here.
+- RN-05 needs real AUTH-02/03/07 and API-04/05 outputs; do not claim M1 or start live identity with a mock account. Ishmum can independently start API-01/backend or Android investigation while those producers are built. RN-05–11 remain unstarted.
+- Scope replacement clears private caches and remounts forms; same-owner temporary unavailability preserves drafts/data while blocking requests. Keep all private toasts/drafts inside the keyed boundary. No persisted cache, automatic mutation replay or sign-out native cleanup policy is introduced.
+- The unrelated untracked icon folders present at RN-04 start are excluded. Main is neither merged nor pushed by this task.
 
 ## Recording rules
 
@@ -179,7 +181,7 @@ The JPEGs are original browser captures, each 1512×1045 pixels, containing both
 
 **Commit message:** `feat(mobile): add authentic assets and floating main navigation`.
 
-**Hash:** `2d5c0d1` (recorded during RN-03; ranges/evidence below are historical to RN-02). Resolve with `git log --oneline --all --grep='^feat(mobile): add authentic assets and floating main navigation$'`; record the real hash on the next normal notes update.
+**Hash:** `2d5c0d1` (recorded during RN-03; ranges/evidence below are historical to RN-02). Resolve with `git log --oneline --all --grep='^feat(mobile): add authentic assets and floating main navigation$'`; the real hash is recorded above.
 
 **Date:** 2026-10-29. **Owner:** Ishmum. **Branch:** `task/react-native/rn-02`. **Parent/shared base:** `2f88102`.
 
@@ -324,7 +326,7 @@ All PNGs are actual browser captures, not generated artwork or implementation as
 
 **Commit message:** `feat(mobile): harden account-scoped HTTP requests`.
 
-**Hash:** Pending. **Date:** 2026-10-29. **Owner:** Ishmum. **Branch:** `task/react-native/rn-03`. **Parent:** `2d5c0d1`.
+**Hash:** `0741758` (recorded during RN-04). **Date:** 2026-10-29. **Owner:** Ishmum. **Branch:** `task/react-native/rn-03`. **Parent:** `2d5c0d1`.
 
 **Status:** Implemented. Shared HTTP/client producer only; no live Auth/API integration, query cache or screen wiring.
 
@@ -383,6 +385,88 @@ Ranges refer to this RN-03 commit. Runtime modules separate transport, decoding,
 #### Remaining and handoff
 
 RN-04 owns query scope, guarded mutation callbacks and platform lifecycle integration. Anisha supplies live Auth and coordinates root wiring. RN-05/API-04/05 own the real identity round trip and generated response types. Real Supabase/private API, signed native HTTP/abort/redirect behavior and platform device acceptance remain unverified. No backend, contracts, lockfile, app config, routes, native targets or enforcement policy changed. No new visual assets or screenshots were needed. This commit is local; no push/main merge is implied.
+
+### RN-04 — Account-scoped server state and lifecycle
+
+**Commit message:** `feat(mobile): isolate account server state and lifecycle`.
+**Hash:** Pending. **Date:** 2026-10-29. **Owner:** Ishmum. **Branch:** `task/react-native/rn-04`.
+**Status:** Implemented for producer scope; independently tested. Real Auth/root wiring stays Anisha's coordinated integration.
+
+**Scope:** Memory-only account QueryClients, same-generation readiness gating, query cancellation, guarded mutations/callbacks, bounded read retries and native/web focus/connectivity adapters. No profile/identity screen, persisted cache, Auth implementation or native restriction cleanup.
+
+#### Every changed file and logical change
+
+Ranges refer to this RN-04 commit. Historical RN-01–03 ranges above remain tied to their own commits.
+
+| File and exact lines in RN-04 | Change and reason |
+|---|---|
+| `README.md`: lines 13–13 | Advertise the query/lifecycle producer and consumer contract; advance next-work guidance to real Auth/API prerequisites, independent backend/Android work and coordinated root wiring. |
+| `README.md`: lines 122–122 | Advertise the query/lifecycle producer and consumer contract; advance next-work guidance to real Auth/API prerequisites, independent backend/Android work and coordinated root wiring. |
+| `apps/mobile/README.md`: lines 21–23 | Link the account query/lifecycle handoff and clarify that live composition and native Expo Network linking remain future coordinated work. |
+| `apps/mobile/package.json`: lines 9–9 | Declare React Query and SDK-compatible Expo Network as mobile runtime dependencies; root lockfile supplies exact reproducible versions. No new Auth/persistence package or app/native config is added. |
+| `apps/mobile/package.json`: lines 16–16 | Declare React Query and SDK-compatible Expo Network as mobile runtime dependencies; root lockfile supplies exact reproducible versions. No new Auth/persistence package or app/native config is added. |
+| `apps/mobile/src/features/README.md`: lines 7–7 | Require account feature controllers to use the keyed query boundary, cancellation and guarded callbacks; keep root Auth/guards coordinated with Anisha. |
+| `apps/mobile/src/infrastructure/query/README.md`: lines 1–151 | Document stable Auth/API/controller composition, private subtree placement, readiness/cache/retry policy, safe read/mutation usage, synchronous callback rules, uncertainty reconciliation and native/browser lifecycle ownership. Distinguish tested producer behavior from pending root, live API and signed-device integration. |
+| `apps/mobile/src/infrastructure/query/account-controller.test.ts`: lines 1–382 | Exercise account/generation retirement, failed sign-out, same-user unavailability, actual HTTP abort forwarding and ignored producer/notification races. Verify deduplication/stale data, bounded retries/429 delay, offline/logout cleanup, sustained-401 focus/reconnect gating, explicit recovery and uncertain writes. |
+| `apps/mobile/src/infrastructure/query/account-controller.ts`: lines 1–133 | Project the public Auth snapshot into one disposable UUID/generation cache owner and honest access availability. Retire on ownership/sign-out intent, preserve same-user outage data, invalidate on readiness/recovery and ref-count one Auth subscription without owning refresh. |
+| `apps/mobile/src/infrastructure/query/account-data-provider.test.tsx`: lines 1–246 | Verify actual React form remount/retention, accountless fallback and only-current-account query rendering. Cover old mutation success/error suppression, current callback delivery, duplicate submissions and remount/subscription cleanup on both platform presets. |
+| `apps/mobile/src/infrastructure/query/account-data-provider.tsx`: lines 1–94 | Subscribe through React’s external-store API and key the private provider tree to scope lifetime so forms reset on account changes. Supply gated/deduplicated queries and no-replay mutations with guarded callbacks, full-operation pending state and same-turn duplicate suppression. |
+| `apps/mobile/src/infrastructure/query/account-scope.ts`: lines 1–123 | Create per-owner query keys/client and guard dispatch, response adoption and synchronous effects. Link operation/query aborts, suppress ignored cancellation, fail offline writes and conservatively flag cancelled started writes as uncertain; disposal aborts and clears caches. |
+| `apps/mobile/src/infrastructure/query/lifecycle.test.ts`: lines 1–117 | Verify one lifecycle installation across consumers, cleanup/rollback/conflicts, unknown connectivity and real browser EventTarget/SSR behavior without native module imports. |
+| `apps/mobile/src/infrastructure/query/lifecycle.ts`: lines 1–51 | Install one reference-counted focus/online event owner, with rollback on registration failure, exact cleanup and conflict detection. Treat unknown reachability optimistically without confusing it with successful HTTP access. |
+| `apps/mobile/src/infrastructure/query/platform-lifecycle.native.test.ts`: lines 1–80 | Mock actual native AppState/Expo Network APIs under both OS presets. Check focus changes, initial-read/event ordering, failed reachability fallback and suppression after cleanup. |
+| `apps/mobile/src/infrastructure/query/platform-lifecycle.native.ts`: lines 1–32 | Map AppState and Expo Network to Query managers, with asynchronous initial-read ordering and cleanup guards. Keep Auth refresh ownership separate and ignore late network results after unmount. |
+| `apps/mobile/src/infrastructure/query/platform-lifecycle.ts`: lines 1–24 | Use SSR-safe browser visibility/online/offline subscriptions without importing Expo Network. Remove exact callbacks and avoid permanently gating startup on a stale navigator.onLine hint. |
+| `apps/mobile/src/infrastructure/query/query-client.ts`: lines 1–38 | Configure memory-only per-scope retention, 30-second freshness and at most one transient read retry with bounded Retry-After delay. Reject other known HTTP/raw failures and all mutation retries/offline queuing; owner teardown replaces per-entry GC timers. |
+| `apps/mobile/src/infrastructure/query/query-lifecycle-boundary.tsx`: lines 1–10 | Expose one root-composable effect boundary around the platform lifecycle adapter, with idempotent shared cleanup and no Auth/root route implementation. |
+| `docs/Context (AGENT)/AGENT_START_HERE.md`: lines 11–11 | Make the RN-01–04 producer checkpoint discoverable to new agents and synchronize 36 future parts while explicitly retaining RN-04 root integration as pending. |
+| `docs/Context (AGENT)/AGENT_START_HERE.md`: lines 130–130 | Make the RN-01–04 producer checkpoint discoverable to new agents and synchronize 36 future parts while explicitly retaining RN-04 root integration as pending. |
+| `docs/core_plan/04_react_native_integration.md`: lines 4–4 | Record RN-03’s actual commit and RN-04’s real subject, tested producer status, dependency/acceptance evidence and scope-lifetime retention choice. Preserve pending Auth/root wiring and RN-05–11 status. |
+| `docs/core_plan/04_react_native_integration.md`: lines 184–184 | Record RN-03’s actual commit and RN-04’s real subject, tested producer status, dependency/acceptance evidence and scope-lifetime retention choice. Preserve pending Auth/root wiring and RN-05–11 status. |
+| `docs/core_plan/04_react_native_integration.md`: lines 190–191 | Record RN-03’s actual commit and RN-04’s real subject, tested producer status, dependency/acceptance evidence and scope-lifetime retention choice. Preserve pending Auth/root wiring and RN-05–11 status. |
+| `docs/core_plan/04_react_native_integration.md`: lines 310–311 | Record RN-03’s actual commit and RN-04’s real subject, tested producer status, dependency/acceptance evidence and scope-lifetime retention choice. Preserve pending Auth/root wiring and RN-05–11 status. |
+| `docs/core_plan/README.md`: lines 3–3 | Synchronize eight implemented parts/producers and 36 future parts, linking actual query/lifecycle evidence while preserving the real Auth/root integration gate. |
+| `docs/core_plan/README.md`: lines 12–12 | Synchronize eight implemented parts/producers and 36 future parts, linking actual query/lifecycle evidence while preserving the real Auth/root integration gate. |
+| `docs/core_plan/README.md`: lines 115–115 | Synchronize eight implemented parts/producers and 36 future parts, linking actual query/lifecycle evidence while preserving the real Auth/root integration gate. |
+| `docs/core_plan_implementation_notes/artifacts/rn-04/bundle-results.json`: lines 1–59 | Record actual final runtime hashes and direct native graph/bundle measurements: iOS 1079372 bytes and 685 map entries; Android graph/bytes recorded alongside. Preserve explicit static-compilation and pending-integration limitations. |
+| `docs/core_plan_implementation_notes/artifacts/rn-04/check-bundles.mjs`: lines 1–37 | Audit direct producer bundles using recursive indexed source maps, required native/Query/Expo Network modules and fixture exclusion. Record source/bundle SHA-256 values without storing binaries or claiming device execution. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1–503 | Update the resume checkpoint and RN-03 actual hash, preserve historical ranges, and append the full RN-04 file/line inventory, decisions, observed timer fix, checks/evidence, limitations and next-owner handoff. |
+| `package-lock.json`: lines 1–20830 | Update the single generated workspace graph for React Query/core 5.105.0 and Expo Network 58.0.4, including matching mobile dependency declarations and registry integrity. No other dependency resolution or lockfile is introduced. |
+
+#### Decisions, relationships and edge cases
+
+- Query uses TanStack React Query 5.105.0 and its matching core. Expo install selected SDK-compatible expo-network 58.0.4. Only the mobile manifest and existing root lockfile change; there is no second lockfile, NetInfo, new Auth SDK, native prebuild/config/target regeneration or root guard edit. npm still reports the existing 16 findings (3 high/13 low), without forced downgrades.
+- One controller projects the public Auth port and owns one disposable cache per UUID/generation. It creates no credentials and never changes Auth generation. Email/token rotation preserves the scope; ownership replacement, generation advance, signing-out intent, signed-out or bootstrap restart clears it synchronously. Failed sign-out cannot revive the retired scope even when the same UUID/generation returns. Same-generation temporary Auth unavailability preserves data/drafts and cancels work until readiness returns.
+- Each scope owns pending operation controllers, links Query cancellation to HTTP, races uncooperative producers, and rechecks the actual snapshot before dispatch/adoption. Keyed QueryClientProvider remounts private forms; callbacks use a still-current scope guard. The mutation helper exposes submit rather than mutateAsync/per-call callbacks, blocks duplicate same-turn submissions, never retries/queues writes, and forwards abort signals. Async transport functions must be free of UI effects; synchronous callbacks and after-await scope.commit checks are the documented boundary. External/global state cannot be cleared by this provider automatically.
+- Query keys contain account UUID plus feature/filter parameters, not email/tokens. All cache state is memory-only. Read freshness is 30 seconds; retention lasts only for the owning scope (gcTime Infinity), with explicit teardown. This deliberate choice fixed observed five-minute timers scheduled by detached observers after synchronous cache clearing but before React unmount; component tests now exit normally. Future large feeds need bounded cardinality.
+- Reads add at most one retry for retryable network/timeout/503 or a valid bounded 429 hint; fake-time tests prove counts/delays and cancellation of waiting retries. Other known HTTP failures and raw exceptions do not retry. HTTP remains the sole 401 recovery owner; paused API gates block automatic focus/reconnect/rotation/refetch. Explicit recovery performs the RN-03 identity probe and invalidates same-owner reads on success. A server outage never signs out.
+- Native AppState/Expo Network and browser visibility/online/offline feed one reference-counted manager installation, with no Auth refresh calls. Network initial reads cannot overwrite newer events or publish after cleanup. Unknown/failed reachability is optimistic, known false is offline, and browser startup avoids a stale navigator.onLine lock. Competing lifecycle owners fail explicitly. SSR returns an accountless snapshot and does not access browser/native network objects.
+- Root composition is intentionally reserved for Anisha with her actual AUTH-02 producer. No route bypass, production fake identity, generated DTO replacement, profile UI, cache persistence, native rule clearing or unresolved PM product policy is added. Requirements are NFR-005/006/009/010; this is lifecycle logic, so no new Figma visual implementation/screenshot was needed.
+
+#### Actual validation and evidence
+
+| Command/check | Actual result and scope |
+|---|---|
+| `npm run check` | Passed: 163 portable cases in 6 files (42 new RN-04); 88 component/native cases across 22 iOS/Android suites (26 new); workspace TypeScript/ESLint, 12 original SVG integrity checks, Ruff and 3 pytest tests. Component runners exit normally without forced termination. |
+| `npm run mobile:export` | Passed supported app web export, 16 static routes, 32 JS/HTML developer-isolation files, all 8 original navigation assets. App routes still do not import this producer, so this is regression evidence. |
+| `npx expo install --check` from apps/mobile | Passed, dependencies up to date; installed expo-network 58.0.4 and React Query 5.105.0. No native prebuild/Pod/signing command executed. |
+| `npm ci --ignore-scripts --dry-run --json` | Passed with zero added/removed/changed actions; manifest/lock agreement only, not an install or release audit. |
+| Direct native producer exports + graph audit below | Passed for iOS and Android, with account controller/provider, lifecycle native adapter, Expo Network, React Query and native HTTP transport selected; zero test/fixture sources or synthetic markers. |
+| `git diff --cached --check`, file/range/link/scope audit | Performed before commit. Unrelated icon folders remain untracked; no native source, app routes, backend or shared contract changes. |
+
+Portable tests cover two-account delayed data, same-UUID generation replacement, sign-out failure, same-user unavailable restoration, actual HTTP abort forwarding, ignored cancellation/notification races, deduplication, stale-data failure, exact retry budgets/429 waits, pending/offline retry cleanup, 401 pause across actual manager focus/reconnect signals, explicit recovery and late mutation callbacks. Component tests verify draft remount/retention, accountless fallback, deduplicated query rendering, suppressed success/error callbacks, duplicate writes and mount/unmount cleanup on both OS presets. Native adapter mocks verify event ordering and unsubscribe/late-read behavior; browser/SSR event tests use real EventTargets without a live backend.
+
+To reproduce direct compilation, create ignored `apps/mobile/.expo/rn04-validation.ts` with exports for createAccountDataController, AccountDataProvider/useAccountData/useAccountQuery/useAccountMutation, QueryLifecycleBoundary and createApiClient, from their corresponding ../src/infrastructure modules. From apps/mobile run, once per platform ios/android:
+
+```bash
+npx expo export:embed --entry-file .expo/rn04-validation.ts --platform ios --dev false --bundle-output /tmp/hoosh-rn04-client/ios.js --sourcemap-output /tmp/hoosh-rn04-client/ios.map
+```
+
+Use android and android.js/map for the other platform. Then from root run `node docs/core_plan_implementation_notes/artifacts/rn-04/check-bundles.mjs` and remove the temporary entry. [The audit script](artifacts/rn-04/check-bundles.mjs) and [actual bundle/source hashes](artifacts/rn-04/bundle-results.json) are committed; compiled files remain temporary. Expo's direct native CLI reported 676 iOS / 674 Android modules (source maps also contain synthetic prelude entries). This is static JS compilation, not installed native module execution. A supplemental direct web-embed attempt exited zero but emitted Expo's relative source-map URL linking warning; it is not used as web acceptance. The supported app web export above passed.
+
+#### Remaining gates and next handoff
+
+Anisha must wire the real Auth/root provider and route policy, confirm the single Auth refresh owner, and verify Expo Network autolinking in audited native builds. RN-05/API-04/05 then supply real identity and generated DTOs, followed by joint M1 acceptance. No real Supabase/private API, signed-device focus/network/abort/redirect behavior, accessibility acceptance or native protection ownership transition was executed. Cancellation cannot undo a committed server mutation; profile controllers must reconcile uncertain writes rather than repeat them blindly. No persisted cache/offline write replay is permitted. This is a local implementation commit on the RN-04 task branch, not a push/main merge.
 
 ### Entry template
 

@@ -4,6 +4,7 @@
 - Main app: Ishmum owns routes in `src/app/(tabs)`, quests/history/settings behavior, and server data integration.
 - Keep route files small as features grow; place domain logic and feature components here.
 - Auth supplies the full shared `AuthSessionPort` to one stable `createApiClient` instance per environment/producer. RN-03 uses snapshots/generation as well as fresh tokens, delegates bounded revalidation to Auth, and never implements login, refresh or sign-out. Read [the HTTP client contract](../infrastructure/api/README.md) before RN-04/05 wiring.
+- Account features use the [RN-04 query/provider contract](../infrastructure/query/README.md). Keep private forms/toasts within its keyed subtree, forward signals through RN-03, and use guarded synchronous mutation callbacks. Root Auth/guard wiring stays coordinated with Anisha.
 - Plan authoring in onboarding and Settings must reuse the same approved schema and validation. That policy contract is not finalized by this scaffold.
 - Native rule/session state remains authoritative in Swift/Kotlin; do not duplicate timers in feature stores.
 
