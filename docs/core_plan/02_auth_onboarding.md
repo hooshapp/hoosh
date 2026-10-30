@@ -2,7 +2,7 @@
 
 **Plan date:** 2026-10-28\
 **Owner:** Anisha (Supabase Auth/project setup SB-01–03, mobile Auth, onboarding, and iOS). Ishmum owns the API/product database and reviews shared integration changes.\
-**Status:** Implementation plan; no parts below are implemented or verified by this document. Every commit hash remains pending.\
+**Status:** AUTH-01–07 code is implemented on `landing-page` and remains uncommitted at the owner’s request; live positive-flow, API integration and native acceptance are pending. See the tracker and QA evidence. Later parts remain gated.\
 **Primary branch:** `area/auth-onboarding`; work on `task/auth/<part>` or `task/onboarding/<part>`, integrate working increments into `main`, then update active area branches.\
 **Companions:** [shared contracts](00_shared_contracts.md), [Supabase foundation](01_supabase_foundation.md), [backend](03_backend_foundation.md), [React Native integration](04_react_native_integration.md), [PM answer log](../PM_QUESTIONS.md).
 
@@ -286,6 +286,13 @@ These parts are planned handoffs, not permission to fill in missing product rule
 
 ### AUTH-13 — Required social providers only
 
+**2026-10-29 partial implementation:** Owner explicitly selected both Apple and
+Google. Provider adapters, buttons, PKCE callbacks and focused tests are implemented
+and uncommitted; credential setup, live consent/session and signed native acceptance
+remain pending. See [development provider runbook](../runbooks/social-auth-development.md).
+The owner handles all commits and pushes; suggested commit guidance below is not
+authorization for the agent to commit.
+
 - **Commit:** One reviewed provider commit at a time, such as `feat(auth): add configured Google sign in`; add another provider in a separate part if required.
 - **Prerequisites:** Explicit Q17/PD-10 scope; provider credentials and exact redirects; applicable store review; native audit for capabilities/signing. Expand this part into numbered provider-specific commits before implementation when more than one provider is selected.
 - **Files:** provider config, feature adapter/button/callback tests; native app config/entitlements only with native-owner review. Reuse existing callback/session lifecycle.
@@ -336,13 +343,13 @@ Each commit includes its relevant tests and honest UI states. Avoid snapshot-onl
 
 | Part | Stage / dependency | Status | Actual commit | Validation evidence |
 |---|---|---|---|---|
-| AUTH-01 | A; plans 00/01 configuration | Not started | Pending | Pending |
-| AUTH-02 | A; AUTH-01 + canonical session contract | Not started | Pending | Pending |
-| AUTH-03 | A; AUTH-02 + RN-01 | Not started | Pending | Pending |
-| AUTH-04 | A; AUTH-02 + redirects | Not started | Pending | Pending |
-| AUTH-05 | A; AUTH-03/04 | Not started | Pending | Pending |
-| AUTH-06 | A; AUTH-04 | Not started | Pending | Pending |
-| AUTH-07 | A; AUTH-02/03 + RN-01/04; callback regression checks later | Not started | Pending | Pending |
+| AUTH-01 | A; plans 00/01 configuration | Implemented on landing-page; live/native acceptance pending | Uncommitted (owner handles commits) | [QA evidence](../qa/auth-foundation.md) |
+| AUTH-02 | A; AUTH-01 + canonical session contract | Implemented on landing-page; live/native acceptance pending | Uncommitted (owner handles commits) | [QA evidence](../qa/auth-foundation.md) |
+| AUTH-03 | A; AUTH-02 + RN-01 | Implemented on landing-page; live/native acceptance pending | Uncommitted (owner handles commits) | [QA evidence](../qa/auth-foundation.md) |
+| AUTH-04 | A; AUTH-02 + redirects | Implemented on landing-page; live/native acceptance pending | Uncommitted (owner handles commits) | [QA evidence](../qa/auth-foundation.md) |
+| AUTH-05 | A; AUTH-03/04 | Implemented on landing-page; live/native acceptance pending | Uncommitted (owner handles commits) | [QA evidence](../qa/auth-foundation.md) |
+| AUTH-06 | A; AUTH-04 | Implemented on landing-page; live/native acceptance pending | Uncommitted (owner handles commits) | [QA evidence](../qa/auth-foundation.md) |
+| AUTH-07 | A; AUTH-02/03 + RN-01/04; callback regression checks later | Implemented on landing-page; live/native acceptance pending | Uncommitted (owner handles commits) | [QA evidence](../qa/auth-foundation.md) |
 | AUTH-08 | A; Auth/API/RN handoff, native evidence separately | Not started | Pending | Pending |
 | AUTH-09 | B; draft contract + profile increment | Awaiting prerequisite scope | Pending | Pending |
 | AUTH-10 | B; AUTH-09 + collection decisions | Intro-only AUTH-10a implemented; preferences gated | `a9feec4` (intro only) | [Scope/checks](../implementation/landing-intro.md); signed-device acceptance pending |

@@ -1,16 +1,16 @@
-# Disconnect
+# Hoosh
 
 Shared React Native app and FastAPI service for Disconnect. Product context starts in [docs/AGENT_START_HERE.md](docs/AGENT_START_HERE.md); pending product answers belong in [docs/PM_QUESTIONS.md](docs/PM_QUESTIONS.md). Detailed development plans and their execution order are in [docs/core_plan/README.md](docs/core_plan/README.md).
 
 ## What works now
 
 - Expo / React Native / TypeScript workspace with Home, Quests, History, Settings, auth, and onboarding routes.
-- Figma-derived colors and Space Grotesk 300/400/500/700. The three first-launch intro screens are implemented; main tabs and Auth screens remain explicit placeholders.
+- Figma-derived colors and Space Grotesk 300/400/500/700. The three first-launch intro screens are implemented; signup/login include Supabase email/password, confirmation/recovery, guarded routing and session handling; main tabs remain explicit placeholders.
 - Shared native-protection types and a tested API client with an injectable access-token provider.
 - FastAPI process health endpoint, OpenAPI documentation, explicit browser CORS configuration, and tests.
 - Reproducible npm and uv lockfiles, linting, type checking, and CI checks.
 
-Authentication, profiles, database tables, saved plans, native protection, rewards, usage measurements, and AI are not implemented in the new React Native/FastAPI application. The shell has no auth guard and exposes no private data. Do not publish this preview as a working protection app.
+Supabase Auth is wired in the mobile app; live positive-flow and native acceptance remain pending. Profiles, product database tables, saved plans, native protection, rewards, usage measurements, and AI are not implemented in the new React Native/FastAPI application. Private tabs require an authenticated session; backend identity verification remains separate. Do not publish this preview as a working protection app.
 
 ## Structure
 
@@ -48,7 +48,7 @@ npm ci
 uv sync --project services/api --frozen
 ```
 
-The UI shell and API health endpoint work without Supabase credentials or a database.
+The intro/forms and API health endpoint can render without Supabase configuration; real account actions require public client configuration and guarded tabs remain closed when it is missing. See [development Auth setup](docs/runbooks/supabase-development.md).
 
 ### Run the shared UI preview
 
@@ -121,8 +121,23 @@ Native restrictions must remain independent of React Native timers, backend avai
 
 ## Landing introduction increment
 
-On `landing-page`, first launch shows the original three-screen scrolling introduction with a five-gesture fallback, Skip/reduced-motion paths and a local seen flag. Later launches open the existing signup placeholder; no account/protection status is inferred. See [AUTH-10a scope and validation](docs/implementation/landing-intro.md). Actual authentication and the remaining onboarding screens are separate work.
+On `landing-page`, first launch shows the original three-screen scrolling introduction with a five-gesture fallback, Skip/reduced-motion paths and a local seen flag. Later launches open the signup form; no account/protection status is inferred. See [AUTH-10a scope and validation](docs/implementation/landing-intro.md). Authentication has a separate session/route guard; the remaining onboarding screens are separate work.
 
 ## Existing iOS reuse source
 
 The owner-provided standalone Swift project is retained in [apps/mobile/ios](apps/mobile/ios/IMPORT.md). See [its source audit](docs/architecture/existing-ios-audit.md) for reuse boundaries. It is not yet wired to React Native; copying it does not establish a signed build, device behavior or live Firebase/AI health.
+
+### Signup and login UI increment
+
+The Figma forms now call Supabase for email/password login/signup and include confirmation, resend, recovery, secure native/tab-scoped web storage, session handling and guarded routing. Apple native and Apple/Google browser sign-in adapters are implemented. Google is enabled in local development, with live web sign-in/reload/signout verified; Apple remains disabled pending provider setup. See the [provider runbook](docs/runbooks/social-auth-development.md). See [scope](docs/implementation/auth-screens.md), [setup](docs/runbooks/supabase-development.md) and [validation boundaries](docs/qa/auth-foundation.md). Google development web acceptance passed; complete email confirmation/recovery flows, native acceptance and API identity integration remain pending.
+
+
+### Product name
+
+The current product name is **Hoosh**. App display configuration, shared signup/
+login/Home/loading/error copy and browser title use Hoosh. Google consent branding
+and the Supabase email sender display name are saved as Hoosh. The existing bundle
+IDs, App Groups, URL scheme, session-storage keys and workspace package names retain
+their legacy values for continuity. The preserved Swift import and live App Store
+listing have not been renamed or released by this change. See
+[branding scope](docs/implementation/hoosh-branding.md).

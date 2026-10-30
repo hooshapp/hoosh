@@ -87,7 +87,7 @@ export function Introduction() {
     exiting.current = false;
   }, [router, saveSeen]);
 
-  if (loading) return <View style={styles.loading}><StatusBar style="light" /><ActivityIndicator color={colors.action} /><Text style={styles.loadingText}>Opening Disconnect…</Text></View>;
+  if (loading) return <View style={styles.loading}><StatusBar style="light" /><ActivityIndicator color={colors.action} /><Text style={styles.loadingText}>Opening Hoosh…</Text></View>;
   return <><StatusBar style="light" /><IntroScreen progress={progress} reducedMotion={reducedMotion} busy={busy} storageError={storageError}
     onScrollGesture={scroll} onContinue={() => scroll(SECTION_DISTANCE)} onExit={() => { void exit(); }}
     onRetry={() => {

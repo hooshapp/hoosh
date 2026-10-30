@@ -1,0 +1,49 @@
+{
+  "fileKey": "ukmD2ZidJ9UR2XxUkvdPoJ",
+  "frames": [
+    "18:2",
+    "27:59"
+  ],
+  "assets": [
+    {
+      "file": "glow.png",
+      "nodeId": "30:18",
+      "width": 160,
+      "height": 160,
+      "sha256": "07799e27b28d02dee8d61a4ccd3128dbab75387c931ea1b526b87e300ee8c98b",
+      "original": "originals/glow.svg"
+    },
+    {
+      "file": "sparkle.png",
+      "nodeId": "30:30",
+      "width": 10,
+      "height": 10,
+      "sha256": "4e80de90eaa668882a384c89c04f1e8f4a74cd3c2d677ec3ebcb7c421d6fdb34",
+      "original": "originals/sparkle.svg"
+    },
+    {
+      "file": "dinosaur.png",
+      "nodeId": "30:38",
+      "width": 60,
+      "height": 60,
+      "sha256": "b9815b9c3bf142215782289a5e4dfef71c3b0971428a2a1dcb27083bb8d0c592",
+      "original": "originals/dinosaur.svg"
+    },
+    {
+      "file": "star.png",
+      "nodeId": "30:33",
+      "width": 14,
+      "height": 14,
+      "sha256": "e1a9360cb66fb93b620e1f086c40a8c4179b95976aa8af59a0b8b354750104fa",
+      "original": "originals/star.svg"
+    },
+    {
+      "file": "google.png",
+      "nodeId": "26:10",
+      "width": 24,
+      "height": 24,
+      "sha256": "feceb2b35583512cb1e05a6d73135aa9b68a40a59f4f7df67da55d4da0750a48",
+      "original": "originals/google.svg"
+    }
+  ]
+}

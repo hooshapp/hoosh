@@ -1,14 +1,18 @@
-# Disconnect — AI Engineering Agent Start Here
+# Hoosh — AI Engineering Agent Start Here
+
+**Branding update (2026-10-30):** Product name is Hoosh. Preserve legacy technical identifiers and original design/source history; see [branding scope](implementation/hoosh-branding.md). App Store listing rename/release remains pending.
 
 **Start date:** 2026-10-28  
 **Read in order:** `PRD.md` → `TSD.md` → current Figma design → existing source repository.  
 **Design:** https://www.figma.com/design/ukmD2ZidJ9UR2XxUkvdPoJ/App-UI?node-id=0-1
 
-**Checkout status (2026-10-28):** A shared Expo/React Native shell, accepted type-only Auth/native interfaces with synthetic HTTP fixtures (Plan 00 committed as `0b50900`), and a FastAPI health foundation now exist. See [`../README.md`](../README.md) for actual setup/check commands. Auth, database access, and native protection are not connected. The provided legacy Swift source is preserved in `apps/mobile/ios/`; read [the source audit](architecture/existing-ios-audit.md). React Native wiring and signed/device validation remain prerequisites for iOS integration. The shell opens Home as a development preview and does not claim active protection.
+**Checkout status (2026-10-29):** A shared Expo/React Native shell, accepted type-only Auth/native interfaces with synthetic HTTP fixtures (Plan 00 committed as `0b50900`), and a FastAPI health foundation now exist. See [`../README.md`](../README.md) for actual setup/check commands. Mobile Supabase Auth is wired on `landing-page`; successful live flows/native acceptance, product database access and native protection remain pending. The provided legacy Swift source is preserved in `apps/mobile/ios/`; read [the source audit](architecture/existing-ios-audit.md). React Native wiring and signed/device validation remain prerequisites for iOS integration. The root shows first-launch introduction or resumes the account flow; private tabs require an authenticated session and do not claim active protection.
 
 **Engineering ownership:** Ishmum owns main/shared React Native UI, Android, backend/product database and shared testing. Anisha owns all Supabase Auth/project setup (SB-01–03), mobile Auth/onboarding and iOS. Ishmum owns only the Supabase product database work (SB-04/05), not Auth administration. Build against the shared contracts independently, then wire real outputs when ready; mark integration-dependent parts complete only after joint validation. Read [the accepted decisions](architecture/identity-foundation.md) and [core execution order](core_plan/README.md) before foundation work.
 
-**Landing-page increment:** The three FR-001 intro screens are implemented on this branch, separately from Auth/preferences. First launch is remembered locally, scrolling advances by the fifth intentional gesture, and Skip/reduced-motion controls remain available. Later launches reach the existing signup placeholder. See [AUTH-10a scope and validation](implementation/landing-intro.md); full Auth/onboarding and native integration remain pending. The Home preview description above records the original scaffold baseline.
+**Landing-page increment:** The three FR-001 intro screens are implemented on this branch, separately from Auth/preferences. First launch is remembered locally, scrolling advances by the fifth intentional gesture, and Skip/reduced-motion controls remain available. Later launches reach the signup form. See [AUTH-10a scope and validation](implementation/landing-intro.md); full Auth/onboarding and native integration remain pending. The Home preview description above records the original scaffold baseline.
+
+**Auth UI increment:** Signup `18:2` and login `27:59` now use Figma artwork and shared React Native forms with local validation, keyboard support and switching links. Email/password, confirmation/recovery and session/route handling are implemented with automated checks; live positive-flow and native acceptance remain pending. See [scope and validation](implementation/auth-screens.md).
 
 ## 1. Founder-provided facts that override generic assumptions
 

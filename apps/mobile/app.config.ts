@@ -1,7 +1,7 @@
 import type { ExpoConfig } from 'expo/config';
 
 const config: ExpoConfig = {
-  name: 'Disconnect',
+  name: 'Hoosh',
   slug: 'disconnect',
   version: '0.0.0',
   orientation: 'portrait',
@@ -9,8 +9,10 @@ const config: ExpoConfig = {
   // Development routing only. Confirm production URL schemes during the iOS audit.
   scheme: 'disconnect-dev',
   web: { output: 'static' },
+  ios: { usesAppleSignIn: true },
   plugins: [
     'expo-router',
+    'expo-apple-authentication',
     ['expo-splash-screen', { backgroundColor: '#FFF1DD' }],
   ],
   experiments: { typedRoutes: true },

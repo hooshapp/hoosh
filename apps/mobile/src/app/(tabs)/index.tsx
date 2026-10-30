@@ -3,7 +3,7 @@ import { Screen } from '@/components/ui/screen';
 
 export default function Home() {
   return (
-    <Screen title="Disconnect" subtitle="Less scrolling. More you.">
+    <Screen title="Hoosh" subtitle="Less scrolling. More you.">
       <EmptyCard
         title="Protection is not connected"
         description="This preview does not restrict apps. Protection setup will be available in a later build."
