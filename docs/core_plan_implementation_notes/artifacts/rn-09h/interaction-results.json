@@ -1,0 +1,16 @@
+{
+  "cases": [
+    "Quest overnight validation, editable time, and keep-draft confirmation",
+    "App search preserves hidden selected IDs and controlled count",
+    "Blank selected custom activity cannot save; deselection is explicit",
+    "Day presets and hours range keyboard/drag update only local drafts",
+    "Session stepper updates planned budget",
+    "Month unavailability survives next-page navigation without weekly fallback",
+    "Real quest route opens blank, prevents fake save and confirms dirty exit",
+    "Real Settings opens unavailable native selection and local plan editor",
+    "Real three-page History retains tab shell and never shows sample stats"
+  ],
+  "errors": [],
+  "privateRequests": [],
+  "liveAccountOrNative": false
+}

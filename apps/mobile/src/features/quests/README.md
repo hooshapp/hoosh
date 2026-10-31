@@ -7,7 +7,7 @@ using the shared Screen/Button, original artwork and warm recipes. A copied orig
 Router/OS. No earlier asset is rewired. Reading badge/secondary copy use the RN-10
 accessible palette; targets grow/wrap and stay at least 44 px.
 
-The real route supplies unavailableQuests with no actions. Suggestions and saved
+The real route supplies unavailableQuests, with a supported blank custom-editor entry and no live quest mutation. Suggestions and saved
 records are separate typed display collections, each with ready/loading/error/
 unavailable; ready empty suggestions get their own empty state. No fixture fallback,
 inferred interest, app catalog or optimistic acceptance exists. Saved records only

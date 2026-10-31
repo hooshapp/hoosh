@@ -46,3 +46,11 @@ scope and provider permissions/flows; **RN09D-D04** signed-device accessibility,
 keyboard, native SVG and real-account lifecycle acceptance. No sign-out/deletion or
 additional unapproved settings flows are invented here. Existing RN-05/06/07/08/10/11
 gates remain open. Browser/JS export evidence is separate from device acceptance.
+
+RN-09f/g/h supply preference and shared plan editor components through
+`inlineEditor`. `onOpen` is a separate supported navigation intent that can show an
+unavailable/local draft detail while the persisted value is unknown. `onEdit`
+continues to require a ready value. The actual root wires only supported apps,
+activities, days, hours and sessions detail routes, with no save handler or native
+success. See `features/preferences/README.md`, `features/plans/README.md` and the
+Plan 04 coverage record for remaining integration gates and source adaptations.

@@ -25,6 +25,8 @@ export type ButtonSurfaceProps = Omit<PressableProps, 'children' | 'accessibilit
   trailingVisual?: ReactNode;
   labelStyle?: StyleProp<TextStyle>;
   descriptionStyle?: StyleProp<TextStyle>;
+  selected?: boolean;
+  expanded?: boolean;
 };
 
 /** Internal presentation shared by action buttons and Router links. */
@@ -41,6 +43,8 @@ export const ButtonSurface = forwardRef<ComponentRef<typeof Pressable>, ButtonSu
       trailingVisual,
       labelStyle,
       descriptionStyle,
+      selected,
+      expanded,
       accessibilityLabel,
       accessibilityRole = 'button',
       style,
@@ -67,7 +71,7 @@ export const ButtonSurface = forwardRef<ComponentRef<typeof Pressable>, ButtonSu
         aria-label={accessibleLabel}
         aria-busy={busy}
         aria-disabled={disabled || busy}
-        accessibilityState={{ busy, disabled: disabled || busy }}
+        accessibilityState={{ busy, disabled: disabled || busy, ...(selected === undefined ? {} : { selected }), ...(expanded === undefined ? {} : { expanded }) }}
         disabled={disabled || busy}
         onFocus={(event) => {
           setFocused(true);

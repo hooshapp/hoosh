@@ -1,0 +1,1145 @@
+{
+  "browser": "156.0.8078.76",
+  "source": "Actual Expo web export; no auth/account/device connected",
+  "cases": [
+    {
+      "keyboard": "manual activation and forward/backward tab-to-panel order",
+      "passed": true
+    },
+    {
+      "width": 280,
+      "large": false,
+      "tab": "Home",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 160,
+        "barHeight": 108,
+        "lastBottom": 692,
+        "navTop": 716,
+        "targets": [
+          {
+            "width": 106,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 106,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 106,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 106,
+            "height": 44,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 280,
+      "large": false,
+      "tab": "Quests",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 160,
+        "barHeight": 108,
+        "lastBottom": 298,
+        "navTop": 716,
+        "targets": [
+          {
+            "width": 106,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 106,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 106,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 106,
+            "height": 44,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 280,
+      "large": false,
+      "tab": "History",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 160,
+        "barHeight": 108,
+        "lastBottom": 412,
+        "navTop": 716,
+        "targets": [
+          {
+            "width": 106,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 106,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 106,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 106,
+            "height": 44,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 280,
+      "large": false,
+      "tab": "Settings",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 160,
+        "barHeight": 108,
+        "lastBottom": 692,
+        "navTop": 716,
+        "targets": [
+          {
+            "width": 106,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 106,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 106,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 106,
+            "height": 44,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 280,
+      "large": true,
+      "tab": "Home",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 184,
+        "barHeight": 132,
+        "lastBottom": 668,
+        "navTop": 692,
+        "targets": [
+          {
+            "width": 106,
+            "height": 56,
+            "inside": true
+          },
+          {
+            "width": 106,
+            "height": 56,
+            "inside": true
+          },
+          {
+            "width": 106,
+            "height": 56,
+            "inside": true
+          },
+          {
+            "width": 106,
+            "height": 56,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 280,
+      "large": true,
+      "tab": "Quests",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 184,
+        "barHeight": 132,
+        "lastBottom": 668,
+        "navTop": 692,
+        "targets": [
+          {
+            "width": 106,
+            "height": 56,
+            "inside": true
+          },
+          {
+            "width": 106,
+            "height": 56,
+            "inside": true
+          },
+          {
+            "width": 106,
+            "height": 56,
+            "inside": true
+          },
+          {
+            "width": 106,
+            "height": 56,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 280,
+      "large": true,
+      "tab": "History",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 184,
+        "barHeight": 132,
+        "lastBottom": 632,
+        "navTop": 692,
+        "targets": [
+          {
+            "width": 106,
+            "height": 56,
+            "inside": true
+          },
+          {
+            "width": 106,
+            "height": 56,
+            "inside": true
+          },
+          {
+            "width": 106,
+            "height": 56,
+            "inside": true
+          },
+          {
+            "width": 106,
+            "height": 56,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 280,
+      "large": true,
+      "tab": "Settings",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 184,
+        "barHeight": 132,
+        "lastBottom": 668,
+        "navTop": 692,
+        "targets": [
+          {
+            "width": 106,
+            "height": 56,
+            "inside": true
+          },
+          {
+            "width": 106,
+            "height": 56,
+            "inside": true
+          },
+          {
+            "width": 106,
+            "height": 56,
+            "inside": true
+          },
+          {
+            "width": 106,
+            "height": 56,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 320,
+      "large": false,
+      "tab": "Home",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 114,
+        "barHeight": 62,
+        "lastBottom": 454,
+        "navTop": 478,
+        "targets": [
+          {
+            "width": 97.09375,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 320,
+      "large": false,
+      "tab": "Quests",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 114,
+        "barHeight": 62,
+        "lastBottom": 263,
+        "navTop": 478,
+        "targets": [
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 107.734375,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 320,
+      "large": false,
+      "tab": "History",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 160,
+        "barHeight": 108,
+        "lastBottom": 412,
+        "navTop": 432,
+        "targets": [
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 109.484375,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 320,
+      "large": false,
+      "tab": "Settings",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 160,
+        "barHeight": 108,
+        "lastBottom": 408,
+        "navTop": 432,
+        "targets": [
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 116.125,
+            "height": 44,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 320,
+      "large": true,
+      "tab": "Home",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 172,
+        "barHeight": 120,
+        "lastBottom": 396,
+        "navTop": 420,
+        "targets": [
+          {
+            "width": 126.78125,
+            "height": 56,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 320,
+      "large": true,
+      "tab": "Quests",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 172,
+        "barHeight": 120,
+        "lastBottom": 396,
+        "navTop": 420,
+        "targets": [
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 144.71875,
+            "height": 56,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 320,
+      "large": true,
+      "tab": "History",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 172,
+        "barHeight": 120,
+        "lastBottom": 396,
+        "navTop": 420,
+        "targets": [
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 147.953125,
+            "height": 56,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 320,
+      "large": true,
+      "tab": "Settings",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 172,
+        "barHeight": 120,
+        "lastBottom": 396,
+        "navTop": 420,
+        "targets": [
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 160.21875,
+            "height": 56,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 393,
+      "large": false,
+      "tab": "Home",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 114,
+        "barHeight": 62,
+        "lastBottom": 604,
+        "navTop": 762,
+        "targets": [
+          {
+            "width": 97.09375,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 393,
+      "large": false,
+      "tab": "Quests",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 114,
+        "barHeight": 62,
+        "lastBottom": 249,
+        "navTop": 762,
+        "targets": [
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 107.734375,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 393,
+      "large": false,
+      "tab": "History",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 114,
+        "barHeight": 62,
+        "lastBottom": 389,
+        "navTop": 762,
+        "targets": [
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 109.484375,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 393,
+      "large": false,
+      "tab": "Settings",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 114,
+        "barHeight": 62,
+        "lastBottom": 698,
+        "navTop": 762,
+        "targets": [
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 116.125,
+            "height": 44,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 393,
+      "large": true,
+      "tab": "Home",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 124,
+        "barHeight": 72,
+        "lastBottom": 728,
+        "navTop": 752,
+        "targets": [
+          {
+            "width": 126.78125,
+            "height": 56,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 393,
+      "large": true,
+      "tab": "Quests",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 124,
+        "barHeight": 72,
+        "lastBottom": 538,
+        "navTop": 752,
+        "targets": [
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 144.71875,
+            "height": 56,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 393,
+      "large": true,
+      "tab": "History",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 124,
+        "barHeight": 72,
+        "lastBottom": 524,
+        "navTop": 752,
+        "targets": [
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 147.953125,
+            "height": 56,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 393,
+      "large": true,
+      "tab": "Settings",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 124,
+        "barHeight": 72,
+        "lastBottom": 728,
+        "navTop": 752,
+        "targets": [
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 160.21875,
+            "height": 56,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 430,
+      "large": false,
+      "tab": "Home",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 114,
+        "barHeight": 62,
+        "lastBottom": 737.5,
+        "navTop": 762,
+        "targets": [
+          {
+            "width": 97.09375,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 430,
+      "large": false,
+      "tab": "Quests",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 114,
+        "barHeight": 62,
+        "lastBottom": 249,
+        "navTop": 762,
+        "targets": [
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 107.734375,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 430,
+      "large": false,
+      "tab": "History",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 114,
+        "barHeight": 62,
+        "lastBottom": 389,
+        "navTop": 762,
+        "targets": [
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 109.484375,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 430,
+      "large": false,
+      "tab": "Settings",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 114,
+        "barHeight": 62,
+        "lastBottom": 698,
+        "navTop": 762,
+        "targets": [
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 116.125,
+            "height": 44,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 430,
+      "large": true,
+      "tab": "Home",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 124,
+        "barHeight": 72,
+        "lastBottom": 728,
+        "navTop": 752,
+        "targets": [
+          {
+            "width": 126.78125,
+            "height": 56,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 430,
+      "large": true,
+      "tab": "Quests",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 124,
+        "barHeight": 72,
+        "lastBottom": 430,
+        "navTop": 752,
+        "targets": [
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 144.71875,
+            "height": 56,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 430,
+      "large": true,
+      "tab": "History",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 124,
+        "barHeight": 72,
+        "lastBottom": 488,
+        "navTop": 752,
+        "targets": [
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 147.953125,
+            "height": 56,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "width": 430,
+      "large": true,
+      "tab": "Settings",
+      "layout": {
+        "overflow": false,
+        "barOverflow": false,
+        "paddingBottom": 124,
+        "barHeight": 72,
+        "lastBottom": 728,
+        "navTop": 752,
+        "targets": [
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 44,
+            "height": 44,
+            "inside": true
+          },
+          {
+            "width": 160.21875,
+            "height": 56,
+            "inside": true
+          }
+        ]
+      }
+    },
+    {
+      "directLink": "quests",
+      "passed": true
+    },
+    {
+      "directLink": "history",
+      "passed": true
+    },
+    {
+      "directLink": "settings",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "privateRequests": [],
+  "deviceAcceptance": false
+}

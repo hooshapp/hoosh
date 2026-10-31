@@ -25,3 +25,22 @@ comparison eligibility and recovery; **RN09C-D03** detail frames `10570:192` and
 `10570:193`/navigation once their supported data exists, forecast excluded until
 PD-12; **RN09C-D04** signed-device/screen-reader acceptance. The summary UI does not
 complete live History acceptance or RN-11.
+
+## RN-09h details and real tab navigation
+
+`HistoryExperience` retains the existing tab shell while navigating summary →
+progress → reclaimed. Week/month readings are independent; the view never fills
+missing months from weekly values. `HistoryDetail` requires producer eligibility,
+positive baseline, non-increasing current usage, valid source/period/coverage and
+a finite reduction in 0–100. Saved hours and narrative are supplied, never derived
+from the comparison by this UI. Zero reduction is valid; zero baseline is not a
+valid percentage comparison. Error/loading/unavailable/ineligible states retain
+Back/period navigation and reveal no stale sample outcomes.
+
+The ten-circle diagram uses exact original green/tan ellipse child assets; values
+control full/partial clipped buckets without changing source SVG roots. Source
+frame 10570:193 lifespan/gender forecast is deliberately replaced by supplied
+period saved hours and evidence under PD-12. No demographic forecast is computed.
+Source status bar/home indicator remain OS-owned; cards wrap/scroll at narrow widths.
+RN09C-D03 detail UI/navigation is prepared; forecast approval and D01/D02/D04 real
+measurement/account-scoped data/device acceptance remain pending.

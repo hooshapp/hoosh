@@ -1,7 +1,7 @@
 # 04 — React Native Integration and Shared Frontend Plan
 
 **Date:** 2026-10-28\
-**Status:** RN-01/02/03 and RN-04 producer implemented with recorded evidence; RN-04 real root wiring remains coordinated/pending, RN-05 has an independently prepared consumer with live acceptance pending, RN-07 has UI-only preparation, RN-08 presentation/read-consumer preparation is implemented, RN-09a Home, RN-09b Quests, RN-09c History and RN-09d Settings presentation are implemented, RN-10 shared UI/lifecycle hardening is implemented with device/live checks pending, and RN-06/11 await their prerequisites. RN-02 also has native JS/Hermes exports; signed-device rendering/keyboard/screen-reader acceptance remains separate.\
+**Status:** RN-01/02/03 and RN-04 producer implemented with recorded evidence; RN-04 real root wiring remains coordinated/pending, RN-05 has an independently prepared consumer with live acceptance pending, RN-07 has UI-only preparation, RN-08 presentation/read-consumer preparation is implemented, RN-09a–h main/detail/editor UI is implemented with live acceptance pending, RN-10 shared UI/lifecycle hardening is implemented with device/live checks pending, and RN-06/11 await their prerequisites. RN-02 also has native JS/Hermes exports; signed-device rendering/keyboard/screen-reader acceptance remains separate.\
 **Primary owner:** Ishmum — shared post-onboarding React Native application.\
 **Required reviewer / collaborator:** Anisha — authentication, onboarding, iOS integration, and root navigation.\
 **Area branch:** `area/react-native`; create each task branch from the updated area branch and integrate working increments into `main`.\
@@ -181,7 +181,7 @@ This is application-data cleanup, not approval to remove native restrictions. Wh
 
 ## 6. Commit sequence and dependencies
 
-RN-01/02/03 and the RN-04 producer are implemented with evidence linked below; RN-04 real root wiring is pending, RN-05 consumer preparation is recorded separately, RN-07 has user-requested UI-only preparation, RN-08 presentation/read-consumer preparation is recorded separately, RN-09a Home, RN-09b Quests, RN-09c History and RN-09d Settings presentation are implemented, RN-10 now has shared UI/lifecycle hardening and a reproducible QA record, while its device/live acceptance, RN-06/11 remain pending. A part is not complete merely because its task branch exists. Proposed messages are suggestions for the actual implementation commits, not instructions to commit this planning document under those messages.
+RN-01/02/03 and the RN-04 producer are implemented with evidence linked below; RN-04 real root wiring is pending, RN-05 consumer preparation is recorded separately, RN-07 has user-requested UI-only preparation, RN-08 presentation/read-consumer preparation is recorded separately, RN-09a–h main/detail/editor UI is implemented with live acceptance pending, RN-10 now has shared UI/lifecycle hardening and a reproducible QA record, while its device/live acceptance, RN-06/11 remain pending. A part is not complete merely because its task branch exists. Proposed messages are suggestions for the actual implementation commits, not instructions to commit this planning document under those messages.
 
 | Part | Coherent proposed commit | Prerequisites | Exit evidence | Status | Actual commit |
 |---|---|---|---|---|---|
@@ -193,7 +193,7 @@ RN-01/02/03 and the RN-04 producer are implemented with evidence linked below; R
 | RN-06 | `test(mobile): cover authenticated round trip and recovery` | RN-05; auth guards/recovery integrated | M1 acceptance matrix, no development bypass, build evidence | Not started | — |
 | RN-07 | `feat(account): integrate versioned profile reads and edits` | RN-04/05; approved profile contract/API/migration | Real profile round trip, conflict and ambiguous-save handling | UI prepared only; real profile/data integration pending | `5790302` (UI only) |
 | RN-08 | `feat(protection-ui): show native capability and installation states` | RN-01; agreed native read boundary; actual adapters for integration | Status mapper tests; device evidence only where adapter exists | Presentation/read consumer prepared; native wiring/device acceptance pending | `71da2d5` (presentation/read preparation only) |
-| RN-09 | `feat(mobile): compose main app surfaces with explicit feature states` | RN-01/02; RN-07/08 where live data is used | Figma comparisons + no invented production data | RN-09a/b/c/d presentation implemented; live integration pending | `ff75039`, `2bbebad`, `c1c84c3`; RN-09d resolved by its notes/unique commit subject |
+| RN-09 | `feat(mobile): compose main app surfaces with explicit feature states` | RN-01/02; RN-07/08 where live data is used | Figma comparisons + no invented production data | RN-09a–h independent UI implemented; live integration pending | `ff75039`, `2bbebad`, `c1c84c3`; RN-09d resolved by its notes/unique commit subject |
 | RN-10 | `fix(mobile): complete accessibility layout and lifecycle handling` | Implemented RN parts; relevant device build access | Accessibility/device-size checks and targeted regression tests | Shared UI/lifecycle hardening implemented; device/live acceptance pending | See RN-10 notes / unique subject |
 | RN-11 | `test(integration): document profile and platform handoff acceptance` | RN-06/07/10; RN-08/09 evidence as applicable | M2 matrix, native capability handoff, reproducible runbook | Awaiting live Auth/API/profile prerequisites; not executed | — |
 
@@ -470,7 +470,7 @@ subparts, not a redefinition of earlier work or its dependencies.
 |---|---|---|
 | RN-09a | Home composition, source assets, local display model, explicit feature states, isolated Figma specimen and tests | Implemented under `feat(mobile): compose Home with explicit feature availability`; self-hash recorded in the next normal notes update. The real Home route receives unavailable inputs; no live producer/action is connected. |
 | RN-09b | Quests presentation; suggestions distinct from accepted/saved occurrences; editors only against the agreed schema | Presentation implemented; real quest actions/editor/schema/persistence remain deferred under RN09B-D01–D04. |
-| RN-09c | History presentation with honest unavailable states and isolated source examples | Presentation implemented; real metrics, detail pages and device acceptance remain deferred under RN09C-D01–D04; forecasts remain gated. |
+| RN-09c | History presentation with honest unavailable states and isolated source examples | Summary plus RN-09h details/navigation UI implemented; real metrics/account integration/device acceptance remain deferred under RN09C-D01/D02/D04; PD-12 forecast remains excluded. |
 | RN-09d | Settings composition reusing RN-07 profile and genuine availability for plan/app/activity editors | Presentation implemented; RN09D-D01–D04 and RN07-D01–D07/native-selection/shared-schema gates remain before live persistence/actions. |
 
 ### RN-09 remaining UI execution — Ishmum, 2026-10-30
@@ -482,10 +482,10 @@ account, app inventory or usage is supplied by actual routes.
 
 | Part | Source / scope | Status |
 |---|---|---|
-| RN-09e | Quest personalize `10487:126` / custom `10577:427`, reusable draft fields, times/repeat/weekdays, validation, dirty exit, action states and routes | UI implemented; live quest persistence/recurrence/native policies remain deferred | |
+| RN-09e | Quest personalize `10487:126` / custom `10577:427`, reusable draft fields, times/repeat/weekdays, validation, dirty exit, action states and routes | UI implemented; live quest persistence/recurrence/native policies remain deferred |
 | RN-09f | Age `10601:5908`, activities `10601:6057`, apps `10601:5968`, inline gender `10601:6146`; search/selection/custom drafts, cancellation and save states | UI implemented; real preference persistence/native selection remain deferred |
 | RN-09g | Inline days `10601:6315`, hours `10601:6513`, sessions `10601:6690`; shared controlled editors reusable by AUTH-12, explicit limits and unavailable saves | UI implemented; approved shared schema, real saves/install and device checks remain deferred |
-| RN-09h | Progress `10570:192`, reduction/time reclaimed `10570:193`, period changes, honest evidence/eligibility states and navigation | Pending |
+| RN-09h | Progress `10570:192`, reduction/time reclaimed `10570:193`, period changes, honest evidence/eligibility states and navigation | UI implemented; live measurements and signed-device acceptance remain deferred |
 
 Each part gets its own local commit and detailed file/line notes. Source assets
 come unchanged from the original pack. Actual routes use absent data/disabled
@@ -522,10 +522,16 @@ sync with the notes; none is completed by the developer specimen or static expor
 | RN09-D05 | Wire real account-scoped Home producers, freshness/errors, cancellation and guarded mutations | Auth/backend/RN owners using RN-04 scope/generation rules; no A-to-B data, stale action or uncertain write may be accepted. |
 | RN09-D06 | Execute signed-device rendering, native SVG, font/screen-reader/focus and lifecycle acceptance | Platform owners with RN-10 evidence; browser reflow and Hermes compilation do not establish device behavior. |
 
-RN-09a/b/c/d presentation is implemented. Next coordinated work: real Auth/root/API/profile prerequisites and approved feature/native contracts before wiring live producers. RN-06, RN-07 persistence and RN-08 native integration
-remain independently pending under their earlier gates. Roll back RN-09a by
-reverting the Home presentation/route slice, preserving account/native data and
-all existing Root/Auth/iOS/Android ownership boundaries.
+RN-09a–h independent UI/local-interaction scope is implemented. The four main
+surfaces and all eleven reviewed detail frames are covered in the
+[screen-by-screen UI record](../qa/rn09-ui-coverage.md), including deliberate
+accessibility/native-picker/forecast adaptations. Next work is real Auth/root/API/
+profile prerequisites, approved feature/native contracts and signed-device QA.
+These are live acceptance gates, not a claim that the completed detail UI is absent.
+Plan 04 as a whole remains open. Original icon rewiring is a separate RN-02/RN-10
+follow-up requested for later; Auth/onboarding and native-owned interventions remain
+with their respective owners. RN-09e `3c9d20d`, f `d0206b4`, g `b319d75`; h resolves
+by its unique commit subject in the notes.
 
 RN-09b source: read-only Figma `27:155`, session `26dd22ea-c87c-4b6c-a571-5e74d6eff5e8`. Quests presentation is independent; no editor/persistence/native action is connected. Deferred: **RN09B-D01** approved quest/editor/recurrence API and persistence; **RN09B-D02** actual Auth/account-scoped data/actions and recovery; **RN09B-D03** approved completion/reward/native restriction evidence; **RN09B-D04** signed-device/accessibility acceptance. Source examples remain isolated. See the implementation notes for exact commit/checks and copied icon-pack provenance.
 
@@ -687,3 +693,9 @@ The architectural choices, staged scope, timeout/retry proposals, and commit dec
 RN-09c source: read-only Figma `27:153`, same source session as RN-09b. Summary presentation has independent unavailable/error/loading/ready readings, required evidence and explicit comparison eligibility. Live data remains unavailable. Deferred: **RN09C-D01** approved measurement/source/schema; **RN09C-D02** real account-scoped insights and recovery; **RN09C-D03** detail pages/navigation and gated PD-12 forecast; **RN09C-D04** signed-device/accessibility acceptance. RN-09b commit: `2bbebad`.
 
 RN-09d source: read-only Figma `27:157`, same source session. Account header and RN-07 controlled form are reused within one scroll owner; source grouped rows delegate only supported ready actions. Real route is unavailable; optional demographics/calendars hidden. Deferred: **RN09D-D01** real profile/Auth/guard integration and reviewed account actions; **RN09D-D02** approved shared plan/activity/native selection schema, persistence and reconciliation; **RN09D-D03** demographic/calendar scope and actual provider flows; **RN09D-D04** signed-device/accessibility/lifecycle. RN-09c commit: `c1c84c3`. These presentations do not complete RN-09 live acceptance or RN-11.
+
+RN-09 UI closure: e/f/g/h add controlled editors/detail navigation with unavailable
+actual saves and isolated source examples. RN09C-D03 detail presentation/navigation
+is implemented; PD-12 forecast remains explicitly excluded. RN09D-D02/D03 editor UI
+is prepared; shared approved schemas, real native selection/save/install and launch
+scope are still pending. No deferred live contract or platform gate is marked done.

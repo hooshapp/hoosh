@@ -15,6 +15,8 @@ export type SettingsRowProps = {
   icon: DesignAsset;
   iconID: string;
   onPress?: () => void;
+  /** Opens a supported read-only/local-draft detail, even when persisted value is unknown. */
+  onView?: () => void;
   inline?: boolean;
   green?: boolean;
   grouped?: boolean;
@@ -27,6 +29,7 @@ export function SettingsRow({
   icon,
   iconID,
   onPress,
+  onView,
   inline = false,
   green = false,
   grouped = false,
@@ -39,13 +42,14 @@ export function SettingsRow({
     </View>
   );
   // A write/picker may only start from a known value (including a confirmed empty value).
-  const action = value.state === 'ready' ? onPress : undefined;
+  const action = onView ?? (value.state === 'ready' ? onPress : undefined);
   const row = action ? (
       <Button
         label={label}
         description={inline ? undefined : text}
         accessibilityLabel={`${label}. ${text}`}
         variant="secondary"
+        expanded={inlineEditor ? true : undefined}
         onPress={action}
         leadingVisual={artwork}
         trailingVisual={

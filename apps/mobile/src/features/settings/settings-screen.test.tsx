@@ -20,14 +20,14 @@ const ready: SettingsModel = {
   activities: { state: 'ready', text: 'Supplied activities' },
   days: { state: 'ready', text: 'Supplied days' },
 };
-test('root has neutral account and honest unavailable rows without auth shortcuts or invented policies', async () => {
+test('root has neutral account and unavailable values with supported local-detail navigation', async () => {
   await render(<SettingsRoute />);
   expect(screen.getByRole('header', { name: 'Settings' })).toBeVisible();
   expect(screen.getByRole('header', { name: 'Your account' })).toBeVisible();
   expect(screen.getAllByText('Not available yet')).toHaveLength(5);
   expect(screen.queryByText('Personal Info')).toBeNull();
   expect(screen.queryByText('Calendar Connections')).toBeNull();
-  expect(screen.queryByRole('button')).toBeNull();
+  expect(screen.getAllByRole('button')).toHaveLength(5);
   expect(screen.queryByText('Jordan Rivera')).toBeNull();
   expect(screen.queryByText('2 sessions/day · 15 min each')).toBeNull();
 });

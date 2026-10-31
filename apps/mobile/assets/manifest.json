@@ -726,7 +726,103 @@
       "sha256": "0847ea5bf5bac1cd1303e9053199cacbee3f6ddf519091925aebdf379a054e8c",
       "usage": "planeditor-presentation",
       "capturedOn": "2026-10-30",
-      "sourceFile": "/tmp/hoosh-download-d24bb.svg"
+      "sourceFile": "Downloaded original Figma MCP asset for node 10601:6624 (no matching node filename in user pack)"
+    },
+    {
+      "file": "icons/historydetail/back.svg",
+      "nodeId": "10573:297",
+      "width": "16",
+      "height": "16",
+      "viewBox": "0 0 16 16",
+      "sizeBytes": 233,
+      "sha256": "1bce35cf6760eb2aec7989d8e3886b9aea0f095f7689ff39157edf924b334028",
+      "usage": "historydetail-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "icon pack/navigation / arrow-left /arrow-left--10573-297.svg"
+    },
+    {
+      "file": "icons/historydetail/progressDots.svg",
+      "nodeId": "10573:300",
+      "width": "30",
+      "height": "8",
+      "viewBox": "0 0 30 8",
+      "sizeBytes": 266,
+      "sha256": "1e40bc1c83e781737d4855ba42976056533a79b029e40af313e3b22967793cb4",
+      "usage": "historydetail-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "icon pack/actions / pagination-dots-second /pagination-dots-second--10573-300.svg"
+    },
+    {
+      "file": "icons/historydetail/next.svg",
+      "nodeId": "10573:336",
+      "width": "20",
+      "height": "20",
+      "viewBox": "0 0 20 20",
+      "sizeBytes": 326,
+      "sha256": "d6968c2bd6d55f6e84e52150ff92792228522422cad43e52fbd60f67ced9df31",
+      "usage": "historydetail-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "Downloaded original Figma MCP asset for node 10573:336 (no matching node filename in user pack)"
+    },
+    {
+      "file": "icons/historydetail/reclaimedDots.svg",
+      "nodeId": "10573:360",
+      "width": "30",
+      "height": "8",
+      "viewBox": "0 0 30 8",
+      "sizeBytes": 266,
+      "sha256": "4e48352eb7bcf7f26c042fa9f04ee5fb7b365247db9a9a391adf5c86162aae0c",
+      "usage": "historydetail-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "icon pack/navigation / pagination-dots-third /pagination-dots-third--10573-360.svg"
+    },
+    {
+      "file": "icons/historydetail/freedLegend.svg",
+      "nodeId": "10577:400",
+      "width": "10",
+      "height": "10",
+      "viewBox": "0 0 10 10",
+      "sizeBytes": 231,
+      "sha256": "ed54824e99198fad5b89d7b25aa7806e56b8bcf9d40a44a1925e70567706ebb1",
+      "usage": "historydetail-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "Downloaded original Figma MCP asset for node 10577:400 (no matching node filename in user pack)"
+    },
+    {
+      "file": "icons/historydetail/remainingLegend.svg",
+      "nodeId": "10577:403",
+      "width": "10",
+      "height": "10",
+      "viewBox": "0 0 10 10",
+      "sizeBytes": 246,
+      "sha256": "12485676c1c774dcc84a27c1796e8fbc5864b71e7fe822cd95ccdc2fa6a1cca2",
+      "usage": "historydetail-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "Downloaded original Figma MCP asset for node 10577:403 (no matching node filename in user pack)"
+    },
+    {
+      "file": "icons/historydetail/freedCircle.svg",
+      "nodeId": "10577:407",
+      "width": "60.0695",
+      "height": "59",
+      "viewBox": "0 0 60.0695 59",
+      "sizeBytes": 271,
+      "sha256": "120152969503835c7e81751919b5b113ae2e4948cd8a7a1d4f2be53c901522db",
+      "usage": "historydetail-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "Downloaded original Figma MCP asset for node 10577:407 (no matching node filename in user pack)"
+    },
+    {
+      "file": "icons/historydetail/remainingCircle.svg",
+      "nodeId": "10577:421",
+      "width": "60.0695",
+      "height": "59",
+      "viewBox": "0 0 60.0695 59",
+      "sizeBytes": 271,
+      "sha256": "cc72bbf312dfe0c0e22edf4c2b7808f7722ebf60ecb6809112a9e41ed1e43fc1",
+      "usage": "historydetail-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "Downloaded original Figma MCP asset for node 10577:421 (no matching node filename in user pack)"
     }
   ]
 }

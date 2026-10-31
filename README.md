@@ -132,3 +132,5 @@ Coordinate edits to the root navigation, `app.config.ts`, dependency lockfiles, 
 Native restrictions must remain independent of React Native timers, backend availability, and AI generation.
 
 RN-09b/c/d add [Quests](apps/mobile/src/features/quests/README.md), [History](apps/mobile/src/features/history/README.md) and [Settings](apps/mobile/src/features/settings/README.md) presentation. Real routes remain honest about unavailable services; Figma sample identity/outcomes stay in the isolated developer gallery. Live Auth/API/native integration and signed-device acceptance remain pending.
+
+RN-09a–h independent main-screen and detail/editor UI is implemented. See [UI coverage](docs/qa/rn09-ui-coverage.md) and Plan 04 notes for exact scope, commits, source adaptations and remaining live/device acceptance. Actual saves, account data, native selection/protection and measured outcomes remain unavailable until their producers are integrated.

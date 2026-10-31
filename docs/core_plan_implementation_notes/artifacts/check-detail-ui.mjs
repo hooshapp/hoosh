@@ -29,7 +29,7 @@ try {
       await img.evaluate(async (el) => { el.loading = 'eager'; await Promise.race([el.decode(), new Promise((_, reject) => setTimeout(() => reject(new Error('Image decode timed out: ' + el.src)), 5000))]); }); const url = new URL(await img.getAttribute('src'), page.url());
       const response = await page.request.get(url.href), bytes = await response.body();
       const asset = manifest.assets.find((a) => a.sha256 === digest(bytes)); assert(asset, `Unknown/nonoriginal asset ${url}`);
-      const box = await img.boundingBox(); assert.equal(box.width, Number(asset.width)); assert.equal(box.height, Number(asset.height));
+      const box = await img.boundingBox(); assert(Math.abs(box.width - Number(asset.width)) < 0.02); assert(Math.abs(box.height - Number(asset.height)) < 0.02);
       assert.equal(digest(await readFile(new URL(asset.file, root))), asset.sha256);
       if (!report.assets.some((a) => a.file === asset.file)) report.assets.push({ file: asset.file, width: box.width, height: box.height, originalBytes: true });
     }

@@ -4,8 +4,7 @@
 Space Grotesk, local original SVGs and shared controlled `Button`. The actual
 `(tabs)/index.tsx` route supplies `unavailableHome`: it makes no API/native calls,
 selects no Dino mood and enables no Feed/recommendation action. It keeps an honest
-protection-unavailable card, independent of Home statistics. Other tab bodies are
-still placeholders. RN-09b/c/d track Quests, History and Settings respectively.
+protection-unavailable card, independent of Home statistics. Quests, History and Settings now have presentation and supported detail/editor UI under RN-09b–h; their live producers remain separate.
 
 ## Display inputs and authority
 

@@ -119,3 +119,5 @@ These browser checks and iOS/Android Hermes/source-map results do not close
 RN10-D01–D06 or the per-feature device/live gates. Repeat on signed devices with
 VoiceOver/TalkBack, real fonts/SVGs, keyboard and actual account lifecycle when the
 producers exist. No browser record proves native protection or completed Auth.
+
+RN-09e–h editor/detail UI follow-up is recorded in [RN-09 UI coverage](rn09-ui-coverage.md), with original-asset, state, local-interaction and real-route browser evidence. Signed-device/live gates remain pending; original RN-10 evidence stays historical to its commit.

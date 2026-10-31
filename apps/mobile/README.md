@@ -29,3 +29,5 @@ RN-07 adds a controlled [profile editor UI](src/features/account/PROFILE_UI.md).
 RN-08 provides [protection status presentation](src/features/protection/README.md) with a bounded read-only consumer. `npm run mobile:ui` includes “Device protection — simulated evidence only”. Real native adapters, foreground/route integration, permission/setup actions and signed-device acceptance remain tracked as RN08-D01–D06.
 
 RN-09a composes the [Home cards](src/features/home/README.md) in the real Home route with unavailable values and disabled/omitted product actions. `npm run mobile:ui` includes “Home — presentation-only Figma example” for the original sample and state matrix. RN-09b/c/d cover the remaining three tab bodies; RN09-D01–D06 track approved policy, live producers and device acceptance.
+
+RN-09a–h independent main-screen and detail/editor UI is implemented. See [UI coverage](../../docs/qa/rn09-ui-coverage.md) and Plan 04 notes for exact scope, commits, source adaptations and remaining live/device acceptance. Actual saves, account data, native selection/protection and measured outcomes remain unavailable until their producers are integrated.

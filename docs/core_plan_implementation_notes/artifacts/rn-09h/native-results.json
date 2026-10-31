@@ -1,0 +1,52 @@
+{
+  "part": "rn-09h",
+  "node": "v24.20.0",
+  "signedDeviceAcceptance": false,
+  "liveIntegration": false,
+  "runtimeSourceSha256": {
+    "apps/mobile/src/components/ui/button-surface.tsx": "5c990a8e2a932f652dc91f33372d2ca715f91febab806d136b5840c2dc61c072",
+    "apps/mobile/src/components/ui/design-artwork.tsx": "ce41587b9c15d7ed6badcfe48eb6fb21a6bf1117b7c1306f4ce96f9ef26bbefb",
+    "apps/mobile/src/app/(tabs)/history.tsx": "1175e7a70cc48a9288c6d8dceb9c1dce4d8b8cd477690a397b59e9ac23be458b",
+    "apps/mobile/src/app/(tabs)/quests.tsx": "22b43211a9da4692a50b05af4c1c53193de2148cb701638573913501ef853c04",
+    "apps/mobile/src/app/(tabs)/settings.tsx": "9c8f6b4e52f120fc36df604bc35d7d94ec990c6a4093c0dbb511ae2fac4ddd2f",
+    "apps/mobile/src/app/quest/[id].tsx": "bff569493dd23b4ab91543d31f2637b90fb1478e3c6da25fccbddccab651c46a",
+    "apps/mobile/src/app/quest/new.tsx": "ed5047d00883b2f4dcff1bf03e081922e35dc3010ac567161230fb0ada989820",
+    "apps/mobile/src/app/settings/[field].tsx": "22cc4b00869fff7f77532b26e2fc7c7d6458217d35b45bb596fb53334b7ca10c",
+    "apps/mobile/src/components/ui/field.tsx": "3e10859b9f578da8b96a9e8150bb2b9914b03dee96e8a4ec5845bb038eac60ab",
+    "apps/mobile/src/design/historydetail-assets.ts": "8d6ee1d6c88bd2fe913a93584dafb366c1339400f17eaadd5598098f1095fc06",
+    "apps/mobile/src/design/planeditor-assets.ts": "3d8ccbb451851d86f66d3c8085d78a063e1a078e3faf5e01cb324e95740474fe",
+    "apps/mobile/src/design/preference-assets.ts": "091d668def7c73cebf893c4510275f8dea535b41bfebe786b1e4044720ca4b35",
+    "apps/mobile/src/design/questeditor-assets.ts": "84bf87bc13877dec16bda3a37c9007bd766fb56b8497f0341c3da3c9fda68e3f",
+    "apps/mobile/src/features/editors/draft-utils.ts": "d8f0dba9096d488fb954e197105e2d8ac8b8055789364d07d6373608bd9e76b7",
+    "apps/mobile/src/features/editors/editor-controls.tsx": "809409f4b36434e9a9fe8b2a3dd3651d66b746a5204fb90ab260f984e8685a14",
+    "apps/mobile/src/features/editors/use-route-draft-guard.tsx": "61fc9d3a4cab5bc75dfa14b057ce5f850c697f07454c3265cfc8cfa99a24afaf",
+    "apps/mobile/src/features/history/history-details-model.ts": "d7cf640e4fe354b3418b6f8fcc53cb65514f51eb490817e17f3b9742a9c313c3",
+    "apps/mobile/src/features/history/history-details.tsx": "f99a8d7eef1b616772efe5bef47af2d6043602559144fefaeef1a76f7e8e52b9",
+    "apps/mobile/src/features/history/history-experience.tsx": "e581cf6518c52813c446649c17b4a658943a4a1c03a06e216f79bfd483e3b354",
+    "apps/mobile/src/features/history/history-model.ts": "666c93af3c706747452711f31425e9828510e4d704fa8c6f8939a32b02e93388",
+    "apps/mobile/src/features/history/history-screen.tsx": "26218e20fd00f75ff32f8d56e7647c2488f990a75a85e9b9cc76e510f755bc98",
+    "apps/mobile/src/features/plans/plan-editors.tsx": "465a50ac9b362cddec1c0d26b5028b8ca26cfc3026056fca46b9ec5fe5f791fc",
+    "apps/mobile/src/features/plans/time-range-control.tsx": "b2aadc6b150c65e356ccb3c7cb1578668f6737aafb692adae07c74abfc53ee71",
+    "apps/mobile/src/features/preferences/preference-editors.tsx": "dcde1a642348cd433beca0800285b006427e4cfb11c95124a8bdb8d60f2fd533",
+    "apps/mobile/src/features/quests/quest-draft.ts": "6926bd9d5de5ad2953a35fb1eedef2f21b43792633910a5e02c319d93e471360",
+    "apps/mobile/src/features/quests/quest-editor.tsx": "61a42b3b09108256271bbd6bb692e8f8f7017306516daabebf15e6aae6b12cd3",
+    "apps/mobile/src/features/settings/settings-row.tsx": "5a331f431c9ef81c3d2d77debdd70acf77943d3c8049d71bf06cd3ea0c31ae05",
+    "apps/mobile/src/features/settings/settings-screen.tsx": "766b81a54979f42ebce38352641d527b61ad3ab5a3d0cb5a77b2b96c6ad1a2ec"
+  },
+  "bundles": {
+    "ios": {
+      "bytes": 2203340,
+      "sha256": "31b83d0dfa67ca455ffc2eb2aa79f82eb20537ba52a993c9be89e77f4fa364ad",
+      "sourceMapEntries": 1228,
+      "fixtureOrPrivateApiSources": 0,
+      "executedOnDevice": false
+    },
+    "android": {
+      "bytes": 2492860,
+      "sha256": "71ae46e5c734e213bf344bc919e7ff4a4e6d3338ca621e95a73e04500b0cf418",
+      "sourceMapEntries": 1367,
+      "fixtureOrPrivateApiSources": 0,
+      "executedOnDevice": false
+    }
+  }
+}

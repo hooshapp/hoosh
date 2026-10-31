@@ -1,6 +1,6 @@
-import { HistoryScreen } from '@/features/history/history-screen';
+import { HistoryExperience } from '@/features/history/history-experience';
 import { unavailableHistory } from '@/features/history/history-model';
-
+import { unavailableHistoryPeriods } from '@/features/history/history-details-model';
 export default function History() {
-  return <HistoryScreen model={unavailableHistory} />;
+  return <HistoryExperience summary={unavailableHistory} periods={unavailableHistoryPeriods} />;
 }

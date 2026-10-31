@@ -17,6 +17,7 @@ import { SettingsRow } from './settings-row';
 export type SettingsScreenProps = {
   model: SettingsModel;
   onEdit?: Partial<Record<SettingsField, () => void>>;
+  onOpen?: Partial<Record<SettingsField, () => void>>;
   onEditProfile?: () => void;
   onRetry?: () => void;
   /** Host owns draft/validation/persistence. Never instantiated with a fake session. */
@@ -26,6 +27,7 @@ export type SettingsScreenProps = {
 export function SettingsScreen({
   model,
   onEdit = {},
+  onOpen = {},
   onEditProfile,
   onRetry,
   profileForm,
@@ -112,14 +114,14 @@ export function SettingsScreen({
             value={model.apps}
             icon={settingsAssets.apps}
             iconID="settings-apps"
-            onPress={onEdit.apps}
+            onPress={onEdit.apps} onView={onOpen.apps}
           />
           <SettingsRow
             label="Redirect Me To"
             value={model.activities}
             icon={settingsAssets.activities}
             iconID="settings-activities"
-            onPress={onEdit.activities}
+            onPress={onEdit.activities} onView={onOpen.activities}
           />
         </Section>
         <Section title="My Plan">
@@ -128,7 +130,7 @@ export function SettingsScreen({
             value={model.days}
             icon={settingsAssets.calendar}
             iconID="settings-calendar"
-            onPress={onEdit.days}
+            onPress={onEdit.days} onView={onOpen.days}
           inlineEditor={inlineEditor?.field === 'days' ? inlineEditor.content : undefined}
           />
           <SettingsRow
@@ -136,7 +138,7 @@ export function SettingsScreen({
             value={model.hours}
             icon={settingsAssets.clock}
             iconID="settings-clock"
-            onPress={onEdit.hours}
+            onPress={onEdit.hours} onView={onOpen.hours}
           inlineEditor={inlineEditor?.field === 'hours' ? inlineEditor.content : undefined}
           />
           <View style={styles.sessionGroup}>
@@ -147,7 +149,7 @@ export function SettingsScreen({
               iconID="settings-timer"
               green
               grouped
-              onPress={onEdit.sessions}
+              onPress={onEdit.sessions} onView={onOpen.sessions}
           inlineEditor={inlineEditor?.field === 'sessions' ? inlineEditor.content : undefined}
             />
             <View style={styles.context}>

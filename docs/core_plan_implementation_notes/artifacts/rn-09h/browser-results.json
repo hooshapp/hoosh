@@ -1,0 +1,243 @@
+{
+  "part": "rn-09h",
+  "cases": [
+    {
+      "state": "Progress",
+      "rendered": true
+    },
+    {
+      "state": "Reduction",
+      "rendered": true
+    },
+    {
+      "state": "Unavailable",
+      "rendered": true
+    },
+    {
+      "state": "Loading",
+      "rendered": true
+    },
+    {
+      "state": "Read error",
+      "rendered": true
+    },
+    {
+      "state": "Ineligible",
+      "rendered": true
+    },
+    {
+      "state": "Zero baseline",
+      "rendered": true
+    },
+    {
+      "state": "Long text",
+      "rendered": true
+    },
+    {
+      "width": 393,
+      "state": "Progress",
+      "layout": {
+        "overflow": false,
+        "targets": [
+          {
+            "width": 54.96875,
+            "height": 46
+          },
+          {
+            "width": 161.5,
+            "height": 44
+          },
+          {
+            "width": 161.5,
+            "height": 44
+          },
+          {
+            "width": 48,
+            "height": 48
+          }
+        ]
+      }
+    },
+    {
+      "width": 393,
+      "state": "Long text",
+      "layout": {
+        "overflow": false,
+        "targets": [
+          {
+            "width": 54.96875,
+            "height": 46
+          },
+          {
+            "width": 161.5,
+            "height": 44
+          },
+          {
+            "width": 161.5,
+            "height": 44
+          },
+          {
+            "width": 48,
+            "height": 48
+          }
+        ]
+      }
+    },
+    {
+      "width": 320,
+      "state": "Progress",
+      "layout": {
+        "overflow": false,
+        "targets": [
+          {
+            "width": 54.96875,
+            "height": 46
+          },
+          {
+            "width": 125,
+            "height": 44
+          },
+          {
+            "width": 125,
+            "height": 44
+          },
+          {
+            "width": 48,
+            "height": 48
+          }
+        ]
+      }
+    },
+    {
+      "width": 320,
+      "state": "Long text",
+      "layout": {
+        "overflow": false,
+        "targets": [
+          {
+            "width": 54.96875,
+            "height": 46
+          },
+          {
+            "width": 125,
+            "height": 44
+          },
+          {
+            "width": 125,
+            "height": 44
+          },
+          {
+            "width": 48,
+            "height": 48
+          }
+        ]
+      }
+    },
+    {
+      "width": 280,
+      "state": "Progress",
+      "layout": {
+        "overflow": false,
+        "targets": [
+          {
+            "width": 54.96875,
+            "height": 46
+          },
+          {
+            "width": 105,
+            "height": 44
+          },
+          {
+            "width": 105,
+            "height": 44
+          },
+          {
+            "width": 48,
+            "height": 48
+          }
+        ]
+      }
+    },
+    {
+      "width": 280,
+      "state": "Long text",
+      "layout": {
+        "overflow": false,
+        "targets": [
+          {
+            "width": 54.96875,
+            "height": 46
+          },
+          {
+            "width": 105,
+            "height": 44
+          },
+          {
+            "width": 105,
+            "height": 44
+          },
+          {
+            "width": 48,
+            "height": 48
+          }
+        ]
+      }
+    },
+    {
+      "largeText320": true
+    }
+  ],
+  "assets": [
+    {
+      "file": "icons/historydetail/back.svg",
+      "width": 16,
+      "height": 16,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/historydetail/progressDots.svg",
+      "width": 30,
+      "height": 8,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/historydetail/next.svg",
+      "width": 20,
+      "height": 20,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/historydetail/reclaimedDots.svg",
+      "width": 30,
+      "height": 8,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/historydetail/remainingCircle.svg",
+      "width": 60.0625,
+      "height": 59,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/historydetail/freedCircle.svg",
+      "width": 60.0625,
+      "height": 59,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/historydetail/freedLegend.svg",
+      "width": 10,
+      "height": 10,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/historydetail/remainingLegend.svg",
+      "width": 10,
+      "height": 10,
+      "originalBytes": true
+    }
+  ],
+  "errors": [],
+  "privateRequests": [],
+  "nativeDeviceAcceptance": false
+}
