@@ -12,11 +12,11 @@ export const navigationAssets = {
   index: {
     active: homeActive,
     inactive: homeInactive,
-    width: 20.5,
-    height: 20.7758,
+    width: 21,
+    height: 21,
     slotSize: 18,
-    left: -1.25,
-    top: -1.5258,
+    left: -1.5,
+    top: -1.5,
   },
   quests: { active: questsActive, inactive: questsInactive, width: 20, height: 20, slotSize: 20 },
   history: {

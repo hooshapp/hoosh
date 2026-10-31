@@ -1,0 +1,860 @@
+{
+  "copiedFromPack": 61,
+  "changedOriginalCaptures": 16,
+  "entries": [
+    {
+      "file": "icons/navigation/home-active.svg",
+      "nodeId": "84:135",
+      "sourceFile": "icon pack/navigation / home /home--84-135.svg",
+      "changedBytes": true,
+      "previous": {
+        "sha256": "05f855e9403285c86ba2bd10481d040d1c5368c85c348e05a5c553c2d1740bdd",
+        "width": "20.5",
+        "height": "20.7758"
+      },
+      "width": "21",
+      "height": "21",
+      "sha256": "1bcb6aef33af54622794c6544b7d32b11d1503a3af95d8f68c1e17bf5eb6eafd"
+    },
+    {
+      "file": "icons/navigation/home-inactive.svg",
+      "nodeId": "10573:366",
+      "sourceFile": "icon pack/navigation / home /home--10573-366.svg",
+      "changedBytes": true,
+      "previous": {
+        "sha256": "db2269ac9d9cd546a6849072a17c90d91a29009e46ea12ef919ba18ba8156573",
+        "width": "20.5",
+        "height": "20.7758"
+      },
+      "width": "21",
+      "height": "21",
+      "sha256": "f383c27cfcd3daa0f43b18b8d0ce4522a1572936b82c9e9435e151663e9896c0"
+    },
+    {
+      "file": "icons/navigation/quests-active.svg",
+      "nodeId": "10491:103",
+      "sourceFile": "icon pack/navigation / zap /zap--10491-103.svg",
+      "changedBytes": true,
+      "previous": {
+        "sha256": "1f9d87b27f3d97ab7bc82c58a171b21261d64b5d37bab2aa069b72a7caca1527",
+        "width": "20",
+        "height": "20"
+      },
+      "width": "20",
+      "height": "20",
+      "sha256": "a416dab14956f22a6c6217c4d4daa65d83a8e9cb01e0bc9ffdf7864f92885638"
+    },
+    {
+      "file": "icons/navigation/quests-inactive.svg",
+      "nodeId": "84:151",
+      "sourceFile": "icon pack/navigation / zap /zap--84-151.svg",
+      "changedBytes": true,
+      "previous": {
+        "sha256": "26072fc5ddefe0b3c59b1c58d0025c82eb09086be597f6f3da4caf3a6d3459f8",
+        "width": "20",
+        "height": "20"
+      },
+      "width": "20",
+      "height": "20",
+      "sha256": "e99965fe701e5bb02ea7dbc9ea9e5c2c76c5d6e7b2bc03b9dade36d06e9572df"
+    },
+    {
+      "file": "icons/navigation/history-active.svg",
+      "nodeId": "10573:381",
+      "sourceFile": "icon pack/navigation / clock /clock--10573-381.svg",
+      "changedBytes": true,
+      "previous": {
+        "sha256": "0eea9601594e12a8a55bf0ed220e68f60c4c827b164df415593c62b4fca85e7f",
+        "width": "20",
+        "height": "20"
+      },
+      "width": "20",
+      "height": "20",
+      "sha256": "b2899070b02887401f22af616acde2986035427bec0a4bb4eaca7e8e7aba775a"
+    },
+    {
+      "file": "icons/navigation/history-inactive.svg",
+      "nodeId": "84:154",
+      "sourceFile": "icon pack/navigation / clock /clock--84-154.svg",
+      "changedBytes": true,
+      "previous": {
+        "sha256": "56744ea272833fea6e17dd927518877e316116d3ef2b998684965f418f5f7375",
+        "width": "20",
+        "height": "20"
+      },
+      "width": "20",
+      "height": "20",
+      "sha256": "72315797f29a6edb86dcb78f46e00d5023f46ae940a6ae37cd9fd49fd0436a1d"
+    },
+    {
+      "file": "icons/navigation/settings-active.svg",
+      "nodeId": "10601:231",
+      "sourceFile": "icon pack/navigation / settings /settings--10601-231.svg",
+      "changedBytes": true,
+      "previous": {
+        "sha256": "bb03d0e98151c3631286445ae00b25d9378cd6640d5bd9c8ae504f14761b1242",
+        "width": "20",
+        "height": "20"
+      },
+      "width": "20",
+      "height": "20",
+      "sha256": "e56071f0130e5094d54854a6a82fea44067a8cf45bb27441292ed9eaf9ff5624"
+    },
+    {
+      "file": "icons/navigation/settings-inactive.svg",
+      "nodeId": "84:148",
+      "sourceFile": "icon pack/navigation / settings /settings--84-148.svg",
+      "changedBytes": true,
+      "previous": {
+        "sha256": "3a61128f61cfb1b0e74eb6c681b0630fa3c4bf31550a819bd16cb97e58d75d40",
+        "width": "20",
+        "height": "20"
+      },
+      "width": "20",
+      "height": "20",
+      "sha256": "c5f2e9573023f7a3abde7af863de2f6de28acc7c9c5b20d2942103634cb9dd1b"
+    },
+    {
+      "file": "mascot/dino-happy.svg",
+      "nodeId": "84:77",
+      "sourceFile": "icon pack/mascots / dino-happy /dino-happy--84-77.svg",
+      "changedBytes": true,
+      "previous": {
+        "sha256": "f59719c9ad6b75b7e8cf98d4444fe9322aa5768d2429814c37f01ea4ae54fa11",
+        "width": "110",
+        "height": "110"
+      },
+      "width": "110",
+      "height": "110",
+      "sha256": "0d544f3d6a965a21b4657df032e933f3582cf76ea3e43a9f8c1f859e1536c8ea"
+    },
+    {
+      "file": "mascot/dino-needs-care.svg",
+      "nodeId": "88:68",
+      "sourceFile": "icon pack/mascots / dino-needs-care /dino-needs-care--88-68.svg",
+      "changedBytes": true,
+      "previous": {
+        "sha256": "0b2d7260f524f8b6f6741d45863ac6a47f67f7c723b80de93bc2ce6d0139ba08",
+        "width": "110",
+        "height": "110"
+      },
+      "width": "110",
+      "height": "110",
+      "sha256": "6c2ead36a850fb073b3186fff282c2ee0b37d0ee584423bd1ae83bb9e35e6892"
+    },
+    {
+      "file": "mascot/dino-feeling-low.svg",
+      "nodeId": "88:77",
+      "sourceFile": "icon pack/mascots / dino-feeling-low /dino-feeling-low--88-77.svg",
+      "changedBytes": true,
+      "previous": {
+        "sha256": "5d169291dd58db4e7d065e619fdc48419b837c98176a964a1b3597f503447eab",
+        "width": "110",
+        "height": "110"
+      },
+      "width": "110",
+      "height": "110",
+      "sha256": "08bec3a55986171166833b6ca6f768f2409573a16654d38073a2f8fb4d183a40"
+    },
+    {
+      "file": "mascot/dino-doing-okay.svg",
+      "nodeId": "88:86",
+      "sourceFile": "icon pack/mascots / dino-doing-okay /dino-doing-okay--88-86.svg",
+      "changedBytes": true,
+      "previous": {
+        "sha256": "f8e3d8db47b359c5e53d312844c0ce58b0a11ef67c3b2ceb71ccd74293590d09",
+        "width": "110",
+        "height": "110"
+      },
+      "width": "110",
+      "height": "110",
+      "sha256": "baeb7f448f4cf243b9b916b199790142616e31203a4fccf3db1add4e4d21f0b2"
+    },
+    {
+      "file": "account/settings-avatar.svg",
+      "nodeId": "10562:244",
+      "sourceFile": "icon pack/mascots / disconnect-dinosaur-male /disconnect-dinosaur-male--10562-244.svg",
+      "changedBytes": true,
+      "previous": {
+        "sha256": "af9693838be4af8b5157b1c08308fc8f7a8e3e11803f4fc228a12e310fdf7d33",
+        "width": "52",
+        "height": "52"
+      },
+      "width": "52",
+      "height": "52",
+      "sha256": "f688393d1595b92fc32c8983838afdc78ff3cf9c4acdd06dad520f71954b1d26"
+    },
+    {
+      "file": "icons/home/heart.svg",
+      "nodeId": "84:145",
+      "sourceFile": "icon pack/actions / heart /heart--84-145.svg",
+      "changedBytes": true,
+      "previous": {
+        "sha256": "7405a9a89f1859e3843afea58c812cf496293e9aa83b9146f0e292e8689e67e9",
+        "width": "12",
+        "height": "12"
+      },
+      "width": "12",
+      "height": "12",
+      "sha256": "7caa30acccc6ff8f77dea75c8290e740c63fa1e6a35330cb86c7e8b97c21d305"
+    },
+    {
+      "file": "icons/home/streak-dots.svg",
+      "nodeId": "84:125",
+      "sourceFile": "icon pack/actions / streak-dots /streak-dots--84-125.svg",
+      "changedBytes": true,
+      "previous": {
+        "sha256": "8b3ca7787538f6bbc522fa9b76d23ad26aa251f1d4254b9c98093b5e4774847c",
+        "width": "86",
+        "height": "8"
+      },
+      "width": "86",
+      "height": "8",
+      "sha256": "b4e4eae8e9f1c99cf9e398f8ffb3c8e7513a6302e6b8ff09a1ec5434313a6c40"
+    },
+    {
+      "file": "mascot/home-dino-happy.svg",
+      "nodeId": "84:77",
+      "sourceFile": "icon pack/mascots / dino-happy /dino-happy--84-77.svg",
+      "changedBytes": true,
+      "previous": {
+        "sha256": "4be9d424f346cf80c30eec855b1bdbbff53089cc8c2562b63df1b55261231cdd",
+        "width": "110",
+        "height": "110"
+      },
+      "width": "110",
+      "height": "110",
+      "sha256": "0d544f3d6a965a21b4657df032e933f3582cf76ea3e43a9f8c1f859e1536c8ea"
+    },
+    {
+      "file": "icons/quests/pencil.svg",
+      "nodeId": "10498:94",
+      "sourceFile": "icon pack/actions / minimal-pencil /minimal-pencil--10498-94.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "e29183e48255d590c4489da2481cddcd98c6ac4e5e393c35bfc5abd98b6fa880",
+        "width": "14",
+        "height": "14"
+      },
+      "width": "14",
+      "height": "14",
+      "sha256": "e29183e48255d590c4489da2481cddcd98c6ac4e5e393c35bfc5abd98b6fa880"
+    },
+    {
+      "file": "icons/history/comparison.svg",
+      "nodeId": "10570:325",
+      "sourceFile": "icon pack/navigation / arrow-right /arrow-right--10570-325.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "670691db3d3d1cb7db1cd4d86cefeeba03f5a5b70c2c8973ce0cf3d4e5a42630",
+        "width": "20",
+        "height": "20"
+      },
+      "width": "20",
+      "height": "20",
+      "sha256": "670691db3d3d1cb7db1cd4d86cefeeba03f5a5b70c2c8973ce0cf3d4e5a42630"
+    },
+    {
+      "file": "icons/history/next.svg",
+      "nodeId": "10570:331",
+      "sourceFile": "icon pack/navigation / arrow-right /arrow-right--10570-331.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "df3d5cb9266a4ea9551980b2d135efa337a3c4973a929d778ac1e1e0fb8eecab",
+        "width": "20",
+        "height": "20"
+      },
+      "width": "20",
+      "height": "20",
+      "sha256": "df3d5cb9266a4ea9551980b2d135efa337a3c4973a929d778ac1e1e0fb8eecab"
+    },
+    {
+      "file": "icons/history/pagination.svg",
+      "nodeId": "10570:308",
+      "sourceFile": "icon pack/actions / pagination-dots-first /pagination-dots-first--10570-308.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "71558919e3fd9c3a77afae2be7e760ed93501e39a3d3755390a21fc2073c2d25",
+        "width": "32",
+        "height": "8"
+      },
+      "width": "32",
+      "height": "8",
+      "sha256": "71558919e3fd9c3a77afae2be7e760ed93501e39a3d3755390a21fc2073c2d25"
+    },
+    {
+      "file": "icons/settings/user.svg",
+      "nodeId": "10601:363",
+      "sourceFile": "icon pack/settings / user /user--10601-363.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "00bdc4e33fe3cda9318adb4fa01c9bf0931abf9319b2f0eda6ee80196a520ef9",
+        "width": "18",
+        "height": "18"
+      },
+      "width": "18",
+      "height": "18",
+      "sha256": "00bdc4e33fe3cda9318adb4fa01c9bf0931abf9319b2f0eda6ee80196a520ef9"
+    },
+    {
+      "file": "icons/settings/gender.svg",
+      "nodeId": "10601:384",
+      "sourceFile": "icon pack/settings / transgender /transgender--10601-384.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "f8d5fd96b8acc348233739a2dfe6d559a030b47c0664b2c58e266ac9dc97f098",
+        "width": "18",
+        "height": "18"
+      },
+      "width": "18",
+      "height": "18",
+      "sha256": "f8d5fd96b8acc348233739a2dfe6d559a030b47c0664b2c58e266ac9dc97f098"
+    },
+    {
+      "file": "icons/settings/apps.svg",
+      "nodeId": "10601:372",
+      "sourceFile": "icon pack/settings / smartphone /smartphone--10601-372.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "7781db188524ac8ba73649f8db0211bb13ed00ca98891c493dce631acdc4cded",
+        "width": "18",
+        "height": "18"
+      },
+      "width": "18",
+      "height": "18",
+      "sha256": "7781db188524ac8ba73649f8db0211bb13ed00ca98891c493dce631acdc4cded"
+    },
+    {
+      "file": "icons/settings/activities.svg",
+      "nodeId": "10601:366",
+      "sourceFile": "icon pack/navigation / arrow-up-right /arrow-up-right--10601-366.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "57fc81850f6d3e26db1587d15cc2fe40cad75aea6cd2443a4946fdc387e27b46",
+        "width": "18",
+        "height": "18"
+      },
+      "width": "18",
+      "height": "18",
+      "sha256": "57fc81850f6d3e26db1587d15cc2fe40cad75aea6cd2443a4946fdc387e27b46"
+    },
+    {
+      "file": "icons/settings/calendar.svg",
+      "nodeId": "10601:369",
+      "sourceFile": "icon pack/settings / calendar /calendar--10601-369.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "432c62c4d22d37ed329dbbca5adc285dcf3bd8ae3f2c1d0dd0b983c4aabf7a9a",
+        "width": "18",
+        "height": "18"
+      },
+      "width": "18",
+      "height": "18",
+      "sha256": "432c62c4d22d37ed329dbbca5adc285dcf3bd8ae3f2c1d0dd0b983c4aabf7a9a"
+    },
+    {
+      "file": "icons/settings/clock.svg",
+      "nodeId": "10601:375",
+      "sourceFile": "icon pack/settings / clock /clock--10601-375.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "6add46819223897b8c1f112509940b82bd0d8d832861b04c4056a3296a47a5c8",
+        "width": "18",
+        "height": "18"
+      },
+      "width": "18",
+      "height": "18",
+      "sha256": "6add46819223897b8c1f112509940b82bd0d8d832861b04c4056a3296a47a5c8"
+    },
+    {
+      "file": "icons/settings/timer.svg",
+      "nodeId": "10562:286",
+      "sourceFile": "icon pack/settings / timer /timer--10562-286.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "af045f2cfa007d7a13c4231fa3efdb87bae41d1abe2bb0b22cbb3ad0d73ed330",
+        "width": "18",
+        "height": "18"
+      },
+      "width": "18",
+      "height": "18",
+      "sha256": "af045f2cfa007d7a13c4231fa3efdb87bae41d1abe2bb0b22cbb3ad0d73ed330"
+    },
+    {
+      "file": "icons/settings/info.svg",
+      "nodeId": "10562:292",
+      "sourceFile": "icon pack/settings / info /info--10562-292.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "b0523e5332656a3f206bf0f58a27f463c3946743540b70e077d6964867f3a18e",
+        "width": "14",
+        "height": "14"
+      },
+      "width": "14",
+      "height": "14",
+      "sha256": "b0523e5332656a3f206bf0f58a27f463c3946743540b70e077d6964867f3a18e"
+    },
+    {
+      "file": "icons/settings/chevron.svg",
+      "nodeId": "10601:310",
+      "sourceFile": "icon pack/navigation / chevron-right /chevron-right--10601-310.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "860bf55a871717642cdb5f99e42745c5bdd3648ba516b6696e53f84c9a1114da",
+        "width": "16",
+        "height": "16"
+      },
+      "width": "16",
+      "height": "16",
+      "sha256": "860bf55a871717642cdb5f99e42745c5bdd3648ba516b6696e53f84c9a1114da"
+    },
+    {
+      "file": "icons/questeditor/back.svg",
+      "nodeId": "10487:219",
+      "sourceFile": "icon pack/navigation / arrow-left /arrow-left--10487-219.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "096b7745a250975e07f1e126c75dfdbf79f51c4cc57e43b548568c091b7ee634",
+        "width": "20",
+        "height": "20"
+      },
+      "width": "20",
+      "height": "20",
+      "sha256": "096b7745a250975e07f1e126c75dfdbf79f51c4cc57e43b548568c091b7ee634"
+    },
+    {
+      "file": "icons/questeditor/interest.svg",
+      "nodeId": "10487:222",
+      "sourceFile": "icon pack/activities / dumbbell /dumbbell--10487-222.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "336834e7c012c629c54dfd799edbb213f7e7461c0ae63aa28d242f77f85a901c",
+        "width": "12",
+        "height": "12"
+      },
+      "width": "12",
+      "height": "12",
+      "sha256": "336834e7c012c629c54dfd799edbb213f7e7461c0ae63aa28d242f77f85a901c"
+    },
+    {
+      "file": "icons/questeditor/pencil.svg",
+      "nodeId": "10487:225",
+      "sourceFile": "icon pack/actions / pencil /pencil--10487-225.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "46cb161eebdfbdb55da38a896fad1d0ee711bcabdc2b1623e6501d30b732c3d8",
+        "width": "16",
+        "height": "16"
+      },
+      "width": "16",
+      "height": "16",
+      "sha256": "46cb161eebdfbdb55da38a896fad1d0ee711bcabdc2b1623e6501d30b732c3d8"
+    },
+    {
+      "file": "icons/questeditor/calendar.svg",
+      "nodeId": "10487:231",
+      "sourceFile": "icon pack/actions / calendar-days /calendar-days--10487-231.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "730b39993c772a6eb4de822763ee414e99a85e4cbbae04d3315ce765ebd5d2bc",
+        "width": "16",
+        "height": "16"
+      },
+      "width": "16",
+      "height": "16",
+      "sha256": "730b39993c772a6eb4de822763ee414e99a85e4cbbae04d3315ce765ebd5d2bc"
+    },
+    {
+      "file": "icons/questeditor/time.svg",
+      "nodeId": "10487:234",
+      "sourceFile": "icon pack/navigation / chevron-down /chevron-down--10487-234.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "67c2ee35e52bc795ee77a7332ecc13818bf97f3e3345f1fdb2c8bea52d3dc959",
+        "width": "16",
+        "height": "16"
+      },
+      "width": "16",
+      "height": "16",
+      "sha256": "67c2ee35e52bc795ee77a7332ecc13818bf97f3e3345f1fdb2c8bea52d3dc959"
+    },
+    {
+      "file": "icons/questeditor/timer.svg",
+      "nodeId": "10487:240",
+      "sourceFile": "icon pack/actions / timer /timer--10487-240.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "54d9f651d02cb0cf661f87ff5c1954f1298d3783babac475d31ae60229952317",
+        "width": "17",
+        "height": "17"
+      },
+      "width": "17",
+      "height": "17",
+      "sha256": "54d9f651d02cb0cf661f87ff5c1954f1298d3783babac475d31ae60229952317"
+    },
+    {
+      "file": "icons/questeditor/duration.svg",
+      "nodeId": "10487:243",
+      "sourceFile": "icon pack/navigation / chevron-down /chevron-down--10487-243.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "d7052bea32b6a6bf91197f939ec3a3e54927c44de136fa6cf30f6d71f0c049d8",
+        "width": "14",
+        "height": "14"
+      },
+      "width": "14",
+      "height": "14",
+      "sha256": "d7052bea32b6a6bf91197f939ec3a3e54927c44de136fa6cf30f6d71f0c049d8"
+    },
+    {
+      "file": "icons/questeditor/repeat.svg",
+      "nodeId": "10487:246",
+      "sourceFile": "icon pack/navigation / chevron-down /chevron-down--10487-246.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "1e46e134ff123111165479f2602ed00e7c13779a31284bf74fe05f777215b763",
+        "width": "14",
+        "height": "14"
+      },
+      "width": "14",
+      "height": "14",
+      "sha256": "1e46e134ff123111165479f2602ed00e7c13779a31284bf74fe05f777215b763"
+    },
+    {
+      "file": "icons/questeditor/lock.svg",
+      "nodeId": "10487:249",
+      "sourceFile": "icon pack/actions / lock-keyhole /lock-keyhole--10487-249.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "c9502f4f6b090a672970fa7b4d1e80b229c3761198888fbb7dad41b8a88fb862",
+        "width": "13",
+        "height": "13"
+      },
+      "width": "13",
+      "height": "13",
+      "sha256": "c9502f4f6b090a672970fa7b4d1e80b229c3761198888fbb7dad41b8a88fb862"
+    },
+    {
+      "file": "icons/questeditor/check.svg",
+      "nodeId": "10487:252",
+      "sourceFile": "icon pack/actions / check /check--10487-252.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "7844be4447f57ba01718d8f1ea4093189fa2fab77003b91a733c147df2004ec4",
+        "width": "18",
+        "height": "18"
+      },
+      "width": "18",
+      "height": "18",
+      "sha256": "7844be4447f57ba01718d8f1ea4093189fa2fab77003b91a733c147df2004ec4"
+    },
+    {
+      "file": "icons/preference/radio.svg",
+      "nodeId": "10601:6207",
+      "sourceFile": "icon pack/settings / radio-selection-selected /radio-selection-selected--10601-6207.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "41d41598c40f8333313f959de3e6334362cf994d7af9a5a6415934fca8a53314",
+        "width": "22",
+        "height": "22"
+      },
+      "width": "22",
+      "height": "22",
+      "sha256": "41d41598c40f8333313f959de3e6334362cf994d7af9a5a6415934fca8a53314"
+    },
+    {
+      "file": "icons/preference/back.svg",
+      "nodeId": "10601:6874",
+      "sourceFile": "icon pack/navigation / arrow-left /arrow-left--10601-6874.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "4b9b89c20206e76dfeda501ed5713a4c280281d2b980a55c5b2b6c449f13d5e8",
+        "width": "18",
+        "height": "18"
+      },
+      "width": "18",
+      "height": "18",
+      "sha256": "4b9b89c20206e76dfeda501ed5713a4c280281d2b980a55c5b2b6c449f13d5e8"
+    },
+    {
+      "file": "icons/preference/move.svg",
+      "nodeId": "10601:6877",
+      "sourceFile": "icon pack/actions / move-vertical /move-vertical--10601-6877.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "5e87d274bc2ae66975922b0e468097e2e12be43ae143960f085028a2b5832530",
+        "width": "14",
+        "height": "14"
+      },
+      "width": "14",
+      "height": "14",
+      "sha256": "5e87d274bc2ae66975922b0e468097e2e12be43ae143960f085028a2b5832530"
+    },
+    {
+      "file": "icons/preference/gym.svg",
+      "nodeId": "10601:6922",
+      "sourceFile": "icon pack/activities / dumbbell /dumbbell--10601-6922.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "4e41c221b13b89b72ad549c6e5961bf3f13ee1ca6a2f032799ba61e4c1fc7c11",
+        "width": "18",
+        "height": "18"
+      },
+      "width": "18",
+      "height": "18",
+      "sha256": "4e41c221b13b89b72ad549c6e5961bf3f13ee1ca6a2f032799ba61e4c1fc7c11"
+    },
+    {
+      "file": "icons/preference/reading.svg",
+      "nodeId": "10601:6928",
+      "sourceFile": "icon pack/activities / book-open /book-open--10601-6928.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "687743a6bc5b98652c335d98835692758a9cf3b49d861ea6f908b5efd6e5b1b6",
+        "width": "18",
+        "height": "18"
+      },
+      "width": "18",
+      "height": "18",
+      "sha256": "687743a6bc5b98652c335d98835692758a9cf3b49d861ea6f908b5efd6e5b1b6"
+    },
+    {
+      "file": "icons/preference/arts.svg",
+      "nodeId": "10601:6934",
+      "sourceFile": "icon pack/activities / palette /palette--10601-6934.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "80d10eaea2edc9c12aad05d189fb5ec46932e6aa41d37d6ed82be06478201e85",
+        "width": "18",
+        "height": "18"
+      },
+      "width": "18",
+      "height": "18",
+      "sha256": "80d10eaea2edc9c12aad05d189fb5ec46932e6aa41d37d6ed82be06478201e85"
+    },
+    {
+      "file": "icons/preference/walking.svg",
+      "nodeId": "10601:6937",
+      "sourceFile": "icon pack/activities / footprints /footprints--10601-6937.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "2c5811ee5b796454dfb08bf15dab972e687fd592014a47c9d260f2cc6a445894",
+        "width": "18",
+        "height": "18"
+      },
+      "width": "18",
+      "height": "18",
+      "sha256": "2c5811ee5b796454dfb08bf15dab972e687fd592014a47c9d260f2cc6a445894"
+    },
+    {
+      "file": "icons/preference/music.svg",
+      "nodeId": "10601:6940",
+      "sourceFile": "icon pack/activities / headphones /headphones--10601-6940.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "6ec3bd314e7f2a8e7abb0eea736daa23b7ffca7e9bc73b435d378490e951563c",
+        "width": "18",
+        "height": "18"
+      },
+      "width": "18",
+      "height": "18",
+      "sha256": "6ec3bd314e7f2a8e7abb0eea736daa23b7ffca7e9bc73b435d378490e951563c"
+    },
+    {
+      "file": "icons/preference/cooking.svg",
+      "nodeId": "10601:6943",
+      "sourceFile": "icon pack/activities / cooking-pot /cooking-pot--10601-6943.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "41aae2a428229805b68beefcf646230b21c414c7bc622b2434c211eff3ab87c9",
+        "width": "18",
+        "height": "18"
+      },
+      "width": "18",
+      "height": "18",
+      "sha256": "41aae2a428229805b68beefcf646230b21c414c7bc622b2434c211eff3ab87c9"
+    },
+    {
+      "file": "icons/preference/custom.svg",
+      "nodeId": "10601:6946",
+      "sourceFile": "icon pack/activities / pencil /pencil--10601-6946.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "a5fbfe65cdf9bc7e9ec5dddeb4dd96d20b4cc1bb6e0c35517086b595b0c6be88",
+        "width": "18",
+        "height": "18"
+      },
+      "width": "18",
+      "height": "18",
+      "sha256": "a5fbfe65cdf9bc7e9ec5dddeb4dd96d20b4cc1bb6e0c35517086b595b0c6be88"
+    },
+    {
+      "file": "icons/preference/search.svg",
+      "nodeId": "10601:6886",
+      "sourceFile": "icon pack/actions / search /search--10601-6886.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "6dddb7616f4a29edb835b3e6e5c089f41a04c25277f6bebbbe46d29c0ce2c3e8",
+        "width": "18",
+        "height": "18"
+      },
+      "width": "18",
+      "height": "18",
+      "sha256": "6dddb7616f4a29edb835b3e6e5c089f41a04c25277f6bebbbe46d29c0ce2c3e8"
+    },
+    {
+      "file": "icons/preference/instagram.svg",
+      "nodeId": "10601:6889",
+      "sourceFile": "icon pack/app-marks / instagram /instagram--10601-6889.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "835eca6141f232fe136bd7aa59b97f202164edd5fea0543d3f41212f25b539d0",
+        "width": "24",
+        "height": "24"
+      },
+      "width": "24",
+      "height": "24",
+      "sha256": "835eca6141f232fe136bd7aa59b97f202164edd5fea0543d3f41212f25b539d0"
+    },
+    {
+      "file": "icons/preference/tiktok.svg",
+      "nodeId": "10601:6895",
+      "sourceFile": "icon pack/app-marks / music-2 /music-2--10601-6895.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "427b192a268eb4648258aa8c414a25f9babe88bc50b282947a71cafbf4904d79",
+        "width": "24",
+        "height": "24"
+      },
+      "width": "24",
+      "height": "24",
+      "sha256": "427b192a268eb4648258aa8c414a25f9babe88bc50b282947a71cafbf4904d79"
+    },
+    {
+      "file": "icons/preference/youtube.svg",
+      "nodeId": "10601:6901",
+      "sourceFile": "icon pack/app-marks / youtube /youtube--10601-6901.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "83aa3e86c0bfc90759159ca0c81afbc5fbe43c9d2c3190067e0899b7cf1ae2d2",
+        "width": "24",
+        "height": "24"
+      },
+      "width": "24",
+      "height": "24",
+      "sha256": "83aa3e86c0bfc90759159ca0c81afbc5fbe43c9d2c3190067e0899b7cf1ae2d2"
+    },
+    {
+      "file": "icons/preference/snapchat.svg",
+      "nodeId": "10601:6907",
+      "sourceFile": "icon pack/app-marks / ghost /ghost--10601-6907.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "c66d7fa926e6af85307e85aad665d1aead05cb67eb8a3e705d1e218ac76b354c",
+        "width": "24",
+        "height": "24"
+      },
+      "width": "24",
+      "height": "24",
+      "sha256": "c66d7fa926e6af85307e85aad665d1aead05cb67eb8a3e705d1e218ac76b354c"
+    },
+    {
+      "file": "icons/preference/whatsapp.svg",
+      "nodeId": "10601:6910",
+      "sourceFile": "icon pack/app-marks / message-circle /message-circle--10601-6910.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "332db191134708869bd802b9503052ede424fcee5f86f92a4d8875fd46e9811a",
+        "width": "24",
+        "height": "24"
+      },
+      "width": "24",
+      "height": "24",
+      "sha256": "332db191134708869bd802b9503052ede424fcee5f86f92a4d8875fd46e9811a"
+    },
+    {
+      "file": "icons/preference/spotify.svg",
+      "nodeId": "10601:6041",
+      "sourceFile": "icon pack/app-marks / spotify-identity /spotify-identity--10601-6041.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "b70000e5d1867e14830f28deb7d8db74b9cde365d498f253fc9a90c849df3836",
+        "width": "36",
+        "height": "36"
+      },
+      "width": "36",
+      "height": "36",
+      "sha256": "b70000e5d1867e14830f28deb7d8db74b9cde365d498f253fc9a90c849df3836"
+    },
+    {
+      "file": "icons/planeditor/minus.svg",
+      "nodeId": "10601:6991",
+      "sourceFile": "icon pack/settings / minus /minus--10601-6991.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "f3ac6d57f174b132dcc28443c8a15ed4b43ed45e27c2e291058e2e2a52a9018f",
+        "width": "16",
+        "height": "16"
+      },
+      "width": "16",
+      "height": "16",
+      "sha256": "f3ac6d57f174b132dcc28443c8a15ed4b43ed45e27c2e291058e2e2a52a9018f"
+    },
+    {
+      "file": "icons/planeditor/plus.svg",
+      "nodeId": "10601:6994",
+      "sourceFile": "icon pack/settings / plus /plus--10601-6994.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "00ead04cc29009263d84422cd72874b5d58b19e089d187d73609e59575e48bae",
+        "width": "16",
+        "height": "16"
+      },
+      "width": "16",
+      "height": "16",
+      "sha256": "00ead04cc29009263d84422cd72874b5d58b19e089d187d73609e59575e48bae"
+    },
+    {
+      "file": "icons/historydetail/back.svg",
+      "nodeId": "10573:297",
+      "sourceFile": "icon pack/navigation / arrow-left /arrow-left--10573-297.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "1bce35cf6760eb2aec7989d8e3886b9aea0f095f7689ff39157edf924b334028",
+        "width": "16",
+        "height": "16"
+      },
+      "width": "16",
+      "height": "16",
+      "sha256": "1bce35cf6760eb2aec7989d8e3886b9aea0f095f7689ff39157edf924b334028"
+    },
+    {
+      "file": "icons/historydetail/progressDots.svg",
+      "nodeId": "10573:300",
+      "sourceFile": "icon pack/actions / pagination-dots-second /pagination-dots-second--10573-300.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "1e40bc1c83e781737d4855ba42976056533a79b029e40af313e3b22967793cb4",
+        "width": "30",
+        "height": "8"
+      },
+      "width": "30",
+      "height": "8",
+      "sha256": "1e40bc1c83e781737d4855ba42976056533a79b029e40af313e3b22967793cb4"
+    },
+    {
+      "file": "icons/historydetail/reclaimedDots.svg",
+      "nodeId": "10573:360",
+      "sourceFile": "icon pack/navigation / pagination-dots-third /pagination-dots-third--10573-360.svg",
+      "changedBytes": false,
+      "previous": {
+        "sha256": "4e48352eb7bcf7f26c042fa9f04ee5fb7b365247db9a9a391adf5c86162aae0c",
+        "width": "30",
+        "height": "8"
+      },
+      "width": "30",
+      "height": "8",
+      "sha256": "4e48352eb7bcf7f26c042fa9f04ee5fb7b365247db9a9a391adf5c86162aae0c"
+    }
+  ]
+}

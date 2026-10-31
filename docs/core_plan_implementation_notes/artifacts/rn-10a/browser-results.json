@@ -1,0 +1,123 @@
+{
+  "cases": [
+    {
+      "width": 280,
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "overflow": false
+    },
+    {
+      "width": 393,
+      "overflow": false
+    }
+  ],
+  "originals": [
+    {
+      "file": "icons/navigation/home-active.svg",
+      "width": 21,
+      "height": 21,
+      "bytesMatch": true
+    },
+    {
+      "file": "icons/navigation/home-inactive.svg",
+      "width": 21,
+      "height": 21,
+      "bytesMatch": true
+    },
+    {
+      "file": "icons/navigation/quests-active.svg",
+      "width": 20,
+      "height": 20,
+      "bytesMatch": true
+    },
+    {
+      "file": "icons/navigation/quests-inactive.svg",
+      "width": 20,
+      "height": 20,
+      "bytesMatch": true
+    },
+    {
+      "file": "icons/navigation/history-active.svg",
+      "width": 20,
+      "height": 20,
+      "bytesMatch": true
+    },
+    {
+      "file": "icons/navigation/history-inactive.svg",
+      "width": 20,
+      "height": 20,
+      "bytesMatch": true
+    },
+    {
+      "file": "icons/navigation/settings-active.svg",
+      "width": 20,
+      "height": 20,
+      "bytesMatch": true
+    },
+    {
+      "file": "icons/navigation/settings-inactive.svg",
+      "width": 20,
+      "height": 20,
+      "bytesMatch": true
+    },
+    {
+      "file": "mascot/dino-needs-care.svg",
+      "width": 110,
+      "height": 110,
+      "bytesMatch": true
+    },
+    {
+      "file": "mascot/dino-feeling-low.svg",
+      "width": 110,
+      "height": 110,
+      "bytesMatch": true
+    },
+    {
+      "file": "mascot/dino-doing-okay.svg",
+      "width": 110,
+      "height": 110,
+      "bytesMatch": true
+    },
+    {
+      "file": "mascot/dino-happy.svg",
+      "width": 110,
+      "height": 110,
+      "bytesMatch": true
+    },
+    {
+      "file": "icons/home/heart.svg",
+      "width": 12,
+      "height": 12,
+      "bytesMatch": true
+    },
+    {
+      "file": "icons/home/saved-time-ellipse.svg",
+      "width": 110,
+      "height": 110,
+      "bytesMatch": true
+    },
+    {
+      "file": "icons/home/check.svg",
+      "width": 16,
+      "height": 16,
+      "bytesMatch": true
+    },
+    {
+      "file": "icons/home/streak-dots.svg",
+      "width": 86,
+      "height": 8,
+      "bytesMatch": true
+    },
+    {
+      "file": "account/settings-avatar.svg",
+      "width": 52,
+      "height": 52,
+      "bytesMatch": true
+    }
+  ],
+  "errors": [],
+  "privateRequests": [],
+  "physicalDevice": false
+}

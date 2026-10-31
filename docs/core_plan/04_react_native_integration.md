@@ -557,7 +557,7 @@ for exact evidence and limits. Fixes cover Home text contrast, status/confirmati
 announcements, explicit confirmation focus/return, retained keyboard tab focus,
 active-panel visibility without dropping drafts, web tab-to-panel DOM order,
 intrinsic footer reflow and late lifecycle callback/cleanup suppression. All
-original assets remain unchanged; icon-pack rewiring is deferred by the user.
+original SVGs remain unedited. RN-10a now completes the user-authorized original-pack refresh; prior captures remain in Git history.
 
 The following checks remain pending; these IDs match the QA record. RN-10 is not
 full signed-device/live acceptance, and unimplemented RN-09b/c/d were not audited
@@ -699,3 +699,5 @@ actual saves and isolated source examples. RN09C-D03 detail presentation/navigat
 is implemented; PD-12 forecast remains explicitly excluded. RN09D-D02/D03 editor UI
 is prepared; shared approved schemas, real native selection/save/install and launch
 scope are still pending. No deferred live contract or platform gate is marked done.
+
+RN-10a original icon-pack work (2026-10-31): 61 same-node tracked files are exact pack copies, refreshing 16 earlier captures. Home nav root is 21×21 with unchanged 18 px slot/−1.5 offsets. Source literal emoji stay literal. Remaining 10 context originals have no same-node pack file and remain verified originals. See assets README and rn-10a audit/evidence. Android device acceptance remains pending until actual device access/results exist.

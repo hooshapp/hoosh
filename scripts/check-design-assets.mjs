@@ -9,6 +9,7 @@ if (!Array.isArray(manifest.assets) || manifest.assets.length === 0)
   throw new Error('The design asset manifest must contain the original asset inventory.');
 const digest = (bytes) => createHash('sha256').update(bytes).digest('hex');
 const navigationHashes = new Set();
+let packCopies = 0;
 for (const asset of manifest.assets) {
   const bytes = await readFile(join(assetsRoot, asset.file));
   if (!bytes.length || bytes.length !== asset.sizeBytes || digest(bytes) !== asset.sha256)
@@ -17,6 +18,12 @@ for (const asset of manifest.assets) {
   for (const key of ['width', 'height', 'viewBox']) {
     if (!root?.includes(`${key}="${asset[key]}"`))
       throw new Error(`Original SVG bounds changed: ${asset.file} (${key})`);
+  }
+  if (process.argv.includes('--pack') && asset.sourceFile?.startsWith('icon pack/')) {
+    const original = await readFile(new URL(`../${asset.sourceFile}`, import.meta.url));
+    if (digest(original) !== asset.sha256 || !original.equals(bytes))
+      throw new Error(`Tracked asset differs from original pack: ${asset.file}`);
+    packCopies++;
   }
   if (asset.usage === 'navigation') navigationHashes.add(asset.sha256);
 }
@@ -41,5 +48,5 @@ if (process.argv.includes('--export')) {
     );
 }
 console.log(
-  `Design assets passed: ${manifest.assets.length} original local SVGs${process.argv.includes('--export') ? ', including all navigation assets in the app export' : ''}.`,
+  `Design assets passed: ${manifest.assets.length} original local SVGs${process.argv.includes('--export') ? ', including all navigation assets in the app export' : ''}${process.argv.includes('--pack') ? `; ${packCopies} exact original-pack copies` : ''}.`,
 );

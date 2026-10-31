@@ -50,7 +50,7 @@ the provider for a different overlapping footer; do not add a second tab reserve
 [Original asset provenance](../../../assets/README.md) identifies all eight nav
 variants and four Dino sources. `navigation-assets.ts` statically imports the local
 unmodified SVGs; `expo-image` renders them without a transformer, path rewriting or
-tinting. Home's stroke overhang uses its original 20.5×20.7758 px image bounds around
+tinting. Home's stroke overhang uses its original 21×21 px image bounds around
 the 18 px source slot. Other nav glyphs are 20×20 px. A failed image reveals its
 destination label while retaining a working tab and accessible name.
 
@@ -113,3 +113,5 @@ Intrinsic bar content can wrap even when RN Web reports fontScale 1 during brows
 text-only scaling. Existing native large-font columns and measured footer reserve
 remain authoritative. See [the actual QA record](../../../../../docs/qa/mobile-accessibility.md)
 for browser results and separate native/device gates.
+
+RN-10a switches earlier navigation captures to byte-exact same-node originals from the user icon pack. Home uses 21×21 native image bounds in its existing 18 px slot, centered at −1.5 px on each axis; other glyphs remain 20×20. Accessible names/selected state, targets, focus and measured bar clearance are retained.

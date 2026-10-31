@@ -4,9 +4,9 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN-09h History details, navigation and RN-09 UI closure implemented. Live integrations/device checks remain deferred. RN-09a–h independent UI/local-interaction scope is complete and ready for review. Real Auth/account-generation wiring, approved feature/plan contracts, database/API persistence, native-authorized selection/enforcement, measured outcomes and signed-device/accessibility acceptance remain under existing deferred IDs. Calendar provider scope, PD-12 forecast and explicitly postponed wholesale icon rewiring remain excluded. Plan 04 overall is not complete; do not rebuild these UI screens when their producers arrive.
+**Current part:** RN-10a Original icon-pack refresh implemented. Live integrations/device checks remain deferred. Continue RN-10b isolated native QA/polish. USB device setup question is pending; actual Android font/keyboard/Back/SVG/TalkBack/lifecycle evidence must be observed on an authorized device, not inferred from browser/bundle checks. Live Auth/native-policy gates remain separate.
 
-**Implementation branch:** `task/react-native/rn-09-detail-ui`; RN-09h parent `b319d75`; no push/main merge.
+**Implementation branch:** `task/react-native/rn-10-android-icons`; RN-10a parent `f67a8ea`; no push/main merge.
 
 **Commit reference:** RN-01 `2f88102`; RN-02 `2d5c0d1`; RN-03 `0741758`; RN-04 `610f570`; RN-05 preparation `0c6e4db`; RN-07 UI `5790302`; RN-08 preparation `71da2d5`; RN-09a `ff75039`. RN-10 is `9b5fbd0`.
 
@@ -16,8 +16,8 @@
 
 ## Resume here
 
-- Latest: **RN-09h History details, navigation and RN-09 UI closure**, subject `feat(mobile): complete History details and RN-09 UI coverage`. RN-09a–h independent UI/local-interaction scope is complete and ready for review. Real Auth/account-generation wiring, approved feature/plan contracts, database/API persistence, native-authorized selection/enforcement, measured outcomes and signed-device/accessibility acceptance remain under existing deferred IDs. Calendar provider scope, PD-12 forecast and explicitly postponed wholesale icon rewiring remain excluded. Plan 04 overall is not complete; do not rebuild these UI screens when their producers arrive.
-- Actual validation: Final npm run check passed: 250 portable mobile tests, 356 iOS/Android component tests across 46 suites, 3 API tests, workspace types/lint/Ruff and 71 original SVGs. Vite gallery build and web export/fixture exclusion passed. iOS/Android Hermes exports passed; verify-main-native rn-09h confirms final source-map equality for all new runtime sources and excludes tests/dev fixtures/private API consumers. Browser e/f/g/h state/layout cases: 17/13/14/15 at 393/320/280 px plus enlarged text; original asset bytes/root geometry checked (0.02 px tolerance for browser subpixel rounding of fractional ellipse roots). Nine browser interaction flows and 36 real-app tab/keyboard/direct-link/footer checks passed. Actual source captures visually inspected; git diff whitespace check passed. One initial full run hit an existing Home test timeout; full rerun passed without modifying that test or its timeout. Signed-device acceptance not run.
+- Latest: **RN-10a Original icon-pack refresh**, subject `fix(mobile): wire original icon pack with verified source geometry`. Continue RN-10b isolated native QA/polish. USB device setup question is pending; actual Android font/keyboard/Back/SVG/TalkBack/lifecycle evidence must be observed on an authorized device, not inferred from browser/bundle checks. Live Auth/native-policy gates remain separate.
+- Actual validation: Before native QA fixture extraction, npm run check passed (250 portable, 356 native-component, 3 API tests, types/lint/Ruff), web export passed with 71 original SVGs, and Vite preview built. Explicit --pack check confirms 61 exact original-pack copies. Browser audit verifies served bytes/effective root geometry for 17 visible navigation/mascot/Home/avatar assets at 393/320/280 px, with original-gallery/Home captures visually inspected. Native physical-device acceptance has not run; ADB lists zero devices.
 - UI-only local drafts are not accepted wire/policy schemas or saved outcomes. Existing RN07/08/09/10/Auth/API/native and signed-device gates remain open. Anisha owns Auth/onboarding/iOS; Ishmum shared UI/Android/backend. No cloud/native state was changed.
 - User icon packs and workspace file remain untracked/excluded. Continue the same notes file and original plan ledger for each sequential UI part.
 
@@ -1481,7 +1481,7 @@ No push/merge, Supabase/API/database/native permission/restriction action or sig
 
 ### RN-09h — History details, navigation and RN-09 UI closure
 
-**Hash:** Pending; resolve by `feat(mobile): complete History details and RN-09 UI coverage`.
+**Hash:** `f67a8ea` (recorded during RN-10 icon/device follow-up).
 **Date:** 2026-10-31. **Owner:** Ishmum. **Branch:** `task/react-native/rn-09-detail-ui`. **Parent:** `b319d75`.
 **Status:** Independent UI implemented and validated; live persistence/native policy and device acceptance remain pending.
 
@@ -1701,6 +1701,150 @@ Complete reviewed progress frame 10570:192 and reduction/reclaimed frame 10570:1
 
 No push/merge, Supabase/API/database/native permission/restriction action or signed-device run occurred. Compilation/browser checks do not certify physical-device accessibility or native protection.
 
+
+### RN-10a — Original icon-pack refresh
+
+**Hash:** Pending; resolve by `fix(mobile): wire original icon pack with verified source geometry`.
+**Date:** 2026-10-31. **Owner:** Ishmum. **Branch:** `task/react-native/rn-10-android-icons`. **Parent:** `f67a8ea`.
+**Status:** Independent UI implemented and validated; live persistence/native policy and device acceptance remain pending.
+
+#### Every changed file and logical change
+
+Ranges refer to this commit. Deletions cite parent ranges; binary captures have dimensions. Existing historical entries remain valid for their own commits.
+
+| File and lines | Change and reason |
+|---|---|
+| `apps/mobile/assets/README.md`: lines 5–5 | Synchronize scope, current progress, UI-only adapters, source provenance, remaining integration/device gates and handoff. |
+| `apps/mobile/assets/README.md`: lines 9–10 | Synchronize scope, current progress, UI-only adapters, source provenance, remaining integration/device gates and handoff. |
+| `apps/mobile/assets/README.md`: lines 33–33 | Synchronize scope, current progress, UI-only adapters, source provenance, remaining integration/device gates and handoff. |
+| `apps/mobile/assets/README.md`: lines 55–85 | Synchronize scope, current progress, UI-only adapters, source provenance, remaining integration/device gates and handoff. |
+| `apps/mobile/assets/account/settings-avatar.svg`: lines 1–10 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/home/heart.svg`: lines 1–3 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/home/heart.svg`: lines 6–6 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/home/streak-dots.svg`: lines 1–8 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/navigation/history-active.svg`: lines 1–3 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/navigation/history-active.svg`: lines 6–6 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/navigation/history-inactive.svg`: lines 1–3 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/navigation/history-inactive.svg`: lines 6–6 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/navigation/home-active.svg`: lines 1–2 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/navigation/home-inactive.svg`: lines 1–2 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/navigation/quests-active.svg`: lines 1–2 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/navigation/quests-inactive.svg`: lines 1–2 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/navigation/settings-active.svg`: lines 1–2 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/navigation/settings-inactive.svg`: lines 1–2 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/manifest.json`: lines 9–16 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 21–28 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 36–40 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 48–52 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 60–64 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 72–76 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 84–88 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 96–100 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 108–112 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 120–124 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 132–136 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 144–148 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 156–160 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 168–169 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 171–173 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 203–204 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 206–208 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 216–217 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 219–221 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 233–234 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 246–247 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 259–260 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 272–273 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 285–286 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 298–299 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 311–312 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 324–325 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 337–338 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 350–351 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 363–364 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 376–377 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 389–390 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 402–403 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 415–416 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 428–429 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 441–442 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 454–455 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 467–468 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 480–481 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 493–494 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 506–507 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 519–520 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 532–533 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 545–546 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 558–559 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 571–572 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 596–597 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 609–610 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 622–623 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 635–636 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 648–649 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 661–662 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 674–675 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 687–688 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 700–701 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 713–714 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 726–727 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 739–740 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 752–753 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 777–778 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 790–791 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 815–816 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 828–829 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/manifest.json`: lines 853–854 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/assets/mascot/dino-doing-okay.svg`: lines 1–9 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/mascot/dino-feeling-low.svg`: lines 1–6 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/mascot/dino-feeling-low.svg`: lines 9–11 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/mascot/dino-happy.svg`: lines 1–6 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/mascot/dino-happy.svg`: lines 9–12 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/mascot/dino-needs-care.svg`: lines 1–6 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/mascot/dino-needs-care.svg`: lines 9–12 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/mascot/home-dino-happy.svg`: lines 1–6 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/mascot/home-dino-happy.svg`: lines 9–12 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/src/components/navigation/README.md`: lines 53–53 | Synchronize scope, current progress, UI-only adapters, source provenance, remaining integration/device gates and handoff. |
+| `apps/mobile/src/components/navigation/README.md`: lines 116–117 | Synchronize scope, current progress, UI-only adapters, source provenance, remaining integration/device gates and handoff. |
+| `apps/mobile/src/design/navigation-assets.ts`: lines 15–16 | Statically import original local assets and retain exact root dimensions at callsites; no runtime Figma URLs. |
+| `apps/mobile/src/design/navigation-assets.ts`: lines 18–19 | Statically import original local assets and retain exact root dimensions at callsites; no runtime Figma URLs. |
+| `docs/core_plan/04_react_native_integration.md`: lines 560–560 | Synchronize scope, current progress, UI-only adapters, source provenance, remaining integration/device gates and handoff. |
+| `docs/core_plan/04_react_native_integration.md`: lines 702–703 | Synchronize scope, current progress, UI-only adapters, source provenance, remaining integration/device gates and handoff. |
+| `docs/core_plan_implementation_notes/artifacts/rn-10a/browser-results.json`: lines 1–123 | Record/reproduce observed browser/build evidence with explicit false native-device/live-service acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-10a/check-icons.mjs`: lines 1–33 | Record/reproduce observed browser/build evidence with explicit false native-device/live-service acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-10a/home-originals.png`: binary PNG, 393×853, 45125 bytes | Actual browser capture of the indicated source-aligned component or state; no account/device outcome is implied. |
+| `docs/core_plan_implementation_notes/artifacts/rn-10a/icon-pack-audit.json`: lines 1–860 | Record/reproduce observed browser/build evidence with explicit false native-device/live-service acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-10a/pack-gallery.png`: binary PNG, 1052×344, 35127 bytes | Actual browser capture of the indicated source-aligned component or state; no account/device outcome is implied. |
+| `scripts/check-design-assets.mjs`: lines 12–12 | Implement the independent UI/provenance/evidence/route handoff described below, preserving existing ownership and live-data boundaries. |
+| `scripts/check-design-assets.mjs`: lines 22–27 | Implement the independent UI/provenance/evidence/route handoff described below, preserving existing ownership and live-data boundaries. |
+| `scripts/check-design-assets.mjs`: lines 51–51 | Implement the independent UI/provenance/evidence/route handoff described below, preserving existing ownership and live-data boundaries. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1–25 | Refresh current branch, UI scope, actual checks and next handoff. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1164–1164 | Record the known preceding commit hash during a normal notes update. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1259–1259 | Record the known preceding commit hash during a normal notes update. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1323–1323 | Record the known preceding commit hash during a normal notes update. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1424–1424 | Record the known preceding commit hash during a normal notes update. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1484–1484 | Record the known preceding commit hash during a normal notes update. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1705–1848 | Record this full file/line change table, decisions, actual validation and remaining work in the code commit. |
+
+#### Decisions and boundaries
+
+User authorized the deferred icon work. Full fresh Home22:4/Quests27:155/Settings27:157/mood88:96 contexts/screenshots read in Figma session39610fcb-dd2b-4c4a-b841-92d7d363408a. Audit all71 tracked originals against210 SVGs in the supplied pack. Copy all61 same-node matches byte-for-byte; 16 earlier capture bytes change, including eight nav variants, Dino variants, Settings avatar, Home heart/streak and Home happy duplicate. Preserve original SVG roots/paths/colors; Home renders original21x21 in the existing18px layout slot with -1.5 offsets. No control target/name/selected-state or actual score/auth/native behavior changes. Preserve all literal Figma emoji/text glyphs, confirmed in source; do not replace them with unrelated line icons. Ten originals without matching source-node pack names remain unchanged Figma-context originals, not placeholders. Manifest now records source pack paths, roots/hashes and copy date. Optional --pack validation checks real source bytes when the user pack exists; default CI remains independent of untracked source folders. The audit retains prior hashes/dimensions and provenance; historical captures remain in Git. Browser audit fixed its own avatar selector to inspect the actual nested HTML image rather than its Expo wrapper. New temporary Android Platform Tools37.0.1 checks device availability only; no device was initially present. Exact Google tooling download is outside repo, no system PATH/global project changes. Record f67a8ea from the previous increment. No whole source pack or user workspace file is committed.
+
+**Actual validation:** Before native QA fixture extraction, npm run check passed (250 portable, 356 native-component, 3 API tests, types/lint/Ruff), web export passed with 71 original SVGs, and Vite preview built. Explicit --pack check confirms 61 exact original-pack copies. Browser audit verifies served bytes/effective root geometry for 17 visible navigation/mascot/Home/avatar assets at 393/320/280 px, with original-gallery/Home captures visually inspected. Native physical-device acceptance has not run; ADB lists zero devices.
+
+**Remaining / next:** Continue RN-10b isolated native QA/polish. USB device setup question is pending; actual Android font/keyboard/Back/SVG/TalkBack/lifecycle evidence must be observed on an authorized device, not inferred from browser/bundle checks. Live Auth/native-policy gates remain separate.
+
+No push/merge, Supabase/API/database/native permission/restriction action or signed-device run occurred. Compilation/browser checks do not certify physical-device accessibility or native protection.
+
+
+### RN-10b — Native Android QA and polish (in progress)
+
+Create an isolated native Expo Go QA project to render the actual populated shared
+screens and state matrix on Android. Share source fixtures with the web gallery;
+keep both projects out of the actual route/import graph. Preserve production Auth,
+backend and native policy ownership. Device access is requested, not yet available;
+never promote manifest/bundle/browser success to physical-device acceptance.
 
 ### Entry template
 

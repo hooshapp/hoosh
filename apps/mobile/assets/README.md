@@ -2,12 +2,12 @@
 
 Source: [App UI](https://www.figma.com/design/ukmD2ZidJ9UR2XxUkvdPoJ/App-UI?node-id=0-1), captured 2026-10-29, with five RN-09a Home assets captured 2026-10-30. No immutable Figma version was supplied; the manifest records node IDs, original dimensions, byte counts and SHA-256 hashes for these captures.
 
-These SVGs are unmodified downloads from high-fidelity Figma design contexts. Do not redraw, tint, minify, edit paths/root bounds or save transient asset URLs in code. Refresh the source and manifest together when design changes. The larger Home SVG bounds include its stroke overhang around the 18 px layout slot; render it at its original 20.5×20.7758 px bounds with the recorded offset. Other nav glyphs are 20×20 px; Home Dino artwork is 110×110 px. The separately exported [Settings avatar](account/README.md) retains its original 52×52 bounds.
+These SVGs are unchanged original exports from the user-provided icon pack or high-fidelity Figma contexts. RN-10a now prefers same-node original-pack files and records pack-copy provenance. Do not redraw, tint, minify, edit paths/root bounds or save transient asset URLs in code. Refresh the source and manifest together when design changes. The original-pack Home icon has a 21×21 root around its 18 px layout slot; render it unchanged with a −1.5/−1.5 offset. Other nav glyphs are 20×20 px; Home Dino artwork is 110×110 px. The separately exported [Settings avatar](account/README.md) retains its original 52×52 bounds.
 
 | Local file | Source node | Format / native view bounds | Purpose |
 |---|---|---|---|
-| [icons/navigation/home-active.svg](icons/navigation/home-active.svg) | `84:135` | SVG, 20.5×20.7758, viewBox `0 0 20.5 20.7758` | Active/inactive navigation glyph; bundled in the app. |
-| [icons/navigation/home-inactive.svg](icons/navigation/home-inactive.svg) | `10573:366` | SVG, 20.5×20.7758, viewBox `0 0 20.5 20.7758` | Active/inactive navigation glyph; bundled in the app. |
+| [icons/navigation/home-active.svg](icons/navigation/home-active.svg) | `84:135` | SVG, 21×21, viewBox `0 0 21 21` | Active/inactive navigation glyph; bundled in the app. |
+| [icons/navigation/home-inactive.svg](icons/navigation/home-inactive.svg) | `10573:366` | SVG, 21×21, viewBox `0 0 21 21` | Active/inactive navigation glyph; bundled in the app. |
 | [icons/navigation/quests-active.svg](icons/navigation/quests-active.svg) | `10491:103` | SVG, 20×20, viewBox `0 0 20 20` | Active/inactive navigation glyph; bundled in the app. |
 | [icons/navigation/quests-inactive.svg](icons/navigation/quests-inactive.svg) | `84:151` | SVG, 20×20, viewBox `0 0 20 20` | Active/inactive navigation glyph; bundled in the app. |
 | [icons/navigation/history-active.svg](icons/navigation/history-active.svg) | `10573:381` | SVG, 20×20, viewBox `0 0 20 20` | Active/inactive navigation glyph; bundled in the app. |
@@ -30,7 +30,7 @@ These SVGs are unmodified downloads from high-fidelity Figma design contexts. Do
 
 Navigation uses both original color variants, decorative image semantics and text labels if an image fails. All targets retain accessible names and selected state. [Navigation contract](../src/components/navigation/README.md) explains layout, history and clearance.
 
-`npm run mobile:check-assets` verifies all 18 local files against the manifest, including unchanged bytes and root dimensions. `npm run mobile:export` additionally verifies that all eight nav SVGs exist byte-for-byte in the release export. Home presentation can render explicitly provided variants; the real route has unavailable inputs and no selected mood. Inspect the isolated examples through `npm run mobile:ui`; artwork is not evidence of a working health model.
+`npm run mobile:check-assets` verifies all 71 local files against the manifest, including unchanged bytes and root dimensions. `npm run mobile:export` additionally verifies that all eight nav SVGs exist byte-for-byte in the release export. Home presentation can render explicitly provided variants; the real route has unavailable inputs and no selected mood. Inspect the isolated examples through `npm run mobile:ui`; artwork is not evidence of a working health model.
 
 RN-09a downloaded all five original assets from Home's fresh high-fidelity context.
 Its Home Dino export differs in bytes from the earlier `84:77` inventory capture;
@@ -52,3 +52,34 @@ no previous source artwork is rewritten or the full untracked pack committed.
 RN-09c History uses the shared Screen, controlled Button and fixed-bound DesignArtwork. Three new original-pack SVG copies and provenance are recorded in `assets/manifest.json`; evidence is under Plan 04 artifacts/rn-09c. No historical icon is rewired.
 
 RN-09d Settings adds nine unchanged original-pack icons (manifest provenance), reuses the 52 px account avatar and RN-07 form, and supports an optional wrapping Button caption style. Source sections/rows remain responsive; actual settings have unknown values and no unsupported actions. See feature README and Plan 04 artifacts/rn-09d.
+
+
+## RN-10a original-pack refresh — 2026-10-31
+
+The user authorized the deferred wiring. All 61 tracked assets with a same-node
+SVG in `icon pack/` are copied byte-for-byte from that file; 16 older captures
+changed. This includes eight navigation variants, Dino variants, the Settings
+avatar, Home heart/streak and the previously separate happy Home capture.
+Older captures remain recoverable from Git history; no SVG is modified or tinted.
+Home navigation geometry follows the pack’s 21×21 root, retaining the source layout
+slot and accessible target. The two happy inventory/callsite files now share exact
+pack bytes without selecting a default mood or changing the account/status models.
+
+Ten assets whose source node is absent from the pack retain their already-verified
+original Figma-context exports (decorations/checks/range/history shapes). These are
+originals, not placeholder icons. Later detail assets that already matched the pack
+are unchanged in appearance and now have explicit verified provenance.
+
+Fresh full Home/Quests/Settings/mood contexts/screenshots were inspected in read-only
+session `39610fcb-dd2b-4c4a-b841-92d7d363408a`. Feed/brain/flame/category/schedule
+emoji, sparkle/Skip symbols and the source text chevrons are literal design text;
+they are preserved rather than replaced with unrelated vector icons from the pack.
+The OS status bar/home indicator remains OS-owned. The source asset audit is in
+Plan 04 artifacts/rn-10a/icon-pack-audit.json.
+
+Run `npm run mobile:check-assets -- --pack` when the untracked source pack is present
+to verify every recorded pack copy, in addition to the normal manifest integrity
+check. CI/fresh clones use the normal check and do not depend on that local pack.
+Whole source-pack folders/workspace files remain untracked; only required assets
+and their provenance are committed. Native Android/iOS rendering must be recorded
+from actual devices separately from byte integrity and compilation checks.
