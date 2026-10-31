@@ -12,7 +12,7 @@ export function AccountHeader({
   identity,
   displayName,
 }: {
-  identity: AuthIdentity;
+  identity: AuthIdentity | null;
   /** Validated profile name from the owning feature; never inferred from email. */
   displayName?: string | null;
 }) {
@@ -28,6 +28,7 @@ export function AccountHeader({
         {!imageFailed ? (
           <Image
             source={avatar}
+            testID="settings-avatar"
             style={styles.image}
             contentFit="contain"
             accessible={false}
@@ -37,11 +38,11 @@ export function AccountHeader({
       </View>
       <View style={styles.info}>
         <Text accessibilityRole="header" style={styles.title}>
-          {displayName ?? 'Your account'}
+          {identity ? displayName ?? 'Your account' : 'Your account'}
         </Text>
         <View style={styles.emailRow}>
           <Text selectable style={styles.email}>
-            {identity.email ?? 'Signed-in account'}
+            {identity ? identity.email ?? 'Signed-in account' : 'Account details aren’t available yet.'}
           </Text>
         </View>
       </View>

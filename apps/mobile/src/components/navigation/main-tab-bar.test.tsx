@@ -101,12 +101,13 @@ describe('Main navigation', () => {
 
   it('keeps auth outside the tab shell and returns to the selected settings tab', async () => {
     await renderRouter(actualRoutes, { initialUrl: '/settings' });
-    await userEvent.press(screen.getByRole('link', { name: 'View sign-in screen' }));
+    expect(screen.queryByRole('link', { name: 'View sign-in screen' })).toBeNull();
+    await act(() => router.push('/(auth)/sign-in'));
     expect(await screen.findByRole('header', { name: 'Welcome back' })).toBeVisible();
     expect(screen.queryByRole('tab', { name: 'Settings' })).not.toBeOnTheScreen();
     await act(() => router.back());
     expect(screen.getByRole('tab', { name: 'Settings' })).toBeSelected();
-    expect(screen.getByRole('header', { name: 'Development preview' })).toBeVisible();
+    expect(screen.getByRole('header', { name: 'Your account' })).toBeVisible();
   });
 
   it('honors cancellable tabPress and tabLongPress events without replacing the navigator', async () => {

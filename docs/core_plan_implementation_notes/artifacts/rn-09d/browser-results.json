@@ -1,0 +1,427 @@
+{
+  "part": "rn-09d",
+  "browser": "156.0.8078.76",
+  "cases": [
+    {
+      "state": "Unavailable",
+      "passed": true
+    },
+    {
+      "state": "Figma example",
+      "passed": true
+    },
+    {
+      "state": "Read only",
+      "passed": true
+    },
+    {
+      "state": "Loading",
+      "passed": true
+    },
+    {
+      "state": "Read error",
+      "passed": true
+    },
+    {
+      "state": "Empty values",
+      "passed": true
+    },
+    {
+      "state": "Partial",
+      "passed": true
+    },
+    {
+      "state": "Profile form",
+      "passed": true
+    },
+    {
+      "state": "Long text",
+      "passed": true
+    },
+    {
+      "explicitActionsOnly": true
+    },
+    {
+      "asset": "account/settings-avatar.svg",
+      "width": 52,
+      "height": 52,
+      "originalBytes": true
+    },
+    {
+      "asset": "icons/settings/user.svg",
+      "width": 18,
+      "height": 18,
+      "originalBytes": true
+    },
+    {
+      "asset": "icons/settings/gender.svg",
+      "width": 18,
+      "height": 18,
+      "originalBytes": true
+    },
+    {
+      "asset": "icons/settings/apps.svg",
+      "width": 18,
+      "height": 18,
+      "originalBytes": true
+    },
+    {
+      "asset": "icons/settings/activities.svg",
+      "width": 18,
+      "height": 18,
+      "originalBytes": true
+    },
+    {
+      "asset": "icons/settings/calendar.svg",
+      "width": 18,
+      "height": 18,
+      "originalBytes": true
+    },
+    {
+      "asset": "icons/settings/clock.svg",
+      "width": 18,
+      "height": 18,
+      "originalBytes": true
+    },
+    {
+      "asset": "icons/settings/timer.svg",
+      "width": 18,
+      "height": 18,
+      "originalBytes": true
+    },
+    {
+      "asset": "icons/settings/info.svg",
+      "width": 14,
+      "height": 14,
+      "originalBytes": true
+    },
+    {
+      "asset": "icons/settings/chevron.svg",
+      "width": 16,
+      "height": 16,
+      "originalBytes": true
+    },
+    {
+      "width": 393,
+      "state": "Unavailable",
+      "layout": {
+        "width": 393,
+        "overflow": false,
+        "textOverflow": [],
+        "buttons": []
+      }
+    },
+    {
+      "width": 393,
+      "state": "Figma example",
+      "layout": {
+        "width": 393,
+        "overflow": false,
+        "textOverflow": [],
+        "buttons": [
+          {
+            "width": 353,
+            "height": 56
+          },
+          {
+            "width": 353,
+            "height": 56
+          },
+          {
+            "width": 353,
+            "height": 69
+          },
+          {
+            "width": 353,
+            "height": 69
+          },
+          {
+            "width": 353,
+            "height": 69
+          },
+          {
+            "width": 353,
+            "height": 69
+          },
+          {
+            "width": 351,
+            "height": 67
+          },
+          {
+            "width": 353,
+            "height": 69
+          },
+          {
+            "width": 353,
+            "height": 69
+          }
+        ]
+      }
+    },
+    {
+      "width": 393,
+      "state": "Long text",
+      "layout": {
+        "width": 393,
+        "overflow": false,
+        "textOverflow": [],
+        "buttons": [
+          {
+            "width": 353,
+            "height": 56
+          },
+          {
+            "width": 353,
+            "height": 56
+          },
+          {
+            "width": 353,
+            "height": 103
+          },
+          {
+            "width": 353,
+            "height": 103
+          },
+          {
+            "width": 353,
+            "height": 69
+          },
+          {
+            "width": 353,
+            "height": 69
+          },
+          {
+            "width": 351,
+            "height": 67
+          },
+          {
+            "width": 353,
+            "height": 69
+          },
+          {
+            "width": 353,
+            "height": 69
+          }
+        ]
+      }
+    },
+    {
+      "width": 320,
+      "state": "Unavailable",
+      "layout": {
+        "width": 320,
+        "overflow": false,
+        "textOverflow": [],
+        "buttons": []
+      }
+    },
+    {
+      "width": 320,
+      "state": "Figma example",
+      "layout": {
+        "width": 320,
+        "overflow": false,
+        "textOverflow": [],
+        "buttons": [
+          {
+            "width": 280,
+            "height": 56
+          },
+          {
+            "width": 280,
+            "height": 56
+          },
+          {
+            "width": 280,
+            "height": 69
+          },
+          {
+            "width": 280,
+            "height": 86
+          },
+          {
+            "width": 280,
+            "height": 69
+          },
+          {
+            "width": 280,
+            "height": 69
+          },
+          {
+            "width": 278,
+            "height": 84
+          },
+          {
+            "width": 280,
+            "height": 89
+          },
+          {
+            "width": 280,
+            "height": 89
+          }
+        ]
+      }
+    },
+    {
+      "width": 320,
+      "state": "Long text",
+      "layout": {
+        "width": 320,
+        "overflow": false,
+        "textOverflow": [],
+        "buttons": [
+          {
+            "width": 280,
+            "height": 56
+          },
+          {
+            "width": 280,
+            "height": 56
+          },
+          {
+            "width": 280,
+            "height": 120
+          },
+          {
+            "width": 280,
+            "height": 120
+          },
+          {
+            "width": 280,
+            "height": 69
+          },
+          {
+            "width": 280,
+            "height": 69
+          },
+          {
+            "width": 278,
+            "height": 84
+          },
+          {
+            "width": 280,
+            "height": 89
+          },
+          {
+            "width": 280,
+            "height": 89
+          }
+        ]
+      }
+    },
+    {
+      "width": 280,
+      "state": "Unavailable",
+      "layout": {
+        "width": 280,
+        "overflow": false,
+        "textOverflow": [],
+        "buttons": []
+      }
+    },
+    {
+      "width": 280,
+      "state": "Figma example",
+      "layout": {
+        "width": 280,
+        "overflow": false,
+        "textOverflow": [],
+        "buttons": [
+          {
+            "width": 240,
+            "height": 56
+          },
+          {
+            "width": 240,
+            "height": 56
+          },
+          {
+            "width": 240,
+            "height": 86
+          },
+          {
+            "width": 240,
+            "height": 86
+          },
+          {
+            "width": 240,
+            "height": 69
+          },
+          {
+            "width": 240,
+            "height": 69
+          },
+          {
+            "width": 238,
+            "height": 84
+          },
+          {
+            "width": 240,
+            "height": 89
+          },
+          {
+            "width": 240,
+            "height": 89
+          }
+        ]
+      }
+    },
+    {
+      "width": 280,
+      "state": "Long text",
+      "layout": {
+        "width": 280,
+        "overflow": false,
+        "textOverflow": [],
+        "buttons": [
+          {
+            "width": 240,
+            "height": 56
+          },
+          {
+            "width": 240,
+            "height": 56
+          },
+          {
+            "width": 240,
+            "height": 137
+          },
+          {
+            "width": 240,
+            "height": 137
+          },
+          {
+            "width": 240,
+            "height": 69
+          },
+          {
+            "width": 240,
+            "height": 69
+          },
+          {
+            "width": 238,
+            "height": 84
+          },
+          {
+            "width": 240,
+            "height": 89
+          },
+          {
+            "width": 240,
+            "height": 89
+          }
+        ]
+      }
+    },
+    {
+      "browserTextStress": {
+        "overflow": false,
+        "textOverflow": [],
+        "scrollable": true
+      }
+    }
+  ],
+  "pageErrors": [],
+  "privateRequests": [],
+  "deviceAcceptance": false
+}

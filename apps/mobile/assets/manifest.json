@@ -235,6 +235,114 @@
       "usage": "history-presentation",
       "capturedOn": "2026-10-30",
       "sourceFile": "icon pack/actions / pagination-dots-first /pagination-dots-first--10570-308.svg"
+    },
+    {
+      "file": "icons/settings/user.svg",
+      "nodeId": "10601:363",
+      "width": "18",
+      "height": "18",
+      "viewBox": "0 0 18 18",
+      "sizeBytes": 552,
+      "sha256": "00bdc4e33fe3cda9318adb4fa01c9bf0931abf9319b2f0eda6ee80196a520ef9",
+      "usage": "settings-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "icon pack/settings / user /user--10601-363.svg"
+    },
+    {
+      "file": "icons/settings/gender.svg",
+      "nodeId": "10601:384",
+      "width": "18",
+      "height": "18",
+      "viewBox": "0 0 18 18",
+      "sizeBytes": 843,
+      "sha256": "f8d5fd96b8acc348233739a2dfe6d559a030b47c0664b2c58e266ac9dc97f098",
+      "usage": "settings-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "icon pack/settings / transgender /transgender--10601-384.svg"
+    },
+    {
+      "file": "icons/settings/apps.svg",
+      "nodeId": "10601:372",
+      "width": "18",
+      "height": "18",
+      "viewBox": "0 0 18 18",
+      "sizeBytes": 438,
+      "sha256": "7781db188524ac8ba73649f8db0211bb13ed00ca98891c493dce631acdc4cded",
+      "usage": "settings-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "icon pack/settings / smartphone /smartphone--10601-372.svg"
+    },
+    {
+      "file": "icons/settings/activities.svg",
+      "nodeId": "10601:366",
+      "width": "18",
+      "height": "18",
+      "viewBox": "0 0 18 18",
+      "sizeBytes": 237,
+      "sha256": "57fc81850f6d3e26db1587d15cc2fe40cad75aea6cd2443a4946fdc387e27b46",
+      "usage": "settings-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "icon pack/navigation / arrow-up-right /arrow-up-right--10601-366.svg"
+    },
+    {
+      "file": "icons/settings/calendar.svg",
+      "nodeId": "10601:369",
+      "width": "18",
+      "height": "18",
+      "viewBox": "0 0 18 18",
+      "sizeBytes": 534,
+      "sha256": "432c62c4d22d37ed329dbbca5adc285dcf3bd8ae3f2c1d0dd0b983c4aabf7a9a",
+      "usage": "settings-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "icon pack/settings / calendar /calendar--10601-369.svg"
+    },
+    {
+      "file": "icons/settings/clock.svg",
+      "nodeId": "10601:375",
+      "width": "18",
+      "height": "18",
+      "viewBox": "0 0 18 18",
+      "sizeBytes": 568,
+      "sha256": "6add46819223897b8c1f112509940b82bd0d8d832861b04c4056a3296a47a5c8",
+      "usage": "settings-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "icon pack/settings / clock /clock--10601-375.svg"
+    },
+    {
+      "file": "icons/settings/timer.svg",
+      "nodeId": "10562:286",
+      "width": "18",
+      "height": "18",
+      "viewBox": "0 0 18 18",
+      "sizeBytes": 434,
+      "sha256": "af045f2cfa007d7a13c4231fa3efdb87bae41d1abe2bb0b22cbb3ad0d73ed330",
+      "usage": "settings-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "icon pack/settings / timer /timer--10562-286.svg"
+    },
+    {
+      "file": "icons/settings/info.svg",
+      "nodeId": "10562:292",
+      "width": "14",
+      "height": "14",
+      "viewBox": "0 0 14 14",
+      "sizeBytes": 571,
+      "sha256": "b0523e5332656a3f206bf0f58a27f463c3946743540b70e077d6964867f3a18e",
+      "usage": "settings-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "icon pack/settings / info /info--10562-292.svg"
+    },
+    {
+      "file": "icons/settings/chevron.svg",
+      "nodeId": "10601:310",
+      "width": "16",
+      "height": "16",
+      "viewBox": "0 0 16 16",
+      "sizeBytes": 210,
+      "sha256": "860bf55a871717642cdb5f99e42745c5bdd3648ba516b6696e53f84c9a1114da",
+      "usage": "settings-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "icon pack/navigation / chevron-right /chevron-right--10601-310.svg"
     }
   ]
 }

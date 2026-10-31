@@ -5,7 +5,7 @@ device validation. **Part:** RN-10. **Base:** RN-09a `ff75039`.
 
 This is evidence for the implemented shared UI and prepared consumers. It does
 not certify the whole Figma app, real authentication/profile integration, native
-protection or VoiceOver/TalkBack. Other main-screen bodies remain RN-09b/c/d.
+protection or VoiceOver/TalkBack. The original evidence below is historical to RN-10; RN-09b/c/d presentation now has supplemental evidence linked at the end.
 Icon-pack rewiring remains deferred at Ishmum's request; original bundled SVGs
 and their recorded hashes are unchanged.
 
@@ -95,3 +95,27 @@ sign-in/out, two accounts, reload/restart, conflicts and uncertain-save recovery
 An absent adapter does not block identity-only M1, but prevents claims about real
 native protection. Scoring, reward and forecasting decisions do not block the
 agreed minimal identity/profile foundation; their feature controls remain gated.
+
+
+## RN-09b/c/d presentation follow-up — 2026-10-30
+
+Quests, History and Settings now have source-aligned presentation, independently of
+live feature acceptance. See [Quests browser evidence](../core_plan_implementation_notes/artifacts/rn-09b/browser-results.json),
+[History evidence](../core_plan_implementation_notes/artifacts/rn-09c/browser-results.json) and
+[Settings evidence](../core_plan_implementation_notes/artifacts/rn-09d/browser-results.json).
+These actual component runs check source examples/unavailable/partial states,
+original SVG byte/bounds correctness, 393/320/280 px layouts and enlarged text.
+
+[Current real-app navigation evidence](../core_plan_implementation_notes/artifacts/rn-09d/app-navigation-results.json)
+checks the actual exported four tabs at 280/320/393/430 px, normal/24 px text,
+manual keyboard activation, selected/hidden panel semantics, minimum tab targets,
+scroll-to-bottom clearance, absence of source samples/private requests and direct
+links to the three new tab bodies. Settings no longer has the RN-10-era developer
+Auth links; the new keyboard check goes into/out of its panel. Source sample rows
+with no handler remain static; profile form retains the shared scroll owner and
+existing confirmation/focus implementation.
+
+These browser checks and iOS/Android Hermes/source-map results do not close
+RN10-D01–D06 or the per-feature device/live gates. Repeat on signed devices with
+VoiceOver/TalkBack, real fonts/SVGs, keyboard and actual account lifecycle when the
+producers exist. No browser record proves native protection or completed Auth.

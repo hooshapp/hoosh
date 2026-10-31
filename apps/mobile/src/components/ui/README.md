@@ -157,3 +157,5 @@ it is not decorative text. The default accessible name includes it unless an
 explicit name/busy label is supplied. Existing button behavior remains controlled.
 
 RN-09c History uses the shared Screen, controlled Button and fixed-bound DesignArtwork. Three new original-pack SVG copies and provenance are recorded in `assets/manifest.json`; evidence is under Plan 04 artifacts/rn-09c. No historical icon is rewired.
+
+RN-09d Settings adds nine unchanged original-pack icons (manifest provenance), reuses the 52 px account avatar and RN-07 form, and supports an optional wrapping Button caption style. Source sections/rows remain responsive; actual settings have unknown values and no unsupported actions. See feature README and Plan 04 artifacts/rn-09d.

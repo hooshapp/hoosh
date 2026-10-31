@@ -14,7 +14,7 @@ See [the root README](../../README.md) for setup, current limitations, ownership
 
 Shared fields/buttons/screen states, controlled busy handling, test discovery and the isolated specimen workflow are documented in [the component README](src/components/ui/README.md). Anisha can reuse these primitives; their form controllers still own validation, submission, cancellation and safe error mapping.
 
-RN-02 supplies the [floating navigation contract](src/components/navigation/README.md) and [original asset provenance](assets/README.md). Navigation uses locally bundled Figma SVGs. RN-09a adds a Home presentation consumer, but the actual route has no health/metric producer and selects no Dino artwork. Other screen bodies retain truthful feature placeholders. The font dependency provides Space Grotesk; no font binaries are copied into this repository.
+RN-02 supplies the [floating navigation contract](src/components/navigation/README.md) and [original asset provenance](assets/README.md). Navigation uses locally bundled Figma SVGs. RN-09a adds a Home presentation consumer, but the actual route has no health/metric producer and selects no Dino artwork. Quests, History and Settings now compose source-aligned presentation with unavailable data; isolated developer examples exercise supported ready states. The font dependency provides Space Grotesk; no font binaries are copied into this repository.
 
 Native source is not ignored by Git. Preserve the released iOS project when integrating it; do not generate a replacement identity or discard extension targets.
 

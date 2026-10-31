@@ -24,6 +24,7 @@ export type ButtonSurfaceProps = Omit<PressableProps, 'children' | 'accessibilit
   leadingVisual?: ReactNode;
   trailingVisual?: ReactNode;
   labelStyle?: StyleProp<TextStyle>;
+  descriptionStyle?: StyleProp<TextStyle>;
 };
 
 /** Internal presentation shared by action buttons and Router links. */
@@ -39,6 +40,7 @@ export const ButtonSurface = forwardRef<ComponentRef<typeof Pressable>, ButtonSu
       leadingVisual,
       trailingVisual,
       labelStyle,
+      descriptionStyle,
       accessibilityLabel,
       accessibilityRole = 'button',
       style,
@@ -112,7 +114,7 @@ export const ButtonSurface = forwardRef<ComponentRef<typeof Pressable>, ButtonSu
               ]}>
               {busy ? busyLabel : label}
             </Text>
-            <Text style={[styles.description, { color: theme.muted }]}>{description}</Text>
+            <Text style={[styles.description, { color: theme.muted }, descriptionStyle]}>{description}</Text>
           </View>
         ) : (
           <Text
