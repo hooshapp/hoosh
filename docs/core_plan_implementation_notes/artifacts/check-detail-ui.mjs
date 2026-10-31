@@ -24,6 +24,7 @@ try {
   await section.scrollIntoViewIfNeeded();
   for (const state of states) {
     await select.selectOption(state);
+    await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
     for (const img of await phone.locator('img').all()) {
       await img.evaluate(async (el) => { el.loading = 'eager'; await Promise.race([el.decode(), new Promise((_, reject) => setTimeout(() => reject(new Error('Image decode timed out: ' + el.src)), 5000))]); }); const url = new URL(await img.getAttribute('src'), page.url());
       const response = await page.request.get(url.href), bytes = await response.body();
@@ -33,6 +34,10 @@ try {
       if (!report.assets.some((a) => a.file === asset.file)) report.assets.push({ file: asset.file, width: box.width, height: box.height, originalBytes: true });
     }
     await phone.screenshot({ path: new URL(`${state.toLowerCase().replaceAll(' ', '-')}.png`, output).pathname });
+    if (part === 'rn-09g' && ['Days', 'Hours', 'Sessions'].includes(state)) {
+      await phone.getByRole('button', { name: `Save ${state.toLowerCase()}`, exact: true }).scrollIntoViewIfNeeded();
+      await phone.screenshot({ path: new URL(`${state.toLowerCase()}-editor.png`, output).pathname });
+    }
     report.cases.push({ state, rendered: true });
   }
   for (const width of [393, 320, 280]) for (const state of [states[0], 'Long text']) {

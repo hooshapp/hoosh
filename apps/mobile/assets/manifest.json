@@ -691,6 +691,42 @@
       "usage": "preference-presentation",
       "capturedOn": "2026-10-30",
       "sourceFile": "Downloaded original Figma MCP asset for node 10601:6913 (no matching node filename in user pack)"
+    },
+    {
+      "file": "icons/planeditor/minus.svg",
+      "nodeId": "10601:6991",
+      "width": "16",
+      "height": "16",
+      "viewBox": "0 0 16 16",
+      "sizeBytes": 191,
+      "sha256": "f3ac6d57f174b132dcc28443c8a15ed4b43ed45e27c2e291058e2e2a52a9018f",
+      "usage": "planeditor-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "icon pack/settings / minus /minus--10601-6991.svg"
+    },
+    {
+      "file": "icons/planeditor/plus.svg",
+      "nodeId": "10601:6994",
+      "width": "16",
+      "height": "16",
+      "viewBox": "0 0 16 16",
+      "sizeBytes": 269,
+      "sha256": "00ead04cc29009263d84422cd72874b5d58b19e089d187d73609e59575e48bae",
+      "usage": "planeditor-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "icon pack/settings / plus /plus--10601-6994.svg"
+    },
+    {
+      "file": "icons/planeditor/range.svg",
+      "nodeId": "10601:6624",
+      "width": "321",
+      "height": "42",
+      "viewBox": "0 0 321 42",
+      "sizeBytes": 1019,
+      "sha256": "0847ea5bf5bac1cd1303e9053199cacbee3f6ddf519091925aebdf379a054e8c",
+      "usage": "planeditor-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "/tmp/hoosh-download-d24bb.svg"
     }
   ]
 }

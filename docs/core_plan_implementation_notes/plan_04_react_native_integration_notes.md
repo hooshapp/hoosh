@@ -4,9 +4,9 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN-09f Preference detail and inline gender UI UI implemented. Live integrations/device checks remain deferred. Continue RN-09g shared days/hours/sessions editors, then RN-09h History details/navigation and complete UI verification. Actual permitted choices, native picker, shared schemas, guarded persistence and signed-device validation remain deferred.
+**Current part:** RN-09g Shared inline plan editor UI UI implemented. Live integrations/device checks remain deferred. Continue RN-09h History progress/reduction pages, real tab/detail navigation, complete source inventory and final verification. Approved plan schema, actual persistence/install reconciliation, Auth scope and signed-device validation remain pending.
 
-**Implementation branch:** `task/react-native/rn-09-detail-ui`; RN-09f parent `3c9d20d`; no push/main merge.
+**Implementation branch:** `task/react-native/rn-09-detail-ui`; RN-09g parent `d0206b4`; no push/main merge.
 
 **Commit reference:** RN-01 `2f88102`; RN-02 `2d5c0d1`; RN-03 `0741758`; RN-04 `610f570`; RN-05 preparation `0c6e4db`; RN-07 UI `5790302`; RN-08 preparation `71da2d5`; RN-09a `ff75039`. RN-10 is `9b5fbd0`.
 
@@ -16,8 +16,8 @@
 
 ## Resume here
 
-- Latest: **RN-09f Preference detail and inline gender UI**, subject `feat(mobile): complete preference editors and inline Settings composition`. Continue RN-09g shared days/hours/sessions editors, then RN-09h History details/navigation and complete UI verification. Actual permitted choices, native picker, shared schemas, guarded persistence and signed-device validation remain deferred.
-- Actual validation: Workspace typecheck/lint, Vite developer build and web export passed (60 original SVGs; 38 app JS/HTML files isolated); 52 targeted iOS/Android component tests in 6 suites passed. Browser runner passed 13 state/responsive/enlarged-text cases and verified 30 distinct visible original assets against root sizes/served bytes. Activities and Age actual captures visually inspected. Full regression/native build acceptance follows in RN-09h.
+- Latest: **RN-09g Shared inline plan editor UI**, subject `feat(mobile): complete shared days hours and session editor UI`. Continue RN-09h History progress/reduction pages, real tab/detail navigation, complete source inventory and final verification. Approved plan schema, actual persistence/install reconciliation, Auth scope and signed-device validation remain pending.
+- Actual validation: Workspace typecheck/lint and Vite developer build passed; 46 targeted iOS/Android component tests in 6 suites passed. Web export passed with 63 original SVGs and isolated developer examples. Browser runner passed 14 source/state/responsive/enlarged-text cases with 16 distinct original asset byte/root checks, including the 321x42 range graphic; Hours editor capture visually inspected. Final comprehensive interaction/regression/native exports follow in RN-09h.
 - UI-only local drafts are not accepted wire/policy schemas or saved outcomes. Existing RN07/08/09/10/Auth/API/native and signed-device gates remain open. Anisha owns Auth/onboarding/iOS; Ishmum shared UI/Android/backend. No cloud/native state was changed.
 - User icon packs and workspace file remain untracked/excluded. Continue the same notes file and original plan ledger for each sequential UI part.
 
@@ -1320,7 +1320,7 @@ No push/merge, Supabase/API/database/native permission/restriction action or sig
 
 ### RN-09f — Preference detail and inline gender UI
 
-**Hash:** Pending; resolve by `feat(mobile): complete preference editors and inline Settings composition`.
+**Hash:** `d0206b4` (recorded in the next UI part).
 **Date:** 2026-10-30. **Owner:** Ishmum. **Branch:** `task/react-native/rn-09-detail-ui`. **Parent:** `3c9d20d`.
 **Status:** Independent UI implemented and validated; live persistence/native policy and device acceptance remain pending.
 
@@ -1415,6 +1415,66 @@ Reviewed full original contexts/screenshots for age 10601:5908, activities 10601
 **Actual validation:** Workspace typecheck/lint, Vite developer build and web export passed (60 original SVGs; 38 app JS/HTML files isolated); 52 targeted iOS/Android component tests in 6 suites passed. Browser runner passed 13 state/responsive/enlarged-text cases and verified 30 distinct visible original assets against root sizes/served bytes. Activities and Age actual captures visually inspected. Full regression/native build acceptance follows in RN-09h.
 
 **Remaining / next:** Continue RN-09g shared days/hours/sessions editors, then RN-09h History details/navigation and complete UI verification. Actual permitted choices, native picker, shared schemas, guarded persistence and signed-device validation remain deferred.
+
+No push/merge, Supabase/API/database/native permission/restriction action or signed-device run occurred. Compilation/browser checks do not certify physical-device accessibility or native protection.
+
+
+### RN-09g — Shared inline plan editor UI
+
+**Hash:** Pending; resolve by `feat(mobile): complete shared days hours and session editor UI`.
+**Date:** 2026-10-30. **Owner:** Ishmum. **Branch:** `task/react-native/rn-09-detail-ui`. **Parent:** `d0206b4`.
+**Status:** Independent UI implemented and validated; live persistence/native policy and device acceptance remain pending.
+
+#### Every changed file and logical change
+
+Ranges refer to this commit. Deletions cite parent ranges; binary captures have dimensions. Existing historical entries remain valid for their own commits.
+
+| File and lines | Change and reason |
+|---|---|
+| `apps/mobile/assets/icons/planeditor/minus.svg`: lines 1–3 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/planeditor/plus.svg`: lines 1–3 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/planeditor/range.svg`: lines 1–9 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/manifest.json`: lines 694–729 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/dev/ui/main.tsx`: lines 15–15 | Exercise the real component in the separate developer gallery with clearly simulated examples and local-only edits; no sample account/data enters actual routes. |
+| `apps/mobile/dev/ui/main.tsx`: lines 132–132 | Exercise the real component in the separate developer gallery with clearly simulated examples and local-only edits; no sample account/data enters actual routes. |
+| `apps/mobile/dev/ui/plan-editor-specimen.tsx`: lines 1–22 | Exercise the real component in the separate developer gallery with clearly simulated examples and local-only edits; no sample account/data enters actual routes. |
+| `apps/mobile/src/app/settings/[field].tsx`: lines 1–1 | Implement the independent UI/provenance/evidence/route handoff described below, preserving existing ownership and live-data boundaries. |
+| `apps/mobile/src/app/settings/[field].tsx`: lines 13–15 | Implement the independent UI/provenance/evidence/route handoff described below, preserving existing ownership and live-data boundaries. |
+| `apps/mobile/src/app/settings/[field].tsx`: lines 21–21 | Implement the independent UI/provenance/evidence/route handoff described below, preserving existing ownership and live-data boundaries. |
+| `apps/mobile/src/design/planeditor-assets.ts`: lines 1–9 | Statically import original local assets and retain exact root dimensions at callsites; no runtime Figma URLs. |
+| `apps/mobile/src/features/plans/README.md`: lines 1–29 | Synchronize scope, current progress, UI-only adapters, source provenance, remaining integration/device gates and handoff. |
+| `apps/mobile/src/features/plans/plan-editors.test.tsx`: lines 1–34 | Verify real draft/state/action boundaries, validation and absence of invented saved or measured outcomes on both iOS/Android component projects. |
+| `apps/mobile/src/features/plans/plan-editors.tsx`: lines 1–74 | Implement DaysEditor, HoursEditor, SessionsEditor: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/plans/time-range-control.tsx`: lines 1–57 | Implement minutesTime, TimeRangeControl: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `docs/core_plan/04_react_native_integration.md`: lines 487–487 | Synchronize scope, current progress, UI-only adapters, source provenance, remaining integration/device gates and handoff. |
+| `docs/core_plan_implementation_notes/artifacts/check-detail-ui.mjs`: lines 27–27 | Record/reproduce observed browser/build evidence with explicit false native-device/live-service acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/check-detail-ui.mjs`: lines 37–40 | Record/reproduce observed browser/build evidence with explicit false native-device/live-service acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09g/browser-results.json`: lines 1–503 | Record/reproduce observed browser/build evidence with explicit false native-device/live-service acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09g/days-editor.png`: binary PNG, 393×853, 42870 bytes | Actual browser capture of the indicated source-aligned component or state; no account/device outcome is implied. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09g/days.png`: binary PNG, 393×853, 43806 bytes | Actual browser capture of the indicated source-aligned component or state; no account/device outcome is implied. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09g/hours-editor.png`: binary PNG, 393×853, 39780 bytes | Actual browser capture of the indicated source-aligned component or state; no account/device outcome is implied. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09g/hours.png`: binary PNG, 393×853, 39780 bytes | Actual browser capture of the indicated source-aligned component or state; no account/device outcome is implied. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09g/large-text-320.png`: binary PNG, 320×853, 46231 bytes | Actual browser capture of the indicated source-aligned component or state; no account/device outcome is implied. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09g/long-text.png`: binary PNG, 393×853, 42598 bytes | Actual browser capture of the indicated source-aligned component or state; no account/device outcome is implied. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09g/save-error.png`: binary PNG, 393×853, 43849 bytes | Actual browser capture of the indicated source-aligned component or state; no account/device outcome is implied. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09g/saving.png`: binary PNG, 393×853, 38768 bytes | Actual browser capture of the indicated source-aligned component or state; no account/device outcome is implied. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09g/sessions-editor.png`: binary PNG, 393×853, 39038 bytes | Actual browser capture of the indicated source-aligned component or state; no account/device outcome is implied. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09g/sessions.png`: binary PNG, 393×853, 39038 bytes | Actual browser capture of the indicated source-aligned component or state; no account/device outcome is implied. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09g/unavailable.png`: binary PNG, 393×853, 44587 bytes | Actual browser capture of the indicated source-aligned component or state; no account/device outcome is implied. |
+| `scripts/check-ui-preview-isolation.mjs`: lines 26–26 | Implement the independent UI/provenance/evidence/route handoff described below, preserving existing ownership and live-data boundaries. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1–25 | Refresh current branch, UI scope, actual checks and next handoff. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1164–1164 | Record the known preceding commit hash during a normal notes update. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1259–1259 | Record the known preceding commit hash during a normal notes update. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1323–1323 | Record the known preceding commit hash during a normal notes update. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1422–1481 | Record this full file/line change table, decisions, actual validation and remaining work in the code commit. |
+
+#### Decisions and boundaries
+
+Implement reviewed inline frames 10601:6315/6513/6690, sharing controlled components through Settings inlineEditor for future AUTH-12 reuse. Day presets/individual selection, editable 24-hour times and explicit overnight validation, accessible adjustable and keyboard/drag range handles, caller-bounded session steppers and planned count-times-minutes caption are local draft behavior only. Invalid/missing bounds disable actions; unknown session counts remain em dashes. No backend schema, hardcoded production allowance bounds, scheduler, timezone/DST policy or native install outcome is inferred. Preserve original 321x42 range SVG exactly at 09:00–22:00 when source-width space permits; it is the reference render of a dynamic control, so other values/narrow widths use functional native track/handles rather than displaying a false fixed interval. Original plus/minus retain 16 px roots; targets enlarge to 44 px. The actual direct detail pages use empty/unavailable values and no saves; dirty edits use the shared public navigation guard. Component tests cover presets, bounds/unknowns, clamping, budget wording, overnight and assistive range actions. Developer source example and bounds stay outside runtime routes. Extend browser evidence to wait for onLayout and capture scrolled editor regions, fixing the initial missed range check before final evidence; no asset geometry was scaled. Record d0206b4 from RN-09f.
+
+**Actual validation:** Workspace typecheck/lint and Vite developer build passed; 46 targeted iOS/Android component tests in 6 suites passed. Web export passed with 63 original SVGs and isolated developer examples. Browser runner passed 14 source/state/responsive/enlarged-text cases with 16 distinct original asset byte/root checks, including the 321x42 range graphic; Hours editor capture visually inspected. Final comprehensive interaction/regression/native exports follow in RN-09h.
+
+**Remaining / next:** Continue RN-09h History progress/reduction pages, real tab/detail navigation, complete source inventory and final verification. Approved plan schema, actual persistence/install reconciliation, Auth scope and signed-device validation remain pending.
 
 No push/merge, Supabase/API/database/native permission/restriction action or signed-device run occurred. Compilation/browser checks do not certify physical-device accessibility or native protection.
 

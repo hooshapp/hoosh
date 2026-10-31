@@ -1,0 +1,9 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="321" height="42" viewBox="0 0 321 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Dual-handle range bar">
+<path id="Inactive interval" d="M12 21C12 18.7909 13.7909 17 16 17H111V25H16C13.7909 25 12 23.2091 12 21V21Z" fill="#E8DCC8"/>
+<path id="Start time handle" d="M133.5 21C133.5 26.799 128.799 31.5 123 31.5C117.201 31.5 112.5 26.799 112.5 21C112.5 15.201 117.201 10.5 123 10.5C128.799 10.5 133.5 15.201 133.5 21Z" fill="white" stroke-width="3" stroke="#0B9968"/>
+<rect id="Active interval" x="135" y="17" width="137" height="8" fill="#33C659"/>
+<path id="End time handle" d="M294.5 21C294.5 26.799 289.799 31.5 284 31.5C278.201 31.5 273.5 26.799 273.5 21C273.5 15.201 278.201 10.5 284 10.5C289.799 10.5 294.5 15.201 294.5 21Z" fill="white" stroke-width="3" stroke="#0B9968"/>
+<path id="Inactive interval_2" d="M296 17H305C307.209 17 309 18.7909 309 21V21C309 23.2091 307.209 25 305 25H296V17Z" fill="#E8DCC8"/>
+</g>
+</svg>

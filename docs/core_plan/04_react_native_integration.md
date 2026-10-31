@@ -484,7 +484,7 @@ account, app inventory or usage is supplied by actual routes.
 |---|---|---|
 | RN-09e | Quest personalize `10487:126` / custom `10577:427`, reusable draft fields, times/repeat/weekdays, validation, dirty exit, action states and routes | UI implemented; live quest persistence/recurrence/native policies remain deferred | |
 | RN-09f | Age `10601:5908`, activities `10601:6057`, apps `10601:5968`, inline gender `10601:6146`; search/selection/custom drafts, cancellation and save states | UI implemented; real preference persistence/native selection remain deferred |
-| RN-09g | Inline days `10601:6315`, hours `10601:6513`, sessions `10601:6690`; shared controlled editors reusable by AUTH-12, explicit limits and unavailable saves | Pending |
+| RN-09g | Inline days `10601:6315`, hours `10601:6513`, sessions `10601:6690`; shared controlled editors reusable by AUTH-12, explicit limits and unavailable saves | UI implemented; approved shared schema, real saves/install and device checks remain deferred |
 | RN-09h | Progress `10570:192`, reduction/time reclaimed `10570:193`, period changes, honest evidence/eligibility states and navigation | Pending |
 
 Each part gets its own local commit and detailed file/line notes. Source assets
