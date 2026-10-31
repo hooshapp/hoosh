@@ -149,3 +149,9 @@ Status updates do not request focus. InlineStatus keeps errors as alerts and nam
 non-error web messages as status regions; queued native announcements remain
 separate. [QA evidence and device limits](../../../../../docs/qa/mobile-accessibility.md)
 are recorded independently of successful component/browser checks.
+
+RN-09b shares fixed-bound decorative asset rendering through DesignArtwork;
+HomeArtwork is a compatibility export with the same failure behavior. Button's
+optional description supplies a wrapping secondary line in the same named action;
+it is not decorative text. The default accessible name includes it unless an
+explicit name/busy label is supplied. Existing button behavior remains controlled.

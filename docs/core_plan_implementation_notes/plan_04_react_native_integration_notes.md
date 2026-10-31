@@ -4,11 +4,11 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN-10 shared UI/lifecycle hardening implemented and validated. Signed-device and live integration acceptance remain pending. RN-11 awaits actual Auth/API/profile producers; it has not been executed.
+**Current part:** RN-09b Quests presentation implemented and validated; Next: implement RN-09c History, followed by RN-09d Settings, as explicitly requested. Live integration and device gates remain pending.
 
-**Implementation branch:** `task/react-native/rn-10-accessibility`, parent RN-09a `ff75039`. No push/main merge is implied.
+**Implementation branch:** `task/react-native/rn-09bcd-ui`, RN-09b parent `9b5fbd0`; no push/main merge.
 
-**Commit reference:** RN-01 `2f88102`; RN-02 `2d5c0d1`; RN-03 `0741758`; RN-04 `610f570`; RN-05 preparation `0c6e4db`; RN-07 UI `5790302`; RN-08 preparation `71da2d5`; RN-09a `ff75039`. RN-10 has a pending self-hash resolved by its unique subject below.
+**Commit reference:** RN-01 `2f88102`; RN-02 `2d5c0d1`; RN-03 `0741758`; RN-04 `610f570`; RN-05 preparation `0c6e4db`; RN-07 UI `5790302`; RN-08 preparation `71da2d5`; RN-09a `ff75039`. RN-10 is `9b5fbd0`.
 
 **Last updated:** 2026-10-30.
 
@@ -16,12 +16,11 @@
 
 ## Resume here
 
-- Read [mobile accessibility QA and RN-11 readiness](../qa/mobile-accessibility.md). RN-10 fixes Home contrast, explicit confirmation focus/return, queued status speech, web tab order and retained focus, inactive-panel accessibility, intrinsic footer reflow, long-name scroll composition and late lifecycle callbacks. Existing SVG/icon-pack wiring is unchanged as requested.
-- Latest checks: 250 portable cases in 10 files (15 new); 234 component cases in 32 iOS/Android suites (16 new); 3 backend tests; workspace types/lint; 18 original assets; web export/isolation. Forty-four browser cases cover actual four-tab focus/layout/accessibility state and prepared profile/protection UI, with zero private requests/page errors. Four native exports match final application/prepared-consumer sources; they are not signed/device tests.
-- RN10-D01–D06 preserve actual VoiceOver/TalkBack, keyboard/fonts/SVG/safe-area, live account/profile, native foreground, future screen and memory/restoration/performance gates. RN-09b/c/d remain unstarted; RN07-D01–D07, RN08-D01–D06 and RN09-D01–D06 remain pending.
-- The user conditionally requested RN-11 while RN-10 was underway. Inspection confirms only /healthz in backend schema, placeholder sign-in/preview redirect, absent generated foundation API types, migrations and real profile endpoints. No real M1/M2 acceptance can run yet. The QA readiness table assigns actual missing outputs to Ishmum/Anisha; this is a dependency audit, not fake integration success.
-- Next independent work for Ishmum: API-01 onward (backend foundation), or the explicitly pending RN-09b/c/d frontend increments. Anisha continues Supabase/Auth/root/iOS. When real producers land, wire RN-05, run RN-06, complete RN-07 persistence, and execute RN-11 with exact tested versions and relevant RN-10/device evidence.
-- Earlier producer and preparation hashes above remain the reference. Anisha owns Auth/onboarding/iOS/root guards; Ishmum owns shared RN/Android/backend. User-owned untracked icon folders and workspace file remain excluded. No task push/merge, cloud/database write, native rebuild/signing or actual account data was used.
+- Latest increment: **RN-09b — Quests presentation**, unique subject `feat(mobile): compose Quests with independent suggestion states`. Next: implement RN-09c History, followed by RN-09d Settings, as explicitly requested.
+- Actual checks: npm run check passed: 250 portable, 254 iOS/Android component cases (20 new), 3 pytest; types/ESLint/Ruff, 19 original assets. mobile:ui:build and mobile:export passed (16 routes, 32-file isolation). Shared browser runner rn-09b passed 22 cases including nine states, explicit intent without saved outcomes, original pencil/check bytes and 14/16 px bounds, 393/320/280 px and enlarged text. Both full native Router/Hermes exports match final sources via verify-main-native.mjs rn-09b; fixture/private API graphs excluded. Browser screenshots were visually reviewed.
+- RN09B-D01 approved quest/editor/recurrence API and persistence; RN09B-D02 actual Auth/account-scoped producers, mutation serialization and error/uncertain-write recovery; RN09B-D03 approved completion/reward/native restriction semantics; RN09B-D04 signed-device/accessibility acceptance. Existing RN07/08/09/10 gates and RN-11 live dependencies remain pending.
+- Read the RN-09b/c/d entries below and their feature READMEs before resuming. Original RN07/08/09/10 deferred IDs remain pending; RN-11 still requires real Auth/API/profile milestones. Anisha owns Auth/onboarding/root/iOS; Ishmum owns shared RN/Android/backend. No native/cloud/database work or automatic native rule cleanup is authorized by these presentations.
+- Original icon-pack copies are used for new source slots only. Existing untracked packs and workspace file stay untouched/excluded; no push/area/main merge is performed.
 
 ## Recording rules
 
@@ -903,7 +902,7 @@ RN-09b Quests presentation is the next bounded frontend commit. Read its real Fi
 
 ### RN-10 — Accessibility, responsive layout and lifecycle hardening
 
-**Hash:** Pending; resolve by `fix(mobile): improve accessible feedback layout and lifecycle cleanup` until the next normal notes update.
+**Hash:** `9b5fbd0` (recorded during RN-09b; ranges/evidence below remain RN-10).
 **Date:** 2026-10-30. **Owner:** Ishmum. **Branch:** `task/react-native/rn-10-accessibility`. **Parent:** `ff75039`.
 **Status:** Shared implementation and portable/browser/compilation checks passed; local commit pending. Full signed-device/live acceptance remains pending under RN10-D01–D06.
 
@@ -1035,6 +1034,73 @@ From apps/mobile, compile the actual app with `npx expo export --platform ios --
 RN10-D01–D06 in the original plan and [QA record](../qa/mobile-accessibility.md) remain pending: actual VoiceOver/TalkBack, native keyboard/font/safe-area/SVG, live Auth/profile/root lifecycle, native foreground reconciliation, future screen audits, and device memory/termination/restoration/performance. Existing RN07/08/09 deferred IDs remain unchanged. Portrait configuration is preserved; supported rotation is not expanded. This commit does not claim full mobile accessibility, cloud/database/native enforcement, or M1/M2 integration.
 
 RN-11 remains awaiting its real producers. Next independent work is backend API-01 or the unstarted RN-09b/c/d frontend slices, while Anisha supplies Auth/Supabase/root/iOS. When real producers land, execute RN-05/06, complete RN-07 persistence and run RN-11 with the exact mobile/API/schema/migration/device versions. This is a local RN-10 commit only; no push/main/area merge or automatic native rule/account cleanup.
+
+### RN-09b — Quests presentation
+
+**Hash:** Pending; resolve by `feat(mobile): compose Quests with independent suggestion states` until the next normal notes update.
+**Date:** 2026-10-30. **Owner:** Ishmum. **Branch:** `task/react-native/rn-09bcd-ui`. **Parent:** `9b5fbd0`.
+**Status:** Presentation implemented and validated; local commit pending, live/device acceptance deferred.
+
+#### Every changed file and logical change
+
+Ranges refer to this commit; previous entries remain historical. Source SVGs are unchanged original bytes. Pure deletions cite parent ranges. Screenshots use actual dimensions/size.
+
+| File and lines | Change and reason |
+|---|---|
+| `README.md`: lines 8–8 | Document RN-09b presentation progress, provenance, interfaces, actual checks and explicitly remaining work without marking unrelated integration complete. |
+| `apps/mobile/assets/README.md`: lines 45–50 | Document RN-09b presentation progress, provenance, interfaces, actual checks and explicitly remaining work without marking unrelated integration complete. |
+| `apps/mobile/assets/icons/quests/pencil.svg`: lines 1–3 | Copy an unchanged original from the user icon pack (or the recorded Figma context when missing), preserving source node/bounds, bytes and provenance. No previous icon is rewired. |
+| `apps/mobile/assets/manifest.json`: lines 190–201 | Record each new original icon with source node, root bounds, hash/length and original-pack path; existing entries remain unchanged. |
+| `apps/mobile/dev/ui/main.tsx`: lines 15–15 | Render the real presentation in the separate developer-only gallery, with visibly simulated source examples and local-only interactions; no Auth/API/native service or production fixture mode. |
+| `apps/mobile/dev/ui/main.tsx`: lines 122–122 | Render the real presentation in the separate developer-only gallery, with visibly simulated source examples and local-only interactions; no Auth/API/native service or production fixture mode. |
+| `apps/mobile/dev/ui/quests-specimen.tsx`: lines 1–142 | Render the real presentation in the separate developer-only gallery, with visibly simulated source examples and local-only interactions; no Auth/API/native service or production fixture mode. |
+| `apps/mobile/src/app/(tabs)/quests.tsx`: lines 1–2 | Compose the tab with the actual feature presentation and explicit unavailable inputs; keep route names/root/Auth guards and unsupported live actions unchanged. |
+| `apps/mobile/src/app/(tabs)/quests.tsx`: lines 5–5 | Compose the tab with the actual feature presentation and explicit unavailable inputs; keep route names/root/Auth guards and unsupported live actions unchanged. |
+| `apps/mobile/src/components/ui/README.md`: lines 152–157 | Document RN-09b presentation progress, provenance, interfaces, actual checks and explicitly remaining work without marking unrelated integration complete. |
+| `apps/mobile/src/components/ui/button-surface.tsx`: lines 19–19 | Extend the shared controlled action with a wrapping caption and meaningful accessible name; preserve default focus, busy/disabled, decorative slots and duplicate-press handling. |
+| `apps/mobile/src/components/ui/button-surface.tsx`: lines 34–34 | Extend the shared controlled action with a wrapping caption and meaningful accessible name; preserve default focus, busy/disabled, decorative slots and duplicate-press handling. |
+| `apps/mobile/src/components/ui/button-surface.tsx`: lines 55–58 | Extend the shared controlled action with a wrapping caption and meaningful accessible name; preserve default focus, busy/disabled, decorative slots and duplicate-press handling. |
+| `apps/mobile/src/components/ui/button-surface.tsx`: lines 105–122 | Extend the shared controlled action with a wrapping caption and meaningful accessible name; preserve default focus, busy/disabled, decorative slots and duplicate-press handling. |
+| `apps/mobile/src/components/ui/button-surface.tsx`: lines 138–139 | Extend the shared controlled action with a wrapping caption and meaningful accessible name; preserve default focus, busy/disabled, decorative slots and duplicate-press handling. |
+| `apps/mobile/src/components/ui/design-artwork.tsx`: lines 1–29 | Share fixed original asset bounds, inaccessible decoration and safe image-failure behavior across feature screens instead of duplicate renderers or cross-feature imports. |
+| `apps/mobile/src/design/quest-assets.ts`: lines 1–7 | Statically map original local assets with their original source dimensions; reuse exact existing matches and avoid runtime Figma URLs or path/color editing. |
+| `apps/mobile/src/features/README.md`: lines 17–21 | Document RN-09b presentation progress, provenance, interfaces, actual checks and explicitly remaining work without marking unrelated integration complete. |
+| `apps/mobile/src/features/home/home-artwork.tsx`: lines 1–2 | Keep Home’s compatibility export while moving the same fixed-bound decorative/failure semantics into the shared DesignArtwork component; no artwork/data behavior is replaced. |
+| `apps/mobile/src/features/quests/README.md`: lines 1–34 | Document RN-09b presentation progress, provenance, interfaces, actual checks and explicitly remaining work without marking unrelated integration complete. |
+| `apps/mobile/src/features/quests/quest-card.tsx`: lines 1–89 | Implement source-aligned responsive presentation and controlled supported actions using shared primitives, authentic assets and explicit feature states; preserve future producer ownership and honest unavailable behavior. |
+| `apps/mobile/src/features/quests/quest-card.tsx`: lines 90–151 | Source typography, colors, insets, card/row hierarchy and flexible minimum targets; wrap/scroll at narrow widths and enlarged fonts without scaling the original SVG roots. |
+| `apps/mobile/src/features/quests/quests-model.ts`: lines 1–29 | Define local display-only shapes and explicit unavailable production inputs. Preserve independent states; no endpoint/schema, policy, identity, measurement, persistence or fixture fallback is invented. |
+| `apps/mobile/src/features/quests/quests-screen.test.tsx`: lines 1–112 | Behavior regressions cover explicit data/action/state boundaries and absence of fixture fallback; retained existing shared/native tests continue to run. |
+| `apps/mobile/src/features/quests/quests-screen.tsx`: lines 1–153 | Implement source-aligned responsive presentation and controlled supported actions using shared primitives, authentic assets and explicit feature states; preserve future producer ownership and honest unavailable behavior. |
+| `apps/mobile/src/features/quests/quests-screen.tsx`: lines 154–192 | Source typography, colors, insets, card/row hierarchy and flexible minimum targets; wrap/scroll at narrow widths and enlarged fonts without scaling the original SVG roots. |
+| `docs/core_plan/04_react_native_integration.md`: lines 4–4 | Document RN-09b presentation progress, provenance, interfaces, actual checks and explicitly remaining work without marking unrelated integration complete. |
+| `docs/core_plan/04_react_native_integration.md`: lines 184–184 | Document RN-09b presentation progress, provenance, interfaces, actual checks and explicitly remaining work without marking unrelated integration complete. |
+| `docs/core_plan/04_react_native_integration.md`: lines 196–196 | Document RN-09b presentation progress, provenance, interfaces, actual checks and explicitly remaining work without marking unrelated integration complete. |
+| `docs/core_plan/04_react_native_integration.md`: lines 472–472 | Document RN-09b presentation progress, provenance, interfaces, actual checks and explicitly remaining work without marking unrelated integration complete. |
+| `docs/core_plan/04_react_native_integration.md`: lines 503–503 | Document RN-09b presentation progress, provenance, interfaces, actual checks and explicitly remaining work without marking unrelated integration complete. |
+| `docs/core_plan/04_react_native_integration.md`: lines 509–510 | Document RN-09b presentation progress, provenance, interfaces, actual checks and explicitly remaining work without marking unrelated integration complete. |
+| `docs/core_plan_implementation_notes/artifacts/check-main-screen.mjs`: lines 1–139 | Record/reproduce actual browser or native compilation evidence, including original asset bounds/bytes, source-map equality, responsive/state checks and explicit false live/device acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09b/browser-config.mjs`: lines 1–53 | Record/reproduce actual browser or native compilation evidence, including original asset bounds/bytes, source-map equality, responsive/state checks and explicit false live/device acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09b/browser-results.json`: lines 1–274 | Record/reproduce actual browser or native compilation evidence, including original asset bounds/bytes, source-map equality, responsive/state checks and explicit false live/device acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09b/figma-example.png`: binary PNG, 393×885, 60181 bytes | Actual isolated component capture (example, unavailable or enlarged text as named); not native/device or live-account evidence. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09b/large-text-320.png`: binary PNG, 320×901, 56483 bytes | Actual isolated component capture (example, unavailable or enlarged text as named); not native/device or live-account evidence. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09b/native-results.json`: lines 1–31 | Record/reproduce actual browser or native compilation evidence, including original asset bounds/bytes, source-map equality, responsive/state checks and explicit false live/device acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09b/unavailable-320.png`: binary PNG, 320×901, 30098 bytes | Actual isolated component capture (example, unavailable or enlarged text as named); not native/device or live-account evidence. |
+| `docs/core_plan_implementation_notes/artifacts/verify-main-native.mjs`: lines 1–59 | Record/reproduce actual browser or native compilation evidence, including original asset bounds/bytes, source-map equality, responsive/state checks and explicit false live/device acceptance. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1–24 | Refresh resume state, actual previous hashes, branch, checks and the next sequential increment. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 905–905 | Record RN-10’s known hash during the next normal implementation update, keeping its historical evidence. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1038–1104 | Record this commit’s full change/evidence/decision/handoff entry with an honest pending self-hash. |
+
+#### Decisions, checks and deferred acceptance
+
+Read-only Figma session 26dd22ea-c87c-4b6c-a571-5e74d6eff5e8 inspected full 27:155 context and screenshot. Original 14 px pencil is copied from icon pack/actions / minimal-pencil /minimal-pencil--10498-94.svg; the exact existing check is reused from the identical Figma source asset. QuestsModel separates suggestions and saved records; ready empty, loading, error and unavailable do not borrow samples. Actual route uses unavailableQuests and disabled creation. QuestCard renders category/context, schedule chips and an optional approved restriction notice. Accept/Personalize delegate only the suggestion ID; no saved record, rule, reward or optimistic completion is created. Callback owners hold busy and handle persistence/failures. Create remains an entry intent: no editor/recurrence schema is guessed. Narrow/native large-font actions stack; source artwork sizes stay exact. Reading badge/caption colors retain RN-10 contrast adaptations. Shared DesignArtwork preserves Home’s prior decorative/failure behavior through a compatibility export; Button’s optional caption retains controlled action/focus/accessible naming. No OS status bar is faked and existing floating navigation is reused. Developer examples show simulated notices only. Evidence commands: PLAYWRIGHT_MODULE=<ESM entry> node docs/core_plan_implementation_notes/artifacts/check-main-screen.mjs rn-09b after Vite preview on 8093; from apps/mobile npx expo export --platform ios --platform android --output-dir .expo/rn-09b-native --source-maps, then native verifier from root.
+
+**Actual validation:** npm run check passed: 250 portable, 254 iOS/Android component cases (20 new), 3 pytest; types/ESLint/Ruff, 19 original assets. mobile:ui:build and mobile:export passed (16 routes, 32-file isolation). Shared browser runner rn-09b passed 22 cases including nine states, explicit intent without saved outcomes, original pencil/check bytes and 14/16 px bounds, 393/320/280 px and enlarged text. Both full native Router/Hermes exports match final sources via verify-main-native.mjs rn-09b; fixture/private API graphs excluded. Browser screenshots were visually reviewed.
+
+**Remaining:** RN09B-D01 approved quest/editor/recurrence API and persistence; RN09B-D02 actual Auth/account-scoped producers, mutation serialization and error/uncertain-write recovery; RN09B-D03 approved completion/reward/native restriction semantics; RN09B-D04 signed-device/accessibility acceptance. Existing RN07/08/09/10 gates and RN-11 live dependencies remain pending.
+
+**Next:** Next: implement RN-09c History, followed by RN-09d Settings, as explicitly requested. This task is a local commit only. No push, merge, backend, cloud, native project regeneration/signing or live-data/permission/restriction action occurred. Original user packs/workspace files remain untracked and excluded. Bytecode exports do not certify native device rendering, accessibility or policy outcomes.
+
 
 ### Entry template
 

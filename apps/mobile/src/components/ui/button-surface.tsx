@@ -16,6 +16,7 @@ import { useUiTheme } from './theme';
 
 export type ButtonSurfaceProps = Omit<PressableProps, 'children' | 'accessibilityState'> & {
   label: string;
+  description?: string;
   busy?: boolean;
   busyLabel?: string;
   variant?: 'primary' | 'secondary';
@@ -30,6 +31,7 @@ export const ButtonSurface = forwardRef<ComponentRef<typeof Pressable>, ButtonSu
   function ButtonSurface(
     {
       label,
+      description,
       busy = false,
       busyLabel = label,
       disabled = false,
@@ -50,7 +52,10 @@ export const ButtonSurface = forwardRef<ComponentRef<typeof Pressable>, ButtonSu
     const [focused, setFocused] = useState(false);
     const primary = variant === 'primary';
     const foreground = primary ? colors.actionLabel : theme.foreground;
-    const accessibleLabel = props['aria-label'] ?? accessibilityLabel ?? (busy ? busyLabel : label);
+    const accessibleLabel =
+      props['aria-label'] ??
+      accessibilityLabel ??
+      (busy ? busyLabel : description ? `${label}. ${description}` : label);
     return (
       <Pressable
         {...props}
@@ -97,10 +102,24 @@ export const ButtonSurface = forwardRef<ComponentRef<typeof Pressable>, ButtonSu
             {leadingVisual}
           </View>
         ) : null}
-        <Text
-          style={[styles.label, { color: foreground, fontSize: primary ? 18 : 16 }, labelStyle]}>
-          {busy ? busyLabel : label}
-        </Text>
+        {description ? (
+          <View style={styles.textGroup}>
+            <Text
+              style={[
+                styles.label,
+                { color: foreground, fontSize: primary ? 18 : 16 },
+                labelStyle,
+              ]}>
+              {busy ? busyLabel : label}
+            </Text>
+            <Text style={[styles.description, { color: theme.muted }]}>{description}</Text>
+          </View>
+        ) : (
+          <Text
+            style={[styles.label, { color: foreground, fontSize: primary ? 18 : 16 }, labelStyle]}>
+            {busy ? busyLabel : label}
+          </Text>
+        )}
         {!busy && trailingVisual ? (
           <View
             accessible={false}
@@ -116,6 +135,8 @@ export const ButtonSurface = forwardRef<ComponentRef<typeof Pressable>, ButtonSu
 );
 
 const styles = StyleSheet.create({
+  textGroup: { flex: 1, minWidth: 0, gap: 2 },
+  description: { fontFamily: fonts.regular, fontSize: 11, lineHeight: 14 },
   button: {
     flexDirection: 'row',
     alignItems: 'center',

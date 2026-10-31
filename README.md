@@ -5,7 +5,7 @@ Shared React Native app and FastAPI service for Disconnect. Product context star
 ## What works now
 
 - Expo / React Native / TypeScript workspace with Home, Quests, History, Settings, auth, and onboarding routes.
-- Figma-derived colors and Space Grotesk 300/400/500/700. Home has a composed Figma-derived layout with unavailable data; other screen bodies remain placeholders.
+- Figma-derived colors and Space Grotesk 300/400/500/700. Home has a composed Figma-derived layout with unavailable data; Quests also has source-derived presentation with unavailable inputs; History and Settings remain placeholders.
 - Shared native-protection types and a tested API client with an injectable access-token provider.
 - RN-01 shared screen/form/state primitives, iOS/Android component tests and an isolated developer UI specimen entry; see [component usage](apps/mobile/src/components/ui/README.md).
 - RN-02 original local icon/Dino inventory and floating four-tab navigation with measured safe-area clearance; see [navigation](apps/mobile/src/components/navigation/README.md) and [asset provenance](apps/mobile/assets/README.md).

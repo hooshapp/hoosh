@@ -187,6 +187,18 @@
       "sha256": "4be9d424f346cf80c30eec855b1bdbbff53089cc8c2562b63df1b55261231cdd",
       "usage": "home-presentation",
       "capturedOn": "2026-10-30"
+    },
+    {
+      "file": "icons/quests/pencil.svg",
+      "nodeId": "10498:94",
+      "width": "14",
+      "height": "14",
+      "viewBox": "0 0 14 14",
+      "sizeBytes": 273,
+      "sha256": "e29183e48255d590c4489da2481cddcd98c6ac4e5e393c35bfc5abd98b6fa880",
+      "usage": "quests-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "icon pack/actions / minimal-pencil /minimal-pencil--10498-94.svg"
     }
   ]
 }

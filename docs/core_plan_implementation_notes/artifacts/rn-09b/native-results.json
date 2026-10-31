@@ -1,0 +1,31 @@
+{
+  "part": "rn-09b",
+  "node": "v24.20.0",
+  "signedDeviceAcceptance": false,
+  "liveIntegration": false,
+  "runtimeSourceSha256": {
+    "apps/mobile/src/components/ui/button-surface.tsx": "1c8539ef32791f9139511c3c118a01e19bdf629441476dceab0f304c520887fd",
+    "apps/mobile/src/components/ui/design-artwork.tsx": "ce41587b9c15d7ed6badcfe48eb6fb21a6bf1117b7c1306f4ce96f9ef26bbefb",
+    "apps/mobile/src/app/(tabs)/quests.tsx": "7ea6c207972aa62df46f51ade8dec2b4fd15c8852a368fd087d6170a8c7bca5f",
+    "apps/mobile/src/design/quest-assets.ts": "aaf369618227da157602ae5cb99d6ebf58f72c65bd32e42a4ecf4b53276ae4a8",
+    "apps/mobile/src/features/quests/quests-model.ts": "02eabdbf364f3ba071b9ec344eb8c6744c4702035eab6979a56cf06ce513142f",
+    "apps/mobile/src/features/quests/quest-card.tsx": "3f15fccdf0d4b9cef5b7c6a0b447f18bb09abe65d753a39acd1839d47ef33fef",
+    "apps/mobile/src/features/quests/quests-screen.tsx": "f3963fce031683fcc4a995bbb4f1f6311f062339a9a7b9b0c419b4553b956b26"
+  },
+  "bundles": {
+    "ios": {
+      "bytes": 2120864,
+      "sha256": "e825115c6aa94eee0f4377370fbf82a75fdd002d0b56015a75f9eb227ebb58c2",
+      "sourceMapEntries": 1199,
+      "fixtureOrPrivateApiSources": 0,
+      "executedOnDevice": false
+    },
+    "android": {
+      "bytes": 2411288,
+      "sha256": "6c0b99f08f9641f2469a4a996ee9b6804a3560818ccdb2641c283b70bb8a885f",
+      "sourceMapEntries": 1338,
+      "fixtureOrPrivateApiSources": 0,
+      "executedOnDevice": false
+    }
+  }
+}

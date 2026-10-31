@@ -42,3 +42,9 @@ retain them unchanged. No SVG path, root bounds or color was edited.
 Third-party app/provider logos are not line icons and are not included in this navigation-only scope. Future auth/app-picker work must export authentic source logos separately with provenance. No emoji, generated art, external CDN or icon-font substitution is used here.
 
 RN-05 preparation adds the original Settings avatar to the manifest and isolated account specimen. Its consumer is not routed into the live app yet; no account gender/mood is inferred from the decorative artwork.
+
+RN-09b adds the unchanged 14×14 `icons/quests/pencil.svg` from the original
+`icon pack/actions / minimal-pencil /minimal-pencil--10498-94.svg` (node 10498:94).
+The manifest stores its original-byte hash/path. Quests reuses the existing 16×16
+check from the identical Figma context asset. All 19 originals are integrity-checked;
+no previous source artwork is rewritten or the full untracked pack committed.
