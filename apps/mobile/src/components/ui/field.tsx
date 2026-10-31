@@ -1,4 +1,4 @@
-import { forwardRef, useId, useState, type ComponentRef } from 'react';
+import { forwardRef, useId, useState, type ComponentRef, type ReactNode } from 'react';
 import { Platform, StyleSheet, Text, TextInput, View, type TextInputProps } from 'react-native';
 
 import { fonts } from '@/design/tokens';
@@ -13,11 +13,12 @@ export type FieldProps = Omit<
   label: string;
   hint?: string;
   error?: string;
+  trailingVisual?: ReactNode;
 };
 
 /** Raw values are passed through unchanged. Validation and submit/focus policy belong to the form. */
 export const Field = forwardRef<ComponentRef<typeof TextInput>, FieldProps>(function Field(
-  { label, hint, error, editable = true, nativeID, onFocus, onBlur, ...props },
+  { label, hint, error, trailingVisual, editable = true, nativeID, onFocus, onBlur, ...props },
   ref,
 ) {
   const generatedId = useId();
@@ -40,6 +41,7 @@ export const Field = forwardRef<ComponentRef<typeof TextInput>, FieldProps>(func
       <Text nativeID={`${id}-label`} style={[styles.label, { color: theme.field.label }]}>
         {label}
       </Text>
+      <View style={styles.inputRow}>
       <TextInput
         {...props}
         {...webAccessibility}
@@ -80,9 +82,12 @@ export const Field = forwardRef<ComponentRef<typeof TextInput>, FieldProps>(func
             fontSize: theme.field.fontSize,
             borderColor: error ? theme.error : focused ? theme.focus : theme.field.border,
           },
+          trailingVisual ? { paddingRight: 40 } : undefined,
           !editable && styles.disabled,
         ]}
       />
+      {trailingVisual ? <View style={styles.trailing} pointerEvents="none" accessible={false} accessibilityElementsHidden importantForAccessibility="no-hide-descendants" aria-hidden>{trailingVisual}</View> : null}
+      </View>
       {hint ? (
         <Text nativeID={`${id}-hint`} style={[styles.detail, { color: theme.muted }]}>
           {hint}
@@ -104,6 +109,8 @@ export const Field = forwardRef<ComponentRef<typeof TextInput>, FieldProps>(func
 
 const styles = StyleSheet.create({
   field: { gap: 6 },
+  inputRow: { position: 'relative' },
+  trailing: { position: 'absolute', right: 12, top: 0, bottom: 0, justifyContent: 'center' },
   label: { fontFamily: fonts.medium, fontSize: 12, lineHeight: 17 },
   input: { borderWidth: 1, lineHeight: 22 },
   detail: { fontFamily: fonts.regular, fontSize: 13, lineHeight: 19 },

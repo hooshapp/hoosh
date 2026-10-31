@@ -1,6 +1,7 @@
+import { router } from 'expo-router';
 import { QuestsScreen } from '@/features/quests/quests-screen';
 import { unavailableQuests } from '@/features/quests/quests-model';
 
 export default function Quests() {
-  return <QuestsScreen model={unavailableQuests} />;
+  return <QuestsScreen model={unavailableQuests} onCreate={() => router.push('/quest/new')} />;
 }

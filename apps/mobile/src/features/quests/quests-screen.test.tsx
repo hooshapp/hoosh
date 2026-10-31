@@ -18,10 +18,10 @@ const ready: QuestsModel = {
   suggestions: { state: 'ready', items: [suggestion] },
   saved: { state: 'ready', items: [] },
 };
-test('actual route has no suggested interests or saved outcomes and no functional create action', async () => {
+test('actual route has no suggested interests or saved outcomes and no fabricated live quest actions', async () => {
   await render(<QuestsRoute />);
   expect(screen.getByRole('header', { name: 'Your Quests' })).toBeVisible();
-  expect(screen.getByRole('button', { name: 'Create a custom quest' })).toBeDisabled();
+  expect(screen.getByRole('button', { name: 'Create a custom quest' })).toBeEnabled();
   expect(screen.queryByText('Evening Gym Session')).toBeNull();
   expect(screen.queryByRole('button', { name: /Accept/ })).toBeNull();
 });

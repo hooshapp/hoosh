@@ -32,3 +32,31 @@ Pending **RN09B-D01–D04**: approved quest/editor/recurrence API and persistenc
 actual Auth/account-scoped reads/mutations/error recovery; PM/native restriction,
 completion and reward rules; signed-device/accessibility validation. These do not
 prevent this independent presentation, but its callbacks are not integration proof.
+
+## RN-09e editor UI
+
+`QuestEditor` implements personalize/custom frames `10487:126`/`10577:427`, with an
+optional edit/cancel intent. `QuestDraft` is raw wall-clock form state, not an API
+or recurrence/timezone/enforcement schema. Start/end support 24-hour entry; duration
+changes only the local end time. Overnight requires explicit next-day confirmation;
+zero/invalid ranges and empty weekly days block save. No Date/DST scheduler is added.
+Drafts stay controlled; save/cancellation are delegated, never optimistically applied.
+Unknown, saving, error, conflict and unconfirmed outcomes remain honest.
+
+`/quest/new` opens an empty editable local draft, with persistence unavailable. Its
+explicit Back action confirms dirty exit and public Router removal prevention also
+covers hardware/browser navigation and unload. `/quest/[id]` is unavailable without
+a real record; URL IDs never select fixtures. Future live editors must be keyed
+by the RN-04 account/generation scope and replace local display shapes with an
+approved producer adapter. Auth owner must cover new detail routes in real guards.
+
+Original 12/13/14/16/17/18/20 px SVGs are copied from the user pack and recorded in
+the manifest. Shared Field gains an inaccessible trailing-visual slot, preserving
+labels/error semantics. `EditorPage`, `EditorActions`, `Choice`, `TimeControl` and
+pure draft utilities are reusable by remaining preference/plan editors. Weekday
+targets grow to 44 px, with responsive wrapping; palette and input outlines retain
+the existing accessibility adaptations. Source status bar/home indicator stay OS-owned.
+
+Run `mobile:ui` for clearly isolated local examples and state controls. Live quest
+read/save/cancel, approved recurrence/apps/completion/reward policy, native rule
+installation and signed-device validation remain RN09B-D01–D04.

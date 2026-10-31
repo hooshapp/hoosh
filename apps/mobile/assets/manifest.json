@@ -343,6 +343,126 @@
       "usage": "settings-presentation",
       "capturedOn": "2026-10-30",
       "sourceFile": "icon pack/navigation / chevron-right /chevron-right--10601-310.svg"
+    },
+    {
+      "file": "icons/questeditor/back.svg",
+      "nodeId": "10487:219",
+      "width": "20",
+      "height": "20",
+      "viewBox": "0 0 20 20",
+      "sizeBytes": 223,
+      "sha256": "096b7745a250975e07f1e126c75dfdbf79f51c4cc57e43b548568c091b7ee634",
+      "usage": "questeditor-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "icon pack/navigation / arrow-left /arrow-left--10487-219.svg"
+    },
+    {
+      "file": "icons/questeditor/interest.svg",
+      "nodeId": "10487:222",
+      "width": "12",
+      "height": "12",
+      "viewBox": "0 0 12 12",
+      "sizeBytes": 2940,
+      "sha256": "336834e7c012c629c54dfd799edbb213f7e7461c0ae63aa28d242f77f85a901c",
+      "usage": "questeditor-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "icon pack/activities / dumbbell /dumbbell--10487-222.svg"
+    },
+    {
+      "file": "icons/questeditor/pencil.svg",
+      "nodeId": "10487:225",
+      "width": "16",
+      "height": "16",
+      "viewBox": "0 0 16 16",
+      "sizeBytes": 1012,
+      "sha256": "46cb161eebdfbdb55da38a896fad1d0ee711bcabdc2b1623e6501d30b732c3d8",
+      "usage": "questeditor-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "icon pack/actions / pencil /pencil--10487-225.svg"
+    },
+    {
+      "file": "icons/questeditor/calendar.svg",
+      "nodeId": "10487:231",
+      "width": "16",
+      "height": "16",
+      "viewBox": "0 0 16 16",
+      "sizeBytes": 672,
+      "sha256": "730b39993c772a6eb4de822763ee414e99a85e4cbbae04d3315ce765ebd5d2bc",
+      "usage": "questeditor-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "icon pack/actions / calendar-days /calendar-days--10487-231.svg"
+    },
+    {
+      "file": "icons/questeditor/time.svg",
+      "nodeId": "10487:234",
+      "width": "16",
+      "height": "16",
+      "viewBox": "0 0 16 16",
+      "sizeBytes": 189,
+      "sha256": "67c2ee35e52bc795ee77a7332ecc13818bf97f3e3345f1fdb2c8bea52d3dc959",
+      "usage": "questeditor-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "icon pack/navigation / chevron-down /chevron-down--10487-234.svg"
+    },
+    {
+      "file": "icons/questeditor/timer.svg",
+      "nodeId": "10487:240",
+      "width": "17",
+      "height": "17",
+      "viewBox": "0 0 17 17",
+      "sizeBytes": 436,
+      "sha256": "54d9f651d02cb0cf661f87ff5c1954f1298d3783babac475d31ae60229952317",
+      "usage": "questeditor-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "icon pack/actions / timer /timer--10487-240.svg"
+    },
+    {
+      "file": "icons/questeditor/duration.svg",
+      "nodeId": "10487:243",
+      "width": "14",
+      "height": "14",
+      "viewBox": "0 0 14 14",
+      "sizeBytes": 201,
+      "sha256": "d7052bea32b6a6bf91197f939ec3a3e54927c44de136fa6cf30f6d71f0c049d8",
+      "usage": "questeditor-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "icon pack/navigation / chevron-down /chevron-down--10487-243.svg"
+    },
+    {
+      "file": "icons/questeditor/repeat.svg",
+      "nodeId": "10487:246",
+      "width": "14",
+      "height": "14",
+      "viewBox": "0 0 14 14",
+      "sizeBytes": 201,
+      "sha256": "1e46e134ff123111165479f2602ed00e7c13779a31284bf74fe05f777215b763",
+      "usage": "questeditor-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "icon pack/navigation / chevron-down /chevron-down--10487-246.svg"
+    },
+    {
+      "file": "icons/questeditor/lock.svg",
+      "nodeId": "10487:249",
+      "width": "13",
+      "height": "13",
+      "viewBox": "0 0 13 13",
+      "sizeBytes": 1000,
+      "sha256": "c9502f4f6b090a672970fa7b4d1e80b229c3761198888fbb7dad41b8a88fb862",
+      "usage": "questeditor-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "icon pack/actions / lock-keyhole /lock-keyhole--10487-249.svg"
+    },
+    {
+      "file": "icons/questeditor/check.svg",
+      "nodeId": "10487:252",
+      "width": "18",
+      "height": "18",
+      "viewBox": "0 0 18 18",
+      "sizeBytes": 218,
+      "sha256": "7844be4447f57ba01718d8f1ea4093189fa2fab77003b91a733c147df2004ec4",
+      "usage": "questeditor-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "icon pack/actions / check /check--10487-252.svg"
     }
   ]
 }

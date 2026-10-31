@@ -473,6 +473,28 @@ subparts, not a redefinition of earlier work or its dependencies.
 | RN-09c | History presentation with honest unavailable states and isolated source examples | Presentation implemented; real metrics, detail pages and device acceptance remain deferred under RN09C-D01–D04; forecasts remain gated. |
 | RN-09d | Settings composition reusing RN-07 profile and genuine availability for plan/app/activity editors | Presentation implemented; RN09D-D01–D04 and RN07-D01–D07/native-selection/shared-schema gates remain before live persistence/actions. |
 
+### RN-09 remaining UI execution — Ishmum, 2026-10-30
+
+User requested completion of independent UI before live integration. These are
+subparts of RN-09, not new top-level plans. Local drafts and preview intents may
+be implemented without approving persistence/enforcement schemas. No fake success,
+account, app inventory or usage is supplied by actual routes.
+
+| Part | Source / scope | Status |
+|---|---|---|
+| RN-09e | Quest personalize `10487:126` / custom `10577:427`, reusable draft fields, times/repeat/weekdays, validation, dirty exit, action states and routes | UI implemented; live quest persistence/recurrence/native policies remain deferred | |
+| RN-09f | Age `10601:5908`, activities `10601:6057`, apps `10601:5968`, inline gender `10601:6146`; search/selection/custom drafts, cancellation and save states | Pending |
+| RN-09g | Inline days `10601:6315`, hours `10601:6513`, sessions `10601:6690`; shared controlled editors reusable by AUTH-12, explicit limits and unavailable saves | Pending |
+| RN-09h | Progress `10570:192`, reduction/time reclaimed `10570:193`, period changes, honest evidence/eligibility states and navigation | Pending |
+
+Each part gets its own local commit and detailed file/line notes. Source assets
+come unchanged from the original pack. Actual routes use absent data/disabled
+persistence; isolated developer flows exercise source samples and local edits.
+No calendar provider flow, lifespan forecast (PD-12), actual native picker,
+completion/reward/enforcement policy, Auth/onboarding or backend is implemented by
+these UI parts. Device acceptance remains separate. Evidence and any source
+adaptations must be recorded before claiming this UI scope complete.
+
 **RN-09a evidence:** Read-only Home `22:4` context/screenshot, original source asset
 bounds/bytes, 19 new portable cases and 34 new iOS/Android component cases (including
 shared Screen regression), 30 browser cases, real four-tab route/clearance, web export

@@ -4,9 +4,9 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN-09d Settings presentation and main-screen handoff implemented and validated; RN-09a/b/c/d presentation is ready for review. Next: coordinate real Auth/root/API/profile prerequisites and approved feature/native contracts, then wire scoped producers and validate on signed devices; do not mark Plan 04 fully complete. Live integration and device gates remain pending.
+**Current part:** RN-09e Quest editor UI and reusable draft controls UI implemented. Live integrations/device checks remain deferred. Continue RN-09f preference editors, then RN-09g shared plan editors and RN-09h History details/navigation/whole-UI verification. Existing integration/device gates remain pending.
 
-**Implementation branch:** `task/react-native/rn-09bcd-ui`, RN-09d parent `c1c84c3`; no push/main merge.
+**Implementation branch:** `task/react-native/rn-09-detail-ui`; RN-09e parent `4cf7b30`; no push/main merge.
 
 **Commit reference:** RN-01 `2f88102`; RN-02 `2d5c0d1`; RN-03 `0741758`; RN-04 `610f570`; RN-05 preparation `0c6e4db`; RN-07 UI `5790302`; RN-08 preparation `71da2d5`; RN-09a `ff75039`. RN-10 is `9b5fbd0`.
 
@@ -16,11 +16,10 @@
 
 ## Resume here
 
-- Latest increment: **RN-09d — Settings presentation and main-screen handoff**, unique subject `feat(mobile): compose Settings with controlled profile and feature availability`. RN-09a/b/c/d presentation is ready for review. Next: coordinate real Auth/root/API/profile prerequisites and approved feature/native contracts, then wire scoped producers and validate on signed devices; do not mark Plan 04 fully complete.
-- Actual checks: npm run check passed: 250 portable tests, 308 iOS/Android component tests in 38 suites, 3 API tests, types/lint/Ruff and 31 original assets. mobile:ui:build and mobile:export passed with 32 JS/HTML files isolated from developer examples. iOS/Android Hermes exports passed and final source maps match all three new feature routes, models, components, asset mappings and reused account/profile UI. Settings has 30 browser cases (nine states, ten original asset byte/bounds checks, 393/320/280 px and enlarged text); actual exported app has 36 navigation/direct-link/keyboard/footer cases at 280/320/393/430 px, including 320x568, with no private requests or page errors. No signed-device/live account acceptance.
-- RN09D-D01 real RN-05/07 profile/Auth/guard/save integration and reviewed account actions; D02 approved shared onboarding/plan/activity/native-selection editors, revisioned persistence and native reconciliation; D03 demographic/calendar scope and actual provider authorization flows; D04 signed-device/accessibility/keyboard/lifecycle. RN09B-D01–D04, RN09C-D01–D04 and existing RN07/08/09/10 gates remain open; RN-11 still requires actual M1/M2 acceptance.
-- Read the RN-09b/c/d entries below and their feature READMEs before resuming. Original RN07/08/09/10 deferred IDs remain pending; RN-11 still requires real Auth/API/profile milestones. Anisha owns Auth/onboarding/root/iOS; Ishmum owns shared RN/Android/backend. No native/cloud/database work or automatic native rule cleanup is authorized by these presentations.
-- Original icon-pack copies are used for new source slots only. Existing untracked packs and workspace file stay untouched/excluded; no push/area/main merge is performed.
+- Latest: **RN-09e Quest editor UI and reusable draft controls**, subject `feat(mobile): complete quest editor presentation and local draft flow`. Continue RN-09f preference editors, then RN-09g shared plan editors and RN-09h History details/navigation/whole-UI verification. Existing integration/device gates remain pending.
+- Actual validation: Workspace typecheck/lint and web export passed (41 original assets, fixture-isolation guard); targeted iOS/Android quest/editor/navigation component suite passed 66 tests in 8 suites; developer Vite build passed and actual Personalize screenshot visually inspected. Final full regression/native exports and broader browser evidence follow in RN-09h.
+- UI-only local drafts are not accepted wire/policy schemas or saved outcomes. Existing RN07/08/09/10/Auth/API/native and signed-device gates remain open. Anisha owns Auth/onboarding/iOS; Ishmum shared UI/Android/backend. No cloud/native state was changed.
+- User icon packs and workspace file remain untracked/excluded. Continue the same notes file and original plan ledger for each sequential UI part.
 
 ## Recording rules
 
@@ -1162,7 +1161,7 @@ Figma 27:153 from the already reviewed full context/screenshot in read-only sess
 
 ### RN-09d — Settings presentation and main-screen handoff
 
-**Hash:** Pending; resolve by `feat(mobile): compose Settings with controlled profile and feature availability` until the next normal notes update.
+**Hash:** `4cf7b30` (recorded during RN-09e).
 **Date:** 2026-10-30. **Owner:** Ishmum. **Branch:** `task/react-native/rn-09bcd-ui`. **Parent:** `c1c84c3`.
 **Status:** Presentation implemented and validated; local commit pending, live/device acceptance deferred.
 
@@ -1253,6 +1252,70 @@ Figma 27:157 from full reviewed context/screenshot in read-only session 26dd22ea
 **Remaining:** RN09D-D01 real RN-05/07 profile/Auth/guard/save integration and reviewed account actions; D02 approved shared onboarding/plan/activity/native-selection editors, revisioned persistence and native reconciliation; D03 demographic/calendar scope and actual provider authorization flows; D04 signed-device/accessibility/keyboard/lifecycle. RN09B-D01–D04, RN09C-D01–D04 and existing RN07/08/09/10 gates remain open; RN-11 still requires actual M1/M2 acceptance.
 
 **Next:** RN-09a/b/c/d presentation is ready for review. Next: coordinate real Auth/root/API/profile prerequisites and approved feature/native contracts, then wire scoped producers and validate on signed devices; do not mark Plan 04 fully complete. This task is a local commit only. No push, merge, backend, cloud, native project regeneration/signing or live-data/permission/restriction action occurred. Original user packs/workspace files remain untracked and excluded. Bytecode exports do not certify native device rendering, accessibility or policy outcomes.
+
+
+### RN-09e — Quest editor UI and reusable draft controls
+
+**Hash:** Pending; resolve by `feat(mobile): complete quest editor presentation and local draft flow`.
+**Date:** 2026-10-30. **Owner:** Ishmum. **Branch:** `task/react-native/rn-09-detail-ui`. **Parent:** `4cf7b30`.
+**Status:** Independent UI implemented and validated; live persistence/native policy and device acceptance remain pending.
+
+#### Every changed file and logical change
+
+Ranges refer to this commit. Deletions cite parent ranges; binary captures have dimensions. Existing historical entries remain valid for their own commits.
+
+| File and lines | Change and reason |
+|---|---|
+| `apps/mobile/assets/icons/questeditor/back.svg`: lines 1–3 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/questeditor/calendar.svg`: lines 1–3 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/questeditor/check.svg`: lines 1–3 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/questeditor/duration.svg`: lines 1–3 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/questeditor/interest.svg`: lines 1–10 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/questeditor/lock.svg`: lines 1–10 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/questeditor/pencil.svg`: lines 1–10 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/questeditor/repeat.svg`: lines 1–3 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/questeditor/time.svg`: lines 1–3 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/questeditor/timer.svg`: lines 1–3 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/manifest.json`: lines 346–465 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/dev/ui/main.tsx`: lines 15–15 | Exercise the real component in the separate developer gallery with clearly simulated examples and local-only edits; no sample account/data enters actual routes. |
+| `apps/mobile/dev/ui/main.tsx`: lines 128–128 | Exercise the real component in the separate developer gallery with clearly simulated examples and local-only edits; no sample account/data enters actual routes. |
+| `apps/mobile/dev/ui/quest-editor-specimen.tsx`: lines 1–21 | Exercise the real component in the separate developer gallery with clearly simulated examples and local-only edits; no sample account/data enters actual routes. |
+| `apps/mobile/src/app/(tabs)/quests.tsx`: lines 1–1 | Implement the independent UI/provenance/evidence/route handoff described below, preserving existing ownership and live-data boundaries. |
+| `apps/mobile/src/app/(tabs)/quests.tsx`: lines 6–6 | Implement the independent UI/provenance/evidence/route handoff described below, preserving existing ownership and live-data boundaries. |
+| `apps/mobile/src/app/quest/[id].tsx`: lines 1–8 | Implement the independent UI/provenance/evidence/route handoff described below, preserving existing ownership and live-data boundaries. |
+| `apps/mobile/src/app/quest/new.tsx`: lines 1–20 | Implement the independent UI/provenance/evidence/route handoff described below, preserving existing ownership and live-data boundaries. |
+| `apps/mobile/src/components/ui/field.tsx`: lines 1–1 | Implement the independent UI/provenance/evidence/route handoff described below, preserving existing ownership and live-data boundaries. |
+| `apps/mobile/src/components/ui/field.tsx`: lines 16–16 | Implement the independent UI/provenance/evidence/route handoff described below, preserving existing ownership and live-data boundaries. |
+| `apps/mobile/src/components/ui/field.tsx`: lines 21–21 | Implement the independent UI/provenance/evidence/route handoff described below, preserving existing ownership and live-data boundaries. |
+| `apps/mobile/src/components/ui/field.tsx`: lines 44–44 | Implement the independent UI/provenance/evidence/route handoff described below, preserving existing ownership and live-data boundaries. |
+| `apps/mobile/src/components/ui/field.tsx`: lines 85–85 | Implement the independent UI/provenance/evidence/route handoff described below, preserving existing ownership and live-data boundaries. |
+| `apps/mobile/src/components/ui/field.tsx`: lines 89–90 | Implement the independent UI/provenance/evidence/route handoff described below, preserving existing ownership and live-data boundaries. |
+| `apps/mobile/src/components/ui/field.tsx`: lines 112–113 | Implement the independent UI/provenance/evidence/route handoff described below, preserving existing ownership and live-data boundaries. |
+| `apps/mobile/src/design/questeditor-assets.ts`: lines 1–23 | Statically import original local assets and retain exact root dimensions at callsites; no runtime Figma URLs. |
+| `apps/mobile/src/features/editors/draft-utils.ts`: lines 1–12 | Implement toggleItem, parseTime, formatTime: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/editors/editor-controls.tsx`: lines 1–105 | Implement Choice, EditorActions, LeaveConfirmation, EditorPage, TimeControl: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/quests/README.md`: lines 35–62 | Synchronize scope, current progress, UI-only adapters, source provenance, remaining integration/device gates and handoff. |
+| `apps/mobile/src/features/quests/quest-draft.ts`: lines 1–24 | Implement questDuration, questDraftIssue, durationLabel: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/quests/quest-editor.test.tsx`: lines 1–34 | Verify real draft/state/action boundaries, validation and absence of invented saved or measured outcomes on both iOS/Android component projects. |
+| `apps/mobile/src/features/quests/quest-editor.tsx`: lines 1–80 | Implement QuestEditor: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/quests/quests-screen.test.tsx`: lines 21–21 | Verify real draft/state/action boundaries, validation and absence of invented saved or measured outcomes on both iOS/Android component projects. |
+| `apps/mobile/src/features/quests/quests-screen.test.tsx`: lines 24–24 | Verify real draft/state/action boundaries, validation and absence of invented saved or measured outcomes on both iOS/Android component projects. |
+| `docs/core_plan/04_react_native_integration.md`: lines 476–497 | Synchronize scope, current progress, UI-only adapters, source provenance, remaining integration/device gates and handoff. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09e/personalize.png`: binary PNG, 393×853, 55429 bytes | Actual browser capture of the indicated source-aligned component or state; no account/device outcome is implied. |
+| `scripts/check-ui-preview-isolation.mjs`: lines 24–24 | Implement the independent UI/provenance/evidence/route handoff described below, preserving existing ownership and live-data boundaries. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1–25 | Refresh current branch, UI scope, actual checks and next handoff. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1164–1164 | Record the known preceding commit hash during a normal notes update. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1257–1320 | Record this full file/line change table, decisions, actual validation and remaining work in the code commit. |
+
+#### Decisions and boundaries
+
+Source frames 10487:126 and 10577:427, full context/screenshots read in Figma session 81abaa02-0cf1-4cd0-b22f-25ecb77f4a7f. Implement raw controlled title/activity, editable time/duration/repeat/weekday draft, explicit overnight, required/invalid validation, separate confirmed cancellation intent and dirty-exit flow. Saving/conflict/unconfirmed/unavailable outcomes never fabricate success. Add reusable accessible Choice/EditorPage/EditorActions/TimeControl and pure date-free draft utilities; extend Field with decorative pencil slot. The real custom route is blank and has no save callback; existing-record route stays unavailable. Use public SDK usePreventRemove for dirty route removal/unload, in addition to explicit Back confirmation; do not copy deprecated private navigation APIs. No Auth/API/native producer or policy was invented. Original assets retain exact roots; source static phone chrome remains OS-owned; weekday targets are enlarged and selected chips use source action green. Read the plan e/f/g/h execution inventory: all eleven detail frames were reviewed before coding. Record 4cf7b30 from the previous increment. React best-practices checklist applied for controlled state, direct imports, accessibility and no duplicated domain authority.
+
+**Actual validation:** Workspace typecheck/lint and web export passed (41 original assets, fixture-isolation guard); targeted iOS/Android quest/editor/navigation component suite passed 66 tests in 8 suites; developer Vite build passed and actual Personalize screenshot visually inspected. Final full regression/native exports and broader browser evidence follow in RN-09h.
+
+**Remaining / next:** Continue RN-09f preference editors, then RN-09g shared plan editors and RN-09h History details/navigation/whole-UI verification. Existing integration/device gates remain pending.
+
+No push/merge, Supabase/API/database/native permission/restriction action or signed-device run occurred. Compilation/browser checks do not certify physical-device accessibility or native protection.
 
 
 ### Entry template
