@@ -199,6 +199,42 @@
       "usage": "quests-presentation",
       "capturedOn": "2026-10-30",
       "sourceFile": "icon pack/actions / minimal-pencil /minimal-pencil--10498-94.svg"
+    },
+    {
+      "file": "icons/history/comparison.svg",
+      "nodeId": "10570:325",
+      "width": "20",
+      "height": "20",
+      "viewBox": "0 0 20 20",
+      "sizeBytes": 243,
+      "sha256": "670691db3d3d1cb7db1cd4d86cefeeba03f5a5b70c2c8973ce0cf3d4e5a42630",
+      "usage": "history-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "icon pack/navigation / arrow-right /arrow-right--10570-325.svg"
+    },
+    {
+      "file": "icons/history/next.svg",
+      "nodeId": "10570:331",
+      "width": "20",
+      "height": "20",
+      "viewBox": "0 0 20 20",
+      "sizeBytes": 232,
+      "sha256": "df3d5cb9266a4ea9551980b2d135efa337a3c4973a929d778ac1e1e0fb8eecab",
+      "usage": "history-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "icon pack/navigation / arrow-right /arrow-right--10570-331.svg"
+    },
+    {
+      "file": "icons/history/pagination.svg",
+      "nodeId": "10570:308",
+      "width": "32",
+      "height": "8",
+      "viewBox": "0 0 32 8",
+      "sizeBytes": 266,
+      "sha256": "71558919e3fd9c3a77afae2be7e760ed93501e39a3d3755390a21fc2073c2d25",
+      "usage": "history-presentation",
+      "capturedOn": "2026-10-30",
+      "sourceFile": "icon pack/actions / pagination-dots-first /pagination-dots-first--10570-308.svg"
     }
   ]
 }

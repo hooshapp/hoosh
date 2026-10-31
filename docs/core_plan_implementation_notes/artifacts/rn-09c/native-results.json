@@ -1,0 +1,30 @@
+{
+  "part": "rn-09c",
+  "node": "v24.20.0",
+  "signedDeviceAcceptance": false,
+  "liveIntegration": false,
+  "runtimeSourceSha256": {
+    "apps/mobile/src/components/ui/button-surface.tsx": "1c8539ef32791f9139511c3c118a01e19bdf629441476dceab0f304c520887fd",
+    "apps/mobile/src/components/ui/design-artwork.tsx": "ce41587b9c15d7ed6badcfe48eb6fb21a6bf1117b7c1306f4ce96f9ef26bbefb",
+    "apps/mobile/src/app/(tabs)/history.tsx": "0af400c37edcdd7ca377793db2a43c3e4211ba76b26fd46b127053a496b5e465",
+    "apps/mobile/src/design/history-assets.ts": "6553968cd671d4aab1750173969abc075fb2eb20d84e75c655675fa2e73b7d3b",
+    "apps/mobile/src/features/history/history-model.ts": "666c93af3c706747452711f31425e9828510e4d704fa8c6f8939a32b02e93388",
+    "apps/mobile/src/features/history/history-screen.tsx": "26218e20fd00f75ff32f8d56e7647c2488f990a75a85e9b9cc76e510f755bc98"
+  },
+  "bundles": {
+    "ios": {
+      "bytes": 2127268,
+      "sha256": "5e8b4f2cc52a2d4e836e803bab4dd4c4cc4ef7daa94257fea9007668a889810e",
+      "sourceMapEntries": 1202,
+      "fixtureOrPrivateApiSources": 0,
+      "executedOnDevice": false
+    },
+    "android": {
+      "bytes": 2417624,
+      "sha256": "09f4cb872f9c61f346f6709516e774baf367d53c1782507e0babcbd566be52a0",
+      "sourceMapEntries": 1341,
+      "fixtureOrPrivateApiSources": 0,
+      "executedOnDevice": false
+    }
+  }
+}

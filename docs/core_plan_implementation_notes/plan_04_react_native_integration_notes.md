@@ -4,9 +4,9 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN-09b Quests presentation implemented and validated; Next: implement RN-09c History, followed by RN-09d Settings, as explicitly requested. Live integration and device gates remain pending.
+**Current part:** RN-09c History presentation implemented and validated; Next: implement RN-09d Settings, as explicitly requested. Live integration and device gates remain pending.
 
-**Implementation branch:** `task/react-native/rn-09bcd-ui`, RN-09b parent `9b5fbd0`; no push/main merge.
+**Implementation branch:** `task/react-native/rn-09bcd-ui`, RN-09c parent `2bbebad`; no push/main merge.
 
 **Commit reference:** RN-01 `2f88102`; RN-02 `2d5c0d1`; RN-03 `0741758`; RN-04 `610f570`; RN-05 preparation `0c6e4db`; RN-07 UI `5790302`; RN-08 preparation `71da2d5`; RN-09a `ff75039`. RN-10 is `9b5fbd0`.
 
@@ -16,9 +16,9 @@
 
 ## Resume here
 
-- Latest increment: **RN-09b — Quests presentation**, unique subject `feat(mobile): compose Quests with independent suggestion states`. Next: implement RN-09c History, followed by RN-09d Settings, as explicitly requested.
-- Actual checks: npm run check passed: 250 portable, 254 iOS/Android component cases (20 new), 3 pytest; types/ESLint/Ruff, 19 original assets. mobile:ui:build and mobile:export passed (16 routes, 32-file isolation). Shared browser runner rn-09b passed 22 cases including nine states, explicit intent without saved outcomes, original pencil/check bytes and 14/16 px bounds, 393/320/280 px and enlarged text. Both full native Router/Hermes exports match final sources via verify-main-native.mjs rn-09b; fixture/private API graphs excluded. Browser screenshots were visually reviewed.
-- RN09B-D01 approved quest/editor/recurrence API and persistence; RN09B-D02 actual Auth/account-scoped producers, mutation serialization and error/uncertain-write recovery; RN09B-D03 approved completion/reward/native restriction semantics; RN09B-D04 signed-device/accessibility acceptance. Existing RN07/08/09/10 gates and RN-11 live dependencies remain pending.
+- Latest increment: **RN-09c — History presentation**, unique subject `feat(mobile): compose History with evidence-aware metric states`. Next: implement RN-09d Settings, as explicitly requested.
+- Actual checks: npm run check passed (250 portable, 286 component tests, 3 API tests, types/lint/Ruff and 22 original assets); mobile:ui:build and mobile:export passed; iOS/Android Hermes exports with final source-map equality passed; 23 browser cases passed at 393/320/280 px and enlarged text, original asset byte/bounds checks, no private requests/page errors. No signed-device run.
+- RN09C-D01 approved measurement/source/insights contract; D02 real scoped insights/coverage/eligibility/recovery; D03 detail pages 10570:192/193, navigation and PD-12 forecast decision; D04 signed-device/accessibility. Existing deferred work remains pending.
 - Read the RN-09b/c/d entries below and their feature READMEs before resuming. Original RN07/08/09/10 deferred IDs remain pending; RN-11 still requires real Auth/API/profile milestones. Anisha owns Auth/onboarding/root/iOS; Ishmum owns shared RN/Android/backend. No native/cloud/database work or automatic native rule cleanup is authorized by these presentations.
 - Original icon-pack copies are used for new source slots only. Existing untracked packs and workspace file stay untouched/excluded; no push/area/main merge is performed.
 
@@ -1037,7 +1037,7 @@ RN-11 remains awaiting its real producers. Next independent work is backend API-
 
 ### RN-09b — Quests presentation
 
-**Hash:** Pending; resolve by `feat(mobile): compose Quests with independent suggestion states` until the next normal notes update.
+**Hash:** `2bbebad` (recorded during RN-09c).
 **Date:** 2026-10-30. **Owner:** Ishmum. **Branch:** `task/react-native/rn-09bcd-ui`. **Parent:** `9b5fbd0`.
 **Status:** Presentation implemented and validated; local commit pending, live/device acceptance deferred.
 
@@ -1100,6 +1100,64 @@ Read-only Figma session 26dd22ea-c87c-4b6c-a571-5e74d6eff5e8 inspected full 27:1
 **Remaining:** RN09B-D01 approved quest/editor/recurrence API and persistence; RN09B-D02 actual Auth/account-scoped producers, mutation serialization and error/uncertain-write recovery; RN09B-D03 approved completion/reward/native restriction semantics; RN09B-D04 signed-device/accessibility acceptance. Existing RN07/08/09/10 gates and RN-11 live dependencies remain pending.
 
 **Next:** Next: implement RN-09c History, followed by RN-09d Settings, as explicitly requested. This task is a local commit only. No push, merge, backend, cloud, native project regeneration/signing or live-data/permission/restriction action occurred. Original user packs/workspace files remain untracked and excluded. Bytecode exports do not certify native device rendering, accessibility or policy outcomes.
+
+
+### RN-09c — History presentation
+
+**Hash:** Pending; resolve by `feat(mobile): compose History with evidence-aware metric states` until the next normal notes update.
+**Date:** 2026-10-30. **Owner:** Ishmum. **Branch:** `task/react-native/rn-09bcd-ui`. **Parent:** `2bbebad`.
+**Status:** Presentation implemented and validated; local commit pending, live/device acceptance deferred.
+
+#### Every changed file and logical change
+
+Ranges refer to this commit; previous entries remain historical. Source SVGs are unchanged original bytes. Pure deletions cite parent ranges. Screenshots use actual dimensions/size.
+
+| File and lines | Change and reason |
+|---|---|
+| `apps/mobile/assets/README.md`: lines 51–52 | Document RN-09c presentation progress, provenance, interfaces, actual checks and explicitly remaining work without marking unrelated integration complete. |
+| `apps/mobile/assets/icons/history/comparison.svg`: lines 1–5 | Copy an unchanged original from the user icon pack (or the recorded Figma context when missing), preserving source node/bounds, bytes and provenance. No previous icon is rewired. |
+| `apps/mobile/assets/icons/history/next.svg`: lines 1–3 | Copy an unchanged original from the user icon pack (or the recorded Figma context when missing), preserving source node/bounds, bytes and provenance. No previous icon is rewired. |
+| `apps/mobile/assets/icons/history/pagination.svg`: lines 1–5 | Copy an unchanged original from the user icon pack (or the recorded Figma context when missing), preserving source node/bounds, bytes and provenance. No previous icon is rewired. |
+| `apps/mobile/assets/manifest.json`: lines 202–237 | Record each new original icon with source node, root bounds, hash/length and original-pack path; existing entries remain unchanged. |
+| `apps/mobile/dev/ui/history-specimen.tsx`: lines 1–145 | Render the real presentation in the separate developer-only gallery, with visibly simulated source examples and local-only interactions; no Auth/API/native service or production fixture mode. |
+| `apps/mobile/dev/ui/main.tsx`: lines 15–15 | Render the real presentation in the separate developer-only gallery, with visibly simulated source examples and local-only interactions; no Auth/API/native service or production fixture mode. |
+| `apps/mobile/dev/ui/main.tsx`: lines 124–124 | Render the real presentation in the separate developer-only gallery, with visibly simulated source examples and local-only interactions; no Auth/API/native service or production fixture mode. |
+| `apps/mobile/src/app/(tabs)/history.tsx`: lines 1–2 | Compose the tab with the actual feature presentation and explicit unavailable inputs; keep route names/root/Auth guards and unsupported live actions unchanged. |
+| `apps/mobile/src/app/(tabs)/history.tsx`: lines 5–5 | Compose the tab with the actual feature presentation and explicit unavailable inputs; keep route names/root/Auth guards and unsupported live actions unchanged. |
+| `apps/mobile/src/components/navigation/main-tab-bar.test.tsx`: lines 75–75 | Behavior regressions cover explicit data/action/state boundaries and absence of fixture fallback; retained existing shared/native tests continue to run. |
+| `apps/mobile/src/components/ui/README.md`: lines 158–159 | Document RN-09c presentation progress, provenance, interfaces, actual checks and explicitly remaining work without marking unrelated integration complete. |
+| `apps/mobile/src/design/history-assets.ts`: lines 1–9 | Statically map original local assets with their original source dimensions; reuse exact existing matches and avoid runtime Figma URLs or path/color editing. |
+| `apps/mobile/src/features/history/README.md`: lines 1–27 | Document RN-09c presentation progress, provenance, interfaces, actual checks and explicitly remaining work without marking unrelated integration complete. |
+| `apps/mobile/src/features/history/history-model.ts`: lines 1–45 | Define local display-only shapes and explicit unavailable production inputs. Preserve independent states; no endpoint/schema, policy, identity, measurement, persistence or fixture fallback is invented. |
+| `apps/mobile/src/features/history/history-screen.test.tsx`: lines 1–120 | Behavior regressions cover explicit data/action/state boundaries and absence of fixture fallback; retained existing shared/native tests continue to run. |
+| `apps/mobile/src/features/history/history-screen.tsx`: lines 1–214 | Implement source-aligned responsive presentation and controlled supported actions using shared primitives, authentic assets and explicit feature states; preserve future producer ownership and honest unavailable behavior. |
+| `apps/mobile/src/features/history/history-screen.tsx`: lines 215–312 | Source typography, colors, insets, card/row hierarchy and flexible minimum targets; wrap/scroll at narrow widths and enlarged fonts without scaling the original SVG roots. |
+| `docs/core_plan/04_react_native_integration.md`: lines 4–4 | Document RN-09c presentation progress, provenance, interfaces, actual checks and explicitly remaining work without marking unrelated integration complete. |
+| `docs/core_plan/04_react_native_integration.md`: lines 184–184 | Document RN-09c presentation progress, provenance, interfaces, actual checks and explicitly remaining work without marking unrelated integration complete. |
+| `docs/core_plan/04_react_native_integration.md`: lines 196–196 | Document RN-09c presentation progress, provenance, interfaces, actual checks and explicitly remaining work without marking unrelated integration complete. |
+| `docs/core_plan/04_react_native_integration.md`: lines 473–473 | Document RN-09c presentation progress, provenance, interfaces, actual checks and explicitly remaining work without marking unrelated integration complete. |
+| `docs/core_plan/04_react_native_integration.md`: lines 503–503 | Document RN-09c presentation progress, provenance, interfaces, actual checks and explicitly remaining work without marking unrelated integration complete. |
+| `docs/core_plan/04_react_native_integration.md`: lines 665–666 | Document RN-09c presentation progress, provenance, interfaces, actual checks and explicitly remaining work without marking unrelated integration complete. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09c/browser-config.mjs`: lines 1–75 | Record/reproduce actual browser or native compilation evidence, including original asset bounds/bytes, source-map equality, responsive/state checks and explicit false live/device acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09c/browser-results.json`: lines 1–193 | Record/reproduce actual browser or native compilation evidence, including original asset bounds/bytes, source-map equality, responsive/state checks and explicit false live/device acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09c/figma-example.png`: binary PNG, 393×885, 43938 bytes | Actual isolated component capture (example, unavailable or enlarged text as named); not native/device or live-account evidence. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09c/large-text-320.png`: binary PNG, 320×901, 55446 bytes | Actual isolated component capture (example, unavailable or enlarged text as named); not native/device or live-account evidence. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09c/native-results.json`: lines 1–30 | Record/reproduce actual browser or native compilation evidence, including original asset bounds/bytes, source-map equality, responsive/state checks and explicit false live/device acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09c/unavailable-320.png`: binary PNG, 320×901, 25088 bytes | Actual isolated component capture (example, unavailable or enlarged text as named); not native/device or live-account evidence. |
+| `scripts/check-ui-preview-isolation.mjs`: lines 16–21 | Reject new developer example/test markers from real exported app JS/HTML; keep the existing fail-closed export prerequisite and prior guards. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1–24 | Refresh resume state, actual previous hashes, branch, checks and the next sequential increment. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 905–905 | Record RN-10’s known hash during the next normal implementation update, keeping its historical evidence. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1105–1162 | Record this commit’s full change/evidence/decision/handoff entry with an honest pending self-hash. |
+
+#### Decisions, checks and deferred acceptance
+
+Figma 27:153 from the already reviewed full context/screenshot in read-only session 26dd22ea-c87c-4b6c-a571-5e74d6eff5e8. HistoryModel is display-only: finite nonnegative values (including valid zero), nonblank display/period/source/coverage, independent read states, and explicit before/now comparison eligibility. Invalid ready inputs are unavailable; the view never derives savings, rewards, percentages or forecasts. Source 40/96/34 typography, dividers and original 20/20/32x8 assets are responsive; evidence captions are a deliberate transparency addition. Next-page affordance is optional and delegates only; actual route has no fake details navigation. Figma numbers exist only in a visibly simulated isolated specimen. Component tests cover unavailable routes, evidence validation, real zero, partial/ineligible states and delegated callbacks; browser checks additionally cover narrow/enlarged layouts and original bytes. Preserve shared lifecycle/nav behavior and update the source heading regression. Includes the six RN09B/RN09C export-isolation markers: b markers were left unstaged in 2bbebad and are now covered by the actual passing guarded export. React best-practices skill checklist applied: pure controlled data, direct imports, bounded state, accessible labels, no unnecessary effects/dependencies.
+
+**Actual validation:** npm run check passed (250 portable, 286 component tests, 3 API tests, types/lint/Ruff and 22 original assets); mobile:ui:build and mobile:export passed; iOS/Android Hermes exports with final source-map equality passed; 23 browser cases passed at 393/320/280 px and enlarged text, original asset byte/bounds checks, no private requests/page errors. No signed-device run.
+
+**Remaining:** RN09C-D01 approved measurement/source/insights contract; D02 real scoped insights/coverage/eligibility/recovery; D03 detail pages 10570:192/193, navigation and PD-12 forecast decision; D04 signed-device/accessibility. Existing deferred work remains pending.
+
+**Next:** Next: implement RN-09d Settings, as explicitly requested. This task is a local commit only. No push, merge, backend, cloud, native project regeneration/signing or live-data/permission/restriction action occurred. Original user packs/workspace files remain untracked and excluded. Bytecode exports do not certify native device rendering, accessibility or policy outcomes.
 
 
 ### Entry template

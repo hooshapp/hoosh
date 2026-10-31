@@ -48,3 +48,5 @@ RN-09b adds the unchanged 14×14 `icons/quests/pencil.svg` from the original
 The manifest stores its original-byte hash/path. Quests reuses the existing 16×16
 check from the identical Figma context asset. All 19 originals are integrity-checked;
 no previous source artwork is rewritten or the full untracked pack committed.
+
+RN-09c History uses the shared Screen, controlled Button and fixed-bound DesignArtwork. Three new original-pack SVG copies and provenance are recorded in `assets/manifest.json`; evidence is under Plan 04 artifacts/rn-09c. No historical icon is rewired.

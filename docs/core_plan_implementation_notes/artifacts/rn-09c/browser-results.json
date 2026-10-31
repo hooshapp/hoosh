@@ -1,0 +1,193 @@
+{
+  "part": "rn-09c",
+  "browser": "156.0.8078.76",
+  "cases": [
+    {
+      "state": "Unavailable",
+      "passed": true
+    },
+    {
+      "state": "Loading",
+      "passed": true
+    },
+    {
+      "state": "Read error",
+      "passed": true
+    },
+    {
+      "state": "Figma example",
+      "passed": true
+    },
+    {
+      "state": "Zero",
+      "passed": true
+    },
+    {
+      "state": "Missing evidence",
+      "passed": true
+    },
+    {
+      "state": "Ineligible comparison",
+      "passed": true
+    },
+    {
+      "state": "Partial",
+      "passed": true
+    },
+    {
+      "state": "Long text",
+      "passed": true
+    },
+    {
+      "explicitActionsOnly": true
+    },
+    {
+      "asset": "icons/history/comparison.svg",
+      "width": 20,
+      "height": 20,
+      "originalBytes": true
+    },
+    {
+      "asset": "icons/history/next.svg",
+      "width": 20,
+      "height": 20,
+      "originalBytes": true
+    },
+    {
+      "asset": "icons/history/pagination.svg",
+      "width": 32,
+      "height": 8,
+      "originalBytes": true
+    },
+    {
+      "width": 393,
+      "state": "Unavailable",
+      "layout": {
+        "width": 393,
+        "overflow": false,
+        "textOverflow": [],
+        "buttons": []
+      }
+    },
+    {
+      "width": 393,
+      "state": "Figma example",
+      "layout": {
+        "width": 393,
+        "overflow": false,
+        "textOverflow": [],
+        "buttons": [
+          {
+            "width": 48,
+            "height": 48
+          }
+        ]
+      }
+    },
+    {
+      "width": 393,
+      "state": "Long text",
+      "layout": {
+        "width": 393,
+        "overflow": false,
+        "textOverflow": [],
+        "buttons": [
+          {
+            "width": 48,
+            "height": 48
+          }
+        ]
+      }
+    },
+    {
+      "width": 320,
+      "state": "Unavailable",
+      "layout": {
+        "width": 320,
+        "overflow": false,
+        "textOverflow": [],
+        "buttons": []
+      }
+    },
+    {
+      "width": 320,
+      "state": "Figma example",
+      "layout": {
+        "width": 320,
+        "overflow": false,
+        "textOverflow": [],
+        "buttons": [
+          {
+            "width": 48,
+            "height": 48
+          }
+        ]
+      }
+    },
+    {
+      "width": 320,
+      "state": "Long text",
+      "layout": {
+        "width": 320,
+        "overflow": false,
+        "textOverflow": [],
+        "buttons": [
+          {
+            "width": 48,
+            "height": 48
+          }
+        ]
+      }
+    },
+    {
+      "width": 280,
+      "state": "Unavailable",
+      "layout": {
+        "width": 280,
+        "overflow": false,
+        "textOverflow": [],
+        "buttons": []
+      }
+    },
+    {
+      "width": 280,
+      "state": "Figma example",
+      "layout": {
+        "width": 280,
+        "overflow": false,
+        "textOverflow": [],
+        "buttons": [
+          {
+            "width": 48,
+            "height": 48
+          }
+        ]
+      }
+    },
+    {
+      "width": 280,
+      "state": "Long text",
+      "layout": {
+        "width": 280,
+        "overflow": false,
+        "textOverflow": [],
+        "buttons": [
+          {
+            "width": 48,
+            "height": 48
+          }
+        ]
+      }
+    },
+    {
+      "browserTextStress": {
+        "overflow": false,
+        "textOverflow": [],
+        "scrollable": true
+      }
+    }
+  ],
+  "pageErrors": [],
+  "privateRequests": [],
+  "deviceAcceptance": false
+}

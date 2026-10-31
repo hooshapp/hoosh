@@ -12,6 +12,7 @@ import { Screen } from '@/components/ui/screen';
 import './styles.css';
 import { ProtectionSpecimen } from './protection-specimen';
 import { HomeSpecimen } from './home-specimen';
+import { HistorySpecimen } from './history-specimen';
 import { QuestsSpecimen } from './quests-specimen';
 import { ProfileSpecimen } from './profile-specimen';
 import { AccountSpecimen } from './account-specimen';
@@ -120,5 +121,6 @@ createRoot(root).render(
     <ProtectionSpecimen width={width} />
     <HomeSpecimen width={width} />
     <QuestsSpecimen width={width} />
+    <HistorySpecimen width={width} />
   </main>,
 );

@@ -72,7 +72,7 @@ describe('Main navigation', () => {
     expect(screen.queryByText('Quests')).not.toBeOnTheScreen();
     for (const [tab, heading] of [
       ['Quests', 'Your Quests'],
-      ['History', 'Your progress'],
+      ['History', 'Your stats'],
       ['Settings', 'Settings'],
     ] as const) {
       await userEvent.press(screen.getByRole('tab', { name: tab }));
