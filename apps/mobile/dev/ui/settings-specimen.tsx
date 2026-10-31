@@ -13,7 +13,7 @@ const ready = (text: string | null): SettingsValue => ({
   state: 'ready',
   text,
 });
-const example: SettingsModel = {
+export const example: SettingsModel = {
   account: {
     identity: {
       user_id: 'b0bbcfac-c011-46a8-a795-24c7777b6de9',

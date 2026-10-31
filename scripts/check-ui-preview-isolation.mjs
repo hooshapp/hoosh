@@ -22,6 +22,7 @@ const forbiddenMarkers = [
   'RN09D_SETTINGS_SPECIMEN_ONLY',
   'RN09D_TEST_ONLY',
   'RN09E_EDITOR_ONLY',
+  'RN09F_PREFERENCES_ONLY',
 ];
 
 async function exportedFiles(directory) {

@@ -4,9 +4,9 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN-09e Quest editor UI and reusable draft controls UI implemented. Live integrations/device checks remain deferred. Continue RN-09f preference editors, then RN-09g shared plan editors and RN-09h History details/navigation/whole-UI verification. Existing integration/device gates remain pending.
+**Current part:** RN-09f Preference detail and inline gender UI UI implemented. Live integrations/device checks remain deferred. Continue RN-09g shared days/hours/sessions editors, then RN-09h History details/navigation and complete UI verification. Actual permitted choices, native picker, shared schemas, guarded persistence and signed-device validation remain deferred.
 
-**Implementation branch:** `task/react-native/rn-09-detail-ui`; RN-09e parent `4cf7b30`; no push/main merge.
+**Implementation branch:** `task/react-native/rn-09-detail-ui`; RN-09f parent `3c9d20d`; no push/main merge.
 
 **Commit reference:** RN-01 `2f88102`; RN-02 `2d5c0d1`; RN-03 `0741758`; RN-04 `610f570`; RN-05 preparation `0c6e4db`; RN-07 UI `5790302`; RN-08 preparation `71da2d5`; RN-09a `ff75039`. RN-10 is `9b5fbd0`.
 
@@ -16,8 +16,8 @@
 
 ## Resume here
 
-- Latest: **RN-09e Quest editor UI and reusable draft controls**, subject `feat(mobile): complete quest editor presentation and local draft flow`. Continue RN-09f preference editors, then RN-09g shared plan editors and RN-09h History details/navigation/whole-UI verification. Existing integration/device gates remain pending.
-- Actual validation: Workspace typecheck/lint and web export passed (41 original assets, fixture-isolation guard); targeted iOS/Android quest/editor/navigation component suite passed 66 tests in 8 suites; developer Vite build passed and actual Personalize screenshot visually inspected. Final full regression/native exports and broader browser evidence follow in RN-09h.
+- Latest: **RN-09f Preference detail and inline gender UI**, subject `feat(mobile): complete preference editors and inline Settings composition`. Continue RN-09g shared days/hours/sessions editors, then RN-09h History details/navigation and complete UI verification. Actual permitted choices, native picker, shared schemas, guarded persistence and signed-device validation remain deferred.
+- Actual validation: Workspace typecheck/lint, Vite developer build and web export passed (60 original SVGs; 38 app JS/HTML files isolated); 52 targeted iOS/Android component tests in 6 suites passed. Browser runner passed 13 state/responsive/enlarged-text cases and verified 30 distinct visible original assets against root sizes/served bytes. Activities and Age actual captures visually inspected. Full regression/native build acceptance follows in RN-09h.
 - UI-only local drafts are not accepted wire/policy schemas or saved outcomes. Existing RN07/08/09/10/Auth/API/native and signed-device gates remain open. Anisha owns Auth/onboarding/iOS; Ishmum shared UI/Android/backend. No cloud/native state was changed.
 - User icon packs and workspace file remain untracked/excluded. Continue the same notes file and original plan ledger for each sequential UI part.
 
@@ -1256,7 +1256,7 @@ Figma 27:157 from full reviewed context/screenshot in read-only session 26dd22ea
 
 ### RN-09e — Quest editor UI and reusable draft controls
 
-**Hash:** Pending; resolve by `feat(mobile): complete quest editor presentation and local draft flow`.
+**Hash:** `3c9d20d` (recorded in the next UI part).
 **Date:** 2026-10-30. **Owner:** Ishmum. **Branch:** `task/react-native/rn-09-detail-ui`. **Parent:** `4cf7b30`.
 **Status:** Independent UI implemented and validated; live persistence/native policy and device acceptance remain pending.
 
@@ -1314,6 +1314,107 @@ Source frames 10487:126 and 10577:427, full context/screenshots read in Figma se
 **Actual validation:** Workspace typecheck/lint and web export passed (41 original assets, fixture-isolation guard); targeted iOS/Android quest/editor/navigation component suite passed 66 tests in 8 suites; developer Vite build passed and actual Personalize screenshot visually inspected. Final full regression/native exports and broader browser evidence follow in RN-09h.
 
 **Remaining / next:** Continue RN-09f preference editors, then RN-09g shared plan editors and RN-09h History details/navigation/whole-UI verification. Existing integration/device gates remain pending.
+
+No push/merge, Supabase/API/database/native permission/restriction action or signed-device run occurred. Compilation/browser checks do not certify physical-device accessibility or native protection.
+
+
+### RN-09f — Preference detail and inline gender UI
+
+**Hash:** Pending; resolve by `feat(mobile): complete preference editors and inline Settings composition`.
+**Date:** 2026-10-30. **Owner:** Ishmum. **Branch:** `task/react-native/rn-09-detail-ui`. **Parent:** `3c9d20d`.
+**Status:** Independent UI implemented and validated; live persistence/native policy and device acceptance remain pending.
+
+#### Every changed file and logical change
+
+Ranges refer to this commit. Deletions cite parent ranges; binary captures have dimensions. Existing historical entries remain valid for their own commits.
+
+| File and lines | Change and reason |
+|---|---|
+| `apps/mobile/assets/icons/preference/arts.svg`: lines 1–10 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/preference/back.svg`: lines 1–3 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/preference/checked.svg`: lines 1–5 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/preference/cooking.svg`: lines 1–10 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/preference/custom.svg`: lines 1–10 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/preference/gym.svg`: lines 1–10 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/preference/instagram.svg`: lines 1–3 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/preference/move.svg`: lines 1–10 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/preference/music.svg`: lines 1–3 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/preference/radio.svg`: lines 1–5 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/preference/reading.svg`: lines 1–3 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/preference/search.svg`: lines 1–3 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/preference/snapchat.svg`: lines 1–10 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/preference/spotify.svg`: lines 1–4 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/preference/summaryCheck.svg`: lines 1–5 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/preference/tiktok.svg`: lines 1–3 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/preference/walking.svg`: lines 1–3 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/preference/whatsapp.svg`: lines 1–3 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/icons/preference/youtube.svg`: lines 1–3 | Copy the unchanged original Figma SVG from the user pack; preserve source roots, colors, bytes and manifest provenance. |
+| `apps/mobile/assets/manifest.json`: lines 466–693 | Record original asset nodes, roots, byte hashes/lengths and pack paths; reuse exact existing originals. |
+| `apps/mobile/dev/ui/main.tsx`: lines 15–15 | Exercise the real component in the separate developer gallery with clearly simulated examples and local-only edits; no sample account/data enters actual routes. |
+| `apps/mobile/dev/ui/main.tsx`: lines 130–130 | Exercise the real component in the separate developer gallery with clearly simulated examples and local-only edits; no sample account/data enters actual routes. |
+| `apps/mobile/dev/ui/preference-specimen.tsx`: lines 1–26 | Exercise the real component in the separate developer gallery with clearly simulated examples and local-only edits; no sample account/data enters actual routes. |
+| `apps/mobile/dev/ui/settings-specimen.tsx`: lines 16–16 | Exercise the real component in the separate developer gallery with clearly simulated examples and local-only edits; no sample account/data enters actual routes. |
+| `apps/mobile/src/app/quest/new.tsx`: old lines 3–3 at `3c9d20d` | Remove superseded placeholder/wording while preserving real integration prerequisites. |
+| `apps/mobile/src/app/quest/new.tsx`: lines 6–6 | Implement the independent UI/provenance/evidence/route handoff described below, preserving existing ownership and live-data boundaries. |
+| `apps/mobile/src/app/quest/new.tsx`: old lines 10–11 at `3c9d20d` | Remove superseded placeholder/wording while preserving real integration prerequisites. |
+| `apps/mobile/src/app/quest/new.tsx`: lines 10–11 | Implement the independent UI/provenance/evidence/route handoff described below, preserving existing ownership and live-data boundaries. |
+| `apps/mobile/src/app/quest/new.tsx`: lines 13–13 | Implement the independent UI/provenance/evidence/route handoff described below, preserving existing ownership and live-data boundaries. |
+| `apps/mobile/src/app/settings/[field].tsx`: lines 1–20 | Implement the independent UI/provenance/evidence/route handoff described below, preserving existing ownership and live-data boundaries. |
+| `apps/mobile/src/design/preference-assets.ts`: lines 1–43 | Statically import original local assets and retain exact root dimensions at callsites; no runtime Figma URLs. |
+| `apps/mobile/src/features/editors/editor-controls.tsx`: lines 3–3 | Implement Choice, EditorActions, LeaveConfirmation, EditorPage, TimeControl: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/editors/editor-controls.tsx`: lines 15–15 | Implement Choice, EditorActions, LeaveConfirmation, EditorPage, TimeControl: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/editors/editor-controls.tsx`: lines 17–17 | Implement Choice, EditorActions, LeaveConfirmation, EditorPage, TimeControl: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/editors/editor-controls.tsx`: lines 25–26 | Implement Choice, EditorActions, LeaveConfirmation, EditorPage, TimeControl: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/editors/editor-controls.tsx`: lines 32–33 | Implement Choice, EditorActions, LeaveConfirmation, EditorPage, TimeControl: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/editors/editor-controls.tsx`: lines 43–43 | Implement Choice, EditorActions, LeaveConfirmation, EditorPage, TimeControl: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/editors/editor-controls.tsx`: lines 56–57 | Implement Choice, EditorActions, LeaveConfirmation, EditorPage, TimeControl: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/editors/editor-controls.tsx`: lines 61–61 | Implement Choice, EditorActions, LeaveConfirmation, EditorPage, TimeControl: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/editors/editor-controls.tsx`: lines 63–64 | Implement Choice, EditorActions, LeaveConfirmation, EditorPage, TimeControl: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/editors/editor-controls.tsx`: lines 66–67 | Implement Choice, EditorActions, LeaveConfirmation, EditorPage, TimeControl: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/editors/use-route-draft-guard.tsx`: lines 1–13 | Implement useRouteDraftGuard: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/preferences/README.md`: lines 1–32 | Synchronize scope, current progress, UI-only adapters, source provenance, remaining integration/device gates and handoff. |
+| `apps/mobile/src/features/preferences/preference-editors.test.tsx`: lines 1–39 | Verify real draft/state/action boundaries, validation and absence of invented saved or measured outcomes on both iOS/Android component projects. |
+| `apps/mobile/src/features/preferences/preference-editors.tsx`: lines 1–97 | Implement AgeEditor, GenderEditor, ActivitiesEditor, AppsEditor: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/settings/settings-row.tsx`: lines 1–1 | Implement SettingsRow: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/settings/settings-row.tsx`: lines 21–21 | Implement SettingsRow: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/settings/settings-row.tsx`: lines 33–33 | Implement SettingsRow: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/settings/settings-row.tsx`: lines 43–43 | Implement SettingsRow: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/settings/settings-row.tsx`: lines 54–54 | Implement SettingsRow: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/settings/settings-row.tsx`: lines 60–60 | Implement SettingsRow: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/settings/settings-row.tsx`: lines 65–65 | Implement SettingsRow: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/settings/settings-row.tsx`: lines 70–70 | Implement SettingsRow: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/settings/settings-row.tsx`: lines 81–81 | Implement SettingsRow: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/settings/settings-row.tsx`: lines 84–85 | Implement SettingsRow: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/settings/settings-screen.tsx`: lines 1–1 | Implement SettingsScreen: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/settings/settings-screen.tsx`: lines 24–24 | Implement SettingsScreen: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/settings/settings-screen.tsx`: lines 32–32 | Implement SettingsScreen: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/settings/settings-screen.tsx`: lines 105–105 | Implement SettingsScreen: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/settings/settings-screen.tsx`: lines 132–132 | Implement SettingsScreen: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/settings/settings-screen.tsx`: lines 140–140 | Implement SettingsScreen: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `apps/mobile/src/features/settings/settings-screen.tsx`: lines 151–151 | Implement SettingsScreen: controlled local presentation and supported intents, preserving explicit availability, accessible wrapping controls and source hierarchy. |
+| `docs/core_plan/04_react_native_integration.md`: lines 486–486 | Synchronize scope, current progress, UI-only adapters, source provenance, remaining integration/device gates and handoff. |
+| `docs/core_plan_implementation_notes/artifacts/check-detail-ui.mjs`: lines 1–51 | Record/reproduce observed browser/build evidence with explicit false native-device/live-service acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09f/activities.png`: binary PNG, 393×853, 35487 bytes | Actual browser capture of the indicated source-aligned component or state; no account/device outcome is implied. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09f/age.png`: binary PNG, 393×853, 25698 bytes | Actual browser capture of the indicated source-aligned component or state; no account/device outcome is implied. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09f/apps.png`: binary PNG, 393×853, 39661 bytes | Actual browser capture of the indicated source-aligned component or state; no account/device outcome is implied. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09f/browser-results.json`: lines 1–511 | Record/reproduce observed browser/build evidence with explicit false native-device/live-service acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09f/gender.png`: binary PNG, 393×853, 37701 bytes | Actual browser capture of the indicated source-aligned component or state; no account/device outcome is implied. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09f/large-text-320.png`: binary PNG, 320×853, 48737 bytes | Actual browser capture of the indicated source-aligned component or state; no account/device outcome is implied. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09f/long-text.png`: binary PNG, 393×853, 54161 bytes | Actual browser capture of the indicated source-aligned component or state; no account/device outcome is implied. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09f/native-unavailable.png`: binary PNG, 393×853, 28054 bytes | Actual browser capture of the indicated source-aligned component or state; no account/device outcome is implied. |
+| `scripts/check-ui-preview-isolation.mjs`: lines 25–25 | Implement the independent UI/provenance/evidence/route handoff described below, preserving existing ownership and live-data boundaries. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1–25 | Refresh current branch, UI scope, actual checks and next handoff. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1164–1164 | Record the known preceding commit hash during a normal notes update. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1259–1259 | Record the known preceding commit hash during a normal notes update. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1321–1421 | Record this full file/line change table, decisions, actual validation and remaining work in the code commit. |
+
+#### Decisions and boundaries
+
+Reviewed full original contexts/screenshots for age 10601:5908, activities 10601:6057, apps 10601:5968 and gender 10601:6146. Age/Gender choices and optional null are supplied rather than inventing collection/range policy. Source age wheel is an accessible bounded radio list; selection text separates 44 px number and 13 px years-old suffix. Activities support multi-select/custom text preservation and blank-custom validation. Catalog search preserves all selected IDs across filters; a separate native handoff has no synthetic catalog/tokens/success. Source examples remain solely in developer UI. Add exact preference arrow/check slots to shared page/action controls and a controlled inline-editor slot to Settings/rows, including rotated original chevron and source expanded borders. Refactor the real quest/preference dirty-route guard through one public usePreventRemove wrapper; no duplicated auth or draft persistence authority. Real detail routes use unavailable inputs and no saves. Original pack files are preferred; missing node filenames use curl on exact context-provided originals, with recorded node/hash/root provenance. No runtime temporary URLs. Persistent labels, optional demographic clearing, enlarged touch targets and accessible contrast are intentional source adaptations. Reuse the developer Settings example for source inline composition without duplicating runtime fixtures. Record preceding 3c9d20d via the normal notes update.
+
+**Actual validation:** Workspace typecheck/lint, Vite developer build and web export passed (60 original SVGs; 38 app JS/HTML files isolated); 52 targeted iOS/Android component tests in 6 suites passed. Browser runner passed 13 state/responsive/enlarged-text cases and verified 30 distinct visible original assets against root sizes/served bytes. Activities and Age actual captures visually inspected. Full regression/native build acceptance follows in RN-09h.
+
+**Remaining / next:** Continue RN-09g shared days/hours/sessions editors, then RN-09h History details/navigation and complete UI verification. Actual permitted choices, native picker, shared schemas, guarded persistence and signed-device validation remain deferred.
 
 No push/merge, Supabase/API/database/native permission/restriction action or signed-device run occurred. Compilation/browser checks do not certify physical-device accessibility or native protection.
 

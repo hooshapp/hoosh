@@ -1,6 +1,6 @@
 import { parseTime, formatTime } from './draft-utils';
 import { useEffect, useRef, useState, type ComponentRef, type PropsWithChildren } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View, type StyleProp, type TextStyle, type ViewStyle } from 'react-native';
 import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/field';
 import { DesignArtwork, type DesignAsset } from '@/components/ui/design-artwork';
@@ -12,9 +12,9 @@ import { colors, fonts } from '@/design/tokens';
 import { questeditorAssets as assets } from '@/design/questeditor-assets';
 
 export type EditorState = 'ready' | 'saving' | 'error' | 'conflict' | 'unconfirmed' | 'unavailable';
-export function Choice({ label, checked, onPress, disabled = false, radio = false, indicator, leading, compact = false }: {
+export function Choice({ label, checked, onPress, disabled = false, radio = false, indicator, leading, compact = false, labelStyle, style, labelVisual }: {
   label: string; checked: boolean; onPress: () => void; disabled?: boolean; radio?: boolean;
-  indicator?: DesignAsset; leading?: React.ReactNode; compact?: boolean;
+  indicator?: DesignAsset; leading?: React.ReactNode; compact?: boolean; labelStyle?: StyleProp<TextStyle>; style?: StyleProp<ViewStyle>; labelVisual?: React.ReactNode;
 }) {
   const [focused, setFocused] = useState(false);
   const press = usePressGuard(onPress, disabled);
@@ -22,15 +22,15 @@ export function Choice({ label, checked, onPress, disabled = false, radio = fals
     accessibilityState={{ checked, disabled }} aria-checked={checked} disabled={disabled}
     onPress={press} onFocus={() => setFocused(true)} onBlur={() => setFocused(false)}
     style={[editorStyles.choice, compact && editorStyles.compact, checked && editorStyles.selected, compact && checked && { backgroundColor: colors.action, borderColor: colors.action },
-      focused && { outlineWidth: 2, outlineStyle: 'solid', outlineColor: colors.success, outlineOffset: 2 }]}>
-    {leading}<Text style={[editorStyles.choiceLabel, compact && { textAlign: 'center' }]}>{label}</Text>
+      focused && { outlineWidth: 2, outlineStyle: 'solid', outlineColor: colors.success, outlineOffset: 2 }, style]}>
+    {leading}{labelVisual ?? <Text style={[editorStyles.choiceLabel, compact && { textAlign: 'center' }, labelStyle]}>{label}</Text>}
     {!compact ? <View style={[editorStyles.indicator, radio && { borderRadius: 11 }, checked && { backgroundColor: colors.readableSuccess, borderColor: colors.readableSuccess }]}>
       {checked && indicator ? <DesignArtwork asset={indicator} /> : null}
     </View> : null}
   </Pressable>;
 }
-export function EditorActions({ state, dirty, valid = true, onSave, onDiscard, saveLabel = 'Save changes' }: {
-  state: EditorState; dirty: boolean; valid?: boolean; onSave?: () => void; onDiscard?: () => void; saveLabel?: string;
+export function EditorActions({ state, dirty, valid = true, onSave, onDiscard, saveLabel = 'Save changes', checkAsset = assets.check }: {
+  state: EditorState; dirty: boolean; valid?: boolean; onSave?: () => void; onDiscard?: () => void; saveLabel?: string; checkAsset?: DesignAsset;
 }) {
   const blocked = ['saving', 'unavailable', 'conflict', 'unconfirmed'].includes(state);
   const message = state === 'error' ? 'Changes couldn’t be saved. Your draft is still here.'
@@ -40,7 +40,7 @@ export function EditorActions({ state, dirty, valid = true, onSave, onDiscard, s
   return <View style={editorStyles.actions}>
     {message ? <InlineStatus state={state === 'error' || state === 'conflict' ? 'error' : 'unavailable'} message={message} /> : null}
     <Button label={saveLabel} disabled={!dirty || !valid || blocked || !onSave} busy={state === 'saving'} busyLabel="Saving…"
-      onPress={() => onSave?.()} leadingVisual={<DesignArtwork asset={assets.check} />} style={editorStyles.save} labelStyle={editorStyles.saveText} />
+      onPress={() => onSave?.()} leadingVisual={<DesignArtwork asset={checkAsset} />} style={editorStyles.save} labelStyle={editorStyles.saveText} />
     {dirty && onDiscard ? <Button label="Discard changes" variant="secondary" disabled={state === 'saving'} onPress={onDiscard} /> : null}
   </View>;
 }
@@ -53,17 +53,18 @@ export function LeaveConfirmation({ onKeep, onDiscard }: { onKeep: () => void; o
     <Button label="Discard and leave" variant="secondary" onPress={onDiscard} />
   </View>;
 }
-export function EditorPage({ title, subtitle, dirty = false, busy = false, onBack, children }: PropsWithChildren<{
-  title: string; subtitle?: string; dirty?: boolean; busy?: boolean; onBack: () => void;
+export function EditorPage({ title, subtitle, dirty = false, busy = false, onBack, children, variant = 'quest', backAsset = assets.back }: PropsWithChildren<{
+  title: string; subtitle?: string; dirty?: boolean; busy?: boolean; onBack: () => void; variant?: 'quest' | 'detail'; backAsset?: DesignAsset;
 }>) {
   const [leaving, setLeaving] = useState(false);
   const back = useRef<ComponentRef<typeof Button>>(null);
-  return <Screen title={title} header={null} contentStyle={editorStyles.page}>
+  return <Screen title={title} header={null} contentStyle={[editorStyles.page, variant === 'detail' && { paddingHorizontal: 20 }]}>
     <View style={editorStyles.navigation}>
-      <Button ref={back} label="" accessibilityLabel="Back" variant="secondary" disabled={busy}
-        leadingVisual={<DesignArtwork asset={assets.back} />} style={editorStyles.back}
+      <Button ref={back} label={variant === 'detail' ? 'Back' : ''} accessibilityLabel="Back" variant="secondary" disabled={busy}
+        leadingVisual={<DesignArtwork asset={backAsset} />} style={[editorStyles.back, variant === 'detail' && { width: 76, borderWidth: 0, backgroundColor: 'transparent' }]} labelStyle={{ fontSize: 14 }}
         onPress={() => dirty ? setLeaving(true) : onBack()} />
-      <Text accessibilityRole="header" style={editorStyles.title}>{title}</Text>
+      <Text accessibilityRole="header" style={[editorStyles.title, variant === 'detail' && { fontSize: 17, lineHeight: 23, textAlign: 'center' }]}>{title}</Text>
+      {variant === 'detail' ? <View style={{ width: 76 }} /> : null}
     </View>
     {subtitle ? <Text style={editorStyles.body}>{subtitle}</Text> : null}
     {leaving ? <LeaveConfirmation onKeep={() => { setLeaving(false); focusControl(back.current); }} onDiscard={onBack} /> : null}

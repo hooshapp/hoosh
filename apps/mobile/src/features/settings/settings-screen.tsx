@@ -1,4 +1,4 @@
-import type { PropsWithChildren } from 'react';
+import type { PropsWithChildren, ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button } from '@/components/ui/button';
 import { DesignArtwork } from '@/components/ui/design-artwork';
@@ -21,6 +21,7 @@ export type SettingsScreenProps = {
   onRetry?: () => void;
   /** Host owns draft/validation/persistence. Never instantiated with a fake session. */
   profileForm?: ProfileFormProps;
+  inlineEditor?: { field: 'gender' | 'days' | 'hours' | 'sessions'; content: ReactNode };
 };
 export function SettingsScreen({
   model,
@@ -28,6 +29,7 @@ export function SettingsScreen({
   onEditProfile,
   onRetry,
   profileForm,
+  inlineEditor,
 }: SettingsScreenProps) {
   const values = [
     model.apps,
@@ -100,6 +102,7 @@ export function SettingsScreen({
               iconID="settings-gender"
               inline
               onPress={onEdit.gender}
+          inlineEditor={inlineEditor?.field === 'gender' ? inlineEditor.content : undefined}
             />
           </Section>
         ) : null}
@@ -126,6 +129,7 @@ export function SettingsScreen({
             icon={settingsAssets.calendar}
             iconID="settings-calendar"
             onPress={onEdit.days}
+          inlineEditor={inlineEditor?.field === 'days' ? inlineEditor.content : undefined}
           />
           <SettingsRow
             label="Active Hours"
@@ -133,6 +137,7 @@ export function SettingsScreen({
             icon={settingsAssets.clock}
             iconID="settings-clock"
             onPress={onEdit.hours}
+          inlineEditor={inlineEditor?.field === 'hours' ? inlineEditor.content : undefined}
           />
           <View style={styles.sessionGroup}>
             <SettingsRow
@@ -143,6 +148,7 @@ export function SettingsScreen({
               green
               grouped
               onPress={onEdit.sessions}
+          inlineEditor={inlineEditor?.field === 'sessions' ? inlineEditor.content : undefined}
             />
             <View style={styles.context}>
               <DesignArtwork

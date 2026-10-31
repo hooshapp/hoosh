@@ -1,0 +1,511 @@
+{
+  "part": "rn-09f",
+  "cases": [
+    {
+      "state": "Activities",
+      "rendered": true
+    },
+    {
+      "state": "Age",
+      "rendered": true
+    },
+    {
+      "state": "Apps",
+      "rendered": true
+    },
+    {
+      "state": "Native unavailable",
+      "rendered": true
+    },
+    {
+      "state": "Gender",
+      "rendered": true
+    },
+    {
+      "state": "Long text",
+      "rendered": true
+    },
+    {
+      "width": 393,
+      "state": "Activities",
+      "layout": {
+        "overflow": false,
+        "targets": [
+          {
+            "width": 76,
+            "height": 44
+          },
+          {
+            "width": 353,
+            "height": 48
+          },
+          {
+            "width": 353,
+            "height": 48
+          },
+          {
+            "width": 353,
+            "height": 48
+          },
+          {
+            "width": 353,
+            "height": 48
+          },
+          {
+            "width": 353,
+            "height": 48
+          },
+          {
+            "width": 353,
+            "height": 48
+          },
+          {
+            "width": 351,
+            "height": 48
+          },
+          {
+            "width": 353,
+            "height": 52
+          },
+          {
+            "width": 353,
+            "height": 48
+          }
+        ]
+      }
+    },
+    {
+      "width": 393,
+      "state": "Long text",
+      "layout": {
+        "overflow": false,
+        "targets": [
+          {
+            "width": 76,
+            "height": 44
+          },
+          {
+            "width": 353,
+            "height": 58
+          },
+          {
+            "width": 353,
+            "height": 58
+          },
+          {
+            "width": 353,
+            "height": 58
+          },
+          {
+            "width": 353,
+            "height": 58
+          },
+          {
+            "width": 353,
+            "height": 58
+          },
+          {
+            "width": 353,
+            "height": 58
+          },
+          {
+            "width": 351,
+            "height": 48
+          },
+          {
+            "width": 353,
+            "height": 52
+          },
+          {
+            "width": 353,
+            "height": 48
+          }
+        ]
+      }
+    },
+    {
+      "width": 320,
+      "state": "Activities",
+      "layout": {
+        "overflow": false,
+        "targets": [
+          {
+            "width": 76,
+            "height": 44
+          },
+          {
+            "width": 280,
+            "height": 48
+          },
+          {
+            "width": 280,
+            "height": 48
+          },
+          {
+            "width": 280,
+            "height": 48
+          },
+          {
+            "width": 280,
+            "height": 48
+          },
+          {
+            "width": 280,
+            "height": 48
+          },
+          {
+            "width": 280,
+            "height": 48
+          },
+          {
+            "width": 278,
+            "height": 48
+          },
+          {
+            "width": 280,
+            "height": 52
+          },
+          {
+            "width": 280,
+            "height": 48
+          }
+        ]
+      }
+    },
+    {
+      "width": 320,
+      "state": "Long text",
+      "layout": {
+        "overflow": false,
+        "targets": [
+          {
+            "width": 76,
+            "height": 44
+          },
+          {
+            "width": 280,
+            "height": 58
+          },
+          {
+            "width": 280,
+            "height": 58
+          },
+          {
+            "width": 280,
+            "height": 78
+          },
+          {
+            "width": 280,
+            "height": 58
+          },
+          {
+            "width": 280,
+            "height": 58
+          },
+          {
+            "width": 280,
+            "height": 58
+          },
+          {
+            "width": 278,
+            "height": 48
+          },
+          {
+            "width": 280,
+            "height": 52
+          },
+          {
+            "width": 280,
+            "height": 48
+          }
+        ]
+      }
+    },
+    {
+      "width": 280,
+      "state": "Activities",
+      "layout": {
+        "overflow": false,
+        "targets": [
+          {
+            "width": 76,
+            "height": 44
+          },
+          {
+            "width": 240,
+            "height": 48
+          },
+          {
+            "width": 240,
+            "height": 48
+          },
+          {
+            "width": 240,
+            "height": 48
+          },
+          {
+            "width": 240,
+            "height": 48
+          },
+          {
+            "width": 240,
+            "height": 48
+          },
+          {
+            "width": 240,
+            "height": 48
+          },
+          {
+            "width": 238,
+            "height": 48
+          },
+          {
+            "width": 240,
+            "height": 52
+          },
+          {
+            "width": 240,
+            "height": 48
+          }
+        ]
+      }
+    },
+    {
+      "width": 280,
+      "state": "Long text",
+      "layout": {
+        "overflow": false,
+        "targets": [
+          {
+            "width": 76,
+            "height": 44
+          },
+          {
+            "width": 240,
+            "height": 98
+          },
+          {
+            "width": 240,
+            "height": 98
+          },
+          {
+            "width": 240,
+            "height": 98
+          },
+          {
+            "width": 240,
+            "height": 98
+          },
+          {
+            "width": 240,
+            "height": 98
+          },
+          {
+            "width": 240,
+            "height": 98
+          },
+          {
+            "width": 238,
+            "height": 48
+          },
+          {
+            "width": 240,
+            "height": 52
+          },
+          {
+            "width": 240,
+            "height": 48
+          }
+        ]
+      }
+    },
+    {
+      "largeText320": true
+    }
+  ],
+  "assets": [
+    {
+      "file": "icons/preference/back.svg",
+      "width": 18,
+      "height": 18,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/preference/gym.svg",
+      "width": 18,
+      "height": 18,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/preference/checked.svg",
+      "width": 15,
+      "height": 15,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/preference/reading.svg",
+      "width": 18,
+      "height": 18,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/preference/arts.svg",
+      "width": 18,
+      "height": 18,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/preference/walking.svg",
+      "width": 18,
+      "height": 18,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/preference/music.svg",
+      "width": 18,
+      "height": 18,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/preference/cooking.svg",
+      "width": 18,
+      "height": 18,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/preference/custom.svg",
+      "width": 18,
+      "height": 18,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/home/check.svg",
+      "width": 16,
+      "height": 16,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/preference/move.svg",
+      "width": 14,
+      "height": 14,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/preference/search.svg",
+      "width": 18,
+      "height": 18,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/preference/instagram.svg",
+      "width": 24,
+      "height": 24,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/preference/tiktok.svg",
+      "width": 24,
+      "height": 24,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/preference/youtube.svg",
+      "width": 24,
+      "height": 24,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/preference/snapchat.svg",
+      "width": 24,
+      "height": 24,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/preference/whatsapp.svg",
+      "width": 24,
+      "height": 24,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/preference/spotify.svg",
+      "width": 36,
+      "height": 36,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/preference/summaryCheck.svg",
+      "width": 14,
+      "height": 14,
+      "originalBytes": true
+    },
+    {
+      "file": "account/settings-avatar.svg",
+      "width": 52,
+      "height": 52,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/settings/user.svg",
+      "width": 18,
+      "height": 18,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/settings/gender.svg",
+      "width": 18,
+      "height": 18,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/settings/chevron.svg",
+      "width": 16,
+      "height": 16,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/preference/radio.svg",
+      "width": 22,
+      "height": 22,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/settings/apps.svg",
+      "width": 18,
+      "height": 18,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/settings/activities.svg",
+      "width": 18,
+      "height": 18,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/settings/calendar.svg",
+      "width": 18,
+      "height": 18,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/settings/clock.svg",
+      "width": 18,
+      "height": 18,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/settings/timer.svg",
+      "width": 18,
+      "height": 18,
+      "originalBytes": true
+    },
+    {
+      "file": "icons/settings/info.svg",
+      "width": 14,
+      "height": 14,
+      "originalBytes": true
+    }
+  ],
+  "errors": [],
+  "privateRequests": [],
+  "nativeDeviceAcceptance": false
+}
