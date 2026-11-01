@@ -45,3 +45,28 @@ responses remain framework protocol responses, with correlation headers.
 API-01 checks: `npm run api:lint` and `npm run api:test` (58 cases on 2026-11-01).
 No provider/project/account or database state was changed. Live verification still
 requires the SB metadata handoff and a real disposable user's access token.
+
+## API-02 signature and claim policy
+
+`SupabaseTokenVerifier` consumes an async public-key resolver and returns immutable
+`VerifiedIdentity`. PyJWT 2.15.1 + cryptography are locked through uv. Key metadata,
+public-only material, P-256/RSA compatibility and RSA 2048–8192-bit resource bounds
+are checked before verification. Token framing is limited to 16 KiB; duplicate JSON
+members/nonfinite numbers, malformed key IDs and unsupported JOSE extensions or
+token-supplied key URLs are rejected before discovery. Untrusted JSON is checked
+only for framing; it cannot authorize a subject.
+
+Signature, exact issuer and single-string audience verification stay enabled in
+PyJWT. Temporal checks use an injectable clock with strict finite NumericDate
+values, configured skew, future-issue/not-before rejection and positive validity
+intervals. Expiration is classified only after other identity/trust checks. Require
+`exp`, `iat`, `sub`, `iss`, `aud`, role `authenticated` and boolean `is_anonymous`;
+an otherwise valid anonymous session gets 403. Optional email is only a verified
+string/null display value; metadata is ignored for authorization. No database/user
+lookup is performed, so offline signature verification does not prove immediate
+revocation after sign-out/deletion. Local user UUID is serialized canonically.
+
+Ephemeral private signing keys and tokens exist only inside tests. No issuer,
+algorithm or test identity is implicitly enabled for the running server. API-03
+adds the real resolver and API-04 exposes the protected route. Live provider-issued
+token verification and actual session integration remain pending.

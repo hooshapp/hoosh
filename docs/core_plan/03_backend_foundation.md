@@ -1,6 +1,6 @@
 # Plan 03 — FastAPI Identity and Profile Foundation
 
-**Status:** API-01 configuration/error/assembly foundation is implemented; API-02–05 are the current authorized sequence. Protected endpoints, key verification and database work remain pending until their individual parts land.\
+**Status:** API-01/02 configuration/error/assembly and deterministic signature verification are implemented. API-03–05 are the current sequence; live discovery, protected route/schema publication and database work remain pending.\
 **Owner:** Ishmum (backend/database). Anisha reviews Auth contracts and participates in live session checks.\
 **Area branch:** `area/backend`; task branches `task/backend/<part>`.\
 **Milestones:** M1 = verified identity without a database; M2 = minimal, isolated, revisioned profile persistence.
@@ -436,8 +436,8 @@ Auth can finish its session work without profiles. The main frontend must not cl
 
 | Part | Status | Actual commit | Evidence / notes |
 |---|---|---|---|
-| API-01 | Implemented; live trust handoff pending | Resolve by `feat(api): add identity configuration and structured errors` | 58 backend tests and Ruff; [Plan 03 notes](../core_plan_implementation_notes/plan_03_backend_foundation_notes.md) |
-| API-02 | Pending | — | — |
+| API-01 | Implemented; live trust handoff pending | `8ce121d` | 58 backend tests and Ruff; [Plan 03 notes](../core_plan_implementation_notes/plan_03_backend_foundation_notes.md) |
+| API-02 | Implemented; live provider tokens unverified | Resolve by `feat(auth): verify Supabase access-token signatures and claims` | 194 backend tests and Ruff; Plan 03 notes |
 | API-03 | Pending | — | — |
 | API-04 | Pending | — | — |
 | API-05 | Pending | — | — |
