@@ -4,13 +4,13 @@
 **Owner:** Ishmum. Anisha owns Supabase Auth setup and mobile sessions/onboarding.
 **Branch:** `task/backend/api-01-05`. **Starting commit:** `2703a23`.
 **Last updated:** 2026-11-01.
-**Current part:** API-02 implemented/tested. Implement API-03 async bounded project-pinned discovery/cache/rotation. Actual SB-02 metadata and live tokens remain pending; no protected route is exposed until API-04.
+**Current part:** API-03 implemented/tested. Implement API-04 protected GET /v1/me through the production async verifier. Live SB metadata/token checks and mobile RN-05/06 remain separate; no database/profile routes yet.
 
 ## Resume here
 
-- Latest: **API-02 — Deterministic asymmetric signature and claim verification**, subject `feat(auth): verify Supabase access-token signatures and claims`, parent `8ce121d`.
-- Validation: `ruff check services/api`: passed; `pytest services/api/tests -q`: 194 passed. ES256 and RS256 signatures use ephemeral keys, controlled resolver and fixed clock; there were no live network/cloud checks. Dependency lock resolved PyJWT 2.15.1 and cryptography 50.0.2.
-- Next / remaining: Implement API-03 async bounded project-pinned discovery/cache/rotation. Actual SB-02 metadata and live tokens remain pending; no protected route is exposed until API-04.
+- Latest: **API-03 — Bounded project-pinned JWKS resolution and lifespan**, subject `feat(auth): resolve and cache project-pinned signing keys`, parent `bdd62a6`.
+- Validation: `ruff check services/api`: passed; `pytest services/api/tests -q`: 223 passed. Async tests exercise 100 coalesced cold callers, 200 unknown IDs/64-entry limit, fake-clock rotation and non-sliding negatives, actual 30/40ms lock/trickle deadlines, stream close/cancellation recovery and app shutdown. HTTPX2 stays locked at 2.16.0; no cloud/discovery call was made.
+- Next / remaining: Implement API-04 protected GET /v1/me through the production async verifier. Live SB metadata/token checks and mobile RN-05/06 remain separate; no database/profile routes yet.
 - Anisha owns Supabase Auth/session/onboarding; Ishmum backend verification and product DB. No provider, user, redirect, database or native policy was changed. No push/main merge.
 
 ## Recording rules
@@ -83,7 +83,7 @@ Ranges refer to this commit; deleted ranges refer to its parent. The entry trave
 
 ### API-02 — Deterministic asymmetric signature and claim verification
 
-**Hash:** Pending; resolve by `feat(auth): verify Supabase access-token signatures and claims`.
+**Hash:** `bdd62a6` (recorded during the next part).
 **Date:** 2026-11-01. **Owner:** Ishmum. **Branch:** `task/backend/api-01-05`. **Parent:** `8ce121d`.
 **Status:** Implemented and deterministically tested; live Supabase and mobile M1 remain unverified.
 
@@ -126,3 +126,53 @@ Ranges refer to this commit; deleted ranges refer to its parent. The entry trave
 **Actual validation:** `ruff check services/api`: passed; `pytest services/api/tests -q`: 194 passed. ES256 and RS256 signatures use ephemeral keys, controlled resolver and fixed clock; there were no live network/cloud checks. Dependency lock resolved PyJWT 2.15.1 and cryptography 50.0.2.
 
 **Remaining / next:** Implement API-03 async bounded project-pinned discovery/cache/rotation. Actual SB-02 metadata and live tokens remain pending; no protected route is exposed until API-04.
+
+### API-03 — Bounded project-pinned JWKS resolution and lifespan
+
+**Hash:** Pending; resolve by `feat(auth): resolve and cache project-pinned signing keys`.
+**Date:** 2026-11-01. **Owner:** Ishmum. **Branch:** `task/backend/api-01-05`. **Parent:** `bdd62a6`.
+**Status:** Implemented and deterministically tested; live Supabase and mobile M1 remain unverified.
+
+#### Changed files and logical changes
+
+Ranges refer to this commit; deleted ranges refer to its parent. The entry travels with code; resolve its own Pending hash through Git until the next normal update.
+
+| File and lines | What changed and why |
+|---|---|
+| `docs/core_plan/03_backend_foundation.md`: lines 3–3 | Update the implementation status, exact evidence, dependency boundary and handoff described in this entry. |
+| `docs/core_plan/03_backend_foundation.md`: lines 440–441 | Update the implementation status, exact evidence, dependency boundary and handoff described in this entry. |
+| `services/api/AUTH.md`: lines 1–78 | Document ownership, complete runtime/assembly separation, numeric bounds, atomic cache and failure/cancellation policies, rotation/revocation limits, incident cache reset and remaining live evidence with official references. |
+| `services/api/README.md`: lines 73–76 | Update the implementation status, exact evidence, dependency boundary and handoff described in this entry. |
+| `services/api/app/application.py`: lines 10–10 | Initialize the explicit unavailable verifier during pure assembly, preserving failure safety outside an active configured lifespan and for schema export. |
+| `services/api/app/application.py`: lines 22–22 | Initialize the explicit unavailable verifier during pure assembly, preserving failure safety outside an active configured lifespan and for schema export. |
+| `services/api/app/core/auth.py`: lines 174–175 | Reject unpaired surrogate display email before public JSON serialization, so a malformed signed claim cannot turn an authenticated identity response into an encoding failure. |
+| `services/api/app/core/jwks.py`: lines 1–186 | Implement fixed HTTPS discovery with TLS/no redirects/proxies, bounded identity-encoded streaming, strict atomic public-key validation, immutable positive cache, coalesced refresh, finite failure/cancellation backoff and bounded non-sliding negative LRU. Entire lookup including lock wait has an asyncio deadline; shutdown closes the sole owned client. |
+| `services/api/app/main.py`: lines 1–1 | Keep only the Uvicorn entry and runtime factory export; schema tools/tests can import assembly/factory without global environment startup. |
+| `services/api/app/main.py`: lines 3–3 | Keep only the Uvicorn entry and runtime factory export; schema tools/tests can import assembly/factory without global environment startup. |
+| `services/api/app/runtime.py`: lines 1–31 | Move validated runtime construction into an import-safe factory; lifespan installs one real resolver/verifier only for complete settings and restores unavailable verification before resource close. |
+| `services/api/pyproject.toml`: lines 8–8 | Promote existing HTTPX2 to a bounded runtime dependency; remove redundant dev-only declaration. |
+| `services/api/pyproject.toml`: old lines 15–15 at `bdd62a6` | Promote existing HTTPX2 to a bounded runtime dependency; remove redundant dev-only declaration. |
+| `services/api/tests/auth/test_jwks.py`: lines 1–431 | Verify real async/cache paths with local keys, fake clocks and mock streams: coalescing/storm memory, fixed URLs, rotation/retirement, expiry/outage/backoff, malformed/private/oversized/redirect/compressed discovery, lock/trickle deadline, cancellation/recovery and configured/unconfigured/schema lifespans. |
+| `services/api/tests/auth/test_token_verifier.py`: lines 76–76 | Extend both algorithm matrices with malformed Unicode email rejection. |
+| `services/api/uv.lock`: lines 133–133 | Record HTTPX2 runtime ownership without changing the previously locked HTTP client/version. |
+| `services/api/uv.lock`: old lines 140–140 at `bdd62a6` | Record HTTPX2 runtime ownership without changing the previously locked HTTP client/version. |
+| `services/api/uv.lock`: lines 148–148 | Record HTTPX2 runtime ownership without changing the previously locked HTTP client/version. |
+| `services/api/uv.lock`: old lines 155–155 at `bdd62a6` | Record HTTPX2 runtime ownership without changing the previously locked HTTP client/version. |
+| `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 1–20 | Refresh current part, validation and the next handoff without overwriting historical entries. |
+| `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 28–28 | Record the preceding committed part hash in this normal update. |
+| `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 86–86 | Record the preceding committed part hash in this normal update. |
+| `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 130–179 | Record this entire per-commit change table, decisions, real validation and unverified live dependencies. |
+
+#### Decisions and relations
+
+- Promote the existing maintained HTTPX2 client to runtime, retaining the installed async streaming/mock APIs confirmed locally and its official package https://pypi.org/project/httpx2/ . Runtime defaults verify TLS, disable redirects/environment proxies and limit the connection pool to four/two. Only the validated issuer-derived endpoint is fetched, without any user credential. Per-resolution asyncio.timeout covers lock waiting, request and body consumption; no detached thread/task simulates cancellation.
+- Cache immutable key sets atomically after full validation. Known unexpired keys require no fetch. Expired sets never receive stale extension on failure. Refresh lock coalesces concurrent callers; successful short positive TTLs still trigger needed expiry refresh even inside unknown-key cooldown. A provider failure/cancel marks a finite attempt cooldown; it does not leave a lock held or a half-written cache. External cancellation propagates and closes the response stream; later requests succeed after cooldown.
+- Unknown IDs have a 64-entry LRU, 60-second non-sliding expiry capped by positive TTL and 30-second refresh cooldown. Repeated hits only update recency, not expiration, avoiding an accidental sliding suppression of rotated keys. Fresh-cache unknowns within policy return INVALID_TOKEN; required trust fetch failures return AUTH_UNAVAILABLE. Valid empty or solely unsupported-algorithm public sets lack the requested key and deny it; malformed metadata/private material/duplicate IDs fail source validation. Bound all 16 advertised entries rather than only usable ones to constrain parsing work.
+- Request identity encoding and reject compressed responses before decoding, as well as wrong media/status, excess declared/actual streamed size, invalid/truncated length and malformed JSON. This keeps body limits meaningful under a malicious/broken source. Other advertised algorithms are never enabled; configured algorithms still require public compatible key data. Header URLs cannot redirect this client.
+- Extract runtime factory from main to prevent tests/schema tools importing a globally configured app. Pure assembly always starts unavailable. Configured lifespan creates exactly one resolver, installs the real verifier, restores unavailable state before closing; local shell/schema lifespans create none. Health remains independent and performs no initial key fetch. Secret settings are not required by deterministic tests.
+- Add signed-email Unicode scalar rejection found while reviewing response encoding; this closes a potential malformed-claim 500 without changing normal string/null display semantics.
+- Document process-local TTL/cooldown and upstream rotation propagation as engineering tradeoffs, not instant revocation. A restart clears this worker cache only; Supabase discovery may have edge caching. Stateless access JWTs do not become retroactively revoked merely because the mobile session signs out. Sources: https://supabase.com/docs/guides/auth/signing-keys and https://docs.python.org/3.12/library/asyncio-task.html#asyncio.timeout .
+
+**Actual validation:** `ruff check services/api`: passed; `pytest services/api/tests -q`: 223 passed. Async tests exercise 100 coalesced cold callers, 200 unknown IDs/64-entry limit, fake-clock rotation and non-sliding negatives, actual 30/40ms lock/trickle deadlines, stream close/cancellation recovery and app shutdown. HTTPX2 stays locked at 2.16.0; no cloud/discovery call was made.
+
+**Remaining / next:** Implement API-04 protected GET /v1/me through the production async verifier. Live SB metadata/token checks and mobile RN-05/06 remain separate; no database/profile routes yet.

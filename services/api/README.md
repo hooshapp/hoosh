@@ -70,3 +70,7 @@ Ephemeral private signing keys and tokens exist only inside tests. No issuer,
 algorithm or test identity is implicitly enabled for the running server. API-03
 adds the real resolver and API-04 exposes the protected route. Live provider-issued
 token verification and actual session integration remain pending.
+
+API-03 supplies the lifespan-scoped production JWKS resolver. See [backend Auth
+policy](AUTH.md) for exact bounds, rotation/backoff/revocation semantics and test
+coverage. The public identity route is introduced separately in API-04.

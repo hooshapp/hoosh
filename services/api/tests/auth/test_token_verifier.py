@@ -73,6 +73,7 @@ def test_required_claims(signer, claim):
         {"is_anonymous": "false"},
         {"is_anonymous": 0},
         {"email": 123},
+        {"email": "\ud800"},
         {"exp": "1800003600"},
         {"exp": True},
         {"exp": None},

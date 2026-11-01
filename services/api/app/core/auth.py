@@ -171,6 +171,8 @@ class SupabaseTokenVerifier:
             email = claims.get("email")
             if email is not None and not isinstance(email, str):
                 raise ValueError("Invalid optional display email")
+            if email is not None:
+                email.encode("utf-8")  # Reject unpaired surrogates before wire serialization.
             issued = numeric_date(claims, "iat")
             expiration = numeric_date(claims, "exp")
             not_before = numeric_date(claims, "nbf") if "nbf" in claims else issued
