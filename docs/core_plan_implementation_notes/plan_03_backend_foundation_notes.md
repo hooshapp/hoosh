@@ -4,13 +4,13 @@
 **Owner:** Ishmum. Anisha owns Supabase Auth setup and mobile sessions/onboarding.
 **Branch:** `task/backend/api-01-05`. **Starting commit:** `2703a23`.
 **Last updated:** 2026-11-01.
-**Current part:** API-03 implemented/tested. Implement API-04 protected GET /v1/me through the production async verifier. Live SB metadata/token checks and mobile RN-05/06 remain separate; no database/profile routes yet.
+**Current part:** API-04 implemented/tested. Implement API-05 reproducible OpenAPI/TypeScript outputs and drift checks. SB-02/03 actual metadata/tokens and RN-05/06 real mobile sign-in remain unverified; profiles/database are API-06 onward.
 
 ## Resume here
 
-- Latest: **API-03 — Bounded project-pinned JWKS resolution and lifespan**, subject `feat(auth): resolve and cache project-pinned signing keys`, parent `bdd62a6`.
-- Validation: `ruff check services/api`: passed; `pytest services/api/tests -q`: 223 passed. Async tests exercise 100 coalesced cold callers, 200 unknown IDs/64-entry limit, fake-clock rotation and non-sliding negatives, actual 30/40ms lock/trickle deadlines, stream close/cancellation recovery and app shutdown. HTTPX2 stays locked at 2.16.0; no cloud/discovery call was made.
-- Next / remaining: Implement API-04 protected GET /v1/me through the production async verifier. Live SB metadata/token checks and mobile RN-05/06 remain separate; no database/profile routes yet.
+- Latest: **API-04 — Database-independent protected identity endpoint**, subject `feat(api): expose database-independent authenticated identity`, parent `35ba307`.
+- Validation: `pytest services/api/tests -q`: 244 passed; `ruff check services/api`: passed. Full signed-token route tests use the production factory/verifier/resolver with only test HTTPS transport substituted. Local 200-iteration crypto means: ES256 0.0595 ms, RS256 0.0423 ms (Mac arm64, warm test resolver; not a deployed/network SLA).
+- Next / remaining: Implement API-05 reproducible OpenAPI/TypeScript outputs and drift checks. SB-02/03 actual metadata/tokens and RN-05/06 real mobile sign-in remain unverified; profiles/database are API-06 onward.
 - Anisha owns Supabase Auth/session/onboarding; Ishmum backend verification and product DB. No provider, user, redirect, database or native policy was changed. No push/main merge.
 
 ## Recording rules
@@ -129,7 +129,7 @@ Ranges refer to this commit; deleted ranges refer to its parent. The entry trave
 
 ### API-03 — Bounded project-pinned JWKS resolution and lifespan
 
-**Hash:** Pending; resolve by `feat(auth): resolve and cache project-pinned signing keys`.
+**Hash:** `35ba307` (recorded during the next part).
 **Date:** 2026-11-01. **Owner:** Ishmum. **Branch:** `task/backend/api-01-05`. **Parent:** `bdd62a6`.
 **Status:** Implemented and deterministically tested; live Supabase and mobile M1 remain unverified.
 
@@ -176,3 +176,48 @@ Ranges refer to this commit; deleted ranges refer to its parent. The entry trave
 **Actual validation:** `ruff check services/api`: passed; `pytest services/api/tests -q`: 223 passed. Async tests exercise 100 coalesced cold callers, 200 unknown IDs/64-entry limit, fake-clock rotation and non-sliding negatives, actual 30/40ms lock/trickle deadlines, stream close/cancellation recovery and app shutdown. HTTPX2 stays locked at 2.16.0; no cloud/discovery call was made.
 
 **Remaining / next:** Implement API-04 protected GET /v1/me through the production async verifier. Live SB metadata/token checks and mobile RN-05/06 remain separate; no database/profile routes yet.
+
+### API-04 — Database-independent protected identity endpoint
+
+**Hash:** Pending; resolve by `feat(api): expose database-independent authenticated identity`.
+**Date:** 2026-11-01. **Owner:** Ishmum. **Branch:** `task/backend/api-01-05`. **Parent:** `35ba307`.
+**Status:** Implemented and deterministically tested; live Supabase and mobile M1 remain unverified.
+
+#### Changed files and logical changes
+
+Ranges refer to this commit; deleted ranges refer to its parent. The entry travels with code; resolve its own Pending hash through Git until the next normal update.
+
+| File and lines | What changed and why |
+|---|---|
+| `docs/core_plan/03_backend_foundation.md`: lines 3–3 | Update the implementation status, exact evidence, dependency boundary and handoff described in this entry. |
+| `docs/core_plan/03_backend_foundation.md`: lines 441–442 | Update the implementation status, exact evidence, dependency boundary and handoff described in this entry. |
+| `docs/core_plan_implementation_notes/artifacts/api-04/local-verification.json`: lines 1–29 | Record 200 warm in-memory crypto samples per supported algorithm with Python/package/platform metadata; no keys/tokens, live provider or deployed latency claim. |
+| `package.json`: lines 18–18 | Disable raw Uvicorn access logs in the default dev command so query-string credential mistakes do not enter access logs; preserve existing API bind/reload behavior. |
+| `services/api/README.md`: lines 77–102 | Update the implementation status, exact evidence, dependency boundary and handoff described in this entry. |
+| `services/api/app/api/v1/__init__.py`: lines 1–1 | Establish the versioned identity route package; no profile/database routes are created. |
+| `services/api/app/api/v1/dependencies.py`: lines 1–29 | Declare OpenAPI bearer security, reject absent/duplicate/malformed Authorization headers and delegate only the bearer JWT to the lifespan-owned verifier. Caller owner headers/query/body never enter identity authority. |
+| `services/api/app/api/v1/me.py`: lines 1–27 | Publish exact database-independent GET /v1/me with explicit operation ID, public response schema and safe 401/403/503/500 response contracts; map only verified UUID/email. |
+| `services/api/app/application.py`: lines 10–10 | Register the identity router in pure assembly; its unavailable default provider fails closed if invoked by unconfigured or schema assembly. |
+| `services/api/app/application.py`: lines 37–37 | Register the identity router in pure assembly; its unavailable default provider fails closed if invoked by unconfigured or schema assembly. |
+| `services/api/app/schemas/identity.py`: lines 1–10 | Define extra-forbidden UUID identity plus required nullable email, with no claims, tokens or profile state in the public response. |
+| `services/api/tests/api/__init__.py`: lines 1–1 | Keep route acceptance fixtures inside tests rather than a runtime auth bypass. |
+| `services/api/tests/api/test_me.py`: lines 1–217 | Exercise production factory/verifier/JWKS paths with ephemeral signed A/B tokens, token-only owner authority, malformed/duplicate credentials, bad scope/signatures/expiry, outages, no database imports, CORS/error privacy and exact schema/security. |
+| `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 1–20 | Refresh current part, validation and the next handoff without overwriting historical entries. |
+| `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 28–28 | Record the preceding committed part hash in this normal update. |
+| `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 86–86 | Record the preceding committed part hash in this normal update. |
+| `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 132–132 | Record the preceding committed part hash in this normal update. |
+| `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 180–224 | Record this entire per-commit change table, decisions, real validation and unverified live dependencies. |
+
+#### Decisions and relations
+
+- Expose only the agreed M1 identity endpoint, not profiles/onboarding state or a database dependency. The response contains canonical verified UUID and required string/null email. No body, query or X-User-ID owner input is used, and forged incoming request IDs are replaced by server UUIDs.
+- Use FastAPI HTTPBearer only for security declaration/credential extraction context with auto_error=False; our raw-header count/parser owns consistent AUTH_REQUIRED behavior, including duplicate Authorization headers and query-only tokens. The async dependency awaits the real configured verifier; no extra network client or account state is constructed per request.
+- Pure schema/local assembly keeps the unavailable provider. Missing headers fail 401; a bearer presented without configured trust fails AUTH_UNAVAILABLE. Actual signatures with expired/invalid claims fail the existing safe 401 classifications, and verified anonymous identities fail the explicit M1 403 scope boundary. Public liveness remains 200 during discovery outage.
+- Route tests do not override the identity dependency. They mint ephemeral signatures against current test wall-clock claims, configure the real runtime factory and replace only HTTPS transport. Tests prove A/B identity/cache behavior, no owner-spoofing, no DB imports even under unusable DB configuration, safe errors/no token/email echo, exposed correlation for allowed CORS and no grants to unknown origins.
+- CPU-only local measurements show sub-millisecond warm validation in this environment, so keep pure crypto inline rather than adding speculative thread/offload complexity. Artifact records exact versions/platform/scope and no keys/tokens. Network/deployment/physical-device performance remains separate.
+- Disable raw Uvicorn access logging in the default dev command and document the deployment flag: even rejected query-token mistakes otherwise enter framework access logs. This is independent of our already-safe application logs. No mobile Auth session or cloud account was configured.
+- API-04 is a complete independent producer for API-05 schema generation; a real Supabase token smoke check and mobile M1 are explicitly later evidence, avoiding circular dependency on finished frontend Auth.
+
+**Actual validation:** `pytest services/api/tests -q`: 244 passed; `ruff check services/api`: passed. Full signed-token route tests use the production factory/verifier/resolver with only test HTTPS transport substituted. Local 200-iteration crypto means: ES256 0.0595 ms, RS256 0.0423 ms (Mac arm64, warm test resolver; not a deployed/network SLA).
+
+**Remaining / next:** Implement API-05 reproducible OpenAPI/TypeScript outputs and drift checks. SB-02/03 actual metadata/tokens and RN-05/06 real mobile sign-in remain unverified; profiles/database are API-06 onward.

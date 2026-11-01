@@ -74,3 +74,29 @@ token verification and actual session integration remain pending.
 API-03 supplies the lifespan-scoped production JWKS resolver. See [backend Auth
 policy](AUTH.md) for exact bounds, rotation/backoff/revocation semantics and test
 coverage. The public identity route is introduced separately in API-04.
+
+## API-04 identity producer
+
+`GET /v1/me` accepts exactly one Authorization bearer header, uses the configured
+production verifier and returns only `{user_id, email}` with explicit nullable
+email and `Cache-Control: no-store`. It does not trust query/body/X-User-ID owner
+input, read a product table or insert a profile. Missing credentials fail 401;
+unconfigured/required discovery failure is 503; verified anonymous scope is 403.
+An API key is not an authenticated-user access token. `/healthz` remains public.
+
+Local route tests use the actual runtime factory, cryptographic verifier and async
+resolver with only HTTPS transport replaced; no identity dependency override or
+signature bypass is installed. API-04 passes 244 backend tests. A warm local
+200-iteration-per-algorithm measurement is recorded in Plan 03's `api-04` artifact;
+it is CPU-only evidence on this Mac, not a deployed latency or network SLA. It does
+not justify adding another crypto offload layer now.
+
+The default `npm run api:dev` disables raw Uvicorn access logs, which otherwise
+include complete query strings. Use the same `--no-access-log` (or a deliberately
+sanitized structured logger) in deployments: rejecting credentials in a query
+must not itself log them. Application error logs use only server request IDs.
+
+M1 handoff still requires Anisha's exact SB-02 trust metadata, a disposable real
+user token, mobile session/root guard composition and RN-05/06 acceptance. No live
+Supabase account, profile persistence, protected UI or installed restriction is
+claimed by these deterministic producer checks.

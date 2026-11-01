@@ -1,0 +1,29 @@
+{
+  "date": "2026-11-01",
+  "platform": {
+    "system": "Darwin",
+    "architecture": "arm64",
+    "python": "3.12.14"
+  },
+  "scope": "Local CPU-only signature/claim path with in-memory test keys and warm fixed resolver; not network, deployment or latency SLA.",
+  "algorithms": {
+    "ES256": {
+      "iterations": 200,
+      "meanMilliseconds": 0.0595,
+      "p95Milliseconds": 0.067
+    },
+    "RS256": {
+      "iterations": 200,
+      "meanMilliseconds": 0.0423,
+      "p95Milliseconds": 0.0494
+    }
+  },
+  "packages": {
+    "fastapi": "0.162.0",
+    "PyJWT": "2.15.1",
+    "cryptography": "50.0.2",
+    "httpx2": "2.16.0"
+  },
+  "liveSupabase": false,
+  "databaseUsed": false
+}

@@ -1,6 +1,6 @@
 # Plan 03 — FastAPI Identity and Profile Foundation
 
-**Status:** API-01–03 configuration/errors, deterministic signature verification and bounded lifespan-scoped JWKS discovery are implemented. API-04/05 route/schema publication is next; actual Supabase/mobile acceptance and all database work remain pending.\
+**Status:** API-01–04 implement validated configuration/errors, bounded asymmetric verification/JWKS and database-independent GET /v1/me. API-05 generated contracts are next; actual Supabase/mobile acceptance and all database/profile work remain pending.\
 **Owner:** Ishmum (backend/database). Anisha reviews Auth contracts and participates in live session checks.\
 **Area branch:** `area/backend`; task branches `task/backend/<part>`.\
 **Milestones:** M1 = verified identity without a database; M2 = minimal, isolated, revisioned profile persistence.
@@ -438,8 +438,8 @@ Auth can finish its session work without profiles. The main frontend must not cl
 |---|---|---|---|
 | API-01 | Implemented; live trust handoff pending | `8ce121d` | 58 backend tests and Ruff; [Plan 03 notes](../core_plan_implementation_notes/plan_03_backend_foundation_notes.md) |
 | API-02 | Implemented; live provider tokens unverified | `bdd62a6` | 194 backend tests and Ruff; Plan 03 notes |
-| API-03 | Implemented; live project discovery unverified | Resolve by `feat(auth): resolve and cache project-pinned signing keys` | 223 backend tests; deadline/cancellation/cache/lifespan checks; [Auth runbook](../../services/api/AUTH.md) |
-| API-04 | Pending | — | — |
+| API-03 | Implemented; live project discovery unverified | `35ba307` | 223 backend tests; deadline/cancellation/cache/lifespan checks; [Auth runbook](../../services/api/AUTH.md) |
+| API-04 | Implemented producer; live Supabase/mobile M1 unverified | Resolve by `feat(api): expose database-independent authenticated identity` | 244 backend tests; real signed-token route paths and local crypto measurements; Plan 03 notes |
 | API-05 | Pending | — | — |
 | API-06 | Pending | — | — |
 | API-07 | Pending | — | — |

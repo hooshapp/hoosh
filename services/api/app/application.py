@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.types import Lifespan
 
 from app.api.health import router as health_router
+from app.api.v1.me import router as identity_router
 from app.core.auth import UnavailableTokenVerifier
 from app.core.errors import install_error_handlers
 from app.core.request_context import RequestContextMiddleware, UnexpectedErrorMiddleware
@@ -33,4 +34,5 @@ def create_app(*, cors_origins: Sequence[str] = (), lifespan: Lifespan | None = 
     )
     application.add_middleware(RequestContextMiddleware)
     application.include_router(health_router)
+    application.include_router(identity_router)
     return application
