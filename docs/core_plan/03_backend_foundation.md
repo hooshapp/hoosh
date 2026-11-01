@@ -1,6 +1,6 @@
 # Plan 03 — FastAPI Identity and Profile Foundation
 
-**Status:** Draft implementation plan. The checkout currently implements only `/healthz`; none of the planned endpoints, verifier, database models, or migrations below exist yet.\
+**Status:** API-01 configuration/error/assembly foundation is implemented; API-02–05 are the current authorized sequence. Protected endpoints, key verification and database work remain pending until their individual parts land.\
 **Owner:** Ishmum (backend/database). Anisha reviews Auth contracts and participates in live session checks.\
 **Area branch:** `area/backend`; task branches `task/backend/<part>`.\
 **Milestones:** M1 = verified identity without a database; M2 = minimal, isolated, revisioned profile persistence.
@@ -436,7 +436,7 @@ Auth can finish its session work without profiles. The main frontend must not cl
 
 | Part | Status | Actual commit | Evidence / notes |
 |---|---|---|---|
-| API-01 | Pending | — | — |
+| API-01 | Implemented; live trust handoff pending | Resolve by `feat(api): add identity configuration and structured errors` | 58 backend tests and Ruff; [Plan 03 notes](../core_plan_implementation_notes/plan_03_backend_foundation_notes.md) |
 | API-02 | Pending | — | — |
 | API-03 | Pending | — | — |
 | API-04 | Pending | — | — |

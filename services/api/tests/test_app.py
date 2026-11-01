@@ -1,19 +1,10 @@
 from fastapi.testclient import TestClient
 
-from app.core.config import Settings
-from app.main import create_app
+from app.application import create_app
 
 
 def make_client() -> TestClient:
-    return TestClient(
-        create_app(
-            Settings(
-                _env_file=None,
-                app_env="test",
-                cors_allowed_origins=["http://localhost:8081"],
-            )
-        )
-    )
+    return TestClient(create_app(cors_origins=["http://localhost:8081"]))
 
 
 def test_service_starts_without_database_or_auth_credentials():

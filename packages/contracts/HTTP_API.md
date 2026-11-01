@@ -125,6 +125,10 @@ signed out or completed onboarding. A name can be null even when the row exists.
 | 503 | `DEPENDENCY_UNAVAILABLE` | true | Required DB/service unavailable; identity may still be valid |
 | 500 | `INTERNAL_ERROR` | false | Safe generic failure; use request ID for investigation |
 
+API routing errors also use safe `NOT_FOUND` (404), `METHOD_NOT_ALLOWED` (405),
+and `HTTP_ERROR` for other framework HTTP failures, without raw framework details.
+CORS preflight responses are browser protocol responses rather than endpoint JSON.
+
 `message` is safe human copy, not a client branching key or stable byte-for-byte
 assertion. Clients branch on status/code; localized copy can replace it. General
 errors omit `details`. Conflict details are required and exactly
