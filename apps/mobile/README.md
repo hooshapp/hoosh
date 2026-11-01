@@ -31,3 +31,11 @@ RN-08 provides [protection status presentation](src/features/protection/README.m
 RN-09a composes the [Home cards](src/features/home/README.md) in the real Home route with unavailable values and disabled/omitted product actions. `npm run mobile:ui` includes “Home — presentation-only Figma example” for the original sample and state matrix. RN-09b/c/d cover the remaining three tab bodies; RN09-D01–D06 track approved policy, live producers and device acceptance.
 
 RN-09a–h independent main-screen and detail/editor UI is implemented. See [UI coverage](../../docs/qa/rn09-ui-coverage.md) and Plan 04 notes for exact scope, commits, source adaptations and remaining live/device acceptance. Actual saves, account data, native selection/protection and measured outcomes remain unavailable until their producers are integrated.
+
+RN-10a refreshes 61 same-node originals from the Figma icon pack (16 earlier captures
+changed); 10 other context originals remain valid. RN-10b adds a separate
+[Expo Go UI QA project](dev/native/README.md). Run `npm run mobile:qa:android` from
+the repository root and scan its QR to interact with populated shared components
+and local drafts on a phone. This is separate from the actual app on port 8081;
+its ordinary routes retain unavailable values. Android physical-device acceptance
+is pending until the phone is connected and the runbook results are recorded.

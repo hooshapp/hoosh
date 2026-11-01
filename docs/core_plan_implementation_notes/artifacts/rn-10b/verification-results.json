@@ -1,0 +1,42 @@
+{
+  "checkedOn": "2026-11-01",
+  "checks": {
+    "npm run check": {
+      "passed": true,
+      "portableTests": 250,
+      "componentTests": 362,
+      "componentProjects": [
+        "ios",
+        "android"
+      ],
+      "apiTests": 3,
+      "typesAndLint": true,
+      "ruff": true
+    },
+    "npm run mobile:export": {
+      "passed": true,
+      "isolatedAppFiles": 38,
+      "originalSvgAssets": 71
+    },
+    "npm run mobile:check-assets -- --pack": {
+      "passed": true,
+      "sameNodeExactCopies": 61
+    },
+    "npm run mobile:ui:build": {
+      "passed": true
+    },
+    "native QA TypeScript": {
+      "passed": true
+    },
+    "browserInteractions": {
+      "passed": true,
+      "flows": 9
+    },
+    "browserConfirmations": {
+      "passed": true,
+      "cases": 7
+    }
+  },
+  "physicalDevice": false,
+  "liveAuthOrNativeProtection": false
+}

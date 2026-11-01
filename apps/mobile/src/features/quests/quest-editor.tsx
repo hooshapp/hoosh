@@ -1,4 +1,6 @@
-import { useState, type PropsWithChildren, type ReactNode } from 'react';
+import { ConfirmationDialog } from '@/features/editors/confirmation-dialog';
+import { focusControl } from '@/components/ui/focus-control';
+import { useRef, useState, type ComponentRef, type PropsWithChildren, type ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/field';
@@ -48,6 +50,7 @@ export function QuestEditor({
   const [repeatOpen, setRepeatOpen] = useState(false),
     [durationOpen, setDurationOpen] = useState(false),
     [cancel, setCancel] = useState(false);
+  const cancelTrigger = useRef<ComponentRef<typeof Button>>(null);
   const busy = state === 'saving',
     issue = questDraftIssue(draft);
   const change = (patch: Partial<QuestDraft>) => {
@@ -245,6 +248,7 @@ export function QuestEditor({
       />
       {mode === 'edit' && onCancelQuest ? (
         <Button
+          ref={cancelTrigger}
           label="Cancel quest"
           variant="secondary"
           disabled={busy}
@@ -252,21 +256,20 @@ export function QuestEditor({
         />
       ) : null}
       {cancel ? (
-        <View style={editorStyles.panel}>
-          <Text accessibilityRole="alert" style={editorStyles.body}>
-            Cancel this quest?
-          </Text>
-          <Button label="Keep quest" onPress={() => setCancel(false)} />
-          <Button
-            label="Confirm cancellation"
-            variant="secondary"
-            disabled={busy}
-            onPress={() => {
-              setCancel(false);
-              onCancelQuest?.();
-            }}
-          />
-        </View>
+        <ConfirmationDialog
+          title="Cancel this quest?"
+          keepLabel="Keep quest"
+          discardLabel="Confirm cancellation"
+          discardDisabled={busy}
+          onKeep={() => {
+            setCancel(false);
+            focusControl(cancelTrigger.current);
+          }}
+          onDiscard={() => {
+            setCancel(false);
+            onCancelQuest?.();
+          }}
+        />
       ) : null}
     </EditorPage>
   );

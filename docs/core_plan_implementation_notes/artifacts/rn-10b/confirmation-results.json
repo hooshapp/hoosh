@@ -1,0 +1,52 @@
+{
+  "cases": [
+    {
+      "width": 393,
+      "height": 480,
+      "largeBrowserText": false,
+      "safeFocusAndReturn": true,
+      "reachableActions": true
+    },
+    {
+      "width": 393,
+      "height": 480,
+      "largeBrowserText": true,
+      "safeFocusAndReturn": true,
+      "reachableActions": true
+    },
+    {
+      "width": 320,
+      "height": 480,
+      "largeBrowserText": false,
+      "safeFocusAndReturn": true,
+      "reachableActions": true
+    },
+    {
+      "width": 320,
+      "height": 480,
+      "largeBrowserText": true,
+      "safeFocusAndReturn": true,
+      "reachableActions": true
+    },
+    {
+      "width": 280,
+      "height": 480,
+      "largeBrowserText": false,
+      "safeFocusAndReturn": true,
+      "reachableActions": true
+    },
+    {
+      "width": 280,
+      "height": 480,
+      "largeBrowserText": true,
+      "safeFocusAndReturn": true,
+      "reachableActions": true
+    },
+    {
+      "browserEscapeKeepsDraft": true
+    }
+  ],
+  "errors": [],
+  "privateRequests": [],
+  "physicalDevice": false
+}

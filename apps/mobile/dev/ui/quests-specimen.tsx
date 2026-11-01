@@ -1,36 +1,10 @@
+import { questsExample as example } from '../shared/ui-samples';
 import { useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { QuestsScreen } from '@/features/quests/quests-screen';
 import { unavailableQuests, type QuestsModel } from '@/features/quests/quests-model';
 
-const example: QuestsModel = {
-  interestSummary: '✦ Suggested from your Gym & Reading picks',
-  saved: { state: 'ready', items: [] },
-  suggestions: {
-    state: 'ready',
-    items: [
-      {
-        id: 'RN09B_GYM_ONLY',
-        categoryLabel: '🏋️ GYM',
-        accent: 'dark',
-        context: 'Matches your evening schedule',
-        title: 'Evening Gym Session',
-        scheduleLabels: ['📅 Mon · Wed · Fri', '🕕 6:00 – 8:00 PM'],
-        restrictionNotice: '🔒 Selected apps locked during this quest',
-      },
-      {
-        id: 'RN09B_READING_ONLY',
-        categoryLabel: '📖 READING',
-        accent: 'green',
-        context: 'Nudged for your night wind-down',
-        title: 'Nightly Reading Session',
-        scheduleLabels: ['📅 Every night', '🕙 10:00 – 10:30 PM'],
-        restrictionNotice: '🔒 Selected apps locked during this quest',
-      },
-    ],
-  },
-};
 const states = [
   'Unavailable',
   'Loading',

@@ -25,6 +25,7 @@
     "mobile:ui": "npm run ui:preview --workspace @disconnect/mobile --",
     "mobile:ui:build": "npm run ui:build --workspace @disconnect/mobile --",
     "mobile:check-ui-isolation": "node scripts/check-ui-preview-isolation.mjs",
-    "mobile:check-assets": "node scripts/check-design-assets.mjs"
+    "mobile:check-assets": "node scripts/check-design-assets.mjs",
+    "mobile:qa:android": "expo start apps/mobile/dev/native --go --lan --port 8090"
   }
 }

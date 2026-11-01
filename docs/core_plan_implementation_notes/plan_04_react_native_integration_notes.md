@@ -4,20 +4,20 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN-10a Original icon-pack refresh implemented. Live integrations/device checks remain deferred. Continue RN-10b isolated native QA/polish. USB device setup question is pending; actual Android font/keyboard/Back/SVG/TalkBack/lifecycle evidence must be observed on an authorized device, not inferred from browser/bundle checks. Live Auth/native-policy gates remain separate.
+**Current part:** RN-10b Native Android QA preparation and confirmation polish implemented. Live integrations/device checks remain deferred. Connect an authorized Android phone (USB debugging accepted), follow `apps/mobile/dev/native/README.md`, and append actual model/OS/build/font/steps/results and redacted captures. RN10-D01/D02/D06 and native D05 remain pending; RN10-D03/D04 require real producers. No phone was detected by adb on 2026-11-01. RN-10a icons are complete at `ab7d855`. No push/merge requested.
 
-**Implementation branch:** `task/react-native/rn-10-android-icons`; RN-10a parent `f67a8ea`; no push/main merge.
+**Implementation branch:** `task/react-native/rn-10-android-icons`; RN-10b parent `ab7d855`; no push/main merge.
 
 **Commit reference:** RN-01 `2f88102`; RN-02 `2d5c0d1`; RN-03 `0741758`; RN-04 `610f570`; RN-05 preparation `0c6e4db`; RN-07 UI `5790302`; RN-08 preparation `71da2d5`; RN-09a `ff75039`. RN-10 is `9b5fbd0`.
 
-**Last updated:** 2026-10-31.
+**Last updated:** 2026-11-01.
 
 **Shared workflow:** [Implementation knowledge base](README.md).
 
 ## Resume here
 
-- Latest: **RN-10a Original icon-pack refresh**, subject `fix(mobile): wire original icon pack with verified source geometry`. Continue RN-10b isolated native QA/polish. USB device setup question is pending; actual Android font/keyboard/Back/SVG/TalkBack/lifecycle evidence must be observed on an authorized device, not inferred from browser/bundle checks. Live Auth/native-policy gates remain separate.
-- Actual validation: Before native QA fixture extraction, npm run check passed (250 portable, 356 native-component, 3 API tests, types/lint/Ruff), web export passed with 71 original SVGs, and Vite preview built. Explicit --pack check confirms 61 exact original-pack copies. Browser audit verifies served bytes/effective root geometry for 17 visible navigation/mascot/Home/avatar assets at 393/320/280 px, with original-gallery/Home captures visually inspected. Native physical-device acceptance has not run; ADB lists zero devices.
+- Latest: **RN-10b Native Android QA preparation and confirmation polish**, subject `fix(mobile): prepare native UI QA and harden confirmation dialogs`. Connect an authorized Android phone (USB debugging accepted), follow `apps/mobile/dev/native/README.md`, and append actual model/OS/build/font/steps/results and redacted captures. RN10-D01/D02/D06 and native D05 remain pending; RN10-D03/D04 require real producers. No phone was detected by adb on 2026-11-01. RN-10a icons are complete at `ab7d855`. No push/merge requested.
+- Actual validation: `npm run check` passed TypeScript/ESLint, 250 portable tests, 362 component tests in iOS/Android projects, original asset integrity, Ruff and 3 API tests. Final nested Metro config lint and QA-specific TypeScript passed separately. `mobile:ui:build` passed; `mobile:export` passed 38 file isolation and 71 original SVG checks; `mobile:check-assets -- --pack` verified 61 exact copies. Final real-app iOS/Android Hermes exports/source maps match current runtime sources and exclude all project-local dev/test/private API consumer sources. QA Android/iOS Metro bundles served HTTP 200 with their explicit QA marker. Nine browser interaction flows and seven narrow/large-text confirmation checks passed without page errors/private API requests. No physical device was detected; no phone acceptance is claimed.
 - UI-only local drafts are not accepted wire/policy schemas or saved outcomes. Existing RN07/08/09/10/Auth/API/native and signed-device gates remain open. Anisha owns Auth/onboarding/iOS; Ishmum shared UI/Android/backend. No cloud/native state was changed.
 - User icon packs and workspace file remain untracked/excluded. Continue the same notes file and original plan ledger for each sequential UI part.
 
@@ -1704,7 +1704,7 @@ No push/merge, Supabase/API/database/native permission/restriction action or sig
 
 ### RN-10a — Original icon-pack refresh
 
-**Hash:** Pending; resolve by `fix(mobile): wire original icon pack with verified source geometry`.
+**Hash:** `ab7d855` (recorded in the next UI part).
 **Date:** 2026-10-31. **Owner:** Ishmum. **Branch:** `task/react-native/rn-10-android-icons`. **Parent:** `f67a8ea`.
 **Status:** Independent UI implemented and validated; live persistence/native policy and device acceptance remain pending.
 
@@ -1838,13 +1838,127 @@ User authorized the deferred icon work. Full fresh Home22:4/Quests27:155/Setting
 No push/merge, Supabase/API/database/native permission/restriction action or signed-device run occurred. Compilation/browser checks do not certify physical-device accessibility or native protection.
 
 
-### RN-10b — Native Android QA and polish (in progress)
+### RN-10b — Native Android QA preparation and confirmation polish
 
-Create an isolated native Expo Go QA project to render the actual populated shared
-screens and state matrix on Android. Share source fixtures with the web gallery;
-keep both projects out of the actual route/import graph. Preserve production Auth,
-backend and native policy ownership. Device access is requested, not yet available;
-never promote manifest/bundle/browser success to physical-device acceptance.
+**Hash:** Pending; resolve by `fix(mobile): prepare native UI QA and harden confirmation dialogs`.
+**Date:** 2026-11-01. **Owner:** Ishmum. **Branch:** `task/react-native/rn-10-android-icons`. **Parent:** `ab7d855`.
+**Status:** Independent UI implemented and validated; live persistence/native policy and device acceptance remain pending.
+
+#### Every changed file and logical change
+
+Ranges refer to this commit. Deletions cite parent ranges; binary captures have dimensions. Existing historical entries remain valid for their own commits.
+
+| File and lines | Change and reason |
+|---|---|
+| `README.md`: lines 76–87 | Synchronize scope, current progress, UI-only adapters, source provenance, remaining integration/device gates and handoff. |
+| `apps/mobile/README.md`: lines 34–41 | Synchronize scope, current progress, UI-only adapters, source provenance, remaining integration/device gates and handoff. |
+| `apps/mobile/dev/native/App.tsx`: lines 1–65 | Import actual feature components, existing fonts, typed local models and original asset registries; no Auth/API/native service producer. |
+| `apps/mobile/dev/native/App.tsx`: lines 66–89 | Define the 19 QA destinations and six scenario controls using literal unions. |
+| `apps/mobile/dev/native/App.tsx`: lines 90–111 | Load existing Space Grotesk weights and mount safe-area/status/footer contexts for the separate native entry. |
+| `apps/mobile/dev/native/App.tsx`: lines 112–182 | QaHost owns page/scenario/reset and explicit UI-only notices; keyed remount resets samples and measured footer height reserves scroll clearance. |
+| `apps/mobile/dev/native/App.tsx`: lines 183–240 | QaScreen owns controlled quest/activity/profile/preference/plan drafts and maps scenarios to existing availability/busy contracts. |
+| `apps/mobile/dev/native/App.tsx`: lines 241–334 | Render actual Home/Quests/History/detail/quest components with shared source examples or explicit missing readings; monthly data never falls back to weekly. |
+| `apps/mobile/dev/native/App.tsx`: lines 335–440 | Compose age/activity/app/gender/day/hour/session editors with local callbacks, original logos and no installed-app or policy inference. |
+| `apps/mobile/dev/native/App.tsx`: lines 441–474 | Reuse Settings inline layout and ProfileForm/AccountHeader with synthetic QA identity; no production route or saved result is created. |
+| `apps/mobile/dev/native/App.tsx`: lines 475–519 | Inventory original icons, all Dino moods and navigation variants at original roots; horizontally scroll wide assets. |
+| `apps/mobile/dev/native/App.tsx`: lines 520–550 | Style the isolated QA footer/menu/assets using existing tokens, wrapping labels and minimum-size controls. |
+| `apps/mobile/dev/native/README.md`: lines 1–92 | Synchronize scope, current progress, UI-only adapters, source provenance, remaining integration/device gates and handoff. |
+| `apps/mobile/dev/native/app.config.ts`: lines 1–10 | Define a separate portrait/light Expo Go project identity; no native application identifiers, signing or plugin regeneration. |
+| `apps/mobile/dev/native/index.tsx`: lines 1–3 | Register the isolated QA root with Expo without importing Router or changing the actual application entry. |
+| `apps/mobile/dev/native/metro.config.cjs`: lines 1–11 | Use Expo defaults plus repository watch/root node_modules paths so shared-source edits and newly created files refresh in the nested QA app; declare the CommonJS dirname global for lint. |
+| `apps/mobile/dev/native/package.json`: lines 1–11 | Declare the private Expo Go entry and already installed SDK/React/RN versions; no nested install, added workspace or lockfile. |
+| `apps/mobile/dev/native/tsconfig.json`: lines 1–7 | Extend mobile strict types, resolve shared aliases relative to the nested project and include shared sample/SVG declarations. |
+| `apps/mobile/dev/shared/ui-samples.ts`: lines 1–122 | Extract the unchanged typed Home/Quests/Settings/History/detail examples and ready/metric helpers for both QA entries; retain existing fixture markers. |
+| `apps/mobile/dev/ui/history-detail-specimen.tsx`: lines 1–1 | Import the shared source sample/helpers instead of duplicating them; retain existing web example/state behavior and format touched presentation for readability. |
+| `apps/mobile/dev/ui/history-detail-specimen.tsx`: lines 5–6 | Import the shared source sample/helpers instead of duplicating them; retain existing web example/state behavior and format touched presentation for readability. |
+| `apps/mobile/dev/ui/history-detail-specimen.tsx`: lines 8–84 | Import the shared source sample/helpers instead of duplicating them; retain existing web example/state behavior and format touched presentation for readability. |
+| `apps/mobile/dev/ui/history-specimen.tsx`: lines 1–1 | Import the shared source sample/helpers instead of duplicating them; retain existing web example/state behavior and format touched presentation for readability. |
+| `apps/mobile/dev/ui/history-specimen.tsx`: lines 5–5 | Import the shared source sample/helpers instead of duplicating them; retain existing web example/state behavior and format touched presentation for readability. |
+| `apps/mobile/dev/ui/history-specimen.tsx`: old lines 10–33 at `ab7d855` | Import the shared source sample/helpers instead of duplicating them; retain existing web example/state behavior and format touched presentation for readability. |
+| `apps/mobile/dev/ui/history-specimen.tsx`: lines 50–50 | Import the shared source sample/helpers instead of duplicating them; retain existing web example/state behavior and format touched presentation for readability. |
+| `apps/mobile/dev/ui/history-specimen.tsx`: lines 60–60 | Import the shared source sample/helpers instead of duplicating them; retain existing web example/state behavior and format touched presentation for readability. |
+| `apps/mobile/dev/ui/history-specimen.tsx`: lines 70–70 | Import the shared source sample/helpers instead of duplicating them; retain existing web example/state behavior and format touched presentation for readability. |
+| `apps/mobile/dev/ui/history-specimen.tsx`: lines 81–81 | Import the shared source sample/helpers instead of duplicating them; retain existing web example/state behavior and format touched presentation for readability. |
+| `apps/mobile/dev/ui/history-specimen.tsx`: lines 97–97 | Import the shared source sample/helpers instead of duplicating them; retain existing web example/state behavior and format touched presentation for readability. |
+| `apps/mobile/dev/ui/history-specimen.tsx`: lines 100–100 | Import the shared source sample/helpers instead of duplicating them; retain existing web example/state behavior and format touched presentation for readability. |
+| `apps/mobile/dev/ui/home-specimen.tsx`: lines 1–1 | Import the shared source sample/helpers instead of duplicating them; retain existing web example/state behavior and format touched presentation for readability. |
+| `apps/mobile/dev/ui/home-specimen.tsx`: old lines 8–33 at `ab7d855` | Import the shared source sample/helpers instead of duplicating them; retain existing web example/state behavior and format touched presentation for readability. |
+| `apps/mobile/dev/ui/quests-specimen.tsx`: lines 1–1 | Import the shared source sample/helpers instead of duplicating them; retain existing web example/state behavior and format touched presentation for readability. |
+| `apps/mobile/dev/ui/quests-specimen.tsx`: old lines 7–33 at `ab7d855` | Import the shared source sample/helpers instead of duplicating them; retain existing web example/state behavior and format touched presentation for readability. |
+| `apps/mobile/dev/ui/settings-specimen.tsx`: lines 1–1 | Import the shared source sample/helpers instead of duplicating them; retain existing web example/state behavior and format touched presentation for readability. Re-export example for existing plan/preference specimens. |
+| `apps/mobile/dev/ui/settings-specimen.tsx`: old lines 7–7 at `ab7d855` | Import the shared source sample/helpers instead of duplicating them; retain existing web example/state behavior and format touched presentation for readability. Re-export example for existing plan/preference specimens. |
+| `apps/mobile/dev/ui/settings-specimen.tsx`: lines 12–13 | Import the shared source sample/helpers instead of duplicating them; retain existing web example/state behavior and format touched presentation for readability. Re-export example for existing plan/preference specimens. |
+| `apps/mobile/dev/ui/settings-specimen.tsx`: lines 77–77 | Import the shared source sample/helpers instead of duplicating them; retain existing web example/state behavior and format touched presentation for readability. Re-export example for existing plan/preference specimens. |
+| `apps/mobile/dev/ui/settings-specimen.tsx`: lines 82–95 | Import the shared source sample/helpers instead of duplicating them; retain existing web example/state behavior and format touched presentation for readability. Re-export example for existing plan/preference specimens. |
+| `apps/mobile/dev/ui/settings-specimen.tsx`: lines 106–106 | Import the shared source sample/helpers instead of duplicating them; retain existing web example/state behavior and format touched presentation for readability. Re-export example for existing plan/preference specimens. |
+| `apps/mobile/dev/ui/settings-specimen.tsx`: lines 122–122 | Import the shared source sample/helpers instead of duplicating them; retain existing web example/state behavior and format touched presentation for readability. Re-export example for existing plan/preference specimens. |
+| `apps/mobile/dev/ui/settings-specimen.tsx`: lines 131–131 | Import the shared source sample/helpers instead of duplicating them; retain existing web example/state behavior and format touched presentation for readability. Re-export example for existing plan/preference specimens. |
+| `apps/mobile/dev/ui/settings-specimen.tsx`: lines 135–135 | Import the shared source sample/helpers instead of duplicating them; retain existing web example/state behavior and format touched presentation for readability. Re-export example for existing plan/preference specimens. |
+| `apps/mobile/package.json`: lines 52–52 | Extend existing lint coverage to the native QA and shared sample directories. |
+| `apps/mobile/src/features/editors/confirmation-dialog.test.tsx`: lines 1–65 | Verify request-close never discards, show dismisses keyboard before requesting focus, and busy cancellation cannot repeat while Keep remains enabled, on both native component projects. |
+| `apps/mobile/src/features/editors/confirmation-dialog.tsx`: lines 1–67 | Add the native Modal with its own safe-area context, keyboard dismissal/show-time safe focus, nondestructive request-close, disabled repeat cancellation, scrollable wrapping and capped card width. |
+| `apps/mobile/src/features/editors/editor-controls.tsx`: lines 1–1 | Replace the inline LeaveConfirmation and its old announcement effect with the shared modal, preserving labels/callbacks and EditorPage focus-return behavior; other controls are unchanged. |
+| `apps/mobile/src/features/editors/editor-controls.tsx`: lines 3–3 | Replace the inline LeaveConfirmation and its old announcement effect with the shared modal, preserving labels/callbacks and EditorPage focus-return behavior; other controls are unchanged. |
+| `apps/mobile/src/features/editors/editor-controls.tsx`: old lines 159–162 at `ab7d855` | Replace the inline LeaveConfirmation and its old announcement effect with the shared modal, preserving labels/callbacks and EditorPage focus-return behavior; other controls are unchanged. |
+| `apps/mobile/src/features/editors/editor-controls.tsx`: lines 161–167 | Replace the inline LeaveConfirmation and its old announcement effect with the shared modal, preserving labels/callbacks and EditorPage focus-return behavior; other controls are unchanged. |
+| `apps/mobile/src/features/quests/quest-editor.tsx`: lines 1–3 | Replace inline quest cancellation with shared ConfirmationDialog; retain busy cancellation guard and restore safe trigger focus on Keep through a typed ref. |
+| `apps/mobile/src/features/quests/quest-editor.tsx`: lines 53–53 | Replace inline quest cancellation with shared ConfirmationDialog; retain busy cancellation guard and restore safe trigger focus on Keep through a typed ref. |
+| `apps/mobile/src/features/quests/quest-editor.tsx`: lines 251–251 | Replace inline quest cancellation with shared ConfirmationDialog; retain busy cancellation guard and restore safe trigger focus on Keep through a typed ref. |
+| `apps/mobile/src/features/quests/quest-editor.tsx`: lines 259–272 | Replace inline quest cancellation with shared ConfirmationDialog; retain busy cancellation guard and restore safe trigger focus on Keep through a typed ref. |
+| `docs/core_plan/04_react_native_integration.md`: lines 531–532 | Synchronize scope, current progress, UI-only adapters, source provenance, remaining integration/device gates and handoff. |
+| `docs/core_plan/04_react_native_integration.md`: lines 563–564 | Synchronize scope, current progress, UI-only adapters, source provenance, remaining integration/device gates and handoff. |
+| `docs/core_plan/04_react_native_integration.md`: lines 572–572 | Synchronize scope, current progress, UI-only adapters, source provenance, remaining integration/device gates and handoff. |
+| `docs/core_plan/04_react_native_integration.md`: lines 704–714 | Synchronize scope, current progress, UI-only adapters, source provenance, remaining integration/device gates and handoff. |
+| `docs/core_plan_implementation_notes/artifacts/rn-10b/README.md`: lines 1–68 | Synchronize scope, current progress, UI-only adapters, source provenance, remaining integration/device gates and handoff. |
+| `docs/core_plan_implementation_notes/artifacts/rn-10b/browser-config.mjs`: lines 1–2 | Record/reproduce observed browser/build evidence with explicit false native-device/live-service acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-10b/check-confirmations.mjs`: lines 1–78 | Record/reproduce observed browser/build evidence with explicit false native-device/live-service acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-10b/check-interactions.mjs`: lines 1–135 | Record/reproduce observed browser/build evidence with explicit false native-device/live-service acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-10b/check-qa-bundles.mjs`: lines 1–29 | Record/reproduce observed browser/build evidence with explicit false native-device/live-service acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-10b/confirmation-280-large.png`: binary PNG, 280×480, 25750 bytes | Actual browser capture of the indicated source-aligned component or state; no account/device outcome is implied. |
+| `docs/core_plan_implementation_notes/artifacts/rn-10b/confirmation-280.png`: binary PNG, 280×480, 26673 bytes | Actual browser capture of the indicated source-aligned component or state; no account/device outcome is implied. |
+| `docs/core_plan_implementation_notes/artifacts/rn-10b/confirmation-393-large.png`: binary PNG, 393×480, 26570 bytes | Actual browser capture of the indicated source-aligned component or state; no account/device outcome is implied. |
+| `docs/core_plan_implementation_notes/artifacts/rn-10b/confirmation-393.png`: binary PNG, 393×480, 25987 bytes | Actual browser capture of the indicated source-aligned component or state; no account/device outcome is implied. |
+| `docs/core_plan_implementation_notes/artifacts/rn-10b/confirmation-results.json`: lines 1–52 | Record/reproduce observed browser/build evidence with explicit false native-device/live-service acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-10b/device-status.json`: lines 1–14 | Record/reproduce observed browser/build evidence with explicit false native-device/live-service acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-10b/interaction-results.json`: lines 1–16 | Record/reproduce observed browser/build evidence with explicit false native-device/live-service acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-10b/native-results.json`: lines 1–53 | Record/reproduce observed browser/build evidence with explicit false native-device/live-service acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-10b/qa-bundle-results.json`: lines 1–22 | Record/reproduce observed browser/build evidence with explicit false native-device/live-service acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/rn-10b/quest-draft-retained.png`: binary PNG, 1050×1000, 75627 bytes | Actual browser capture of the indicated source-aligned component or state; no account/device outcome is implied. |
+| `docs/core_plan_implementation_notes/artifacts/rn-10b/verification-results.json`: lines 1–42 | Record/reproduce observed browser/build evidence with explicit false native-device/live-service acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/verify-main-native.mjs`: lines 8–9 | Accept RN-10b exact-runtime verification and reject any project-local dev source in actual iOS/Android source maps while allowing SDK devtools. |
+| `docs/core_plan_implementation_notes/artifacts/verify-main-native.mjs`: lines 44–46 | Accept RN-10b exact-runtime verification and reject any project-local dev source in actual iOS/Android source maps while allowing SDK devtools. |
+| `docs/qa/mobile-accessibility.md`: lines 73–73 | Synchronize scope, current progress, UI-only adapters, source provenance, remaining integration/device gates and handoff. |
+| `docs/qa/mobile-accessibility.md`: lines 124–157 | Synchronize scope, current progress, UI-only adapters, source provenance, remaining integration/device gates and handoff. |
+| `package.json`: lines 28–29 | Add mobile:qa:android to start the separate Expo Go project over LAN on port 8090. |
+| `scripts/check-ui-preview-isolation.mjs`: lines 29–30 | Reject both new native QA markers in ordinary app exports alongside existing specimen markers. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1–25 | Refresh current branch, UI scope, actual checks and next handoff. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1164–1164 | Record the known preceding commit hash during a normal notes update. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1259–1259 | Record the known preceding commit hash during a normal notes update. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1323–1323 | Record the known preceding commit hash during a normal notes update. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1424–1424 | Record the known preceding commit hash during a normal notes update. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1484–1484 | Record the known preceding commit hash during a normal notes update. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1707–1707 | Record the known preceding commit hash during a normal notes update. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1841–1962 | Record this full file/line change table, decisions, actual validation and remaining work in the code commit. |
+
+#### Decisions and boundaries
+
+- Requirements: Plan 04 RN-10, NFR-008/009/011 and AC-12. Preserve RN-09 Figma presentations and RN-10a original-pack provenance. Prior Figma frame checks and RN-10a captures remain the design references; this part adds no invented product design or policy.
+- `ConfirmationDialog` uses the public React Native Modal with its own SafeAreaProvider, a scrollable safe-area overlay and a capped, wrapping card. A browser test initially found inherited off-screen specimen insets expanding padding beyond the viewport; the modal-specific provider fixes the coordinate boundary. Android request-close calls Keep, never Discard. On modal show, dismiss the IME and explicitly focus the safe action. iOS announcement uses the existing shared helper; native speech still requires observation. There is no timer, replay or private native API.
+- `LeaveConfirmation` now composes that dialog, so EditorPage and Router removal guards share safe presentation without changing their dirty-state contracts. Quest cancellation uses it too, restores trigger focus on Keep and retains its busy disable guard via `discardDisabled`. The focused tests cover request-close safety, show-time keyboard/focus and blocked repeat cancellation. The actual modal hardware Back, IME and spoken focus must still be tested on a phone.
+- `dev/native` is an isolated Expo Go project, not another installed workspace or app route. Its own registration/config/tsconfig and Metro root watch/dependency paths allow live shared-source edits and new files. An initial iOS request exposed missing outside-project file watching; the explicit config and restart yielded HTTP 200 for both platforms. Dependencies come from the existing root install; no new lockfile, native project, signing identity or iOS target was generated.
+- The native QA root loads existing Space Grotesk fonts and safe-area/footer metrics. Its menu selects 19 real component presentations. Its Ready/Loading/Error/Unavailable/Busy/Long text scenarios only supply controlled local models/drafts. Unsupported readings stay unavailable; callbacks produce an explicit intent notice, never saved/earned/installed/connected success. Changing a scenario/reset intentionally remounts local drafts. QA Screens/Reset are test controls, not proof of real app navigation or lifecycle persistence.
+- `dev/shared/ui-samples.ts` extracts unchanged Home/Quests/Settings/History/detail source examples and helpers from the web gallery. Existing consumers retain labels, fields and sample markers. This removes duplicate web/native sample definitions while production routes remain unavailable. The asset inventory statically imports tracked originals and scrolls wide artwork horizontally without changing roots or selecting a production Dino outcome.
+- Ordinary app isolation checks reject the new QA markers; native verification rejects the entire project-local dev tree, with an RN-10b exact-source runtime list. Shared SDK devtools are not falsely treated as application fixtures. Browser/native/build results identify their actual boundary and explicitly deny device/live acceptance.
+- Browser flows exercise overnight quest validation, retained draft, app search/selection, custom activity validation, day/hour/session controls, missing monthly history and real unavailable detail routes. Confirmation checks cover 393/320/280 px, 480 px height, normal/24 px browser text, visible minimum-size actions, safe initial/return focus and Escape. Captures were visually inspected; they are browser images, not phone screenshots.
+- The runbook documents Expo Go launch, optional authorized USB setup, source samples, state/reset semantics, required separate real Router tab/hardware Back run and the remaining TalkBack/font/IME/SVG/lifecycle observations. Do not toggle permissions, erase app data or claim actual protection as part of UI QA. Restore any device font settings after future checks.
+- Ownership stays unchanged: Ishmum shared UI/Android/backend; Anisha Auth/onboarding/iOS. Real Auth/API/root/native integration is still deferred. User packs/workspace files are excluded from staging; existing local original assets already make pack-free CI reproducible.
+
+**Actual validation:** `npm run check` passed TypeScript/ESLint, 250 portable tests, 362 component tests in iOS/Android projects, original asset integrity, Ruff and 3 API tests. Final nested Metro config lint and QA-specific TypeScript passed separately. `mobile:ui:build` passed; `mobile:export` passed 38 file isolation and 71 original SVG checks; `mobile:check-assets -- --pack` verified 61 exact copies. Final real-app iOS/Android Hermes exports/source maps match current runtime sources and exclude all project-local dev/test/private API consumer sources. QA Android/iOS Metro bundles served HTTP 200 with their explicit QA marker. Nine browser interaction flows and seven narrow/large-text confirmation checks passed without page errors/private API requests. No physical device was detected; no phone acceptance is claimed.
+
+**Remaining / next:** Connect an authorized Android phone (USB debugging accepted), follow `apps/mobile/dev/native/README.md`, and append actual model/OS/build/font/steps/results and redacted captures. RN10-D01/D02/D06 and native D05 remain pending; RN10-D03/D04 require real producers. No phone was detected by adb on 2026-11-01. RN-10a icons are complete at `ab7d855`. No push/merge requested.
+
+No push/merge, Supabase/API/database/native permission/restriction action or signed-device run occurred. Compilation/browser checks do not certify physical-device accessibility or native protection.
+
 
 ### Entry template
 

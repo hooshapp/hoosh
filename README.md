@@ -73,6 +73,18 @@ npm run mobile
 
 This starts Metro for an Expo development client. An actual device requires a matching native development build. The legacy iOS source is now present under `apps/mobile/ios/` from commit `fe8f262`; its identifiers, extension targets, App Groups and signing still need auditing before RN integration. A matching Expo native build has not been established by importing that source. Do not run `expo prebuild --clean` over that working project.
 
+### Interact with populated UI on an Android phone
+
+```bash
+npm run mobile:qa:android
+```
+
+Scan the terminal QR in compatible Expo Go on the same Wi-Fi. This separate
+**Disconnect UI QA** project has 19 component pages, local drafts and state
+controls; no account, saved data or protection is connected. See the
+[native QA runbook](apps/mobile/dev/native/README.md) for phone setup and the
+separate actual-app navigation run. Physical-device results remain pending.
+
 ### Run the API
 
 ```bash

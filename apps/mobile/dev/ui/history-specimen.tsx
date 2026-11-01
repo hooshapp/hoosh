@@ -1,36 +1,9 @@
+import { historyExample as example, historyMetric as metric } from '../shared/ui-samples';
 import { useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { HistoryScreen } from '@/features/history/history-screen';
-import {
-  unavailableHistory,
-  type HistoryModel,
-  type HistoryMetric,
-} from '@/features/history/history-model';
+import { unavailableHistory, type HistoryModel } from '@/features/history/history-model';
 
-const metric = (
-  value: number,
-  display: string,
-  period = 'this week',
-): HistoryMetric => ({
-  value,
-  display,
-  period,
-  source: 'Simulated example',
-  coverage: 'Example coverage only',
-});
-const example: HistoryModel = {
-  periodLabel: 'This Week',
-  turnOffs: { state: 'ready', data: metric(51, '51') },
-  screenTime: {
-    state: 'ready',
-    data: {
-      eligible: true,
-      before: metric(750, '12h 30m', 'when you started'),
-      now: metric(150, '2h 30m'),
-    },
-  },
-  savedHours: { state: 'ready', data: metric(10, '10') },
-};
 const states = [
   'Unavailable',
   'Loading',
@@ -74,8 +47,7 @@ function model(state: State): HistoryModel {
         data: { ...example.screenTime.data, eligible: false },
       },
     };
-  if (state === 'Partial')
-    return { ...example, savedHours: { state: 'error' } };
+  if (state === 'Partial') return { ...example, savedHours: { state: 'error' } };
   if (state === 'Long text')
     return {
       ...example,
@@ -85,8 +57,7 @@ function model(state: State): HistoryModel {
         data: {
           ...metric(51, '51'),
           period: 'during a deliberately long reporting period',
-          coverage:
-            'A longer coverage description that must wrap and remain readable',
+          coverage: 'A longer coverage description that must wrap and remain readable',
         },
       },
     };
@@ -96,9 +67,7 @@ export function HistorySpecimen({ width }: { width: number }) {
   const [state, setState] = useState<State>('Unavailable');
   const [notice, setNotice] = useState('No measurements or account connected.');
   const action = () =>
-    setNotice(
-      'Preview navigation intent only. No detail route or measurement loaded.',
-    );
+    setNotice('Preview navigation intent only. No detail route or measurement loaded.');
   return (
     <section data-testid="RN09C_HISTORY_SPECIMEN_ONLY">
       <h2>History — presentation-only Figma example</h2>
@@ -109,8 +78,7 @@ export function HistorySpecimen({ width }: { width: number }) {
           onChange={(event) => {
             setState(event.target.value as State);
             setNotice('Example changed; no account measurements loaded.');
-          }}
-        >
+          }}>
           {states.map((value) => (
             <option key={value}>{value}</option>
           ))}
@@ -126,15 +94,10 @@ export function HistorySpecimen({ width }: { width: number }) {
             initialMetrics={{
               frame: { x: 0, y: 0, width, height: 852 },
               insets: { top: 0, right: 0, bottom: 0, left: 0 },
-            }}
-          >
+            }}>
             <HistoryScreen
               model={model(state)}
-              onNext={
-                ['Figma example', 'Long text'].includes(state)
-                  ? action
-                  : undefined
-              }
+              onNext={['Figma example', 'Long text'].includes(state) ? action : undefined}
               onRetry={state === 'Read error' ? action : undefined}
             />
           </SafeAreaProvider>

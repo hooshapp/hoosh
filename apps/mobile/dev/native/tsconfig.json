@@ -1,0 +1,7 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "paths": { "@/*": ["../../src/*"], "@/assets/*": ["../../assets/*"] }
+  },
+  "include": ["**/*.ts", "**/*.tsx", "../shared/**/*.ts", "../../src/types/assets.d.ts"]
+}

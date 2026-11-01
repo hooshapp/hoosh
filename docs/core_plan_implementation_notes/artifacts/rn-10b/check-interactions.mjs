@@ -1,0 +1,135 @@
+import assert from 'node:assert/strict';
+import { writeFile } from 'node:fs/promises';
+const { chromium } = await import(process.env.PLAYWRIGHT_MODULE ?? 'playwright');
+const browser = await chromium.launch({ channel: 'chrome', headless: true });
+const report = { cases: [], errors: [], privateRequests: [], liveAccountOrNative: false };
+try {
+  const page = await browser.newPage({ viewport: { width: 1050, height: 1000 } });
+  page.on('pageerror', (e) => report.errors.push(e.message));
+  page.on('request', (r) => {
+    if (/\/v1\//.test(r.url())) report.privateRequests.push(r.url());
+  });
+  await page.goto('http://127.0.0.1:8093');
+  const quest = page.getByTestId('RN09E_EDITOR_ONLY');
+  await quest.scrollIntoViewIfNeeded();
+  await quest.getByRole('button', { name: 'Start time: 6:00 PM' }).click();
+  await quest.getByLabel('Start time (24-hour HH:MM)', { exact: true }).fill('23:00');
+  await quest.getByRole('button', { name: 'End time: 8:00 PM' }).click();
+  await quest.getByLabel('End time (24-hour HH:MM)', { exact: true }).fill('01:00');
+  assert(await quest.getByRole('button', { name: 'Save quest', exact: true }).isDisabled());
+  await quest.getByRole('checkbox', { name: 'Ends the next day' }).click();
+  assert(await quest.getByRole('button', { name: 'Save quest', exact: true }).isEnabled());
+  await quest.getByRole('button', { name: 'Back', exact: true }).click();
+  await page.getByRole('button', { name: 'Keep editing', exact: true }).click();
+  assert.equal(
+    await quest.getByLabel('Start time (24-hour HH:MM)', { exact: true }).inputValue(),
+    '23:00',
+  );
+  await page.screenshot({ path: new URL('./quest-draft-retained.png', import.meta.url).pathname });
+  report.cases.push('Quest overnight validation, editable time, and keep-draft confirmation');
+  const pref = page.getByTestId('RN09F_PREFERENCES_ONLY');
+  await pref.getByLabel('Preference page').selectOption('Apps');
+  await pref.getByLabel('Search apps', { exact: true }).fill('TikTok');
+  await pref.getByRole('checkbox', { name: 'TikTok', exact: true }).click();
+  await pref.getByText('2 apps selected for your current plan', { exact: true }).waitFor();
+  await pref.getByLabel('Search apps', { exact: true }).fill('');
+  assert.equal(
+    await pref
+      .getByRole('checkbox', { name: 'Instagram', exact: true })
+      .getAttribute('aria-checked'),
+    'true',
+  );
+  assert.equal(
+    await pref.getByRole('checkbox', { name: 'TikTok', exact: true }).getAttribute('aria-checked'),
+    'false',
+  );
+  report.cases.push('App search preserves hidden selected IDs and controlled count');
+  await pref.getByLabel('Preference page').selectOption('Activities');
+  await pref.getByLabel('Custom activity', { exact: true }).fill('');
+  assert(await pref.getByRole('button', { name: 'Save activities', exact: true }).isDisabled());
+  await pref.getByRole('checkbox', { name: 'Custom', exact: true }).click();
+  assert(await pref.getByRole('button', { name: 'Save activities', exact: true }).isEnabled());
+  report.cases.push('Blank selected custom activity cannot save; deselection is explicit');
+  const plan = page.getByTestId('RN09G_PLAN_ONLY');
+  await plan.getByLabel('Plan editor page').selectOption('Days');
+  await plan.getByRole('button', { name: 'Weekends', exact: true }).click();
+  assert.equal(
+    await plan.getByRole('checkbox', { name: 'Monday', exact: true }).getAttribute('aria-checked'),
+    'false',
+  );
+  assert.equal(
+    await plan
+      .getByRole('checkbox', { name: 'Saturday', exact: true })
+      .getAttribute('aria-checked'),
+    'true',
+  );
+  await plan.getByLabel('Plan editor page').selectOption('Hours');
+  const slider = plan.getByRole('slider', { name: 'Start time', exact: true });
+  await slider.focus();
+  await page.keyboard.press('ArrowRight');
+  await plan.getByRole('button', { name: 'Start time: 9:01 AM', exact: true }).waitFor();
+  await slider.scrollIntoViewIfNeeded();
+  const rect = await slider.boundingBox();
+  await page.mouse.move(rect.x + 22, rect.y + 22);
+  await page.mouse.down();
+  await page.mouse.move(rect.x + 42, rect.y + 22, { steps: 4 });
+  await page.mouse.up();
+  assert.notEqual(await slider.getAttribute('aria-valuenow'), '541');
+  report.cases.push('Day presets and hours range keyboard/drag update only local drafts');
+  await plan.getByLabel('Plan editor page').selectOption('Sessions');
+  await plan.getByRole('button', { name: 'Increase sessions per day', exact: true }).click();
+  await plan.getByText('45 min of planned app time each day', { exact: true }).waitFor();
+  report.cases.push('Session stepper updates planned budget');
+  const history = page.getByTestId('RN09H_HISTORY_ONLY');
+  await history.getByLabel('History detail page').selectOption('Progress');
+  await history.getByRole('button', { name: 'This month', exact: true }).click();
+  assert.equal(await history.getByText('80', { exact: true }).count(), 0);
+  await history.getByRole('button', { name: 'View time reclaimed', exact: true }).click();
+  assert.equal(await history.getByLabel('80% less screen time').count(), 0);
+  report.cases.push('Month unavailability survives next-page navigation without weekly fallback');
+  await page.setViewportSize({ width: 393, height: 852 });
+  await page.goto('http://127.0.0.1:8097');
+  await page.getByRole('tab', { name: 'Quests', exact: true }).click();
+  await page.getByRole('button', { name: 'Create a custom quest', exact: true }).click();
+  await page.getByRole('heading', { name: 'Custom quest', exact: true }).waitFor();
+  assert(await page.getByRole('button', { name: 'Save quest', exact: true }).isDisabled());
+  await page.getByLabel('Quest name', { exact: true }).fill('Local draft');
+  await page.getByRole('button', { name: 'Back', exact: true }).click();
+  await page.getByRole('button', { name: 'Discard and leave', exact: true }).click();
+  await page.getByRole('heading', { name: 'Your Quests', exact: true }).waitFor();
+  report.cases.push('Real quest route opens blank, prevents fake save and confirms dirty exit');
+  await page.getByRole('tab', { name: 'Settings', exact: true }).click();
+  await page
+    .getByRole('button', { name: 'Distracting Apps. Not available yet', exact: true })
+    .click();
+  await page.getByRole('heading', { name: 'Make room for focus', exact: true }).waitFor();
+  assert(await page.getByRole('button', { name: 'Choose apps', exact: true }).isDisabled());
+  assert.equal(await page.getByText('Instagram', { exact: true }).count(), 0);
+  await page.getByRole('button', { name: 'Back', exact: true }).click();
+  await page.getByRole('heading', { name: 'Settings', exact: true }).waitFor();
+  await page.getByRole('button', { name: 'Active Days. Not available yet', exact: true }).click();
+  await page.getByRole('heading', { name: 'Active Days', exact: true }).waitFor();
+  assert(await page.getByRole('button', { name: 'Save days', exact: true }).isDisabled());
+  await page.getByRole('button', { name: 'Back', exact: true }).click();
+  report.cases.push('Real Settings opens unavailable native selection and local plan editor');
+  await page.getByRole('tab', { name: 'History', exact: true }).click();
+  await page.getByRole('button', { name: 'Next history page', exact: true }).click();
+  await page.getByRole('heading', { name: 'How you’re doing', exact: true }).waitFor();
+  await page.getByRole('button', { name: 'This month', exact: true }).click();
+  await page.getByRole('button', { name: 'View time reclaimed', exact: true }).click();
+  await page.getByRole('heading', { name: 'Screen time reduction', exact: true }).waitFor();
+  assert.equal(await page.getByText('80', { exact: true }).count(), 0);
+  await page.getByRole('button', { name: 'Back', exact: true }).click();
+  await page.getByRole('button', { name: 'Back', exact: true }).click();
+  await page.getByRole('heading', { name: 'Your stats', exact: true }).waitFor();
+  report.cases.push('Real three-page History retains tab shell and never shows sample stats');
+  assert.deepEqual(report.errors, []);
+  assert.deepEqual(report.privateRequests, []);
+  await writeFile(
+    new URL('./interaction-results.json', import.meta.url),
+    JSON.stringify(report, null, 2) + '\n',
+  );
+  console.log(`${report.cases.length} real browser interaction flows passed.`);
+} finally {
+  await browser.close();
+}

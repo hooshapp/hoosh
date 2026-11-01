@@ -1,0 +1,22 @@
+{
+  "project": "Disconnect UI QA",
+  "physicalDevice": false,
+  "platforms": {
+    "android": {
+      "runtimeVersion": "exposdk:58.0.0",
+      "bundleStatus": 200,
+      "bundleBytes": 4314440,
+      "sha256": "5e6b591eb21b8027af26a7f0a7127a818c34baf838ddc579e78dc51950e9e166",
+      "sourceExamplesIncludedOnlyHere": true,
+      "executedOnDevice": false
+    },
+    "ios": {
+      "runtimeVersion": "exposdk:58.0.0",
+      "bundleStatus": 200,
+      "bundleBytes": 4307556,
+      "sha256": "de4f4368327743043c4458d681e7fae1fe86838ad0fced22f013b5957549182e",
+      "sourceExamplesIncludedOnlyHere": true,
+      "executedOnDevice": false
+    }
+  }
+}

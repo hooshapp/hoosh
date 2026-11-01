@@ -1,5 +1,6 @@
+import { ConfirmationDialog } from './confirmation-dialog';
 import { parseTime, formatTime } from './draft-utils';
-import { useEffect, useRef, useState, type ComponentRef, type PropsWithChildren } from 'react';
+import { useRef, useState, type ComponentRef, type PropsWithChildren } from 'react';
 import {
   Pressable,
   StyleSheet,
@@ -156,18 +157,14 @@ export function LeaveConfirmation({
   onKeep: () => void;
   onDiscard: () => void;
 }) {
-  const keep = useRef<ComponentRef<typeof Button>>(null);
-  useEffect(() => {
-    focusControl(keep.current);
-  }, []);
   return (
-    <View style={editorStyles.panel}>
-      <Text accessibilityRole="alert" style={editorStyles.body}>
-        Discard unsaved changes?
-      </Text>
-      <Button ref={keep} label="Keep editing" onPress={onKeep} />
-      <Button label="Discard and leave" variant="secondary" onPress={onDiscard} />
-    </View>
+    <ConfirmationDialog
+      title="Discard unsaved changes?"
+      keepLabel="Keep editing"
+      discardLabel="Discard and leave"
+      onKeep={onKeep}
+      onDiscard={onDiscard}
+    />
   );
 }
 export function EditorPage({

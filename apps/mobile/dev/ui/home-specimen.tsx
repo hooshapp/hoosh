@@ -1,3 +1,4 @@
+import { homeExample as figmaHome } from '../shared/ui-samples';
 import { useState } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -5,32 +6,6 @@ import { HomeScreen } from '@/features/home/home-screen';
 import { unavailableHome, type HomeModel } from '@/features/home/home-model';
 
 /** Figma examples only. This module must never enter an Expo route/native consumer graph. */
-const figmaHome: HomeModel = {
-  dino: { state: 'ready', value: { percent: 85, artwork: 'happy', feedCost: 10 } },
-  credits: { state: 'ready', value: 240 },
-  weekly: {
-    state: 'ready',
-    value: {
-      hours: 5,
-      periodLabel: 'this week',
-      rangeLabel: 'Example week only',
-      sourceLabel: 'Figma sample',
-      coverageLabel: 'No usage measured',
-    },
-  },
-  streak: { state: 'ready', value: { days: 7, recentWeekComplete: true } },
-  recommendation: {
-    state: 'ready',
-    value: {
-      id: 'RN09_FIGMA_RECOMMENDATION_ONLY',
-      title: 'Read for 20 minutes',
-      description:
-        'You usually scroll for 20 mins at this hour. Instead, pick up a book — your Kindle is waiting!',
-      rewardCredits: 50,
-      restrictionNotice: '🔒 Instagram & TikTok will be locked during quest',
-    },
-  },
-};
 const scenarios = [
   'Unavailable',
   'Loading',

@@ -528,8 +528,8 @@ surfaces and all eleven reviewed detail frames are covered in the
 accessibility/native-picker/forecast adaptations. Next work is real Auth/root/API/
 profile prerequisites, approved feature/native contracts and signed-device QA.
 These are live acceptance gates, not a claim that the completed detail UI is absent.
-Plan 04 as a whole remains open. Original icon rewiring is a separate RN-02/RN-10
-follow-up requested for later; Auth/onboarding and native-owned interventions remain
+Plan 04 as a whole remains open. Original icon rewiring is completed by RN-10a;
+Auth/onboarding and native-owned interventions remain
 with their respective owners. RN-09e `3c9d20d`, f `d0206b4`, g `b319d75`; h resolves
 by its unique commit subject in the notes.
 
@@ -560,8 +560,8 @@ intrinsic footer reflow and late lifecycle callback/cleanup suppression. All
 original SVGs remain unedited. RN-10a now completes the user-authorized original-pack refresh; prior captures remain in Git history.
 
 The following checks remain pending; these IDs match the QA record. RN-10 is not
-full signed-device/live acceptance, and unimplemented RN-09b/c/d were not audited
-as completed screens.
+full signed-device/live acceptance. RN-09b–h now have recorded browser/component
+checks; actual device checks for those screens remain pending.
 
 | Ref | Remaining acceptance | Owner / required evidence |
 |---|---|---|
@@ -569,7 +569,7 @@ as completed screens.
 | RN10-D02 | Native font scale, keyboard, safe areas, focus scrolling and SVG rendering | Platform owners; supported devices and configured portrait behavior. |
 | RN10-D03 | Real Auth/account/profile lifecycle and root integration | Anisha + Ishmum; live RN-05/06/07 round trips and account transitions. |
 | RN10-D04 | Native authorization/status foreground reconciliation | Native owners; RN08-D01–D06 with actual adapters. |
-| RN10-D05 | Accessibility of future Quests/History/Settings composition | Ishmum; repeat checks when RN-09b/c/d exist. |
+| RN10-D05 | Native accessibility of implemented Quests/History/Settings and detail/editor composition | Ishmum; browser/component checks recorded, phone traversal/focus/layout acceptance pending. |
 | RN10-D06 | Cold start, memory pressure, background/termination/offline restoration and responsiveness | Integration/platform owners; measured device evidence without invented SLAs. |
 
 ### RN-11 — Profile milestone and platform handoff evidence
@@ -701,3 +701,14 @@ is prepared; shared approved schemas, real native selection/save/install and lau
 scope are still pending. No deferred live contract or platform gate is marked done.
 
 RN-10a original icon-pack work (2026-10-31): 61 same-node tracked files are exact pack copies, refreshing 16 earlier captures. Home nav root is 21×21 with unchanged 18 px slot/−1.5 offsets. Source literal emoji stay literal. Remaining 10 context originals have no same-node pack file and remain verified originals. See assets README and rn-10a audit/evidence. Android device acceptance remains pending until actual device access/results exist.
+
+
+RN-10b Android QA preparation and polish (2026-11-01): a separate Expo Go project
+at `apps/mobile/dev/native` renders actual widgets across 19 local sample pages
+without routing fixtures into the real app. Shared samples now serve web/native
+QA. Discard/cancel confirmations use a scrollable safe-area modal, dismiss the
+keyboard on show, focus the safe action and keep the draft on Android request-close;
+busy cancellation remains disabled. See its README, the QA record and per-file
+implementation notes. No Android device is connected, so RN10-D01/D02/D06 and
+native RN10-D05 acceptance remain pending. RN10-D03/D04 still need real producers.
+RN-10a commit: `ab7d855`. Do not mistake a served Expo Go bundle for phone execution.

@@ -70,7 +70,7 @@ browser emulation or mocked public native APIs.
 | RN10-D02 | Actual Dynamic Type/font scaling, software/hardware keyboard, safe areas, focus scrolling and SVG rendering | Platform owners. Small/standard/large device checks; portrait remains configured, and unsupported rotation is not enabled by this change. |
 | RN10-D03 | Real Auth/account/profile lifecycle, guarded root provider integration and two-account/restored-session transitions | Anisha + Ishmum. RN-05/06 and RN-07 live evidence; current callbacks/provider tests do not establish integration. |
 | RN10-D04 | Real native authorization/status visibility and foreground reconciliation | Native owners; RN08-D01–D06. No adapter/action is activated by these UI fixes. |
-| RN10-D05 | Audit Quests/History/Settings when RN-09b/c/d are implemented | Ishmum; Anisha reviews Auth/iOS impact. Rerun layout, focus, contrast and state matrix on each real increment. |
+| RN10-D05 | Native accessibility of implemented Quests/History/Settings and detail/editor composition | Ishmum; Anisha reviews iOS impact. Browser/component follow-up is recorded; actual phone traversal, focus and layout results remain pending. |
 | RN10-D06 | Cold start, memory pressure, process death, background/foreground/offline restoration and measured responsiveness | Platform/integration owners. Reproducible real-device observations; no promised latency SLA, persisted private cache or synthetic enforcement from JS. |
 
 ## RN-11 readiness — live milestone cannot run yet
@@ -121,3 +121,37 @@ VoiceOver/TalkBack, real fonts/SVGs, keyboard and actual account lifecycle when 
 producers exist. No browser record proves native protection or completed Auth.
 
 RN-09e–h editor/detail UI follow-up is recorded in [RN-09 UI coverage](rn09-ui-coverage.md), with original-asset, state, local-interaction and real-route browser evidence. Signed-device/live gates remain pending; original RN-10 evidence stays historical to its commit.
+
+
+## RN-10a/b icon and Android follow-up — 2026-11-01
+
+RN-10a (`ab7d855`) copied 61 same-node originals byte-for-byte from the user pack,
+refreshing 16 earlier exports and correcting Home navigation root geometry. Ten
+other exact context originals remain because the pack has no same-node filename.
+Source literal emoji/glyphs stay literal. See the rn-10a asset audit and browser
+captures; the pack is not needed in CI because originals are tracked locally.
+
+RN-10b moves dirty-exit and quest cancellation prompts into a shared native modal
+with scrollable safe-area content and its own safe-area provider. A browser
+regression caught inherited gallery insets pushing its actions off-screen; the
+modal now measures its own window. Modal show dismisses the keyboard and requests
+safe-action focus; request-close delegates to Keep, and busy cancellation cannot
+repeat. Existing editor return focus is retained. Component events verify these
+contracts, not TalkBack speech or Android IME behavior.
+
+The [native QA runbook](../../apps/mobile/dev/native/README.md) provides a separate
+Expo Go project with 19 actual component pages and local examples/state controls.
+Samples are shared with the existing web gallery; production exports reject their
+markers and native source maps exclude the entire project-local dev tree. The
+QA project has no Router; real app hardware Back/tab behavior must be checked in
+the ordinary shell separately.
+
+**Physical Android status: pending.** `adb devices -l` found no authorized devices
+on 2026-11-01. No phone screenshot, TalkBack observation, font-scale/IME observation
+or measured process lifecycle result exists for this part. Bundle compilation,
+web navigation and mocked iOS/Android tests are explicitly separate evidence.
+RN10-D01/D02/D06 and native D05 remain open; D03/D04 still require live Auth/API
+and native producers. No signing, released iOS project or native policy changed.
+
+Reproduction and current results are in
+[RN-10b evidence](../core_plan_implementation_notes/artifacts/rn-10b/README.md).

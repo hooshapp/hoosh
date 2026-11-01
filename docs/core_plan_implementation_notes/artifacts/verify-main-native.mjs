@@ -5,7 +5,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const part = process.argv[2];
-if (!['rn-09b', 'rn-09c', 'rn-09d', 'rn-09h'].includes(part)) throw new Error('Choose rn-09b/c/d/h.');
+if (!['rn-09b', 'rn-09c', 'rn-09d', 'rn-09h', 'rn-10b'].includes(part))
+  throw new Error('Choose rn-09b/c/d/h or rn-10b.');
 const root = fileURLToPath(new URL('../../../', import.meta.url));
 const output = path.join(root, `apps/mobile/.expo/${part}-native`);
 const { runtime } = await import(`./${part}/browser-config.mjs`);
@@ -40,7 +41,9 @@ for (const platform of ['ios', 'android']) {
   }
   assert(
     !map.sources.some((name) =>
-      /\.test\.|\/__tests__\/|\/dev\/ui\/|\/infrastructure\/api\/|\/account-surface\./.test(name),
+      /\.test\.|\/__tests__\/|\/apps\/mobile\/dev\/|\/infrastructure\/api\/|\/account-surface\./.test(
+        name,
+      ),
     ),
   );
   const bytes = fs.readFileSync(bundle);
