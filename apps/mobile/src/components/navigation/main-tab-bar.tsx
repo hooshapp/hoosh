@@ -198,7 +198,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 10,
   },
-  pill: { minHeight: 38, flexDirection: 'row', alignItems: 'center', gap: 8, borderRadius: 24 },
+  pill: {
+    minHeight: 38,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    borderRadius: 24,
+    // Keep a native background drawable from mount when selection changes color.
+    backgroundColor: colors.darkNav,
+  },
   activePill: {
     backgroundColor: colors.action,
     paddingLeft: 16,

@@ -1,0 +1,306 @@
+{
+  "date": "2026-11-01",
+  "device": {
+    "model": "Pixel 8 Pro",
+    "androidVersion": "16",
+    "apiLevel": 36,
+    "expoGoVersion": "58.0.5",
+    "physicalPixels": [
+      1344,
+      2992
+    ],
+    "densityDpi": 480,
+    "originalFontScale": 1.15
+  },
+  "build": "Expo Go development projects; not a signed standalone app",
+  "baselinePages": [
+    {
+      "page": "Home",
+      "fontScale": 1.15,
+      "rendered": true
+    },
+    {
+      "page": "Quests",
+      "fontScale": 1.15,
+      "rendered": true
+    },
+    {
+      "page": "Settings",
+      "fontScale": 1.15,
+      "rendered": true
+    },
+    {
+      "page": "History",
+      "fontScale": 1.15,
+      "rendered": true
+    },
+    {
+      "page": "Personalize",
+      "fontScale": 1.15,
+      "rendered": true
+    },
+    {
+      "page": "Custom quest",
+      "fontScale": 1.15,
+      "rendered": true
+    },
+    {
+      "page": "Edit quest",
+      "fontScale": 1.15,
+      "rendered": true
+    },
+    {
+      "page": "Age",
+      "fontScale": 1.15,
+      "rendered": true
+    },
+    {
+      "page": "Activities",
+      "fontScale": 1.15,
+      "rendered": true
+    },
+    {
+      "page": "Apps",
+      "fontScale": 1.15,
+      "rendered": true
+    },
+    {
+      "page": "Native selection",
+      "fontScale": 1.15,
+      "rendered": true
+    },
+    {
+      "page": "Gender",
+      "fontScale": 1.15,
+      "rendered": true
+    },
+    {
+      "page": "Days",
+      "fontScale": 1.15,
+      "rendered": true
+    },
+    {
+      "page": "Hours",
+      "fontScale": 1.15,
+      "rendered": true
+    },
+    {
+      "page": "Sessions",
+      "fontScale": 1.15,
+      "rendered": true
+    },
+    {
+      "page": "Progress",
+      "fontScale": 1.15,
+      "rendered": true
+    },
+    {
+      "page": "Time reclaimed",
+      "fontScale": 1.15,
+      "rendered": true
+    },
+    {
+      "page": "Profile",
+      "fontScale": 1.15,
+      "rendered": true
+    },
+    {
+      "page": "Original assets",
+      "fontScale": 1.15,
+      "rendered": true
+    }
+  ],
+  "largeText": {
+    "cases": [
+      {
+        "page": "Home",
+        "fontScale": 2.0,
+        "rendered": true
+      },
+      {
+        "page": "Quests",
+        "fontScale": 2.0,
+        "rendered": true
+      },
+      {
+        "page": "Settings",
+        "fontScale": 2.0,
+        "rendered": true,
+        "scrolledToLowerContent": true
+      },
+      {
+        "page": "Custom quest",
+        "fontScale": 2.0,
+        "rendered": true,
+        "scrolledToLowerContent": true
+      },
+      {
+        "page": "Activities",
+        "fontScale": 2.0,
+        "rendered": true,
+        "scrolledToLowerContent": true
+      },
+      {
+        "page": "Apps",
+        "fontScale": 2.0,
+        "rendered": true,
+        "scrolledToLowerContent": true
+      },
+      {
+        "page": "Days",
+        "fontScale": 2.0,
+        "rendered": true,
+        "scrolledToLowerContent": true
+      },
+      {
+        "page": "Hours",
+        "fontScale": 2.0,
+        "rendered": true,
+        "scrolledToLowerContent": true
+      },
+      {
+        "page": "Sessions",
+        "fontScale": 2.0,
+        "rendered": true,
+        "scrolledToLowerContent": true
+      },
+      {
+        "page": "Progress",
+        "fontScale": 2.0,
+        "rendered": true,
+        "scrolledToLowerContent": true
+      },
+      {
+        "page": "Profile",
+        "fontScale": 2.0,
+        "rendered": true,
+        "scrolledToLowerContent": true
+      }
+    ],
+    "originalFontScale": "1.15",
+    "restoredFontScale": "1.15"
+  },
+  "keyboardAndQaModal": {
+    "fontScale": 1.15,
+    "softwareKeyboardObserved": true,
+    "typedDraftRetainedAfterModalHardwareBack": true,
+    "explicitDiscardReturnedToMenu": true
+  },
+  "actualRouter": {
+    "fontScale": 1.15,
+    "fourTabsAndSelectedSemantics": true,
+    "hardwareRouteBackPrompt": true,
+    "modalBackKeepsTypedDraft": true,
+    "explicitDiscardReturnsToQuests": true,
+    "liveDataStillUnavailable": true
+  },
+  "snapshotCrop": {
+    "left": 0,
+    "top": 151,
+    "right": 1344,
+    "bottom": 2848,
+    "purpose": "Exclude status/notification icons and system navigation; no app pixels repainted."
+  },
+  "developmentServerInterruption": "Nested QA Metro exited when a stale HMR connection registered the ordinary Router entry against the QA root. Restarted Metro and cold-opened Expo Go between projects; subsequent QA and actual Router checks passed. No app-data wipe or SDK change.",
+  "pending": [
+    "TalkBack speech, accessibility traversal and spoken focus/return",
+    "signed standalone build, iOS and additional device sizes",
+    "live Auth/profile/native producers",
+    "offline/termination/memory-pressure protection behavior and measured responsiveness",
+    "full state-by-state matrix for every feature"
+  ],
+  "liveAccountOrProtection": false,
+  "largeTextRetest": {
+    "weekdayButtons": {
+      "count": 7,
+      "rows": 2,
+      "selectionRoundTrip": true,
+      "fontScale": 2.0
+    },
+    "largeModal": {
+      "headerBackDismissedIme": true,
+      "hardwareBackKeptDraft": true,
+      "fontScale": 2.0
+    },
+    "actualTabs": [
+      "Home",
+      "Quests",
+      "Settings",
+      "History"
+    ],
+    "restoredStayAwake": "0",
+    "restoredFontScale": "1.15"
+  },
+  "controls": {
+    "hoursHorizontalDrag": {
+      "before": [
+        "Start time: 9:00 AM"
+      ],
+      "after": [
+        "Start time: 1:22 PM"
+      ],
+      "fontScale": 1.15
+    },
+    "sessionStepperUpdatesBudget": true,
+    "activitiesCustomInput": {
+      "typed": true,
+      "visibleBounds": [
+        99,
+        1750,
+        1245,
+        1887
+      ]
+    },
+    "homeStateCycle": [
+      "Loading",
+      "Error",
+      "Unavailable",
+      "Busy",
+      "Long text",
+      "Ready"
+    ],
+    "restoredStayAwake": "0"
+  },
+  "finish": {
+    "hoursHorizontalDrag": {
+      "before": [
+        "Start time: 9:00 AM"
+      ],
+      "after": [
+        "Start time: 1:22 PM"
+      ],
+      "fontScale": 1.15
+    },
+    "leftOpen": "QA Home, Ready source example",
+    "restoredStayAwake": "0",
+    "restoredFontScale": "1.15",
+    "screenOffTimeout": "30000"
+  },
+  "fixedIssues": [
+    {
+      "issue": "Compact quest weekday labels split across lines at system font scale 2.0",
+      "fix": "Grow compact minimum width above fontScale 1.3; flex wrapping creates two rows of complete labels.",
+      "nativeRetest": "Seven labels on two rows, checkbox deselection/reselection passed at fontScale 2.0."
+    },
+    {
+      "issue": "Selected navigation background became square after switching tabs",
+      "fix": "Initialize each pill background to the existing bar color before selected color changes.",
+      "nativeRetest": "Normal-font before/after capture geometry and large-font four-tab pass; rounded selected pills observed."
+    }
+  ],
+  "checks": {
+    "npm run check": {
+      "passed": true,
+      "portableTests": 250,
+      "componentTests": 362,
+      "apiTests": 3,
+      "typesLintRuff": true
+    },
+    "mobile:export": {
+      "passed": true,
+      "isolatedAppFiles": 38,
+      "originalAssets": 71
+    },
+    "iOSAndAndroidHermesExactSources": true
+  }
+}

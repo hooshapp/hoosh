@@ -1,0 +1,368 @@
+{
+  "physicalDevice": "Pixel 8 Pro",
+  "signedStandaloneBuild": false,
+  "nativePillBefore": {
+    "topInset10WidthPx": 377,
+    "middleWidthPx": 377,
+    "rounded": false
+  },
+  "nativePillAfter": {
+    "topInset10WidthPx": 325,
+    "middleWidthPx": 377,
+    "rounded": true
+  },
+  "captures": [
+    {
+      "file": "activities-baseline.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "c984d1f54f3381f1d3f208216f10939d1243b0ea0c97432d854c724faa6d9993"
+    },
+    {
+      "file": "activities-font-2-bottom.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "9c3c5ffa9202ee8a6b41bfd8101b00fc93bd77cced9523fb65ac7edeec2be837"
+    },
+    {
+      "file": "activities-keyboard.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "ad2935c8c32a9e0b7f04b51f4b0f5b2f7f3c96e2cc5b5b778c5102942875ed7c"
+    },
+    {
+      "file": "actual-history-font-2-bottom.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "f665696a6b3c1a389b15ffabdc26f2b47d593667afa955cfb4f4f583952b46c5"
+    },
+    {
+      "file": "actual-history.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "63b1a4f92e37eee8bf6eadede84b56bdc7ca7a0497513b839a21fce787a01c73"
+    },
+    {
+      "file": "actual-home-font-2-bottom.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "a631b87e9dc241ea4bb64962ab558b64b00549cb3174af64d934beed48ec5c9e"
+    },
+    {
+      "file": "actual-home.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "b8e84ece1bc37821e57e80c24323abc27591382c9f302771597ad760fe78a779"
+    },
+    {
+      "file": "actual-quests-font-2-bottom.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "7302b81565abf0ce5c0b9dd3a381f5fccf2be023b69a29d714d8e6456e8fee0f"
+    },
+    {
+      "file": "actual-quests.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "e2d05792806a6fe71ae956946d6d4e6b8fc33b0a337676ac2200f15a5cd02b87"
+    },
+    {
+      "file": "actual-route-hardware-back.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "05214e86c8c06c02e76dbd91e473429e040a67bb060c37e19aeedfa7da93542c"
+    },
+    {
+      "file": "actual-settings-font-2-bottom.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "2c48d8c0343e3c256c494ef92d65fb54e1071e3ae9171cabc3dd1b303131928e"
+    },
+    {
+      "file": "actual-settings-font-2.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "0bafe4c61d0ea3f7e4c24d52a7fae2444a83da81acb23d33aaa3143d20eef958"
+    },
+    {
+      "file": "actual-settings.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "ba507b91b3c11724d6e5283df0af5aff7c38c2e70e608b3d5e703d07f60c058b"
+    },
+    {
+      "file": "age-baseline.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "4931f27247cc06e01f803f028b5ebcd6e11ccfddb6456c6a1a8f291ba3ee533e"
+    },
+    {
+      "file": "apps-baseline.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "dd777ebd250c23786c7003c99bcba339eb885866f7a3f40fe790d1b49b396d27"
+    },
+    {
+      "file": "apps-font-2-bottom.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "384ebe200f6740203dca3d2df769c86e5e2d3e61c318132bbd57e8b31389ae27"
+    },
+    {
+      "file": "custom-quest-baseline.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "e30205bfaa072df879ecc893f32cf6744f4b3942a3d9f80eaa9778fe64388a1e"
+    },
+    {
+      "file": "edit-quest-baseline.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "35c610a455fc21170d05673ffa34258a63d50633a4bf4cbda5627a25c301d78a"
+    },
+    {
+      "file": "gender-baseline-clean.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "94bf529e863568d830659784641322443a2e3afb870a794b5b942204e46de2a7"
+    },
+    {
+      "file": "history-baseline.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "78fbf2951b0d640b9dc010dfcdd54c262d21609ced87562ec545dfb3d3d542cb"
+    },
+    {
+      "file": "home-baseline.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "7252a690baf0b816d95749b12d0e4f7f7374f86964f734bc18d484d539020764"
+    },
+    {
+      "file": "home-error.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "ddd9fa509d2ead321590af6afa1a386be5371e7e005dbceabef562d62be149b6"
+    },
+    {
+      "file": "home-final.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "7252a690baf0b816d95749b12d0e4f7f7374f86964f734bc18d484d539020764"
+    },
+    {
+      "file": "home-font-2.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "c77d08fbdb4f79c4f69c5871ebc1ff0778f35c49ac96e7d27acd7beb6c9556a2"
+    },
+    {
+      "file": "home-long-text.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "e564ebab0f3ad4b2c45db56637e70abd32a14748855c9d0b292e3bcd3ea2e2d0"
+    },
+    {
+      "file": "hours-native-drag.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "8a877cbf876fc16660aeb239674683b7048cadaf44078e7f1736581511549783"
+    },
+    {
+      "file": "native-selection-baseline.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "957aa2116077ad678eb56f1d2e1d031724cf50822cfcd4a546f4b00db6b07d11"
+    },
+    {
+      "file": "original-assets-scroll-6.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "69898045bc7dd58e6e589ad01526de0c1220341eee016b2f94a6bedf3e2703a4"
+    },
+    {
+      "file": "personalize-baseline.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "3ad65e6e8d686c2a3638d8176880d64d3c6aca0a7d1c723666e2c747faefa041"
+    },
+    {
+      "file": "profile-baseline.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "096edf0ccf8036ddd5a5afeb33f925ce22bbb51ae804f7d1a8b80a15dd8c5655"
+    },
+    {
+      "file": "profile-font-2-bottom.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "60444fa0c2c9f98bff01675c72110036dd037098e437756978de8e57d6da189b"
+    },
+    {
+      "file": "progress-baseline.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "8dabcd1812e8619e785aa32b9e15917edb67642405a0c3ceecd46d601897f2a2"
+    },
+    {
+      "file": "progress-font-2-bottom.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "bcdd878f265280465e58bcbc2d90413526bc696dabc8436e8421a486fb616c41"
+    },
+    {
+      "file": "quest-discard-prompt.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "bcef6b949624092a12cbcd9c7d496ab82c8c871ead01d4d78d27afe1b7e166eb"
+    },
+    {
+      "file": "quest-keyboard.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "f6a04fbbc3bd36fe651b13b2095a75c9eff597e51c36b7567cd3aefb2b5b851c"
+    },
+    {
+      "file": "quest-modal-font-2.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "ab6e7d8344c7644c76429dd1d5206632e7eab49ad6cbdd44a8980d8811aa66ea"
+    },
+    {
+      "file": "quest-weekdays-after.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "8a291e46796e7d33b8d94b91de96c113a47eb13145b1a645b351a2425138c741"
+    },
+    {
+      "file": "quest-weekdays-before.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "681116e7c8dcdf5940067fa8db1b388b6a55152d765210bb0c69d5063045c311"
+    },
+    {
+      "file": "quests-baseline.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "ba90e43e44d6585a3367d2b501132589517893527242de65a36dd81953453b3f"
+    },
+    {
+      "file": "sessions-native-stepper.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "be9fd010230820de0835fe77ef86e5ed7de964d8f157bbc1ab0ed8350c65b81c"
+    },
+    {
+      "file": "settings-baseline.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "afae2af2f1b1470b23e1758cf7b81e7a261d346e401b605859726a90f0e9b351"
+    },
+    {
+      "file": "settings-font-2-bottom.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "1c828f0c6655ea8477a82c2ab3cb2f25a1e0456a66de69f6c7b5996de7e18db1"
+    },
+    {
+      "file": "tab-pill-after.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "5f2114dd92cd9f4c777164753838bb043ea4789b2d8d5fe6fe12f891dd8e6c54"
+    },
+    {
+      "file": "time-reclaimed-baseline.png",
+      "pixels": [
+        1344,
+        2697
+      ],
+      "sha256": "49f0e1f878b3ab51540a75534e4e26cc64f1a9db56573c297f83e16a77af8b3f"
+    }
+  ]
+}

@@ -67,10 +67,10 @@ browser emulation or mocked public native APIs.
 | Ref | Remaining work | Owner / acceptance evidence |
 |---|---|---|
 | RN10-D01 | VoiceOver/TalkBack traversal, selected-tab announcements, confirmation/status/error speech and focus | Anisha iOS; Ishmum Android. Signed builds on supported devices; no duplicate/hidden/off-screen announcements. |
-| RN10-D02 | Actual Dynamic Type/font scaling, software/hardware keyboard, safe areas, focus scrolling and SVG rendering | Platform owners. Small/standard/large device checks; portrait remains configured, and unsupported rotation is not enabled by this change. |
+| RN10-D02 | Actual Dynamic Type/font scaling, software/hardware keyboard, safe areas, focus scrolling and SVG rendering | RN-10c has Pixel 8 Pro Expo Go at 1.15/2.0, software IME and SVG observations; hardware keyboard, iOS, other devices and signed-build checks remain. Portrait stays configured. |
 | RN10-D03 | Real Auth/account/profile lifecycle, guarded root provider integration and two-account/restored-session transitions | Anisha + Ishmum. RN-05/06 and RN-07 live evidence; current callbacks/provider tests do not establish integration. |
 | RN10-D04 | Real native authorization/status visibility and foreground reconciliation | Native owners; RN08-D01–D06. No adapter/action is activated by these UI fixes. |
-| RN10-D05 | Native accessibility of implemented Quests/History/Settings and detail/editor composition | Ishmum; Anisha reviews iOS impact. Browser/component follow-up is recorded; actual phone traversal, focus and layout results remain pending. |
+| RN10-D05 | Native accessibility of implemented Quests/History/Settings and detail/editor composition | Ishmum; Anisha reviews iOS impact. Browser/component and RN-10c Android layout/navigation/control results are recorded; screen-reader traversal/focus, other platforms/builds and full state matrices remain. |
 | RN10-D06 | Cold start, memory pressure, process death, background/foreground/offline restoration and measured responsiveness | Platform/integration owners. Reproducible real-device observations; no promised latency SLA, persisted private cache or synthetic enforcement from JS. |
 
 ## RN-11 readiness — live milestone cannot run yet
@@ -146,8 +146,8 @@ markers and native source maps exclude the entire project-local dev tree. The
 QA project has no Router; real app hardware Back/tab behavior must be checked in
 the ordinary shell separately.
 
-**Physical Android status: pending.** `adb devices -l` found no authorized devices
-on 2026-11-01. No phone screenshot, TalkBack observation, font-scale/IME observation
+**Physical Android status at the RN-10b checkpoint: pending.** `adb devices -l`
+found no authorized devices before the RN-10c connection on 2026-11-01. No phone screenshot, TalkBack observation, font-scale/IME observation
 or measured process lifecycle result exists for this part. Bundle compilation,
 web navigation and mocked iOS/Android tests are explicitly separate evidence.
 RN10-D01/D02/D06 and native D05 remain open; D03/D04 still require live Auth/API
@@ -155,3 +155,45 @@ and native producers. No signing, released iOS project or native policy changed.
 
 Reproduction and current results are in
 [RN-10b evidence](../core_plan_implementation_notes/artifacts/rn-10b/README.md).
+
+
+## RN-10c — physical Pixel 8 Pro run, 2026-11-01
+
+Actual device: Pixel 8 Pro, Android 16/API 36, Expo Go 58.0.5, 1344×2992 pixels,
+density 480. Original system font scale 1.15; large-font checks used 2.0. This was
+Expo Go development UI execution, not a signed standalone native integration run.
+
+| Case | Observed outcome |
+|---|---|
+| 19 QA pages at 1.15 | All opened; source assets, four Dino moods, controls and sample labels rendered. |
+| 11 representative pages at 2.0 | Content wrapped/scrolled; lower controls inspected. Quest weekday letters initially split; fixed by growing compact buttons and wrapping rows. Retest showed all seven labels on two rows and working selection. |
+| Actual four Router tabs at 1.15 and 2.0 | Selected semantics and navigation passed. At 2.0 navigation expanded to labeled rows, with scroll clearance. Rounded selected pill was lost after switching at 1.15; explicit default background fixes it, confirmed by phone capture geometry and retest. |
+| Quest keyboard and header Back | Typed local text visible; opening the large-font modal dismissed IME. Both prompt actions remained reachable. |
+| QA and actual Router hardware Back | Dirty route prompted; Back inside the modal kept typed text; explicit discard returned to the appropriate menu/Quests route. |
+| Activities custom input | Typed local text remained visible above the software keyboard. |
+| Hours and sessions | Native horizontal handle drag changed 9:00 AM to 1:22 PM; one session increment updated the displayed local budget to 45 minutes. No save/install occurred. |
+| Home scenario cycle | Loading, Error, Unavailable, Busy, Long text, Ready opened; sample/intent boundaries stayed explicit. |
+| Restoration | Font scale restored to 1.15; temporary USB stay-awake restored to 0; screen timeout remained 30000 ms. QA Home left open. |
+
+[Phone results, capture audit and reproduction](../core_plan_implementation_notes/artifacts/rn-10c/README.md)
+include before/after evidence. Status/navigation bars were cropped; only inspected
+owned-app captures are tracked. A notification-overlaid capture was excluded and
+retaken. The floating gray Tools gear in some captures belongs to Expo Go.
+
+The final workspace check passed 250 portable + 362 native-component + 3 API tests,
+types/lint/Ruff and asset checks. Final web export passed isolation for 38 files and
+71 original assets; iOS/Android Hermes source-map checks match changed shared code.
+Those exports themselves were not installed on the phone; the phone ran Expo Go.
+
+A stale HMR registration for the ordinary Router entry against the nested QA
+project stopped local Metro during the final retest. Metro was restarted and Expo
+Go cold-opened between projects; the interrupted tests subsequently passed. The
+phone auto-locked, its owner unlocked it, and later tests temporarily kept it awake
+only while plugged in. No lock was bypassed and no app data was erased.
+
+RN10-D02/D05 have partial actual Android evidence. TalkBack/VoiceOver speech and
+traversal, iOS, additional devices/sizes, standalone signing, per-feature exhaustive
+states and actual Auth/native integration remain pending. Cold start of Expo Go
+for test setup does not establish D06's released-app process/offline/low-memory or
+native protection behavior. No native permission, restriction, backend or cloud
+state was changed.

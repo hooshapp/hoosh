@@ -86,7 +86,16 @@ a successful bundle request, browser screenshot or component test.
 
 ## Current evidence
 
-As of 2026-11-01 no authorized Android device was visible to `adb`; no physical
-phone result is recorded. The JavaScript bundles and types compile; those results
-are separate from device execution. See [the QA record](../../../../docs/qa/mobile-accessibility.md)
-and [RN-10b evidence](../../../../docs/core_plan_implementation_notes/artifacts/rn-10b/).
+RN-10b recorded compile-only results before a phone was connected. RN-10c now
+records actual Pixel 8 Pro / Android 16 / Expo Go 58.0.5 observations at system
+font scales 1.15 and 2.0. See [the current QA record](../../../../docs/qa/mobile-accessibility.md)
+and [physical-run evidence](../../../../docs/core_plan_implementation_notes/artifacts/rn-10c/README.md)
+for the exact passed cases, discovered issues and remaining acceptance. Compilation
+is still separate from device execution; Expo Go is not a signed standalone build.
+
+When switching between the QA project and the ordinary Router project, close the
+previous Expo Go experience first. In this run, a stale HMR connection registered
+the Router entry against the nested QA server and stopped Metro; restart Metro and
+reopen the intended project if this occurs. It is a development-server failure, not
+a successful app lifecycle result. Do not inspect screenshots while the device is
+locked or another app is foreground; ask the owner to unlock before continuing.

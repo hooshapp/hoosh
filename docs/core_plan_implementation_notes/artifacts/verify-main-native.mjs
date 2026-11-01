@@ -5,8 +5,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const part = process.argv[2];
-if (!['rn-09b', 'rn-09c', 'rn-09d', 'rn-09h', 'rn-10b'].includes(part))
-  throw new Error('Choose rn-09b/c/d/h or rn-10b.');
+if (!['rn-09b', 'rn-09c', 'rn-09d', 'rn-09h', 'rn-10b', 'rn-10c'].includes(part))
+  throw new Error('Choose rn-09b/c/d/h or rn-10b/c.');
 const root = fileURLToPath(new URL('../../../', import.meta.url));
 const output = path.join(root, `apps/mobile/.expo/${part}-native`);
 const { runtime } = await import(`./${part}/browser-config.mjs`);

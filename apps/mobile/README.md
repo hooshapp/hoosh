@@ -37,5 +37,5 @@ changed); 10 other context originals remain valid. RN-10b adds a separate
 [Expo Go UI QA project](dev/native/README.md). Run `npm run mobile:qa:android` from
 the repository root and scan its QR to interact with populated shared components
 and local drafts on a phone. This is separate from the actual app on port 8081;
-its ordinary routes retain unavailable values. Android physical-device acceptance
-is pending until the phone is connected and the runbook results are recorded.
+its ordinary routes retain unavailable values. RN-10c records physical Pixel 8 Pro / Android 16 checks; see the QA record for
+remaining TalkBack and signed-build/platform acceptance.

@@ -194,7 +194,7 @@ RN-01/02/03 and the RN-04 producer are implemented with evidence linked below; R
 | RN-07 | `feat(account): integrate versioned profile reads and edits` | RN-04/05; approved profile contract/API/migration | Real profile round trip, conflict and ambiguous-save handling | UI prepared only; real profile/data integration pending | `5790302` (UI only) |
 | RN-08 | `feat(protection-ui): show native capability and installation states` | RN-01; agreed native read boundary; actual adapters for integration | Status mapper tests; device evidence only where adapter exists | Presentation/read consumer prepared; native wiring/device acceptance pending | `71da2d5` (presentation/read preparation only) |
 | RN-09 | `feat(mobile): compose main app surfaces with explicit feature states` | RN-01/02; RN-07/08 where live data is used | Figma comparisons + no invented production data | RN-09a–h independent UI implemented; live integration pending | `ff75039`, `2bbebad`, `c1c84c3`; RN-09d resolved by its notes/unique commit subject |
-| RN-10 | `fix(mobile): complete accessibility layout and lifecycle handling` | Implemented RN parts; relevant device build access | Accessibility/device-size checks and targeted regression tests | Shared UI/lifecycle hardening implemented; device/live acceptance pending | See RN-10 notes / unique subject |
+| RN-10 | `fix(mobile): complete accessibility layout and lifecycle handling` | Implemented RN parts; relevant device build access | Accessibility/device-size checks and targeted regression tests | Shared hardening/icons and partial Pixel 8 Pro Expo Go QA implemented; remaining platform/live acceptance pending | RN-10 notes; RN-10a `ab7d855`, b `704bc49`, c by unique subject |
 | RN-11 | `test(integration): document profile and platform handoff acceptance` | RN-06/07/10; RN-08/09 evidence as applicable | M2 matrix, native capability handoff, reproducible runbook | Awaiting live Auth/API/profile prerequisites; not executed | — |
 
 Independent UI work RN-01/02 may start while Supabase/Auth/backend are being built. RN-03 can use deterministic test responses once the HTTP contract is agreed. RN-04 can use injected test auth snapshots, but no production fixture mode. RN-05/06 are the first real identity milestone. RN-07 is a later profile milestone. RN-08 must not block M1 when no native adapter exists; only its pure presentation boundary can proceed without one. RN-09 is bounded presentation work, not completion of all app business logic.
@@ -566,10 +566,10 @@ checks; actual device checks for those screens remain pending.
 | Ref | Remaining acceptance | Owner / required evidence |
 |---|---|---|
 | RN10-D01 | VoiceOver/TalkBack traversal, announcements and focus | Platform owners; actual signed-device steps/results. |
-| RN10-D02 | Native font scale, keyboard, safe areas, focus scrolling and SVG rendering | Platform owners; supported devices and configured portrait behavior. |
+| RN10-D02 | Remaining platform/device font scale, keyboard, safe areas, focus scrolling and SVG acceptance | RN-10c records Pixel 8 Pro Expo Go at 1.15/2.0 and software IME; hardware keyboard, iOS, additional devices and signed-build evidence remain. |
 | RN10-D03 | Real Auth/account/profile lifecycle and root integration | Anisha + Ishmum; live RN-05/06/07 round trips and account transitions. |
 | RN10-D04 | Native authorization/status foreground reconciliation | Native owners; RN08-D01–D06 with actual adapters. |
-| RN10-D05 | Native accessibility of implemented Quests/History/Settings and detail/editor composition | Ishmum; browser/component checks recorded, phone traversal/focus/layout acceptance pending. |
+| RN10-D05 | Native accessibility of implemented Quests/History/Settings and detail/editor composition | Ishmum; RN-10c records actual Android layout/navigation/control checks; screen-reader traversal/focus, other platforms/builds and full state matrices remain. |
 | RN10-D06 | Cold start, memory pressure, background/termination/offline restoration and responsiveness | Integration/platform owners; measured device evidence without invented SLAs. |
 
 ### RN-11 — Profile milestone and platform handoff evidence
@@ -712,3 +712,26 @@ busy cancellation remains disabled. See its README, the QA record and per-file
 implementation notes. No Android device is connected, so RN10-D01/D02/D06 and
 native RN10-D05 acceptance remain pending. RN10-D03/D04 still need real producers.
 RN-10a commit: `ab7d855`. Do not mistake a served Expo Go bundle for phone execution.
+
+
+RN-10c physical Android follow-up (2026-11-01): Ishmum executed Expo Go on an
+authorized Pixel 8 Pro, Android 16/API 36, Expo Go 58.0.5. All 19 QA destinations
+opened at the original 1.15 font scale; 11 representative pages and all four actual
+Router tabs were inspected at 2.0. Typed drafts, software keyboard, header/hardware
+Back, explicit discard, Home's six QA scenarios, native hours drag and session
+steppers were exercised. Two observed failures are fixed and retested: compact
+weekday labels now grow/wrap into intact rows at enlarged fonts, and selected tab
+pills keep rounded backgrounds after switching. Phone screenshots and exact limits
+are in [RN-10c evidence](../core_plan_implementation_notes/artifacts/rn-10c/README.md).
+Font scale 1.15, USB stay-awake setting 0 and the original 30-second screen timeout
+were confirmed at handoff. QA Home is left open with explicitly simulated data.
+
+RN10-D02/D05 now have **partial physical Android evidence**, not full platform
+acceptance. RN10-D01 still requires observed TalkBack/VoiceOver speech and traversal;
+D03/D04 require real producers; D06 needs standalone-build lifecycle/offline/process
+and responsiveness evidence. iOS, additional device sizes, signed standalone builds
+and the complete per-feature state matrix remain open. A local stale HMR connection
+stopped QA Metro during project switching; the server was restarted, Expo Go was
+cold-opened between projects and the interrupted cases then passed. This interruption
+is recorded as a development-tool failure, not an app lifecycle pass. RN-10b commit:
+`704bc49`. No native project, release identity, Auth/backend data or permission changed.

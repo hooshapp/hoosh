@@ -3,6 +3,7 @@ import { parseTime, formatTime } from './draft-utils';
 import { useRef, useState, type ComponentRef, type PropsWithChildren } from 'react';
 import {
   Pressable,
+  useWindowDimensions,
   StyleSheet,
   Text,
   View,
@@ -47,6 +48,7 @@ export function Choice({
   labelVisual?: React.ReactNode;
 }) {
   const [focused, setFocused] = useState(false);
+  const { fontScale } = useWindowDimensions();
   const press = usePressGuard(onPress, disabled);
   return (
     <Pressable
@@ -61,6 +63,7 @@ export function Choice({
       style={[
         editorStyles.choice,
         compact && editorStyles.compact,
+        compact && fontScale > 1.3 && { minWidth: Math.ceil(44 * fontScale) },
         checked && editorStyles.selected,
         compact && checked && { backgroundColor: colors.action, borderColor: colors.action },
         focused && {

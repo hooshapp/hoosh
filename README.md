@@ -83,7 +83,8 @@ Scan the terminal QR in compatible Expo Go on the same Wi-Fi. This separate
 **Disconnect UI QA** project has 19 component pages, local drafts and state
 controls; no account, saved data or protection is connected. See the
 [native QA runbook](apps/mobile/dev/native/README.md) for phone setup and the
-separate actual-app navigation run. Physical-device results remain pending.
+separate actual-app navigation run. [The QA record](docs/qa/mobile-accessibility.md)
+tracks actual Android observations and remaining device/integration acceptance.
 
 ### Run the API
 
