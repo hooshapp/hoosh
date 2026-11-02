@@ -41,7 +41,7 @@ jobs:
       - name: Install only build-time API generator dependencies
         run: npm ci --workspace @disconnect/api-codegen --include-workspace-root=false
       - run: uv sync --project services/api --frozen
-      - run: uv run --project services/api ruff check services/api scripts/export-openapi.py
+      - run: uv run --project services/api ruff check services/api scripts/export-openapi.py scripts/configure-db-access.py
       - run: uv run --project services/api pytest services/api/tests
       - name: Reproducible OpenAPI and generated HTTP types
         run: npm run api:check-contracts

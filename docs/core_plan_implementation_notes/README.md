@@ -43,7 +43,7 @@ Read its current resume checkpoint and the plan ledger for actual implementation
 Plan 03 now has its own [backend foundation record](plan_03_backend_foundation_notes.md);
 read it before API-01–05 implementation or Auth/API consumer integration. When Anisha starts Plan 02, she creates
 `plan_02_auth_onboarding_notes.md`; when either developer starts Plan 01, use
-`plan_01_supabase_foundation_notes.md` and label each entry's owner/part. Shared plans
+[plan_01_supabase_foundation_notes.md](plan_01_supabase_foundation_notes.md) and label each entry's owner/part. Shared plans
 still have one notes file and one named author per overlapping change. Create the
 remaining records when those plans actually begin, not as invented implementation history.
 

@@ -19,6 +19,8 @@ __pycache__/
 .env
 .env.*
 !.env.example
+# Private database certificates and local provisioning scratch files
+services/api/.local/
 
 # Signing and local native build files (native source must be tracked)
 *.p8

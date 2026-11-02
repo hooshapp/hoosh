@@ -127,3 +127,17 @@ real response parsing and account-generation checks remain essential.
 Next: Anisha supplies SB-02/03 metadata/current token and the session/root producer;
 Ishmum and Anisha execute real M1/RN-05/06. Ishmum can prepare SB-04/05 and API-06
 for later product persistence. API-06–10, cloud verification and M2 remain open.
+
+## Supabase database preparation — SB-04
+
+Ishmum's [role bootstrap](db/bootstrap/README.md), [development runbook](../../docs/runbooks/supabase-development.md)
+and [Plan 01 notes](../../docs/core_plan_implementation_notes/plan_01_supabase_foundation_notes.md)
+record the provisioned non-owner runtime role and separate migration credential.
+The backend's ignored public trust configuration and production JWKS resolver
+were checked against the real project; its public API keys cannot authenticate
+`/v1/me`. Real user-token/mobile M1 remains pending Anisha's handoff.
+
+Hosted CA/hostname verification passes. Hosted password login and permission
+checks remain pending correction of the private administrator URI; no password
+reset was performed. HTTP application database engines/sessions are still API-06
+work; no profile table or product migration has been created.

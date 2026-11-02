@@ -1,6 +1,6 @@
 # Plan 01 — Supabase Auth and Database Foundation
 
-**Status:** Draft implementation plan; no project, credentials, roles, or users are created by this document.\
+**Status:** SB-04 role bootstrap is provisioned and locally validated; hosted password login is pending corrected private credentials. SB-01–03 and SB-06 Auth ownership/acceptance remain with Anisha.\
 **Owners:** Anisha owns Supabase Auth end to end, including development project setup and Auth configuration (SB-01–03). Ishmum owns product database roles and test infrastructure (SB-04–05). Anisha leads SB-06 with Ishmum supplying backend evidence.\
 **Area branches:** SB-01–03 use `area/auth-onboarding`; SB-04–05 use `area/backend`. Use one task branch per part, such as `task/auth/supabase-sb-01` or `task/backend/supabase-sb-04`. SB-06 has one named author, Anisha, with Ishmum contributing API/database notes.\
 **Prerequisite:** Agree the relevant contracts in [Plan 00](00_shared_contracts.md).\
@@ -194,7 +194,8 @@ Every part includes implementation evidence in its commit/PR description. Dashbo
 
 **Validation / acceptance:**
 
-- Runtime connects successfully, cannot create/drop objects, cannot assume the migration role, and has neither `rolsuper` nor `rolbypassrls`.
+- Runtime connects successfully, cannot create/drop persistent product/schema objects, cannot assume the migration role, and has neither `rolsuper` nor `rolbypassrls`.
+- PUBLIC-inherited temporary-table privileges are recorded separately, not revoked globally at the expense of managed services.
 - Runtime cannot read or modify managed Auth tables; Auth management stays with Supabase Auth.
 - Migration credentials can apply an explicit migration to development, but the API config never loads them as its runtime URL.
 - A connection without the correct TLS trust settings fails rather than silently downgrading.
@@ -301,7 +302,7 @@ All entries start **Pending**. Replace status only when that part's checks have 
 | SB-01 | Anisha | Pending | — | — |
 | SB-02 | Anisha | Pending | — | — |
 | SB-03 | Anisha | Pending | — | — |
-| SB-04 | Ishmum | Pending | — | — |
+| SB-04 | Ishmum | Partial: hosted role/catalog + local acceptance passed; hosted login pending | Pending: `chore(db): define least-privilege development database access` | [Plan 01 notes](../core_plan_implementation_notes/plan_01_supabase_foundation_notes.md); CA/hostname verified, saved admin password rejected; no credential reset |
 | SB-05 | Ishmum | Pending | — | — |
 | SB-06 | Anisha leads; Ishmum contributes | Pending | — | — |
 
@@ -317,3 +318,14 @@ Official guidance checked 2026-10-28; recheck the pinned SDK/provider behavior d
 - [Database connection methods](https://supabase.com/docs/guides/database/connecting-to-postgres)
 - [Postgres roles](https://supabase.com/docs/guides/database/postgres/roles)
 - [RLS](https://supabase.com/docs/guides/database/postgres/row-level-security)
+
+## Backend/database checkpoint — 2026-11-01
+
+Ishmum consumed public project metadata through authenticated MCP without changing
+Anisha's Auth configuration/users. PostgreSQL 17.11 and ES256 are observed; the
+production JWKS resolver and rejection of both actual public API key types were
+checked. SB-04 created only the dedicated runtime role via an infrastructure-only
+provider migration; product tables/RLS remain API-07 Alembic work. Public TLS
+trust/hostname checks pass with the downloaded CA, while hosted password login
+is pending correction of the privately supplied administrator credential. Do not
+mark full SB-04 or live M1 accepted from these observations.

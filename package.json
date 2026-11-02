@@ -17,7 +17,7 @@
     "mobile:export": "npm run export:web --workspace @disconnect/mobile -- && npm run mobile:check-ui-isolation && npm run mobile:check-assets -- --export",
     "api:dev": "uv run --project services/api uvicorn app.main:app --app-dir services/api --reload --reload-dir services/api/app --host 127.0.0.1 --port 8000 --no-access-log",
     "api:test": "uv run --project services/api pytest services/api/tests",
-    "api:lint": "uv run --project services/api ruff check services/api scripts/export-openapi.py",
+    "api:lint": "uv run --project services/api ruff check services/api scripts/export-openapi.py scripts/configure-db-access.py",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",

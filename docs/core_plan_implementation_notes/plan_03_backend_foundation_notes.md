@@ -226,7 +226,7 @@ Ranges refer to this commit; deleted ranges refer to its parent. The entry trave
 
 ### API-05 — Executable OpenAPI and generated HTTP types
 
-**Hash:** Pending; resolve by `chore(contracts): generate identity API types from OpenAPI`.
+**Hash:** `d4f3e38` (recorded during the Supabase follow-up).
 **Date:** 2026-11-01. **Owner:** Ishmum. **Branch:** `task/backend/api-01-05`. **Parent:** `06f5704`.
 **Status:** Implemented and deterministically tested; live Supabase and mobile M1 remain unverified.
 
@@ -332,3 +332,13 @@ Ranges refer to this commit; deleted ranges refer to its parent. The entry trave
 **Actual validation:** `npm run check`: passed (269 API, 250 portable mobile and 362 native component tests; TypeScript, ESLint, Ruff, assets and immutable contract checks). `npm run mobile:export`: passed (71 original assets, 38-file UI-fixture isolation). Frozen uv sync, fresh filtered npm ci in an isolated directory and generator check passed; deliberately stale generated output failed without mutation. Repeated full generation preserved both SHA-256 hashes. Evidence: `artifacts/api-05/verification.json`; no live provider calls.
 
 **Remaining / next:** API-01–05 producer scope is complete. Ishmum next prepares SB-04/05 then API-06 database sessions/harness; API-06–10 remain pending. Anisha supplies exact SB-02 trust metadata/current tokens and the mobile Auth/session/root producer for joint RN-05/06 and M1 acceptance. Product profiles/M2 and native enforcement are not implemented. No push requested or performed.
+
+## Supabase backend follow-up — 2026-11-01
+
+See [Plan 01 notes](plan_01_supabase_foundation_notes.md) for Ishmum's actual live
+JWKS/public-API-key checks and SB-04/05 work. The existing project exposes ES256;
+ignored local API trust configuration is populated, and the production resolver
+resolved its real key. Both the legacy anon and modern publishable key were
+rejected as user identity. No real user token/Auth/mobile M1 proof was supplied.
+The hosted runtime role is provisioned; password login remains pending a corrected
+private administrator credential. API-06–10 are not implemented by this follow-up.
