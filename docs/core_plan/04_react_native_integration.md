@@ -5,7 +5,9 @@
 **Primary owner:** Ishmum — shared post-onboarding React Native application.\
 **Required reviewer / collaborator:** Anisha — authentication, onboarding, iOS integration, and root navigation.\
 **Area branch:** `area/react-native`; create each task branch from the updated area branch and integrate working increments into `main`.\
-**Companions:** [Shared contracts](00_shared_contracts.md), [Supabase foundation](01_supabase_foundation.md), [Auth/onboarding](02_auth_onboarding.md), [Backend foundation](03_backend_foundation.md), [PM questions](../PM_QUESTIONS.md).
+**Companions:** [Shared contracts](00_shared_contracts.md), [Supabase foundation](01_supabase_foundation.md), [Auth/onboarding](02_auth_onboarding.md), [Backend foundation](03_backend_foundation.md), [PM questions](<../Context (AGENT)/PM_QUESTIONS.md>).
+
+**Implementation record:** Follow the [knowledge-base workflow](../core_plan_implementation_notes/README.md) and maintain [Plan 04 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md). Each commit needs its own file/line change record, reasoning, checks and handoff. RN-01 is not started by creating those notes.
 
 ## 1. Outcome and deliberate scope
 

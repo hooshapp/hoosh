@@ -4,7 +4,7 @@
 **Owner:** Anisha (Supabase Auth/project setup SB-01–03, mobile Auth, onboarding, and iOS). Ishmum owns the API/product database and reviews shared integration changes.\
 **Status:** Implementation plan; no parts below are implemented or verified by this document. Every commit hash remains pending.\
 **Primary branch:** `area/auth-onboarding`; work on `task/auth/<part>` or `task/onboarding/<part>`, integrate working increments into `main`, then update active area branches.\
-**Companions:** [shared contracts](00_shared_contracts.md), [Supabase foundation](01_supabase_foundation.md), [backend](03_backend_foundation.md), [React Native integration](04_react_native_integration.md), [PM answer log](../PM_QUESTIONS.md).
+**Companions:** [shared contracts](00_shared_contracts.md), [Supabase foundation](01_supabase_foundation.md), [backend](03_backend_foundation.md), [React Native integration](04_react_native_integration.md), [PM answer log](<../Context (AGENT)/PM_QUESTIONS.md>).
 
 ## 1. Goal and delivery boundaries
 

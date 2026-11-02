@@ -1,6 +1,6 @@
 # Disconnect
 
-Shared React Native app and FastAPI service for Disconnect. Product context starts in [docs/AGENT_START_HERE.md](docs/AGENT_START_HERE.md); pending product answers belong in [docs/PM_QUESTIONS.md](docs/PM_QUESTIONS.md). Detailed development plans and their execution order are in [docs/core_plan/README.md](docs/core_plan/README.md).
+Shared React Native app and FastAPI service for Disconnect. Product context starts in [project context](<docs/Context (AGENT)/AGENT_START_HERE.md>); pending product answers belong in [PM questions](<docs/Context (AGENT)/PM_QUESTIONS.md>). Detailed development plans and their execution order are in [docs/core_plan/README.md](docs/core_plan/README.md). The [implementation knowledge base](docs/core_plan_implementation_notes/README.md) records the required per-plan, per-commit change notes and how to resume work across agents/chats.
 
 ## What works now
 

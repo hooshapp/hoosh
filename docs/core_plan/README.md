@@ -3,11 +3,11 @@
 **Status:** Plan 00 is complete and validated (foundation commit `0b50900`, recorded in its ledger); Plans 01–04 remain implementation drafts. Auth, private API endpoints, database and native adapters are not implemented.\
 **Baseline inspected:** `c7a8f73` — `Set up mobile and API foundation`.\
 **Reviewed:** 2026-10-28.\
-**Product answers:** [PM_QUESTIONS.md](../PM_QUESTIONS.md); no PM question is answered by an engineering default in these plans.
+**Product answers:** [PM_QUESTIONS.md](<../Context (AGENT)/PM_QUESTIONS.md>); no PM question is answered by an engineering default in these plans.
 
 ## 1. Start here
 
-Read [Plan 00](00_shared_contracts.md) first, then your area plan and the specific part you are about to implement. Build on the scaffold; do not reinstall it, rewrite the tested Swift core, create every future table, or complete an entire area before integrating.
+Read [Plan 00](00_shared_contracts.md) first, then your area plan and the specific part you are about to implement. Before coding, read the [implementation knowledge-base workflow](../core_plan_implementation_notes/README.md), create that plan's notes file if absent, and read any existing entries. Build on the scaffold; do not reinstall it, rewrite the tested Swift core, create every future table, or complete an entire area before integrating.
 
 There are **44 parts**: 4 shared-contract parts implemented and committed and 40 future implementation parts. They are reviewable work boundaries, not 44 completed commits or immediately unblocked tasks. Some onboarding/provider/native presentation parts are conditional. Split a concrete part further if its diff is too large, preserving stable IDs and dependencies.
 
@@ -84,7 +84,7 @@ The identity-only `/v1/me` plus separate `/v1/profile` is adopted in [SC-01's de
 3. Implement one coherent change with relevant tests. Keep unavailable integrations honest and fixtures outside release entry/import paths.
 4. Run focused and applicable shared checks. Record mock, actual database, live provider, browser, emulator, and signed-device evidence separately.
 5. Review shared contracts/files with Anisha and integrate working increments into `main` frequently.
-6. Update that part's existing ledger with actual commit hash, evidence, limitations, and next unlocked part. Avoid competing completion trackers.
+6. Update that part's existing ledger with actual commit hash, evidence, limitations, and next unlocked part. Maintain the plan's implementation-notes file with a separate section per commit covering every changed file/line range, what/why, actual validation and remaining work. The ledger summarizes status; notes preserve implementation detail and handoff context. Do not claim completion in either until supported by code/evidence.
 
 When blocked, name the exact missing input for that part and continue independent work. Corrective commits are allowed; record them rather than pretending checks passed first time. Production publishing is a separate action/gate, not an automatic consequence of merging a foundation part.
 
