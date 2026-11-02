@@ -1,0 +1,76 @@
+{
+  "date": "2026-11-02",
+  "branch": "task/backend/api-07",
+  "parent": "45a8c2e",
+  "revision": "20261102_0001",
+  "checks": {
+    "deterministicBackendTests": 344,
+    "requiredRealPostgresTests": 66,
+    "freshAndRepeatedUpgrade": "passed",
+    "disposableDowngradeAndEmptyHistoryReupgrade": "passed",
+    "alembicModelDrift": "zero",
+    "constraintPolicyAclColumnGrantAndTriggerTamperRejection": "passed",
+    "defaultPrivileges": "inspected and preserved",
+    "unicodeRevisionForeignKeyAndServerClockConstraints": "passed",
+    "authForeignKeyCascade": "passed in disposable fixture only",
+    "runtimeOwnershipAndMissingContextABRls": "passed",
+    "ruff": "passed",
+    "freshFullRequiredSuiteAfterVolumeRebuild": "344 deterministic and 66 real DB checks passed",
+    "frozenUvSync": "passed",
+    "httpTypeAndOpenApiDrift": "zero"
+  },
+  "versions": {
+    "alembic": "1.20.1",
+    "sqlalchemy": "2.0.55",
+    "psycopg": "3.3.6",
+    "fastapi": "0.162.0"
+  },
+  "managedPreflight": {
+    "publicTables": [],
+    "alembicHistory": null,
+    "profileClockFunction": null,
+    "managedAuthIdType": "uuid",
+    "administratorBypass": true,
+    "providerHistory": "only earlier runtime-role infrastructure bootstrap; not product history"
+  },
+  "managedUpgrade": {
+    "administrator": "postgres",
+    "encoding": "UTF8",
+    "revision": "20261102_0001",
+    "owner": "postgres",
+    "rls": true,
+    "forceRls": true,
+    "runtimePrivileges": [
+      "SELECT",
+      "INSERT",
+      "UPDATE"
+    ],
+    "mobileOrPublicCrud": false
+  },
+  "managedModelAndSecurityCheck": "passed; no new upgrade operations",
+  "managedRuntimeSmoke": {
+    "runtimeRole": "disconnect_api",
+    "verifiedTlsToPooler": true,
+    "unscopedProfilesDefaultDeny": "passed",
+    "runtimeMigrationMetadataRead": "denied",
+    "liveAuthUsersCreatedOrDeleted": false,
+    "managedUserCascadeSmoke": "deferred to Anisha-approved disposable accounts/API-10"
+  },
+  "reviewedSqlSha256": "a211beb399c473a96e2632ee8c588d0d001108afc11f68bcfe2348f33c61b651",
+  "httpPathsUnchanged": [
+    "/healthz",
+    "/v1/me"
+  ],
+  "profileHttpEndpointsImplemented": false,
+  "realAuthUsersCreatedOrDeleted": false,
+  "authConfigurationOrSharedDefaultPrivilegesChanged": false,
+  "hostedGithubCiExecuted": false,
+  "pushOrMainMerge": false,
+  "finalLocalTestStack": "stopped; migrated named test volume retained",
+  "localFixtureDefaultsEmulateHostedBroadDataApiGrants": true,
+  "generatedOutputSha256": {
+    "packages/contracts/openapi/foundation.openapi.json": "6f634f6efd2ec2908d6b0ea134285dff19eb8695a6d5d0217b3816f4238d479f",
+    "packages/contracts/src/http.generated.ts": "326141d72c8e3c0a786c7973f798b5c098784652644dfe89a9dbd8b275d9d852"
+  },
+  "reviewedSqlNormalization": "trailing line whitespace removed; one terminal newline; SQL unchanged"
+}

@@ -41,7 +41,7 @@ jobs:
       - name: Install only build-time API generator dependencies
         run: npm ci --workspace @disconnect/api-codegen --include-workspace-root=false
       - run: uv sync --project services/api --frozen
-      - run: uv run --project services/api ruff check services/api scripts/export-openapi.py scripts/configure-db-access.py scripts/db-test.py
+      - run: uv run --project services/api ruff check services/api scripts/export-openapi.py scripts/configure-db-access.py scripts/db-test.py scripts/migrate-db.py
       - run: uv run --project services/api pytest services/api/tests
       - name: Reproducible OpenAPI and generated HTTP types
         run: npm run api:check-contracts
@@ -56,7 +56,7 @@ jobs:
       - run: uv sync --project services/api --frozen
       - name: Start pinned disposable PostgreSQL
         run: uv run --project services/api python scripts/db-test.py up
-      - name: Required real database bootstrap and permission checks
+      - name: Required real migrations, profile constraints and runtime RLS checks
         run: uv run --project services/api python scripts/db-test.py check
       - name: Remove only the labeled disposable fixture
         if: always()

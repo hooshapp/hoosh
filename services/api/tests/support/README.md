@@ -43,7 +43,7 @@ test file, which allows CI configuration and ensures accidental unsafe values fa
 It is not a Supabase Auth emulator. The reviewed production role bootstrap is
 mounted separately, followed by test-only runtime access. No profile table or
 Alembic history is pre-created: API-06 now adds connection/session/context fixtures,
-and API-07 adds actual migrations and table/RLS tests. SB-05 baseline checks establish
+and API-07 now adds actual migrations and table/RLS tests. SB-05 baseline checks establish
 real logins, minimum role flags/permissions, repeatable bootstrap and rejection
 of unsafe existing role/ownership/public grants; they do not prove hosted Auth,
 API persistence, cascade behavior or row isolation.
@@ -53,11 +53,28 @@ transactions, connection reuse, failure cleanup, pool/statement timeouts, stale 
 lost connections, function-scoped HTTP finalization and shutdown. Its randomly
 named `test_support` probe tables are explicitly cleaned after target/marker
 validation; they are not product models or migrations. See
-[application DB contract](../../app/db/README.md). Real profile/RLS acceptance still
-requires API-07 onward; hosted Auth semantics remain separate.
+[application DB contract](../../app/db/README.md). API-07 now extends the group to real profile/RLS acceptance below; hosted Auth
+semantics remain separate.
 
 If Docker is unavailable, this group is unavailable locally; keep CI required and
 provision an explicitly separate disposable target before changing the contract.
 Do not edit guards to point cleanup at the shared development project. For port
 conflicts stop the conflicting local service or deliberately update the entire
 guard/Compose/example/CI contract together; never silently switch endpoints.
+
+## API-07 migration prerequisite
+
+Every selected database test now depends on a session fixture that validates the
+isolated target and runs actual Alembic upgrade to the single head. A failed
+migration fails the group; there is no manually pre-created profile table or stamp.
+Fresh Docker bootstrap adds only test-only anon/authenticated/service_role role
+prerequisites and deliberately broad default grants, so tests prove the migration
+removes ambient access even for a bypass role. Existing volumes from API-06 need
+the deliberate labeled `api:db:reset`/`api:db:up` cycle for these prerequisites.
+
+The group now has 66 real DB tests, including actual fresh/repeated upgrades,
+disposable downgrade/re-upgrade, drift/tamper rejection, no-context/A-B RLS,
+Unicode/revision/FK constraints, server clocks and selective Auth-deletion cascade.
+Auth accounts are seeded/deleted only in this guarded local fixture and cleaned
+by exact UUIDs. No shared/managed Auth user is created or deleted. See the
+[migration guide](../../alembic/README.md) for private hosted commands and recovery.

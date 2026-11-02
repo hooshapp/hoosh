@@ -13,9 +13,9 @@ npm run api:lint
 
 `GET /healthz` and the protected database-independent `GET /v1/me` are implemented. FastAPI publishes its schema at `/openapi.json` and documentation at `/docs`.
 
-The adopted [M1/M2 contract](../../packages/contracts/HTTP_API.md) specifies identity-only `GET /v1/me`, then planned `GET/PATCH /v1/profile`; the latter awaits API-07–09. Ishmum owns Pydantic/OpenAPI schemas and one Alembic history when those parts begin. Derive user IDs from verified Supabase access tokens; no client-provided identity or production auth bypass. Supabase Auth owns credentials and mobile session refresh. The API owns token verification and server-authoritative product mutations.
+The adopted [M1/M2 contract](../../packages/contracts/HTTP_API.md) specifies identity-only `GET /v1/me`, then planned `GET/PATCH /v1/profile`; the latter awaits API-08/09. Ishmum owns Pydantic/OpenAPI schemas and one Alembic history when those parts begin. Derive user IDs from verified Supabase access tokens; no client-provided identity or production auth bypass. Supabase Auth owns credentials and mobile session refresh. The API owns token verification and server-authoritative product mutations.
 
-The JWT verifier, bounded public-key resolver and lazy PostgreSQL unit of work are implemented. Product migrations/profile tables, cloud deployment and Auth/mobile integration are not supplied by this foundation. Configuration is read from `services/api/.env`, independently of the shell working directory. Copy `.env.example` when you need browser CORS or later integration settings.
+The JWT verifier, bounded public-key resolver and lazy PostgreSQL unit of work are implemented. The minimal profile model/Alembic schema/RLS are also implemented; profile HTTP endpoints, cloud deployment and Auth/mobile integration remain pending. Configuration is read from `services/api/.env`, independently of the shell working directory. Copy `.env.example` when you need browser CORS or later integration settings.
 
 Dependencies are locked in `uv.lock`. Add them using `uv add --project services/api ...` (or `--dev` for tooling), and commit both the project file and lockfile.
 
@@ -126,7 +126,7 @@ real response parsing and account-generation checks remain essential.
 
 Next: Anisha supplies SB-02/03 metadata/current token and the session/root producer;
 Ishmum and Anisha execute real M1/RN-05/06. SB-05 is verified locally; SB-04 hosted
-login is accepted. Ishmum can start API-07 for product migrations/RLS. API-07–10,
+login is accepted. API-07 migrations/RLS are accepted as a producer. API-08–10,
 real-user Auth/mobile verification and M2 remain open.
 
 ## Supabase database preparation — SB-04
@@ -141,7 +141,7 @@ were checked against the real project; its public API keys cannot authenticate
 Hosted CA/hostname verification, administrator/runtime password login and runtime
 permission checks pass after the URI was corrected privately. The dedicated
 runtime password was initialized separately; no shared password reset was performed.
-HTTP application engine/session infrastructure is implemented in API-06; no profile table or product migration has been created.
+HTTP application engine/session infrastructure is implemented in API-06; API-07 now supplies the minimal profile migration/table/RLS.
 
 ## Disposable database checks — SB-05
 
@@ -155,7 +155,7 @@ than silently skipping. `api:db:down` retains the fixture volume; explicit guard
 SB-05 is accepted locally (8 real DB checks); hosted GitHub execution remains
 unverified. API-06 now consumes the local role/fixture contract;
 SB-04 hosted runtime login/TLS acceptance also passed.
-No profile schema or Alembic migration is created by these infrastructure parts.
+Those SB-04/05 infrastructure parts did not create product schema; API-07 now supplies it.
 
 ## API-06 scoped transaction handoff
 
@@ -168,5 +168,21 @@ HTTP success. No raw SQL/driver/credential error reaches the public envelope.
 `npm run api:test`: 337 deterministic tests; `npm run api:db:test`: 24 real local
 PostgreSQL tests. The existing database CI job selects all of them. A read-only
 hosted SQLAlchemy check confirms the runtime role/TLS/options, with no product DDL
-or Auth changes. OpenAPI/type drift remains zero. API-07 supplies the actual
+or Auth changes. OpenAPI/type drift remains zero. API-07 now supplies the actual
 Alembic history, profiles/FK/grants/RLS; API-08–10 and joint Auth/M1/M2 stay pending.
+
+## API-07 profile migration handoff
+
+The [migration guide](alembic/README.md) documents the sole product history,
+explicit target/credential guards, offline review, upgrade/check and test-only
+downgrade. Head `20261102_0001` is applied to the inspected-empty hosted development
+schema and locally validated. The model contains only UUID/name/revision/server
+clocks; RLS and private ACLs enforce runtime-only own-user access. Existing Auth
+objects/settings and shared default privileges were not changed.
+
+344 deterministic and 66 required real PostgreSQL tests passed, including actual
+fresh/repeated/downgrade upgrades, constraints/cascade, A-B isolation with omitted
+owner predicates and deliberate ACL/policy/trigger drift rejection. Hosted runtime
+read-without-context is denied by RLS and version metadata is private. Actual
+managed-user cascade/A-B testing remains joint API-10 work. No profile HTTP route
+exists yet; API-08/09 must use the transaction guard and explicit owner predicates.

@@ -345,3 +345,9 @@ API-06 now consumes SB-04/05 with a verified lazy SQLAlchemy engine and scoped
 user transactions; the same isolated CI group extends to 24 DB tests. Product
 Alembic/history/RLS remain API-07. This follow-up does not accept Anisha's Auth
 parts or Supabase Auth lifecycle simulation. See Plan 03 implementation notes.
+
+API-07 now provides the single product Alembic history, minimal profile/FK, explicit
+grants and RLS. The same migration path was tested locally and applied to the
+inspected-empty development project without Auth changes or a second provider
+product history. API-08/09 endpoints and real managed-account cascade/A-B remain
+later backend/joint work; Anisha-owned setup/acceptance rows are unchanged.

@@ -10,7 +10,6 @@ from pydantic import ValidationError
 from app.application import create_app as assemble_app
 from app.core.config import Settings
 from app.core.database_config import runtime_database_url
-from app.db.base import Base
 from app.db.engine import Database
 from app.db.session import DatabaseContextError
 from app.runtime import create_app
@@ -131,7 +130,8 @@ def test_engine_and_lifespan_are_lazy_bounded_and_close_without_network(monkeypa
         assert client.get("/healthz").status_code == 200
     assert resource.closed and app.state.database is None
     resource.close()
-    assert not Base.metadata.tables
+    # Engine construction remains forbidden from creating tables, regardless of
+    # model metadata registered by later Alembic/model tests in this process.
     with TestClient(assemble_app()) as client:
         assert client.app.state.database is None
 

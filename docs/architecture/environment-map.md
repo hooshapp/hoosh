@@ -42,3 +42,10 @@ in URL sslmode=verify-full/sslrootcert; test plaintext is confined to the exact
 disposable target. Deployment must give the application only its runtime secret;
 local bootstrap tools sharing the ignored developer file do not define production
 secret-access isolation.
+
+API-07's explicit migration runner accepts only a guarded test target or the exact
+pinned development project and migration URI; it never chooses the application
+URL or a default target. It passes an already validated Connection to Alembic,
+not a private URI through ini/command arguments. Hosted downgrade is unsupported;
+only the marker-guarded disposable target exposes it. New profile/history/function
+ACLs are private before commit; shared default privileges are not changed.

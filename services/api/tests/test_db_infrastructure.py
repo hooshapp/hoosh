@@ -31,7 +31,9 @@ def test_real_fixture_identity_major_marker_and_minimal_auth(test_environment):
             "WHERE table_schema='auth' AND table_name='users'"
         ).fetchall() == [("id",)]
         assert admin.execute("SELECT count(*) FROM auth.users").fetchone() == (0,)
-        assert admin.execute("SELECT to_regclass('public.profiles')").fetchone() == (None,)
+        assert admin.execute("SELECT version_num FROM public.alembic_version").fetchone() == (
+            "20261102_0001",
+        )
 
 
 def test_bootstrap_is_repeatable_and_runtime_can_only_connect(test_environment):

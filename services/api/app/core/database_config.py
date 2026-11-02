@@ -9,6 +9,17 @@ from sqlalchemy.exc import ArgumentError
 
 
 def runtime_database_url(value: str, *, app_env: str, project_origin: str | None) -> URL:
+    return _database_url(
+        value, app_env=app_env, project_origin=project_origin, role="disconnect_api"
+    )
+
+
+def migration_database_url(value: str, *, app_env: str, project_origin: str | None) -> URL:
+    """Explicit migration tooling only; application Settings never calls this."""
+    return _database_url(value, app_env=app_env, project_origin=project_origin, role="postgres")
+
+
+def _database_url(value: str, *, app_env: str, project_origin: str | None, role: str) -> URL:
     """Return a driver-pinned URL or a safe error without the credential-bearing input."""
     if (
         not value.startswith(("postgresql://", "postgres://", "postgresql+psycopg://"))
@@ -32,7 +43,7 @@ def runtime_database_url(value: str, *, app_env: str, project_origin: str | None
             app_env != "test"
             or port != 55432
             or target.database != "disconnect_test"
-            or target.username != "disconnect_api"
+            or target.username != role
             or dict(target.query) != {"sslmode": "disable"}
         ):
             raise ValueError("Unencrypted local access is restricted to the disposable test target")
@@ -43,7 +54,7 @@ def runtime_database_url(value: str, *, app_env: str, project_origin: str | None
         project = project_host.split(".")[0]
         direct = target.host == f"db.{project}.supabase.co"
         pooler = bool(re.fullmatch(r"[a-z0-9-]+\.pooler\.supabase\.com", target.host or ""))
-        expected_user = "disconnect_api" if direct else f"disconnect_api.{project}"
+        expected_user = role if direct else f"{role}.{project}"
         ca = Path(target.query.get("sslrootcert", ""))
         if (
             not (direct or pooler)

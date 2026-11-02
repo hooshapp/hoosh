@@ -1,11 +1,8 @@
 """Guarded disposable prerequisites; no product schema/Alembic is fabricated."""
 
-import os
-from pathlib import Path
 from uuid import uuid4
 
 import pytest
-from dotenv import dotenv_values
 from psycopg import sql
 from sqlalchemy import Column, ForeignKey, MetaData, Table, Text
 from sqlalchemy.dialects.postgresql import UUID
@@ -16,11 +13,8 @@ from tests.support import database
 
 
 @pytest.fixture
-def db_environment():
-    values = dotenv_values(Path(__file__).resolve().parents[1] / ".env", interpolate=False)
-    for key in ("APP_ENV", "TEST_DATABASE_URL", "TEST_MIGRATION_DATABASE_URL"):
-        if key in os.environ:
-            values[key] = os.environ[key]
+def db_environment(migrated_database):
+    values = dict(migrated_database)
     # Scope/identity/major validated before an engine or any fixture DDL exists.
     with database.connect(values, "TEST_MIGRATION_DATABASE_URL"):
         pass

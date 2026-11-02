@@ -4,9 +4,9 @@
 psycopg 3, a two-connection QueuePool by default, zero overflow, pre-ping and
 rollback on return. There is no second driver pool, global Session, startup
 connection probe, automatic migration or `metadata.create_all`. `Base.metadata`
-is empty and supplies stable constraint names for the future single Alembic
-history. SQLAlchemy 2.0.55 is the tested maintained 2.0 line; Alembic 1.20.1 is
-development/migration tooling only, with configuration/history deferred to API-07.
+registers only the owned minimal profile table and supplies stable constraint
+names for the single Alembic history. SQLAlchemy 2.0.55 is the tested maintained 2.0 line; Alembic 1.20.1 is
+development/migration tooling only; API-07 now owns the configuration/history.
 
 ## Configuration and availability
 
@@ -61,8 +61,8 @@ Session or an ended unit fails as an internal invariant rather than returning an
 apparently absent profile. Future repositories also call `require_user_context`
 and filter every query by its UUID. This protects against accidental entry, not
 malicious trusted backend code, arbitrary raw Connection SQL or stolen runtime
-credentials. API-07 still must add actual RLS USING/WITH CHECK and grants; no row
-isolation is claimed by context binding alone. Opaque iOS selection tokens stay
+credentials. API-07 now adds actual RLS USING/WITH CHECK and explicit grants; context binding
+alone must never be described as row isolation. Opaque iOS selection tokens stay
 on-device; elevated DB credentials never belong in mobile configuration.
 
 The wrapper owns commit/rollback. Calling `session.commit()`/`rollback()` inside
@@ -75,7 +75,7 @@ one during a unit returns an error and rolls back without retrying mutations.
 
 Connection/interface/pool timeout failures become a sanitized dependency 503.
 Integrity/programming errors stay available for repository-specific mapping in
-API-07–09 and otherwise become the existing safe 500; a broken SQL query is not
+API-08/09 and otherwise become the existing safe 500; a broken SQL query is not
 misreported as an unavailable database. Driver text/SQL/parameters never enter
 public errors. Owned engine/pool logging is disabled because reset failures can
 contain driver details despite hide_parameters; the application logs request IDs.
@@ -107,8 +107,10 @@ tables live in `test_support`, are cleaned through the guarded target and never
 replace future product migrations. CI uses this same required group, not SQLite
 or skipped missing credentials. Schema export still constructs no engine/client.
 
-Next is API-07: Alembic configuration and the minimal profile table, FK, grants,
-RLS and actual migration tests. API-08–10 then add endpoints/revision/evidence.
+API-07 now supplies the minimal profile model, real Alembic upgrade and explicit
+FK/grants/RLS/server-clock invariants. See [migration contract](../../alembic/README.md).
+The required group has 66 real DB tests; 344 deterministic backend tests also pass.
+API-08–10 next add endpoints/revision/evidence.
 Anisha's Auth/mobile/root producer and real-user M1/M2 acceptance stay separate.
 
 Sources checked 2026-11-01: [SQLAlchemy pooling](https://docs.sqlalchemy.org/en/20/core/pooling.html),

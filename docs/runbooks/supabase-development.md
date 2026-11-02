@@ -33,7 +33,7 @@ The reviewed bootstrap and exact hosted procedure are in
 Use `disconnect_api` only as runtime identity; use the project database admin only
 for explicit bootstrap/migration operations during this initial development stage.
 The roles must remain separate. API-06 now owns the lazy bounded application engine and verified-user units;
-API-07 will create product tables/grants/RLS using Alembic.
+API-07 now owns the profile table/grants/RLS through Alembic.
 
 Hosted role creation/catalog evidence and real password-login/TLS evidence are
 recorded separately in [Plan 01 implementation notes](../core_plan_implementation_notes/plan_01_supabase_foundation_notes.md).
@@ -76,7 +76,7 @@ login/denials, repeated bootstrap, five unsafe existing-role/ambient-grant cases
 and rejected wrong password. Empty initialization and labeled reset/rebuild passed.
 The SB-05 baseline had 307 deterministic tests; API-06 now has 337 deterministic
 tests and 24 checks in the separately required marked DB group. Actual SQLAlchemy/session/context infrastructure is now implemented in API-06;
-Alembic/product schema/RLS is API-07; neither is supplied by a fake pre-created profile table.
+API-07 now supplies real Alembic/product schema/RLS rather than a fake pre-created profile table.
 
 ## API-06 application connection check
 
@@ -87,3 +87,21 @@ created. Libpq confirmed client TLS; server pg_stat_ssl reports the provider's
 pooler/backend leg (observed false), which is not a check of this client's TLS.
 The runtime startup/liveness/missing-token checks opened zero DB connections,
 and lifespan disposed its owned engine. See Plan 03 notes for exact API-06 evidence.
+
+## API-07 actual product migration — 2026-11-02
+
+Immediately before migration the hosted owned public tables, product Alembic
+history and profile clock function were absent; managed auth.users.id was UUID.
+The reviewed additive SQL created only public.profiles, its policies/clock trigger
+and public.alembic_version. Upgrade and check passed at 20261102_0001 using the
+explicit private migration URI/verified TLS. Runtime profile reads without context
+return no rows; runtime cannot read history. Every new object revoked ambient
+non-owner privileges, including Data API roles, while shared defaults were
+inspected and preserved. No managed Auth user/provider/redirect was changed.
+
+Use [the migration guide](../../services/api/alembic/README.md) and API-07 notes/SQL
+evidence; do not reapply product schema through dashboard/Supabase migrations or
+stamp legacy state. Local downgrade/fresh-upgrade/constraints/server clocks/A-B
+RLS and fixture Auth-delete cascade passed (66 real DB checks, 344 deterministic).
+Managed-account A-B/cascade still requires Anisha-approved disposable users and
+joint API-10 evidence. API-08 own-profile GET is next; HTTP routes remain unchanged.

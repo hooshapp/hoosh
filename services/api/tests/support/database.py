@@ -1,11 +1,22 @@
 """Fail-closed disposable target validation, before any connection or cleanup."""
 
+import os
 from collections.abc import Mapping
+from pathlib import Path
 
 import psycopg
+from dotenv import dotenv_values
 from psycopg.conninfo import conninfo_to_dict
 
 SCOPE = "disconnect-isolated-postgres-v1"
+
+
+def environment() -> dict:
+    values = dotenv_values(Path(__file__).resolve().parents[1] / ".env", interpolate=False)
+    for key in ("APP_ENV", "TEST_DATABASE_URL", "TEST_MIGRATION_DATABASE_URL"):
+        if key in os.environ:
+            values[key] = os.environ[key]
+    return values
 
 
 def parameters(environment: Mapping[str, str], key: str) -> dict:

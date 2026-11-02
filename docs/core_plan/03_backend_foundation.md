@@ -1,6 +1,6 @@
 # Plan 03 — FastAPI Identity and Profile Foundation
 
-**Status:** API-01–06 are implemented: strict trust/errors, JWT/JWKS, database-independent identity, generated contracts and bounded lazy PostgreSQL units of work. API-06 passed 337 deterministic tests, 24 real PostgreSQL checks and a read-only hosted runtime/TLS smoke check. Actual user-token/mobile M1 and API-07–10/profile/migration/RLS work remain pending.\
+**Status:** API-01–07 are implemented: strict trust/errors, JWT/JWKS, database-independent identity, generated contracts and bounded lazy PostgreSQL units of work. API-06 passed 337 deterministic tests, 24 real PostgreSQL checks and a read-only hosted runtime/TLS smoke check. API-07 added the model, single Alembic history and profile constraints/grants/RLS, with 344 deterministic and 66 real DB tests plus hosted upgrade/check. Actual user-token/mobile M1, managed-user cascade smoke and API-08–10/profile HTTP work remain pending.\
 **Owner:** Ishmum (backend/database). Anisha reviews Auth contracts and participates in live session checks.\
 **Area branch:** `area/backend`; task branches `task/backend/<part>`.\
 **Milestones:** M1 = verified identity without a database; M2 = minimal, isolated, revisioned profile persistence.
@@ -441,8 +441,8 @@ Auth can finish its session work without profiles. The main frontend must not cl
 | API-03 | Implemented; live public discovery checked; user tokens unverified | `35ba307` | 223 backend tests; deadline/cancellation/cache/lifespan checks; [Auth runbook](../../services/api/AUTH.md) |
 | API-04 | Implemented producer; live Supabase/mobile M1 unverified | `06f5704` | 244 backend tests; real signed-token route paths and local crypto measurements; Plan 03 notes |
 | API-05 | Implemented; live M1 remains pending | `d4f3e38` | 269 API tests, full workspace checks, isolated fresh generator install/drift rejection and mobile export; Plan 03 notes |
-| API-06 | Implemented; local real-DB + read-only hosted engine checks passed | Resolve by `feat(db): add scoped PostgreSQL sessions and integration fixtures` | 337 deterministic tests, 24 real DB checks, Ruff, frozen lock and schema drift; [Plan 03 notes](../core_plan_implementation_notes/plan_03_backend_foundation_notes.md) / [DB contract](../../services/api/app/db/README.md) |
-| API-07 | Pending | — | — |
+| API-06 | Implemented; local real-DB + read-only hosted engine checks passed | `45a8c2e` | 337 deterministic tests, 24 real DB checks, Ruff, frozen lock and schema drift; [Plan 03 notes](../core_plan_implementation_notes/plan_03_backend_foundation_notes.md) / [DB contract](../../services/api/app/db/README.md) |
+| API-07 | Implemented producer; local migrations/RLS and hosted empty upgrade/security checks passed | Resolve by `feat(db): migrate minimal profiles with runtime row isolation` | 344 deterministic / 66 real DB checks; head `20261102_0001`; [Plan 03 notes](../core_plan_implementation_notes/plan_03_backend_foundation_notes.md); actual managed Auth A/B/cascade remains API-10 joint smoke |
 | API-08 | Pending | — | — |
 | API-09 | Pending | — | — |
 | API-10 | Pending | — | — |
@@ -485,5 +485,22 @@ finalization and post-close reuse are rejected. Actual PostgreSQL tests cover
 rollback/commit failure, A/B physical-connection reuse, timeout/exhaustion, lost
 connections, no mutation replay and failure-safe lifespan cleanup. Only the
 existing health/identity routes remain published; no product table, RLS, Alembic
-configuration/history or profile endpoint was created. API-07 is next and supplies
-those migration/isolation prerequisites before endpoints in API-08/09.
+configuration/history or profile endpoint was created by API-06. API-07 now
+supplies those migration/isolation prerequisites before endpoints in API-08/09.
+
+### API-07 producer checkpoint — 2026-11-02
+
+One Alembic root/head now creates only minimal public.profiles and technical
+history, with Auth UUID cascade FK, canonical nullable 80-code-point name, positive
+revision, invoker server-clock trigger and explicit SELECT/INSERT/UPDATE-only
+runtime grants. RLS is enabled/forced with command-specific own-user policies.
+Existing broad default privileges were inspected/preserved; every newly created
+object revokes unintended ambient access before commit. Actual migration/schema
+checks, ownership/RLS/ACL/constraint/trigger drift checks and hostile default
+privileges are tested on PostgreSQL, not fake create_all or stamped history.
+
+The verified empty development schema was upgraded through the same Alembic
+runner, not a parallel Supabase product migration. No hosted Auth user was changed
+for tests; actual managed-account cascade/A-B remains joint API-10 evidence.
+API-08 is next (nonmutating own-profile GET); API-09 adds revisioned PATCH. No
+new HTTP route/schema was published by API-07. See the migration guide/runbook.
