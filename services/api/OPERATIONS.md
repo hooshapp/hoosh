@@ -157,9 +157,9 @@ plan; no production deployment or release readiness is established here.
 | Layer | Current evidence | Remaining acceptance |
 |---|---|---|
 | Local backend | 469 deterministic tests; 102 real PostgreSQL checks including the operational journey and categorized failures | Hosted GitHub execution unverified |
-| Actual process/network | Normal app.main startup, live loopback liveness/CORS/no-Origin checks and structured logs pass | Authenticated process journey needs A/B tokens |
+| Actual process/network | Normal app.main startup, public and authenticated A/B loopback/CORS/no-Origin HTTP checks pass; profiles survive an actual process restart | Actual application/browser/native journeys remain separate |
 | Hosted dependencies | Public ES256 key discovery, schema/security drift check and runtime-role TLS/READ COMMITTED/default deny pass | No user identity was exercised by these independent probes |
-| Managed M1/M2 | Tooling ready; no tokens were available during this implementation | Two approved users' actual identity, persistence, conflicts/isolation and later coordinated cascade evidence |
+| Managed M1/M2 | Real privately supplied A/B tokens verified; identity, profile reads/writes/clear/conflicts/isolation/refetch/restart pass over HTTP | Actual Auth/mobile/root flows and coordinated managed cascade evidence |
 | Browser | Allowed/denied CORS protocol and exposed headers pass | Actual UI execution was attempted but the computer tool reported no browser available; real Auth/web flow remains open |
 | Native | No-Origin HTTP protocol is checked | Actual development-client/signed-device session, storage, links, account changes/sign-out and profile journey |
 | Onboarding | [Persistence contract review](../../docs/architecture/onboarding-persistence-review.md) prepared | Anisha/Ishmum review and PM/native prerequisites before a later schema/plan |
@@ -169,3 +169,14 @@ physical-device behavior, sign-out cache cleanup or account deletion just becaus
 HTTP passes. Record those independently with environment/date/platform, outcome
 and responsible owner; never copy credentials or personal account payloads into
 notes. Full API-10 stays open until the required joint rows are actually accepted.
+
+
+Managed-account follow-up (2026-11-02): after both approved tokens were supplied,
+read-only acceptance and explicit disposable writes passed through the normal API
+process and hosted runtime DB role. Original names were restored; created profile
+rows remain and revisions/update times advanced. A separate read-only check started
+two genuine API processes sequentially and confirmed unchanged profiles after
+restart. Browser inventory was rechecked and empty. Tokens/personal payloads were
+not copied into evidence; Auth users/settings/schema were untouched. See Plan 03
+notes and artifacts/api-10/managed-acceptance.json. This supersedes the earlier
+missing-token limitation, while full app/device/lifecycle gates remain open.

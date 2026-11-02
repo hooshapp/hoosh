@@ -122,3 +122,10 @@ itself. Read-only aggregate inspection observed existing Auth users and no produ
 profiles at this checkpoint, not approval to use those accounts. Tokens remain
 missing; managed-user/cascade and Auth/mobile acceptance stay coordinated with
 Anisha. No hosted schema/user/provider/redirect or shared credential was changed.
+
+Managed-account HTTP follow-up: two privately supplied real tokens passed project
+verification and actual A/B read/write/clear/conflict/isolation/refetch plus API
+restart persistence. Original names were restored, new profile rows retained and
+revisions/update times advanced. No Auth account was created/deleted, no settings
+or schema changed. Managed cascade stays a separate coordinated Anisha workflow;
+actual app/browser/native gates remain pending. Evidence: Plan 03 notes/artifact.

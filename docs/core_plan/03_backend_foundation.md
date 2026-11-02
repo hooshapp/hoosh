@@ -1,6 +1,6 @@
 # Plan 03 — FastAPI Identity and Profile Foundation
 
-**Status:** API-01–09 are implemented: strict trust/errors, JWT/JWKS, database-independent identity, generated contracts and bounded lazy PostgreSQL units of work. API-06 passed 337 deterministic tests, 24 real PostgreSQL checks and a read-only hosted runtime/TLS smoke check. API-07 added the model, single Alembic history and profile constraints/grants/RLS, with 344 deterministic and 66 real DB tests plus hosted upgrade/check. API-08 now adds nonmutating own-profile GET and generated shapes (374 deterministic / 75 real DB tests). API-09 now adds strict bounded PATCH, canonical validation, atomic insert/CAS and own conflicts (453 deterministic / 96 real DB checks). API-10 operational diagnostics/tooling and independent checks are now implemented; actual managed-user/mobile M1/M2 and cascade/browser/device acceptance remain pending.\
+**Status:** API-01–09 are implemented: strict trust/errors, JWT/JWKS, database-independent identity, generated contracts and bounded lazy PostgreSQL units of work. API-06 passed 337 deterministic tests, 24 real PostgreSQL checks and a read-only hosted runtime/TLS smoke check. API-07 added the model, single Alembic history and profile constraints/grants/RLS, with 344 deterministic and 66 real DB tests plus hosted upgrade/check. API-08 now adds nonmutating own-profile GET and generated shapes (374 deterministic / 75 real DB tests). API-09 now adds strict bounded PATCH, canonical validation, atomic insert/CAS and own conflicts (453 deterministic / 96 real DB checks). API-10 operational diagnostics/tooling and independent checks are now implemented; managed-account HTTP identity/profile/restart checks now pass; actual application M1/M2 and cascade/browser/device acceptance remain pending.\
 **Owner:** Ishmum (backend/database). Anisha reviews Auth contracts and participates in live session checks.\
 **Area branch:** `area/backend`; task branches `task/backend/<part>`.\
 **Milestones:** M1 = verified identity without a database; M2 = minimal, isolated, revisioned profile persistence.
@@ -439,15 +439,15 @@ Auth can finish its session work without profiles. The main frontend must not cl
 | Part | Status | Actual commit | Evidence / notes |
 |---|---|---|---|
 | API-01 | Implemented; public trust configuration observed | `8ce121d` | 58 backend tests and Ruff; [Plan 03 notes](../core_plan_implementation_notes/plan_03_backend_foundation_notes.md) |
-| API-02 | Implemented; live provider tokens unverified | `bdd62a6` | 194 backend tests and Ruff; Plan 03 notes |
-| API-03 | Implemented; live public discovery checked; user tokens unverified | `35ba307` | 223 backend tests; deadline/cancellation/cache/lifespan checks; [Auth runbook](../../services/api/AUTH.md) |
-| API-04 | Implemented producer; live Supabase/mobile M1 unverified | `06f5704` | 244 backend tests; real signed-token route paths and local crypto measurements; Plan 03 notes |
-| API-05 | Implemented; live M1 remains pending | `d4f3e38` | 269 API tests, full workspace checks, isolated fresh generator install/drift rejection and mobile export; Plan 03 notes |
+| API-02 | Implemented; configured-project ES256 user tokens now verified in API-10 | `bdd62a6` | 194 backend tests and Ruff; Plan 03 notes |
+| API-03 | Implemented; live public discovery and managed-token request path checked in API-10 | `35ba307` | 223 backend tests; deadline/cancellation/cache/lifespan checks; [Auth runbook](../../services/api/AUTH.md) |
+| API-04 | Implemented producer; managed A/B identity HTTP accepted; app/mobile M1 pending | `06f5704` | 244 backend tests; real signed-token route paths and local crypto measurements; Plan 03 notes |
+| API-05 | Implemented; managed HTTP contract accepted; application M1 remains pending | `d4f3e38` | 269 API tests, full workspace checks, isolated fresh generator install/drift rejection and mobile export; Plan 03 notes |
 | API-06 | Implemented; local real-DB + read-only hosted engine checks passed | `45a8c2e` | 337 deterministic tests, 24 real DB checks, Ruff, frozen lock and schema drift; [Plan 03 notes](../core_plan_implementation_notes/plan_03_backend_foundation_notes.md) / [DB contract](../../services/api/app/db/README.md) |
 | API-07 | Implemented producer; local migrations/RLS and hosted empty upgrade/security checks passed | `4d8d1fc` | 344 deterministic / 66 real DB checks; head `20261102_0001`; [Plan 03 notes](../core_plan_implementation_notes/plan_03_backend_foundation_notes.md); actual managed Auth A/B/cascade remains API-10 joint smoke |
 | API-08 | Implemented producer; real signed-token GET/runtime-DB reads and failures accepted locally | `ca275af` | 374 deterministic / 75 real DB tests; generated GET schemas/types; managed tokens/mobile integration remain API-10 joint work |
 | API-09 | Implemented producer; local M2 backend read/write/concurrency/isolation accepted | `c563ff6` | 453 deterministic / 96 real DB tests; strict raw body/name/revision contract, two-connection races, rollback/deletion/replay; actual managed-user/mobile acceptance remains API-10 |
-| API-10 | Operational slice implemented; joint managed-user/browser/native acceptance pending | Resolve by `feat(api): add operational diagnostics and acceptance checks` | 469 deterministic / 102 PostgreSQL checks; actual configured-process/CORS/no-Origin, hosted public-key/schema/runtime/TLS checks; [operator guide](../../services/api/OPERATIONS.md). A/B token file empty, browser tool unavailable and real mobile/root wiring pending; not full Plan 03 acceptance |
+| API-10 | Operational slice and managed A/B HTTP checks accepted; app/browser/native/lifecycle acceptance pending | `188c5dd`; follow-up resolves by `docs(api): record managed-account acceptance evidence` | Prior 469 deterministic / 102 PostgreSQL checks; real managed A/B identity, profile writes/clear/conflict/isolation/refetch and actual API restart persistence pass. [Operator guide](../../services/api/OPERATIONS.md). Actual browser unavailable, Auth/RN-07/root/native and managed cascade gates still open; not full Plan 03 acceptance |
 
 ## 10. Sources and verification notes
 
@@ -559,8 +559,8 @@ runtime TLS/READ COMMITTED/default-deny passed without exercising a user identit
 
 The same A/B acceptance library is tested with actual local signed requests and
 the runtime DB role, including create/edit/clear/conflict/refetch and isolation.
-That does not replace a managed-project user journey. Approved A/B tokens were not
-available, the computer tool reported no browser available, and actual Auth/RN-07/
+That does not replace a managed-project user journey. At that initial operational checkpoint A/B tokens were not available (resolved by
+the managed follow-up below), the computer tool reported no browser available, and actual Auth/RN-07/
 root/native application wiring remains pending. Full API-10 and Plan 03/M1/M2
 acceptance stay OPEN. The producer count remains 19 implemented/25 awaiting
 acceptance; API-10 is an implemented operational slice within a pending gate.
@@ -570,3 +570,19 @@ exact remaining matrix, liveness/readiness and safe recovery. The follow-on
 onboarding persistence review specifies review inputs without adding tables,
 completion flags, native claims or PM answers. No Auth administration, managed user
 creation/deletion, schema mutation or mobile code was performed by this increment.
+
+### API-10 managed HTTP checkpoint — 2026-11-02
+
+Both supplied tokens verify against actual project trust and identify distinct
+accounts. The normal app.main process plus hosted runtime DB role passed read-only
+A/B identity/profile and the explicit disposable write journey: save, stale replay
+conflict, other-user isolation, clear, original-name restore and refetch. A separate
+read-only comparison across a genuine API process restart preserved both profiles.
+New test profile rows remain and revisions/update times advanced as documented.
+No Auth users/settings or schema changed. Evidence contains outcomes only.
+
+The missing-token gate is resolved for this run, not an enduring token/session
+availability promise. Actual browser inventory remains empty; real Auth/RN-07/root/
+native and managed cascade evidence still require the joint handoff. Full API-10,
+Plan 03 and application M1/M2 remain open; producer counts stay 19/25. No production
+code or automated tests changed; prior 469/102 validation is preserved, not rerun.

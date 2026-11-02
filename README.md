@@ -16,7 +16,7 @@ Shared React Native app and FastAPI service for Disconnect. Product context star
 - RN-08 protection status mapper/UI and read-only native-port consumer are prepared; [native evidence rules and deferred integration](apps/mobile/src/features/protection/README.md). No native adapter is registered or active protection claimed for this checkout.
 - RN-09a [Home presentation](apps/mobile/src/features/home/README.md) is routed with honest unavailable states; its interactive Figma sample stays in `mobile:ui`. Quests/History/Settings presentation is implemented; live data/actions across all four tabs remain pending.
 - RN-10 shared accessibility/layout/lifecycle hardening with [QA evidence and RN-11 prerequisites](docs/qa/mobile-accessibility.md); signed-device/live acceptance remains pending.
-- FastAPI liveness plus verified `GET /v1/me` and isolated revisioned profile GET/PATCH, bounded JWT/JWKS verification, safe errors and generated OpenAPI/HTTP types; see [backend status](services/api/README.md). Real user-token/mobile integration remains pending.
+- FastAPI liveness plus verified `GET /v1/me` and isolated revisioned profile GET/PATCH, bounded JWT/JWKS verification, safe errors and generated OpenAPI/HTTP types; see [backend status](services/api/README.md). Real application/mobile integration remains pending.
 - API-10 privacy-safe diagnostics and explicit [operational/acceptance tools](services/api/OPERATIONS.md); real managed-user/mobile acceptance remains pending.
 - Reproducible npm and uv lockfiles, linting, type checking, and CI checks.
 
@@ -194,6 +194,11 @@ operator login/HTTP checks. Read the [operator guide](services/api/OPERATIONS.md
 for reproducible commands and the exact remaining acceptance matrix. Current
 checks: 469 deterministic backend / 102 PostgreSQL tests plus full workspace;
 actual configured-process/CORS/no-Origin HTTP and hosted dependency checks pass.
-Approved user tokens, actual browser execution and real Auth/profile/native
-integration remain pending; Plan 03 is not fully accepted. No hosted schema or
+Managed-user HTTP checks pass in the follow-up below; actual browser execution
+and real Auth/root/profile/native application integration remain pending; Plan 03 is not fully accepted. No hosted schema or
 Auth administration changes were needed.
+
+Managed-account API-10 follow-up: actual A/B tokens now pass hosted identity,
+profile save/clear/conflicts/isolation/refetch and API-restart persistence. Names
+were restored; new test rows/revisions remain. Actual browser, Auth/root/RN-07,
+native and managed lifecycle acceptance still remain open; see the operator guide.

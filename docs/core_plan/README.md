@@ -167,7 +167,14 @@ API-10 operational implementation is available: safe correlated diagnostics,
 private token/login and explicit HTTP acceptance tools, current hosted dependency
 checks and an onboarding persistence review. 469 deterministic / 102 real DB
 checks pass; configured-process/CORS/no-Origin HTTP and hosted public trust/schema/
-runtime TLS checks pass. Full API-10 stays pending for approved A/B user tokens,
-actual browser and Auth/mobile/device journeys. No browser was available to the
-computer tool and no account tokens were supplied. Counts remain 19/25; no joint
+runtime TLS checks pass. At the initial operational checkpoint no account tokens or browser were available.
+The managed follow-up below resolves the HTTP token checks; full API-10 still
+awaits actual browser and Auth/mobile/device journeys. Counts remain 19/25; no joint
 M1/M2 or Anisha-owned work is accepted by these independent checks.
+
+API-10 managed HTTP follow-up: two supplied tokens now verify and pass actual A/B
+identity, profile writes/clear/conflict/isolation/refetch and process-restart
+persistence on the hosted runtime role. The missing-token gate is resolved for
+this run. Browser inventory is empty and real Auth/root/RN-07/native/cascade
+acceptance remains joint work. Counts stay 19/25; application M1/M2 and full
+API-10/Plan 03 remain open. Operational commit: 188c5dd.

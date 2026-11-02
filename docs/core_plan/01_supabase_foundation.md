@@ -357,3 +357,8 @@ history and dedicated runtime client TLS/READ COMMITTED/default deny. Operationa
 A/B tooling is ready, but approved account tokens and real Auth/mobile/cascade
 acceptance remain pending under joint SB-06/API-10. These read-only checks do not
 accept Anisha's project administration or create any users/settings/schema.
+
+API-10 managed-account HTTP follow-up now passes actual A/B identity/profile
+write/conflict/isolation/refetch and process restart persistence against the
+dedicated runtime role. No Auth administration/schema action was needed. Joint
+SB-06 Auth/application/native and coordinated cascade gates remain open.

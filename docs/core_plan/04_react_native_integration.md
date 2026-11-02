@@ -771,3 +771,8 @@ managed-user/browser/native/root evidence stays pending. Backend availability
 but real session/root wiring and joint acceptance remain necessary. See the
 backend operator guide and onboarding persistence review. No RN source/status was
 advanced by these backend-only operational checks.
+
+API-10 follow-up now accepts actual managed-account A/B HTTP identity/profile
+writes/conflicts/isolation and restart persistence. Backend/token availability
+for this run is established; RN-07 real consumer and Anisha Auth/root/native
+integration remain open. No RN code or application/device milestone was accepted.

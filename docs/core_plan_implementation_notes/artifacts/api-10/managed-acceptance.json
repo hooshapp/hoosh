@@ -1,0 +1,79 @@
+{
+  "date": "2026-11-02",
+  "branch": "task/backend/api-10-hosted",
+  "parent": "188c5dd",
+  "project": "eaisvwqfbgdkzdfmxkvm",
+  "identitySource": "two privately supplied access tokens verified with the production project-pinned verifier; distinct subjects",
+  "server": "normal app.main loopback HTTP process; actual hosted runtime database role",
+  "readOnlyJourney": {
+    "liveness": "passed",
+    "corsProtocol": "passed",
+    "noOriginHttp": "passed",
+    "browserExecution": "not_run",
+    "nativeDevice": "not_run",
+    "managedIdentityAB": "passed",
+    "managedProfileReadAB": "passed",
+    "managedProfileWriteAB": "not_run",
+    "accountLifecycleAndMobile": "not_run"
+  },
+  "writeJourney": {
+    "liveness": "passed",
+    "corsProtocol": "passed",
+    "noOriginHttp": "passed",
+    "browserExecution": "not_run",
+    "nativeDevice": "not_run",
+    "managedIdentityAB": "passed",
+    "managedProfileReadAB": "passed",
+    "managedProfileWriteAB": "passed; original names restored; created rows retained",
+    "accountLifecycleAndMobile": "not_run"
+  },
+  "restartPersistence": {
+    "apiProcessRestartPersistence": "passed",
+    "accounts": {
+      "A": {
+        "profileExists": true,
+        "profileUnchangedAcrossRestart": true
+      },
+      "B": {
+        "profileExists": true,
+        "profileUnchangedAcrossRestart": true
+      }
+    },
+    "profileWritesDuringRestartCheck": false,
+    "browserOrNativeExecution": false
+  },
+  "verifiedBehaviors": [
+    "matching verified UUID for both accounts",
+    "required nullable profile shape and owner scope",
+    "browser-origin and no-Origin authenticated HTTP protocol",
+    "forged owner query cannot switch scope",
+    "revision-safe profile save",
+    "stale replay conflicts with own revision",
+    "other-account rows unchanged",
+    "explicit name clearing",
+    "original names restored on success",
+    "refetch matches saved row",
+    "both profiles unchanged across a genuine API process restart"
+  ],
+  "sideEffects": {
+    "profileWrites": true,
+    "originalDisplayNamesRestored": true,
+    "newProfileRowsRetained": true,
+    "revisionsAndUpdateTimesAdvanced": true,
+    "authUsersCreatedOrDeletedByAgent": false,
+    "authSettingsChanged": false,
+    "schemaChanged": false,
+    "credentialsChanged": false
+  },
+  "remaining": {
+    "actualBrowserExecution": "pending; browser inventory rechecked and empty",
+    "nativeSdkOrSignedDevice": "pending",
+    "rn07RealConsumerAndAuthRoot": "pending",
+    "managedUserCascadeLifecycle": "pending joint Anisha workflow; no Auth deletion performed",
+    "fullApi10AndPlan03Acceptance": "open"
+  },
+  "automatedSuite": "unchanged production/test code; prior 469 deterministic / 102 PostgreSQL tests not rerun for this evidence-only follow-up",
+  "privacy": "no credentials, user UUIDs, emails, names, token claims or raw response payloads stored",
+  "cleanup": "all task-owned API processes stopped; no new DB fixture started",
+  "pushOrMainMerge": false
+}

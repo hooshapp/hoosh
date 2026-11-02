@@ -186,7 +186,7 @@ publish PATCH input and nonnullable saved profile. API-08 hash ca275af; next API
 operational/joint managed-token/mobile evidence. API-07's schema remains unchanged;
 no hosted Auth/user or mobile code was changed. RN-07 actual wiring is still open.
 
-Current API-10 checkpoint (2026-11-02): operational code/tools are implemented with
+Initial API-10 operational checkpoint (2026-11-02): operational code/tools are implemented with
 469 deterministic / 102 real DB checks and full workspace passing. See the backend
 OPERATIONS.md for diagnostics, private token/login and explicit A/B checks. Actual
 process/CORS/no-Origin, hosted public ES256, schema/security drift and runtime TLS/
@@ -196,3 +196,12 @@ and real Anisha Auth/root/RN-07/native journeys remain pending. Counts stay 19/2
 no managed identity or physical-device success is inferred from dependency probes.
 API-09 hash c563ff6. The onboarding persistence review is prepared, not an approved
 schema/completion endpoint. No hosted Auth/schema or mobile source was changed.
+
+Latest API-10 managed HTTP checkpoint (2026-11-02): approved tokens were supplied
+and verified for two distinct actual accounts. Hosted runtime-role HTTP identity,
+profile save/clear/conflict/isolation/refetch and true API process restart
+persistence pass. Token absence is no longer the blocker for this recorded run.
+No token/identity/profile payloads are in artifacts. No Auth user/settings/schema
+changed. Browser inventory is empty; real Auth/root/RN-07/native and managed
+cascade gates remain open. Full API-10/Plan 03 and application M1/M2 are not accepted
+by this HTTP evidence alone. Read the Plan 03 resume checkpoint and operator guide.

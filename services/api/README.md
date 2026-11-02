@@ -136,7 +136,7 @@ and [Plan 01 notes](../../docs/core_plan_implementation_notes/plan_01_supabase_f
 record the provisioned non-owner runtime role and separate migration credential.
 The backend's ignored public trust configuration and production JWKS resolver
 were checked against the real project; its public API keys cannot authenticate
-`/v1/me`. Real user-token/mobile M1 remains pending Anisha's handoff.
+`/v1/me`. Managed-token HTTP verification now passes; actual mobile M1 remains pending Anisha's handoff.
 
 Hosted CA/hostname verification, administrator/runtime password login and runtime
 permission checks pass after the URI was corrected privately. The dedicated
@@ -276,8 +276,8 @@ Anisha can consume the HTTP API without database credentials.
 
 Current checks: 469 deterministic / 102 real PostgreSQL tests, full workspace,
 frozen lock and unchanged generated schemas. Actual app.main startup/network CORS/
-no-Origin/log checks and hosted JWKS/schema/runtime TLS checks passed. No approved
-A/B tokens were available; computer-use reported no browser available; real
+no-Origin/log checks and hosted JWKS/schema/runtime TLS checks passed. At the initial operational checkpoint no approved A/B tokens were available;
+the managed follow-up below resolves HTTP verification. Computer-use reported no browser available; real
 Auth/RN-07/root/native journeys remain pending. API-10 operational work is
 implemented, but full API-10/Plan 03/M1/M2 acceptance is open. No new route,
 migration, hosted Auth user/provider or mobile code was introduced here.
@@ -285,3 +285,11 @@ migration, hosted Auth user/provider or mobile code was introduced here.
 The [onboarding persistence review](../../docs/architecture/onboarding-persistence-review.md)
 prepares the follow-on contract conversation without storing demographics/opaque
 native selections or declaring server-side onboarding completion.
+
+Managed-account follow-up: both supplied real tokens now pass local verification
+and actual HTTP A/B identity/profile journeys using the hosted runtime DB role.
+Revisioned writes, stale replay conflicts, isolation, clear/name restoration and
+refetch passed; both profiles remained unchanged after a true API process restart.
+This resolves the missing-token gate for this run. No Auth user/settings or schema
+changes were made. Full application/browser/native/lifecycle acceptance remains
+open; see OPERATIONS.md and the separate managed acceptance artifact/notes.
