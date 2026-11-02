@@ -239,11 +239,11 @@ _No answer recorded._
 **Question:** Why collect age and gender? What user benefit requires them, what minimum age is supported, and can these questions be removed from initial onboarding?
 
 **Related:** PD-17; FR-003; PD-12 if demographics are used for projections.  
-**Status:** Unanswered
+**Status:** Partially answered — product direction recorded; implementation and privacy details remain.
 
 **Answers and follow-ups:**
 
-_No answer recorded._
+On November 1–2, 2026, Anisha specified that supported signup ages are 18 through 80 inclusive. Ages 18–30 are the target audience, not the full eligibility range. Age and gender/avatar choices are intended for personalized plans; the user must answer each. The third avatar is a gender-neutral or non-gender-bound option, not “Prefer not to answer” (superseding the earlier response). Answers should be saved and editable later in Settings. The specific use of demographic answers in a plan, privacy notice and storage/retention details still need design and review. The current app asks these questions after account signup, so signup eligibility is not yet enforced.
 
 ### Q20 — Personalization and tone
 

@@ -18,17 +18,17 @@ The screen UI lives in `apps/mobile/src/features/onboarding/OnboardingQuestions.
 
 ## Current behavior
 
-- Gender and age are optional, transient answers. They are not written to device storage or sent to a server. Age is currently presented as a 1–100 wheel because the minimum age and demographic purpose remain unresolved in PD-17; this range must be revisited before release.
+- Age is selected from 18–80 and gender/avatar selection is required, including the neutral “Other” avatar. These answers are stored in the account-scoped local draft and completed answers. The owner requires signup eligibility to be enforced before account creation, and later Settings edits; neither is implemented yet. Signup currently precedes these questions, local data does not sync across devices, and no demographic-driven plan generation exists.
 - The age screen supports direct wheel scrolling and tapping a visible age. Back/Next controls are stacked as in Figma.
 - The app screen starts with Instagram and Snapchat selected, requires 2–4 choices to continue, and offers the six Figma choices. Users can replace the defaults.
 - The hobbies screen starts with Gym and Reading, supports the six Figma cards and custom activities (up to 12 total, 40 characters each), and allows custom items to be removed. Pressing Next includes a typed custom activity even if the plus button was not pressed.
 - Preferences and in-progress step are saved in AsyncStorage under keys scoped to the signed-in account. A resumed user sees their saved step. Switching accounts cannot load another account's draft. Storage failure has an explicit retry state.
-- Completion stores only app choices, hobbies, schema version, and the last observed `screenTimeAccess` status; it marks this question flow complete for the account and routes to tabs. A future app launch can therefore resume the account flow without repeating these questions.
-- Skip is available on each question. Skipping the final permission step completes onboarding without implying that permission was granted.
+- Completion stores age, avatar/gender choice, app choices, hobbies, schema version, and the last observed `screenTimeAccess` status locally; it marks this question flow complete for the account and routes to tabs. A future app launch can resume without repeating these questions.
+- Skip is disabled on age and avatar/gender. Skipping the permission step proceeds without implying permission was granted.
 
 ## Safety and product boundaries
 
-- `PD-17` is not resolved. Do not store, transmit, or use gender or age for restrictions, model prompts, or targeting until the product decision, supported-age policy, consent, and privacy review are settled.
+- `PD-17` is partially resolved: see Q19 for the owner's eligibility and collection decisions. Privacy, storage, retention and the specific role of demographics in personalization remain to be designed and reviewed; do not infer demographic-based restrictions or unsupported claims.
 - The permission page calls the local native authorization module where available. iOS uses Family Controls and Android uses Usage Access settings. Web/missing-module builds show unavailable. Authorization does not activate protection. See [implementation and build gates](screen-time-authorization.md).
 - This increment does not train an AI model or generate a plan. App and hobby preferences are local inputs only. Any future AI service must use an explicitly designed data contract and consent boundary; device enforcement must stay independent of AI/network availability per the architecture plan.
 - Onboarding completion and actual Screen Time authorization/protection are distinct states. Do not represent a completed questionnaire as protected.

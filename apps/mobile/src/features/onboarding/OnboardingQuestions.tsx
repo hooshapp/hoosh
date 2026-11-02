@@ -60,8 +60,8 @@ const HOBBY_OPTIONS = [
 
 const STEP_COUNT = 7;
 const LAST_STEP: QuestionStep = 6;
-const AGE_MIN = 1;
-const AGE_MAX = 100;
+const AGE_MIN = 18;
+const AGE_MAX = 80;
 const AGE_ROW_HEIGHT = 28;
 const AGE_WHEEL_HEIGHT = 242;
 const QUESTION_COPY = [
@@ -87,6 +87,7 @@ export function OnboardingQuestions() {
   const [step, setStep] = useState<QuestionStep>(0);
   const [gender, setGender] = useState<string | null>(null);
   const [age, setAge] = useState(24);
+  const [ageChosen, setAgeChosen] = useState(false);
   const [answers, setAnswers] = useState<Answers>({
     apps: ['Instagram', 'Snapchat'],
     hobbies: ['Gym', 'Reading'],
@@ -143,7 +144,11 @@ export function OnboardingQuestions() {
       }
       if (cancelled) return;
       if (draft) {
-        setStep(draft.step as QuestionStep);
+        setStep((draft.gender && draft.age ? draft.step : 0) as QuestionStep);
+        setGender(draft.gender ?? null);
+        setAge(draft.age ?? 24);
+        selectedAge.current = draft.age ?? 24;
+        setAgeChosen(draft.age !== undefined);
         setAnswers({ apps: draft.apps, hobbies: draft.hobbies });
       }
       setLoadResult({ accountId, status: 'ready', notice });
@@ -166,14 +171,14 @@ export function OnboardingQuestions() {
 
   const saveDraft = useCallback(() => {
     if (!accountId) return Promise.reject(new Error('Sign in required'));
-    const value = serializeQuestionDraft({ step: Math.min(step, 4), apps: answers.apps, hobbies: answers.hobbies });
+    const value = serializeQuestionDraft({ step: Math.min(step, 4), apps: answers.apps, hobbies: answers.hobbies, age: ageChosen ? age : undefined, gender: gender ?? undefined });
     const nextWrite = draftWrites.current.catch(() => undefined).then(() =>
       AsyncStorage.setItem(questionDraftKey(accountId), value),
     );
     draftWrites.current = nextWrite;
     void nextWrite.then(() => setDraftWriteFailed(false)).catch(() => setDraftWriteFailed(true));
     return nextWrite;
-  }, [accountId, answers.apps, answers.hobbies, step]);
+  }, [accountId, answers.apps, answers.hobbies, step, age, ageChosen, gender]);
 
   useEffect(() => {
     if (!draftReady) return;
@@ -197,11 +202,11 @@ export function OnboardingQuestions() {
       Alert.alert('Sign in required', 'Please sign in before saving your setup.');
       return;
     }
+    if (!gender || !ageChosen) { setStep(!gender ? 0 : 1); return; }
     setSaving(true);
     try {
       await saveDraft();
-      // Demographic answers remain transient until Q19/PD-17 is decided. Permission state is an OS observation, never a protection claim.
-      const savedAnswers = makeSavedQuestionAnswers(answers.apps, answers.hobbies, authorization);
+      const savedAnswers = makeSavedQuestionAnswers(answers.apps, answers.hobbies, authorization, { age, gender });
       await AsyncStorage.setItem(questionAnswersKey(accountId), JSON.stringify(savedAnswers));
       await AsyncStorage.setItem(questionCompleteKey(accountId), '1');
       await AsyncStorage.removeItem(questionDraftKey(accountId));
@@ -211,21 +216,15 @@ export function OnboardingQuestions() {
     } finally {
       setSaving(false);
     }
-  }, [accountId, answers.apps, answers.hobbies, router, saveDraft, authorization]);
+  }, [accountId, answers.apps, answers.hobbies, router, saveDraft, authorization, age, ageChosen, gender]);
 
   const finishOnboarding = useCallback(async () => {
     await finish();
   }, [finish]);
 
   const skip = useCallback(() => {
+    if (step === 0 || step === 1) return;
     switch (step) {
-      case 0:
-        setGender(null);
-        break;
-      case 1:
-        selectedAge.current = 24;
-        setAge(24);
-        break;
       case 2:
         setAnswers(current => ({ ...current, apps: [] }));
         break;
@@ -269,6 +268,7 @@ export function OnboardingQuestions() {
 
   const next = useCallback(() => {
     Keyboard.dismiss();
+    if ((step === 0 && !gender) || (step === 1 && !ageChosen)) return;
     if (step === 3 && !addCustomHobby()) return;
     if (step === 4) {
       setStep(5);
@@ -283,13 +283,14 @@ export function OnboardingQuestions() {
       return;
     }
     setStep(current => Math.min(LAST_STEP, current + 1) as QuestionStep);
-  }, [finishOnboarding, step, addCustomHobby]);
+  }, [finishOnboarding, step, addCustomHobby, gender, ageChosen]);
 
   const onAgeScrollEnd = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const value = AGE_MIN + Math.round(event.nativeEvent.contentOffset.y / AGE_ROW_HEIGHT);
     const nextAge = Math.max(AGE_MIN, Math.min(AGE_MAX, value));
     selectedAge.current = nextAge;
     setAge(nextAge);
+    setAgeChosen(true);
   }, []);
 
   const appSelection = answers.apps.length;
@@ -314,7 +315,7 @@ export function OnboardingQuestions() {
   return (
     <KeyboardAvoidingView style={styles.screen} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <View style={[styles.header, { paddingTop: safeTop + 10 }]}>
-        <Pressable accessibilityRole="button" accessibilityLabel="Skip this question" disabled={saving || requestingPermission} onPress={skip}>
+        <Pressable accessibilityRole="button" accessibilityLabel="Skip this question" disabled={saving || requestingPermission || step < 2} onPress={skip} style={{ opacity: step < 2 ? 0 : 1 }}>
           <Text style={styles.skip}>Skip</Text>
         </Pressable>
         <View style={styles.progress} accessibilityRole="progressbar"
@@ -338,7 +339,7 @@ export function OnboardingQuestions() {
         <Text accessibilityRole="header" style={styles.title}>{QUESTION_COPY[step]}</Text>
 
         {step === 0 && <GenderStep value={gender} onChange={setGender} />}
-        {step === 1 && <AgeStep value={age} listRef={ageList} onScrollEnd={onAgeScrollEnd} onChange={value => { selectedAge.current = value; setAge(value); }} />}
+        {step === 1 && <><Text style={styles.description}>Select your age to continue. Hoosh supports ages 18–80.</Text><AgeStep value={age} listRef={ageList} onScrollEnd={onAgeScrollEnd} onChange={value => { selectedAge.current = value; setAge(value); setAgeChosen(true); }} /></>}
         {step === 2 && <AppsStep selected={answers.apps} selectedCount={appSelection} onToggle={name => toggle('apps', name, 4)} />}
         {step === 3 && <HobbiesStep
           selected={answers.hobbies}
@@ -354,7 +355,7 @@ export function OnboardingQuestions() {
         step={step}
         compact={compact}
         bottomInset={safeBottom}
-        canContinue={step !== 2 || answers.apps.length >= 2}
+        canContinue={step === 0 ? !!gender : step === 1 ? ageChosen : step !== 2 || answers.apps.length >= 2}
         saving={saving || requestingPermission}
         authorized={authorization === 'authorized'}
         onBack={() => setStep(current => Math.max(0, current - 1) as QuestionStep)}
@@ -428,20 +429,20 @@ function GenderStep({ value, onChange }: { value: string | null; onChange(value:
   return (
     <>
       <View pointerEvents="none" style={styles.genderGlow}><SvgXmlIcon name="permission-glow" width={160} height={160} /></View>
-      <Text style={styles.description}>Quick one-time setup so we can tailor your experience. Totally optional. :)</Text>
+      <Text style={styles.description}>Choose the avatar that feels right for you.</Text>
       <View style={styles.genderRow}>
         <GenderCard label="Male" selected={value === 'Male'} icon="gender-male" onPress={() => onChange(value === 'Male' ? null : 'Male')} />
         <GenderCard label="Female" selected={value === 'Female'} icon="gender-female" onPress={() => onChange(value === 'Female' ? null : 'Female')} />
       </View>
       <Pressable
         accessibilityRole="radio"
-        accessibilityState={{ selected: value === 'Other / Prefer not to say' }}
-        onPress={() => onChange(value === 'Other / Prefer not to say' ? null : 'Other / Prefer not to say')}
-        style={[styles.otherGenderCard, value === 'Other / Prefer not to say' && styles.cardSelected]}
+        accessibilityState={{ selected: value === 'Other' }}
+        onPress={() => onChange(value === 'Other' ? null : 'Other')}
+        style={[styles.otherGenderCard, value === 'Other' && styles.cardSelected]}
       >
-        <View style={styles.cardBadge}><SelectionMark selected={value === 'Other / Prefer not to say'} /></View>
+        <View style={styles.cardBadge}><SelectionMark selected={value === 'Other'} /></View>
         <View style={styles.genderArt}><View style={styles.genderSparkle}><SvgXmlIcon name="permission-sparkle" width={10} height={10} /></View><View style={styles.genderStar}><SvgXmlIcon name="gender-star" width={14} height={14} /></View><SvgXmlIcon name="gender-other" width={52} height={52} /></View>
-        <Text style={styles.cardLabel}>Other / Prefer not to say</Text>
+        <Text style={styles.cardLabel}>Other</Text>
         <Text style={styles.smallMuted}>You can always change this later</Text>
       </Pressable>
     </>

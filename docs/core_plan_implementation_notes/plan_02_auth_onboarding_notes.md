@@ -197,6 +197,10 @@ Auth and five questionnaire screens exist on this branch. A new-account confirma
 
 ## Current working-tree changes — pending commit
 
+November 2 follow-up: a temporary signup age field was added and then removed at the owner's request. The separate onboarding age question remains; signup does not verify eligibility. Browser and native acceptance remain unverified.
+
+November 2: the owner selected an 18–80 supported signup range and clarified that the third avatar is gender-neutral, not “Prefer not to answer.” The questionnaire requires an age and avatar choice and saves them in account-scoped local storage; the age selector is limited to 18–80. Signup still occurs before this questionnaire, so this does not enforce account eligibility. Existing completed users, server enforcement, Settings editing, cross-device sync, privacy notice and the use of these fields in plans remain open. `npm run typecheck --workspace @disconnect/mobile`, mobile lint, ten focused onboarding Jest tests and ten draft Vitest tests passed; physical-device and visual Figma acceptance remain unverified. This entry describes uncommitted work.
+
 The plan preview UI and its focused test changes are uncommitted. Typecheck and nine focused onboarding tests passed when last run; the implemented preview has not been visually compared against Figma in a running app or validated on a physical device. It does not generate or apply a real plan. Documentation was reorganized to match the `main` structure and these notes/ledgers were updated. Recheck the full diff and verify integration with `main` before committing.
 
 Historical inventories above are generated from Git hunk headers; deleted lines have no new-file line number, and binary assets have no line ranges. The existing detailed runbooks are the source for dated validation; do not infer unrecorded checks.

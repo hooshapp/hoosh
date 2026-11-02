@@ -42,11 +42,25 @@ async function open() {
   await screen.findByText('What’s your gender?');
 }
 
+it('requires the neutral avatar and an explicit eligible age selection', async () => {
+  await open();
+  expect(screen.getByRole('button', { name: 'Next →' }).props.accessibilityState.disabled).toBe(true);
+  await fireEvent.press(screen.getByText('Other'));
+  await fireEvent.press(screen.getByRole('button', { name: 'Next →' }));
+  await screen.findByText('How old are you?');
+  expect(screen.getByRole('button', { name: 'Next →' }).props.accessibilityState.disabled).toBe(true);
+  expect(screen.queryByRole('button', { name: 'Age 17' })).toBeNull();
+  expect(screen.queryByRole('button', { name: 'Age 81' })).toBeNull();
+  await fireEvent.press(screen.getByRole('button', { name: 'Age 18' }));
+  expect(screen.getByRole('button', { name: 'Next →' }).props.accessibilityState.disabled).toBe(false);
+});
+
 it('walks through the five Figma screens in order and returns to the correct prior page', async () => {
   await open();
   await fireEvent.press(screen.getByText('Female'));
   await fireEvent.press(screen.getByRole('button', { name: 'Next →' }));
   expect(await screen.findByText('How old are you?')).toBeTruthy();
+  await fireEvent.press(screen.getByRole('button', { name: 'Age 24' }));
   await fireEvent.press(screen.getByRole('button', { name: 'Next →' }));
   expect(await screen.findByText('Which apps do you use most?')).toBeTruthy();
   await fireEvent.press(screen.getByRole('button', { name: 'Back' }));
@@ -61,7 +75,9 @@ it('walks through the five Figma screens in order and returns to the correct pri
 
 it('enforces the 2–4 app selection and allows replacing the defaults', async () => {
   await open();
+  await fireEvent.press(screen.getByText('Other'));
   await fireEvent.press(screen.getByRole('button', { name: 'Next →' }));
+  await fireEvent.press(screen.getByRole('button', { name: 'Age 24' }));
   await fireEvent.press(screen.getByRole('button', { name: 'Next →' }));
   await screen.findByText('Which apps do you use most?');
   await fireEvent.press(screen.getByText('TikTok'));
@@ -75,7 +91,9 @@ it('enforces the 2–4 app selection and allows replacing the defaults', async (
 
 it('adds and removes a custom hobby without duplicates', async () => {
   await open();
+  await fireEvent.press(screen.getByText('Other'));
   await fireEvent.press(screen.getByRole('button', { name: 'Next →' }));
+  await fireEvent.press(screen.getByRole('button', { name: 'Age 24' }));
   await fireEvent.press(screen.getByRole('button', { name: 'Next →' }));
   await screen.findByText('Which apps do you use most?');
   await fireEvent.press(screen.getByRole('button', { name: 'Next →' }));
@@ -88,7 +106,7 @@ it('adds and removes a custom hobby without duplicates', async () => {
 });
 
 it('resumes the account-scoped last step and saves only approved preference fields', async () => {
-  mockStorage.set(questionDraftKey('account-a'), serializeQuestionDraft({ step: 4, apps: ['X'], hobbies: ['Walking'] }));
+  mockStorage.set(questionDraftKey('account-a'), serializeQuestionDraft({ age: 25, gender: 'Other', step: 4, apps: ['X'], hobbies: ['Walking'] }));
   await render(<OnboardingQuestions />, { wrapper: Wrapper });
   expect(await screen.findByText('Screen Time access')).toBeTruthy();
   await fireEvent.press(screen.getByRole('button', { name: 'Not now' }));
@@ -97,14 +115,13 @@ it('resumes the account-scoped last step and saves only approved preference fiel
   await waitFor(() => expect(mockReplace).toHaveBeenCalledWith('/(tabs)'));
   const saved = JSON.parse(mockStorage.get(questionAnswersKey('account-a')) ?? '{}') as Record<string, unknown>;
   expect(saved).toMatchObject({ apps: ['X'], hobbies: ['Walking'], screenTimeAccess: 'unavailable' });
-  expect(saved).not.toHaveProperty('gender');
-  expect(saved).not.toHaveProperty('age');
+  expect(saved).toMatchObject({ gender: 'Other', age: 25 });
   expect(mockStorage.get(questionCompleteKey('account-a'))).toBe('1');
   expect(mockStorage.has(questionDraftKey('account-a'))).toBe(false);
 });
 
 it('does not pretend the unavailable Screen Time button granted access', async () => {
-  mockStorage.set(questionDraftKey('account-a'), serializeQuestionDraft({ step: 4, apps: [], hobbies: [] }));
+  mockStorage.set(questionDraftKey('account-a'), serializeQuestionDraft({ age: 25, gender: 'Other', step: 4, apps: [], hobbies: [] }));
   await render(<OnboardingQuestions />, { wrapper: Wrapper });
   await screen.findByText('Screen Time access');
   await fireEvent.press(screen.getByRole('button', { name: 'Allow Screen Time access' }));
@@ -114,6 +131,7 @@ it('does not pretend the unavailable Screen Time button granted access', async (
 
 it('updates the selected age immediately when a visible age is tapped', async () => {
   await open();
+  await fireEvent.press(screen.getByText('Other'));
   await fireEvent.press(screen.getByRole('button', { name: 'Next →' }));
   await screen.findByText('How old are you?');
   await fireEvent.press(screen.getByRole('button', { name: 'Age 25' }));
@@ -123,7 +141,7 @@ it('updates the selected age immediately when a visible age is tapped', async ()
 it('continues only after native authorization is confirmed, and saves that observation', async () => {
   jest.mocked(getScreenTimeAuthorization).mockResolvedValue('not_requested');
   jest.mocked(requestScreenTimeAuthorization).mockResolvedValue('authorized');
-  mockStorage.set(questionDraftKey('account-a'), serializeQuestionDraft({ step: 4, apps: [], hobbies: [] }));
+  mockStorage.set(questionDraftKey('account-a'), serializeQuestionDraft({ age: 25, gender: 'Other', step: 4, apps: [], hobbies: [] }));
   await render(<OnboardingQuestions />, { wrapper: Wrapper });
   await screen.findByText('Screen Time access');
   await fireEvent.press(screen.getByRole('button', { name: 'Allow Screen Time access' }));
@@ -138,7 +156,7 @@ it('continues only after native authorization is confirmed, and saves that obser
 
 it('keeps the user on permission setup if the native request fails', async () => {
   jest.mocked(requestScreenTimeAuthorization).mockRejectedValue(new Error('request cancelled'));
-  mockStorage.set(questionDraftKey('account-a'), serializeQuestionDraft({ step: 4, apps: [], hobbies: [] }));
+  mockStorage.set(questionDraftKey('account-a'), serializeQuestionDraft({ age: 25, gender: 'Other', step: 4, apps: [], hobbies: [] }));
   await render(<OnboardingQuestions />, { wrapper: Wrapper });
   await screen.findByText('Screen Time access');
   await fireEvent.press(screen.getByRole('button', { name: 'Allow Screen Time access' }));
@@ -147,7 +165,7 @@ it('keeps the user on permission setup if the native request fails', async () =>
 });
 
 it('includes a typed custom activity when the user presses Next without the plus button', async () => {
-  mockStorage.set(questionDraftKey('account-a'), serializeQuestionDraft({ step: 3, apps: ['X'], hobbies: [] }));
+  mockStorage.set(questionDraftKey('account-a'), serializeQuestionDraft({ age: 25, gender: 'Other', step: 3, apps: ['X'], hobbies: [] }));
   await render(<OnboardingQuestions />, { wrapper: Wrapper });
   await screen.findByText('What do you want to do instead?');
   await fireEvent.changeText(screen.getByLabelText('Add a custom activity'), 'Gardening');

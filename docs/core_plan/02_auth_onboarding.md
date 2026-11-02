@@ -264,7 +264,7 @@ These parts are planned handoffs, not permission to fill in missing product rule
 - **Files:** `(onboarding)` route steps; feature components/validation/tests; source assets exported through the design workflow, not substitutes.
 - **Work:** Accessible landing skip/reduced-motion flow; step navigation; optional demographic skip if retained; activity choices/custom entry; local draft writes and progress indicators. Validate selected values and long custom labels. Do not claim the static app examples are installed-app discovery or native selection. If this coherent part becomes too large, split introduction and preference questions into separately numbered commits before implementation.
 - **Acceptance:** Back/skip/restart preserve intended values; no answer becomes an enforcement input by accident; large text/keyboard/screens readers work; empty custom input and repeated taps are handled; offline behavior is explicit; changed question list does not leave a hardcoded wrong `x of 7` indicator.
-- **Boundary / recovery:** No unsupported age range or compulsory demographics. No real controlled-app selection until AUTH-11. Revert UI while retaining a readable versioned draft.
+- **Boundary / recovery:** Owner decision Nov 1–2: supported signup ages 18–80; age and a gender/avatar response are required, with a neutral “Other” avatar. This supersedes the optional-demographics and “Prefer not to answer” assumptions. Questionnaire collection and local persistence are implemented; privacy details and age eligibility before account creation remain open. No real controlled-app selection until AUTH-11. Revert UI while retaining a readable versioned draft.
 
 ### AUTH-11 — Native selection and permission handoff
 

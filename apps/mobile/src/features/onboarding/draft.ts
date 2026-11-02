@@ -7,6 +7,8 @@ export type QuestionDraft = {
   step: number;
   apps: string[];
   hobbies: string[];
+  age?: number;
+  gender?: string;
 };
 
 export type SavedQuestionAnswers = {
@@ -14,6 +16,8 @@ export type SavedQuestionAnswers = {
   apps: string[];
   hobbies: string[];
   screenTimeAccess: AuthorizationState;
+  age?: number;
+  gender?: string;
 };
 
 const supportedApps = new Set(['Instagram', 'Snapchat', 'TikTok', 'YouTube', 'Reddit', 'X']);
@@ -49,6 +53,8 @@ export function parseQuestionDraft(raw: string | null): QuestionDraft | null {
     step: value.step as number,
     apps: uniqueStrings(value.apps as string[]),
     hobbies: uniqueStrings((value.hobbies as string[]).map(item => item.trim().replace(/\s+/g, ' '))),
+    age: typeof value.age === 'number' && Number.isInteger(value.age) && value.age >= 18 && value.age <= 80 ? value.age : undefined,
+    gender: typeof value.gender === 'string' && ['Male', 'Female', 'Other'].includes(value.gender) ? value.gender : undefined,
   };
 }
 
@@ -56,12 +62,13 @@ export function serializeQuestionDraft(draft: Omit<QuestionDraft, 'version'>): s
   return JSON.stringify({ version: QUESTION_DRAFT_VERSION, ...draft });
 }
 
-export function makeSavedQuestionAnswers(apps: string[], hobbies: string[], authorization: AuthorizationState = 'not_requested'): SavedQuestionAnswers {
+export function makeSavedQuestionAnswers(apps: string[], hobbies: string[], authorization: AuthorizationState = 'not_requested', demographics?: { age: number; gender: string }): SavedQuestionAnswers {
   return {
     version: QUESTION_DRAFT_VERSION,
     apps: uniqueStrings(apps.filter(app => supportedApps.has(app))),
     hobbies: uniqueStrings(hobbies.map(item => item.trim().replace(/\s+/g, ' ')).filter(item => item.length > 0 && item.length <= 40)),
     screenTimeAccess: authorization,
+    ...(demographics ? { age: demographics.age, gender: demographics.gender } : {}),
   };
 }
 

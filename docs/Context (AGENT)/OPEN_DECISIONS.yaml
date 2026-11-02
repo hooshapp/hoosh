@@ -70,5 +70,5 @@ decisions:
     recommendation: supportive_default_opt_in_stronger_tone
   - id: PD-17
     topic: minimum_supported_age_and_distribution_rating
-    status: unresolved
-    recommendation: confirm_privacy_and_store_policy
+    status: partially_resolved
+    recommendation: supported_signup_ages_18_to_80_inclusive_privacy_and_store_review_pending
