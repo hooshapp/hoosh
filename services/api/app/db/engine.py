@@ -5,11 +5,18 @@ from contextlib import contextmanager
 from uuid import UUID
 
 from sqlalchemy import create_engine, text
-from sqlalchemy.exc import DBAPIError, InterfaceError, OperationalError, TimeoutError
+from sqlalchemy.exc import (
+    DBAPIError,
+    IntegrityError,
+    InterfaceError,
+    OperationalError,
+    TimeoutError,
+)
 from sqlalchemy.orm import sessionmaker
 
 from app.core.config import Settings
 from app.core.database_config import runtime_database_url
+from app.core.diagnostics import dependency_event
 from app.core.errors import ApiError
 from app.core.identity import VerifiedIdentity
 from app.db.session import CONTEXT, TRANSACTION, DatabaseContextError, UserSession
@@ -68,6 +75,7 @@ class Database:
         if not isinstance(identity, VerifiedIdentity) or not isinstance(identity.user_id, UUID):
             raise DatabaseContextError()
         if self.closed:
+            dependency_event("database", "closed")
             raise ApiError(ErrorCode.DEPENDENCY_UNAVAILABLE)
         try:
             with self._sessions() as session, session.begin():
@@ -81,11 +89,27 @@ class Database:
                 session.info[TRANSACTION] = session.get_transaction()
                 yield session
                 # session.begin commits before returning control to the caller.
-        except (OperationalError, InterfaceError, TimeoutError):
+        except TimeoutError:
+            dependency_event("database", "pool_timeout")
+            raise ApiError(ErrorCode.DEPENDENCY_UNAVAILABLE) from None
+        except (OperationalError, InterfaceError) as error:
+            outcome = {
+                "28P01": "authentication",
+                "57014": "query_cancelled",
+                "55P03": "lock_unavailable",
+            }.get(getattr(error.orig, "sqlstate", None), "connection_failure")
+            dependency_event(
+                "database", "disconnected" if error.connection_invalidated else outcome
+            )
             raise ApiError(ErrorCode.DEPENDENCY_UNAVAILABLE) from None
         except DBAPIError as error:
             if error.connection_invalidated:
+                dependency_event("database", "disconnected")
                 raise ApiError(ErrorCode.DEPENDENCY_UNAVAILABLE) from None
+            dependency_event(
+                "database",
+                "integrity_error" if isinstance(error, IntegrityError) else "query_error",
+            )
             raise  # Integrity/programming failures belong to later repository mapping.
 
     def close(self) -> None:

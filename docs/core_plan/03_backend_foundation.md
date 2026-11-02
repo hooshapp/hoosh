@@ -1,6 +1,6 @@
 # Plan 03 — FastAPI Identity and Profile Foundation
 
-**Status:** API-01–09 are implemented: strict trust/errors, JWT/JWKS, database-independent identity, generated contracts and bounded lazy PostgreSQL units of work. API-06 passed 337 deterministic tests, 24 real PostgreSQL checks and a read-only hosted runtime/TLS smoke check. API-07 added the model, single Alembic history and profile constraints/grants/RLS, with 344 deterministic and 66 real DB tests plus hosted upgrade/check. API-08 now adds nonmutating own-profile GET and generated shapes (374 deterministic / 75 real DB tests). API-09 now adds strict bounded PATCH, canonical validation, atomic insert/CAS and own conflicts (453 deterministic / 96 real DB checks). Actual user-token/mobile M1/M2, managed-user cascade smoke and API-10 evidence remain pending.\
+**Status:** API-01–09 are implemented: strict trust/errors, JWT/JWKS, database-independent identity, generated contracts and bounded lazy PostgreSQL units of work. API-06 passed 337 deterministic tests, 24 real PostgreSQL checks and a read-only hosted runtime/TLS smoke check. API-07 added the model, single Alembic history and profile constraints/grants/RLS, with 344 deterministic and 66 real DB tests plus hosted upgrade/check. API-08 now adds nonmutating own-profile GET and generated shapes (374 deterministic / 75 real DB tests). API-09 now adds strict bounded PATCH, canonical validation, atomic insert/CAS and own conflicts (453 deterministic / 96 real DB checks). API-10 operational diagnostics/tooling and independent checks are now implemented; actual managed-user/mobile M1/M2 and cascade/browser/device acceptance remain pending.\
 **Owner:** Ishmum (backend/database). Anisha reviews Auth contracts and participates in live session checks.\
 **Area branch:** `area/backend`; task branches `task/backend/<part>`.\
 **Milestones:** M1 = verified identity without a database; M2 = minimal, isolated, revisioned profile persistence.
@@ -375,7 +375,11 @@ All parts include their own relevant tests; API-10 is the final integration evid
 
 ### API-10 — Complete operational checks and cross-app handoff
 
-**Proposed commit:** `docs(api): record identity and profile integration evidence`\
+**Operational implementation commit:** `feat(api): add operational diagnostics and acceptance checks`
+
+The original docs-only commit proposal grew to include the diagnostics and secure
+reproducible acceptance tools required by steps 1–3. This is one operational
+increment; do not mark API-10 accepted before its joint gates pass.\
 **Depends on:** API-04/05 for M1; API-06–09 and RN-07 for M2 live profile evidence. Coordinate with SB-06; RN-11 consumes the tested backend behavior and is not a prerequisite for this producer/evidence record.\
 **Files:** `services/api/README.md`, runbooks, CI, actual evidence notes; no extra product domains.
 
@@ -442,8 +446,8 @@ Auth can finish its session work without profiles. The main frontend must not cl
 | API-06 | Implemented; local real-DB + read-only hosted engine checks passed | `45a8c2e` | 337 deterministic tests, 24 real DB checks, Ruff, frozen lock and schema drift; [Plan 03 notes](../core_plan_implementation_notes/plan_03_backend_foundation_notes.md) / [DB contract](../../services/api/app/db/README.md) |
 | API-07 | Implemented producer; local migrations/RLS and hosted empty upgrade/security checks passed | `4d8d1fc` | 344 deterministic / 66 real DB checks; head `20261102_0001`; [Plan 03 notes](../core_plan_implementation_notes/plan_03_backend_foundation_notes.md); actual managed Auth A/B/cascade remains API-10 joint smoke |
 | API-08 | Implemented producer; real signed-token GET/runtime-DB reads and failures accepted locally | `ca275af` | 374 deterministic / 75 real DB tests; generated GET schemas/types; managed tokens/mobile integration remain API-10 joint work |
-| API-09 | Implemented producer; local M2 backend read/write/concurrency/isolation accepted | Resolve by `feat(api): save profiles with optimistic concurrency` | 453 deterministic / 96 real DB tests; strict raw body/name/revision contract, two-connection races, rollback/deletion/replay; actual managed-user/mobile acceptance remains API-10 |
-| API-10 | Pending | — | — |
+| API-09 | Implemented producer; local M2 backend read/write/concurrency/isolation accepted | `c563ff6` | 453 deterministic / 96 real DB tests; strict raw body/name/revision contract, two-connection races, rollback/deletion/replay; actual managed-user/mobile acceptance remains API-10 |
+| API-10 | Operational slice implemented; joint managed-user/browser/native acceptance pending | Resolve by `feat(api): add operational diagnostics and acceptance checks` | 469 deterministic / 102 PostgreSQL checks; actual configured-process/CORS/no-Origin, hosted public-key/schema/runtime/TLS checks; [operator guide](../../services/api/OPERATIONS.md). A/B token file empty, browser tool unavailable and real mobile/root wiring pending; not full Plan 03 acceptance |
 
 ## 10. Sources and verification notes
 
@@ -543,3 +547,26 @@ writes, strict Unicode/raw input, no partial writes after failure and lost-respo
 replay. Generated input/saved-response types are published. No migration/hosted
 Auth or mobile change was needed. The M2 backend producer is accepted locally;
 API-10 joint managed-user/mobile/operational evidence remains open with Anisha.
+
+### API-10 operational checkpoint — 2026-11-02
+
+Privacy-safe request/dependency diagnostics and explicit operator tools are now
+implemented. The running app.main passed actual loopback liveness, allowed/denied
+CORS preflight, private-error/exposed correlation headers and no-Origin HTTP checks.
+Hosted public ES256 discovery, unchanged Alembic/security check and actual dedicated
+runtime TLS/READ COMMITTED/default-deny passed without exercising a user identity.
+469 deterministic / 102 real PostgreSQL tests and full workspace checks pass.
+
+The same A/B acceptance library is tested with actual local signed requests and
+the runtime DB role, including create/edit/clear/conflict/refetch and isolation.
+That does not replace a managed-project user journey. Approved A/B tokens were not
+available, the computer tool reported no browser available, and actual Auth/RN-07/
+root/native application wiring remains pending. Full API-10 and Plan 03/M1/M2
+acceptance stay OPEN. The producer count remains 19 implemented/25 awaiting
+acceptance; API-10 is an implemented operational slice within a pending gate.
+
+See the operator guide for private token acquisition and explicit read/write checks,
+exact remaining matrix, liveness/readiness and safe recovery. The follow-on
+onboarding persistence review specifies review inputs without adding tables,
+completion flags, native claims or PM answers. No Auth administration, managed user
+creation/deletion, schema mutation or mobile code was performed by this increment.

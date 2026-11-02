@@ -10,6 +10,7 @@ import httpx2
 
 from app.core.auth import signing_key, valid_kid
 from app.core.config import Settings, SigningAlgorithm
+from app.core.diagnostics import dependency_event
 from app.core.errors import ApiError
 from app.core.identity import VerificationKey
 from app.core.json_data import json_object
@@ -53,12 +54,16 @@ class JwksResolver:
         if not valid_kid(kid) or algorithm not in (self.settings.supabase_jwt_algorithms or ()):
             raise ApiError(ErrorCode.INVALID_TOKEN)
         if self._closed:
+            dependency_event("jwks", "closed")
             raise ApiError(ErrorCode.AUTH_UNAVAILABLE)
         try:
             # Includes waiting for the coalescing lock, TLS, streaming and validation.
             async with asyncio.timeout(self.settings.auth_jwks_budget_seconds):
                 return await self._resolve(kid, algorithm)
         except (TimeoutError, httpx2.HTTPError, ValueError, RuntimeError) as error:
+            dependency_event(
+                "jwks", "budget_exceeded" if isinstance(error, TimeoutError) else "fetch_failed"
+            )
             raise ApiError(ErrorCode.AUTH_UNAVAILABLE) from error
 
     def _fresh(self) -> bool:
@@ -92,11 +97,14 @@ class JwksResolver:
         if not self._fresh():
             return None
         if (key := self._known_key(kid, algorithm)) is not None:
+            dependency_event("jwks", "cache_hit")
             return key
         if self._negative.get(kid, 0) > self.clock():
             self._negative.move_to_end(kid)  # LRU recency, not a sliding negative TTL.
+            dependency_event("jwks", "negative_hit")
             raise ApiError(ErrorCode.INVALID_TOKEN)
         if self._cooling_down():
+            dependency_event("jwks", "refresh_suppressed")
             self._remember_unknown(kid)
             raise ApiError(ErrorCode.INVALID_TOKEN)
         return None
@@ -111,11 +119,18 @@ class JwksResolver:
             if (key := self._from_fresh_cache(kid, algorithm)) is not None:
                 return key
             if not self._fresh() and self._last_attempt_failed and self._cooling_down():
+                dependency_event("jwks", "refresh_suppressed")
                 raise ApiError(ErrorCode.AUTH_UNAVAILABLE)
             self._last_attempt = self.clock()
             # Failure/cancellation leaves a finite cooldown, not a wedged lock or stale extension.
             self._last_attempt_failed = True
-            keys = await self._fetch_keys()
+            dependency_event("jwks", "fetch_started")
+            try:
+                keys = await self._fetch_keys()
+            except asyncio.CancelledError:
+                dependency_event("jwks", "fetch_cancelled")
+                raise
+            dependency_event("jwks", "fetch_succeeded")
             if self._closed:
                 raise ApiError(ErrorCode.AUTH_UNAVAILABLE)
             self._keys = MappingProxyType(keys)

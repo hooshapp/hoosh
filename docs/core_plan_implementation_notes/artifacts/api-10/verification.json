@@ -1,0 +1,83 @@
+{
+  "date": "2026-11-02",
+  "branch": "task/backend/api-10",
+  "parent": "c563ff6",
+  "status": "operational slice implemented; full API-10/Plan 03/M1/M2 acceptance pending",
+  "checks": {
+    "deterministicBackendTests": 469,
+    "requiredRealPostgresTests": 102,
+    "workspaceCheck": "passed (468 backend tests at full-workspace run; final backend-only run adds terminal echo-failure rejection)",
+    "mobileVitestTests": 250,
+    "mobileJestTests": 362,
+    "originalSvgAssetsChecked": 71,
+    "backendLint": "passed including both operator CLIs",
+    "frozenUvSync": "passed; 47 packages",
+    "generatedSchemaAndTypes": "unchanged; drift checks passed",
+    "ciYaml": "parsed; hosted execution unverified",
+    "localOperationalABJourney": "passed against actual runtime role and ephemeral signed tokens, with both existing and absent initial profiles",
+    "diagnostics": "request/JWKS outcomes, async-worker correlation, connection/pool/lock/query-cancellation categories and no private data passed",
+    "privateLoginHelper": "hidden prompts, nonterminal/echo-fallback refusal, exact pinned destination, verification-before-save, access-only atomic mode-600 persistence and no retry passed"
+  },
+  "actualConfiguredProcess": {
+    "entryPoint": "app.main:app",
+    "listener": "loopback only",
+    "rawAccessLogEnabled": false,
+    "liveness": "passed",
+    "corsAllowedAndDeniedPreflight": "passed",
+    "exposedCorrelationAndNoStore": "passed",
+    "noOriginHttp": "passed",
+    "structuredRequestDiagnostics": "observed; production-request-sample.json",
+    "managedAuthenticatedJourney": "not run; approved A/B tokens unavailable",
+    "browserExecution": "attempted; computer-use tool reported No browser is available",
+    "nativeDevice": "not run"
+  },
+  "hostedReadOnly": {
+    "initialAggregateInspection": {
+      "managedAuthUsers": 4,
+      "profileRows": 0,
+      "revision": "20261102_0001"
+    },
+    "publicJwks": {
+      "acceptedKeys": 1,
+      "algorithm": "ES256",
+      "tlsAndParser": "passed",
+      "userTokenVerified": false
+    },
+    "schemaSecurityDrift": "passed; no new upgrade operations",
+    "runtime": {
+      "role": "disconnect_api",
+      "verifiedClientTlsToPooler": true,
+      "isolation": "read committed",
+      "unscopedDefaultDeny": true,
+      "userIdentityExercised": false
+    }
+  },
+  "remaining": {
+    "approvedATokenAvailable": false,
+    "approvedBTokenAvailable": false,
+    "managedM1M2": "pending",
+    "managedUserCascade": "pending joint Anisha workflow; no Auth delete in this tool",
+    "browserAuthAppJourney": "pending",
+    "nativeSdkAndSignedDevice": "pending",
+    "rn07AuthRootIntegration": "pending",
+    "onboardingExtension": "review checklist prepared; no new schema or completion endpoint"
+  },
+  "hostedAuthUsersOrSettingsChangedByAgent": false,
+  "hostedSchemaChanged": false,
+  "newProductionRoute": false,
+  "productionAuthBypassAdded": false,
+  "pushOrMainMerge": false,
+  "cleanup": "owned loopback/static servers stopped; disposable DB stopped with migrated named volume retained",
+  "versions": {
+    "python": "3.12.14",
+    "fastapi": "0.162.0",
+    "pydantic": "2.14.1",
+    "sqlalchemy": "2.0.55",
+    "psycopg": "3.3.6",
+    "httpx2": "2.16.0"
+  },
+  "generatedOutputSha256": {
+    "packages/contracts/openapi/foundation.openapi.json": "d402f62b8d5ecf9b01f7db46babb9f7b6e45c35160e6a43ec03075a0149d4275",
+    "packages/contracts/src/http.generated.ts": "f9684eec5c1e16f7d20e372f44b75b783f190165214217386729235198736339"
+  }
+}

@@ -262,3 +262,26 @@ rollback after mutation. Full workspace types/lint/assets/contracts and all 612
 mobile tests pass. No migration, hosted schema/Auth setting/user, or mobile code
 was changed. Next API-10/joint work supplies operational and real managed-token/
 mobile M1/M2 evidence with Anisha; locally accepted producers do not finish those.
+
+
+## API-10 operations and acceptance handoff
+
+The [operator guide](OPERATIONS.md) documents privacy-safe structured diagnostics,
+loopback startup, explicit read-only/managed-account/disposable-write checks,
+private token acquisition and the exact remaining gates. `api:acceptance` does not
+read user tokens or write profiles by default. `api:acceptance:login` signs in to
+an approved existing account with hidden prompts and stores only a verified access
+token in the ignored private file; it does not administer Auth or own app refresh.
+Anisha can consume the HTTP API without database credentials.
+
+Current checks: 469 deterministic / 102 real PostgreSQL tests, full workspace,
+frozen lock and unchanged generated schemas. Actual app.main startup/network CORS/
+no-Origin/log checks and hosted JWKS/schema/runtime TLS checks passed. No approved
+A/B tokens were available; computer-use reported no browser available; real
+Auth/RN-07/root/native journeys remain pending. API-10 operational work is
+implemented, but full API-10/Plan 03/M1/M2 acceptance is open. No new route,
+migration, hosted Auth user/provider or mobile code was introduced here.
+
+The [onboarding persistence review](../../docs/architecture/onboarding-persistence-review.md)
+prepares the follow-on contract conversation without storing demographics/opaque
+native selections or declaring server-side onboarding completion.

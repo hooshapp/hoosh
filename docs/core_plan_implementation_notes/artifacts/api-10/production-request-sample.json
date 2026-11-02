@@ -1,0 +1,52 @@
+[
+  {
+    "event": "request",
+    "request_id": "95718f00-4ead-4a7b-8614-b25d8a3cde4a",
+    "endpoint": "/healthz",
+    "method": "GET",
+    "status": 200,
+    "completion": "completed",
+    "duration_ms": 6.745,
+    "error_category": "none"
+  },
+  {
+    "event": "request",
+    "request_id": "9c05610a-8dac-4740-b763-81608c13b980",
+    "endpoint": "/v1/me",
+    "method": "GET",
+    "status": 401,
+    "completion": "completed",
+    "duration_ms": 1.396,
+    "error_category": "AUTH_REQUIRED"
+  },
+  {
+    "event": "request",
+    "request_id": "befba3fb-2910-467e-832a-b1015fc291b2",
+    "endpoint": "/v1/me",
+    "method": "GET",
+    "status": 401,
+    "completion": "completed",
+    "duration_ms": 0.217,
+    "error_category": "AUTH_REQUIRED"
+  },
+  {
+    "event": "request",
+    "request_id": "c9a8fdb2-9107-4ed4-86f7-3c694bcf34a9",
+    "endpoint": "/v1/profile",
+    "method": "OPTIONS",
+    "status": 200,
+    "completion": "completed",
+    "duration_ms": 0.181,
+    "error_category": "none"
+  },
+  {
+    "event": "request",
+    "request_id": "ac4530cd-f734-4c9e-aa40-ae517f7241fb",
+    "endpoint": "/v1/profile",
+    "method": "OPTIONS",
+    "status": 400,
+    "completion": "completed",
+    "duration_ms": 0.064,
+    "error_category": "HTTP_ERROR"
+  }
+]

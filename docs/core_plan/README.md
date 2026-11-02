@@ -1,6 +1,6 @@
 # Disconnect — Core Development Plans
 
-**Status:** Plan 00 is complete and validated (foundation commit `0b50900`, recorded in its ledger); Plan 04 RN-01–04 producers now supply shared UI/testing, authentic-asset navigation and bounded HTTP and account query/lifecycle producers with recorded evidence; real RN-04 Auth/root wiring, Anisha-owned Plan 01/Auth acceptance, Plan 02, API-10 and RN-06/11 remain pending; RN-10 shared UI/lifecycle hardening exists with device/live acceptance pending; RN-09a–h main/detail/editor UI exists with live integration pending; RN-05 consumer, RN-07 UI-only and RN-08 presentation/read-consumer preparation exist, with their real integration/acceptance pending. API-01–09 backend identity, contracts, scoped database units, profile migrations/RLS and isolated revisioned profile GET/PATCH are implemented; mobile Auth, database and native adapter integration remain pending.\
+**Status:** Plan 00 is complete and validated (foundation commit `0b50900`, recorded in its ledger); Plan 04 RN-01–04 producers now supply shared UI/testing, authentic-asset navigation and bounded HTTP and account query/lifecycle producers with recorded evidence; real RN-04 Auth/root wiring, Anisha-owned Plan 01/Auth acceptance, Plan 02, full API-10 and RN-06/11 remain pending; API-10 operational diagnostics/tools and independent checks are implemented; RN-10 shared UI/lifecycle hardening exists with device/live acceptance pending; RN-09a–h main/detail/editor UI exists with live integration pending; RN-05 consumer, RN-07 UI-only and RN-08 presentation/read-consumer preparation exist, with their real integration/acceptance pending. API-01–09 backend identity, contracts, scoped database units, profile migrations/RLS and isolated revisioned profile GET/PATCH are implemented; mobile Auth, database and native adapter integration remain pending.\
 **Baseline inspected:** `c7a8f73` — `Set up mobile and API foundation`.\
 **Reviewed:** 2026-10-28.\
 **Product answers:** [PM_QUESTIONS.md](<../Context (AGENT)/PM_QUESTIONS.md>); no PM question is answered by an engineering default in these plans.
@@ -9,7 +9,7 @@
 
 Read [Plan 00](00_shared_contracts.md) first, then your area plan and the specific part you are about to implement. Before coding, read the [implementation knowledge-base workflow](../core_plan_implementation_notes/README.md), create that plan's notes file if absent, and read any existing entries. Build on the scaffold; do not reinstall it, rewrite the tested Swift core, create every future table, or complete an entire area before integrating.
 
-There are **44 parts**: 19 implemented parts/producers (SC-01–04, RN-01–04, API-01–09 and SB-04–05) and 25 parts awaiting acceptance (including RN-05 consumer, RN-07 UI, RN-08 presentation preparation, RN-09 main-screen presentation with live acceptance pending and RN-10 shared hardening); real RN-04 root integration remains pending. See each ledger/Git reference for commit and validation details. They are reviewable work boundaries, not 44 completed commits or immediately unblocked tasks. Some onboarding/provider/native presentation parts are conditional. Split a concrete part further if its diff is too large, preserving stable IDs and dependencies.
+There are **44 parts**: 19 implemented parts/producers (SC-01–04, RN-01–04, API-01–09 and SB-04–05) and 25 parts awaiting acceptance (including API-10 with its operational slice implemented, RN-05 consumer, RN-07 UI, RN-08 presentation preparation, RN-09 main-screen presentation with live acceptance pending and RN-10 shared hardening); real RN-04 root integration remains pending. See each ledger/Git reference for commit and validation details. They are reviewable work boundaries, not 44 completed commits or immediately unblocked tasks. Some onboarding/provider/native presentation parts are conditional. Split a concrete part further if its diff is too large, preserving stable IDs and dependencies.
 
 | Plan | Parts | Main owner | Initial result |
 |---|---:|---|---|
@@ -162,3 +162,12 @@ exact owner-FK handling. Current checks: 453 deterministic / 96 real PostgreSQL;
 full workspace types/lint/contracts and 612 mobile tests pass. API-08 hash ca275af.
 Next API-10 records operational and joint managed-user/mobile acceptance; RN-07
 still needs actual profile consumer wiring and Anisha's Auth/root producer.
+
+API-10 operational implementation is available: safe correlated diagnostics,
+private token/login and explicit HTTP acceptance tools, current hosted dependency
+checks and an onboarding persistence review. 469 deterministic / 102 real DB
+checks pass; configured-process/CORS/no-Origin HTTP and hosted public trust/schema/
+runtime TLS checks pass. Full API-10 stays pending for approved A/B user tokens,
+actual browser and Auth/mobile/device journeys. No browser was available to the
+computer tool and no account tokens were supplied. Counts remain 19/25; no joint
+M1/M2 or Anisha-owned work is accepted by these independent checks.

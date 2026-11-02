@@ -76,3 +76,12 @@ Sources reviewed on 2026-11-01:
 [PyJWT verification](https://pyjwt.readthedocs.io/en/stable/api.html),
 [Python asyncio timeout/cancellation](https://docs.python.org/3.12/library/asyncio-task.html#asyncio.timeout),
 [HTTPX2 package/API](https://pypi.org/project/httpx2/).
+
+
+API-10 adds request-correlated JWKS diagnostics with fixed cache/fetch outcomes;
+no kid, token, claims, email, URL or raw provider exception is logged. Public
+configured-project ES256 discovery was rechecked on 2026-11-02, but this does not
+prove a real user session. See [operations](OPERATIONS.md) for private access-token
+acquisition, operational HTTP checks and the still-open managed/mobile gates.
+The one-off password helper is an operator utility; Anisha's SDK remains the app's
+only login/storage/refresh/session-generation authority.

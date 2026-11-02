@@ -764,3 +764,10 @@ and applied to the empty development schema. API-08 now publishes nonmutating GE
 with generated read types; API-09 supplies strict revisioned PATCH (453 deterministic /
 96 DB checks). RN-07 consumer wiring, Anisha's Auth/root producer and live
 Auth/profile acceptance still remain necessary. No RN UI/consumer status changed here.
+
+API-10 operational diagnostics and reproducible HTTP checks are implemented; real
+managed-user/browser/native/root evidence stays pending. Backend availability
+(GET/PATCH plus generated types) no longer blocks the independent RN-07 consumer,
+but real session/root wiring and joint acceptance remain necessary. See the
+backend operator guide and onboarding persistence review. No RN source/status was
+advanced by these backend-only operational checks.

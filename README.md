@@ -17,6 +17,7 @@ Shared React Native app and FastAPI service for Disconnect. Product context star
 - RN-09a [Home presentation](apps/mobile/src/features/home/README.md) is routed with honest unavailable states; its interactive Figma sample stays in `mobile:ui`. Quests/History/Settings presentation is implemented; live data/actions across all four tabs remain pending.
 - RN-10 shared accessibility/layout/lifecycle hardening with [QA evidence and RN-11 prerequisites](docs/qa/mobile-accessibility.md); signed-device/live acceptance remains pending.
 - FastAPI liveness plus verified `GET /v1/me` and isolated revisioned profile GET/PATCH, bounded JWT/JWKS verification, safe errors and generated OpenAPI/HTTP types; see [backend status](services/api/README.md). Real user-token/mobile integration remains pending.
+- API-10 privacy-safe diagnostics and explicit [operational/acceptance tools](services/api/OPERATIONS.md); real managed-user/mobile acceptance remains pending.
 - Reproducible npm and uv lockfiles, linting, type checking, and CI checks.
 
 Mobile authentication is not yet connected. The backend identity producer is implemented; mobile profile integration, saved plans, native protection, rewards, usage measurements and AI remain pending. API-07 supplies the minimal profile table/RLS. Imported legacy iOS behavior is separate and still requires audit/integration. The shell has no auth guard and exposes no private data. Do not publish this preview as a working protection app.
@@ -138,7 +139,7 @@ Coordinate edits to the root navigation, `app.config.ts`, dependency lockfiles, 
 
 ## Next integration
 
-1. API-01–09 backend identity/schema/database/profile producers are implemented; read [Plan 03 notes](docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md). RN-05/06 still need real Supabase/Auth/session and coordinated root wiring. SB-05 is verified locally; SB-04 hosted runtime login/TLS is accepted. GET/PATCH M2 backend behavior is accepted locally; API-10 operational/joint evidence is next.
+1. API-01–09 backend identity/schema/database/profile producers are implemented; read [Plan 03 notes](docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md). RN-05/06 still need real Supabase/Auth/session and coordinated root wiring. SB-05 is verified locally; SB-04 hosted runtime login/TLS is accepted. GET/PATCH M2 backend behavior and API-10 operational tools are accepted locally; joint managed-user/mobile evidence remains pending.
 2. Anisha owns Supabase Auth/project setup (SB-01–03) and builds the single Auth/session producer (AUTH-01/02); both sides use controlled tests before live integration. Audit the imported Swift source and investigate Android feasibility independently.
 3. When the producer outputs are ready, connect real sign-in → identity-only `GET /v1/me` → matching account UI (M1), without requiring a product database.
 4. Add isolated PostgreSQL persistence and `GET/PATCH /v1/profile` with revision/conflict handling (M2). Full onboarding/plans/native installation follow their approved contracts and evidence.
@@ -187,3 +188,12 @@ cannot overwrite unseen revisions. Current checks: 453 deterministic backend /
 96 real PostgreSQL tests; full workspace checks also pass. No new migration or
 hosted Auth change was needed. API-10 and actual managed-user/mobile M1/M2 remain
 joint acceptance; the app profile UI is not connected by this backend change.
+
+API-10 now provides correlated request/JWKS/database diagnostics and private
+operator login/HTTP checks. Read the [operator guide](services/api/OPERATIONS.md)
+for reproducible commands and the exact remaining acceptance matrix. Current
+checks: 469 deterministic backend / 102 PostgreSQL tests plus full workspace;
+actual configured-process/CORS/no-Origin HTTP and hosted dependency checks pass.
+Approved user tokens, actual browser execution and real Auth/profile/native
+integration remain pending; Plan 03 is not fully accepted. No hosted schema or
+Auth administration changes were needed.

@@ -112,3 +112,13 @@ revisioned profile GET/PATCH against the existing API-07 schema. Local signed-to
 runtime-role race/rollback tests pass; real managed-user writes and account cascade
 smoke remain the coordinated API-10/SB-06 handoff with Anisha. Do not seed/delete
 managed users, reset credentials or change providers just to reproduce local tests.
+
+
+API-10's [operator guide](../../services/api/OPERATIONS.md) now provides secure
+access-token acquisition for existing approved disposable accounts and explicit
+A/B read/write checks. Current actual hosted public-key discovery, schema/security
+drift and runtime TLS/READ COMMITTED/default-deny pass; none exercises a user by
+itself. Read-only aggregate inspection observed existing Auth users and no product
+profiles at this checkpoint, not approval to use those accounts. Tokens remain
+missing; managed-user/cascade and Auth/mobile acceptance stay coordinated with
+Anisha. No hosted schema/user/provider/redirect or shared credential was changed.

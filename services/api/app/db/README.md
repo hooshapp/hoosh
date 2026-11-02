@@ -127,3 +127,12 @@ synchronous handler and commits before returning its snapshotted DTO. This avoid
 opening a Session during FastAPI body validation while preserving API-06 unit
 ownership/rollback/no-replay guarantees. Conflicts and owner-FK 403 abort the unit;
 only the exact owner FK is reclassified. Current checks: 453 deterministic / 96 DB.
+
+
+API-10 emits fixed failure categories correlated to the request across the sync
+worker boundary. Pool timeout, cancellation, unavailable lock and connection/error
+categories contain no SQL/params/driver text. Missing SQLSTATE stays a generic
+connection failure rather than guessing from a password-bearing message. Error
+mapping, rollback and mutation no-replay behavior are unchanged. Current checks:
+469 deterministic / 102 DB; managed identity/mobile gates remain separate in the
+[operator guide](../../OPERATIONS.md).

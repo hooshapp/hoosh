@@ -6,6 +6,7 @@ from typing import Annotated
 from fastapi import Depends, Request
 
 from app.api.v1.dependencies import verified_identity
+from app.core.diagnostics import dependency_event
 from app.core.errors import ApiError
 from app.core.identity import VerifiedIdentity
 from app.db.engine import Database
@@ -16,6 +17,7 @@ from app.schemas.errors import ErrorCode
 def database(request: Request) -> Database:
     resource = request.app.state.database
     if resource is None or resource.closed:
+        dependency_event("database", "unconfigured" if resource is None else "closed")
         raise ApiError(ErrorCode.DEPENDENCY_UNAVAILABLE)
     return resource
 

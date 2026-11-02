@@ -1,7 +1,8 @@
 # RN-05 account consumer preparation
 
-**Status: prepared, not live RN-05 acceptance.** No real Auth producer/guard,
-protected API identity endpoint or API-05 generated types exist in this checkout.
+**Status: prepared, not live RN-05 acceptance.** The real Auth producer/guard and application wiring remain absent. Backend
+API-04/05 and API-08/09 now provide verified identity, profiles and generated types;
+API-10 supplies operational checks, with joint acceptance still open.
 The current Settings route and development navigation links are unchanged. This
 module does not make public Settings an authenticated screen or install a fixture
 session. RN-05 stays incomplete until the real round trip is exercised.
@@ -38,8 +39,8 @@ successful credential removal; Auth owns successful navigation/storage recovery.
   AbortSignal into RN-03 and using its strict same-subject runtime decoder.
   `/healthz` or the SDK's email cannot populate this view.
 - The current return type is the existing canonical **AuthIdentity projection**,
-  not a new handwritten wire DTO or replacement generator. API-05 must bind the
-  read to the actual generated schema when that producer lands. Runtime subject
+  not a new handwritten wire DTO or replacement generator. The existing compile-only consumer checks show generated identity compatibility;
+  integration must retain the strict runtime decoder and account ownership checks. Runtime subject
   validation remains necessary after generated types are available.
 - `useIdentityQuery` shares `['account', UUID, 'identity']`. Invalid/protocol/mismatch
   errors immediately suppress old identity presentation and remove that cached
@@ -77,7 +78,8 @@ See the persistent [RN-05 preparation notes](../../../../../docs/core_plan_imple
 Before RN-05 can be marked complete:
 
 1. Finish SB-03 and actual AUTH-01/02/03/07 producers, root guards and RN-04 wiring.
-2. Implement API-04 `/v1/me` and API-05 generated schemas; bind this read to them.
+2. Consume the implemented API-04 `/v1/me`, API-05 generated schemas and API-08/09
+   profile contract; backend producer availability is no longer the blocker.
 3. Integrate this region into real Settings, removing development Auth/onboarding
    links together with the guard change. Review sign-out placement with PM/design.
 4. Exercise disposable development sign-in, matching identity, null email, missing/

@@ -44,6 +44,7 @@ class ApiError(Exception):
 
 def error_response(request: Request, error: ApiError, *, status: int | None = None) -> JSONResponse:
     code = error.code
+    request.state.diagnostic_error_code = code.value
     default_status, message = ERRORS[code]
     payload = {
         "code": code,
