@@ -1,7 +1,7 @@
 # Identity and profile HTTP contract
 
 **Status:** Adopted for M1/M2 on 2026-10-28 at Ishmum's direction. These endpoints
-now have implemented `/healthz`, identity GET and nonmutating profile GET. Profile PATCH remains API-09. Ishmum owns the
+now have implemented `/healthz`, identity GET and profile GET/PATCH (API-01–09). Ishmum owns the
 server/schema/client; Anisha owns the Auth session consumed by the client.
 
 See [architecture](../../docs/architecture/identity-foundation.md),
@@ -83,7 +83,10 @@ signed out or completed onboarding. A name can be null even when the row exists.
 - Bound the raw PATCH body to **16 KiB**, including streamed/chunked bodies;
   exceeding the bound yields 413 `REQUEST_TOO_LARGE`. This engineering resource
   bound is separate from the normalized name length. Do not trust Content-Length
-  alone or log a rejected body. Non-JSON/invalid JSON yields safe 422 validation.
+  alone or log a rejected body. Require a UTF-8 JSON object (application/json or
+  application/*+json); duplicate keys, NaN/Infinity, non-JSON/invalid JSON and
+  undecodable UTF-8 yield safe 422 body/invalid_json. Size/JSON checks precede Auth;
+  typed field and identity validation precede database acquisition.
 - Expected revision 0 inserts only if absent, producing revision 1. A positive
   revision updates only a matching existing row and increments atomically. An
   absent row with a positive expectation, stale expectation, or concurrent initial
@@ -167,13 +170,17 @@ responses at the client boundary when RN-03 implements it; TypeScript alone does
 not validate network data. Unknown future codes get a safe fallback, never success.
 
 API-05 now publishes Pydantic + exported FastAPI OpenAPI as executable authority
-for implemented `/healthz`, `/v1/me`, `GET /v1/profile` and shared error schemas. Committed outputs
+for implemented `/healthz`, `/v1/me`, `GET/PATCH /v1/profile` and shared error schemas. Committed outputs
 are `openapi/foundation.openapi.json` and `src/http.generated.ts`; regenerate/check
 with root `api:generate` / `api:check-contracts`. The pinned build-only generator
-produces types, not another HTTP client. Public `HealthResponse`, `MeResponse`, `ProfileView`, `ProfileResponse` and
-error aliases are derived from generated schemas; domain Auth/native ports remain
+produces types, not another HTTP client. Public `HealthResponse`, `MeResponse`, `ProfileView`, `ProfileResponse`,
+`ProfilePatch`, `ProfileSavedResponse` and error aliases are derived from generated schemas; domain Auth/native ports remain
 handwritten. Error codes discriminate required details and literal retryability in
 both JSON Schema and TypeScript. API-08 validates profile success examples against the generated GET envelope.
-PATCH request/algorithm behavior remains planned for API-09; no generated PATCH path
-or mobile integration is implied. Required nullable fields and UTC Z timestamps
-are part of the read response.
+API-09 now publishes strict PATCH input and a nonnullable ProfileSavedResponse:
+its profile always exists on a successful save, whereas GET can return null.
+Both operations use required nullable names and UTC Z timestamps. Backend M2
+is accepted locally; real managed-user/mobile integration remains API-10 joint work.
+The applied int32 revision storage never wraps: an exhausted revision returns
+409 with that own current revision and needs a reviewed forward schema change,
+not automatic replay. Larger positive expectations return ordinary own conflicts.

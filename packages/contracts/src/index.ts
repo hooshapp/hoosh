@@ -32,5 +32,7 @@ export type HealthResponse = components['schemas']['HealthResponse'];
 export type MeResponse = components['schemas']['MeResponse'];
 export type ProfileView = components['schemas']['ProfileView'];
 export type ProfileResponse = components['schemas']['ProfileResponse'];
+export type ProfilePatch = components['schemas']['ProfilePatch'];
+export type ProfileSavedResponse = components['schemas']['ProfileSavedResponse'];
 export type ApiErrorEnvelope = components['schemas']['ErrorEnvelope'];
 export type ApiErrorCode = ApiErrorEnvelope['error']['code'];

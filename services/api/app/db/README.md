@@ -111,10 +111,19 @@ API-07 now supplies the minimal profile model, real Alembic upgrade and explicit
 FK/grants/RLS/server-clock invariants. See [migration contract](../../alembic/README.md).
 API-08 now adds explicit-owner, nonmutating profile GET and UTC DTOs inside the
 unit. The required group has 75 real DB tests; 374 deterministic backend tests also
-pass. API-09/10 next add revisioned writes and real-account/mobile evidence.
+pass. API-09 now supplies revisioned writes; API-10 adds real-account/mobile evidence.
 Anisha's Auth/mobile/root producer and real-user M1/M2 acceptance stay separate.
 
 Sources checked 2026-11-01: [SQLAlchemy pooling](https://docs.sqlalchemy.org/en/20/core/pooling.html),
 [Session transactions](https://docs.sqlalchemy.org/en/20/orm/session_basics.html),
 [FastAPI function scope](https://fastapi.tiangolo.com/advanced/advanced-dependencies/),
 [psycopg connections](https://www.psycopg.org/psycopg3/docs/api/connections.html).
+
+
+API-09 write units explicitly use READ COMMITTED, so the own-revision SELECT after
+an atomic insert/update miss obtains a fresh statement snapshot. PATCH validates
+the public body/identity first, then opens Database.transaction directly in the
+synchronous handler and commits before returning its snapshotted DTO. This avoids
+opening a Session during FastAPI body validation while preserving API-06 unit
+ownership/rollback/no-replay guarantees. Conflicts and owner-FK 403 abort the unit;
+only the exact owner FK is reclassified. Current checks: 453 deterministic / 96 DB.

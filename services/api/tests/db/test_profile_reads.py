@@ -5,52 +5,15 @@ from fastapi.testclient import TestClient
 from sqlalchemy import event, text
 
 from app.core.identity import VerifiedIdentity
-from app.models import Profile
 from app.repositories.profiles import read_own_profile
-from tests.auth.support import LocalSigner, settings
+from tests.auth.support import settings
 from tests.support import database
-from tests.support.http import authenticated_app, signed_headers
+from tests.support.http import authenticated_app
+from tests.support.profiles import headers, snapshot
 from tests.support.schema import validate_observed_response
 
 pytestmark = pytest.mark.database
 
-
-@pytest.fixture
-def profile_accounts(resource, db_environment):
-    identities = [VerifiedIdentity(uuid4(), None) for _ in range(3)]
-    users = [identity.user_id for identity in identities]
-    with database.connect(db_environment, "TEST_MIGRATION_DATABASE_URL") as admin:
-        for user in users:
-            admin.execute("INSERT INTO auth.users(id) VALUES (%s)", (user,))
-        try:
-            for identity, name in zip(identities[:2], ("A private 😀", None), strict=True):
-                with resource.transaction(identity) as session:
-                    session.add(Profile(user_id=identity.user_id, display_name=name))
-            yield identities
-        finally:
-            admin.execute("DELETE FROM auth.users WHERE id=ANY(%s)", (users,))
-
-
-def snapshot(values, identities):
-    with database.connect(values, "TEST_MIGRATION_DATABASE_URL") as admin:
-        return admin.execute(
-            "SELECT * FROM public.profiles WHERE user_id=ANY(%s) ORDER BY user_id",
-            ([identity.user_id for identity in identities],),
-        ).fetchall()
-
-
-@pytest.fixture
-def profile_client(monkeypatch, db_settings):
-    signer = LocalSigner()
-    app, _ = authenticated_app(
-        monkeypatch, settings(**db_settings.model_dump(exclude_none=True)), signer=signer
-    )
-    with TestClient(app) as client:
-        yield client, app.state.database, signer
-
-
-def headers(signer, identity, **claims):
-    return signed_headers(signer, {"sub": str(identity.user_id), **claims})
 
 
 def assert_safe_failure(response, code, caplog):

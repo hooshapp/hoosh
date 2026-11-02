@@ -79,6 +79,8 @@ def safe_validation_details(errors: list[dict]) -> ValidationDetails:
             field, code = "body", "extra_field"
         elif kind == "missing":
             code = "required"
+        elif field == "display_name" and kind in ("invalid_text", "blank", "too_long"):
+            code = kind
         elif kind in ("greater_than_equal", "greater_than", "less_than_equal", "less_than"):
             code = "out_of_range"
         elif kind == "string_too_long":

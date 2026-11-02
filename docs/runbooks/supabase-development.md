@@ -105,3 +105,10 @@ stamp legacy state. Local downgrade/fresh-upgrade/constraints/server clocks/A-B
 RLS and fixture Auth-delete cascade passed (66 real DB checks, 344 deterministic).
 Managed-account A-B/cascade still requires Anisha-approved disposable users and
 joint API-10 evidence. API-08 own-profile GET is next; HTTP routes remain unchanged.
+
+
+API-09 adds no database migration or hosted Auth action. The backend now exposes
+revisioned profile GET/PATCH against the existing API-07 schema. Local signed-token/
+runtime-role race/rollback tests pass; real managed-user writes and account cascade
+smoke remain the coordinated API-10/SB-06 handoff with Anisha. Do not seed/delete
+managed users, reset credentials or change providers just to reproduce local tests.

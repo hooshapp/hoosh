@@ -350,4 +350,4 @@ API-07 now provides the single product Alembic history, minimal profile/FK, expl
 grants and RLS. The same migration path was tested locally and applied to the
 inspected-empty development project without Auth changes or a second provider
 product history. API-08 GET now passes local signed-token/runtime-DB checks;
-API-09 writes and real managed-account cascade/A-B remain later backend/joint work; Anisha-owned setup/acceptance rows are unchanged.
+API-09 writes now pass local race/isolation checks; real managed-account cascade/A-B remains joint API-10 work; Anisha-owned setup/acceptance rows are unchanged.

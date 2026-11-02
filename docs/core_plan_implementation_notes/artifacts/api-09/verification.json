@@ -1,0 +1,67 @@
+{
+  "date": "2026-11-02",
+  "branch": "task/backend/api-09",
+  "parent": "ca275af",
+  "implementedRoute": {
+    "method": "PATCH",
+    "path": "/v1/profile",
+    "operationId": "save_own_profile",
+    "successStatus": 200,
+    "successProfileNullable": false,
+    "ownerSource": "verified-user transaction only",
+    "rawByteLimit": 16384,
+    "bodyFields": [
+      "expected_revision",
+      "display_name"
+    ],
+    "normalizedNameCodePointLimit": 80,
+    "nameNormalizer": "Python 3.12 str.strip; NUL/unpaired surrogate rejection first; no NFC/case conversion",
+    "isolationLevel": "READ COMMITTED",
+    "creation": "INSERT ON CONFLICT DO NOTHING RETURNING",
+    "edit": "scoped revision-predicate UPDATE RETURNING; atomic revision increment",
+    "conflict": "own current revision only; zero if absent; no automatic replay"
+  },
+  "checks": {
+    "deterministicBackendTests": 453,
+    "requiredRealPostgresTests": 96,
+    "fullWorkspaceCheck": "passed",
+    "mobileVitestTests": 250,
+    "mobileJestTests": 362,
+    "originalSvgAssetsChecked": 71,
+    "workspaceTypesLintAndBackendRuff": "passed",
+    "openApiAndGeneratedTypes": "regenerated and drift check passed",
+    "environmentFreeSchemaExport": "passed",
+    "frozenUvSync": "passed; 47 packages",
+    "streamedMisdeclaredLengthAndExactByteBoundary": "passed with CORS/no-store/request-ID",
+    "strictJsonUtf8DuplicatesNonfiniteAndSafeFieldErrors": "passed",
+    "sharedUnicodeNormalizationCases": "passed",
+    "validationBeforeDatabaseAccess": "passed",
+    "twoActualConnectionCreateAndEditRaces": "one 200 and one 409 each",
+    "deletedOwnerRace": "actual INSERT waited on uncommitted Auth deletion; then safe 403 after delete commit",
+    "deletedOwnerUnexpiredIdentity": "identity still verifies; profile absent; no account recreation",
+    "ambiguousSuccessReplay": "conflicts without overwrite or revision increment",
+    "rollbackAfterActualMutation": "create and update rolled back; no partial profile changes",
+    "ABOwnerInputAndOwnConflictDetails": "passed",
+    "unrelatedConstraintFailure": "preserved; not misclassified as 403",
+    "largeExpectationsAndInt32RevisionExhaustion": "safe own conflicts; no encoding error or wrap"
+  },
+  "versions": {
+    "python": "3.12.14",
+    "fastapi": "0.162.0",
+    "pydantic": "2.14.1",
+    "sqlalchemy": "2.0.55",
+    "psycopg": "3.3.6"
+  },
+  "unchangedMigrationHead": "20261102_0001",
+  "newSchemaMigration": false,
+  "hostedDatabaseOrAuthChanged": false,
+  "productionVerifierBypassAdded": false,
+  "managedUserTokenOrMobileAcceptance": "not run; API-10 joint evidence with Anisha",
+  "hostedGithubCiExecuted": false,
+  "pushOrMainMerge": false,
+  "finalLocalTestStack": "stopped; existing named migrated volume retained",
+  "generatedOutputSha256": {
+    "packages/contracts/openapi/foundation.openapi.json": "d402f62b8d5ecf9b01f7db46babb9f7b6e45c35160e6a43ec03075a0149d4275",
+    "packages/contracts/src/http.generated.ts": "f9684eec5c1e16f7d20e372f44b75b783f190165214217386729235198736339"
+  }
+}

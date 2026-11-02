@@ -127,7 +127,7 @@ capability tests remain separate; a web export does not establish native behavio
 - **`TSD.md`** — architecture, native boundaries, Swift/Android requirements, TypeScript interfaces, FastAPI endpoints, Pydantic/SQL examples, event sync, security, database, tests, infra, agent work packages.
 - **`OPEN_DECISIONS.yaml`** — machine-readable unresolved founder choices, intentionally unapproved.
 - **[`PM_QUESTIONS.md`](PM_QUESTIONS.md)** — 22 PM questions with stable IDs and space to append dated answers, clarifications, and agreed decisions.
-- **[`core_plan/README.md`](../core_plan/README.md)** — execution order and index for five detailed foundation plans, with 44 parts (Plan 00 committed as `0b50900`, RN-01–04, API-01–08 and SB-04–05 producers implemented with evidence, 26 parts awaiting acceptance, including RN-05 consumer, RN-07 UI-only, RN-08 native presentation preparation, RN-09a–h UI with live integration pending and RN-10 shared hardening; RN-04 real root wiring pending), cross-plan dependencies, implementation/commit ledgers, and explicit PM/native gates.
+- **[`core_plan/README.md`](../core_plan/README.md)** — execution order and index for five detailed foundation plans, with 44 parts (Plan 00 committed as `0b50900`, RN-01–04, API-01–09 and SB-04–05 producers implemented with evidence, 25 parts awaiting acceptance, including RN-05 consumer, RN-07 UI-only, RN-08 native presentation preparation, RN-09a–h UI with live integration pending and RN-10 shared hardening; RN-04 real root wiring pending), cross-plan dependencies, implementation/commit ledgers, and explicit PM/native gates.
 
 **Source of truth:** This is a context-rich implementation baseline. A full repo audit and explicit product policy answers may require updates before coding core session/reward rules. The documents must be revised whenever founder decisions, platform behavior, or existing code evidence contradicts assumptions.
 
@@ -177,3 +177,11 @@ not absence. Generated OpenAPI/types include GET only. 374 deterministic / 75 re
 PostgreSQL tests pass. API-07 hash is 4d8d1fc; API-09 revisioned PATCH is next.
 Earlier checkpoints/counts above are historical. No hosted schema/Auth changes
 were needed; actual managed-user tokens and mobile M1/M2 remain joint acceptance.
+
+Current API-09 checkpoint (2026-11-02): strict bounded PATCH and atomic create/CAS
+profile writes are implemented; local M2 backend producer checks pass (453
+deterministic / 96 real PostgreSQL). Simultaneous requests, deleted-owner FK race,
+rollback, raw Unicode/body limits and lost-response replay are tested. Types now
+publish PATCH input and nonnullable saved profile. API-08 hash ca275af; next API-10
+operational/joint managed-token/mobile evidence. API-07's schema remains unchanged;
+no hosted Auth/user or mobile code was changed. RN-07 actual wiring is still open.

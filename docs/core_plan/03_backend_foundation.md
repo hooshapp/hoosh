@@ -1,6 +1,6 @@
 # Plan 03 — FastAPI Identity and Profile Foundation
 
-**Status:** API-01–08 are implemented: strict trust/errors, JWT/JWKS, database-independent identity, generated contracts and bounded lazy PostgreSQL units of work. API-06 passed 337 deterministic tests, 24 real PostgreSQL checks and a read-only hosted runtime/TLS smoke check. API-07 added the model, single Alembic history and profile constraints/grants/RLS, with 344 deterministic and 66 real DB tests plus hosted upgrade/check. API-08 now adds nonmutating own-profile GET and generated shapes (374 deterministic / 75 real DB tests). Actual user-token/mobile M1, managed-user cascade smoke and API-09/10 saves/evidence remain pending.\
+**Status:** API-01–09 are implemented: strict trust/errors, JWT/JWKS, database-independent identity, generated contracts and bounded lazy PostgreSQL units of work. API-06 passed 337 deterministic tests, 24 real PostgreSQL checks and a read-only hosted runtime/TLS smoke check. API-07 added the model, single Alembic history and profile constraints/grants/RLS, with 344 deterministic and 66 real DB tests plus hosted upgrade/check. API-08 now adds nonmutating own-profile GET and generated shapes (374 deterministic / 75 real DB tests). API-09 now adds strict bounded PATCH, canonical validation, atomic insert/CAS and own conflicts (453 deterministic / 96 real DB checks). Actual user-token/mobile M1/M2, managed-user cascade smoke and API-10 evidence remain pending.\
 **Owner:** Ishmum (backend/database). Anisha reviews Auth contracts and participates in live session checks.\
 **Area branch:** `area/backend`; task branches `task/backend/<part>`.\
 **Milestones:** M1 = verified identity without a database; M2 = minimal, isolated, revisioned profile persistence.
@@ -441,8 +441,8 @@ Auth can finish its session work without profiles. The main frontend must not cl
 | API-05 | Implemented; live M1 remains pending | `d4f3e38` | 269 API tests, full workspace checks, isolated fresh generator install/drift rejection and mobile export; Plan 03 notes |
 | API-06 | Implemented; local real-DB + read-only hosted engine checks passed | `45a8c2e` | 337 deterministic tests, 24 real DB checks, Ruff, frozen lock and schema drift; [Plan 03 notes](../core_plan_implementation_notes/plan_03_backend_foundation_notes.md) / [DB contract](../../services/api/app/db/README.md) |
 | API-07 | Implemented producer; local migrations/RLS and hosted empty upgrade/security checks passed | `4d8d1fc` | 344 deterministic / 66 real DB checks; head `20261102_0001`; [Plan 03 notes](../core_plan_implementation_notes/plan_03_backend_foundation_notes.md); actual managed Auth A/B/cascade remains API-10 joint smoke |
-| API-08 | Implemented producer; real signed-token GET/runtime-DB reads and failures accepted locally | Resolve by `feat(api): read the authenticated user's profile` | 374 deterministic / 75 real DB tests; generated GET schemas/types; managed tokens/mobile integration remain API-10 joint work |
-| API-09 | Pending | — | — |
+| API-08 | Implemented producer; real signed-token GET/runtime-DB reads and failures accepted locally | `ca275af` | 374 deterministic / 75 real DB tests; generated GET schemas/types; managed tokens/mobile integration remain API-10 joint work |
+| API-09 | Implemented producer; local M2 backend read/write/concurrency/isolation accepted | Resolve by `feat(api): save profiles with optimistic concurrency` | 453 deterministic / 96 real DB tests; strict raw body/name/revision contract, two-connection races, rollback/deletion/replay; actual managed-user/mobile acceptance remains API-10 |
 | API-10 | Pending | — | — |
 
 ## 10. Sources and verification notes
@@ -520,3 +520,26 @@ nonmutation snapshots, timezone changes, timeout/exhaustion and recovery. Genera
 OpenAPI/types publish GET only; no migration or hosted Auth/schema change was
 needed. Next API-09 adds strict revisioned PATCH; API-10/joint managed-user/mobile
 acceptance remains open. Read the implementation notes and backend README.
+
+### API-09 producer checkpoint — 2026-11-02
+
+PATCH /v1/profile now validates an exact JSON object with both expected_revision
+and display_name before opening its verified-user transaction. A scoped ASGI body
+boundary counts actual raw bytes (16 KiB) including streamed/misdeclared-length
+requests; safe JSON/field failures preserve CORS/correlation and never echo input.
+Name validation rejects NUL/surrogates, applies Python 3.12 strip once and checks
+1–80 code points; explicit null clears. No owner or metadata write is accepted.
+
+Insert-if-absent and revision-predicate UPDATE RETURNING are atomic; own revision
+conflicts are queried only after a miss in explicit READ COMMITTED. Server clocks
+remain API-07's trigger. Only the exact owner FK becomes 403; other integrity errors
+retain their classification. A matching int32-max revision cannot wrap; it returns
+an own conflict requiring a future reviewed forward change. Oversized positive
+expectations cannot match storage and yield own conflicts without integer encoding.
+
+453 deterministic / 96 PostgreSQL checks pass, including simultaneous HTTP creates
+and edits using two connections, actual FK wait versus Auth deletion, selective A/B
+writes, strict Unicode/raw input, no partial writes after failure and lost-response
+replay. Generated input/saved-response types are published. No migration/hosted
+Auth or mobile change was needed. The M2 backend producer is accepted locally;
+API-10 joint managed-user/mobile/operational evidence remains open with Anisha.

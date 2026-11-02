@@ -27,6 +27,7 @@ class Database:
         )
         self.engine = create_engine(
             target,
+            isolation_level="READ COMMITTED",
             pool_size=settings.db_pool_size,
             max_overflow=0,
             pool_timeout=settings.db_pool_timeout_seconds,

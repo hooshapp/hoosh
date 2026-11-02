@@ -31,7 +31,10 @@ class ForbiddenDatabase:
         ("anonymous", 403, "FORBIDDEN"),
     ],
 )
-def test_profile_authentication_fails_before_database_access(monkeypatch, scenario, status, code):
+@pytest.mark.parametrize("method", ["GET", "PATCH"])
+def test_profile_authentication_fails_before_database_access(
+    monkeypatch, scenario, status, code, method
+):
     signer = LocalSigner()
     app, headers = authenticated_app(monkeypatch, settings(), signer=signer)
     with TestClient(app) as client:
@@ -52,7 +55,13 @@ def test_profile_authentication_fails_before_database_access(monkeypatch, scenar
             headers = signed_headers(signer, {"iat": 100, "exp": 200})
         elif scenario == "anonymous":
             headers = signed_headers(signer, {"is_anonymous": True})
-        response = client.get("/v1/profile", headers=headers)
+        response = client.request(
+            method, "/v1/profile", headers=headers,
+            **(
+                {"json": {"expected_revision": 0, "display_name": "x"}}
+                if method == "PATCH" else {}
+            ),
+        )
         assert response.status_code == status
         assert response.json()["error"]["code"] == code
         assert response.headers["Cache-Control"] == "no-store"
@@ -69,7 +78,7 @@ def test_profile_unconfigured_db_is_unavailable_while_identity_and_liveness_work
         assert "profile" not in response.json()
         assert client.get("/v1/me", headers=headers).status_code == 200
         assert client.get("/healthz").status_code == 200
-        assert client.patch("/v1/profile", headers=headers, json={}).status_code == 405
+        assert client.patch("/v1/profile", headers=headers, json={}).status_code == 422
 
 
 def test_unconfigured_auth_fails_before_database_access():
@@ -150,14 +159,14 @@ def test_nullable_name_is_required_and_timestamps_preserve_instant_in_utc():
     assert value.model_dump(mode="json")["created_at"] == "2026-11-02T14:10:05.123456Z"
 
 
-def test_profile_openapi_has_only_get_and_no_owner_input():
+def test_profile_openapi_get_has_no_owner_input():
     from app.application import create_app
 
     schema = create_app().openapi()
     operation = schema["paths"]["/v1/profile"]["get"]
     assert operation["operationId"] == "get_own_profile"
     assert operation["security"] == [{"SupabaseAccessToken": []}]
-    assert set(schema["paths"]["/v1/profile"]) == {"get"}
+    assert set(schema["paths"]["/v1/profile"]) == {"get", "patch"}
     assert "requestBody" not in operation and not operation.get("parameters")
     assert set(operation["responses"]) == {"200", "401", "403", "503", "500"}
     assert set(schema["components"]["schemas"]["ProfileView"]["required"]) == {

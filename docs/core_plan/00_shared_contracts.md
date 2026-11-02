@@ -50,7 +50,7 @@ Visual authority: [App-UI](https://www.figma.com/design/ukmD2ZidJ9UR2XxUkvdPoJ/A
 
 ### Relation to existing documents
 
-The accepted [identity decision record](../architecture/identity-foundation.md) and TSD §8.3 now keep `GET /v1/me` identity-only and put app profile reads/edits at `/v1/profile`. This keeps M1 independent of database availability and gives identity and profile different failure semantics. The exact [HTTP contract](../../packages/contracts/HTTP_API.md) and synthetic fixtures are recorded; API-04 implements identity GET and API-08 profile GET, while revisioned PATCH remains API-09.
+The accepted [identity decision record](../architecture/identity-foundation.md) and TSD §8.3 now keep `GET /v1/me` identity-only and put app profile reads/edits at `/v1/profile`. This keeps M1 independent of database availability and gives identity and profile different failure semantics. The exact [HTTP contract](../../packages/contracts/HTTP_API.md) and synthetic fixtures are recorded; API-04 implements identity GET and API-08 profile GET, and API-09 implements revisioned PATCH. Managed-user/mobile acceptance remains joint work.
 
 Engineering choices below were adopted for the development foundation on 2026-10-28 at Ishmum's direction. Anisha's independent review is not claimed. They do not mark PM questions answered. A later PM decision can change product behavior; revise the affected contract and tests intentionally.
 
@@ -148,7 +148,7 @@ PATCH accepts only:
 ```
 
 - `expected_revision`: required integer >=0; reject booleans/coercion that defeats strict validation.
-- `display_name`: optional in the schema, but at least one mutable field must be supplied; currently it is the only mutable field.
+- `display_name`: required in the current M2 schema because it is the only mutable field; omission is invalid and never clears the name.
 - `null` explicitly clears the name; omission does not clear it.
 - Reject U+0000 and unpaired surrogate code points as invalid text before database access; PostgreSQL text cannot store them safely. Do not silently delete characters or turn invalid input into a clear operation.
 - The server is the canonical normalizer: apply Python 3.12 `str.strip()` to surrounding whitespace, reject an empty result, then accept at most 80 Unicode code points. This is an adopted engineering bound, not a PM decision. Do not apply Unicode normalization, case conversion, or an independent frontend trimming rule. The client submits its raw draft (or explicit `null` to clear); advisory validation must not reject input that the server would accept. Use server-owned fixtures covering ordinary spaces, nonbreaking spaces, U+0085, U+001C–U+001F, U+FEFF, combining marks, and astral characters. Python `strip()` and JavaScript `trim()` do not recognize exactly the same characters, and JS `.length` counts UTF-16 units rather than code points. Render the accepted normalized response as canonical. Describe the after-normalization limit in the request schema rather than incorrectly claiming a raw-input `maxLength: 80`; bound the raw PATCH body separately to 16 KiB, including streamed input (413 `REQUEST_TOO_LARGE`).

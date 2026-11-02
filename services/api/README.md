@@ -11,11 +11,11 @@ npm run api:test
 npm run api:lint
 ```
 
-`GET /healthz`, protected database-independent `GET /v1/me` and nonmutating `GET /v1/profile` are implemented. FastAPI publishes its schema at `/openapi.json` and documentation at `/docs`.
+`GET /healthz`, protected database-independent `GET /v1/me` and revisioned profile `GET/PATCH /v1/profile` are implemented. FastAPI publishes its schema at `/openapi.json` and documentation at `/docs`.
 
-The adopted [M1/M2 contract](../../packages/contracts/HTTP_API.md) specifies identity-only `GET /v1/me`, implemented `GET /v1/profile`, and planned revisioned PATCH (API-09). Ishmum owns Pydantic/OpenAPI schemas and the sole Alembic history. Derive user IDs from verified Supabase access tokens; no client-provided identity or production auth bypass. Supabase Auth owns credentials and mobile session refresh. The API owns token verification and server-authoritative product mutations.
+The adopted [M1/M2 contract](../../packages/contracts/HTTP_API.md) specifies identity-only `GET /v1/me`, implemented `GET /v1/profile`, and implemented revisioned PATCH (API-09). Ishmum owns Pydantic/OpenAPI schemas and the sole Alembic history. Derive user IDs from verified Supabase access tokens; no client-provided identity or production auth bypass. Supabase Auth owns credentials and mobile session refresh. The API owns token verification and server-authoritative product mutations.
 
-The JWT verifier, bounded public-key resolver and lazy PostgreSQL unit of work are implemented. The minimal profile model/Alembic schema/RLS are also implemented; profile mutations, cloud deployment and Auth/mobile integration remain pending. Configuration is read from `services/api/.env`, independently of the shell working directory. Copy `.env.example` when you need browser CORS or later integration settings.
+The JWT verifier, bounded public-key resolver and lazy PostgreSQL unit of work are implemented. The minimal profile model/Alembic schema/RLS and profile GET/PATCH are also implemented. Cloud deployment and Auth/mobile integration remain pending. Configuration is read from `services/api/.env`, independently of the shell working directory. Copy `.env.example` when you need browser CORS or later integration settings.
 
 Dependencies are locked in `uv.lock`. Add them using `uv add --project services/api ...` (or `--dev` for tooling), and commit both the project file and lockfile.
 
@@ -126,7 +126,7 @@ real response parsing and account-generation checks remain essential.
 
 Next: Anisha supplies SB-02/03 metadata/current token and the session/root producer;
 Ishmum and Anisha execute real M1/RN-05/06. SB-05 is verified locally; SB-04 hosted
-login is accepted. API-07 migrations/RLS and API-08 GET are accepted as producers. API-09/10,
+login is accepted. API-07 migrations/RLS and API-08 GET are accepted as producers; API-09 writes are now implemented. API-10,
 real-user Auth/mobile verification and M2 remain open.
 
 ## Supabase database preparation — SB-04
@@ -169,7 +169,7 @@ HTTP success. No raw SQL/driver/credential error reaches the public envelope.
 PostgreSQL tests. The existing database CI job selects all of them. A read-only
 hosted SQLAlchemy check confirms the runtime role/TLS/options, with no product DDL
 or Auth changes. OpenAPI/type drift remains zero. API-07 now supplies the actual
-Alembic history, profiles/FK/grants/RLS. API-08 GET is now implemented; API-09/10 and joint Auth/M1/M2 stay pending.
+Alembic history, profiles/FK/grants/RLS. API-08 GET is now implemented; API-09 writes are now implemented; API-10 and joint Auth/M1/M2 stay pending.
 
 ## API-07 profile migration handoff
 
@@ -214,7 +214,51 @@ recovery. OpenAPI/types now publish GET only; public ProfileView/ProfileResponse
 aliases are generated. JSON Schema checks explicitly require the test-only
 RFC 3339 validator, so date-time format checks cannot silently become no-ops.
 
-Next API-09 implements strict revisioned PATCH; API-10 supplies actual managed
+API-09 now implements strict revisioned PATCH below; API-10 supplies actual managed
 Supabase user-token/A-B and mobile evidence with Anisha. No hosted account/provider
 or shared schema/default changes were made for API-08. Test signatures are local
 only; no production verifier override or synthetic endpoint is registered.
+
+
+## API-09 revisioned profile save handoff
+
+`PATCH /v1/profile` takes exactly `{expected_revision, display_name}`: strict integer
+>=0, plus a required string/null. Null clears; missing fields and extra keys are
+422. Reject NUL/unpaired surrogates before DB access; strip with Python 3.12, reject
+blank and limit to 80 code points. No NFC/case conversion or client normalizer.
+The generated raw input deliberately has no maxLength:80; padded valid names can
+exceed that raw length. Successful saves are 200 with a nonnullable persisted
+profile, canonical name, revision and UTC server timestamps.
+
+A scoped ASGI boundary enforces 16384 actual raw bytes, including streamed bodies,
+without trusting Content-Length. It accepts UTF-8 application/json or application/*+json
+objects and rejects duplicate keys/nonfinite constants/invalid JSON as safe 422.
+Size/JSON checks precede Auth; typed fields and identity validate before database
+acquisition. The synchronous handler then owns one existing verified-user unit,
+builds its DTO inside it and commits before returning success. No Session survives
+the request, no privileged credential is used, and no failed mutation is replayed.
+
+Expected 0 uses PostgreSQL INSERT ON CONFLICT DO NOTHING RETURNING. Positive
+expectations use one UPDATE with explicit verified owner/revision predicates and
+RETURNING, incrementing atomically; API-07's invoker trigger owns timestamps.
+A miss reads only that owner's current revision and returns 409 (0 means absent).
+The engine explicitly pins READ COMMITTED for the fresh post-miss snapshot.
+The int32 revision never wraps: storage exhaustion returns 409 with its current
+revision and requires a reviewed forward migration; larger expectations also
+conflict safely. Preserve drafts and refetch/reconcile, including a lost success
+response. Never automatically resubmit a mutation after 401/503 or a conflict.
+
+Only SQLSTATE 23503 with the exact public.profiles owner FK is mapped to safe 403;
+other integrity/programming failures retain safe 500 and outages remain 503.
+Deleted-account inserts do not recreate Auth or revoke an unexpired stateless JWT;
+an update whose row already cascaded away is an absent-row conflict. A successful
+write racing with a later account deletion can itself be cascaded, as normal FK
+semantics require. No account-lifecycle guarantee beyond that is claimed.
+
+453 deterministic / 96 PostgreSQL checks pass: Unicode/strict input and streamed
+limits, two simultaneous creates and same-revision edits on distinct connections,
+a real blocked insert versus Auth deletion, scoped A/B conflicts, replay and full
+rollback after mutation. Full workspace types/lint/assets/contracts and all 612
+mobile tests pass. No migration, hosted schema/Auth setting/user, or mobile code
+was changed. Next API-10/joint work supplies operational and real managed-token/
+mobile M1/M2 evidence with Anisha; locally accepted producers do not finish those.

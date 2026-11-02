@@ -12,6 +12,7 @@ from app.api.v1.profiles import router as profile_router
 from app.core.auth import UnavailableTokenVerifier
 from app.core.errors import install_error_handlers
 from app.core.openapi import install_openapi
+from app.core.profile_body import ProfileBodyMiddleware
 from app.core.request_context import RequestContextMiddleware, UnexpectedErrorMiddleware
 from app.schemas.errors import ErrorEnvelope
 
@@ -22,12 +23,13 @@ def create_app(*, cors_origins: Sequence[str] = (), lifespan: Lifespan | None = 
         version="0.0.0",
         lifespan=lifespan,
         responses={500: {"model": ErrorEnvelope, "description": "Safe unexpected failure"}},
-        description="Verified identity and nonmutating own-profile reads; writes remain separate.",
+        description="Verified identity and isolated, revision-safe profiles.",
     )
     application.state.token_verifier = UnavailableTokenVerifier()
     application.state.database = None
     install_error_handlers(application)
-    # Starlette inserts middleware at the front: context → CORS → error boundary → routes.
+    # Starlette inserts at the front: context → CORS → errors → bounded body → routes.
+    application.add_middleware(ProfileBodyMiddleware)
     application.add_middleware(UnexpectedErrorMiddleware)
     application.add_middleware(
         CORSMiddleware,

@@ -1,4 +1,4 @@
-"""Minimal M2 profile. HTTP validation/revision compare-and-swap arrive in API-08/09."""
+"""Minimal M2 storage. API-08/09 provide validated reads and revisioned writes."""
 
 from datetime import datetime
 from uuid import UUID

@@ -60,7 +60,11 @@ export interface paths {
         delete?: never;
         options?: never;
         head?: never;
-        patch?: never;
+        /**
+         * Create or edit the authenticated user's profile with a revision check
+         * @description Strict JSON object, at most 16384 raw bytes including streamed bodies. Expected revision 0 creates only if absent; positive revision updates only a matching own row and increments atomically. Null clears the required display_name field. Names use Python 3.12 str.strip and at most 80 Unicode code points after stripping; reject NUL/unpaired surrogates. No owner input or Auth metadata write. 409 contains only the own current revision (0 if absent); preserve drafts and refetch. A deleted-owner FK is 403; unrelated errors are not reclassified. Never automatically replay writes after a lost response, 401 or 503. No-store.
+         */
+        patch: operations["save_own_profile"];
         trace?: never;
     };
 }
@@ -144,9 +148,26 @@ export interface components {
              */
             user_id: string;
         };
+        /** ProfilePatch */
+        ProfilePatch: {
+            /**
+             * Display Name
+             * @description Required mutable field: null clears. Reject NUL/unpaired surrogates, then Python 3.12 str.strip(); require 1–80 Unicode code points after stripping. No Unicode/case normalization. Raw request body is limited to 16 KiB.
+             */
+            display_name: string | null;
+            /** Expected Revision */
+            expected_revision: number;
+        };
         /** ProfileResponse */
         ProfileResponse: {
             profile: components["schemas"]["ProfileView"] | null;
+        };
+        /**
+         * ProfileSavedResponse
+         * @description A successful mutation always returns a persisted profile, never absence.
+         */
+        ProfileSavedResponse: {
+            profile: components["schemas"]["ProfileView"];
         };
         /** ProfileView */
         ProfileView: {
@@ -382,6 +403,118 @@ export interface operations {
             };
             /** @description Verified anonymous identity excluded in M2 */
             403: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Safe unexpected failure */
+            500: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Identity trust or database unavailable */
+            503: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    save_own_profile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProfilePatch"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProfileSavedResponse"];
+                };
+            };
+            /** @description Missing, invalid or expired credentials */
+            401: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    "WWW-Authenticate": "Bearer";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Anonymous or deleted owner excluded */
+            403: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Own revision mismatch or storage exhaustion */
+            409: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Raw request exceeds 16 KiB */
+            413: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Safe JSON/field validation failure */
+            422: {
                 headers: {
                     "Cache-Control": "no-store";
                     /** @description Server-generated UUID; matches error.request_id on failures. */
