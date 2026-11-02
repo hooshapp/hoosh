@@ -1,10 +1,10 @@
 """Shared safe error envelope, including the reserved M2 detail shapes."""
 
 from enum import StrEnum
-from typing import Literal, Self
+from typing import Annotated, Literal
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictInt, model_validator
+from pydantic import BaseModel, ConfigDict, Field, StrictBool, StrictInt, field_validator
 
 
 class ErrorCode(StrEnum):
@@ -49,27 +49,55 @@ class ConflictDetails(WireModel):
     current_revision: StrictInt = Field(ge=0)
 
 
-class ErrorBody(WireModel):
-    code: ErrorCode
+class CommonErrorBody(WireModel):
     message: str
-    retryable: StrictBool
     request_id: UUID
-    details: ValidationDetails | ConflictDetails | None = None
+    retryable: StrictBool
 
-    @model_validator(mode="after")
-    def check_details(self) -> Self:
-        if self.code == ErrorCode.VALIDATION_ERROR:
-            if not isinstance(self.details, ValidationDetails):
-                raise ValueError("Validation errors require bounded safe field details")
-        elif self.code == ErrorCode.PROFILE_CONFLICT:
-            if not isinstance(self.details, ConflictDetails):
-                raise ValueError("Conflicts require the current revision")
-        elif self.details is not None:
-            raise ValueError("General errors have no details")
-        expected_retry = self.code in (ErrorCode.AUTH_UNAVAILABLE, ErrorCode.DEPENDENCY_UNAVAILABLE)
-        if self.retryable != expected_retry:
-            raise ValueError("Retryability must match the shared error code")
-        return self
+    @field_validator("retryable", mode="before")
+    @classmethod
+    def strict_retryable(cls, value):
+        if type(value) is not bool:
+            raise ValueError("Retryability must be a JSON boolean")
+        return value
+
+
+class GeneralErrorBody(CommonErrorBody):
+    code: Literal[
+        ErrorCode.AUTH_REQUIRED,
+        ErrorCode.INVALID_TOKEN,
+        ErrorCode.TOKEN_EXPIRED,
+        ErrorCode.FORBIDDEN,
+        ErrorCode.REQUEST_TOO_LARGE,
+        ErrorCode.INTERNAL_ERROR,
+        ErrorCode.NOT_FOUND,
+        ErrorCode.METHOD_NOT_ALLOWED,
+        ErrorCode.HTTP_ERROR,
+    ]
+    retryable: Literal[False]
+
+
+class UnavailableErrorBody(CommonErrorBody):
+    code: Literal[ErrorCode.AUTH_UNAVAILABLE, ErrorCode.DEPENDENCY_UNAVAILABLE]
+    retryable: Literal[True]
+
+
+class ValidationErrorBody(CommonErrorBody):
+    code: Literal[ErrorCode.VALIDATION_ERROR]
+    retryable: Literal[False]
+    details: ValidationDetails
+
+
+class ConflictErrorBody(CommonErrorBody):
+    code: Literal[ErrorCode.PROFILE_CONFLICT]
+    retryable: Literal[False]
+    details: ConflictDetails
+
+
+ErrorBody = Annotated[
+    GeneralErrorBody | UnavailableErrorBody | ValidationErrorBody | ConflictErrorBody,
+    Field(discriminator="code"),
+]
 
 
 class ErrorEnvelope(WireModel):

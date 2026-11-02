@@ -1,0 +1,550 @@
+{
+  "components": {
+    "schemas": {
+      "ConflictDetails": {
+        "additionalProperties": false,
+        "properties": {
+          "current_revision": {
+            "minimum": 0.0,
+            "title": "Current Revision",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "current_revision"
+        ],
+        "title": "ConflictDetails",
+        "type": "object"
+      },
+      "ConflictErrorBody": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "const": "PROFILE_CONFLICT",
+            "title": "Code",
+            "type": "string"
+          },
+          "details": {
+            "$ref": "#/components/schemas/ConflictDetails"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "request_id": {
+            "format": "uuid",
+            "title": "Request Id",
+            "type": "string"
+          },
+          "retryable": {
+            "const": false,
+            "title": "Retryable",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "message",
+          "request_id",
+          "retryable",
+          "code",
+          "details"
+        ],
+        "title": "ConflictErrorBody",
+        "type": "object"
+      },
+      "ErrorEnvelope": {
+        "additionalProperties": false,
+        "properties": {
+          "error": {
+            "discriminator": {
+              "mapping": {
+                "AUTH_REQUIRED": "#/components/schemas/GeneralErrorBody",
+                "AUTH_UNAVAILABLE": "#/components/schemas/UnavailableErrorBody",
+                "DEPENDENCY_UNAVAILABLE": "#/components/schemas/UnavailableErrorBody",
+                "FORBIDDEN": "#/components/schemas/GeneralErrorBody",
+                "HTTP_ERROR": "#/components/schemas/GeneralErrorBody",
+                "INTERNAL_ERROR": "#/components/schemas/GeneralErrorBody",
+                "INVALID_TOKEN": "#/components/schemas/GeneralErrorBody",
+                "METHOD_NOT_ALLOWED": "#/components/schemas/GeneralErrorBody",
+                "NOT_FOUND": "#/components/schemas/GeneralErrorBody",
+                "PROFILE_CONFLICT": "#/components/schemas/ConflictErrorBody",
+                "REQUEST_TOO_LARGE": "#/components/schemas/GeneralErrorBody",
+                "TOKEN_EXPIRED": "#/components/schemas/GeneralErrorBody",
+                "VALIDATION_ERROR": "#/components/schemas/ValidationErrorBody"
+              },
+              "propertyName": "code"
+            },
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/GeneralErrorBody"
+              },
+              {
+                "$ref": "#/components/schemas/UnavailableErrorBody"
+              },
+              {
+                "$ref": "#/components/schemas/ValidationErrorBody"
+              },
+              {
+                "$ref": "#/components/schemas/ConflictErrorBody"
+              }
+            ],
+            "title": "Error"
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "title": "ErrorEnvelope",
+        "type": "object"
+      },
+      "GeneralErrorBody": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "enum": [
+              "AUTH_REQUIRED",
+              "INVALID_TOKEN",
+              "TOKEN_EXPIRED",
+              "FORBIDDEN",
+              "REQUEST_TOO_LARGE",
+              "INTERNAL_ERROR",
+              "NOT_FOUND",
+              "METHOD_NOT_ALLOWED",
+              "HTTP_ERROR"
+            ],
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "request_id": {
+            "format": "uuid",
+            "title": "Request Id",
+            "type": "string"
+          },
+          "retryable": {
+            "const": false,
+            "title": "Retryable",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "message",
+          "request_id",
+          "retryable",
+          "code"
+        ],
+        "title": "GeneralErrorBody",
+        "type": "object"
+      },
+      "HealthResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "service": {
+            "const": "disconnect-api",
+            "title": "Service",
+            "type": "string"
+          },
+          "status": {
+            "const": "ok",
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "status",
+          "service"
+        ],
+        "title": "HealthResponse",
+        "type": "object"
+      },
+      "MeResponse": {
+        "additionalProperties": false,
+        "description": "Verified identity only; nullable email is always present, never an auth key.",
+        "properties": {
+          "email": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Email"
+          },
+          "user_id": {
+            "format": "uuid",
+            "title": "User Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_id",
+          "email"
+        ],
+        "title": "MeResponse",
+        "type": "object"
+      },
+      "UnavailableErrorBody": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "enum": [
+              "AUTH_UNAVAILABLE",
+              "DEPENDENCY_UNAVAILABLE"
+            ],
+            "title": "Code",
+            "type": "string"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "request_id": {
+            "format": "uuid",
+            "title": "Request Id",
+            "type": "string"
+          },
+          "retryable": {
+            "const": true,
+            "title": "Retryable",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "message",
+          "request_id",
+          "retryable",
+          "code"
+        ],
+        "title": "UnavailableErrorBody",
+        "type": "object"
+      },
+      "ValidationDetails": {
+        "additionalProperties": false,
+        "properties": {
+          "fields": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationField"
+            },
+            "maxItems": 10,
+            "minItems": 1,
+            "title": "Fields",
+            "type": "array"
+          }
+        },
+        "required": [
+          "fields"
+        ],
+        "title": "ValidationDetails",
+        "type": "object"
+      },
+      "ValidationErrorBody": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "const": "VALIDATION_ERROR",
+            "title": "Code",
+            "type": "string"
+          },
+          "details": {
+            "$ref": "#/components/schemas/ValidationDetails"
+          },
+          "message": {
+            "title": "Message",
+            "type": "string"
+          },
+          "request_id": {
+            "format": "uuid",
+            "title": "Request Id",
+            "type": "string"
+          },
+          "retryable": {
+            "const": false,
+            "title": "Retryable",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "message",
+          "request_id",
+          "retryable",
+          "code",
+          "details"
+        ],
+        "title": "ValidationErrorBody",
+        "type": "object"
+      },
+      "ValidationField": {
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "enum": [
+              "required",
+              "invalid_type",
+              "blank",
+              "too_long",
+              "invalid_text",
+              "out_of_range",
+              "extra_field",
+              "invalid_json"
+            ],
+            "title": "Code",
+            "type": "string"
+          },
+          "field": {
+            "enum": [
+              "body",
+              "expected_revision",
+              "display_name"
+            ],
+            "title": "Field",
+            "type": "string"
+          }
+        },
+        "required": [
+          "field",
+          "code"
+        ],
+        "title": "ValidationField",
+        "type": "object"
+      }
+    },
+    "securitySchemes": {
+      "SupabaseAccessToken": {
+        "description": "User access JWT from the configured Supabase project; never an API key.",
+        "scheme": "bearer",
+        "type": "http"
+      }
+    }
+  },
+  "info": {
+    "description": "Verified identity foundation; profiles and native protection are separate.",
+    "title": "Disconnect API",
+    "version": "0.0.0"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/healthz": {
+      "get": {
+        "description": "Process liveness only; does not assert database or native protection readiness.",
+        "operationId": "get_process_health",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            },
+            "description": "Successful Response",
+            "headers": {
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Safe unexpected failure",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Health",
+        "tags": [
+          "health"
+        ]
+      }
+    },
+    "/v1/me": {
+      "get": {
+        "description": "No profile insertion or database connection. Email is display-only; no-store.",
+        "operationId": "get_verified_identity",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MeResponse"
+                }
+              }
+            },
+            "description": "Successful Response",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Missing, invalid or expired credentials",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "WWW-Authenticate": {
+                "required": true,
+                "schema": {
+                  "const": "Bearer",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Verified anonymous identity excluded in M1",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Safe unexpected failure",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Required identity trust unavailable",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "SupabaseAccessToken": []
+          }
+        ],
+        "summary": "Read the verified current user's identity",
+        "tags": [
+          "identity"
+        ]
+      }
+    }
+  }
+}

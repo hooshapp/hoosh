@@ -25,8 +25,10 @@ export type {
   SelectedAppsSummary,
 } from './protection';
 
-/** The currently implemented public liveness response. */
-export interface HealthResponse {
-  status: 'ok';
-  service: 'disconnect-api';
-}
+/** HTTP wire authority is generated from the implemented FastAPI schema. */
+import type { components } from './http.generated';
+export type { components, operations, paths } from './http.generated';
+export type HealthResponse = components['schemas']['HealthResponse'];
+export type MeResponse = components['schemas']['MeResponse'];
+export type ApiErrorEnvelope = components['schemas']['ErrorEnvelope'];
+export type ApiErrorCode = ApiErrorEnvelope['error']['code'];

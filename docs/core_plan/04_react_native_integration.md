@@ -735,3 +735,12 @@ stopped QA Metro during project switching; the server was restarted, Expo Go was
 cold-opened between projects and the interrupted cases then passed. This interruption
 is recorded as a development-tool failure, not an app lifecycle pass. RN-10b commit:
 `704bc49`. No native project, release identity, Auth/backend data or permission changed.
+
+
+API-01–05 backend producer handoff (2026-11-01): protected `/v1/me`, asymmetric
+verification/JWKS and generated `MeResponse`/error/health types now exist. Read
+[Plan 03 notes](../core_plan_implementation_notes/plan_03_backend_foundation_notes.md).
+This removes the missing backend/schema producer for RN-05; Anisha's actual
+Supabase/session/guard/root outputs, configured-project smoke and real RN-05/06
+acceptance remain pending. RN-07 still requires SB-04/05 and API-06–09 persistence.
+No mobile Auth/root provider was wired by the backend commits.

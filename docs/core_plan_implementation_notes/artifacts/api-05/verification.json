@@ -1,0 +1,39 @@
+{
+  "date": "2026-11-01",
+  "parts": "API-01\u201305 producer scope",
+  "checks": {
+    "apiTests": 269,
+    "portableMobileTests": 250,
+    "nativeComponentTests": 362,
+    "rootCheckPassed": true,
+    "mobileWebExportPassed": true,
+    "originalAssets": 71,
+    "driftCheckPassed": true,
+    "repeatGenerationByteStable": true,
+    "freshFilteredNpmCiAndTypeCheckPassed": true,
+    "staleTypeOutputRejectedWithoutMutation": true,
+    "uvFrozenSyncPassed": true
+  },
+  "outputs": {
+    "packages/contracts/openapi/foundation.openapi.json": "6f634f6efd2ec2908d6b0ea134285dff19eb8695a6d5d0217b3816f4238d479f",
+    "packages/contracts/src/http.generated.ts": "326141d72c8e3c0a786c7973f798b5c098784652644dfe89a9dbd8b275d9d852"
+  },
+  "toolchain": {
+    "appAndContractsTypeScript": "6.0.3",
+    "generatorTypeScript": "5.9.3",
+    "openapiTypescript": "7.13.0",
+    "pythonJsonschema": "4.26.0"
+  },
+  "scopedGeneratorAudit": {
+    "moderate": 3,
+    "high": 0,
+    "critical": 0,
+    "chain": "openapi-typescript / @redocly/openapi-core / minimatch",
+    "runtimeExposure": false,
+    "inputScope": "Trusted local exported schema; external references rejected; track compatible upstream fixes."
+  },
+  "liveSupabase": false,
+  "mobileAuthWired": false,
+  "databaseProvisioned": false,
+  "nativeProtectionChanged": false
+}

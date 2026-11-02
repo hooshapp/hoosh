@@ -4,13 +4,13 @@
 **Owner:** Ishmum. Anisha owns Supabase Auth setup and mobile sessions/onboarding.
 **Branch:** `task/backend/api-01-05`. **Starting commit:** `2703a23`.
 **Last updated:** 2026-11-01.
-**Current part:** API-04 implemented/tested. Implement API-05 reproducible OpenAPI/TypeScript outputs and drift checks. SB-02/03 actual metadata/tokens and RN-05/06 real mobile sign-in remain unverified; profiles/database are API-06 onward.
+**Current part:** API-05 implemented/tested. API-01–05 producer scope is complete. Ishmum next prepares SB-04/05 then API-06 database sessions/harness; API-06–10 remain pending. Anisha supplies exact SB-02 trust metadata/current tokens and the mobile Auth/session/root producer for joint RN-05/06 and M1 acceptance. Product profiles/M2 and native enforcement are not implemented. No push requested or performed.
 
 ## Resume here
 
-- Latest: **API-04 — Database-independent protected identity endpoint**, subject `feat(api): expose database-independent authenticated identity`, parent `35ba307`.
-- Validation: `pytest services/api/tests -q`: 244 passed; `ruff check services/api`: passed. Full signed-token route tests use the production factory/verifier/resolver with only test HTTPS transport substituted. Local 200-iteration crypto means: ES256 0.0595 ms, RS256 0.0423 ms (Mac arm64, warm test resolver; not a deployed/network SLA).
-- Next / remaining: Implement API-05 reproducible OpenAPI/TypeScript outputs and drift checks. SB-02/03 actual metadata/tokens and RN-05/06 real mobile sign-in remain unverified; profiles/database are API-06 onward.
+- Latest: **API-05 — Executable OpenAPI and generated HTTP types**, subject `chore(contracts): generate identity API types from OpenAPI`, parent `06f5704`.
+- Validation: `npm run check`: passed (269 API, 250 portable mobile and 362 native component tests; TypeScript, ESLint, Ruff, assets and immutable contract checks). `npm run mobile:export`: passed (71 original assets, 38-file UI-fixture isolation). Frozen uv sync, fresh filtered npm ci in an isolated directory and generator check passed; deliberately stale generated output failed without mutation. Repeated full generation preserved both SHA-256 hashes. Evidence: `artifacts/api-05/verification.json`; no live provider calls.
+- Next / remaining: API-01–05 producer scope is complete. Ishmum next prepares SB-04/05 then API-06 database sessions/harness; API-06–10 remain pending. Anisha supplies exact SB-02 trust metadata/current tokens and the mobile Auth/session/root producer for joint RN-05/06 and M1 acceptance. Product profiles/M2 and native enforcement are not implemented. No push requested or performed.
 - Anisha owns Supabase Auth/session/onboarding; Ishmum backend verification and product DB. No provider, user, redirect, database or native policy was changed. No push/main merge.
 
 ## Recording rules
@@ -64,7 +64,7 @@ Ranges refer to this commit; deleted ranges refer to its parent. The entry trave
 | `services/api/tests/test_app.py`: lines 7–7 | Reuse the existing liveness/CORS checks against pure assembly, avoiding import of a globally configured runtime app. |
 | `services/api/tests/test_config.py`: lines 1–141 | Exercise local/production/partial settings, immutable trust, unsafe/contradictory project URLs, algorithm confusion, finite resource bounds, exact CORS origins, JSON environment configuration and actual runtime entry validation. |
 | `services/api/tests/test_errors.py`: lines 1–164 | Verify no secret echo/logging, server-generated ID/body parity, CORS on sanitized 500s, safe 401/422/routing errors, bounded field details, environment-free assembly and cancellation/non-HTTP forwarding. |
-| `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 1–20 | Refresh current part, validation and the next handoff without overwriting historical entries. |
+| `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 1–25 | Refresh current part, validation and the next handoff without overwriting historical entries. |
 | `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 26–83 | Record this entire per-commit change table, decisions, real validation and unverified live dependencies. |
 
 #### Decisions and relations
@@ -112,6 +112,8 @@ Ranges refer to this commit; deleted ranges refer to its parent. The entry trave
 | `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 1–20 | Refresh current part, validation and the next handoff without overwriting historical entries. |
 | `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 28–28 | Record the preceding committed part hash in this normal update. |
 | `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 84–129 | Record this entire per-commit change table, decisions, real validation and unverified live dependencies. |
+
+`services/api/tests/__init__.py` was also created in API-02 as an empty (0-byte) test-package marker. It has no line range; this coverage correction was recorded during API-05.
 
 #### Decisions and relations
 
@@ -179,7 +181,7 @@ Ranges refer to this commit; deleted ranges refer to its parent. The entry trave
 
 ### API-04 — Database-independent protected identity endpoint
 
-**Hash:** Pending; resolve by `feat(api): expose database-independent authenticated identity`.
+**Hash:** `06f5704` (recorded during the next part).
 **Date:** 2026-11-01. **Owner:** Ishmum. **Branch:** `task/backend/api-01-05`. **Parent:** `35ba307`.
 **Status:** Implemented and deterministically tested; live Supabase and mobile M1 remain unverified.
 
@@ -221,3 +223,112 @@ Ranges refer to this commit; deleted ranges refer to its parent. The entry trave
 **Actual validation:** `pytest services/api/tests -q`: 244 passed; `ruff check services/api`: passed. Full signed-token route tests use the production factory/verifier/resolver with only test HTTPS transport substituted. Local 200-iteration crypto means: ES256 0.0595 ms, RS256 0.0423 ms (Mac arm64, warm test resolver; not a deployed/network SLA).
 
 **Remaining / next:** Implement API-05 reproducible OpenAPI/TypeScript outputs and drift checks. SB-02/03 actual metadata/tokens and RN-05/06 real mobile sign-in remain unverified; profiles/database are API-06 onward.
+
+### API-05 — Executable OpenAPI and generated HTTP types
+
+**Hash:** Pending; resolve by `chore(contracts): generate identity API types from OpenAPI`.
+**Date:** 2026-11-01. **Owner:** Ishmum. **Branch:** `task/backend/api-01-05`. **Parent:** `06f5704`.
+**Status:** Implemented and deterministically tested; live Supabase and mobile M1 remain unverified.
+
+#### Changed files and logical changes
+
+Ranges refer to this commit; deleted ranges refer to its parent. The entry travels with code; resolve its own Pending hash through Git until the next normal update.
+
+| File and lines | What changed and why |
+|---|---|
+| `.github/workflows/checks.yml`: lines 37–42 | Install only the pinned build-time generator workspace in the API job; check the exporter with Ruff and fail CI when schema/types drift after deterministic tests. |
+| `.github/workflows/checks.yml`: lines 44–44 | Install only the pinned build-time generator workspace in the API job; check the exporter with Ruff and fail CI when schema/types drift after deterministic tests. |
+| `.github/workflows/checks.yml`: lines 46–47 | Install only the pinned build-time generator workspace in the API job; check the exporter with Ruff and fail CI when schema/types drift after deterministic tests. |
+| `README.md`: lines 19–19 | Replace obsolete health-only status with the implemented identity producer and state live Auth, database and native boundaries; point the next developer to Plan 03 notes and dependent work. |
+| `README.md`: lines 22–22 | Replace obsolete health-only status with the implemented identity producer and state live Auth, database and native boundaries; point the next developer to Plan 03 notes and dependent work. |
+| `README.md`: lines 98–98 | Replace obsolete health-only status with the implemented identity producer and state live Auth, database and native boundaries; point the next developer to Plan 03 notes and dependent work. |
+| `README.md`: lines 141–141 | Replace obsolete health-only status with the implemented identity producer and state live Auth, database and native boundaries; point the next developer to Plan 03 notes and dependent work. |
+| `apps/mobile/src/infrastructure/api/decoders.ts`: lines 10–10 | Clarify that wire types now come from generated OpenAPI while existing runtime decoding still validates untrusted response JSON; no mobile session/root wiring changes. |
+| `docs/Context (AGENT)/AGENT_START_HERE.md`: lines 7–7 | Refresh the checkout checkpoint, implemented producer count and Plan 03 handoff so another agent resumes with accurate ownership and outstanding integration dependencies. |
+| `docs/Context (AGENT)/AGENT_START_HERE.md`: lines 130–130 | Refresh the checkout checkpoint, implemented producer count and Plan 03 handoff so another agent resumes with accurate ownership and outstanding integration dependencies. |
+| `docs/Context (AGENT)/AGENT_START_HERE.md`: lines 137–147 | Refresh the checkout checkpoint, implemented producer count and Plan 03 handoff so another agent resumes with accurate ownership and outstanding integration dependencies. |
+| `docs/core_plan/03_backend_foundation.md`: lines 3–3 | Record API-01–05 producer completion, known commit hashes, validation and generator compatibility decision; leave API-06–10 and live milestones explicitly pending. |
+| `docs/core_plan/03_backend_foundation.md`: lines 442–443 | Record API-01–05 producer completion, known commit hashes, validation and generator compatibility decision; leave API-06–10 and live milestones explicitly pending. |
+| `docs/core_plan/03_backend_foundation.md`: lines 468–477 | Record API-01–05 producer completion, known commit hashes, validation and generator compatibility decision; leave API-06–10 and live milestones explicitly pending. |
+| `docs/core_plan/04_react_native_integration.md`: lines 738–746 | Record backend identity/schema producer availability without claiming RN-05/06 Auth/root integration or RN-07 database acceptance. |
+| `docs/core_plan/README.md`: lines 3–3 | Update the cross-plan index to 13 implemented producers and 31 awaiting acceptance; explain remaining live M1 and database dependencies. |
+| `docs/core_plan/README.md`: lines 12–12 | Update the cross-plan index to 13 implemented producers and 31 awaiting acceptance; explain remaining live M1 and database dependencies. |
+| `docs/core_plan/README.md`: lines 122–132 | Update the cross-plan index to 13 implemented producers and 31 awaiting acceptance; explain remaining live M1 and database dependencies. |
+| `docs/core_plan_implementation_notes/artifacts/api-05/verification.json`: lines 1–39 | Record exact test counts, deterministic output hashes, fresh-install/drift/export checks and scoped build-tool audit; distinguish all local evidence from unverified cloud/mobile/database work. |
+| `package-lock.json`: lines 1506–1509 | Lock the private generator workspace and its TypeScript 5 peer/dependency graph under the existing single npm lockfile while preserving app/contracts TypeScript 6. |
+| `package-lock.json`: lines 5687–5762 | Lock the private generator workspace and its TypeScript 5 peer/dependency graph under the existing single npm lockfile while preserving app/contracts TypeScript 6. |
+| `package-lock.json`: lines 7226–7235 | Lock the private generator workspace and its TypeScript 5 peer/dependency graph under the existing single npm lockfile while preserving app/contracts TypeScript 6. |
+| `package-lock.json`: lines 8048–8054 | Lock the private generator workspace and its TypeScript 5 peer/dependency graph under the existing single npm lockfile while preserving app/contracts TypeScript 6. |
+| `package-lock.json`: lines 8211–8217 | Lock the private generator workspace and its TypeScript 5 peer/dependency graph under the existing single npm lockfile while preserving app/contracts TypeScript 6. |
+| `package-lock.json`: lines 11048–11060 | Lock the private generator workspace and its TypeScript 5 peer/dependency graph under the existing single npm lockfile while preserving app/contracts TypeScript 6. |
+| `package-lock.json`: lines 15884–15893 | Lock the private generator workspace and its TypeScript 5 peer/dependency graph under the existing single npm lockfile while preserving app/contracts TypeScript 6. |
+| `package-lock.json`: lines 17945–17954 | Lock the private generator workspace and its TypeScript 5 peer/dependency graph under the existing single npm lockfile while preserving app/contracts TypeScript 6. |
+| `package-lock.json`: lines 18622–18631 | Lock the private generator workspace and its TypeScript 5 peer/dependency graph under the existing single npm lockfile while preserving app/contracts TypeScript 6. |
+| `package-lock.json`: lines 20295–20301 | Lock the private generator workspace and its TypeScript 5 peer/dependency graph under the existing single npm lockfile while preserving app/contracts TypeScript 6. |
+| `package-lock.json`: lines 20914–20920 | Lock the private generator workspace and its TypeScript 5 peer/dependency graph under the existing single npm lockfile while preserving app/contracts TypeScript 6. |
+| `package-lock.json`: lines 20983–21069 | Lock the private generator workspace and its TypeScript 5 peer/dependency graph under the existing single npm lockfile while preserving app/contracts TypeScript 6. |
+| `package.json`: lines 20–20 | Expose reproducible generation and immutable contract checks, include drift in the full check command and lint the environment-free exporter. |
+| `package.json`: lines 24–24 | Expose reproducible generation and immutable contract checks, include drift in the full check command and lint the environment-free exporter. |
+| `package.json`: lines 29–31 | Expose reproducible generation and immutable contract checks, include drift in the full check command and lint the environment-free exporter. |
+| `packages/api-codegen/README.md`: lines 1–28 | Document local-only generation, peer isolation, fresh filtered install, schema/type review and the three observed moderate build-only audit findings with compatible-fix follow-up. |
+| `packages/api-codegen/generate-http-types.mjs`: lines 1–33 | Generate deterministic AST-derived TypeScript from the committed local schema, reject external references and detect missing/stale output without rewriting it in check mode. |
+| `packages/api-codegen/package.json`: lines 1–15 | Create a private build-only workspace with exact openapi-typescript 7.13.0/TypeScript 5.9.3 pins and generate/check scripts; no runtime client. |
+| `packages/contracts/HTTP_API.md`: lines 169–177 | Declare implemented Pydantic/OpenAPI authority and generated HTTP types while retaining handwritten Auth/native domain ports and explicitly future M2 profile endpoints. |
+| `packages/contracts/README.md`: lines 33–57 | Explain generated public aliases, exact regeneration/drift commands, compiler isolation and the continued need for runtime response/account checks. |
+| `packages/contracts/fixtures/http-v1.json`: lines 4–4 | Correct fixture metadata to distinguish validated identity/error examples from planned profile success examples; synthetic payloads remain unchanged. |
+| `packages/contracts/openapi/foundation.openapi.json`: lines 1–550 | Commit deterministic OpenAPI for only health and verified identity, with strict public models, code-discriminated errors, security and required middleware response headers. |
+| `packages/contracts/src/http.generated.ts`: lines 1–301 | Commit generated paths/operations/components and wire responses from the exact pinned schema tool; expose no profile route or internal token/claim fields. |
+| `packages/contracts/src/index.ts`: lines 28–34 | Replace the handwritten liveness interface with generated aliases and export generated identity/error/schema types; preserve existing Auth/native port exports. |
+| `packages/contracts/type-tests/http.typecheck.ts`: lines 1–38 | Compile consumer compatibility and negative examples with the app compiler: required nullable email, no token/owner body/profile endpoint, and precise error detail/retry narrowing. |
+| `scripts/export-openapi.py`: lines 1–44 | Export canonical sorted schema through pure application assembly; offer byte-check/stdout modes without importing runtime main, reading Settings, entering lifespan or constructing clients. |
+| `services/api/README.md`: lines 14–14 | Document actual identity implementation, schema tooling and producer handoff; correct old no-verifier claims and keep cloud/mobile/database acceptance separate. |
+| `services/api/README.md`: lines 16–16 | Document actual identity implementation, schema tooling and producer handoff; correct old no-verifier claims and keep cloud/mobile/database acceptance separate. |
+| `services/api/README.md`: lines 18–18 | Document actual identity implementation, schema tooling and producer handoff; correct old no-verifier claims and keep cloud/mobile/database acceptance separate. |
+| `services/api/README.md`: lines 103–129 | Document actual identity implementation, schema tooling and producer handoff; correct old no-verifier claims and keep cloud/mobile/database acceptance separate. |
+| `services/api/app/api/health.py`: lines 4–5 | Make existing literal health fields required in Pydantic/OpenAPI and explicitly supply them without changing public JSON; give liveness a stable operation ID. |
+| `services/api/app/api/health.py`: lines 10–12 | Make existing literal health fields required in Pydantic/OpenAPI and explicitly supply them without changing public JSON; give liveness a stable operation ID. |
+| `services/api/app/api/health.py`: lines 15–15 | Make existing literal health fields required in Pydantic/OpenAPI and explicitly supply them without changing public JSON; give liveness a stable operation ID. |
+| `services/api/app/api/health.py`: lines 18–18 | Make existing literal health fields required in Pydantic/OpenAPI and explicitly supply them without changing public JSON; give liveness a stable operation ID. |
+| `services/api/app/application.py`: lines 13–13 | Declare the shared safe 500 response and install middleware-aware OpenAPI headers in pure assembly without runtime initialization. |
+| `services/api/app/application.py`: lines 15–15 | Declare the shared safe 500 response and install middleware-aware OpenAPI headers in pure assembly without runtime initialization. |
+| `services/api/app/application.py`: lines 23–23 | Declare the shared safe 500 response and install middleware-aware OpenAPI headers in pure assembly without runtime initialization. |
+| `services/api/app/application.py`: lines 41–41 | Declare the shared safe 500 response and install middleware-aware OpenAPI headers in pure assembly without runtime initialization. |
+| `services/api/app/core/errors.py`: old lines 12–12 at `06f5704` | Build safe error payloads through the discriminated schema validator and emit details only for validation/conflict variants, preserving existing HTTP behavior. |
+| `services/api/app/core/errors.py`: lines 48–56 | Build safe error payloads through the discriminated schema validator and emit details only for validation/conflict variants, preserving existing HTTP behavior. |
+| `services/api/app/core/openapi.py`: lines 1–39 | Describe server request correlation on each declared response, no-store on private/error responses and Bearer challenge on 401; cache the assembled schema. |
+| `services/api/app/schemas/errors.py`: lines 4–4 | Expose strict code-discriminated general/unavailable/validation/conflict variants with literal retryability and required bounded details so wire types reflect runtime guarantees. |
+| `services/api/app/schemas/errors.py`: lines 7–7 | Expose strict code-discriminated general/unavailable/validation/conflict variants with literal retryability and required bounded details so wire types reflect runtime guarantees. |
+| `services/api/app/schemas/errors.py`: lines 52–52 | Expose strict code-discriminated general/unavailable/validation/conflict variants with literal retryability and required bounded details so wire types reflect runtime guarantees. |
+| `services/api/app/schemas/errors.py`: old lines 55–55 at `06f5704` | Expose strict code-discriminated general/unavailable/validation/conflict variants with literal retryability and required bounded details so wire types reflect runtime guarantees. |
+| `services/api/app/schemas/errors.py`: lines 55–100 | Expose strict code-discriminated general/unavailable/validation/conflict variants with literal retryability and required bounded details so wire types reflect runtime guarantees. |
+| `services/api/pyproject.toml`: lines 16–16 | Add jsonschema as a test-only dependency for validating shared fixtures against executable exported JSON Schema. |
+| `services/api/tests/api/test_schema.py`: lines 1–182 | Verify environment-free deterministic export, nonmutating drift checks, exact public routes/security/headers, shared fixtures and strict Pydantic/JSON-Schema agreement for valid and malformed responses. |
+| `services/api/uv.lock`: lines 36–44 | Lock jsonschema and its test-only dependency graph reproducibly; retain existing runtime package versions. |
+| `services/api/uv.lock`: lines 150–150 | Lock jsonschema and its test-only dependency graph reproducibly; retain existing runtime package versions. |
+| `services/api/uv.lock`: lines 166–166 | Lock jsonschema and its test-only dependency graph reproducibly; retain existing runtime package versions. |
+| `services/api/uv.lock`: lines 275–301 | Lock jsonschema and its test-only dependency graph reproducibly; retain existing runtime package versions. |
+| `services/api/uv.lock`: lines 467–515 | Lock jsonschema and its test-only dependency graph reproducibly; retain existing runtime package versions. |
+| `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 1–20 | Refresh current part, validation and the next handoff without overwriting historical entries. |
+| `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 28–28 | Record the preceding committed part hash in this normal update. |
+| `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 86–86 | Record the preceding committed part hash in this normal update. |
+| `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 134–134 | Record the preceding committed part hash in this normal update. |
+| `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 184–184 | Record the preceding committed part hash in this normal update. |
+| `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 67–67 | Correct the original API-01 creation scaffold coverage to lines 1–25 at that commit. |
+| `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 116–117 | Record the API-02 empty test-package marker omitted by line-only diff tooling; it has zero bytes and no invented source line. |
+| `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 226–226 | Separate the final historical API-04 entry from the new API-05 record. |
+| `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 227–334 | Record this entire per-commit change table, decisions, real validation and unverified live dependencies. |
+
+#### Decisions and relations
+
+- Generate only implemented health/identity routes from pure assembly. Invalid production environment variables, forbidden Settings/client constructors and main-import checks demonstrate that schema export does not run runtime startup or fabricate an identity. Runtime configuration validation remains strict. Generated output includes the declared safe 500 response plus middleware request-ID/no-store/Bearer headers.
+- Refactor the existing error schema into a code-discriminated union. General and unavailable errors cannot acquire arbitrary details; validation/conflict variants require their reserved bounded shapes and canonical boolean retryability. Validate the same synthetic identity/error fixtures against Pydantic and Draft 2020-12 JSON Schema with format checks. Profile success examples remain planned M2 inputs; no profile endpoint/database is generated or implemented.
+- Preserve existing health JSON while making its literals required in the executable schema. Expose generated public aliases and compile-only TypeScript consumer checks; retain handwritten Auth/native domain ports and the existing runtime client/decoders. Static generated types do not authenticate a session or validate arbitrary network JSON. No root guard/session composition is changed.
+- Installing the generator alongside the app initially failed peer resolution: openapi-typescript 7.13.0 requires TypeScript 5 while the app/contracts use 6.0.3. Use one private build-only workspace pinned to 5.9.3 under the existing root lockfile. Actual dependency resolution and a fresh filtered install confirm isolation; no force/legacy-peer flags, app compiler downgrade or second lockfile. The API CI job installs only this tool workspace.
+- The scoped build-tool audit reports three moderate findings (zero high/critical) in openapi-typescript / Redocly / minimatch. The offered major downgrade was not forced. Only trusted repository-local schema input is accepted and external references are rejected; the tool is not imported by application runtime. Track a compatible upstream fix. This is not an audit-clean claim for the full mobile tree.
+- Check both generated files by exact bytes without rewriting them in check mode, and include the checks in root validation and API CI. Repeated generation is byte stable; a fresh isolated install reproduces output and detects deliberately stale types without repairing them silently. Ruff includes the exporter. Add jsonschema only to the Python development group.
+- Update the backend/root/agent/plan/contract handoffs together so later agents see the identity producer is available while real Supabase metadata/tokens, mobile Auth/root integration and database work remain outstanding. Correct the API-01 notes scaffold coverage to its original lines 1–25 and explicitly record the empty API-02 tests package marker (no invented line range). Historical source ranges remain tied to their original commits.
+- No cloud Auth configuration, provider/user/redirect, database migration, native restriction, PM answer or push/main merge was performed. Deterministic signed keys/transports prove producer behavior, not live M1 acceptance.
+
+**Actual validation:** `npm run check`: passed (269 API, 250 portable mobile and 362 native component tests; TypeScript, ESLint, Ruff, assets and immutable contract checks). `npm run mobile:export`: passed (71 original assets, 38-file UI-fixture isolation). Frozen uv sync, fresh filtered npm ci in an isolated directory and generator check passed; deliberately stale generated output failed without mutation. Repeated full generation preserved both SHA-256 hashes. Evidence: `artifacts/api-05/verification.json`; no live provider calls.
+
+**Remaining / next:** API-01–05 producer scope is complete. Ishmum next prepares SB-04/05 then API-06 database sessions/harness; API-06–10 remain pending. Anisha supplies exact SB-02 trust metadata/current tokens and the mobile Auth/session/root producer for joint RN-05/06 and M1 acceptance. Product profiles/M2 and native enforcement are not implemented. No push requested or performed.

@@ -166,9 +166,12 @@ failure categories; do not fabricate this server envelope for them. Validate
 responses at the client boundary when RN-03 implements it; TypeScript alone does
 not validate network data. Unknown future codes get a safe fallback, never success.
 
-These examples are the initial design authority. API-05 makes Pydantic + exported
-FastAPI OpenAPI the executable authority, committing
-`openapi/foundation.openapi.json` and `src/http.generated.ts`. Generate types with
-a pinned `openapi-typescript`; keep one runtime client. API schema tests must consume
-these fixtures. Do not handwrite duplicate HTTP response types now. HealthResponse
-remains the existing small implemented liveness type until that generation step.
+API-05 now publishes Pydantic + exported FastAPI OpenAPI as executable authority
+for implemented `/healthz`, `/v1/me` and shared error schemas. Committed outputs
+are `openapi/foundation.openapi.json` and `src/http.generated.ts`; regenerate/check
+with root `api:generate` / `api:check-contracts`. The pinned build-only generator
+produces types, not another HTTP client. Public `HealthResponse`, `MeResponse` and
+error aliases are derived from generated schemas; domain Auth/native ports remain
+handwritten. Error codes discriminate required details and literal retryability in
+both JSON Schema and TypeScript. Profile success examples remain design inputs
+until API-08/09 adds actual M2 endpoints and generated shapes.

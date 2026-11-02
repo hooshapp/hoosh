@@ -10,7 +10,9 @@ from app.api.health import router as health_router
 from app.api.v1.me import router as identity_router
 from app.core.auth import UnavailableTokenVerifier
 from app.core.errors import install_error_handlers
+from app.core.openapi import install_openapi
 from app.core.request_context import RequestContextMiddleware, UnexpectedErrorMiddleware
+from app.schemas.errors import ErrorEnvelope
 
 
 def create_app(*, cors_origins: Sequence[str] = (), lifespan: Lifespan | None = None) -> FastAPI:
@@ -18,6 +20,7 @@ def create_app(*, cors_origins: Sequence[str] = (), lifespan: Lifespan | None = 
         title="Disconnect API",
         version="0.0.0",
         lifespan=lifespan,
+        responses={500: {"model": ErrorEnvelope, "description": "Safe unexpected failure"}},
         description="Verified identity foundation; profiles and native protection are separate.",
     )
     application.state.token_verifier = UnavailableTokenVerifier()
@@ -35,4 +38,5 @@ def create_app(*, cors_origins: Sequence[str] = (), lifespan: Lifespan | None = 
     application.add_middleware(RequestContextMiddleware)
     application.include_router(health_router)
     application.include_router(identity_router)
+    install_openapi(application)
     return application

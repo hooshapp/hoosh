@@ -34,6 +34,14 @@ jobs:
       - uses: astral-sh/setup-uv@v10.3.3
         with:
           version: '0.12.10'
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - name: Install only build-time API generator dependencies
+        run: npm ci --workspace @disconnect/api-codegen --include-workspace-root=false
       - run: uv sync --project services/api --frozen
-      - run: uv run --project services/api ruff check services/api
+      - run: uv run --project services/api ruff check services/api scripts/export-openapi.py
       - run: uv run --project services/api pytest services/api/tests
+      - name: Reproducible OpenAPI and generated HTTP types
+        run: npm run api:check-contracts

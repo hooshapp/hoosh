@@ -1,6 +1,6 @@
 # Plan 03 — FastAPI Identity and Profile Foundation
 
-**Status:** API-01–04 implement validated configuration/errors, bounded asymmetric verification/JWKS and database-independent GET /v1/me. API-05 generated contracts are next; actual Supabase/mobile acceptance and all database/profile work remain pending.\
+**Status:** API-01–05 are implemented and deterministically validated: strict trust/errors, bounded JWT/JWKS, protected database-independent GET /v1/me and generated OpenAPI/HTTP types with CI drift checks. Actual Supabase/mobile M1 acceptance and API-06–10/database/profile work remain pending.\
 **Owner:** Ishmum (backend/database). Anisha reviews Auth contracts and participates in live session checks.\
 **Area branch:** `area/backend`; task branches `task/backend/<part>`.\
 **Milestones:** M1 = verified identity without a database; M2 = minimal, isolated, revisioned profile persistence.
@@ -439,8 +439,8 @@ Auth can finish its session work without profiles. The main frontend must not cl
 | API-01 | Implemented; live trust handoff pending | `8ce121d` | 58 backend tests and Ruff; [Plan 03 notes](../core_plan_implementation_notes/plan_03_backend_foundation_notes.md) |
 | API-02 | Implemented; live provider tokens unverified | `bdd62a6` | 194 backend tests and Ruff; Plan 03 notes |
 | API-03 | Implemented; live project discovery unverified | `35ba307` | 223 backend tests; deadline/cancellation/cache/lifespan checks; [Auth runbook](../../services/api/AUTH.md) |
-| API-04 | Implemented producer; live Supabase/mobile M1 unverified | Resolve by `feat(api): expose database-independent authenticated identity` | 244 backend tests; real signed-token route paths and local crypto measurements; Plan 03 notes |
-| API-05 | Pending | — | — |
+| API-04 | Implemented producer; live Supabase/mobile M1 unverified | `06f5704` | 244 backend tests; real signed-token route paths and local crypto measurements; Plan 03 notes |
+| API-05 | Implemented; live M1 remains pending | Resolve by `chore(contracts): generate identity API types from OpenAPI` | 269 API tests, full workspace checks, isolated fresh generator install/drift rejection and mobile export; Plan 03 notes |
 | API-06 | Pending | — | — |
 | API-07 | Pending | — | — |
 | API-08 | Pending | — | — |
@@ -465,3 +465,13 @@ Official references checked 2026-10-28. Cache bounds, pool sizes, schema split, 
 - [Alembic tutorial](https://alembic.sqlalchemy.org/en/latest/tutorial.html)
 - [PostgreSQL row policies](https://www.postgresql.org/docs/current/ddl-rowsecurity.html)
 - [Transaction-local settings](https://www.postgresql.org/docs/current/functions-admin.html)
+
+
+API-01–05 producer checkpoint (2026-11-01): all five independent parts are
+implemented. The public generated paths are exactly `/healthz` and `/v1/me`;
+reserved error detail schemas do not create profile endpoints. The build-only
+API generator uses pinned TypeScript 5.9.3/openapi-typescript 7.13.0 in its own
+private workspace, preserving the application/contracts TypeScript 6.0.3 and one
+npm lockfile. See notes for exact checks, scoped tooling advisories and remaining
+live handoff. API-06 still requires SB-04/05; no product database or cloud Auth
+configuration was provisioned by these commits.

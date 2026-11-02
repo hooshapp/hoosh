@@ -16,10 +16,10 @@ Shared React Native app and FastAPI service for Disconnect. Product context star
 - RN-08 protection status mapper/UI and read-only native-port consumer are prepared; [native evidence rules and deferred integration](apps/mobile/src/features/protection/README.md). No native adapter is registered or active protection claimed for this checkout.
 - RN-09a [Home presentation](apps/mobile/src/features/home/README.md) is routed with honest unavailable states; its interactive Figma sample stays in `mobile:ui`. Quests/History/Settings presentation is implemented; live data/actions across all four tabs remain pending.
 - RN-10 shared accessibility/layout/lifecycle hardening with [QA evidence and RN-11 prerequisites](docs/qa/mobile-accessibility.md); signed-device/live acceptance remains pending.
-- FastAPI process health endpoint, OpenAPI documentation, explicit browser CORS configuration, and tests.
+- FastAPI liveness plus verified `GET /v1/me`, bounded JWT/JWKS verification, safe errors and generated OpenAPI/HTTP types; see [backend status](services/api/README.md). Live Supabase/mobile integration remains pending.
 - Reproducible npm and uv lockfiles, linting, type checking, and CI checks.
 
-The shared React Native/FastAPI foundation does not yet implement authentication, profiles, database tables, saved plans, native protection, rewards, usage measurements or AI. Imported legacy iOS behavior is separate and still requires audit/integration. The shell has no auth guard and exposes no private data. Do not publish this preview as a working protection app.
+Mobile authentication is not yet connected. The backend identity producer is implemented; profiles, database tables, saved plans, native protection, rewards, usage measurements and AI remain pending. Imported legacy iOS behavior is separate and still requires audit/integration. The shell has no auth guard and exposes no private data. Do not publish this preview as a working protection app.
 
 ## Structure
 
@@ -95,6 +95,7 @@ npm run api:dev
 - Liveness: `http://127.0.0.1:8000/healthz`
 - Interactive API docs: `http://127.0.0.1:8000/docs`
 - Schema: `http://127.0.0.1:8000/openapi.json`
+- Identity: `GET /v1/me` requires a verified access token; no profile/database dependency.
 
 `/healthz` reports only that the API process is responding; it does not claim database readiness or device protection.
 
@@ -137,7 +138,7 @@ Coordinate edits to the root navigation, `app.config.ts`, dependency lockfiles, 
 
 ## Next integration
 
-1. Start from the committed Plan 00 contracts (`0b50900`) and RN-01–04 UI/navigation/HTTP/query foundation. Ishmum can continue API foundation (API-01) and Android investigation; RN-05 waits for the real Auth/API producers and coordinated root wiring; inspect the current plan notes/branch before starting.
+1. API-01–05 backend identity/schema producers are implemented; read [Plan 03 notes](docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md). RN-05/06 still need real Supabase/Auth/session and coordinated root wiring. Ishmum can prepare SB-04/05 and API-06 for later database/profile work.
 2. Anisha owns Supabase Auth/project setup (SB-01–03) and builds the single Auth/session producer (AUTH-01/02); both sides use controlled tests before live integration. Audit the imported Swift source and investigate Android feasibility independently.
 3. When the producer outputs are ready, connect real sign-in → identity-only `GET /v1/me` → matching account UI (M1), without requiring a product database.
 4. Add isolated PostgreSQL persistence and `GET/PATCH /v1/profile` with revision/conflict handling (M2). Full onboarding/plans/native installation follow their approved contracts and evidence.

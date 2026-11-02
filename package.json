@@ -17,15 +17,17 @@
     "mobile:export": "npm run export:web --workspace @disconnect/mobile -- && npm run mobile:check-ui-isolation && npm run mobile:check-assets -- --export",
     "api:dev": "uv run --project services/api uvicorn app.main:app --app-dir services/api --reload --reload-dir services/api/app --host 127.0.0.1 --port 8000 --no-access-log",
     "api:test": "uv run --project services/api pytest services/api/tests",
-    "api:lint": "uv run --project services/api ruff check services/api",
+    "api:lint": "uv run --project services/api ruff check services/api scripts/export-openapi.py",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
-    "check": "npm run typecheck && npm run lint && npm run mobile:check-assets && npm test && npm run api:lint && npm run api:test",
+    "check": "npm run typecheck && npm run lint && npm run mobile:check-assets && npm test && npm run api:lint && npm run api:test && npm run api:check-contracts",
     "mobile:ui": "npm run ui:preview --workspace @disconnect/mobile --",
     "mobile:ui:build": "npm run ui:build --workspace @disconnect/mobile --",
     "mobile:check-ui-isolation": "node scripts/check-ui-preview-isolation.mjs",
     "mobile:check-assets": "node scripts/check-design-assets.mjs",
-    "mobile:qa:android": "expo start apps/mobile/dev/native --go --lan --port 8090"
+    "mobile:qa:android": "expo start apps/mobile/dev/native --go --lan --port 8090",
+    "api:generate": "uv run --project services/api python scripts/export-openapi.py && npm run generate --workspace @disconnect/api-codegen",
+    "api:check-contracts": "uv run --project services/api python scripts/export-openapi.py --check && npm run check --workspace @disconnect/api-codegen"
   }
 }

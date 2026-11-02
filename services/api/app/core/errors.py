@@ -9,7 +9,6 @@ from starlette.responses import JSONResponse
 
 from app.schemas.errors import (
     ConflictDetails,
-    ErrorBody,
     ErrorCode,
     ErrorEnvelope,
     ValidationDetails,
@@ -46,15 +45,15 @@ class ApiError(Exception):
 def error_response(request: Request, error: ApiError, *, status: int | None = None) -> JSONResponse:
     code = error.code
     default_status, message = ERRORS[code]
-    envelope = ErrorEnvelope(
-        error=ErrorBody(
-            code=code,
-            message=message,
-            retryable=code in (ErrorCode.AUTH_UNAVAILABLE, ErrorCode.DEPENDENCY_UNAVAILABLE),
-            request_id=UUID(request.state.request_id),
-            details=error.details,
-        )
-    )
+    payload = {
+        "code": code,
+        "message": message,
+        "retryable": code in (ErrorCode.AUTH_UNAVAILABLE, ErrorCode.DEPENDENCY_UNAVAILABLE),
+        "request_id": UUID(request.state.request_id),
+    }
+    if error.details is not None:
+        payload["details"] = error.details
+    envelope = ErrorEnvelope.model_validate({"error": payload})
     headers = {"Cache-Control": "no-store"}
     if (status or default_status) == 401:
         headers["WWW-Authenticate"] = "Bearer"

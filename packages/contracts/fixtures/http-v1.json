@@ -1,7 +1,7 @@
 {
   "fixtureVersion": 1,
   "synthetic": true,
-  "note": "Design examples, not an implemented API. Credentials are scenario labels; no real JWTs. Case preconditions are described by case names.",
+  "note": "Synthetic contract examples. Identity/shared errors are validated in API-05; profile successes remain planned until M2. Credentials are scenario labels, never real JWTs.",
   "examples": [
     {
       "case": "identity",

@@ -1,0 +1,15 @@
+{
+  "name": "@disconnect/api-codegen",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Build-only OpenAPI tooling; never imported by the mobile app",
+  "scripts": {
+    "generate": "node generate-http-types.mjs",
+    "check": "node generate-http-types.mjs --check"
+  },
+  "devDependencies": {
+    "openapi-typescript": "7.13.0",
+    "typescript": "5.9.3"
+  }
+}

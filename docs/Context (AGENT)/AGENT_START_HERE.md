@@ -4,7 +4,7 @@
 **Read in order:** `PRD.md` → `TSD.md` → current Figma design → existing source repository.  
 **Design:** https://www.figma.com/design/ukmD2ZidJ9UR2XxUkvdPoJ/App-UI?node-id=0-1
 
-**Checkout status (2026-10-30):** A shared Expo/React Native shell, accepted type-only Auth/native interfaces with synthetic HTTP fixtures (Plan 00 committed as `0b50900`), and a FastAPI health foundation now exist. See [repository README](../../README.md) for actual setup/check commands. Auth, database access, and native protection are not connected. Legacy iOS source is now present in `apps/mobile/ios/` from commit `fe8f262`; its audit, signing/build validation and reuse remain prerequisites for RN/iOS integration. Source availability alone is not integration acceptance. The shell opens Home as a development preview: RN-09a composes source cards with unavailable inputs and no sample outcomes; Quests, History and Settings now also have source-aligned presentation with unavailable inputs and isolated source examples. It does not claim active protection.
+**Checkout status (2026-11-01):** A shared Expo/React Native shell, accepted type-only Auth/native interfaces with synthetic HTTP fixtures (Plan 00 committed as `0b50900`), and a FastAPI health foundation now exist. See [repository README](../../README.md) for actual setup/check commands. Auth, database access, and native protection are not connected. Legacy iOS source is now present in `apps/mobile/ios/` from commit `fe8f262`; its audit, signing/build validation and reuse remain prerequisites for RN/iOS integration. Source availability alone is not integration acceptance. The shell opens Home as a development preview: RN-09a composes source cards with unavailable inputs and no sample outcomes; Quests, History and Settings now also have source-aligned presentation with unavailable inputs and isolated source examples. It does not claim active protection.
 
 **Engineering ownership:** Ishmum owns main/shared React Native UI, Android, backend/product database and shared testing. Anisha owns all Supabase Auth/project setup (SB-01–03), mobile Auth/onboarding and iOS. Ishmum owns only the Supabase product database work (SB-04/05), not Auth administration. Build against the shared contracts independently, then wire real outputs when ready; mark integration-dependent parts complete only after joint validation. Read [the accepted decisions](../architecture/identity-foundation.md) and [core execution order](../core_plan/README.md) before foundation work.
 
@@ -127,10 +127,21 @@ capability tests remain separate; a web export does not establish native behavio
 - **`TSD.md`** — architecture, native boundaries, Swift/Android requirements, TypeScript interfaces, FastAPI endpoints, Pydantic/SQL examples, event sync, security, database, tests, infra, agent work packages.
 - **`OPEN_DECISIONS.yaml`** — machine-readable unresolved founder choices, intentionally unapproved.
 - **[`PM_QUESTIONS.md`](PM_QUESTIONS.md)** — 22 PM questions with stable IDs and space to append dated answers, clarifications, and agreed decisions.
-- **[`core_plan/README.md`](../core_plan/README.md)** — execution order and index for five detailed foundation plans, with 44 parts (Plan 00 committed as `0b50900`, RN-01–04 producers implemented with evidence, 36 parts awaiting acceptance, including RN-05 consumer, RN-07 UI-only, RN-08 native presentation preparation, RN-09a–h UI with live integration pending and RN-10 shared hardening; RN-04 real root wiring pending), cross-plan dependencies, implementation/commit ledgers, and explicit PM/native gates.
+- **[`core_plan/README.md`](../core_plan/README.md)** — execution order and index for five detailed foundation plans, with 44 parts (Plan 00 committed as `0b50900`, RN-01–04 and API-01–05 producers implemented with evidence, 31 parts awaiting acceptance, including RN-05 consumer, RN-07 UI-only, RN-08 native presentation preparation, RN-09a–h UI with live integration pending and RN-10 shared hardening; RN-04 real root wiring pending), cross-plan dependencies, implementation/commit ledgers, and explicit PM/native gates.
 
 **Source of truth:** This is a context-rich implementation baseline. A full repo audit and explicit product policy answers may require updates before coding core session/reward rules. The documents must be revised whenever founder decisions, platform behavior, or existing code evidence contradicts assumptions.
 
 [RN-10 QA and RN-11 readiness](../qa/mobile-accessibility.md): shared accessibility/lifecycle fixes are recorded separately from pending signed-device and live Auth/profile checks. RN-11 currently awaits the real M1/M2 producers.
 
 RN-09a–h independent main-screen and detail/editor UI is implemented. See [UI coverage](../qa/rn09-ui-coverage.md) and Plan 04 notes for exact scope, commits, source adaptations and remaining live/device acceptance. Actual saves, account data, native selection/protection and measured outcomes remain unavailable until their producers are integrated.
+
+
+Plan 03 API-01–05 now implement backend identity verification and generated wire
+contracts; read [Plan 03 implementation notes](../core_plan_implementation_notes/plan_03_backend_foundation_notes.md)
+before backend/Auth/RN integration. FastAPI has public `/healthz` and protected
+`/v1/me`; profiles/database/API-06–10 remain pending. Real Supabase project tokens,
+mobile Auth/session/root wiring and live M1/M2 acceptance are not yet verified.
+Schema export is environment-free and fail-closed; no fake authenticated account
+is registered. App/shared TypeScript remains 6.0.3; its pinned build-only generator
+uses an isolated TypeScript 5 peer. Plan 04 phone/UI evidence does not establish
+live Auth, persistence or native protection.

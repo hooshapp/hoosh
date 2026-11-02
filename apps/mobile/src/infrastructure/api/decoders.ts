@@ -7,7 +7,7 @@ export function decodeHealth(value: unknown): HealthResponse {
     throw new ApiError('invalid_response');
   return { status: 'ok', service: 'disconnect-api' };
 }
-/** Canonical AuthIdentity projection; API-05 still owns future generated wire DTOs. */
+/** Verified wire-to-domain projection; API-05 types do not replace runtime validation. */
 export function decodeIdentity(value: unknown, { account }: ResponseContext): AuthIdentity {
   if (
     !isRecord(value) ||

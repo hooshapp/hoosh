@@ -11,11 +11,11 @@ npm run api:test
 npm run api:lint
 ```
 
-Only `GET /healthz` is implemented. FastAPI publishes its schema at `/openapi.json` and documentation at `/docs`.
+`GET /healthz` and the protected database-independent `GET /v1/me` are implemented. FastAPI publishes its schema at `/openapi.json` and documentation at `/docs`.
 
-The adopted [M1/M2 contract](../../packages/contracts/HTTP_API.md) specifies identity-only `GET /v1/me`, then `GET/PATCH /v1/profile`; none is implemented yet. Ishmum owns Pydantic/OpenAPI schemas and one Alembic history when those parts begin. Derive user IDs from verified Supabase access tokens; no client-provided identity or production auth bypass. Supabase Auth owns credentials and mobile session refresh. The API owns token verification and server-authoritative product mutations.
+The adopted [M1/M2 contract](../../packages/contracts/HTTP_API.md) specifies identity-only `GET /v1/me`, then planned `GET/PATCH /v1/profile`; the latter awaits API-06–09. Ishmum owns Pydantic/OpenAPI schemas and one Alembic history when those parts begin. Derive user IDs from verified Supabase access tokens; no client-provided identity or production auth bypass. Supabase Auth owns credentials and mobile session refresh. The API owns token verification and server-authoritative product mutations.
 
-There is no database connection, JWT verifier, migration, cloud deployment, or Supabase project created by this scaffold. Configuration is read from `services/api/.env`, independently of the shell working directory. Copy `.env.example` when you need browser CORS or later integration settings.
+The JWT verifier and bounded public-key resolver are implemented; no database connection, migration, cloud deployment or Supabase project is created by these parts. Configuration is read from `services/api/.env`, independently of the shell working directory. Copy `.env.example` when you need browser CORS or later integration settings.
 
 Dependencies are locked in `uv.lock`. Add them using `uv add --project services/api ...` (or `--dev` for tooling), and commit both the project file and lockfile.
 
@@ -100,3 +100,30 @@ M1 handoff still requires Anisha's exact SB-02 trust metadata, a disposable real
 user token, mobile session/root guard composition and RN-05/06 acceptance. No live
 Supabase account, profile persistence, protected UI or installed restriction is
 claimed by these deterministic producer checks.
+
+## API-05 schema and generated contract handoff
+
+Run `npm run api:generate` to export the environment-free app and produce committed
+HTTP types; `npm run api:check-contracts` checks exact bytes without rewriting.
+Root `npm run check` and the API CI job enforce drift. The exporter never imports
+`main.app`, constructs `Settings`, enters lifespan, creates a network client or
+connects a database. A deliberately invalid production environment is tested to
+prove this separation; normal runtime startup validation remains strict.
+
+Pydantic error variants expose code-discriminated required details and literal
+retryability in OpenAPI/TypeScript. The schema documents middleware request-ID,
+private no-store and 401 Bearer headers. Health retains the exact required literal
+response used by existing mobile consumers. Shared synthetic identity/error
+fixtures validate against Pydantic and exported JSON Schema; profile success
+fixtures stay future M2 inputs. Only implemented routes are generated.
+
+The private `packages/api-codegen` workspace pins openapi-typescript 7.13.0 with its
+TypeScript 5.9.3 peer, while mobile/contracts keep 6.0.3 and the root npm lockfile.
+See its README for the scoped build-only audit finding and local-input boundary.
+No new runtime HTTP client or mobile Auth integration is installed. Generated
+`MeResponse` is structurally compatible with the existing AuthIdentity projection;
+real response parsing and account-generation checks remain essential.
+
+Next: Anisha supplies SB-02/03 metadata/current token and the session/root producer;
+Ishmum and Anisha execute real M1/RN-05/06. Ishmum can prepare SB-04/05 and API-06
+for later product persistence. API-06–10, cloud verification and M2 remain open.
