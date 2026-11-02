@@ -32,7 +32,7 @@ The reviewed bootstrap and exact hosted procedure are in
 [`services/api/db/bootstrap`](../../services/api/db/bootstrap/README.md).
 Use `disconnect_api` only as runtime identity; use the project database admin only
 for explicit bootstrap/migration operations during this initial development stage.
-The roles must remain separate. API-06 will add actual application connections;
+The roles must remain separate. API-06 now owns the lazy bounded application engine and verified-user units;
 API-07 will create product tables/grants/RLS using Alembic.
 
 Hosted role creation/catalog evidence and real password-login/TLS evidence are
@@ -74,6 +74,16 @@ labels. No managed project URL or secret is used by CI or fixture cleanup.
 Local real PostgreSQL acceptance: eight checks passed, including actual runtime
 login/denials, repeated bootstrap, five unsafe existing-role/ambient-grant cases
 and rejected wrong password. Empty initialization and labeled reset/rebuild passed.
-Default deterministic backend tests (307) stay separate from the required marked
-DB group. Actual SQLAlchemy/session/context work is API-06, and Alembic/product
-schema/RLS is API-07; neither is supplied by a fake pre-created profile table.
+The SB-05 baseline had 307 deterministic tests; API-06 now has 337 deterministic
+tests and 24 checks in the separately required marked DB group. Actual SQLAlchemy/session/context infrastructure is now implemented in API-06;
+Alembic/product schema/RLS is API-07; neither is supplied by a fake pre-created profile table.
+
+## API-06 application connection check
+
+A read-only SQLAlchemy/psycopg smoke check used the configured hosted runtime role,
+verified client TLS to the session pooler and confirmed the bounded server options.
+No synthetic Auth user, product SQL, hosted fixture, migration or Auth setting was
+created. Libpq confirmed client TLS; server pg_stat_ssl reports the provider's
+pooler/backend leg (observed false), which is not a check of this client's TLS.
+The runtime startup/liveness/missing-token checks opened zero DB connections,
+and lifespan disposed its owned engine. See Plan 03 notes for exact API-06 evidence.

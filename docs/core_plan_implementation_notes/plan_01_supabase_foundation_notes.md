@@ -9,7 +9,7 @@
 
 - Latest: **SB-05 — Disposable PostgreSQL infrastructure and SB-04 hosted acceptance**, subject `test(db): add disposable PostgreSQL integration environment`, parent `53d6c8b`.
 - Actual validation: `npm run api:lint`: passed; `npm run api:test`: 307 passed, 8 explicitly deselected for the separate group; `npm run api:db:test`: 8 real PostgreSQL tests passed. Empty-volume up and labeled reset/up/test passed; a wrong APP_ENV made the selected required DB group fail, not skip. Frozen uv sync and generated-contract drift checks passed; Compose configuration and CI YAML parsed. Hosted administrator/runtime verify-full logins, non-rotating recheck, denied persistent DDL/Auth/admin escalation, wrong runtime password, and administrator DDL followed by rollback all passed; no probe table remained. Task containers were stopped with the named test volume retained. Evidence: artifacts/sb-04 and artifacts/sb-05; hosted GitHub workflow run is unverified.
-- Next / remaining: Ishmum can start API-06 database engine/request sessions and isolated connection/context fixtures, then API-07 Alembic/profile/RLS and API-08–10 endpoints/evidence. SB-04 and SB-05 are accepted; real Supabase user-token/A/B identity and Anisha Auth/session/root/onboarding/iOS plus joint M1/M2/RN acceptance remain pending. The local test stack is stopped; api:db:up starts it again. No push/main merge was requested or performed.
+- Next / remaining: API-06 now consumes the verified role/fixture with scoped transactions; read Plan 03 notes for its commit and current 337 unit / 24 real DB checks. API-07 Alembic/profile/RLS is next. Anisha Auth/user-token/root and joint M1/M2 acceptance remain pending. No push/main merge.
 - Anisha retains Auth administration/users/providers/redirects, onboarding and iOS.
   Ishmum owns the product database/backend. No Auth setting, user, product table,
   paid resource, credential reset, push or main merge was performed.
@@ -83,7 +83,7 @@ Pending hash by unique commit subject until the next normal notes update.
 
 ### SB-05 — Disposable PostgreSQL infrastructure and SB-04 hosted acceptance
 
-**Hash:** Pending; resolve by `test(db): add disposable PostgreSQL integration environment`.
+**Hash:** `302b214` (recorded during API-06).
 **Date:** 2026-11-01. **Owner:** Ishmum. **Branch:** `task/backend/supabase-sb-05`. **Parent:** `53d6c8b`.
 **Status:** Implemented; SB-05 real local DB checks and SB-04 hosted login/TLS accepted
 

@@ -303,7 +303,7 @@ All entries start **Pending**. Replace status only when that part's checks have 
 | SB-02 | Anisha | Pending | — | — |
 | SB-03 | Anisha | Pending | — | — |
 | SB-04 | Ishmum | Implemented; hosted role/login/TLS + local acceptance passed | `53d6c8b` | [Plan 01 notes](../core_plan_implementation_notes/plan_01_supabase_foundation_notes.md); actual administrator/runtime logins, TLS, denied privileges and rollback-only migration DDL passed; hosted acceptance recorded with SB-05 follow-up; no shared credential reset |
-| SB-05 | Ishmum | Implemented; local real-DB acceptance passed | Pending: `test(db): add disposable PostgreSQL integration environment` | [Plan 01 notes](../core_plan_implementation_notes/plan_01_supabase_foundation_notes.md); 8 real DB checks, pinned PostgreSQL 17.11, guarded fresh-volume reset/start, required CI job defined |
+| SB-05 | Ishmum | Implemented; local real-DB acceptance passed | `302b214` | [Plan 01 notes](../core_plan_implementation_notes/plan_01_supabase_foundation_notes.md); 8 real DB checks, pinned PostgreSQL 17.11, guarded fresh-volume reset/start, required CI job defined |
 | SB-06 | Anisha leads; Ishmum contributes | Pending | — | — |
 
 ## 10. References checked for this plan
@@ -340,3 +340,8 @@ The CI job is committed; a hosted GitHub run was not performed here. This fixtur
 contract is enough to start independent API-06 implementation locally; hosted
 SB-04 login acceptance has also passed in this follow-up.
 No product schema, RLS, SQLAlchemy session or migration test is claimed yet.
+
+API-06 now consumes SB-04/05 with a verified lazy SQLAlchemy engine and scoped
+user transactions; the same isolated CI group extends to 24 DB tests. Product
+Alembic/history/RLS remain API-07. This follow-up does not accept Anisha's Auth
+parts or Supabase Auth lifecycle simulation. See Plan 03 implementation notes.

@@ -1,0 +1,47 @@
+{
+  "date": "2026-11-01",
+  "branch": "task/backend/api-06",
+  "parent": "302b214",
+  "checks": {
+    "deterministicBackendTests": 337,
+    "requiredRealPostgresTests": 24,
+    "ruff": "passed",
+    "frozenUvSync": "passed",
+    "openApiAndTypeDrift": "zero; passed",
+    "startupAndAuthShutdownFailureCleanup": "passed",
+    "realDeferredCommitFailureBeforeHttpSuccess": "passed",
+    "physicalConnectionABContextAndTimeoutRecovery": "passed",
+    "deadIdleAndActiveConnectionRecoveryWithoutMutationReplay": "passed",
+    "guardedDisposableTargetAndCleanup": "existing guards reused; actual test-support probes cleaned"
+  },
+  "versions": {
+    "fastapi": "0.162.0",
+    "sqlalchemy": "2.0.55",
+    "psycopg": "3.3.6",
+    "alembic": "1.20.1",
+    "pytest": "9.2.0"
+  },
+  "python": "3.12.14",
+  "libpq": 180006,
+  "hostedReadOnlyCheck": {
+    "hostedSqlAlchemyRuntimeLogin": "passed",
+    "role": "disconnect_api",
+    "clientTlsToPooler": true,
+    "configuredTlsMode": "verify-full",
+    "providerBackendPgStatSsl": false,
+    "connectionMode": "session-pooler",
+    "productSqlOrMigrationsPerformed": false,
+    "runtimeLivenessAndMissingCredentialsUsedZeroDatabaseConnections": true
+  },
+  "generatedOutputSha256": {
+    "packages/contracts/openapi/foundation.openapi.json": "6f634f6efd2ec2908d6b0ea134285dff19eb8695a6d5d0217b3816f4238d479f",
+    "packages/contracts/src/http.generated.ts": "326141d72c8e3c0a786c7973f798b5c098784652644dfe89a9dbd8b275d9d852"
+  },
+  "finalLocalTestStack": "stopped; named disposable test volume retained",
+  "productTablesOrRlsCreated": false,
+  "alembicConfigurationOrHistoryCreated": false,
+  "realUserTokenOrMobileAcceptance": false,
+  "authAdministrationOrNativeChanged": false,
+  "hostedGithubCiRun": false,
+  "pushOrMainMerge": false
+}

@@ -24,6 +24,7 @@ def create_app(*, cors_origins: Sequence[str] = (), lifespan: Lifespan | None = 
         description="Verified identity foundation; profiles and native protection are separate.",
     )
     application.state.token_verifier = UnavailableTokenVerifier()
+    application.state.database = None
     install_error_handlers(application)
     # Starlette inserts middleware at the front: context → CORS → error boundary → routes.
     application.add_middleware(UnexpectedErrorMiddleware)

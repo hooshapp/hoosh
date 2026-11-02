@@ -5,8 +5,10 @@ from pathlib import Path
 from typing import Literal, Self
 from urllib.parse import urlsplit
 
-from pydantic import Field, field_validator, model_validator
+from pydantic import Field, SecretStr, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from app.core.database_config import runtime_database_url
 
 API_ROOT = Path(__file__).resolve().parents[2]
 SigningAlgorithm = Literal["ES256", "RS256"]
@@ -51,6 +53,13 @@ class Settings(BaseSettings):
     supabase_jwt_issuer: str | None = None
     supabase_jwt_audience: str | None = Field(default=None, min_length=1, max_length=256)
     supabase_jwt_algorithms: tuple[SigningAlgorithm, ...] | None = None
+    database_url: SecretStr | None = Field(default=None, repr=False)
+    db_pool_size: int = Field(default=2, ge=1, le=5)
+    db_pool_timeout_seconds: float = Field(default=2, ge=0.05, le=10, allow_inf_nan=False)
+    db_connect_timeout_seconds: int = Field(default=5, ge=1, le=10)
+    db_statement_timeout_ms: int = Field(default=5000, ge=100, le=30000)
+    db_lock_timeout_ms: int = Field(default=2000, ge=100, le=5000)
+    db_idle_transaction_timeout_ms: int = Field(default=10000, ge=1000, le=60000)
     auth_token_max_bytes: int = Field(default=16384, ge=1024, le=65536)
     auth_clock_skew_seconds: float = Field(default=30, ge=0, le=120, allow_inf_nan=False)
     auth_jwks_ttl_seconds: float = Field(default=300, ge=1, le=600, allow_inf_nan=False)
@@ -113,6 +122,14 @@ class Settings(BaseSettings):
             raise ValueError("Production requires complete Supabase verification configuration")
         if self.auth_jwks_connect_seconds > self.auth_jwks_budget_seconds:
             raise ValueError("JWKS connect timeout cannot exceed the complete resolution budget")
+        if self.db_lock_timeout_ms > self.db_statement_timeout_ms:
+            raise ValueError("Database lock timeout cannot exceed statement timeout")
+        if self.database_url is not None:
+            runtime_database_url(
+                self.database_url.get_secret_value(),
+                app_env=self.app_env,
+                project_origin=self.supabase_project_url,
+            )
         return self
 
     @property

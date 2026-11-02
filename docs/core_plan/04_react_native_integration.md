@@ -742,7 +742,7 @@ verification/JWKS and generated `MeResponse`/error/health types now exist. Read
 [Plan 03 notes](../core_plan_implementation_notes/plan_03_backend_foundation_notes.md).
 This removes the missing backend/schema producer for RN-05; Anisha's actual
 Supabase/session/guard/root outputs, configured-project smoke and real RN-05/06
-acceptance remain pending. RN-07 still requires API-06–09 persistence; SB-04/05 are delivered in the later checkpoint.
+acceptance remain pending. RN-07 still requires API-07–09 persistence; SB-04/05 are delivered in the later checkpoint.
 No mobile Auth/root provider was wired by the backend commits.
 
 ### Supabase database infrastructure follow-up — 2026-11-01
@@ -751,6 +751,11 @@ SB-05's disposable real PostgreSQL producer is implemented and verified; SB-04's
 hosted role, actual password login and verified TLS/permissions are also accepted. The
 backend has observed the real ES256 JWKS and rejects real project public API keys
 as user tokens. These are infrastructure/backend checks, not RN-05/06 acceptance.
-RN-07 still needs API-06–10 profile persistence, and Anisha's Auth/session/root
+RN-07 still needs API-07–10 profile persistence, and Anisha's Auth/session/root
 producer remains required for live account/UI integration. No mobile Auth or UI
 code was changed in this follow-up; see Plan 01 implementation notes for evidence.
+
+API-06 now supplies the guarded lazy database transaction/session producer (337
+deterministic / 24 real DB tests). This is backend infrastructure only: profile
+schema/RLS/API routes remain API-07–10, and real Auth/root wiring still comes from
+Anisha. No RN consumer/acceptance status is advanced by this backend-only part.

@@ -41,8 +41,10 @@ def test_export_is_deterministic_and_never_constructs_runtime_or_clients(monkeyp
 
     monkeypatch.setenv("APP_ENV", "production")
     monkeypatch.setenv("SUPABASE_PROJECT_URL", "invalid-and-incomplete")
+    monkeypatch.setenv("DATABASE_URL", "invalid-and-secret-database-config")
     monkeypatch.setattr(Settings, "__init__", forbidden)
     monkeypatch.setattr(httpx2.AsyncClient, "__init__", forbidden)
+    monkeypatch.setattr("app.db.engine.create_engine", forbidden)
     was_main_imported = "app.main" in sys.modules
     module = exporter()
     first = module.schema_text()

@@ -42,11 +42,19 @@ test file, which allows CI configuration and ensures accidental unsafe values fa
 `bootstrap.sql` creates only minimal `auth.users(id uuid)` and a fixture marker.
 It is not a Supabase Auth emulator. The reviewed production role bootstrap is
 mounted separately, followed by test-only runtime access. No profile table or
-Alembic history is pre-created: API-06 adds connection/session/context fixtures,
-and API-07 adds actual migrations and table/RLS tests. These checks establish
+Alembic history is pre-created: API-06 now adds connection/session/context fixtures,
+and API-07 adds actual migrations and table/RLS tests. SB-05 baseline checks establish
 real logins, minimum role flags/permissions, repeatable bootstrap and rejection
 of unsafe existing role/ownership/public grants; they do not prove hosted Auth,
 API persistence, cascade behavior or row isolation.
+
+API-06 extends the same required group to 24 tests with real SQLAlchemy runtime-role
+transactions, connection reuse, failure cleanup, pool/statement timeouts, stale and
+lost connections, function-scoped HTTP finalization and shutdown. Its randomly
+named `test_support` probe tables are explicitly cleaned after target/marker
+validation; they are not product models or migrations. See
+[application DB contract](../../app/db/README.md). Real profile/RLS acceptance still
+requires API-07 onward; hosted Auth semantics remain separate.
 
 If Docker is unavailable, this group is unavailable locally; keep CI required and
 provision an explicitly separate disposable target before changing the contract.

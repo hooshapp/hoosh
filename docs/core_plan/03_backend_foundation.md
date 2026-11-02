@@ -1,6 +1,6 @@
 # Plan 03 — FastAPI Identity and Profile Foundation
 
-**Status:** API-01–05 are implemented and deterministically validated: strict trust/errors, bounded JWT/JWKS, protected database-independent GET /v1/me and generated OpenAPI/HTTP types with CI drift checks. Actual Supabase/mobile M1 acceptance and API-06–10/database/profile work remain pending.\
+**Status:** API-01–06 are implemented: strict trust/errors, JWT/JWKS, database-independent identity, generated contracts and bounded lazy PostgreSQL units of work. API-06 passed 337 deterministic tests, 24 real PostgreSQL checks and a read-only hosted runtime/TLS smoke check. Actual user-token/mobile M1 and API-07–10/profile/migration/RLS work remain pending.\
 **Owner:** Ishmum (backend/database). Anisha reviews Auth contracts and participates in live session checks.\
 **Area branch:** `area/backend`; task branches `task/backend/<part>`.\
 **Milestones:** M1 = verified identity without a database; M2 = minimal, isolated, revisioned profile persistence.
@@ -436,12 +436,12 @@ Auth can finish its session work without profiles. The main frontend must not cl
 
 | Part | Status | Actual commit | Evidence / notes |
 |---|---|---|---|
-| API-01 | Implemented; live trust handoff pending | `8ce121d` | 58 backend tests and Ruff; [Plan 03 notes](../core_plan_implementation_notes/plan_03_backend_foundation_notes.md) |
+| API-01 | Implemented; public trust configuration observed | `8ce121d` | 58 backend tests and Ruff; [Plan 03 notes](../core_plan_implementation_notes/plan_03_backend_foundation_notes.md) |
 | API-02 | Implemented; live provider tokens unverified | `bdd62a6` | 194 backend tests and Ruff; Plan 03 notes |
-| API-03 | Implemented; live project discovery unverified | `35ba307` | 223 backend tests; deadline/cancellation/cache/lifespan checks; [Auth runbook](../../services/api/AUTH.md) |
+| API-03 | Implemented; live public discovery checked; user tokens unverified | `35ba307` | 223 backend tests; deadline/cancellation/cache/lifespan checks; [Auth runbook](../../services/api/AUTH.md) |
 | API-04 | Implemented producer; live Supabase/mobile M1 unverified | `06f5704` | 244 backend tests; real signed-token route paths and local crypto measurements; Plan 03 notes |
-| API-05 | Implemented; live M1 remains pending | Resolve by `chore(contracts): generate identity API types from OpenAPI` | 269 API tests, full workspace checks, isolated fresh generator install/drift rejection and mobile export; Plan 03 notes |
-| API-06 | Pending | — | — |
+| API-05 | Implemented; live M1 remains pending | `d4f3e38` | 269 API tests, full workspace checks, isolated fresh generator install/drift rejection and mobile export; Plan 03 notes |
+| API-06 | Implemented; local real-DB + read-only hosted engine checks passed | Resolve by `feat(db): add scoped PostgreSQL sessions and integration fixtures` | 337 deterministic tests, 24 real DB checks, Ruff, frozen lock and schema drift; [Plan 03 notes](../core_plan_implementation_notes/plan_03_backend_foundation_notes.md) / [DB contract](../../services/api/app/db/README.md) |
 | API-07 | Pending | — | — |
 | API-08 | Pending | — | — |
 | API-09 | Pending | — | — |
@@ -473,5 +473,17 @@ reserved error detail schemas do not create profile endpoints. The build-only
 API generator uses pinned TypeScript 5.9.3/openapi-typescript 7.13.0 in its own
 private workspace, preserving the application/contracts TypeScript 6.0.3 and one
 npm lockfile. See notes for exact checks, scoped tooling advisories and remaining
-live handoff. API-06 still requires SB-04/05; no product database or cloud Auth
-configuration was provisioned by these commits.
+live handoff. Those five commits provisioned no product database or cloud Auth
+configuration; API-06 now consumes the later verified SB-04/05 handoff below.
+
+### API-06 producer checkpoint — 2026-11-01
+
+The application now owns one lazy bounded engine and fresh verified-user sessions.
+Migration credentials are not a Settings field or fallback. The synchronous
+function-scoped dependency commits before sending success; missing context, manual
+finalization and post-close reuse are rejected. Actual PostgreSQL tests cover
+rollback/commit failure, A/B physical-connection reuse, timeout/exhaustion, lost
+connections, no mutation replay and failure-safe lifespan cleanup. Only the
+existing health/identity routes remain published; no product table, RLS, Alembic
+configuration/history or profile endpoint was created. API-07 is next and supplies
+those migration/isolation prerequisites before endpoints in API-08/09.
