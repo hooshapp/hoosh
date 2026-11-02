@@ -4,14 +4,14 @@
 **Owner:** Ishmum. Anisha owns Supabase Auth setup and mobile sessions/onboarding.
 **Branch:** `task/backend/api-01-05`. **Starting commit:** `2703a23`.
 **Last updated:** 2026-11-01.
-**Current part:** API-05 implemented/tested. API-01–05 producer scope is complete. Ishmum next prepares SB-04/05 then API-06 database sessions/harness; API-06–10 remain pending. Anisha supplies exact SB-02 trust metadata/current tokens and the mobile Auth/session/root producer for joint RN-05/06 and M1 acceptance. Product profiles/M2 and native enforcement are not implemented. No push requested or performed.
+**Current part:** API-01–05 implemented/tested. SB-05 is implemented in Plan 01; SB-04 hosted role/login/TLS is accepted. Next is independent API-06 work against the verified local fixture; see Plan 01 notes.
 
 ## Resume here
 
 - Latest: **API-05 — Executable OpenAPI and generated HTTP types**, subject `chore(contracts): generate identity API types from OpenAPI`, parent `06f5704`.
 - Validation: `npm run check`: passed (269 API, 250 portable mobile and 362 native component tests; TypeScript, ESLint, Ruff, assets and immutable contract checks). `npm run mobile:export`: passed (71 original assets, 38-file UI-fixture isolation). Frozen uv sync, fresh filtered npm ci in an isolated directory and generator check passed; deliberately stale generated output failed without mutation. Repeated full generation preserved both SHA-256 hashes. Evidence: `artifacts/api-05/verification.json`; no live provider calls.
-- Next / remaining: API-01–05 producer scope is complete. Ishmum next prepares SB-04/05 then API-06 database sessions/harness; API-06–10 remain pending. Anisha supplies exact SB-02 trust metadata/current tokens and the mobile Auth/session/root producer for joint RN-05/06 and M1 acceptance. Product profiles/M2 and native enforcement are not implemented. No push requested or performed.
-- Anisha owns Supabase Auth/session/onboarding; Ishmum backend verification and product DB. No provider, user, redirect, database or native policy was changed. No push/main merge.
+- Next / remaining: Read Plan 01 notes: SB-05 local PostgreSQL is verified; SB-04 hosted role/login/TLS is accepted. API-06 can start against the verified role/fixture; API-06–10 acceptance, real user tokens and Anisha Auth/mobile M1 remain open.
+- Anisha owns Supabase Auth/session/onboarding; Ishmum backend verification and product DB. Plan 01 records the new database role/bootstrap work separately. No Auth provider/user/redirect or native policy was changed. No push/main merge.
 
 ## Recording rules
 
@@ -340,5 +340,11 @@ JWKS/public-API-key checks and SB-04/05 work. The existing project exposes ES256
 ignored local API trust configuration is populated, and the production resolver
 resolved its real key. Both the legacy anon and modern publishable key were
 rejected as user identity. No real user token/Auth/mobile M1 proof was supplied.
-The hosted runtime role is provisioned; password login remains pending a corrected
-private administrator credential. API-06–10 are not implemented by this follow-up.
+The hosted runtime role/login/TLS and permission denials are accepted after the
+private administrator credential was corrected; its distinct runtime secret is
+saved only in the ignored local configuration. API-06–10 are not implemented by this follow-up.
+
+SB-05 now supplies the pinned real PostgreSQL/role fixture and required DB check
+command/CI definition (8 checks passed locally). Its marker/target/cleanup guards
+never fall back to managed credentials. Follow the Plan 01 current checkpoint;
+API-06/07 must still add actual sessions/context and Alembic/schema/RLS tests.

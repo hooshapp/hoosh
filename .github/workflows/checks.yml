@@ -41,7 +41,23 @@ jobs:
       - name: Install only build-time API generator dependencies
         run: npm ci --workspace @disconnect/api-codegen --include-workspace-root=false
       - run: uv sync --project services/api --frozen
-      - run: uv run --project services/api ruff check services/api scripts/export-openapi.py scripts/configure-db-access.py
+      - run: uv run --project services/api ruff check services/api scripts/export-openapi.py scripts/configure-db-access.py scripts/db-test.py
       - run: uv run --project services/api pytest services/api/tests
       - name: Reproducible OpenAPI and generated HTTP types
         run: npm run api:check-contracts
+
+  database:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: astral-sh/setup-uv@v10.3.3
+        with:
+          version: '0.12.10'
+      - run: uv sync --project services/api --frozen
+      - name: Start pinned disposable PostgreSQL
+        run: uv run --project services/api python scripts/db-test.py up
+      - name: Required real database bootstrap and permission checks
+        run: uv run --project services/api python scripts/db-test.py check
+      - name: Remove only the labeled disposable fixture
+        if: always()
+        run: uv run --project services/api python scripts/db-test.py reset

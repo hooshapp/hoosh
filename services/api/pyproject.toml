@@ -22,6 +22,8 @@ dev = [
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+addopts = "-m 'not database'"
+markers = ["database: required disposable PostgreSQL checks; explicit local target only"]
 
 [tool.ruff]
 target-version = "py312"

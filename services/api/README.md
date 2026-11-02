@@ -125,8 +125,8 @@ No new runtime HTTP client or mobile Auth integration is installed. Generated
 real response parsing and account-generation checks remain essential.
 
 Next: Anisha supplies SB-02/03 metadata/current token and the session/root producer;
-Ishmum and Anisha execute real M1/RN-05/06. Ishmum can prepare SB-04/05 and API-06
-for later product persistence. API-06–10, cloud verification and M2 remain open.
+Ishmum and Anisha execute real M1/RN-05/06. SB-05 is verified locally; SB-04 hosted login is accepted. Ishmum can start
+API-06 against the local fixture for later product persistence. API-06–10, cloud verification and M2 remain open.
 
 ## Supabase database preparation — SB-04
 
@@ -137,7 +137,21 @@ The backend's ignored public trust configuration and production JWKS resolver
 were checked against the real project; its public API keys cannot authenticate
 `/v1/me`. Real user-token/mobile M1 remains pending Anisha's handoff.
 
-Hosted CA/hostname verification passes. Hosted password login and permission
-checks remain pending correction of the private administrator URI; no password
-reset was performed. HTTP application database engines/sessions are still API-06
-work; no profile table or product migration has been created.
+Hosted CA/hostname verification, administrator/runtime password login and runtime
+permission checks pass after the URI was corrected privately. The dedicated
+runtime password was initialized separately; no shared password reset was performed.
+HTTP application database engines/sessions are still API-06 work; no profile table or product migration has been created.
+
+## Disposable database checks — SB-05
+
+Read [the fixture guide](tests/support/README.md), then run `npm run api:db:up` and
+`npm run api:db:test`. A separate required CI job runs the same pinned PostgreSQL
+17.11/role/bootstrap prerequisites without cloud secrets. Default API tests exclude
+the marked DB group; selecting it with missing/unsafe configuration fails rather
+than silently skipping. `api:db:down` retains the fixture volume; explicit guarded
+`api:db:reset` removes only that named test volume. Do not target the shared project.
+
+SB-05 is accepted locally (8 real DB checks); hosted GitHub execution remains
+unverified. API-06 can now consume the local role/fixture contract independently;
+SB-04 hosted runtime login/TLS acceptance also passed.
+No profile schema or Alembic migration is created by these infrastructure parts.

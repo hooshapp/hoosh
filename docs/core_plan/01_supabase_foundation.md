@@ -1,6 +1,6 @@
 # Plan 01 — Supabase Auth and Database Foundation
 
-**Status:** SB-04 role bootstrap is provisioned and locally validated; hosted password login is pending corrected private credentials. SB-01–03 and SB-06 Auth ownership/acceptance remain with Anisha.\
+**Status:** Ishmum-owned SB-04 hosted role/login/TLS and SB-05 disposable PostgreSQL infrastructure are implemented and verified. SB-01–03 and SB-06 Auth ownership/acceptance remain with Anisha.\
 **Owners:** Anisha owns Supabase Auth end to end, including development project setup and Auth configuration (SB-01–03). Ishmum owns product database roles and test infrastructure (SB-04–05). Anisha leads SB-06 with Ishmum supplying backend evidence.\
 **Area branches:** SB-01–03 use `area/auth-onboarding`; SB-04–05 use `area/backend`. Use one task branch per part, such as `task/auth/supabase-sb-01` or `task/backend/supabase-sb-04`. SB-06 has one named author, Anisha, with Ishmum contributing API/database notes.\
 **Prerequisite:** Agree the relevant contracts in [Plan 00](00_shared_contracts.md).\
@@ -302,8 +302,8 @@ All entries start **Pending**. Replace status only when that part's checks have 
 | SB-01 | Anisha | Pending | — | — |
 | SB-02 | Anisha | Pending | — | — |
 | SB-03 | Anisha | Pending | — | — |
-| SB-04 | Ishmum | Partial: hosted role/catalog + local acceptance passed; hosted login pending | Pending: `chore(db): define least-privilege development database access` | [Plan 01 notes](../core_plan_implementation_notes/plan_01_supabase_foundation_notes.md); CA/hostname verified, saved admin password rejected; no credential reset |
-| SB-05 | Ishmum | Pending | — | — |
+| SB-04 | Ishmum | Implemented; hosted role/login/TLS + local acceptance passed | `53d6c8b` | [Plan 01 notes](../core_plan_implementation_notes/plan_01_supabase_foundation_notes.md); actual administrator/runtime logins, TLS, denied privileges and rollback-only migration DDL passed; hosted acceptance recorded with SB-05 follow-up; no shared credential reset |
+| SB-05 | Ishmum | Implemented; local real-DB acceptance passed | Pending: `test(db): add disposable PostgreSQL integration environment` | [Plan 01 notes](../core_plan_implementation_notes/plan_01_supabase_foundation_notes.md); 8 real DB checks, pinned PostgreSQL 17.11, guarded fresh-volume reset/start, required CI job defined |
 | SB-06 | Anisha leads; Ishmum contributes | Pending | — | — |
 
 ## 10. References checked for this plan
@@ -326,6 +326,17 @@ Anisha's Auth configuration/users. PostgreSQL 17.11 and ES256 are observed; the
 production JWKS resolver and rejection of both actual public API key types were
 checked. SB-04 created only the dedicated runtime role via an infrastructure-only
 provider migration; product tables/RLS remain API-07 Alembic work. Public TLS
-trust/hostname checks pass with the downloaded CA, while hosted password login
-is pending correction of the privately supplied administrator credential. Do not
-mark full SB-04 or live M1 accepted from these observations.
+trust/hostname checks and actual administrator/runtime logins now pass with the
+downloaded CA after the private password was corrected. A distinct runtime
+password was initialized privately; denied privileges, wrong-password rejection
+and rollback-only migration DDL passed. SB-04 is accepted; real user/mobile M1
+remains pending Anisha's producer and joint integration.
+
+SB-05 now supplies a pinned loopback-only PostgreSQL 17.11 fixture with explicit
+test credentials, minimal Auth UUID prerequisite, marker/target guards and required
+real database checks. See [test infrastructure](../../services/api/tests/support/README.md).
+Both empty-volume initialization and guarded destroy/rebuild passed locally.
+The CI job is committed; a hosted GitHub run was not performed here. This fixture
+contract is enough to start independent API-06 implementation locally; hosted
+SB-04 login acceptance has also passed in this follow-up.
+No product schema, RLS, SQLAlchemy session or migration test is claimed yet.

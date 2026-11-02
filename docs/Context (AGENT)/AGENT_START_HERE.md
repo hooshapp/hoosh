@@ -127,7 +127,7 @@ capability tests remain separate; a web export does not establish native behavio
 - **`TSD.md`** — architecture, native boundaries, Swift/Android requirements, TypeScript interfaces, FastAPI endpoints, Pydantic/SQL examples, event sync, security, database, tests, infra, agent work packages.
 - **`OPEN_DECISIONS.yaml`** — machine-readable unresolved founder choices, intentionally unapproved.
 - **[`PM_QUESTIONS.md`](PM_QUESTIONS.md)** — 22 PM questions with stable IDs and space to append dated answers, clarifications, and agreed decisions.
-- **[`core_plan/README.md`](../core_plan/README.md)** — execution order and index for five detailed foundation plans, with 44 parts (Plan 00 committed as `0b50900`, RN-01–04 and API-01–05 producers implemented with evidence, 31 parts awaiting acceptance, including RN-05 consumer, RN-07 UI-only, RN-08 native presentation preparation, RN-09a–h UI with live integration pending and RN-10 shared hardening; RN-04 real root wiring pending), cross-plan dependencies, implementation/commit ledgers, and explicit PM/native gates.
+- **[`core_plan/README.md`](../core_plan/README.md)** — execution order and index for five detailed foundation plans, with 44 parts (Plan 00 committed as `0b50900`, RN-01–04, API-01–05 and SB-04–05 producers implemented with evidence, 29 parts awaiting acceptance, including RN-05 consumer, RN-07 UI-only, RN-08 native presentation preparation, RN-09a–h UI with live integration pending and RN-10 shared hardening; RN-04 real root wiring pending), cross-plan dependencies, implementation/commit ledgers, and explicit PM/native gates.
 
 **Source of truth:** This is a context-rich implementation baseline. A full repo audit and explicit product policy answers may require updates before coding core session/reward rules. The documents must be revised whenever founder decisions, platform behavior, or existing code evidence contradicts assumptions.
 
@@ -145,3 +145,14 @@ Schema export is environment-free and fail-closed; no fake authenticated account
 is registered. App/shared TypeScript remains 6.0.3; its pinned build-only generator
 uses an isolated TypeScript 5 peer. Plan 04 phone/UI evidence does not establish
 live Auth, persistence or native protection.
+
+Supabase MCP access is now authenticated and verified. Ishmum's [Plan 01 notes](../core_plan_implementation_notes/plan_01_supabase_foundation_notes.md)
+record observed development metadata, real backend JWKS/public-key checks, SB-04
+hosted role/login/TLS and SB-05 disposable PostgreSQL 17.11 infrastructure. Hosted
+TLS trust/hostname and actual runtime-login permission checks pass after the private
+password was corrected. A separate runtime credential was initialized privately;
+no shared credential was reset. SB-05
+local/CI contract is implemented; 8 real PostgreSQL tests passed locally (hosted
+GitHub run unverified). Next backend work is API-06 against the verified fixture;
+API application engines, profile schema/RLS and Anisha's Auth/root wiring remain
+pending. Actual secrets/certificates stay ignored; never include them in notes.

@@ -11,7 +11,7 @@ mapping and mobile values. This file records names/purposes, never credentials.
 | `SUPABASE_JWT_AUDIENCE` | Expected M1 audience `authenticated`; actual user issuance proof pending |
 | `SUPABASE_JWT_ALGORITHMS` | Explicit JSON list `["ES256"]`, observed public JWKS; no auto-enabling keys |
 | `CORS_ALLOWED_ORIGINS` | Explicit browser origins; not authentication |
-| `DATABASE_URL` | Future API-06 runtime connection as `disconnect_api`; never an admin/service key |
+| `DATABASE_URL` | Provisioned `disconnect_api` connection for future API-06 use; never an admin/service key |
 | `MIGRATION_DATABASE_URL` | Explicit bootstrap/Alembic admin connection; never runtime fallback |
 | `TEST_DATABASE_URL`, `TEST_MIGRATION_DATABASE_URL` | SB-05 disposable local database only; no fallback to managed URLs |
 | `apps/mobile/.env` | Anisha supplies project URL/publishable key; Ishmum API origin, no DB/elevated key |
@@ -27,3 +27,9 @@ Current target/ref and observed facts: [development runbook](../runbooks/supabas
 Before any future production environment, deliberately separate project, accounts,
 URLs, credentials and callback allowlists; this development map is not production
 configuration or a promise of zero cloud charges.
+
+SB-05 implements the two TEST_* variables in a separate ignored
+`services/api/tests/.env`, copied from its tracked example without overwriting
+existing values. Explicit shell test values override that file and are validated.
+It is loopback/55432/disconnect_test only; root APP_ENV=test and a fixture marker
+are mandatory. Remote verify-full requirements do not permit cloud URLs in tests.

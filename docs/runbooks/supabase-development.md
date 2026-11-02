@@ -43,8 +43,11 @@ in this runbook. Credentials/root certificates are supplied privately through th
 dashboard and ignored local files. Session-pooler host must come from Connect;
 TLS verification is mandatory. The downloaded project CA passed TLS 1.3/hostname
 verification, and wrong trust/hostname checks failed before authentication. The
-saved administrator password was rejected; hosted login acceptance remains pending
-its private correction. No shared credential was reset.
+initial password was rejected, then corrected privately. Actual administrator and
+runtime logins now pass with verify-full; the runtime password is a separately
+generated secret saved only in the ignored API .env. True runtime permission
+probes, a wrong-password rejection, a non-rotating recheck and rollback-only admin
+DDL passed; no probe table remains. No shared credential was reset.
 
 ## Auth/project sections — Anisha's handoff pending
 
@@ -58,3 +61,19 @@ Anisha; [the backend Auth runbook](../../services/api/AUTH.md) describes cache,
 rotation and stateless-token revocation limits. Never restore availability by
 disabling verification. Database recovery must not reset the shared development
 project or touch managed Auth.
+
+## Isolated database — Ishmum / SB-05
+
+The pinned PostgreSQL 17.11 Compose stack and [test guide](../../services/api/tests/support/README.md)
+are implemented. `npm run api:db:up`, `api:db:test`, `api:db:down` and `api:db:reset`
+operate only on the named local fixture. Exact port is loopback 55432, database
+`disconnect_test`, volume `disconnect_db_test_data`. Both test URLs and APP_ENV=test
+are required, targets/marker are checked before SQL, and reset verifies volume
+labels. No managed project URL or secret is used by CI or fixture cleanup.
+
+Local real PostgreSQL acceptance: eight checks passed, including actual runtime
+login/denials, repeated bootstrap, five unsafe existing-role/ambient-grant cases
+and rejected wrong password. Empty initialization and labeled reset/rebuild passed.
+Default deterministic backend tests (307) stay separate from the required marked
+DB group. Actual SQLAlchemy/session/context work is API-06, and Alembic/product
+schema/RLS is API-07; neither is supplied by a fake pre-created profile table.

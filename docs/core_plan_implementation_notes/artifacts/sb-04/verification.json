@@ -25,16 +25,20 @@
     "ownedSchemas": 0,
     "canUseTemporaryTablesViaPublic": true
   },
-  "connectionMode": "session-pooler",
+  "connectionMode": "verified session-pooler",
   "host": "aws-0-us-east-1.pooler.supabase.com",
   "port": 5432,
   "downloadedCaAndHostnameHandshake": "passed TLSv1.3 without credentials",
-  "hostedPasswordLoginAndPermissions": "pending: Supabase rejects the privately saved administrator password",
+  "hostedPasswordLoginAndPermissions": "passed after private credential correction",
   "localBootstrapAndPermissionChecks": "passed using true runtime login",
   "unsafeRoleAndGrantScenariosRejected": 5,
   "deterministicBackendTestsForThisPart": 286,
   "authSettingsOrUsersChanged": false,
   "productTablesCreated": false,
   "paidResourcesCreated": false,
-  "wrongTrustAndWrongHostname": "both rejected before authentication"
+  "wrongTrustAndWrongHostname": "both rejected before authentication",
+  "runtimePasswordInitializedPrivately": true,
+  "nonRotatingRecheck": "passed",
+  "migrationDdlRollbackProbe": "passed; no persistent product/probe table remains",
+  "wrongRuntimePassword": "rejected"
 }

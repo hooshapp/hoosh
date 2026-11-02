@@ -1,0 +1,55 @@
+# Disposable PostgreSQL — SB-05
+
+Run from the repository root with Docker running and the locked uv environment:
+
+```sh
+npm run api:db:up
+npm run api:db:test
+npm run api:db:down
+# Deliberately destroy only the labeled fixture's volume, when a clean start is needed:
+npm run api:db:reset
+```
+
+The Compose project is `disconnect-db-tests`, database `disconnect_test`, volume
+`disconnect_db_test_data` and published address `127.0.0.1:55432`. PostgreSQL
+17.11-bookworm is pinned by its multi-platform digest to match the managed major
+observed through MCP. Public passwords in Compose/fixtures are **local test-only**;
+they must never be copied to a managed connection. Nothing reads the main API
+`.env` or falls back to its runtime/migration URLs for test connections.
+
+`up` copies `services/api/tests/.env.example` to an ignored `.env` if absent, without
+overwriting existing values, then waits for container health. `down` stops the
+stack but retains its test volume. `reset` validates exact volume/project/scope
+labels before Compose removes this volume; it has no arbitrary target option.
+Initialization SQL only runs for empty storage, so after changing bootstrap SQL
+deliberately reset this fixture and prove it starts empty again.
+
+The required `database` pytest group validates APP_ENV=test, both explicit test
+URLs, exact database/port/roles, loopback and a database scope marker before any
+test SQL. It rejects extra libpq options/hostaddr/service, mismatched targets and
+managed URLs before connecting; localhost alone is insufficient. Missing/broken
+configuration **fails**, never skips or substitutes SQLite. Driver errors are
+redacted. Explicit local sslmode=disable belongs only to this loopback fixture;
+hosted connections instead require verify-full with the downloaded CA.
+
+Default `npm run api:test` remains deterministic and excludes this separately
+marked group; `npm run api:db:test` and the required `database` CI job run it.
+CI creates the same Compose image/SQL/role prerequisites without cloud credentials.
+Use `uv run --project services/api pytest services/api/tests -o addopts= -m database`
+for direct invocation. Shell APP_ENV/TEST_* values deliberately override the local
+test file, which allows CI configuration and ensures accidental unsafe values fail.
+
+`bootstrap.sql` creates only minimal `auth.users(id uuid)` and a fixture marker.
+It is not a Supabase Auth emulator. The reviewed production role bootstrap is
+mounted separately, followed by test-only runtime access. No profile table or
+Alembic history is pre-created: API-06 adds connection/session/context fixtures,
+and API-07 adds actual migrations and table/RLS tests. These checks establish
+real logins, minimum role flags/permissions, repeatable bootstrap and rejection
+of unsafe existing role/ownership/public grants; they do not prove hosted Auth,
+API persistence, cascade behavior or row isolation.
+
+If Docker is unavailable, this group is unavailable locally; keep CI required and
+provision an explicitly separate disposable target before changing the contract.
+Do not edit guards to point cleanup at the shared development project. For port
+conflicts stop the conflicting local service or deliberately update the entire
+guard/Compose/example/CI contract together; never silently switch endpoints.

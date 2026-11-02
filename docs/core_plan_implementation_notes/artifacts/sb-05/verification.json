@@ -1,0 +1,28 @@
+{
+  "date": "2026-11-01",
+  "owner": "Ishmum",
+  "image": "postgres:17.11-bookworm@sha256:839fbb5a4942a7758dd93e18b42ea5649807491a0545b5eeeb8f0b8bb11857a5",
+  "managedMajor": 17,
+  "composeProject": "disconnect-db-tests",
+  "database": "disconnect_test",
+  "volume": "disconnect_db_test_data",
+  "portBindings": {
+    "5432/tcp": [
+      {
+        "HostIp": "127.0.0.1",
+        "HostPort": "55432"
+      }
+    ]
+  },
+  "emptyVolumeStartup": "passed",
+  "labeledVolumeResetAndFreshStartup": "passed",
+  "requiredDatabaseTests": 8,
+  "deterministicBackendTests": 307,
+  "missingOrUnsafeTarget": "fail before connecting; no managed URL fallback or SQLite",
+  "productMigrationsOrRlsAcceptance": false,
+  "hostedAuthBehaviorSimulated": false,
+  "cloudCredentialsRequired": false,
+  "ciWorkflow": "defined; local equivalent passed, hosted GitHub execution not run",
+  "wrongEnvironmentActualDatabaseGroup": "failed as expected; no skips",
+  "finalLocalState": "fixture containers stopped; named test volume retained"
+}
