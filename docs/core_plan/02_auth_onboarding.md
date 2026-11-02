@@ -332,21 +332,25 @@ Each commit includes its relevant tests and honest UI states. Avoid snapshot-onl
 
 ## 13. Progress tracker
 
+Progress snapshot November 1, 2026: work below exists on `landing-page` and has not been integrated into `main`. A related commit is not evidence that every acceptance criterion passed.
+
 | Part | Stage / dependency | Status | Actual commit | Validation evidence |
 |---|---|---|---|---|
-| AUTH-01 | A; plans 00/01 configuration | Not started | Pending | Pending |
-| AUTH-02 | A; AUTH-01 + canonical session contract | Not started | Pending | Pending |
-| AUTH-03 | A; AUTH-02 + RN-01 | Not started | Pending | Pending |
-| AUTH-04 | A; AUTH-02 + redirects | Not started | Pending | Pending |
-| AUTH-05 | A; AUTH-03/04 | Not started | Pending | Pending |
-| AUTH-06 | A; AUTH-04 | Not started | Pending | Pending |
-| AUTH-07 | A; AUTH-02/03 + RN-01/04; callback regression checks later | Not started | Pending | Pending |
-| AUTH-08 | A; Auth/API/RN handoff, native evidence separately | Not started | Pending | Pending |
-| AUTH-09 | B; draft contract + profile increment | Awaiting prerequisite scope | Pending | Pending |
-| AUTH-10 | B; AUTH-09 + collection decisions | Awaiting prerequisite scope | Pending | Pending |
-| AUTH-11 | C; audited/measured native adapters | Awaiting native evidence | Pending | Pending |
-| AUTH-12 | C; approved policy and future plan API/native plans | Awaiting product/implementation contracts | Pending | Pending |
-| AUTH-13 | D; selected provider/store/native configuration | Conditional; not part of initial email slice | Pending | Pending |
+| AUTH-01 | Client and storage | In progress | `32165ea` | Implemented on `landing-page`; native acceptance pending. |
+| AUTH-02 | Session provider | In progress | `32165ea` | Controller implemented; native lifecycle and integration acceptance pending. |
+| AUTH-03 | Email sign-in | In progress | `32165ea` | Screen implemented; native and integration acceptance pending. |
+| AUTH-04 | Callback controller | In progress | `32165ea` | Callback validation implemented; native deep-link acceptance pending. |
+| AUTH-05 | Signup and confirmation | In progress | `32165ea` | New-account email delivered and account confirmed; Gmail placement and other acceptance cases remain. |
+| AUTH-06 | Password recovery | In progress | `32165ea` | UI implemented; positive end-to-end reset and native acceptance pending. |
+| AUTH-07 | Guards and sign-out | In progress | `32165ea` | Implemented; joint identity-transition acceptance pending. |
+| AUTH-08 | Auth/API handoff and native acceptance | Awaiting handoff | — | Joint API identity and signed-device evidence required. |
+| AUTH-09 | Onboarding draft and profile | In progress | `bb4b540` | Local account-scoped draft exists; profile handoff and cross-device behavior remain. |
+| AUTH-10 | Introduction and questions | In progress | `a9feec4`, `bb4b540` | Intro and five questions implemented; age/gender persistence, accessibility and device checks remain. |
+| AUTH-11 | Native permission and selection | In progress | `bb4b540` | Permission bridge source exists; native picker and device authorization acceptance remain. |
+| AUTH-12 | Plan authoring and completion | In progress | — | Local, uncommitted preview work exists on Anisha's checkout; real plan rules, persistence, installation and recovery remain. |
+| AUTH-13 | Apple and Google providers | In progress | `32165ea` | Provider adapters and browser work exist; native acceptance remains. |
+
+Detailed branch evidence: `landing-page:docs/qa/auth-foundation.md`, `landing-page:docs/implementation/onboarding-questions.md`, and `landing-page:docs/runbooks/social-auth-development.md`. These paths are on that branch and are not yet present on `main`.
 
 Use `In progress`, `Ready for review`, and `Completed` only as real work advances. Preserve actual commit hashes and test evidence; planning is not a completed implementation commit.
 

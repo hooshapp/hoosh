@@ -294,16 +294,18 @@ finishing a producer module does not imply that all integration evidence is comp
 
 ## 9. Progress ledger
 
-All entries start **Pending**. Replace status only when that part's checks have been performed; record the actual commit hash and evidence location.
+Progress snapshot November 1, 2026: Anisha's implementation is on `landing-page`, not yet integrated into `main`. Commit references below identify related work, not full acceptance. Dashboard settings are external and may change.
 
 | Part | Owner | Status | Actual commit | Evidence / notes |
 |---|---|---|---|---|
-| SB-01 | Anisha | Pending | — | — |
-| SB-02 | Anisha | Pending | — | — |
-| SB-03 | Anisha | Pending | — | — |
+| SB-01 | Anisha | In progress | `32165ea` (related Auth work) | Development configuration and credentials map documented on `landing-page`; teammate access and backup ownership need confirmation. |
+| SB-02 | Anisha | In progress | `32165ea` (related Auth work) | Development project, issuer and public ES256 signing key documented; actual audience, database version and backend agreement require confirmation. |
+| SB-03 | Anisha | In progress | `32165ea` (related Auth work) | Email verification, redirects and development SMTP configured. A new-account confirmation email arrived in Gmail Spam and the account was confirmed; full two-account and edge-case acceptance remain. |
 | SB-04 | Ishmum | Pending | — | — |
 | SB-05 | Ishmum | Pending | — | — |
-| SB-06 | Anisha leads; Ishmum contributes | Pending | — | — |
+| SB-06 | Anisha leads; Ishmum contributes | In progress | `32165ea` (partial Auth work) | App-to-API identity handoff, second-account isolation and recovery evidence remain; joint work needed. |
+
+Detailed branch evidence: `landing-page:docs/runbooks/supabase-development.md`, `landing-page:docs/runbooks/credentials-map.md`, and `landing-page:docs/qa/auth-foundation.md`. These paths are on that branch and are not yet present on `main`.
 
 ## 10. References checked for this plan
 
