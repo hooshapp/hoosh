@@ -156,11 +156,11 @@ plan; no production deployment or release readiness is established here.
 
 | Layer | Current evidence | Remaining acceptance |
 |---|---|---|
-| Local backend | 469 deterministic tests; 102 real PostgreSQL checks including the operational journey and categorized failures | Hosted GitHub execution unverified |
+| Local backend | 473 deterministic tests; 104 real PostgreSQL checks including the operational journey, categorized failures and safe outage recovery probe | Hosted GitHub execution unverified |
 | Actual process/network | Normal app.main startup, public and authenticated A/B loopback/CORS/no-Origin HTTP checks pass; profiles survive an actual process restart | Actual application/browser/native journeys remain separate |
 | Hosted dependencies | Public ES256 key discovery, schema/security drift check and runtime-role TLS/READ COMMITTED/default deny pass | No user identity was exercised by these independent probes |
 | Managed M1/M2 | Real privately supplied A/B tokens verified; identity, profile reads/writes/clear/conflicts/isolation/refetch/restart pass over HTTP | Actual Auth/mobile/root flows and coordinated managed cascade evidence |
-| Browser | Allowed/denied CORS protocol and exposed headers pass | Actual UI execution was attempted but the computer tool reported no browser available; real Auth/web flow remains open |
+| Browser | Actual Opera GX Fetch/CORS: allowed/denied origins, preflight, exposed correlation/no-store and safe 401/413/422 pass through native app control | Actual authenticated application/web session/profile flow remains open |
 | Native | No-Origin HTTP protocol is checked | Actual development-client/signed-device session, storage, links, account changes/sign-out and profile journey |
 | Onboarding | [Persistence contract review](../../docs/architecture/onboarding-persistence-review.md) prepared | Anisha/Ishmum review and PM/native prerequisites before a later schema/plan |
 
@@ -176,7 +176,98 @@ read-only acceptance and explicit disposable writes passed through the normal AP
 process and hosted runtime DB role. Original names were restored; created profile
 rows remain and revisions/update times advanced. A separate read-only check started
 two genuine API processes sequentially and confirmed unchanged profiles after
-restart. Browser inventory was rechecked and empty. Tokens/personal payloads were
+restart. At that earlier checkpoint browser-connector inventory was empty; native app control later established actual browser protocol acceptance below. Tokens/personal payloads were
 not copied into evidence; Auth users/settings/schema were untouched. See Plan 03
 notes and artifacts/api-10/managed-acceptance.json. This supersedes the earlier
 missing-token limitation, while full app/device/lifecycle gates remain open.
+
+
+## Actual browser protocol reproduction
+
+The [static operator probe](tools/browser/index.html) has **no real token input**,
+loads no private files and performs no successful profile write. It is outside
+mobile/production entry points and uses fixed loopback origins. In separate root
+terminals, run:
+
+```sh
+CORS_ALLOWED_ORIGINS='["http://localhost:8081","http://127.0.0.1:8766"]' uv run --project services/api uvicorn app.main:app --app-dir services/api --host 127.0.0.1 --port 8765 --no-access-log
+python3 -m http.server 8766 --bind 127.0.0.1 --directory services/api/tools/browser
+python3 -m http.server 8767 --bind 127.0.0.1 --directory services/api/tools/browser
+```
+
+Open http://127.0.0.1:8766/?run=1 in a real browser. Its visible report must show
+passed for missing/invalid credentials, GET/PATCH preflight and browser-readable
+correlation/no-store on safe 401/422/413 responses. Then open port 8767 with the
+same path; the real browser must reject the unapproved origin's preflight. The
+probe first confirms API reachability with an unauthenticated opaque no-cors
+health fetch, so an offline API cannot count as a passing denied-origin check.
+That opaque response is not used to read private data or bypass CORS. Main checks
+use ordinary CORS requests. Do not disable browser security or add wildcard CORS.
+
+Actual Opera GX execution passed on 2026-11-02 using native CUA app controls,
+despite browser-connector inventory being empty. The first probe draft incorrectly
+combined no-cors with redirect:error and failed before network access; it was fixed
+to use follow for the fixed unauthenticated health fetch. Fresh URL loading then
+verified the current file. The CSP restricts connections to the one loopback API.
+No credentials, personal payloads or browser settings were changed. Browser error
+responses prove protocol enforcement, not authenticated SDK/application acceptance.
+Stop only these task-owned servers after testing; leave user browser sessions alone.
+
+## Auth-only and unavailable-database process checks
+
+The new read-only outage mode requires two supplied verified tokens and is
+mutually exclusive with --write-profiles:
+
+```sh
+npm run api:acceptance -- --project eaisvwqfbgdkzdfmxkvm --base-url http://127.0.0.1:8765 --expect-profile-unavailable
+```
+
+It requires both actual `/v1/me` identities to succeed while profile GET and PATCH
+return retryable DEPENDENCY_UNAVAILABLE 503, for allowed browser-origin and
+no-Origin HTTP paths. Null-profile success or an Auth outage fails this check.
+PATCH uses an impossible positive revision rather than expected 0: if the DB
+recovers between probes, it cannot create/update a row, and a 409 stops the check.
+A real local PostgreSQL regression test exercises that recovery race.
+
+To start the **existing runtime factory with the DB disabled**, without editing
+services/api/.env, run from services/api in a separate terminal:
+
+```sh
+uv run python - <<'PYTHON'
+import uvicorn
+from app.core.config import Settings
+from app.runtime import create_app
+values = Settings().model_dump()
+values.update(database_url=None, cors_allowed_origins=['http://localhost:8081'])
+settings = Settings(_env_file=None, **values)
+uvicorn.run(create_app(settings), host='127.0.0.1', port=8765, access_log=False)
+PYTHON
+```
+
+Only this process has its DB disabled; production trust still verifies real tokens.
+An unconfigured-shell check instead starts `create_app(Settings(_env_file=None))`:
+health passes and opaque bearer requests safely return AUTH_UNAVAILABLE 503. There
+is no fabricated identity. Normal complete configuration remains the standard
+app.main entry point; keep unavailable checks away from write acceptance mode. The final configured-process
+read-only A/B journey and valid-credential profile reads passed again after the
+pooler cooldown, without changing the saved credentials.
+
+Actual process checks passed for unconfigured shell, Auth-only with DB disabled,
+and identity independence during a genuine connection failure. No production
+configuration file was modified. **Do not induce failures on the shared pooler by
+sending bad passwords.** That initial operator experiment opened Supavisor's
+ECIRCUITBREAKER and temporarily blocked new connections from this origin; invalid
+probes were stopped and existing valid credentials retained. Deliberate wrong-
+password/outage fault tests belong on the guarded disposable database. An existing
+outage can be checked with this mode without creating new bad-credential attempts.
+For recovery, stop failing clients and permit the provider cooldown; do not reset
+shared credentials, loosen TLS or loop on login failures. Supabase documents a
+window up to two minutes, extended by further invalid attempts:
+[Supavisor circuit breaker](https://supabase.com/kb/troubleshooting/supavisor-error-circuit-breaker-open-after-password-rotation).
+
+Current evidence is in artifacts/api-10/browser-protocol.json and
+platform-startup-verification.json with final pooler recovery status. Full API-10
+remains open for joint authenticated application/root/RN-07, real native
+client/device and coordinated managed account-cascade acceptance. Hosted GitHub
+execution remains unverified; no push or deployment was requested. The independently
+implementable backend Auth work is complete; Anisha's mobile Auth remains hers.

@@ -205,3 +205,15 @@ No token/identity/profile payloads are in artifacts. No Auth user/settings/schem
 changed. Browser inventory is empty; real Auth/root/RN-07/native and managed
 cascade gates remain open. Full API-10/Plan 03 and application M1/M2 are not accepted
 by this HTTP evidence alone. Read the Plan 03 resume checkpoint and operator guide.
+
+Latest API-10 independent-check checkpoint (2026-11-02): actual browser protocol
+passes through Opera GX native app control; the empty browser-connector inventory
+was not a blocker. Auth-only/unconfigured runtime startup and real-token identity
+independence from DB failure pass. New safe outage acceptance mode cannot write on
+recovery. 473 deterministic / 104 PostgreSQL and full workspace checks pass. Read
+the operator guide for the shared-pooler circuit-breaker incident/recovery; invalid
+password probes were stopped and future deliberate fault tests are local-only.
+Anisha's mobile Auth/root and RN-07 real consumer/native-device/cascade gates stay
+open. Do not start another session manager or mark full API-10 accepted. Managed
+HTTP evidence follow-up hash is 138387f. No hosted credential/schema/Auth setting
+or mobile production code changed.

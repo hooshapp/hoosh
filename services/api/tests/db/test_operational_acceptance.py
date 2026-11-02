@@ -104,3 +104,65 @@ def test_actual_database_failure_categories_keep_request_correlation(
             for r in logs
         )
         assert "private-wrong-password" not in json.dumps(logs) + response.text
+
+
+def test_unavailable_profile_journey_with_actual_connection_failure(monkeypatch, db_settings):
+    from tests.auth.support import USER_B, LocalSigner
+    from tools.acceptance import unavailable_profile_checks
+
+    signer = LocalSigner()
+    values = db_settings.model_dump(exclude_none=True) | {
+        "cors_allowed_origins": ["http://localhost:8081"],
+        "database_url": db_settings.database_url.get_secret_value().replace(
+            "disconnect_test_runtime_only", "deliberately-wrong-test-password"
+        ),
+    }
+    app, _ = authenticated_app(monkeypatch, settings(**values), signer=signer)
+    identities = {"A": USER_A, "B": USER_B}
+    tokens = {
+        label: signed_headers(signer, {"sub": str(user)})["Authorization"][7:]
+        for label, user in identities.items()
+    }
+    with TestClient(app) as client:
+        report = unavailable_profile_checks(
+            client, tokens, identities, origin="http://localhost:8081"
+        )
+        assert report["profileUnavailableAB"].startswith("passed")
+        assert app.state.database.engine.pool.checkedout() == 0
+
+
+def test_unavailable_probe_cannot_create_when_database_recovers_between_requests(
+    monkeypatch, db_settings, profile_accounts, db_environment
+):
+    from app.core.errors import ApiError
+    from app.schemas.errors import ErrorCode
+    from tests.auth.support import LocalSigner
+    from tests.support.profiles import snapshot
+    from tools.acceptance import AcceptanceError, unavailable_profile_checks
+
+    signer = LocalSigner()
+    config = settings(
+        **(
+            db_settings.model_dump(exclude_none=True)
+            | {
+                "cors_allowed_origins": ["http://localhost:8081"],
+            }
+        )
+    )
+    app, _ = authenticated_app(monkeypatch, config, signer=signer)
+    identities = {"A": profile_accounts[2].user_id, "B": profile_accounts[1].user_id}
+    tokens = {
+        label: signed_headers(signer, {"sub": str(user)})["Authorization"][7:]
+        for label, user in identities.items()
+    }
+    before = snapshot(db_environment, profile_accounts)
+
+    def temporary_read_failure(session):
+        raise ApiError(ErrorCode.DEPENDENCY_UNAVAILABLE)
+
+    monkeypatch.setattr("app.api.v1.profiles.read_own_profile", temporary_read_failure)
+    with TestClient(app) as client:
+        # GET fails, but PATCH can connect. Its impossible revision must not create A's row.
+        with pytest.raises(AcceptanceError):
+            unavailable_profile_checks(client, tokens, identities, origin="http://localhost:8081")
+    assert snapshot(db_environment, profile_accounts) == before

@@ -129,3 +129,11 @@ restart persistence. Original names were restored, new profile rows retained and
 revisions/update times advanced. No Auth account was created/deleted, no settings
 or schema changed. Managed cascade stays a separate coordinated Anisha workflow;
 actual app/browser/native gates remain pending. Evidence: Plan 03 notes/artifact.
+
+API-10 startup/browser follow-up verifies actual CORS enforcement in Opera GX and
+real identity independence from disabled/unavailable product DB. During the initial
+connection-failure experiment, deliberately invalid credentials opened Supavisor's
+temporary ECIRCUITBREAKER. Invalid clients were stopped; shared credentials/TLS/Auth
+settings were not reset or changed. Intentional bad-password tests stay exclusively
+on the disposable DB. See the operator guide and platform startup artifact for
+recovery; don't repeatedly probe a locked-out pooler or recreate project resources.

@@ -1,0 +1,117 @@
+{
+  "date": "2026-11-02",
+  "branch": "task/backend/api-10-platform-checks",
+  "parent": "138387f",
+  "status": "independent API-10 browser protocol and backend startup acceptance passed; joint app/native/lifecycle gates open",
+  "changes": {
+    "operatorUnavailableMode": "--expect-profile-unavailable; mutually exclusive with writes; requires distinct verified A/B subjects",
+    "recoveryWriteProtection": "GET/PATCH 503 probes use impossible positive revision; no create/update if DB recovers between requests",
+    "browserProbe": "fixed loopback-only static page; deliberately invalid credentials; no real token input/storage or successful profile write",
+    "productionAuthOrDatabaseCodeChanged": false,
+    "productionRoutesOrSchemaChanged": false,
+    "mobileAuthOrRootChanged": false
+  },
+  "actualBrowser": "browser-protocol.json; Opera GX visible allowed/denied origin reports accepted through native CUA app control",
+  "actualProcessStartupModes": {
+    "shell": {
+      "startup": "passed",
+      "liveness": "passed",
+      "protectedUnconfigured": "safe AUTH_UNAVAILABLE 503"
+    },
+    "auth_only": {
+      "liveness": "passed",
+      "corsProtocol": "passed",
+      "noOriginHttp": "passed",
+      "browserExecution": "not_run",
+      "nativeDevice": "not_run",
+      "managedIdentityAB": "passed with product database unavailable",
+      "profileUnavailableAB": "passed; GET and PATCH return dependency 503, never absence"
+    },
+    "database_unavailable": {
+      "liveness": "passed",
+      "corsProtocol": "passed",
+      "noOriginHttp": "passed",
+      "browserExecution": "not_run",
+      "nativeDevice": "not_run",
+      "managedIdentityAB": "passed with product database unavailable",
+      "profileUnavailableAB": "passed; GET and PATCH return dependency 503, never absence"
+    }
+  },
+  "poolerIncident": {
+    "cause": "intentional invalid-password hosted connection-failure experiment",
+    "observed": "Supavisor ECIRCUITBREAKER temporarily blocked new connections from origin",
+    "correctiveAction": "stopped all invalid credential probes; future intentional faults limited to guarded disposable database",
+    "savedCredentialsReset": false,
+    "tlsOrAuthProtectionsWeakened": false,
+    "originalConfiguredProcessDuringBreaker": "dependency failure; not reported as healthy",
+    "validCredentialRecovery": {
+      "A": {
+        "verifiedIdentity": true,
+        "runtimeProfileRead": "passed",
+        "profileExists": true
+      },
+      "B": {
+        "verifiedIdentity": true,
+        "runtimeProfileRead": "passed",
+        "profileExists": true
+      }
+    },
+    "configuredProcessAfterCooldown": {
+      "liveness": "passed",
+      "corsProtocol": "passed",
+      "noOriginHttp": "passed",
+      "browserExecution": "not_run",
+      "nativeDevice": "not_run",
+      "managedIdentityAB": "passed",
+      "managedProfileReadAB": "passed",
+      "managedProfileWriteAB": "not_run",
+      "accountLifecycleAndMobile": "not_run"
+    }
+  },
+  "checks": {
+    "backendDeterministicTests": 473,
+    "requiredRealPostgresTests": 104,
+    "fullWorkspaceCheck": "passed",
+    "mobileVitestTests": 250,
+    "mobileJestTests": 362,
+    "originalSvgAssetsChecked": 71,
+    "backendAndOperatorLint": "passed",
+    "generatedContracts": "unchanged; drift checks passed",
+    "frozenUvSync": "passed; 47 packages",
+    "staticBrowserJavaScriptSyntax": "node --check passed",
+    "outageProbeWithDisabledDb": "actual ephemeral-signed HTTP test passed",
+    "outageProbeWithConnectionFailure": "real local runtime-role PostgreSQL failure passed",
+    "outageToRecoveryCannotWrite": "real local absent-account row stays absent; mismatch fails acceptance instead of saving",
+    "mutuallyExclusiveCliModes": "passed",
+    "noFalseAbsenceOrAuthOutagePass": "passed"
+  },
+  "versions": {
+    "python": "3.12.14",
+    "fastapi": "0.162.0",
+    "pydantic": "2.14.1",
+    "sqlalchemy": "2.0.55",
+    "psycopg": "3.3.6",
+    "httpx2": "2.16.0"
+  },
+  "remaining": [
+    "actual authenticated application Auth/root/RN-07 web/native journey",
+    "actual native development-client/signed-device session, storage, links and sign-out",
+    "coordinated managed Auth account-deletion cascade/lifecycle with Anisha",
+    "hosted GitHub check execution remains unverified; no push requested"
+  ],
+  "acceptanceCounts": "19 implemented producers / 25 awaiting acceptance; full API-10/Plan 03 not marked complete",
+  "privacy": "no actual tokens, account UUIDs, email/name payloads, connection URIs or private diagnostics stored",
+  "sideEffects": {
+    "hostedProfileWritesThisFollowUp": false,
+    "hostedAuthAdministration": false,
+    "savedCredentialOrAuthSettingChanges": false,
+    "temporarySharedPoolerCircuitBreaker": true,
+    "confirmedRecovered": true
+  },
+  "cleanup": "owned API/static servers and disposable DB stopped; migrated volume retained; no user browser tab/session closed after user changed browser",
+  "generatedOutputSha256": {
+    "packages/contracts/openapi/foundation.openapi.json": "d402f62b8d5ecf9b01f7db46babb9f7b6e45c35160e6a43ec03075a0149d4275",
+    "packages/contracts/src/http.generated.ts": "f9684eec5c1e16f7d20e372f44b75b783f190165214217386729235198736339"
+  },
+  "pushOrMainMerge": false
+}

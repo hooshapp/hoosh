@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src http://127.0.0.1:8765; base-uri 'none'; form-action 'none'">
+<title>API-10 browser protocol check</title>
+<style>body{font:16px system-ui,sans-serif;max-width:850px;margin:40px auto;padding:0 20px;color:#172b25}pre{white-space:pre-wrap;background:#f2f6f4;padding:20px;border-radius:8px}h1{font-size:24px}</style>
+<h1>API-10 browser protocol check</h1>
+<p>This local operator probe uses deliberately invalid credentials. It never loads real tokens, stores credentials, or writes a profile.</p>
+<pre id="result" role="status" aria-live="polite">Running browser fetch checks…</pre>
+<script>
+(async () => {
+  const report = {version:1, origin:location.origin, api:'http://127.0.0.1:8765',
+    actualBrowser:true, managedIdentity:false, applicationIntegration:false, nativeDevice:false};
+  const supported = ['http://127.0.0.1:8766','http://127.0.0.1:8767'];
+  const allowed = location.origin === supported[0];
+  const check = (condition) => { if (!condition) throw new Error('Check failed'); };
+  const request = async (path, options={}) => {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 5000);
+    try { return await fetch(report.api+path, {
+      credentials:'omit', cache:'no-store', redirect:'error', signal:controller.signal, ...options,
+    }); } finally { clearTimeout(timer); }
+  };
+  try {
+    check(supported.includes(location.origin));
+    // Establish reachability separately: a failed server is not a passing CORS denial.
+    report.stage='reachability';
+    report.fetchSupported=typeof fetch === 'function';
+    report.abortControllerSupported=typeof AbortController === 'function';
+    const reachable = await request('/healthz', {mode:'no-cors',redirect:'follow'});
+    check(reachable.type === 'opaque');
+    report.apiReachable = true;
+    if (allowed) {
+      const cases = [
+        ['missingToken', '/v1/me', {}, 401, 'AUTH_REQUIRED'],
+        ['invalidTokenPreflight', '/v1/me', {headers:{Authorization:'Bearer deliberately.invalid.token'}}, 401, 'INVALID_TOKEN'],
+        ['patchPreflight', '/v1/profile', {method:'PATCH',headers:{Authorization:'Bearer deliberately.invalid.token','Content-Type':'application/json'},body:JSON.stringify({expected_revision:0,display_name:'Never saved'})}, 401, 'INVALID_TOKEN'],
+        ['invalidJson', '/v1/profile', {method:'PATCH',headers:{'Content-Type':'application/json'},body:'{'}, 422, 'VALIDATION_ERROR'],
+        ['oversizedBody', '/v1/profile', {method:'PATCH',headers:{'Content-Type':'application/json'},body:'x'.repeat(16385)}, 413, 'REQUEST_TOO_LARGE'],
+      ];
+      for (const [name,path,options,status,code] of cases) {
+        report.stage=name;
+        const response = await request(path,options);
+        const body = await response.json();
+        check(response.status === status && body.error.code === code);
+        check(response.headers.get('Cache-Control') === 'no-store');
+        check(response.headers.get('X-Request-ID') === body.error.request_id);
+        check(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/.test(body.error.request_id));
+        report[name] = 'passed';
+      }
+      report.allowedOrigin = 'passed';
+    } else {
+      let blocked = false;
+      try {
+        await request('/v1/profile',{method:'PATCH',headers:{Authorization:'Bearer deliberately.invalid.token','Content-Type':'application/json'},body:'{}'});
+      } catch (error) { blocked = error instanceof TypeError; }
+      check(blocked);
+      report.deniedOrigin = 'passed; browser blocked preflight';
+    }
+    report.stage='complete';
+    report.result='passed';
+  } catch (error) {
+    report.result='failed';
+    report.exceptionType=['TypeError','Error','TimeoutError','AbortError'].includes(error.name)?error.name:'other';
+    report.failure='Browser checks did not complete; inspect API availability/origin locally.';
+  }
+  document.title = 'API-10 browser: '+report.result;
+  document.querySelector('#result').textContent=JSON.stringify(report,null,2);
+})();
+</script>
+</html>

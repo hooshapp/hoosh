@@ -18,6 +18,7 @@ from tools.acceptance import (
     development_settings,
     private_values,
     transport_checks,
+    unavailable_profile_checks,
 )
 
 
@@ -39,10 +40,16 @@ def main():
     parser.add_argument("--base-url", required=True)
     parser.add_argument("--origin", default="http://localhost:8081")
     parser.add_argument("--with-accounts", action="store_true")
-    parser.add_argument(
+    profile_mode = parser.add_mutually_exclusive_group()
+    profile_mode.add_argument(
         "--write-profiles",
         action="store_true",
         help="Approved disposable accounts only; created rows remain",
+    )
+    profile_mode.add_argument(
+        "--expect-profile-unavailable",
+        action="store_true",
+        help="Verify A/B identity while GET/PATCH profile fail with dependency 503; no DB setup",
     )
     args = parser.parse_args()
     try:
@@ -50,7 +57,7 @@ def main():
         origin = base_url(args.origin)
         target = base_url(args.base_url)
         tokens, expected = {}, {}
-        if args.with_accounts or args.write_profiles:
+        if args.with_accounts or args.write_profiles or args.expect_profile_unavailable:
             values = private_values()
             tokens = {label: values.get(key) or "" for label, key in TOKEN_KEYS.items()}
             if not all(tokens.values()):
@@ -70,7 +77,11 @@ def main():
             follow_redirects=False,
         ) as client:
             report = transport_checks(client, origin)
-            if tokens:
+            if args.expect_profile_unavailable:
+                report.update(
+                    unavailable_profile_checks(client, tokens, expected, origin=origin)
+                )
+            elif tokens:
                 report.update(
                     account_checks(
                         client,

@@ -284,3 +284,50 @@ def account_checks(client, tokens: dict, expected_users: dict, *, write: bool, o
         current[label] = restored
     report["managedProfileWriteAB"] = "passed; original names restored; created rows retained"
     return report
+
+
+def unavailable_profile_checks(client, tokens: dict, expected_users: dict, *, origin: str) -> dict:
+    """Read-only acceptance of Auth independence while the product DB is unavailable."""
+    if (
+        set(tokens) != {"A", "B"}
+        or set(expected_users) != {"A", "B"}
+        or not all(tokens.values())
+        or len(set(expected_users.values())) != 2
+    ):
+        raise AcceptanceError("Two distinct approved development identities are required")
+    # An impossible positive revision cannot create or update a row if the DB
+    # recovers between the GET and PATCH probes; a 409 then fails this check safely.
+    for label in ("A", "B"):
+        for browser_origin in (None, origin):
+            _, body = checked(
+                client, "GET", "/v1/me", 200, token=tokens[label], origin=browser_origin
+            )
+            if MeResponse.model_validate(body).user_id != expected_users[label]:
+                raise AcceptanceError("Verified identity differs from the captured account")
+            for method, body in (
+                ("GET", None),
+                (
+                    "PATCH",
+                    {
+                        "expected_revision": 10**100,
+                        "display_name": "Unavailable acceptance",
+                    },
+                ),
+            ):
+                _, error = checked(
+                    client,
+                    method,
+                    "/v1/profile",
+                    503,
+                    token=tokens[label],
+                    origin=browser_origin,
+                    body=body,
+                )
+                if error.code != ErrorCode.DEPENDENCY_UNAVAILABLE or not error.retryable:
+                    raise AcceptanceError("Unavailable database was misclassified")
+    return {
+        "managedIdentityAB": "passed with product database unavailable",
+        "profileUnavailableAB": "passed; GET and PATCH return dependency 503, never absence",
+        "browserExecution": "not_run",
+        "nativeDevice": "not_run",
+    }

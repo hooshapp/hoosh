@@ -1,6 +1,6 @@
 # Plan 03 — FastAPI Identity and Profile Foundation
 
-**Status:** API-01–09 are implemented: strict trust/errors, JWT/JWKS, database-independent identity, generated contracts and bounded lazy PostgreSQL units of work. API-06 passed 337 deterministic tests, 24 real PostgreSQL checks and a read-only hosted runtime/TLS smoke check. API-07 added the model, single Alembic history and profile constraints/grants/RLS, with 344 deterministic and 66 real DB tests plus hosted upgrade/check. API-08 now adds nonmutating own-profile GET and generated shapes (374 deterministic / 75 real DB tests). API-09 now adds strict bounded PATCH, canonical validation, atomic insert/CAS and own conflicts (453 deterministic / 96 real DB checks). API-10 operational diagnostics/tooling and independent checks are now implemented; managed-account HTTP identity/profile/restart checks now pass; actual application M1/M2 and cascade/browser/device acceptance remain pending.\
+**Status:** API-01–09 are implemented: strict trust/errors, JWT/JWKS, database-independent identity, generated contracts and bounded lazy PostgreSQL units of work. API-06 passed 337 deterministic tests, 24 real PostgreSQL checks and a read-only hosted runtime/TLS smoke check. API-07 added the model, single Alembic history and profile constraints/grants/RLS, with 344 deterministic and 66 real DB tests plus hosted upgrade/check. API-08 now adds nonmutating own-profile GET and generated shapes (374 deterministic / 75 real DB tests). API-09 now adds strict bounded PATCH, canonical validation, atomic insert/CAS and own conflicts (453 deterministic / 96 real DB checks). API-10 operational diagnostics/tooling and independent checks are now implemented; managed-account HTTP identity/profile/restart checks now pass; actual browser protocol now passes; authenticated application M1/M2 and cascade/native-device acceptance remain pending.\
 **Owner:** Ishmum (backend/database). Anisha reviews Auth contracts and participates in live session checks.\
 **Area branch:** `area/backend`; task branches `task/backend/<part>`.\
 **Milestones:** M1 = verified identity without a database; M2 = minimal, isolated, revisioned profile persistence.
@@ -447,7 +447,7 @@ Auth can finish its session work without profiles. The main frontend must not cl
 | API-07 | Implemented producer; local migrations/RLS and hosted empty upgrade/security checks passed | `4d8d1fc` | 344 deterministic / 66 real DB checks; head `20261102_0001`; [Plan 03 notes](../core_plan_implementation_notes/plan_03_backend_foundation_notes.md); actual managed Auth A/B/cascade remains API-10 joint smoke |
 | API-08 | Implemented producer; real signed-token GET/runtime-DB reads and failures accepted locally | `ca275af` | 374 deterministic / 75 real DB tests; generated GET schemas/types; managed tokens/mobile integration remain API-10 joint work |
 | API-09 | Implemented producer; local M2 backend read/write/concurrency/isolation accepted | `c563ff6` | 453 deterministic / 96 real DB tests; strict raw body/name/revision contract, two-connection races, rollback/deletion/replay; actual managed-user/mobile acceptance remains API-10 |
-| API-10 | Operational slice and managed A/B HTTP checks accepted; app/browser/native/lifecycle acceptance pending | `188c5dd`; follow-up resolves by `docs(api): record managed-account acceptance evidence` | Prior 469 deterministic / 102 PostgreSQL checks; real managed A/B identity, profile writes/clear/conflict/isolation/refetch and actual API restart persistence pass. [Operator guide](../../services/api/OPERATIONS.md). Actual browser unavailable, Auth/RN-07/root/native and managed cascade gates still open; not full Plan 03 acceptance |
+| API-10 | Operational, managed A/B HTTP and actual browser protocol accepted; app/native/lifecycle acceptance pending | `188c5dd`, `138387f`; current follow-up resolves by `test(api): verify browser protocol and isolated startup modes` | 473 deterministic / 104 PostgreSQL checks; actual browser and separated startup modes, real managed A/B identity, profile writes/clear/conflict/isolation/refetch and actual API restart persistence pass. [Operator guide](../../services/api/OPERATIONS.md). Browser protocol now passes in Opera GX; authenticated Auth/RN-07/root/native and managed cascade gates still open; not full Plan 03 acceptance |
 
 ## 10. Sources and verification notes
 
@@ -586,3 +586,35 @@ availability promise. Actual browser inventory remains empty; real Auth/RN-07/ro
 native and managed cascade evidence still require the joint handoff. Full API-10,
 Plan 03 and application M1/M2 remain open; producer counts stay 19/25. No production
 code or automated tests changed; prior 469/102 validation is preserved, not rerun.
+
+### API-10 browser/startup checkpoint — 2026-11-02
+
+Actual Opera GX browser Fetch/CORS protocol now passes allowed/denied origin,
+preflight, exposed correlation/no-store and safe 401/413/422 checks through native
+app control. The browser connector remains absent; it was not a native-app-control
+blocker. The static operator probe contains no real credentials and is independent
+of Anisha's Auth implementation. This does not accept authenticated app UX.
+
+Actual runtime-factory processes also pass unconfigured-shell and real-token
+Auth-only startup with the DB disabled; identity remains valid during an actual
+connection failure and profile GET/PATCH are dependency 503 rather than absence.
+A reproducible unavailable-profile CLI mode verifies that boundary and uses an
+impossible revision so DB recovery cannot cause an unintended write. Full workspace
+checks pass (473 deterministic / 104 real DB, plus 612 mobile tests).
+
+An initial shared-pooler bad-password fault experiment caused a temporary provider
+authentication circuit breaker. Further invalid probes were stopped; no credentials
+or settings were reset. Such intentional fault tests remain local-only. Recovery
+and exact evidence are recorded in the operator guide and follow-up artifact.
+Full API-10/Plan 03/application M1/M2 remain open for real Auth/root/RN-07/native
+client-device and coordinated managed cascade. Counts stay 19/25; no Auth provider,
+account administration, schema or mobile production behavior was added here.
+
+| API-10 requirement | Current independent result | Remaining join |
+|---|---|---|
+| Startup/configuration | Actual shell, Auth-only, unavailable DB and recovered configured processes checked | Deployment remains a later plan |
+| Safe diagnostics | Request/JWKS/DB correlation and private-data exclusion implemented/tested | Hosted log retention/access policy belongs to deployment |
+| Browser / native paths | Actual browser Fetch/CORS and signed no-Origin HTTP pass | Actual authenticated app and native client/device |
+| Real managed A/B M1/M2 API | Identity, writes/clear/conflicts/isolation/refetch and restart pass | Auth/root/RN-07 integration and coordinated cascade/lifecycle |
+| Liveness/readiness | Explicit liveness semantics and bounded operator checks documented | No automatic readiness endpoint or cloud worker added |
+| Onboarding extension | Review checklist prepared with existing field/ownership limits | Anisha/Ishmum review plus PM/native inputs before another schema/plan |

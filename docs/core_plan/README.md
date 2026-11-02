@@ -178,3 +178,11 @@ persistence on the hosted runtime role. The missing-token gate is resolved for
 this run. Browser inventory is empty and real Auth/root/RN-07/native/cascade
 acceptance remains joint work. Counts stay 19/25; application M1/M2 and full
 API-10/Plan 03 remain open. Operational commit: 188c5dd.
+
+API-10 actual browser protocol and independent startup modes now pass. Native app
+control verified Opera GX CORS/preflight and safe error headers; real identity
+remains independent of a disabled/unavailable product DB. The CLI has a safe
+unavailable-profile mode; 473 deterministic / 104 PostgreSQL checks and full
+workspace pass. Backend Auth implementation/verification is done. Actual app
+session/root/RN-07 and native/device/cascade acceptance are joint work, so full
+API-10 and application M1/M2 remain open and counts stay 19/25.

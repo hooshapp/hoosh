@@ -293,3 +293,14 @@ refetch passed; both profiles remained unchanged after a true API process restar
 This resolves the missing-token gate for this run. No Auth user/settings or schema
 changes were made. Full application/browser/native/lifecycle acceptance remains
 open; see OPERATIONS.md and the separate managed acceptance artifact/notes.
+
+API-10 browser/startup follow-up now accepts actual Opera GX Fetch/CORS protocol
+without a browser connector, and runtime-factory Auth-only/unconfigured modes.
+`api:acceptance --expect-profile-unavailable` verifies both real identities while
+profile GET/PATCH safely return dependency 503; an impossible positive revision
+prevents accidental writes if the DB recovers. Current validation: 473 deterministic
+/ 104 PostgreSQL and full workspace. Deliberate connection-failure faults stay on
+the disposable DB after a hosted bad-password experiment triggered a temporary
+provider circuit breaker; no credential reset or weakened TLS was used. See the
+operator guide/evidence for recovery and exact remaining authenticated-app/native/
+lifecycle gates. No mobile Auth implementation was taken over from Anisha.

@@ -776,3 +776,9 @@ API-10 follow-up now accepts actual managed-account A/B HTTP identity/profile
 writes/conflicts/isolation and restart persistence. Backend/token availability
 for this run is established; RN-07 real consumer and Anisha Auth/root/native
 integration remain open. No RN code or application/device milestone was accepted.
+
+API-10 now independently verifies actual browser CORS/protocol and separate
+Auth-only/unconfigured startup modes. This removes the browser-protocol gap, not
+the real application Auth/root/RN-07/native-client acceptance gates. Backend
+identity/profile producers remain available; RN-07 consumer work can proceed
+against those contracts, with real Auth integration coordinated with Anisha.

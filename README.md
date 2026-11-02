@@ -202,3 +202,10 @@ Managed-account API-10 follow-up: actual A/B tokens now pass hosted identity,
 profile save/clear/conflicts/isolation/refetch and API-restart persistence. Names
 were restored; new test rows/revisions remain. Actual browser, Auth/root/RN-07,
 native and managed lifecycle acceptance still remain open; see the operator guide.
+
+API-10 independent browser/startup checks now pass: actual Opera GX CORS/preflight
+and readable safe errors, plus Auth-only/unconfigured startup and real identity
+independence from DB failure. The unavailable-profile CLI mode cannot write if
+the DB recovers between probes. Current tests: 473 backend / 104 PostgreSQL and
+full workspace. Actual authenticated app/root/RN-07, native-device and coordinated
+managed lifecycle acceptance remain joint work; see the operator guide.

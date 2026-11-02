@@ -204,3 +204,91 @@ def test_login_aborts_if_terminal_cannot_disable_echo(private_input, monkeypatch
     with pytest.raises(SystemExit, match="private details withheld"):
         module.main()
     assert not acceptance.private_values()["API_ACCEPTANCE_ACCESS_TOKEN_A"]
+
+
+def test_unavailable_profile_mode_cannot_be_combined_with_writes(monkeypatch):
+    module = script("api-acceptance")
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "api-acceptance.py",
+            "--project",
+            "example",
+            "--base-url",
+            "http://127.0.0.1:8000",
+            "--write-profiles",
+            "--expect-profile-unavailable",
+        ],
+    )
+    with pytest.raises(SystemExit) as error:
+        module.main()
+    assert error.value.code == 2
+
+
+def test_unavailable_profile_mode_checks_signed_identity_without_db(monkeypatch):
+    from fastapi.testclient import TestClient
+
+    from tests.auth.support import USER_A, USER_B, LocalSigner
+    from tests.support.http import authenticated_app, signed_headers
+
+    signer = LocalSigner()
+    app, _ = authenticated_app(
+        monkeypatch, settings(cors_allowed_origins=["http://localhost:8081"]), signer=signer
+    )
+    identities = {"A": USER_A, "B": USER_B}
+    tokens = {
+        label: signed_headers(signer, {"sub": str(user)})["Authorization"][7:]
+        for label, user in identities.items()
+    }
+    with TestClient(app) as client:
+        assert app.state.database is None
+        report = acceptance.unavailable_profile_checks(
+            client, tokens, identities, origin="http://localhost:8081"
+        )
+        assert report["managedIdentityAB"].startswith("passed")
+        assert report["profileUnavailableAB"].startswith("passed")
+        assert report["nativeDevice"] == "not_run"
+
+
+@pytest.mark.parametrize(
+    "status,body",
+    [
+        (200, {"profile": None}),
+        (
+            503,
+            {
+                "error": {
+                    "code": "AUTH_UNAVAILABLE",
+                    "message": "Safe copy",
+                    "retryable": True,
+                    "request_id": "a46e48ad-c742-4e18-b57d-2c9a56544945",
+                }
+            },
+        ),
+    ],
+)
+def test_unavailable_profile_mode_rejects_false_absence_or_auth_error(status, body):
+    from tests.auth.support import USER_A, USER_B
+
+    def handler(request):
+        common = {
+            "X-Request-ID": "a46e48ad-c742-4e18-b57d-2c9a56544945",
+            "Cache-Control": "no-store",
+        }
+        if request.url.path == "/v1/me":
+            return httpx2.Response(
+                200, headers=common, json={"user_id": str(USER_A), "email": None}
+            )
+        return httpx2.Response(status, headers=common, json=body)
+
+    with httpx2.Client(
+        base_url="https://api.example", transport=httpx2.MockTransport(handler)
+    ) as client:
+        with pytest.raises(acceptance.AcceptanceError):
+            acceptance.unavailable_profile_checks(
+                client,
+                {"A": "a", "B": "b"},
+                {"A": USER_A, "B": USER_B},
+                origin="http://localhost:8081",
+            )
