@@ -1,5 +1,9 @@
-import { Introduction } from '@/features/intro/Introduction';
+import { Redirect } from 'expo-router';
+import { OnboardingQuestions } from '@/features/onboarding/OnboardingQuestions';
+import { useAuth } from '@/features/auth/auth-provider';
 
 export default function Welcome() {
-  return <Introduction />;
+  const { snapshot } = useAuth();
+  if (snapshot.status !== 'signed_in') return <Redirect href="/(auth)/sign-in" />;
+  return <OnboardingQuestions />;
 }

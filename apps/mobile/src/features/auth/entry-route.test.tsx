@@ -8,6 +8,7 @@ let mockSnapshot: AuthSnapshot = { status: 'signed_out', sessionGeneration: 0 };
 let mockPending: Partial<PendingLink> | null = null;
 const mockReset = jest.fn<() => boolean>();
 jest.mock('./auth-provider', () => ({ useAuth: () => ({ snapshot: mockSnapshot, links: { pending: mockPending }, controller: { canResetPassword: mockReset } }) }));
+jest.mock('@react-native-async-storage/async-storage', () => ({ __esModule: true, default: { getItem: async () => null } }));
 jest.mock('../intro/Introduction', () => ({ Introduction: () => {
   const { Text } = jest.requireActual<typeof import('react-native')>('react-native');
   return <Text>First-launch introduction</Text>;

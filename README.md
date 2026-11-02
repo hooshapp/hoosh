@@ -62,7 +62,7 @@ Expo prints the local URL, normally `http://localhost:8081`. Web is a convenient
 npm run mobile
 ```
 
-This starts Metro for an Expo development client. An actual device requires a matching native development build. The provided Swift project is preserved separately in `apps/mobile/ios/`; see [its source audit](docs/architecture/existing-ios-audit.md). React Native native directories and signing remain unconfigured; qualify the original identifiers, extension targets and App Groups before integration. Do not run `expo prebuild --clean` over that working project.
+This starts Metro for an Expo development client. An actual device requires a matching native development build. The provided Swift project is preserved separately in `apps/mobile/ios/`; see [its source audit](docs/architecture/existing-ios-audit.md). Generate separate React Native development hosts with `npm run mobile:native:prepare -- all`; see [native build steps and current evidence](docs/runbooks/native-development-builds.md). The Android debug build now compiles and packages the permission module. Production signing and legacy extension/App Group integration remain pending. Do not run `expo prebuild --clean` over that working project.
 
 ### Run the API
 

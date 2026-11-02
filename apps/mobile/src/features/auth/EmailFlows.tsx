@@ -57,12 +57,12 @@ export function ConfirmEmail() {
   const remaining = pending ? Math.max(0, Math.ceil((pending.lastSentAt + 60000 - now) / 1000)) : 0;
   const resend = async () => {
     if (lock.current) return; lock.current = true; setBusy(true); setError('');
-    try { await controller.resendConfirmation(); setMessage('Request accepted. Check for the latest email; delivery may take a moment.'); }
+    try { await controller.resendConfirmation(); setMessage('Request accepted. If your account needs confirmation, check your inbox. If it is already confirmed, return to login.'); }
     catch (e) { setError(authErrorMessage(e)); }
     finally { lock.current = false; setBusy(false); setNow(Date.now()); }
   };
   return <Panel title="Check your email">
-    <Message>{pending?.kind === 'signup' ? 'Check your email for the next step, or log in if you already have an account. A request does not guarantee delivery. Open the latest link on this device, in the same tab for the web preview.' : 'There is no pending confirmation on this device. Return to login or start signup again.'}</Message>
+    <Message>{pending?.kind === 'signup' ? 'For a new account, check your inbox for a confirmation link and open it on this device (in the same browser tab for the web preview). If you already have an account, return to login with your existing password. Signing up again does not reset it.' : 'There is no pending confirmation on this device. Return to login or start signup again.'}</Message>
     {message ? <Message>{message}</Message> : null}
     <ErrorMessage message={error} />
     {pending?.kind === 'signup' && pending.phase === 'requested' && <Action label={busy ? 'Requesting email…' : remaining ? `Resend in ${remaining}s` : 'Resend confirmation'} disabled={busy || remaining > 0} onPress={() => { void resend(); }} />}

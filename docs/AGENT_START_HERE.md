@@ -14,6 +14,8 @@
 
 **Auth UI increment:** Signup `18:2` and login `27:59` now use Figma artwork and shared React Native forms with local validation, keyboard support and switching links. Email/password, confirmation/recovery and session/route handling are implemented with automated checks; live positive-flow and native acceptance remain pending. See [scope and validation](implementation/auth-screens.md).
 
+**Questionnaire onboarding increment:** Gender `27:113`, age `48:79`, app choices `48:81`, hobbies `50:83`, and Screen Time permission `50:85` are implemented in order on `landing-page`. Gender/age remain transient pending PD-17; preferences are account-scoped local data; native iOS/Android authorization bridge source is connected, while signed builds, native selection/enforcement, and AI plan generation remain pending. See [native authorization status](implementation/screen-time-authorization.md). See [scope and validation](implementation/onboarding-questions.md).
+
 ## 1. Founder-provided facts that override generic assumptions
 
 - Disconnect is an existing, released iOS app, not a brand-new proof of concept.
@@ -131,3 +133,5 @@ capability tests remain separate; a web export does not establish native behavio
 - **[`core_plan/README.md`](core_plan/README.md)** — execution order and index for five detailed foundation plans, with 44 parts (Plan 00 committed as `0b50900`, 40 future parts), cross-plan dependencies, implementation/commit ledgers, and explicit PM/native gates.
 
 **Source of truth:** This is a context-rich implementation baseline. A full repo audit and explicit product policy answers may require updates before coding core session/reward rules. The documents must be revised whenever founder decisions, platform behavior, or existing code evidence contradicts assumptions.
+
+**Native development host (2026-10-30):** `npm run mobile:native:prepare -- all` generates an isolated real-auth Expo host under ignored `.native-dev/mobile`. Legacy Swift source integrity passes; iOS pods install including the permission bridge. Expo SDK 58 requires Xcode 26.4+; the Xcode 26.0.1 retry failed inside ExpoModulesJSI. Android SDK setup is now complete and the debug APK compiles, registers the permission module, and passes signature verification; phone/emulator runtime testing remains pending. See [build evidence and next steps](runbooks/native-development-builds.md).

@@ -9,7 +9,7 @@ const config: ExpoConfig = {
   // Development routing only. Confirm production URL schemes during the iOS audit.
   scheme: 'disconnect-dev',
   web: { output: 'static' },
-  ios: { usesAppleSignIn: true },
+  ios: { usesAppleSignIn: true, entitlements: { 'com.apple.developer.family-controls': true } },
   plugins: [
     'expo-router',
     'expo-apple-authentication',

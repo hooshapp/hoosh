@@ -18,6 +18,9 @@
     "typecheck": "npm run typecheck --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
-    "check": "npm run typecheck && npm run lint && npm test && npm run api:lint && npm run api:test"
+    "check": "npm run typecheck && npm run lint && npm test && npm run api:lint && npm run api:test",
+    "mobile:native:prepare": "node scripts/prepare-native-dev.mjs",
+    "mobile:native:check": "node scripts/check-native-toolchain.mjs",
+    "mobile:android:emulator": "node scripts/start-android-emulator.mjs"
   }
 }

@@ -66,9 +66,9 @@ function RootNavigation() {
     <Stack.Screen name="auth/link-error" />
     <Stack.Protected guard={snapshot.status !== 'signed_in' || linkGate}>
       <Stack.Screen name="(auth)" />
-      <Stack.Screen name="(onboarding)" />
     </Stack.Protected>
     <Stack.Protected guard={snapshot.status === 'signed_in' && !linkGate} redirectTo="/(auth)/sign-in">
+      <Stack.Screen name="(onboarding)" />
       <Stack.Screen name="(tabs)" />
     </Stack.Protected>
   </Stack>;

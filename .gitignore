@@ -46,3 +46,6 @@ Build/
 DerivedData/
 .build/
 .firebase/
+
+# Separate generated Expo development host; legacy iOS remains under apps/mobile/ios
+.native-dev/
