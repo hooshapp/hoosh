@@ -4,7 +4,7 @@
 **Owner:** Anisha (Supabase Auth/project setup SB-01–03, mobile Auth, onboarding, and iOS). Ishmum owns the API/product database and reviews shared integration changes.\
 **Status:** AUTH-01–07 code is implemented on `landing-page` and remains uncommitted at the owner’s request; live positive-flow, API integration and native acceptance are pending. See the tracker and QA evidence. Later parts remain gated.\
 **Primary branch:** `area/auth-onboarding`; work on `task/auth/<part>` or `task/onboarding/<part>`, integrate working increments into `main`, then update active area branches.\
-**Companions:** [shared contracts](00_shared_contracts.md), [Supabase foundation](01_supabase_foundation.md), [backend](03_backend_foundation.md), [React Native integration](04_react_native_integration.md), [PM answer log](../PM_QUESTIONS.md).
+**Companions:** [shared contracts](00_shared_contracts.md), [Supabase foundation](01_supabase_foundation.md), [backend](03_backend_foundation.md), [React Native integration](04_react_native_integration.md), [PM answer log](<../Context (AGENT)/PM_QUESTIONS.md>).
 
 ## 1. Goal and delivery boundaries
 
@@ -343,19 +343,19 @@ Each commit includes its relevant tests and honest UI states. Avoid snapshot-onl
 
 | Part | Stage / dependency | Status | Actual commit | Validation evidence |
 |---|---|---|---|---|
-| AUTH-01 | A; plans 00/01 configuration | Implemented on landing-page; live/native acceptance pending | Uncommitted (owner handles commits) | [QA evidence](../qa/auth-foundation.md) |
-| AUTH-02 | A; AUTH-01 + canonical session contract | Implemented on landing-page; live/native acceptance pending | Uncommitted (owner handles commits) | [QA evidence](../qa/auth-foundation.md) |
-| AUTH-03 | A; AUTH-02 + RN-01 | Implemented on landing-page; live/native acceptance pending | Uncommitted (owner handles commits) | [QA evidence](../qa/auth-foundation.md) |
-| AUTH-04 | A; AUTH-02 + redirects | Implemented on landing-page; live/native acceptance pending | Uncommitted (owner handles commits) | [QA evidence](../qa/auth-foundation.md) |
-| AUTH-05 | A; AUTH-03/04 | Implemented on landing-page; live/native acceptance pending | Uncommitted (owner handles commits) | [QA evidence](../qa/auth-foundation.md) |
-| AUTH-06 | A; AUTH-04 | Implemented on landing-page; live/native acceptance pending | Uncommitted (owner handles commits) | [QA evidence](../qa/auth-foundation.md) |
-| AUTH-07 | A; AUTH-02/03 + RN-01/04; callback regression checks later | Implemented on landing-page; live/native acceptance pending | Uncommitted (owner handles commits) | [QA evidence](../qa/auth-foundation.md) |
-| AUTH-08 | A; Auth/API/RN handoff, native evidence separately | Not started | Pending | Pending |
-| AUTH-09 | B; draft contract + profile increment | Awaiting prerequisite scope | Pending | Pending |
-| AUTH-10 | B; AUTH-09 + collection decisions | Intro-only AUTH-10a implemented; preferences gated | `a9feec4` (intro only) | [Scope/checks](../implementation/landing-intro.md); signed-device acceptance pending |
-| AUTH-11 | C; audited/measured native adapters | Awaiting native evidence | Pending | Pending |
-| AUTH-12 | C; approved policy and future plan API/native plans | Awaiting product/implementation contracts | Pending | Pending |
-| AUTH-13 | D; selected provider/store/native configuration | Conditional; not part of initial email slice | Pending | Pending |
+| AUTH-01 | Configured client and storage | In progress | `32165ea` | Client and storage implemented; [QA evidence](../qa/auth-foundation.md); native acceptance pending. |
+| AUTH-02 | Session provider | In progress | `32165ea` | Controller implemented; native lifecycle and integration acceptance pending. |
+| AUTH-03 | Email sign-in | In progress | `32165ea` | Screen implemented; native-device and integration acceptance pending. |
+| AUTH-04 | Callback controller | In progress | `32165ea` | Callback validation implemented; native deep-link acceptance pending. |
+| AUTH-05 | Signup and confirmation | In progress | `32165ea` | Email delivered and account confirmed Nov 1; inbox placement and remaining acceptance cases pending. |
+| AUTH-06 | Password recovery | In progress | `32165ea` | Recovery UI implemented; positive end-to-end reset and native acceptance pending. |
+| AUTH-07 | Guards and sign-out | In progress | `32165ea` | Guard and local sign-out implemented; joint identity-transition acceptance pending. |
+| AUTH-08 | Auth/API handoff and native acceptance | Awaiting handoff | — | Requires joint API identity and signed-device evidence. |
+| AUTH-09 | Onboarding draft and profile | In progress | `bb4b540` | Account-scoped local draft exists; profile handoff and cross-device behavior remain pending. |
+| AUTH-10 | Introduction and questions | In progress | `a9feec4`, `bb4b540` | [Introduction](../implementation/landing-intro.md) and [five questions](../implementation/onboarding-questions.md) implemented; age/gender persistence, accessibility and device checks remain. |
+| AUTH-11 | Native permission and selection | In progress | `bb4b540` | [Permission bridge](../implementation/screen-time-authorization.md) exists; native picker and device authorization acceptance remain. |
+| AUTH-12 | Plan authoring and completion | In progress | Uncommitted preview | UI preview work has begun; plan rules, persistence, native install and recovery remain unimplemented. |
+| AUTH-13 | Apple and Google providers | In progress | `32165ea` | Browser provider work recorded in [social runbook](../runbooks/social-auth-development.md); native acceptance remains. |
 
 Use `In progress`, `Ready for review`, and `Completed` only as real work advances. Preserve actual commit hashes and test evidence; planning is not a completed implementation commit.
 

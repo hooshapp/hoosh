@@ -96,7 +96,11 @@ export function OnboardingQuestions() {
   const [permissionNotice, setPermissionNotice] = useState(false);
   const [authorization, setAuthorization] = useState<AuthorizationState>('not_requested');
   const [requestingPermission, setRequestingPermission] = useState(false);
-  const [showPlan, setShowPlan] = useState(false);
+  useEffect(() => {
+    if (step !== 5) return;
+    const timer = setTimeout(() => setStep(6), 1800);
+    return () => clearTimeout(timer);
+  }, [step]);
   useEffect(() => {
     if (step !== 4) return;
     let current = true;
@@ -162,7 +166,7 @@ export function OnboardingQuestions() {
 
   const saveDraft = useCallback(() => {
     if (!accountId) return Promise.reject(new Error('Sign in required'));
-    const value = serializeQuestionDraft({ step, apps: answers.apps, hobbies: answers.hobbies });
+    const value = serializeQuestionDraft({ step: Math.min(step, 4), apps: answers.apps, hobbies: answers.hobbies });
     const nextWrite = draftWrites.current.catch(() => undefined).then(() =>
       AsyncStorage.setItem(questionDraftKey(accountId), value),
     );
@@ -210,7 +214,6 @@ export function OnboardingQuestions() {
   }, [accountId, answers.apps, answers.hobbies, router, saveDraft, authorization]);
 
   const finishOnboarding = useCallback(async () => {
-    setShowPlan(false);
     await finish();
   }, [finish]);
 
@@ -230,7 +233,6 @@ export function OnboardingQuestions() {
         setAnswers(current => ({ ...current, hobbies: [] }));
         break;
       case 4:
-        setShowPlan(true);
         setStep(5);
         return;
       case 5:
@@ -241,7 +243,7 @@ export function OnboardingQuestions() {
         return;
     }
     setStep(current => Math.min(LAST_STEP, current + 1) as QuestionStep);
-  }, [finish, finishOnboarding, step]);
+  }, [finishOnboarding, step]);
 
   const addCustomHobby = useCallback(() => {
     const value = customHobby.trim().replace(/\s+/g, ' ');
@@ -269,7 +271,6 @@ export function OnboardingQuestions() {
     Keyboard.dismiss();
     if (step === 3 && !addCustomHobby()) return;
     if (step === 4) {
-      setShowPlan(true);
       setStep(5);
       return;
     }
@@ -282,7 +283,7 @@ export function OnboardingQuestions() {
       return;
     }
     setStep(current => Math.min(LAST_STEP, current + 1) as QuestionStep);
-  }, [finish, finishOnboarding, step, addCustomHobby]);
+  }, [finishOnboarding, step, addCustomHobby]);
 
   const onAgeScrollEnd = useCallback((event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const value = AGE_MIN + Math.round(event.nativeEvent.contentOffset.y / AGE_ROW_HEIGHT);
@@ -307,6 +308,8 @@ export function OnboardingQuestions() {
       </View>
     );
   }
+
+  if (step >= 5) return <PlanPreview loading={step === 5} answers={answers} saving={saving} onContinue={() => { void finishOnboarding(); }} onBack={() => setStep(4)} />;
 
   return (
     <KeyboardAvoidingView style={styles.screen} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
@@ -357,11 +360,69 @@ export function OnboardingQuestions() {
         onBack={() => setStep(current => Math.max(0, current - 1) as QuestionStep)}
         onNext={next}
         onSkip={skip}
-        onPermissionRequest={() => { if (authorization === 'authorized') void finish(); else void requestPermission(); }}
+        onPermissionRequest={() => { if (authorization === 'authorized') next(); else void requestPermission(); }}
       />
     </KeyboardAvoidingView>
   );
 }
+
+function PlanPreview({ loading, answers, saving, onContinue, onBack }: { loading: boolean; answers: Answers; saving: boolean; onContinue(): void; onBack(): void }) {
+  const insets = useSafeAreaInsets();
+  return <View style={[planStyles.screen, { paddingTop: Math.min(insets.top || 44, 44), paddingBottom: Math.max(insets.bottom, 24) }]}>
+    <Pressable accessibilityRole="button" onPress={onBack} style={planStyles.skip}><Text style={styles.skip}>Back</Text></Pressable>
+    <View style={styles.progress} accessibilityRole="progressbar" accessibilityLabel="Onboarding step 6 of 7" accessibilityValue={{ min: 1, max: 7, now: 6 }}>
+      {Array.from({ length: 7 }, (_, i) => <View key={i} style={[styles.progressSegment, i < 6 && styles.progressSegmentActive]} />)}
+    </View>
+    <Text style={styles.stepCount}>6 of 7</Text>
+    <ScrollView contentContainerStyle={planStyles.content}>
+      <Text accessibilityRole="header" style={styles.title}>{loading ? 'We are creating a plan for you' : 'Your plan preview'}</Text>
+      <Text style={styles.description}>{loading ? 'A little less scrolling. A little more time for what you love.' : 'Here is an example based on your choices. Your personalized plan will be available later.'}</Text>
+      {loading ? <>
+        <View style={planStyles.mascot}><View style={planStyles.mascotInner}><SvgXmlIcon name="permission-dinosaur" width={60} height={60} /></View></View>
+        <Text style={planStyles.loadingText}>Preparing your preview ···</Text>
+        <View style={planStyles.card}>
+          <PlanStage title="Your apps are chosen" detail={answers.apps.join(' · ') || 'No apps chosen'} />
+          <PlanStage title="Your hobbies are chosen" detail={answers.hobbies.join(' · ') || 'No activities chosen'} />
+          <PlanStage title="Preparing your suggestion" detail="Making room for what you love" />
+        </View>
+      </> : <>
+        {answers.apps.length === 0 && <Text style={planStyles.empty}>You haven’t chosen any apps yet.</Text>}
+        {answers.apps.map((app, index) => <View key={app} style={planStyles.card}>
+          <View style={planStyles.cardRow}><View style={styles.appIcon}><Text style={planStyles.iconText}>{app.slice(0, 1)}</Text></View><View style={planStyles.cardTitle}><Text style={styles.cardLabel}>{app}</Text><Text style={styles.appDetail}>Example: 10 min break</Text></View><Text style={planStyles.badge}>10 MIN</Text></View>
+          <Text style={planStyles.detail}>An example break that could make room for {answers.hobbies[index % Math.max(answers.hobbies.length, 1)] || 'an activity you enjoy'}.</Text>
+        </View>)}
+        <View style={[planStyles.card, planStyles.estimate]}><Text style={planStyles.cardHeading}>Weekly estimate</Text><Text style={planStyles.detail}>Illustration only: one 10-minute break per selected app each day could add up to {answers.apps.length * 70} minutes per week. This is not measured screen time.</Text></View>
+        <Text style={styles.note}>Suggestions are a preview and are not applied yet.</Text>
+        <PrimaryButton label={saving ? 'Saving…' : 'Continue'} onPress={onContinue} disabled={saving} wide />
+        <SecondaryButton label="Back" onPress={onBack} wide />
+      </>}
+    </ScrollView>
+  </View>;
+}
+
+function PlanStage({ title, detail }: { title: string; detail: string }) {
+  return <View style={planStyles.stage}><Text style={planStyles.check}>✓</Text><View style={planStyles.cardTitle}><Text style={planStyles.cardHeading}>{title}</Text><Text style={styles.appDetail}>{detail}</Text></View></View>;
+}
+
+const planStyles = StyleSheet.create({
+  screen: { flex: 1, backgroundColor: colors.darkCanvas, paddingHorizontal: 24 },
+  skip: { alignSelf: 'flex-end', height: 32, justifyContent: 'center' },
+  content: { paddingTop: 18, paddingBottom: 30, gap: 14 },
+  mascot: { width: 160, height: 160, borderRadius: 80, borderWidth: 3, borderColor: colors.action, alignSelf: 'center', alignItems: 'center', justifyContent: 'center', marginTop: 20 },
+  mascotInner: { width: 120, height: 120, borderRadius: 24, backgroundColor: '#26332a', alignItems: 'center', justifyContent: 'center' },
+  loadingText: { color: colors.action, fontFamily: fonts.medium, textAlign: 'center', fontSize: 14, marginVertical: 8 },
+  card: { backgroundColor: colors.darkCard, borderRadius: 14, borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)', padding: 16, gap: 12 },
+  estimate: { borderColor: colors.action },
+  cardRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  cardTitle: { flex: 1, alignItems: 'flex-start', gap: 2 },
+  cardHeading: { color: colors.white, fontFamily: fonts.bold, fontSize: 13 },
+  detail: { color: colors.darkMuted, fontFamily: fonts.light, fontSize: 12, lineHeight: 16 },
+  badge: { overflow: 'hidden', backgroundColor: colors.action, color: '#111', borderRadius: 20, paddingHorizontal: 10, paddingVertical: 6, fontFamily: fonts.bold, fontSize: 10 },
+  iconText: { color: colors.action, fontFamily: fonts.bold, fontSize: 18 },
+  empty: { color: colors.darkMuted, fontFamily: fonts.regular },
+  stage: { flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: 48 },
+  check: { color: colors.action, fontSize: 20, width: 28, textAlign: 'center' },
+});
 
 function GenderStep({ value, onChange }: { value: string | null; onChange(value: string | null): void }) {
   return (

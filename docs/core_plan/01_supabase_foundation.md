@@ -294,16 +294,16 @@ finishing a producer module does not imply that all integration evidence is comp
 
 ## 9. Progress ledger
 
-All entries start **Pending**. Replace status only when that part's checks have been performed; record the actual commit hash and evidence location.
+Updated November 1, 2026 from the `landing-page` implementation and recorded development-dashboard evidence. Status describes the whole part, including its acceptance criteria; external configuration is not established by a Git commit alone.
 
 | Part | Owner | Status | Actual commit | Evidence / notes |
 |---|---|---|---|---|
-| SB-01 | Anisha | Pending | — | — |
-| SB-02 | Anisha | Pending | — | — |
-| SB-03 | Anisha | Pending | — | — |
+| SB-01 | Anisha | In progress | `32165ea` (Auth work) | [Development runbook](../runbooks/supabase-development.md) and [credentials map](../runbooks/credentials-map.md) exist; teammate access, backup ownership and complete handoff still need confirmation. |
+| SB-02 | Anisha | In progress | `32165ea` (Auth work) | Development project, issuer and public ES256 JWKS observed in the runbook; confirm actual audience, PostgreSQL version and backend agreement. |
+| SB-03 | Anisha | In progress | `32165ea` (Auth work) | Email confirmation, redirects and development SMTP configured. A new-account email was received in Gmail Spam and the account confirmed on Nov 1; two-account token and edge-case evidence remain incomplete. |
 | SB-04 | Ishmum | Pending | — | — |
 | SB-05 | Ishmum | Pending | — | — |
-| SB-06 | Anisha leads; Ishmum contributes | Pending | — | — |
+| SB-06 | Anisha leads; Ishmum contributes | In progress | `32165ea` (partial Auth work) | [Auth QA](../qa/auth-foundation.md); live app/API identity handoff, second-account isolation and recovery evidence remain. |
 
 ## 10. References checked for this plan
 

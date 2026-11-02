@@ -1,6 +1,6 @@
 # Hoosh
 
-Shared React Native app and FastAPI service for Disconnect. Product context starts in [docs/AGENT_START_HERE.md](docs/AGENT_START_HERE.md); pending product answers belong in [docs/PM_QUESTIONS.md](docs/PM_QUESTIONS.md). Detailed development plans and their execution order are in [docs/core_plan/README.md](docs/core_plan/README.md).
+Shared React Native app and FastAPI service for Disconnect. Product context starts in [agent context](<docs/Context (AGENT)/AGENT_START_HERE.md>); pending product answers belong in [product questions](<docs/Context (AGENT)/PM_QUESTIONS.md>). Detailed development plans and their execution order are in [docs/core_plan/README.md](docs/core_plan/README.md).
 
 ## What works now
 

@@ -92,6 +92,8 @@ it('resumes the account-scoped last step and saves only approved preference fiel
   await render(<OnboardingQuestions />, { wrapper: Wrapper });
   expect(await screen.findByText('Screen Time access')).toBeTruthy();
   await fireEvent.press(screen.getByRole('button', { name: 'Not now' }));
+  await screen.findByText('Your plan preview', {}, { timeout: 4000 });
+  await fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
   await waitFor(() => expect(mockReplace).toHaveBeenCalledWith('/(tabs)'));
   const saved = JSON.parse(mockStorage.get(questionAnswersKey('account-a')) ?? '{}') as Record<string, unknown>;
   expect(saved).toMatchObject({ apps: ['X'], hobbies: ['Walking'], screenTimeAccess: 'unavailable' });
@@ -128,6 +130,8 @@ it('continues only after native authorization is confirmed, and saves that obser
   expect(await screen.findByRole('button', { name: 'Continue →' })).toBeTruthy();
   expect(mockReplace).not.toHaveBeenCalled();
   await fireEvent.press(screen.getByRole('button', { name: 'Continue →' }));
+  await screen.findByText('Your plan preview', {}, { timeout: 4000 });
+  await fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
   await waitFor(() => expect(mockReplace).toHaveBeenCalledWith('/(tabs)'));
   expect(JSON.parse(mockStorage.get(questionAnswersKey('account-a')) ?? '{}').screenTimeAccess).toBe('authorized');
 });
@@ -150,6 +154,8 @@ it('includes a typed custom activity when the user presses Next without the plus
   await fireEvent.press(screen.getByRole('button', { name: 'Next →' }));
   await screen.findByText('Screen Time access');
   await fireEvent.press(screen.getByRole('button', { name: 'Not now' }));
+  await screen.findByText('Your plan preview', {}, { timeout: 4000 });
+  await fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
   await waitFor(() => expect(mockReplace).toHaveBeenCalled());
   expect(JSON.parse(mockStorage.get(questionAnswersKey('account-a')) ?? '{}').hobbies).toEqual(['Gardening']);
 });

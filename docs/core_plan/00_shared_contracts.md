@@ -27,7 +27,7 @@ M1/M2 do not claim a finished onboarding journey, app blocking, Android parity, 
 - `apps/mobile/src/infrastructure/api/client.ts` already accepts an `AccessTokenProvider`, rejects absent credentials for protected requests, and prevents cross-origin paths. It lacks the full error/cancellation/lifecycle handling planned in Plan 04.
 - `packages/contracts/src/index.ts` exports accepted Auth lifecycle types from `auth.ts` and draft native policy/availability types from `protection.ts`. Consumer compile scenarios check the public port. Runtime implementations of these shared ports are absent from the new React Native foundation; the legacy Swift app is a separate reuse source.
 - `services/api/app/main.py` serves process health/OpenAPI only. JWT verification, database connections, migrations, and product endpoints are absent.
-- `docs/OPEN_DECISIONS.yaml` and the PM answer log still contain unresolved product decisions.
+- `docs/Context (AGENT)/OPEN_DECISIONS.yaml` and the PM answer log still contain unresolved product decisions.
 
 ### Figma recheck
 

@@ -3,7 +3,7 @@
 **Status:** Plan 00 is complete and validated (foundation commit `0b50900`, recorded in its ledger); Plans 01–04 remain implementation drafts. Auth, private API endpoints, database and native adapters are not implemented.\
 **Baseline inspected:** `c7a8f73` — `Set up mobile and API foundation`.\
 **Reviewed:** 2026-10-28.\
-**Product answers:** [PM_QUESTIONS.md](../PM_QUESTIONS.md); no PM question is answered by an engineering default in these plans.
+**Product answers:** [PM_QUESTIONS.md](<../Context (AGENT)/PM_QUESTIONS.md>); no PM question is answered by an engineering default in these plans.
 
 ## 1. Start here
 
