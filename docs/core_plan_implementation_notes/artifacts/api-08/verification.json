@@ -1,0 +1,67 @@
+{
+  "date": "2026-11-02",
+  "branch": "task/backend/api-08",
+  "parent": "4d8d1fc",
+  "implementedRoute": {
+    "method": "GET",
+    "path": "/v1/profile",
+    "operationId": "get_own_profile",
+    "nonmutating": true,
+    "absentResponse": {
+      "profile": null
+    },
+    "ownerSource": "verified-user transaction only",
+    "timestamps": "UTC RFC 3339 with Z",
+    "privateCacheControl": "no-store"
+  },
+  "checks": {
+    "deterministicBackendTests": 374,
+    "requiredRealPostgresTests": 75,
+    "fullWorkspaceCheck": "passed",
+    "mobileVitestTests": 250,
+    "mobileJestTests": 362,
+    "originalSvgAssetsChecked": 71,
+    "workspaceTypesAndLint": "passed",
+    "backendRuff": "passed",
+    "openApiAndGeneratedTypeDrift": "zero",
+    "environmentFreeSchemaExport": "passed without Settings/client/engine construction",
+    "frozenUvSync": "passed; 47 installed packages",
+    "realSignedTokenRouteAndRuntimeRoleQueries": "passed",
+    "repeatedAbsentAndExistingReadsNonmutating": "passed",
+    "realAccountABConnectionReuseAndOwnerInjection": "passed",
+    "repositoryExplicitOwnerFilterInAdditionToRls": "passed",
+    "authenticationBeforeDbAccess": "passed",
+    "nonUtcSessionTimezone": "passed",
+    "realConnectionPoolLockAndStatementFailureMapping": "passed with no false absent success",
+    "postFailureRecoveryAndConnectionRelease": "passed",
+    "unexpectedFailureSafe500": "passed",
+    "dateTimeFormatChecking": "explicitly required; malformed or timezone-less timestamp rejection passed"
+  },
+  "versions": {
+    "python": "3.12.14",
+    "fastapi": "0.162.0",
+    "pydantic": "2.14.1",
+    "sqlalchemy": "2.0.55",
+    "psycopg": "3.3.6",
+    "jsonschema": "4.26.0",
+    "rfc3339-validator": "0.1.4",
+    "six": "1.17.0"
+  },
+  "unchangedMigrationHead": "20261102_0001",
+  "generatedPaths": [
+    "/healthz",
+    "/v1/me",
+    "/v1/profile"
+  ],
+  "profilePatchImplemented": false,
+  "newSchemaMigration": false,
+  "hostedDatabaseOrAuthChanged": false,
+  "managedUserTokenOrMobileAcceptance": "not run; API-10 joint handoff with Anisha",
+  "hostedGithubCiExecuted": false,
+  "pushOrMainMerge": false,
+  "finalLocalTestStack": "stopped; existing named migrated volume retained",
+  "generatedOutputSha256": {
+    "packages/contracts/openapi/foundation.openapi.json": "222e5b27fdde75b849a8d67002236d23b5d89a1a5472e53ec11d5fe295abf28f",
+    "packages/contracts/src/http.generated.ts": "056185a47d88fb4d9211a4157fb8c5b76172b2177e48907b55c2b3152e1b8e5b"
+  }
+}

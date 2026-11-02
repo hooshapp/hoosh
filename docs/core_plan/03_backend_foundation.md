@@ -1,6 +1,6 @@
 # Plan 03 — FastAPI Identity and Profile Foundation
 
-**Status:** API-01–07 are implemented: strict trust/errors, JWT/JWKS, database-independent identity, generated contracts and bounded lazy PostgreSQL units of work. API-06 passed 337 deterministic tests, 24 real PostgreSQL checks and a read-only hosted runtime/TLS smoke check. API-07 added the model, single Alembic history and profile constraints/grants/RLS, with 344 deterministic and 66 real DB tests plus hosted upgrade/check. Actual user-token/mobile M1, managed-user cascade smoke and API-08–10/profile HTTP work remain pending.\
+**Status:** API-01–08 are implemented: strict trust/errors, JWT/JWKS, database-independent identity, generated contracts and bounded lazy PostgreSQL units of work. API-06 passed 337 deterministic tests, 24 real PostgreSQL checks and a read-only hosted runtime/TLS smoke check. API-07 added the model, single Alembic history and profile constraints/grants/RLS, with 344 deterministic and 66 real DB tests plus hosted upgrade/check. API-08 now adds nonmutating own-profile GET and generated shapes (374 deterministic / 75 real DB tests). Actual user-token/mobile M1, managed-user cascade smoke and API-09/10 saves/evidence remain pending.\
 **Owner:** Ishmum (backend/database). Anisha reviews Auth contracts and participates in live session checks.\
 **Area branch:** `area/backend`; task branches `task/backend/<part>`.\
 **Milestones:** M1 = verified identity without a database; M2 = minimal, isolated, revisioned profile persistence.
@@ -350,9 +350,7 @@ All parts include their own relevant tests; API-10 is the final integration evid
 
 **Acceptance/tests:** absent row remains absent after repeated GETs; own row returned; A/B isolation; malformed/missing token rejected before database access; DB outage/timeout is not reported as first-run onboarding; no SQL details or other user's values in errors.
 
-**Recovery:** Disable profile reads if their scope cannot be trusted, while leaving identity independent. A DB failure returns unavailable, not an empty successful profile; repair connection/repository logic without deleting or recreating user rows.
-
-**Recovery:** keep GET disabled until migrations are applied. A backend rollback must remain compatible with the existing table and generated response shape.
+**Recovery:** Enable GET only after the migration prerequisite is applied. Disable profile reads if their scope cannot be trusted, while leaving identity independent. A DB failure returns unavailable, not an empty successful profile; repair connection/repository logic without deleting or recreating user rows. A backend rollback must remain compatible with the existing table and generated response shape.
 
 ### API-09 — Implement revision-safe profile creation and edits
 
@@ -442,8 +440,8 @@ Auth can finish its session work without profiles. The main frontend must not cl
 | API-04 | Implemented producer; live Supabase/mobile M1 unverified | `06f5704` | 244 backend tests; real signed-token route paths and local crypto measurements; Plan 03 notes |
 | API-05 | Implemented; live M1 remains pending | `d4f3e38` | 269 API tests, full workspace checks, isolated fresh generator install/drift rejection and mobile export; Plan 03 notes |
 | API-06 | Implemented; local real-DB + read-only hosted engine checks passed | `45a8c2e` | 337 deterministic tests, 24 real DB checks, Ruff, frozen lock and schema drift; [Plan 03 notes](../core_plan_implementation_notes/plan_03_backend_foundation_notes.md) / [DB contract](../../services/api/app/db/README.md) |
-| API-07 | Implemented producer; local migrations/RLS and hosted empty upgrade/security checks passed | Resolve by `feat(db): migrate minimal profiles with runtime row isolation` | 344 deterministic / 66 real DB checks; head `20261102_0001`; [Plan 03 notes](../core_plan_implementation_notes/plan_03_backend_foundation_notes.md); actual managed Auth A/B/cascade remains API-10 joint smoke |
-| API-08 | Pending | — | — |
+| API-07 | Implemented producer; local migrations/RLS and hosted empty upgrade/security checks passed | `4d8d1fc` | 344 deterministic / 66 real DB checks; head `20261102_0001`; [Plan 03 notes](../core_plan_implementation_notes/plan_03_backend_foundation_notes.md); actual managed Auth A/B/cascade remains API-10 joint smoke |
+| API-08 | Implemented producer; real signed-token GET/runtime-DB reads and failures accepted locally | Resolve by `feat(api): read the authenticated user's profile` | 374 deterministic / 75 real DB tests; generated GET schemas/types; managed tokens/mobile integration remain API-10 joint work |
 | API-09 | Pending | — | — |
 | API-10 | Pending | — | — |
 
@@ -504,3 +502,21 @@ runner, not a parallel Supabase product migration. No hosted Auth user was chang
 for tests; actual managed-account cascade/A-B remains joint API-10 evidence.
 API-08 is next (nonmutating own-profile GET); API-09 adds revisioned PATCH. No
 new HTTP route/schema was published by API-07. See the migration guide/runbook.
+
+### API-08 producer checkpoint — 2026-11-02
+
+GET /v1/profile now uses the function-scoped verified-user transaction, an explicit
+owner predicate and the existing non-owner runtime/RLS. Missing rows return only
+{profile:null}; repeated reads do not insert/backfill or import Auth metadata.
+DTOs are built inside the live unit, require nullable fields and normalize aware
+server timestamps to UTC Z without guessing a zone for naive values. Identity
+remains database-independent. Auth rejects invalid credentials before DB access;
+connection/pool/query timeouts return safe 503, while invariant/programming errors
+remain safe 500 rather than successful absence.
+
+374 deterministic and 75 required PostgreSQL tests pass, including real signed
+requests, A/B connection reuse, forged owner inputs, missing/deleted Auth subjects,
+nonmutation snapshots, timezone changes, timeout/exhaustion and recovery. Generated
+OpenAPI/types publish GET only; no migration or hosted Auth/schema change was
+needed. Next API-09 adds strict revisioned PATCH; API-10/joint managed-user/mobile
+acceptance remains open. Read the implementation notes and backend README.

@@ -113,8 +113,8 @@ npm run api:lint
 ```
 
 These are actual scaffold scripts, not evidence they passed in a particular change.
-No database migrations are present yet; add Alembic and actual DB checks through
-Plan 03. Legacy iOS source exists, but importing it does not prove an audited or
+Plan 03 API-07 supplies Alembic and required PostgreSQL migration/policy checks;
+API-08 adds nonmutating own-profile GET. Legacy iOS source exists, but importing it does not prove an audited or
 Expo-integrated native build. Signed iOS builds on a physical device and Android device
 capability tests remain separate; a web export does not establish native behavior.
 
@@ -127,7 +127,7 @@ capability tests remain separate; a web export does not establish native behavio
 - **`TSD.md`** — architecture, native boundaries, Swift/Android requirements, TypeScript interfaces, FastAPI endpoints, Pydantic/SQL examples, event sync, security, database, tests, infra, agent work packages.
 - **`OPEN_DECISIONS.yaml`** — machine-readable unresolved founder choices, intentionally unapproved.
 - **[`PM_QUESTIONS.md`](PM_QUESTIONS.md)** — 22 PM questions with stable IDs and space to append dated answers, clarifications, and agreed decisions.
-- **[`core_plan/README.md`](../core_plan/README.md)** — execution order and index for five detailed foundation plans, with 44 parts (Plan 00 committed as `0b50900`, RN-01–04, API-01–07 and SB-04–05 producers implemented with evidence, 27 parts awaiting acceptance, including RN-05 consumer, RN-07 UI-only, RN-08 native presentation preparation, RN-09a–h UI with live integration pending and RN-10 shared hardening; RN-04 real root wiring pending), cross-plan dependencies, implementation/commit ledgers, and explicit PM/native gates.
+- **[`core_plan/README.md`](../core_plan/README.md)** — execution order and index for five detailed foundation plans, with 44 parts (Plan 00 committed as `0b50900`, RN-01–04, API-01–08 and SB-04–05 producers implemented with evidence, 26 parts awaiting acceptance, including RN-05 consumer, RN-07 UI-only, RN-08 native presentation preparation, RN-09a–h UI with live integration pending and RN-10 shared hardening; RN-04 real root wiring pending), cross-plan dependencies, implementation/commit ledgers, and explicit PM/native gates.
 
 **Source of truth:** This is a context-rich implementation baseline. A full repo audit and explicit product policy answers may require updates before coding core session/reward rules. The documents must be revised whenever founder decisions, platform behavior, or existing code evidence contradicts assumptions.
 
@@ -139,7 +139,7 @@ RN-09a–h independent main-screen and detail/editor UI is implemented. See [UI 
 Plan 03 API-01–05 now implement backend identity verification and generated wire
 contracts; read [Plan 03 implementation notes](../core_plan_implementation_notes/plan_03_backend_foundation_notes.md)
 before backend/Auth/RN integration. FastAPI has public `/healthz` and protected
-`/v1/me`; profile HTTP/API-08–10 and real-user/mobile acceptance remain pending. Real Supabase project tokens,
+`/v1/me`; the newer API-08 checkpoint below adds profile GET. API-09/10 and real-user/mobile acceptance remain pending. Real Supabase project tokens,
 mobile Auth/session/root wiring and live M1/M2 acceptance are not yet verified.
 Schema export is environment-free and fail-closed; no fake authenticated account
 is registered. App/shared TypeScript remains 6.0.3; its pinned build-only generator
@@ -154,18 +154,26 @@ password was corrected. A separate runtime credential was initialized privately;
 no shared credential was reset. SB-05
 local/CI contract is implemented; 8 real PostgreSQL tests passed locally (hosted
 GitHub run unverified). API-06 lazy engine/scoped verified-user transactions are now implemented and
-validated. API-07 now supplies the profile model/Alembic/RLS; next is API-08 GET; Anisha's Auth/root wiring and joint
+validated. API-07 supplies the profile model/Alembic/RLS and API-08 GET is now implemented; next is API-09 PATCH; Anisha's Auth/root wiring and joint
 live identity acceptance remain pending. Actual secrets/certificates stay ignored; never include them in notes.
 
 API-06 details/commit/evidence are in Plan 03 notes and the application DB README.
 The current checks are 337 deterministic backend tests and 24 real PostgreSQL
 tests; the existing DB CI group includes the new tests. Runtime connections are
 lazy and use the dedicated role; request units finalize before HTTP success,
-never borrow migration credentials and do not replay failed mutations. API-07 now supplies the minimal product model/RLS/history; schema paths still contain only health/identity.
+never borrow migration credentials and do not replay failed mutations. API-07 now supplies the minimal product model/RLS/history; schema paths now also include API-08 profile GET.
 
 API-07 is implemented/applied to the inspected-empty development project through
 Alembic head 20261102_0001, with local migration/RLS acceptance and private runtime
 checks (344 deterministic / 66 real DB tests). Read the Plan 03 notes and migration
-guide before API-08. There is no profile backfill/signup trigger or new HTTP route;
+guide before further database work. API-07 added no profile backfill/signup trigger or HTTP route; API-08 now adds GET;
 managed Auth users/settings were untouched. Actual managed-user cascade/A-B and
 Auth/mobile integration remain joint API-10/SB-06 work with Anisha.
+
+Current API-08 checkpoint (2026-11-02): GET /v1/profile is implemented with real
+verified-user scope, explicit owner filtering/RLS and exact nullable/UTC responses.
+Repeated absence reads do not insert; connection/pool/query failures are safe 503,
+not absence. Generated OpenAPI/types include GET only. 374 deterministic / 75 real
+PostgreSQL tests pass. API-07 hash is 4d8d1fc; API-09 revisioned PATCH is next.
+Earlier checkpoints/counts above are historical. No hosted schema/Auth changes
+were needed; actual managed-user tokens and mobile M1/M2 remain joint acceptance.

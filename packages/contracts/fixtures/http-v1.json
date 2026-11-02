@@ -1,7 +1,7 @@
 {
   "fixtureVersion": 1,
   "synthetic": true,
-  "note": "Synthetic contract examples. Identity/shared errors are validated in API-05; profile successes remain planned until M2. Credentials are scenario labels, never real JWTs.",
+  "note": "Synthetic contract examples. Identity/shared errors are validated in API-05; profile success envelopes are validated in API-08. PATCH behavior remains API-09. Credentials are scenario labels, never real JWTs.",
   "examples": [
     {
       "case": "identity",

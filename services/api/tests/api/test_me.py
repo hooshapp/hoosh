@@ -214,4 +214,4 @@ def test_method_rejection_and_exact_identity_schema(context, signer):
     assert operation["operationId"] == "get_verified_identity"
     assert operation["security"] == [{"SupabaseAccessToken": []}]
     assert set(schema["components"]["schemas"]["MeResponse"]["required"]) == {"user_id", "email"}
-    assert "/v1/profile" not in schema["paths"]
+    assert set(schema["paths"]["/v1/profile"]) == {"get"}

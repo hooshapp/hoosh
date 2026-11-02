@@ -43,6 +43,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read the authenticated user's profile
+         * @description The verified access-token subject selects the row; no owner parameter. Returns {profile:null} only when no row exists. Never creates a profile or imports Auth metadata. Nullable fields are present; timestamps are UTC RFC 3339 with Z. Database failure is 503, not absence or sign-out. No-store.
+         */
+        get: operations["get_own_profile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -118,6 +138,34 @@ export interface components {
         MeResponse: {
             /** Email */
             email: string | null;
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+        };
+        /** ProfileResponse */
+        ProfileResponse: {
+            profile: components["schemas"]["ProfileView"] | null;
+        };
+        /** ProfileView */
+        ProfileView: {
+            /**
+             * Created At
+             * Format: date-time
+             * @description Server-created UTC RFC 3339 timestamp with Z.
+             */
+            created_at: string;
+            /** Display Name */
+            display_name: string | null;
+            /** Revision */
+            revision: number;
+            /**
+             * Updated At
+             * Format: date-time
+             * @description Server-updated UTC RFC 3339 timestamp with Z.
+             */
+            updated_at: string;
             /**
              * User Id
              * Format: uuid
@@ -285,6 +333,78 @@ export interface operations {
                 };
             };
             /** @description Required identity trust unavailable */
+            503: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    get_own_profile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProfileResponse"];
+                };
+            };
+            /** @description Missing, invalid or expired credentials */
+            401: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    "WWW-Authenticate": "Bearer";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Verified anonymous identity excluded in M2 */
+            403: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Safe unexpected failure */
+            500: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Identity trust or database unavailable */
             503: {
                 headers: {
                     "Cache-Control": "no-store";

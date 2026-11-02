@@ -30,5 +30,7 @@ import type { components } from './http.generated';
 export type { components, operations, paths } from './http.generated';
 export type HealthResponse = components['schemas']['HealthResponse'];
 export type MeResponse = components['schemas']['MeResponse'];
+export type ProfileView = components['schemas']['ProfileView'];
+export type ProfileResponse = components['schemas']['ProfileResponse'];
 export type ApiErrorEnvelope = components['schemas']['ErrorEnvelope'];
 export type ApiErrorCode = ApiErrorEnvelope['error']['code'];

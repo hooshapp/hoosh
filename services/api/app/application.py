@@ -8,6 +8,7 @@ from starlette.types import Lifespan
 
 from app.api.health import router as health_router
 from app.api.v1.me import router as identity_router
+from app.api.v1.profiles import router as profile_router
 from app.core.auth import UnavailableTokenVerifier
 from app.core.errors import install_error_handlers
 from app.core.openapi import install_openapi
@@ -21,7 +22,7 @@ def create_app(*, cors_origins: Sequence[str] = (), lifespan: Lifespan | None = 
         version="0.0.0",
         lifespan=lifespan,
         responses={500: {"model": ErrorEnvelope, "description": "Safe unexpected failure"}},
-        description="Verified identity foundation; profiles and native protection are separate.",
+        description="Verified identity and nonmutating own-profile reads; writes remain separate.",
     )
     application.state.token_verifier = UnavailableTokenVerifier()
     application.state.database = None
@@ -39,5 +40,6 @@ def create_app(*, cors_origins: Sequence[str] = (), lifespan: Lifespan | None = 
     application.add_middleware(RequestContextMiddleware)
     application.include_router(health_router)
     application.include_router(identity_router)
+    application.include_router(profile_router)
     install_openapi(application)
     return application

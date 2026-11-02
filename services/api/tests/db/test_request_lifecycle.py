@@ -1,37 +1,14 @@
-import time
 from uuid import UUID, uuid4
 
-import httpx2
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import insert, select, text
 
-from app.core.jwks import JwksResolver
 from app.db.dependencies import UserSessionDependency
-from app.runtime import create_app
-from tests.auth.support import USER_A, LocalSigner, settings
+from tests.auth.support import USER_A, settings
+from tests.support.http import authenticated_app
 
 pytestmark = pytest.mark.database
-
-
-def authenticated_app(monkeypatch, config):
-    signer = LocalSigner()
-
-    def resolver_factory(value):
-        return JwksResolver(
-            value,
-            client=httpx2.AsyncClient(
-                transport=httpx2.MockTransport(
-                    lambda request: httpx2.Response(200, json={"keys": [signer.jwk]})
-                )
-            ),
-        )
-
-    monkeypatch.setattr("app.runtime.JwksResolver", resolver_factory)
-    app = create_app(config)
-    now = int(time.time())
-    token = signer.token({"iat": now - 60, "exp": now + 300})
-    return app, {"Authorization": "Bearer " + token}
 
 
 def test_sync_request_commits_and_shuts_down_owned_pool_before_reuse(

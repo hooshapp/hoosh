@@ -19,7 +19,7 @@ Shared React Native app and FastAPI service for Disconnect. Product context star
 - FastAPI liveness plus verified `GET /v1/me`, bounded JWT/JWKS verification, safe errors and generated OpenAPI/HTTP types; see [backend status](services/api/README.md). Real user-token/mobile integration remains pending.
 - Reproducible npm and uv lockfiles, linting, type checking, and CI checks.
 
-Mobile authentication is not yet connected. The backend identity producer is implemented; profile HTTP integration, saved plans, native protection, rewards, usage measurements and AI remain pending. API-07 supplies the minimal profile table/RLS. Imported legacy iOS behavior is separate and still requires audit/integration. The shell has no auth guard and exposes no private data. Do not publish this preview as a working protection app.
+Mobile authentication is not yet connected. The backend identity producer is implemented; profile saves/mobile integration, saved plans, native protection, rewards, usage measurements and AI remain pending. API-07 supplies the minimal profile table/RLS. Imported legacy iOS behavior is separate and still requires audit/integration. The shell has no auth guard and exposes no private data. Do not publish this preview as a working protection app.
 
 ## Structure
 
@@ -138,7 +138,7 @@ Coordinate edits to the root navigation, `app.config.ts`, dependency lockfiles, 
 
 ## Next integration
 
-1. API-01–07 backend identity/schema/database producers are implemented; read [Plan 03 notes](docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md). RN-05/06 still need real Supabase/Auth/session and coordinated root wiring. SB-05 is verified locally; SB-04 hosted runtime login/TLS is accepted. Ishmum can start API-08 nonmutating own-profile reads.
+1. API-01–08 backend identity/schema/database/read producers are implemented; read [Plan 03 notes](docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md). RN-05/06 still need real Supabase/Auth/session and coordinated root wiring. SB-05 is verified locally; SB-04 hosted runtime login/TLS is accepted. API-08 GET is accepted locally; Ishmum can start API-09 revisioned saves.
 2. Anisha owns Supabase Auth/project setup (SB-01–03) and builds the single Auth/session producer (AUTH-01/02); both sides use controlled tests before live integration. Audit the imported Swift source and investigate Android feasibility independently.
 3. When the producer outputs are ready, connect real sign-in → identity-only `GET /v1/me` → matching account UI (M1), without requiring a product database.
 4. Add isolated PostgreSQL persistence and `GET/PATCH /v1/profile` with revision/conflict handling (M2). Full onboarding/plans/native installation follow their approved contracts and evidence.
@@ -157,7 +157,7 @@ runtime login, verified TLS and denied privilege checks pass; the new runtime
 credential is saved privately and no shared password was reset. The [isolated PostgreSQL guide](services/api/tests/support/README.md)
 provides `npm run api:db:up`, `api:db:test`, `api:db:down` and guarded `api:db:reset`.
 A separate required CI job runs real DB checks without managed-project secrets.
-Default `api:test` stays deterministic; API-08–10 profile HTTP integration and
+Default `api:test` stays deterministic; API-09/10 profile saves/evidence and
 Anisha's Auth/mobile integration remain separate unfinished work.
 
 API-06 now supplies the lazy bounded SQLAlchemy/psycopg engine, guarded verified-user
@@ -165,10 +165,17 @@ transactions and synchronous function-scoped dependency. See [the DB contract](s
 and [Plan 03 notes](docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md).
 337 deterministic backend tests plus 24 real PostgreSQL checks passed; hosted
 runtime/TLS connectivity was checked read-only. The minimal table/RLS/migration are supplied by API-07;
-profile HTTP endpoints are API-08/09; no mobile/Auth/native feature was added.
+profile GET is now API-08; PATCH remains API-09. No mobile/Auth/native feature was added.
 
 API-07 now provides the minimal profile model, server-clock invariants and single
 Alembic history with explicit runtime grants/RLS. See [migration guide](services/api/alembic/README.md)
 and Plan 03 notes for the reviewed SQL and applied empty-development upgrade.
 344 deterministic / 66 real PostgreSQL tests pass. No Auth user/configuration was
-changed; real managed A-B/cascade and app wiring remain joint work. API-08 is next.
+changed; real managed A-B/cascade and app wiring remain joint work. API-08 GET is implemented below; API-09 is next.
+
+API-08 now exposes authenticated `GET /v1/profile`: exact own profile or explicit
+`{profile:null}`, without insertion or Auth metadata import. UTC timestamps,
+no-store headers and generated HTTP types are verified. Current checks: 374
+deterministic backend / 75 real PostgreSQL tests. PATCH remains API-09; actual
+managed-user/mobile M1/M2 acceptance remains joint work. No cloud change was
+required for this read endpoint.

@@ -23,7 +23,7 @@ Import with `import type { ... } from '@disconnect/contracts'`.
 There is no approved session allocator, plan policy, quest lifecycle, or reward formula here. Resolve the corresponding PM questions before adding those production contracts. Ishmum and Anisha review shared-contract changes and integrate them into `main` early. These types contain no React, Supabase SDK, runtime adapter, or production fixture selector.
 
 The adopted [HTTP contract](HTTP_API.md) and synthetic [fixtures](fixtures/http-v1.json)
-specify the first endpoints, which are not implemented yet. API-05 generates HTTP
+specify identity and profile reads (implemented) and revisioned saves (API-09). API-05 generates HTTP
 types from Pydantic/FastAPI OpenAPI; no duplicate handwritten HTTP schemas now.
 
 `npm run typecheck --workspace @disconnect/contracts` checks source and
@@ -34,10 +34,11 @@ mobile routes/imports. See [handoff and release-isolation rules](../../docs/arch
 
 ## Implemented HTTP authority — API-05
 
-FastAPI/Pydantic models are executable authority for implemented `/healthz` and
-`/v1/me`, plus shared safe errors. `openapi/foundation.openapi.json` and
+FastAPI/Pydantic models are executable authority for implemented `/healthz`,
+`/v1/me` and `GET /v1/profile`, plus shared safe errors. `openapi/foundation.openapi.json` and
 `src/http.generated.ts` are committed together. The public entry exports type-only
-`paths`, `operations`, `components`, `HealthResponse`, `MeResponse`, `ApiErrorEnvelope`
+`paths`, `operations`, `components`, `HealthResponse`, `MeResponse`, `ProfileView`,
+`ProfileResponse`, `ApiErrorEnvelope`
 and `ApiErrorCode`. Auth/native domain ports remain handwritten and type-only.
 
 From the repository root:
@@ -53,5 +54,5 @@ network clients or database setup. Its unavailable provider cannot return a user
 The [private generator workspace](../api-codegen/README.md) isolates its TypeScript 5
 peer without changing the TypeScript 6 application. CI checks drift and the shared
 fixtures against both Pydantic and exported JSON Schema. Reserved profile error
-shapes do not implement profile routes; M2 success examples remain planned until
-API-08/09. Generated types do not replace runtime response/subject validation.
+shapes do not implement mutations; API-08 now validates required-nullable profile
+successes and UTC timestamps, while PATCH remains API-09. Generated types do not replace runtime response/subject validation.

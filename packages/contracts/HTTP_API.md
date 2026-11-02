@@ -1,7 +1,7 @@
 # Identity and profile HTTP contract
 
 **Status:** Adopted for M1/M2 on 2026-10-28 at Ishmum's direction. These endpoints
-are specified, not implemented. Only `/healthz` currently runs. Ishmum owns the
+now have implemented `/healthz`, identity GET and nonmutating profile GET. Profile PATCH remains API-09. Ishmum owns the
 server/schema/client; Anisha owns the Auth session consumed by the client.
 
 See [architecture](../../docs/architecture/identity-foundation.md),
@@ -167,11 +167,13 @@ responses at the client boundary when RN-03 implements it; TypeScript alone does
 not validate network data. Unknown future codes get a safe fallback, never success.
 
 API-05 now publishes Pydantic + exported FastAPI OpenAPI as executable authority
-for implemented `/healthz`, `/v1/me` and shared error schemas. Committed outputs
+for implemented `/healthz`, `/v1/me`, `GET /v1/profile` and shared error schemas. Committed outputs
 are `openapi/foundation.openapi.json` and `src/http.generated.ts`; regenerate/check
 with root `api:generate` / `api:check-contracts`. The pinned build-only generator
-produces types, not another HTTP client. Public `HealthResponse`, `MeResponse` and
+produces types, not another HTTP client. Public `HealthResponse`, `MeResponse`, `ProfileView`, `ProfileResponse` and
 error aliases are derived from generated schemas; domain Auth/native ports remain
 handwritten. Error codes discriminate required details and literal retryability in
-both JSON Schema and TypeScript. Profile success examples remain design inputs
-until API-08/09 adds actual M2 endpoints and generated shapes.
+both JSON Schema and TypeScript. API-08 validates profile success examples against the generated GET envelope.
+PATCH request/algorithm behavior remains planned for API-09; no generated PATCH path
+or mobile integration is implied. Required nullable fields and UTC Z timestamps
+are part of the read response.

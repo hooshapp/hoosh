@@ -11,11 +11,11 @@ npm run api:test
 npm run api:lint
 ```
 
-`GET /healthz` and the protected database-independent `GET /v1/me` are implemented. FastAPI publishes its schema at `/openapi.json` and documentation at `/docs`.
+`GET /healthz`, protected database-independent `GET /v1/me` and nonmutating `GET /v1/profile` are implemented. FastAPI publishes its schema at `/openapi.json` and documentation at `/docs`.
 
-The adopted [M1/M2 contract](../../packages/contracts/HTTP_API.md) specifies identity-only `GET /v1/me`, then planned `GET/PATCH /v1/profile`; the latter awaits API-08/09. Ishmum owns Pydantic/OpenAPI schemas and one Alembic history when those parts begin. Derive user IDs from verified Supabase access tokens; no client-provided identity or production auth bypass. Supabase Auth owns credentials and mobile session refresh. The API owns token verification and server-authoritative product mutations.
+The adopted [M1/M2 contract](../../packages/contracts/HTTP_API.md) specifies identity-only `GET /v1/me`, implemented `GET /v1/profile`, and planned revisioned PATCH (API-09). Ishmum owns Pydantic/OpenAPI schemas and the sole Alembic history. Derive user IDs from verified Supabase access tokens; no client-provided identity or production auth bypass. Supabase Auth owns credentials and mobile session refresh. The API owns token verification and server-authoritative product mutations.
 
-The JWT verifier, bounded public-key resolver and lazy PostgreSQL unit of work are implemented. The minimal profile model/Alembic schema/RLS are also implemented; profile HTTP endpoints, cloud deployment and Auth/mobile integration remain pending. Configuration is read from `services/api/.env`, independently of the shell working directory. Copy `.env.example` when you need browser CORS or later integration settings.
+The JWT verifier, bounded public-key resolver and lazy PostgreSQL unit of work are implemented. The minimal profile model/Alembic schema/RLS are also implemented; profile mutations, cloud deployment and Auth/mobile integration remain pending. Configuration is read from `services/api/.env`, independently of the shell working directory. Copy `.env.example` when you need browser CORS or later integration settings.
 
 Dependencies are locked in `uv.lock`. Add them using `uv add --project services/api ...` (or `--dev` for tooling), and commit both the project file and lockfile.
 
@@ -126,7 +126,7 @@ real response parsing and account-generation checks remain essential.
 
 Next: Anisha supplies SB-02/03 metadata/current token and the session/root producer;
 Ishmum and Anisha execute real M1/RN-05/06. SB-05 is verified locally; SB-04 hosted
-login is accepted. API-07 migrations/RLS are accepted as a producer. API-08–10,
+login is accepted. API-07 migrations/RLS and API-08 GET are accepted as producers. API-09/10,
 real-user Auth/mobile verification and M2 remain open.
 
 ## Supabase database preparation — SB-04
@@ -169,7 +169,7 @@ HTTP success. No raw SQL/driver/credential error reaches the public envelope.
 PostgreSQL tests. The existing database CI job selects all of them. A read-only
 hosted SQLAlchemy check confirms the runtime role/TLS/options, with no product DDL
 or Auth changes. OpenAPI/type drift remains zero. API-07 now supplies the actual
-Alembic history, profiles/FK/grants/RLS; API-08–10 and joint Auth/M1/M2 stay pending.
+Alembic history, profiles/FK/grants/RLS. API-08 GET is now implemented; API-09/10 and joint Auth/M1/M2 stay pending.
 
 ## API-07 profile migration handoff
 
@@ -184,5 +184,37 @@ objects/settings and shared default privileges were not changed.
 fresh/repeated/downgrade upgrades, constraints/cascade, A-B isolation with omitted
 owner predicates and deliberate ACL/policy/trigger drift rejection. Hosted runtime
 read-without-context is denied by RLS and version metadata is private. Actual
-managed-user cascade/A-B testing remains joint API-10 work. No profile HTTP route
-exists yet; API-08/09 must use the transaction guard and explicit owner predicates.
+managed-user cascade/A-B testing remains joint API-10 work. API-07 itself added
+no HTTP route; API-08 GET now uses its transaction guard and explicit owner predicate.
+
+
+## API-08 own-profile read handoff
+
+`GET /v1/profile` requires the same verified access token as `/v1/me`. It returns
+200 with `{profile:null}` for an absent row, or exactly UUID/display_name/revision/
+created_at/updated_at. A nullable name is always present, timestamps preserve the
+server instant as UTC RFC 3339 with Z, and every private result is no-store. No
+owner argument, Auth metadata read, hidden insert or onboarding-completion claim
+is accepted. A valid unexpired JWT whose Auth row was deleted can still produce
+an absent read; this is not account re-creation or token revocation.
+
+The synchronous handler snapshots the DTO before its function-scoped transaction
+ends. Repository entry requires live verified-user context and filters by its UUID
+in addition to RLS. Authentication completes before database acquisition. A missing
+DB configuration, connection failure, query timeout or full pool produces safe
+503 DEPENDENCY_UNAVAILABLE, never `{profile:null}` or sign-out. Unexpected query/
+invariant failures remain safe 500. `/healthz` and `/v1/me` stay DB-independent.
+The migration prerequisite remains head 20261102_0001; API-08 changes no schema.
+
+`npm run api:test` passes 374 cases and `npm run api:db:test` passes 75 real
+PostgreSQL checks. New checks cover real ephemeral signatures and runtime-role
+queries, exact/nonmutating absence, A-B connection reuse, owner injection, non-UTC
+session timezone, no-context entry, actual lock/statement timeouts and pool outage/
+recovery. OpenAPI/types now publish GET only; public ProfileView/ProfileResponse
+aliases are generated. JSON Schema checks explicitly require the test-only
+RFC 3339 validator, so date-time format checks cannot silently become no-ops.
+
+Next API-09 implements strict revisioned PATCH; API-10 supplies actual managed
+Supabase user-token/A-B and mobile evidence with Anisha. No hosted account/provider
+or shared schema/default changes were made for API-08. Test signatures are local
+only; no production verifier override or synthetic endpoint is registered.

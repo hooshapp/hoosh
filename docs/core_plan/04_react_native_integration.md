@@ -742,7 +742,7 @@ verification/JWKS and generated `MeResponse`/error/health types now exist. Read
 [Plan 03 notes](../core_plan_implementation_notes/plan_03_backend_foundation_notes.md).
 This removes the missing backend/schema producer for RN-05; Anisha's actual
 Supabase/session/guard/root outputs, configured-project smoke and real RN-05/06
-acceptance remain pending. RN-07 still requires API-08/09 profile HTTP integration; SB-04/05 are delivered in the later checkpoint.
+acceptance remain pending. RN-07 now has API-08 GET available but still requires API-09 writes/Auth integration; SB-04/05 are delivered in the later checkpoint.
 No mobile Auth/root provider was wired by the backend commits.
 
 ### Supabase database infrastructure follow-up — 2026-11-01
@@ -751,7 +751,7 @@ SB-05's disposable real PostgreSQL producer is implemented and verified; SB-04's
 hosted role, actual password login and verified TLS/permissions are also accepted. The
 backend has observed the real ES256 JWKS and rejects real project public API keys
 as user tokens. These are infrastructure/backend checks, not RN-05/06 acceptance.
-RN-07 still needs API-08–10 profile HTTP integration, and Anisha's Auth/session/root
+RN-07 still needs API-09/10 writes/evidence and real profile HTTP integration, and Anisha's Auth/session/root
 producer remains required for live account/UI integration. No mobile Auth or UI
 code was changed in this follow-up; see Plan 01 implementation notes for evidence.
 
@@ -760,6 +760,6 @@ deterministic / 24 real DB tests). This is backend infrastructure only: API-07 n
 Anisha. No RN consumer/acceptance status is advanced by this backend-only part.
 
 API-07 now supplies the real profile model/migration/grants/RLS, validated locally
-and applied to the empty development schema. API-08/09 still must publish GET/PATCH
-profile before RN-07 can consume live responses, and Anisha's Auth/root producer
-remains necessary for joint acceptance. No RN UI/consumer status changed here.
+and applied to the empty development schema. API-08 now publishes nonmutating GET
+with generated read types (374 deterministic / 75 DB checks). API-09 PATCH and
+Anisha's Auth/root producer remain necessary for joint acceptance. No RN UI/consumer status changed here.

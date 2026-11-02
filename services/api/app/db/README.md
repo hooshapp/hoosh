@@ -58,7 +58,7 @@ exact root SessionTransaction and cleared when it ends.
 
 Repository Session execution, ORM flush and commit require that context; a bare
 Session or an ended unit fails as an internal invariant rather than returning an
-apparently absent profile. Future repositories also call `require_user_context`
+apparently absent profile. Repositories also call `require_user_context`
 and filter every query by its UUID. This protects against accidental entry, not
 malicious trusted backend code, arbitrary raw Connection SQL or stolen runtime
 credentials. API-07 now adds actual RLS USING/WITH CHECK and explicit grants; context binding
@@ -82,7 +82,7 @@ contain driver details despite hide_parameters; the application logs request IDs
 
 ## HTTP and shutdown
 
-Use `UserSessionDependency` on future **synchronous** handlers. Its
+Use `UserSessionDependency` on **synchronous** handlers; API-08 profile GET consumes it. Its
 `Depends(scope="function")` finalizes the unit before sending success headers;
 FastAPI >=0.121.1 is declared (tested lock: 0.162.0). Returning success and then
 failing COMMIT must not leave the client believing a write succeeded. Tests prove
@@ -109,8 +109,9 @@ or skipped missing credentials. Schema export still constructs no engine/client.
 
 API-07 now supplies the minimal profile model, real Alembic upgrade and explicit
 FK/grants/RLS/server-clock invariants. See [migration contract](../../alembic/README.md).
-The required group has 66 real DB tests; 344 deterministic backend tests also pass.
-API-08–10 next add endpoints/revision/evidence.
+API-08 now adds explicit-owner, nonmutating profile GET and UTC DTOs inside the
+unit. The required group has 75 real DB tests; 374 deterministic backend tests also
+pass. API-09/10 next add revisioned writes and real-account/mobile evidence.
 Anisha's Auth/mobile/root producer and real-user M1/M2 acceptance stay separate.
 
 Sources checked 2026-11-01: [SQLAlchemy pooling](https://docs.sqlalchemy.org/en/20/core/pooling.html),

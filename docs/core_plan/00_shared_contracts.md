@@ -50,7 +50,7 @@ Visual authority: [App-UI](https://www.figma.com/design/ukmD2ZidJ9UR2XxUkvdPoJ/A
 
 ### Relation to existing documents
 
-The accepted [identity decision record](../architecture/identity-foundation.md) and TSD §8.3 now keep `GET /v1/me` identity-only and put app profile reads/edits at `/v1/profile`. This keeps M1 independent of database availability and gives identity and profile different failure semantics. The exact [HTTP contract](../../packages/contracts/HTTP_API.md) and synthetic fixtures are recorded; routes are not implemented yet.
+The accepted [identity decision record](../architecture/identity-foundation.md) and TSD §8.3 now keep `GET /v1/me` identity-only and put app profile reads/edits at `/v1/profile`. This keeps M1 independent of database availability and gives identity and profile different failure semantics. The exact [HTTP contract](../../packages/contracts/HTTP_API.md) and synthetic fixtures are recorded; API-04 implements identity GET and API-08 profile GET, while revisioned PATCH remains API-09.
 
 Engineering choices below were adopted for the development foundation on 2026-10-28 at Ishmum's direction. Anisha's independent review is not claimed. They do not mark PM questions answered. A later PM decision can change product behavior; revise the affected contract and tests intentionally.
 

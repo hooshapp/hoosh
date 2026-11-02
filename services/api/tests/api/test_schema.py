@@ -1,7 +1,6 @@
 import importlib.util
 import json
 import sys
-from pathlib import Path
 
 import httpx2
 import pytest
@@ -13,10 +12,7 @@ from app.application import create_app
 from app.core.config import Settings
 from app.schemas.errors import ErrorCode, ErrorEnvelope
 from app.schemas.identity import MeResponse
-
-ROOT = Path(__file__).resolve().parents[4]
-SCHEMA_PATH = ROOT / "packages/contracts/openapi/foundation.openapi.json"
-FIXTURES = json.loads((ROOT / "packages/contracts/fixtures/http-v1.json").read_text())["examples"]
+from tests.support.schema import FIXTURES, ROOT, SCHEMA_PATH, wire_validator
 
 
 def exporter():
@@ -26,13 +22,6 @@ def exporter():
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
     return module
-
-
-def wire_validator(name):
-    schema = create_app().openapi()
-    document = {"$ref": f"#/components/schemas/{name}", "components": schema["components"]}
-    Draft202012Validator.check_schema(document)
-    return Draft202012Validator(document, format_checker=FormatChecker())
 
 
 def test_export_is_deterministic_and_never_constructs_runtime_or_clients(monkeypatch):
@@ -50,7 +39,7 @@ def test_export_is_deterministic_and_never_constructs_runtime_or_clients(monkeyp
     first = module.schema_text()
     assert first == module.schema_text() == SCHEMA_PATH.read_text()
     assert ("app.main" in sys.modules) == was_main_imported
-    assert set(json.loads(first)["paths"]) == {"/healthz", "/v1/me"}
+    assert set(json.loads(first)["paths"]) == {"/healthz", "/v1/me", "/v1/profile"}
 
 
 def test_export_drift_check_fails_without_mutating_artifacts(monkeypatch, tmp_path):
