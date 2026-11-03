@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
-import { EmptyCard } from '@/components/ui/empty-card';
+import { DeviceProtection } from '@/features/protection/device-protection';
+export { UnavailableDeviceProtection } from '@/features/protection/device-protection';
 import { InlineStatus } from '@/components/ui/inline-status';
 import { useAccountAction } from '@/features/account/use-account-action';
 import { useSettingsSummary } from '@/features/settings/use-settings-summary';
@@ -8,15 +9,6 @@ import { HomePreferences, type PreferencesNavigation } from './home-preferences'
 import { HomeScreen } from './home-screen';
 import { unavailableHome } from './home-model';
 
-/** RN-08c must supply actual native evidence. Saved API revisions cannot establish protection. */
-export function UnavailableDeviceProtection() {
-  return (
-    <EmptyCard
-      title="Protection unavailable"
-      description="We can’t confirm protection on this device right now."
-    />
-  );
-}
 export function ConnectedHomeScreen({ onOpen }: { onOpen?: PreferencesNavigation }) {
   const { query, summary, availability, online } = useSettingsSummary();
   const { controller } = useAccountData();
@@ -63,7 +55,7 @@ export function ConnectedHomeScreen({ onOpen }: { onOpen?: PreferencesNavigation
           refreshing={availability === 'ready' && online && query.isFetching}
         />
       }
-      protection={<UnavailableDeviceProtection />}
+      protection={<DeviceProtection />}
     />
   );
 }

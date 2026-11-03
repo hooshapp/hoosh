@@ -1,0 +1,23 @@
+{
+  "part": "RN-08c",
+  "date": "2026-11-03",
+  "checks": {
+    "portable_mobile": 382,
+    "component": 502,
+    "api": 590,
+    "new_lifecycle_component": 14,
+    "web_export_files": 38,
+    "original_svg_assets": 71,
+    "android_hermes_export": true
+  },
+  "actual_device_observation": {
+    "module_connected": true,
+    "usage_allowed_but_protection_inactive": true,
+    "settings_action_opened_own_app_usage_page": true,
+    "app_state_and_router_unit_tests": true
+  },
+  "native_enforcement": false,
+  "ios_unchanged": true,
+  "permission_restore": "RN-08d cleanup",
+  "physical_matrix": "RN-08d"
+}

@@ -99,3 +99,35 @@ for this development package and will be restored to its initial default in d.
 UI permission launch/return, external revoke, lock, failure/absence and cleanup
 continue in c/d. No enforcement or whole-OS capability verdict follows from this
 limited adapter.
+
+## RN-08c — registered Android status and visibility
+
+Metro registers the stable Android adapter through the platform-specific module;
+iOS remains with Anisha and web/absent-module builds keep the old unavailable
+card. Actual Home uses the existing protection mapper/hook with unknown desired
+native revision (never the API revision), plus a separate usage-access read/action.
+Unsupported mode now says protection is unimplemented in this build, avoiding a
+whole-device/platform verdict. Grant alone always remains inactive.
+
+The connected Router host combines actual route focus and AppState foreground.
+Hidden/changed/failed read evidence cannot keep an allowed/active claim; foreground
+or focus return reads again. Explicit Review usage access stays busy through its
+native launch/current-read operation, serializes taps and uses safe failures.
+Retry reads only; it never opens settings. Late or unmounted permission completions
+cannot refresh a new owner. This adds no Auth listener, account transfer or root
+provider and works independently of API configuration.
+
+The existing native QA probe renders these same production controls with real
+AppState visibility, disables simulated state controls, and labels actual native
+observations separately from source UI examples. On Pixel, native module connected
+and Usage access allowed / App protection not active were observed. Review usage
+access opened the real Settings page specifically for Disconnect, with its switch
+on from the temporary b grant. Back returned to the same native QA screen.
+Complete revoke/grant/cold-start/font/lock/absence observations continue in d.
+
+Checks pass: 382 portable / 502 component / 590 API, types/lint/contracts, 38-file
+web isolation / 71 original assets, Android production Hermes export. Fourteen new
+component checks cover real Router/AppState reads and cleanup, hide/foreground,
+revocation, failed read retry, duplicate Settings action, errors, stale/unmounted
+callbacks and module absence. Actual Pixel UI launch does not certify assistive
+speech or signed release acceptance.

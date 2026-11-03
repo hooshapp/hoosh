@@ -73,6 +73,7 @@ export function useProtectionStatus(
       : { phase: 'checking' };
   return {
     model: mapProtectionStatus(integration, desiredRevision, read),
+    authorization: read.phase === 'ready' && read.authorization === read.status?.authorization ? read.authorization : null,
     refresh: requestRefresh,
   };
 }

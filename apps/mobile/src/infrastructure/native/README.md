@@ -1,7 +1,7 @@
 # Native protection adapters
 
 Consume `ProtectionIntegration` availability, then implement the shared `ProtectionService` port from `@disconnect/contracts` here.
-RN-08b implements the Android read/usage-access adapter; RN-08c registers it. No enforcement adapter is implemented. Only `connected` exposes a service; connection alone does not prove permission or installation.
+RN-08b implements the Android read/usage-access adapter; RN-08c registers it through the Android-specific module. No enforcement adapter is implemented. Only `connected` exposes a service; connection alone does not prove permission or installation.
 
 - Anisha (iOS): audit and retain the released Swift app's targets, App Groups, entitlements, stores, and event journal before adding a bridge.
 - Ishmum (Android): establish supported capabilities and real-device behavior, then implement the same port with truthful capability flags.

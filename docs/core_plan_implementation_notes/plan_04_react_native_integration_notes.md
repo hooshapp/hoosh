@@ -4,7 +4,7 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN-08b implemented within the Android read/permission scope; continue the sequential a–d entries below. No enforcement/iOS/Auth completion is implied.
+**Current part:** RN-08c implemented within the Android read/permission scope; continue the sequential a–d entries below. No enforcement/iOS/Auth completion is implied.
 
 **Implementation branch:** `task/react-native/rn-08-android-foundation`; sequential a–d commits, local only; no push/main merge.
 
@@ -2802,7 +2802,7 @@ Use the following structure for future commits, including corrective commits.
 
 ### RN-08b — Android read and usage-access adapter
 
-**Commit:** `feat(android): expose measured capabilities and usage access`. **Hash:** Pending.
+**Commit:** `feat(android): expose measured capabilities and usage access`. **Hash:** `6734a26` (recorded during RN-08c).
 **Date:** 2026-11-03. **Owner:** Ishmum. **Branch:** `task/react-native/rn-08-android-foundation`. **Parent:** `6117b96`.
 **Status:** Same native module extended and adapter implemented; actual denied/granted Kotlin observations and 30 portable checks pass. UI registration/foreground wiring and complete device matrix continue c/d.
 
@@ -2833,3 +2833,57 @@ Use the following structure for future commits, including corrective commits.
 | `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 2723–2723 | Record the preceding part hash during this normal update; retain its historical evidence. |
 | `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 7–13 | Update current part/branch checkpoint; previous evidence remains historical. |
 | `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 2803–2835 | Record this part’s decisions, actual checks/failures, every file/line and remaining work. Own hash stays Pending until next normal update. |
+
+
+### RN-08c — Native status and foreground integration
+
+**Commit:** `feat(protection-ui): connect Android status and foreground refresh`. **Hash:** Pending.
+**Date:** 2026-11-03. **Owner:** Ishmum. **Branch:** `task/react-native/rn-08-android-foundation`. **Parent:** `6734a26`.
+**Status:** Android registration/read/permission integration implemented and verified; full physical matrix/cleanup continues d.
+
+**Changes / reasons:** Register a stable Android-only optional module/adapter, with iOS delegated to Anisha and web/absent-module fallback unchanged. Home's connected and neutral routes render the native region independently of API/Auth; no root/provider change. Existing protection read hook gets actual Router focus AND AppState foreground, and exposes authorization only when current read sources agree. Integration/visibility changes, errors and deadlines invalidate stale evidence. Desired native revision is null: no configuration is installed and no API draft/revision is substituted. The unsupported copy now describes this build instead of falsely judging the device. A separate usage-access region explains authorization without claiming protection, and delegates explicit settings launch to the shared port. Operation-long launch/read busy, same-turn/in-flight duplicate fences, fixed safe failures, deliberate retry and module/unmount generation fences prevent stale callbacks. A native read retry never opens permission settings. The existing developer QA renders the same production view with real AppState, disables simulated probe-state controls and labels real observations instead of source examples. No account attribution, native writes, sign-out cleanup, iOS edit or cloud dependency.
+
+**Actual checks:** `npm run check` passes 382 portable / 502 Android+iOS component / 590 API plus types/lint/contracts/assets; ordinary API excludes 192 DB checks (no backend changes). New `device-protection.test.tsx` contributes 14 checks: granted does not imply active; hide/show and external revoke; permission busy/duplicates/failure/retry; read retry without permission; replacement/unmount late action; module absence; actual Router focus plus AppState and listener cleanup. Existing protection/Home regressions pass 98 focused checks. `npm run mobile:export` passes 38-file isolation/71 assets. `npx expo export --platform android --output-dir .expo/rn08c-android` produces real production Hermes bytecode including registry/consumer. These are separate from actual device observations. On Pixel Android 16, the development APK loaded the native QA component: module connected, usage allowed, protection unimplemented/inactive; Review usage access opened the own-app Android Settings page and Back returned to the app. Full device revoke/lock/cold/font/absence matrix remains d; no speech/release signing claim. Version/checkpoint artifact integration-c.json and runbook record evidence.
+
+**Failures / corrections:** Test mocks initially widened string literals beyond generated capability/status types and used an undeclared absolute test route; explicit return types and a relative Router test path fix typecheck. Dependency warnings are upstream; final checks pass. The phone auto-locked during the build; user unlocked it on request, and temporary USB stay-awake (initial 0) prevents repeated lock during interactive checks; d restores that exact value. No lock-screen content or personal identifiers are committed. Native QA footer previously called every screen sample data; actual probe now has explicit real-device labels and no simulated state selection. No unresolved source/test error.
+
+**Next:** d records real grant/deny/revoke, keyguard/empty window, foreground/cold start, API-independent Kotlin reads, absent-module builds, responsive/accessibility labels and restores own-package AppOps/USB state. Native enforcement, signed release, speech, iOS/Auth and unresolved policy remain open; this is read/permission status only. RN-08b hash 6734a26 is recorded during the normal update. No hosted/Auth/backend/native rule action, push or merge.
+
+**Every changed file / exact commit line ranges:**
+
+| File and lines | Change and reason |
+|---|---|
+| `apps/mobile/dev/native/App.tsx`: lines 126–126 | Add App.tsx for the documented Android probe/build or read/permission integration; see decisions above for its ownership, trust boundary and verification. |
+| `apps/mobile/dev/native/App.tsx`: lines 137–137 | Add App.tsx for the documented Android probe/build or read/permission integration; see decisions above for its ownership, trust boundary and verification. |
+| `apps/mobile/dev/native/App.tsx`: lines 155–155 | Add App.tsx for the documented Android probe/build or read/permission integration; see decisions above for its ownership, trust boundary and verification. |
+| `apps/mobile/dev/native/App.tsx`: lines 158–158 | Add App.tsx for the documented Android probe/build or read/permission integration; see decisions above for its ownership, trust boundary and verification. |
+| `apps/mobile/dev/native/App.tsx`: lines 169–169 | Add App.tsx for the documented Android probe/build or read/permission integration; see decisions above for its ownership, trust boundary and verification. |
+| `apps/mobile/dev/native/usage-probe.tsx`: lines 6–8 | Expose developer-only real probe observations through the existing native QA entry; preserve unavailable/busy/error behavior and unmount safety. |
+| `apps/mobile/dev/native/usage-probe.tsx`: lines 16–16 | Expose developer-only real probe observations through the existing native QA entry; preserve unavailable/busy/error behavior and unmount safety. |
+| `apps/mobile/dev/native/usage-probe.tsx`: lines 21–29 | Expose developer-only real probe observations through the existing native QA entry; preserve unavailable/busy/error behavior and unmount safety. |
+| `apps/mobile/dev/native/usage-probe.tsx`: lines 33–33 | Expose developer-only real probe observations through the existing native QA entry; preserve unavailable/busy/error behavior and unmount safety. |
+| `apps/mobile/src/app/(tabs)/index.tsx`: lines 2–2 | Add index.tsx for the documented Android probe/build or read/permission integration; see decisions above for its ownership, trust boundary and verification. |
+| `apps/mobile/src/app/(tabs)/index.tsx`: lines 6–6 | Add index.tsx for the documented Android probe/build or read/permission integration; see decisions above for its ownership, trust boundary and verification. |
+| `apps/mobile/src/app/(tabs)/index.tsx`: lines 23–23 | Add index.tsx for the documented Android probe/build or read/permission integration; see decisions above for its ownership, trust boundary and verification. |
+| `apps/mobile/src/features/home/README.md`: lines 8–9 | Add README.md for the documented Android probe/build or read/permission integration; see decisions above for its ownership, trust boundary and verification. |
+| `apps/mobile/src/features/home/README.md`: lines 140–142 | Add README.md for the documented Android probe/build or read/permission integration; see decisions above for its ownership, trust boundary and verification. |
+| `apps/mobile/src/features/home/connected-home-screen.tsx`: lines 2–3 | Add connected-home-screen.tsx for the documented Android probe/build or read/permission integration; see decisions above for its ownership, trust boundary and verification. |
+| `apps/mobile/src/features/home/connected-home-screen.tsx`: lines 58–58 | Add connected-home-screen.tsx for the documented Android probe/build or read/permission integration; see decisions above for its ownership, trust boundary and verification. |
+| `apps/mobile/src/features/protection/README.md`: lines 3–5 | Add README.md for the documented Android probe/build or read/permission integration; see decisions above for its ownership, trust boundary and verification. |
+| `apps/mobile/src/features/protection/README.md`: lines 112–127 | Add README.md for the documented Android probe/build or read/permission integration; see decisions above for its ownership, trust boundary and verification. |
+| `apps/mobile/src/features/protection/device-protection.test.tsx`: lines 1–236 | Add device-protection.test.tsx for the documented Android probe/build or read/permission integration; see decisions above for its ownership, trust boundary and verification. |
+| `apps/mobile/src/features/protection/device-protection.tsx`: lines 1–79 | Add device-protection.tsx for the documented Android probe/build or read/permission integration; see decisions above for its ownership, trust boundary and verification. |
+| `apps/mobile/src/features/protection/status-model.ts`: lines 129–129 | Add status-model.ts for the documented Android probe/build or read/permission integration; see decisions above for its ownership, trust boundary and verification. |
+| `apps/mobile/src/features/protection/use-protection-status.ts`: lines 76–76 | Add use-protection-status.ts for the documented Android probe/build or read/permission integration; see decisions above for its ownership, trust boundary and verification. |
+| `apps/mobile/src/features/protection/use-usage-permission-action.ts`: lines 1–63 | Add use-usage-permission-action.ts for the documented Android probe/build or read/permission integration; see decisions above for its ownership, trust boundary and verification. |
+| `apps/mobile/src/infrastructure/native/README.md`: lines 4–4 | Add README.md for the documented Android probe/build or read/permission integration; see decisions above for its ownership, trust boundary and verification. |
+| `apps/mobile/src/infrastructure/native/protection-integration.android.ts`: lines 1–7 | Add protection-integration.android.ts for the documented Android probe/build or read/permission integration; see decisions above for its ownership, trust boundary and verification. |
+| `apps/mobile/src/infrastructure/native/protection-integration.ts`: lines 1–12 | Add protection-integration.ts for the documented Android probe/build or read/permission integration; see decisions above for its ownership, trust boundary and verification. |
+| `docs/core_plan/04_react_native_integration.md`: lines 450–450 | Record current scope/evidence, exact reproducible checks and retained acceptance boundaries; preserve prior part IDs/history. |
+| `docs/core_plan/04_react_native_integration.md`: lines 459–459 | Record current scope/evidence, exact reproducible checks and retained acceptance boundaries; preserve prior part IDs/history. |
+| `docs/core_plan/04_react_native_integration.md`: lines 1010–1020 | Record current scope/evidence, exact reproducible checks and retained acceptance boundaries; preserve prior part IDs/history. |
+| `docs/core_plan_implementation_notes/artifacts/rn-08/integration-c.json`: lines 1–23 | Record current scope/evidence, exact reproducible checks and retained acceptance boundaries; preserve prior part IDs/history. |
+| `docs/qa/android-capability-probe.md`: lines 102–133 | Record current scope/evidence, exact reproducible checks and retained acceptance boundaries; preserve prior part IDs/history. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 2805–2805 | Record the preceding part hash during this normal update; retain its historical evidence. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 7–13 | Update current part/branch checkpoint; previous evidence remains historical. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 2838–2889 | Record this part’s decisions, actual checks/failures, every file/line and remaining work. Own hash stays Pending until next normal update. |

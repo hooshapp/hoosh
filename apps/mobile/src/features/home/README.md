@@ -5,8 +5,8 @@ Space Grotesk, local original SVGs and shared controlled `Button`. The actual
 `(tabs)/index.tsx` route keeps these outcome inputs unavailable: it selects no Dino
 mood and enables no Feed/recommendation action. Under the existing private account
 provider, RN-09k adds canonical saved-preference summaries through the settings
-query; without that provider it keeps the neutral preview. Device protection stays
-unavailable until RN-08c provides actual native evidence. Quests, History and
+query; without that provider it keeps the neutral preview. RN-08c now reads the registered Android usage-access adapter, while protection
+remains inactive/unimplemented; iOS/web/absent-module builds retain the unavailable card. Quests, History and
 Settings retain the previously reviewed presentation/detail/editor work.
 
 ## Display inputs and authority
@@ -137,8 +137,9 @@ same connected Home and routes with its memory-only credential adapter. That
 project remains isolated from production exports and does not prove Auth SDK/root
 or managed-account acceptance.
 
-RN-08c remains unimplemented: `UnavailableDeviceProtection` reuses the existing
-unavailable card in both connected and neutral Home. No native port, registration,
+RN-08c now registers the Android read/usage-access adapter on Home, with real
+foreground/focus refresh. `UnavailableDeviceProtection` remains the fallback for
+absent-module/iOS/web builds. No native port, registration,
 permission, rule, installed revision or setup callback is manufactured. API settings
 revision and draft values never enter native installation state. The existing
 Dino, credits, usage, streak and recommendation regions remain unavailable.

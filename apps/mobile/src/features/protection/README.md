@@ -1,8 +1,8 @@
 # RN-08 protection presentation and read-only consumer
 
-**Status: presentation prepared and tested; real native integration/device acceptance
-pending.** No adapter is registered in the current app, and the Home/Settings routes
-are unchanged. This module does not install restrictions or prove Android parity,
+**Status: Android read/usage-access integration implemented in RN-08a–c; device
+matrix recorded in RN-08d.** Home registers the Android adapter; iOS remains with
+Anisha and unavailable builds retain the neutral fallback. This module does not install restrictions or prove Android parity,
 Screen Time permissions, production entitlements or current device protection.
 
 ## Inputs and trust
@@ -109,3 +109,19 @@ The original plan and Plan 04 implementation notes track **RN08-D01–D06**:
 Pure mapping tests, mocked hook checks, browser geometry and native JS compilation
 are separate from all six live/device gates. No existing native source, entitlements,
 platform settings, backend, Auth contract or enforcement behavior is changed here.
+
+## RN-08c host integration
+
+`device-protection.tsx` uses the platform-specific registered integration, actual
+Router focus plus AppState foreground, and the existing read hook/mapper. Desired
+native revision stays null because this slice installs no configuration. The hook
+also exposes current authorization only when its two read sources agree; hidden/
+changing/failed observations clear it. The Android unsupported-mode copy describes
+this build, not an Android-wide capability verdict.
+
+Usage access is a separate region with explicit Settings action. Its action hook
+owns duplicate suppression, operation-long launch/read busy, safe failure/retry,
+module identity and unmount fencing. Foreground return re-reads actual permission.
+A grant, API response or navigation cannot claim protection active. No Auth/root
+changes, native sign-out cleanup or fabricated installed revision are added.
+See [actual Android evidence](../../../../../docs/qa/android-capability-probe.md).

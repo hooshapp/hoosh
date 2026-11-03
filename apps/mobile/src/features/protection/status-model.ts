@@ -126,7 +126,7 @@ export function mapProtectionStatus(
     return {
       kind: 'unsupported',
       title: 'Protection unavailable here',
-      message: 'This device does not support the protection features required here.',
+      message: 'Protection is not implemented in this build. Usage access alone does not activate protection.',
       tone: 'neutral',
     };
   if (

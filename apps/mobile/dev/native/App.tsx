@@ -123,7 +123,7 @@ function QaHost() {
   const action = () => setNotice('UI intent only. Nothing saved, connected, earned or installed.');
   return (
     <View testID="RN10_NATIVE_QA_ONLY" style={styles.app}>
-      {page === 'Android probe' ? <UsageProbe /> : page ? (
+      {page === 'Android probe' ? <UsageProbe key={reset} /> : page ? (
         <QaScreen
           key={`${page}:${scenario}:${reset}`}
           page={page}
@@ -134,7 +134,7 @@ function QaHost() {
       ) : (
         <Screen
           title="Disconnect UI QA"
-          subtitle="Developer-only source examples. No account or native service connected.">
+          subtitle="Developer-only source examples and a separate real Android capability probe.">
           {screens.map((name) => (
             <Button
               key={name}
@@ -152,10 +152,10 @@ function QaHost() {
         onLayout={(e) => metrics?.reportHeight(Math.ceil(e.nativeEvent.layout.height))}
         style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 8) }]}>
         <Text style={styles.qaLabel}>
-          UI QA SAMPLE · {page ?? 'Screens'} · {scenario}
+          {page === 'Android probe' ? 'REAL ANDROID CAPABILITY PROBE' : `UI QA SAMPLE · ${page ?? 'Screens'} · ${scenario}`}
         </Text>
         <Text accessibilityLiveRegion="polite" style={styles.notice}>
-          {notice}
+          {page === 'Android probe' ? 'Actual native reads. No account/API connection, metrics or installed protection.' : notice}
         </Text>
         <View style={styles.actions}>
           <Button
@@ -166,6 +166,7 @@ function QaHost() {
           />
           <Button
             label="State"
+            disabled={page === 'Android probe'}
             accessibilityLabel={`Change QA state, currently ${scenario}`}
             variant="secondary"
             onPress={() => setScenario(states[(states.indexOf(scenario) + 1) % states.length])}

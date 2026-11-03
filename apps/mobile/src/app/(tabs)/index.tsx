@@ -1,11 +1,9 @@
 import { router } from 'expo-router';
-import {
-  ConnectedHomeScreen,
-  UnavailableDeviceProtection,
-} from '@/features/home/connected-home-screen';
+import { ConnectedHomeScreen } from '@/features/home/connected-home-screen';
 import { useOptionalAccountData } from '@/infrastructure/query/account-data-provider';
 import { HomeScreen } from '@/features/home/home-screen';
 import { unavailableHome } from '@/features/home/home-model';
+import { DeviceProtection } from '@/features/protection/device-protection';
 
 export default function Home() {
   const account = useOptionalAccountData();
@@ -22,5 +20,5 @@ export default function Home() {
         }}
       />
     );
-  return <HomeScreen model={unavailableHome} protection={<UnavailableDeviceProtection />} />;
+  return <HomeScreen model={unavailableHome} protection={<DeviceProtection />} />;
 }
