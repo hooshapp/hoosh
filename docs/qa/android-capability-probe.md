@@ -72,3 +72,30 @@ Current code/build configuration and device evidence determine supported behavio
 RN-08b adds the same port's safe read/permission adapter, c owns visible foreground
 refresh, d records the real device matrix. User/product enforcement decisions,
 Anisha's native iOS/Auth work and signed release/accessibility acceptance stay open.
+
+## RN-08b — read/permission adapter
+
+The same module now returns current authorization, honest unsupported protection
+capabilities (all feature flags false; no package picker or usage summary) and
+inactive/needs-permission status with null installed revision/empty reasons. The
+TypeScript ProtectionService adapter validates these native values and strips
+untrusted extras. Selection, rules, temporary allowances, cancellation, drain and
+acknowledgment reject explicitly instead of returning success/empty event stubs.
+
+An explicit usage-access Settings action resolves the package-specific screen,
+falls back to the general screen if needed, and fails safely when no activity is
+available. It runs on the Android main queue. A narrowly scoped intent query makes
+that action discoverable; no broad package visibility permission is added. Launch
+success is not permission success; the adapter re-reads the current authorization,
+serializes repeated requests and c refreshes again on actual foreground return.
+
+Actual rebuilt APK/instrumentation: denied returns needs_permission/null revision;
+temporary usage grant returns authorized/inactive/null revision, no installed
+reasons, and a bounded ready count of 5 in the one-minute observation. Counts are
+not measured usage/savings and are not uploaded. All protection flags remain false.
+See [adapter evidence](../core_plan_implementation_notes/artifacts/rn-08/adapter-b.json).
+30 portable adapter checks and mobile TypeScript pass. Permission was changed only
+for this development package and will be restored to its initial default in d.
+UI permission launch/return, external revoke, lock, failure/absence and cleanup
+continue in c/d. No enforcement or whole-OS capability verdict follows from this
+limited adapter.

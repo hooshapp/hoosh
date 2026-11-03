@@ -15,7 +15,10 @@ class UsageProbeInstrumentation : Instrumentation() {
   override fun onStart() {
     val result = Bundle()
     try {
-      result.putString("probe", JSONObject(UsageReader(targetContext).probe(1)).toString())
+      val reader = UsageReader(targetContext)
+      result.putString("probe", JSONObject(reader.probe(1)).toString())
+      result.putString("capabilities", JSONObject(reader.capabilities()).toString())
+      result.putString("status", JSONObject(reader.status()).toString())
       finish(Activity.RESULT_OK, result)
     } catch (_: Exception) {
       result.putString("probe", "unavailable")

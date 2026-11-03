@@ -5,12 +5,37 @@ import android.app.KeyguardManager
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import android.os.Build
 import android.os.Process
 import android.os.UserManager
 
 /** No package/event identifiers cross the bridge or enter storage/logs. No enforcement. */
 class UsageReader(private val context: Context) {
+  fun capabilities(): Map<String, Any?> = mapOf(
+    "platform" to "android", "mode" to "unsupported", "selectionUI" to "unavailable",
+    "supportsUsageThreshold" to false, "supportsScheduledRestriction" to false,
+    "supportsTemporaryAllowance" to false, "supportsAdvanceWarning" to false,
+    "supportsUsageSummary" to false
+  )
+
+  fun status(): Map<String, Any?> {
+    val access = authorization()
+    return mapOf("authorization" to access, "state" to if (access == "denied") "needs_permission" else "inactive",
+      "installedRevision" to null, "installedReasonIds" to emptyList<String>())
+  }
+
+  /** Launch only on explicit intent; permission is re-read separately on foreground return. */
+  fun openUsageAccess(): Boolean {
+    val specific = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS, Uri.parse("package:${context.packageName}"))
+    val general = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
+    val intent = if (specific.resolveActivity(context.packageManager) != null) specific else general
+    if (intent.resolveActivity(context.packageManager) == null) throw IllegalStateException("Usage access settings unavailable")
+    context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+    return true
+  }
   fun authorization(): String {
     return try {
       val operations = context.getSystemService(Context.APP_OPS_SERVICE) as? AppOpsManager

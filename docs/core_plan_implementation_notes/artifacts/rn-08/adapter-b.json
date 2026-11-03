@@ -1,0 +1,71 @@
+{
+  "part": "RN-08b",
+  "date": "2026-11-03",
+  "device": "Pixel 8 Pro / Android 16 / API 36",
+  "actual_instrumentation": {
+    "denied": {
+      "capabilities": {
+        "platform": "android",
+        "mode": "unsupported",
+        "selectionUI": "unavailable",
+        "supportsUsageThreshold": false,
+        "supportsScheduledRestriction": false,
+        "supportsTemporaryAllowance": false,
+        "supportsAdvanceWarning": false,
+        "supportsUsageSummary": false
+      },
+      "probe": {
+        "apiLevel": 36,
+        "authorization": "denied",
+        "userUnlocked": true,
+        "deviceLocked": false,
+        "windowMinutes": 1,
+        "selfPackageVisible": true,
+        "eventLimit": 1000,
+        "state": "denied",
+        "eventCount": null,
+        "capped": false
+      },
+      "status": {
+        "authorization": "denied",
+        "state": "needs_permission",
+        "installedRevision": null,
+        "installedReasonIds": []
+      }
+    },
+    "granted": {
+      "capabilities": {
+        "platform": "android",
+        "mode": "unsupported",
+        "selectionUI": "unavailable",
+        "supportsUsageThreshold": false,
+        "supportsScheduledRestriction": false,
+        "supportsTemporaryAllowance": false,
+        "supportsAdvanceWarning": false,
+        "supportsUsageSummary": false
+      },
+      "probe": {
+        "apiLevel": 36,
+        "authorization": "authorized",
+        "userUnlocked": true,
+        "deviceLocked": false,
+        "windowMinutes": 1,
+        "selfPackageVisible": true,
+        "eventLimit": 1000,
+        "state": "ready",
+        "eventCount": 5,
+        "capped": false
+      },
+      "status": {
+        "authorization": "authorized",
+        "state": "inactive",
+        "installedRevision": null,
+        "installedReasonIds": []
+      }
+    }
+  },
+  "debug_apk_sha256": "45fbd9adff09e2a6d8b1e486824cdd5dfeccaec2f7765f40ef036e68b0f771e9",
+  "adapter_tests": 30,
+  "grant_method": "temporary AppOps change for own development package; restore default during RN-08d",
+  "enforcement_installed": false
+}

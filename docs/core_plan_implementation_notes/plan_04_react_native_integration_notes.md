@@ -4,7 +4,7 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN-08a implemented within the Android read/permission scope; continue the sequential a–d entries below. No enforcement/iOS/Auth completion is implied.
+**Current part:** RN-08b implemented within the Android read/permission scope; continue the sequential a–d entries below. No enforcement/iOS/Auth completion is implied.
 
 **Implementation branch:** `task/react-native/rn-08-android-foundation`; sequential a–d commits, local only; no push/main merge.
 
@@ -2720,7 +2720,7 @@ Use the following structure for future commits, including corrective commits.
 
 ### RN-08a — Bounded Android capability probe
 
-**Commit:** `chore(android): add a bounded capability probe`. **Hash:** Pending.
+**Commit:** `chore(android): add a bounded capability probe`. **Hash:** `6117b96` (recorded during RN-08b).
 **Date:** 2026-11-03. **Owner:** Ishmum. **Branch:** `task/react-native/rn-08-android-foundation`. **Parent:** `a0cb9bc`.
 **Status:** Probe and Android-only development host implemented; actual APK/test APK build/install and initial denied Kotlin device observation pass. Grant/revocation/lock/empty-window matrix continues in b/d.
 
@@ -2798,3 +2798,38 @@ Use the following structure for future commits, including corrective commits.
 | `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 2637–2637 | Record the preceding part hash during this normal update; retain its historical evidence. |
 | `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 7–13 | Update current part/branch checkpoint; previous evidence remains historical. |
 | `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 2721–2800 | Record this part’s decisions, actual checks/failures, every file/line and remaining work. Own hash stays Pending until next normal update. |
+
+
+### RN-08b — Android read and usage-access adapter
+
+**Commit:** `feat(android): expose measured capabilities and usage access`. **Hash:** Pending.
+**Date:** 2026-11-03. **Owner:** Ishmum. **Branch:** `task/react-native/rn-08-android-foundation`. **Parent:** `6117b96`.
+**Status:** Same native module extended and adapter implemented; actual denied/granted Kotlin observations and 30 portable checks pass. UI registration/foreground wiring and complete device matrix continue c/d.
+
+**Decisions / changes:** Extend UsageReader with honest unsupported protection capabilities (every protection/summary flag false, picker unavailable), freshly read authorization and inactive/needs-permission status with no installed revision/reasons. Add explicit Settings ACTION_USAGE_ACCESS_SETTINGS with app-specific URI/general fallback, narrow intent visibility and main-queue launch; absent/unavailable activity throws rather than pretending grant. The TypeScript adapter consumes only those methods, validates every native shape and strips extras/untrusted notes. Every unsupported pick/get-selection, apply/cancel, allowance, event drain/ack operation rejects. No timer, restriction, package catalog or successful empty event stub exists. Permission request is serialized and returns a current read, not a promise that the user granted it; c refreshes again on foreground return. Raw native exceptions become fixed safe errors.
+
+**Actual checks:** Combined debug/test APK build passes (533 tasks, 43 executed); APK/test APK install successfully. Instrumentation reports denied/needs_permission/null revision and, after an explicit temporary AppOps grant for our own development package, authorized/inactive/null revision/empty reasons. All capability flags remain false. The one-minute bounded query returned ready/count 5/capped false; no identifiers leave the module. Sanitized evidence and APK SHA are in adapter-b.json. `npm run test:unit --workspace @disconnect/mobile -- src/infrastructure/native/android-usage-adapter.test.ts` passes 30 checks: absent/incomplete modules, safe native validation, all grant states, fabricated capability/installed claims, extra/private fields, exceptions, duplicate intent serialization, failed intent retry and every unsupported operation. Mobile TypeScript passes; no new dependency or Auth/root/iOS change. Actual Settings UI launch and native return/revoke lifecycle are c/d acceptance, not inferred from these tests. Full shared/export checks follow c/d. No unresolved adapter/build failure.
+
+**Remaining / ownership:** c registers the Android module and connects existing protection/read presentation with actual foreground + route visibility, busy/errors and safe native permission action. d tests real grant/deny/revoke/lock/empty/read/UI/API-independence and restores the temporary permission to initial default. Usage access never installs protection; unsupported mode refers to this build, not an Android-wide verdict. Anisha's iOS/Auth and all enforcement/ownership/product policy remain unchanged. The existing RN-08a hash 6117b96 is recorded during this normal update. Local sequential commit; no hosted/API operation, push or merge.
+
+**Every changed file / exact commit line ranges:**
+
+| File and lines | Change and reason |
+|---|---|
+| `apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/UsageProbeInstrumentation.kt`: lines 18–21 | Add UsageProbeInstrumentation.kt for the documented Android probe/build or read/permission integration; see decisions above for its ownership, trust boundary and verification. |
+| `apps/mobile/modules/hoosh-usage/android/src/main/AndroidManifest.xml`: lines 3–3 | Add AndroidManifest.xml for the documented Android probe/build or read/permission integration; see decisions above for its ownership, trust boundary and verification. |
+| `apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/HooshUsageModule.kt`: lines 5–5 | Expose the same local Kotlin reader through the Expo bridge with real context/errors; no successful enforcement/event stubs. |
+| `apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/HooshUsageModule.kt`: lines 13–15 | Expose the same local Kotlin reader through the Expo bridge with real context/errors; no successful enforcement/event stubs. |
+| `apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/UsageReader.kt`: lines 8–10 | Read actual AppOps/unlock/keyguard/own-package evidence and bounded count-only events; denied/locked/error never becomes zero, and no identifiers or enforcement escape. |
+| `apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/UsageReader.kt`: lines 17–38 | Read actual AppOps/unlock/keyguard/own-package evidence and bounded count-only events; denied/locked/error never becomes zero, and no identifiers or enforcement escape. |
+| `apps/mobile/src/infrastructure/native/README.md`: lines 4–4 | Add README.md for the documented Android probe/build or read/permission integration; see decisions above for its ownership, trust boundary and verification. |
+| `apps/mobile/src/infrastructure/native/README.md`: lines 13–20 | Add README.md for the documented Android probe/build or read/permission integration; see decisions above for its ownership, trust boundary and verification. |
+| `apps/mobile/src/infrastructure/native/android-usage-adapter.test.ts`: lines 1–151 | Add android-usage-adapter.test.ts for the documented Android probe/build or read/permission integration; see decisions above for its ownership, trust boundary and verification. |
+| `apps/mobile/src/infrastructure/native/android-usage-adapter.ts`: lines 1–128 | Add android-usage-adapter.ts for the documented Android probe/build or read/permission integration; see decisions above for its ownership, trust boundary and verification. |
+| `docs/core_plan/04_react_native_integration.md`: lines 450–450 | Record current scope/evidence, exact reproducible checks and retained acceptance boundaries; preserve prior part IDs/history. |
+| `docs/core_plan/04_react_native_integration.md`: lines 458–458 | Record current scope/evidence, exact reproducible checks and retained acceptance boundaries; preserve prior part IDs/history. |
+| `docs/core_plan_implementation_notes/artifacts/rn-08/adapter-b.json`: lines 1–71 | Record current scope/evidence, exact reproducible checks and retained acceptance boundaries; preserve prior part IDs/history. |
+| `docs/qa/android-capability-probe.md`: lines 75–101 | Record current scope/evidence, exact reproducible checks and retained acceptance boundaries; preserve prior part IDs/history. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 2723–2723 | Record the preceding part hash during this normal update; retain its historical evidence. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 7–13 | Update current part/branch checkpoint; previous evidence remains historical. |
+| `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 2803–2835 | Record this part’s decisions, actual checks/failures, every file/line and remaining work. Own hash stays Pending until next normal update. |
