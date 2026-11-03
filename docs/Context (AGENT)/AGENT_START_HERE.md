@@ -284,3 +284,14 @@ Read the latest Plan 04 notes before continuing. Next RN-09k composes real saved
 preferences/drafts; native status remains unavailable until RN-08c. Hosted
 migration, real Auth/root, authenticated phone, iOS and deferred C deletion remain
 separate. Parent counts stay 46 parts / 21 producers / 25 pending.
+
+
+RN-09k checkpoint (2026-11-03): Home now composes saved activities and inactive
+partial plan drafts through the same settings query/projection as Settings. The
+existing provider gates the real route, canonical saves/refetches update both,
+and offline/errors/account changes mask private summaries. No outcome metrics,
+recommendations or native status are inferred; k's native portion awaits RN-08c.
+Checks: 352 mobile unit / 478 component / 590 API plus web isolation/assets and
+Android QA compilation. Read the latest Plan 04 notes. Next RN-09l independent
+acceptance work or RN-08a; hosted migration, Auth/root, authenticated phone, native/
+iOS/product and user-deferred C-deletion gates remain open. Counts stay 46/21/25.

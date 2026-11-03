@@ -103,3 +103,23 @@ synthetic account ports, including concurrent editors and a committed save whose
 response is lost. Actual hosted/HTTP phone journeys, signing and assistive speech
 remain unexecuted here. The hosted migration and earlier authenticated-phone/C
 account-deletion deferrals are unchanged.
+
+## Home saved-preference summaries (RN-09k)
+
+After the same approved development connection, choose **Open live Home**. Check
+that activity and partial day/hour/session summaries match live Settings. Use the
+four Edit buttons to enter the existing editors, then save and return to Home.
+Only canonical accepted values should appear; typing, pending saves and uncertain
+responses must not replace the summary. A deliberate latest GET may reveal a
+committed lost-response save; it must not replay the write.
+
+Verify explicit empty/whole-draft clear, failed reads/retry, account access
+recovery, offline masking and reconnect, A/B account changes and same-user session
+replacement. Home must continue showing Protection unavailable and no invented
+Dino score, credits, streak, recommendation or usage result. Saved drafts are not
+active protection. Restore test preferences with revision checks, preserving
+independent edits, and disconnect the QA account when finished.
+
+This entry compiles on Android but no live phone journey was run for RN-09k.
+Hosted migration, real Auth/root integration and RN-08c native status remain
+pending; earlier authenticated-phone/disposable-C deletion deferrals still apply.

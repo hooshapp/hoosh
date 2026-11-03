@@ -15,6 +15,8 @@ export type HomeScreenProps = {
   model: HomeModel;
   /** Inject only the actual RN-08/native-owner presentation; never derive from Home metrics. */
   protection?: ReactNode;
+  /** Accepted preference summaries supplied by the account-scoped settings consumer. */
+  preferences?: ReactNode;
   onFeed?: () => void;
   onOpenHistory?: () => void;
   onAcceptRecommendation?: (id: string) => void;
@@ -26,6 +28,7 @@ export type HomeScreenProps = {
 export function HomeScreen({
   model: input,
   protection,
+  preferences,
   onFeed,
   onOpenHistory,
   onAcceptRecommendation,
@@ -78,6 +81,7 @@ export function HomeScreen({
             {model.weekly.value.coverageLabel}
           </Text>
         ) : null}
+        {preferences}
         {protection}
       </View>
     </Screen>

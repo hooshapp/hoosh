@@ -2,9 +2,12 @@
 
 `HomeScreen` composes the Home `22:4` card layout with the existing `Screen`,
 Space Grotesk, local original SVGs and shared controlled `Button`. The actual
-`(tabs)/index.tsx` route supplies `unavailableHome`: it makes no API/native calls,
-selects no Dino mood and enables no Feed/recommendation action. It keeps an honest
-protection-unavailable card, independent of Home statistics. Quests, History and Settings now have presentation and supported detail/editor UI under RN-09b–h; their live producers remain separate.
+`(tabs)/index.tsx` route keeps these outcome inputs unavailable: it selects no Dino
+mood and enables no Feed/recommendation action. Under the existing private account
+provider, RN-09k adds canonical saved-preference summaries through the settings
+query; without that provider it keeps the neutral preview. Device protection stays
+unavailable until RN-08c provides actual native evidence. Quests, History and
+Settings retain the previously reviewed presentation/detail/editor work.
 
 ## Display inputs and authority
 
@@ -56,7 +59,8 @@ debit, save, removal or success transition.
 Mount live private Home producers inside RN-04's keyed account/generation subtree
 when Auth is ready; cancel/ignore departing-account work and clear private state.
 Do not retain A's statistics/recommendation or show them during B's bootstrap.
-No private Home cache/store or root Auth/provider change is added here.
+RN-09k reads the existing settings key inside that subtree; no additional private
+Home cache/store or root Auth/provider change is added.
 
 `protection` is a separate optional presentation slot. Wire RN-08's actual native
 read consumer through its owner when RN08-D01–D06 are satisfied. Never infer active
@@ -105,3 +109,42 @@ Original plan and notes track **RN09-D01–D06**: approved scoring/rewards/strea
 producers; valid usage/insights measurements; temporary recommendation lifecycle;
 real native status/actions; account-scoped live wiring; signed-device/accessibility
 acceptance. RN-09a completes this bounded Home presentation increment only.
+
+## RN-09k saved-preference composition — 2026-11-03
+
+`ConnectedHomeScreen` observes `useSettingsSummary`, the same account-scoped query
+and pure projection as `ConnectedSettingsScreen`. `HomePreferences` renders those
+accepted activity/day/hour/session labels inside the existing Home scroll owner.
+`HomeScreen.preferences` is a composition slot, separate from its metric/outcome
+model and from native protection. It reuses existing warm surface/type/button
+recipes; no source icon or illustrated Home example is substituted or activated.
+
+Home and Settings agree after canonical saves, explicit clears and GET refreshes.
+Dirty local input, pending PATCH and uncertain responses do not enter the summary.
+A deliberate successful GET may reveal a committed write whose response was lost;
+that verifies the current saved value without claiming the save response succeeded.
+Missing settings, known empty preferences and unavailable/error reads stay
+separate. A background read leaves the last accepted value visible with Updating
+saved preferences; failed/invalid reads hide it. Offline or unavailable credentials
+mask private summary labels in both surfaces. Reconnect/recovery uses the existing
+scope/read lifecycle; it never submits a write. API recovery is a deliberate action
+through the existing account controller and renders safe failure copy.
+
+The actual route passes Edit activities / Edit draft days / Edit draft hours /
+Edit draft sessions navigation into the existing detail routes; these are ordinary
+editor navigation, not native setup. The existing developer QA entry exposes the
+same connected Home and routes with its memory-only credential adapter. That
+project remains isolated from production exports and does not prove Auth SDK/root
+or managed-account acceptance.
+
+RN-08c remains unimplemented: `UnavailableDeviceProtection` reuses the existing
+unavailable card in both connected and neutral Home. No native port, registration,
+permission, rule, installed revision or setup callback is manufactured. API settings
+revision and draft values never enter native installation state. The existing
+Dino, credits, usage, streak and recommendation regions remain unavailable.
+
+Tests cover shared reads/canonical labels, read/save/clear/uncertain flows, errors,
+retry/recovery, offline and account/generation isolation. Current results and exact
+file/line evidence are in the Plan 04 implementation notes. RN-09k's native status
+acceptance, RN-09l HTTP/device journeys, real Auth/root, signing and assistive speech
+remain separate open gates.

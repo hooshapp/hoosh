@@ -267,3 +267,14 @@ and Android QA Hermes compilation. Hosted upgrade, real Auth/root and actual
 HTTP/authenticated phone acceptance remain pending. Next RN-09k can compose these
 accepted producers, with native status unavailable until RN-08c; RN-08a stays
 independent and RN-09l retains live acceptance. Parent counts remain 46/21/25.
+
+
+RN-09k saved-preference checkpoint (2026-11-03): Home/Settings now share the same
+account settings query/projection and canonical activity/partial-draft labels.
+Home links to the existing editors, handles read/error/recovery/offline states and
+preserves unavailable metric/recommendation inputs. k's native status dependency
+remains open until RN-08c supplies actual native evidence; current protection is
+unavailable. Full checks pass (352 mobile unit / 478 component / 590 API), web
+isolation/assets and Android QA Hermes compilation. No hosted/real Auth/phone/native
+acceptance occurred. Next RN-09l independent checks or RN-08a; retain remaining k
+native and parent live/product gates. Top-level counts stay 46/21/25.

@@ -38,7 +38,7 @@ export type HomeModel = Readonly<{
   recommendation: HomeDatum<RecommendationDisplay> | Readonly<{ state: 'empty' }>;
 }>;
 
-/** Current route has no producers. No example account, statistics, or default mood. */
+/** These outcome producers remain unavailable; saved preferences have a separate summary. */
 export const unavailableHome: HomeModel = {
   dino: { state: 'unavailable' },
   credits: { state: 'unavailable' },
