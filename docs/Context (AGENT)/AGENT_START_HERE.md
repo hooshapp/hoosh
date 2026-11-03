@@ -261,3 +261,14 @@ concurrent section edits pass. No new migration or hosted upgrade/managed-user
 run occurred. Next: RN-09i/j consumers, independently RN-08a. Counts are now
 21 implemented producers / 25 pending across 46 parts. Full app Auth/device,
 managed C deletion, iOS and product/native gates remain separate; read Plan 03 notes.
+
+
+RN-09i checkpoint (2026-11-02): the existing activity editor now persists through
+API-12 with shared account-scoped settings data/revision, canonical summaries and
+explicit conflict/uncertain-save review. Production routes activate only under
+the account provider; Auth/root ownership stays with Anisha. Read the latest
+Plan 04 notes for exact files and tests. Full workspace (325 mobile unit / 416
+component / 590 API), web isolation/assets and Android QA Hermes export pass;
+no hosted migration, authenticated phone or signed-device acceptance was run.
+Next: RN-09j non-enforcing plan draft editors using the same settings resource;
+RN-08a independent. Counts remain 46 parts / 21 producers / 25 pending.

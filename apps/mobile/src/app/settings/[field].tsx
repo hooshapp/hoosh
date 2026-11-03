@@ -16,8 +16,23 @@ import {
 import { EditorPage } from '@/features/editors/editor-controls';
 import { useRouteDraftGuard } from '@/features/editors/use-route-draft-guard';
 import { EmptyCard } from '@/components/ui/empty-card';
+import { useOptionalAccountData } from '@/infrastructure/query/account-data-provider';
+import { ActivityPreferencesScreen } from '@/features/settings/activity-preferences-screen';
 export default function PreferenceDetail() {
   const { field } = useLocalSearchParams<{ field: string }>();
+  const account = useOptionalAccountData();
+  if (field === 'activities' && account?.scope)
+    return (
+      <ActivityPreferencesScreen
+        onBack={() => {
+          if (router.canGoBack()) router.back();
+          else router.replace('/(tabs)/settings');
+        }}
+      />
+    );
+  return <UnavailableDetail field={field} />;
+}
+function UnavailableDetail({ field }: { field: string }) {
   const [age, setAge] = useState<number | null>(null);
   const [activities, setActivities] = useState<ActivityDraft>({
     selected: [],
@@ -69,7 +84,8 @@ export default function PreferenceDetail() {
           field === 'days' ? 'Active Days' : field === 'hours' ? 'Active Hours' : 'App Sessions'
         }
         dirty={dirty}
-        onBack={back}>
+        onBack={back}
+      >
         {field === 'days' ? (
           <DaysEditor days={days} onChange={setDays} dirty={dirty} state="unavailable" />
         ) : field === 'hours' ? (

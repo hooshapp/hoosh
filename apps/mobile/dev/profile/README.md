@@ -37,3 +37,33 @@ The real Settings route also mounts the same `ProfileSurface` when it is inside
 Anisha's `AccountDataProvider`. Until that root exists, it keeps its neutral preview.
 Physical Expo Go runs do not prove standalone signing, iOS, assistive speech or
 native protection. See the Plan 04 notes for actual results and unfinished checks.
+
+## Activity preferences (RN-09i)
+
+The same isolated entry now opens the production Settings activity summary and
+**Redirect Me To** editor. Run only against an approved development project with
+migration `0002` applied. The migration must be coordinated separately; the mobile
+consumer does not apply it or manage Auth. Follow the existing connection/token
+steps above, then open **Redirect Me To** from live Settings.
+
+- Verify missing row versus failed read; selecting nothing and pressing
+  **Save activities** explicitly saves empty preferences. No GET creates a row.
+- Edit built-in choices and raw custom text; save, reopen, discard and check
+  authoritative validation. Deselecting Custom clears its saved text; toggling it
+  before saving retains the raw input. The summary uses accepted data only.
+- Advance the same settings revision from another client while dirty (including
+  a plan-draft change). Save must conflict; **Check latest preferences** performs
+  GET. **Keep my edits** requires a later Save; **Use latest preferences** discards
+  the volatile draft. Neither review choice sends PATCH. Unselected sections
+  must survive an activities-only save.
+- Existing **Lose next save response** applies to the next PATCH, including
+  activities. After an uncertain save or a failed latest read, no automatic replay
+  is permitted. Restore access and deliberately review the latest preferences.
+- Test offline edits/reconnect, dirty Back and account/generation replacement.
+  Restore any modified preferences with revision checks; do not overwrite
+  independent changes. No native rule, session or onboarding state is changed.
+
+RN-09i has deterministic/component and Android Hermes compilation evidence only.
+Hosted upgrade, real Auth/root, authenticated phone round trips, signing and
+assistive speech are separate acceptance gates. Earlier user deferrals remain in
+force. This QA credential adapter is still excluded from production exports.

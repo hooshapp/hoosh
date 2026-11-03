@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/field';
@@ -186,23 +186,32 @@ export function ActivitiesEditor({
   options,
   onChange,
   onBack,
+  customError,
+  feedback,
+  navigationDirty,
   ...actions
 }: PreferenceActions & {
   draft: ActivityDraft;
   options: readonly SelectionOption[];
   onChange: (draft: ActivityDraft) => void;
   onBack: () => void;
+  customError?: string;
+  feedback?: ReactNode;
+  navigationDirty?: boolean;
 }) {
-  const issue = draft.customSelected && !draft.custom.trim();
+  // Raw text goes to the server unchanged; JS trim differs from the adopted Unicode rules.
+  const issue = draft.customSelected && draft.custom.length === 0;
   return (
     <EditorPage
       variant="detail"
       backAsset={assets.back}
       title="Redirect Me To"
-      dirty={actions.dirty}
+      dirty={navigationDirty ?? actions.dirty}
       busy={actions.state === 'saving'}
-      onBack={onBack}>
+      onBack={onBack}
+    >
       <Heading>Less scrolling. More you.</Heading>
+      {feedback}
       <View style={styles.options}>
         {options.map((option) => (
           <Choice
@@ -231,7 +240,7 @@ export function ActivitiesEditor({
                 value={draft.custom}
                 editable={actions.state !== 'saving'}
                 onChangeText={(custom) => onChange({ ...draft, custom })}
-                error={issue ? 'Enter an activity or deselect Custom.' : undefined}
+                error={customError ?? (issue ? 'Enter an activity or deselect Custom.' : undefined)}
               />
             </View>
           ) : null}

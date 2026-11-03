@@ -193,13 +193,14 @@ RN-01/02/03 and the RN-04 producer are implemented with evidence linked below; R
 | RN-06 | `test(mobile): cover authenticated round trip and recovery` | RN-05; auth guards/recovery integrated | M1 acceptance matrix, no development bypass, build evidence | Not started | — |
 | RN-07 | `feat(account): integrate versioned profile reads and edits` | RN-04/05; approved profile contract/API/migration | Real profile round trip, conflict and ambiguous-save handling | Revisioned consumer wired; real Auth/root/device acceptance pending | `5790302` (UI); `f32e87c` (consumer wiring) |
 | RN-08 | `feat(protection-ui): show native capability and installation states` | RN-01; agreed native read boundary; actual adapters for integration | Status mapper tests; device evidence only where adapter exists | Presentation/read consumer prepared; RN-08a–d planned; remaining native/product gates open | `71da2d5` (presentation/read preparation only) |
-| RN-09 | `feat(mobile): compose main app surfaces with explicit feature states` | RN-01/02; RN-07/08 where live data is used | Figma comparisons + no invented production data | RN-09a–h UI implemented; RN-09i–l planned; remaining product/live gates open | `ff75039`, `2bbebad`, `c1c84c3`; RN-09d resolved by its notes/unique commit subject |
+| RN-09 | `feat(mobile): compose main app surfaces with explicit feature states` | RN-01/02; RN-07/08 where live data is used | Figma comparisons + no invented production data | RN-09a–h UI and RN-09i activity consumer implemented; j–l and remaining product/live gates open | `ff75039`, `2bbebad`, `c1c84c3`; RN-09d resolved by its notes/unique commit subject |
 | RN-10 | `fix(mobile): complete accessibility layout and lifecycle handling` | Implemented RN parts; relevant device build access | Accessibility/device-size checks and targeted regression tests | Shared hardening/icons and partial Pixel 8 Pro Expo Go QA implemented; remaining platform/live acceptance pending | RN-10 notes; RN-10a `ab7d855`, b `704bc49`, c by unique subject |
 | RN-11 | `test(integration): document profile and platform handoff acceptance` | RN-06/07/10; RN-08/09 evidence as applicable | M2 matrix, native capability handoff, reproducible runbook | Awaiting live Auth/API/profile prerequisites; not executed | — |
 
 **Planning expansion (2026-11-02):** The original RN-01–11, RN-09a–h and
-D-ref IDs are unchanged. RN-08a–d and RN-09i–l below are planned subparts, not
-completed work or additional top-level RN parts. API-11/12 are their bounded
+D-ref IDs are unchanged. RN-08a–d and RN-09i–l below are subparts, not
+additional top-level RN parts. RN-09i is implemented for its consumer scope;
+the remaining subparts and parent live acceptance stay open. API-11/12 are their bounded
 backend dependencies in the existing Plan 03. Start RN-08a independently, or
 API-11 → API-12 → RN-09i → RN-09j. RN-08c plus RN-09i/j feed RN-09k → RN-09l.
 Anisha's Auth/onboarding/iOS and unanswered product behavior remain outside this
@@ -589,7 +590,7 @@ RN-09b source: read-only Figma `27:155`, session `26dd22ea-c87c-4b6c-a571-5e74d6
 
 #### RN-09 execution expansion — preferences and non-enforcing drafts (2026-11-02)
 
-**Status: planned; not implemented.** Preserve RN-09a–h and their original UI
+**Status: RN-09i consumer implemented; j–l planned.** Preserve RN-09a–h and their original UI
 history. Continue with i–l below; do not redo the completed screen/editor work.
 Use the single settings resource planned in API-11/12. Profile remains the separate
 RN-07 resource; app-selection tokens remain device-native. No new state library,
@@ -597,10 +598,29 @@ persisted query cache, generic settings framework or automatic write queue.
 
 | Part / suggested commit | Work and dependencies | Done when / focused verification |
 |---|---|---|
-| **RN-09i** — `feat(settings): persist alternative activity preferences` | After API-12, use its generated DTOs/runtime decoder and one account-scoped settings query. Map the existing ActivitiesEditor IDs/custom text to the agreed settings contract. Add read/save/discard, canonical revision handling, fixed server validation and deliberate conflict/uncertain-save review using RN-07 patterns. The API-11 contract records stable existing activity IDs; no Figma sample selection is a production default. | Missing settings is distinct from an outage. Explicit empty selection persists; raw drafts survive validation/conflict/background reads. Two editors share the same settings revision; neither blindly overwrites the other's section. Late A responses cannot populate B. The real route remains unavailable without the real provider. |
+| **RN-09i** — `feat(settings): persist alternative activity preferences` **Consumer implemented; live acceptance pending** | After API-12, use its generated DTOs/runtime decoder and one account-scoped settings query. Map the existing ActivitiesEditor IDs/custom text to the agreed settings contract. Add read/save/discard, canonical revision handling, fixed server validation and deliberate conflict/uncertain-save review using RN-07 patterns. The API-11 contract records stable existing activity IDs; no Figma sample selection is a production default. | Missing settings is distinct from an outage. Explicit empty selection persists; raw drafts survive validation/conflict/background reads. Two editors share the same settings revision; neither blindly overwrites the other's section. Late A responses cannot populate B. The real route remains unavailable without the real provider. |
 | **RN-09j** — `feat(settings): persist non-enforcing plan drafts` | After RN-09i, wire existing days/hours/session editors to the same settings query/resource, including its draft timezone field. Reuse the same request/review machinery rather than a second profile-style framework. Omitted sections preserve data; explicit null clears a section. Preserve partially filled nullable draft fields. | Save/reload restores the accepted draft, with validation, revision conflicts and failed/uncertain saves covered. UI explicitly says **Saved draft — not active**; it does not claim a plan is installed, onboarding is complete or protection is enabled. Schedule/session labels must describe draft values without assuming counting/reset/overlap rules. No `applyRules`, native revision change or background installation occurs. |
 | **RN-09k** — `feat(home): consume saved preferences and device availability` | After i/j, compose accepted preferences/draft summaries into existing Home/Settings models. After RN-08c, include real Android protection availability/status where applicable; before then retain the existing unavailable native state. Keep Home thin and derive state from those producers. | Home/Settings agree after save/refetch, and still render during API/native failures. Saved draft, authorization and installed protection remain distinct. No synthetic quest, usage, streak, Dino health, Feed result or saved-time value is introduced. Suggestions/actions whose product meaning is unresolved stay unavailable. |
 | **RN-09l** — `test(mobile): verify settings persistence and isolation` | After i–k, test save/reload, two-user isolation, same-user generation change, concurrent activity/schedule edits, explicit clear, dirty navigation, lost response, API restart, offline edits and native absence/revocation where implemented. Reuse existing scoped test ports and QA entry; do not build another Auth system. | Deterministic/component/real-DB checks pass. Run actual HTTP and Android development-build checks when credentials/device exist; otherwise record those exact gates pending. Full application Auth/root, iOS, signed-device accessibility and RN-11 handoff remain joint acceptance, not inferred from an operator-token harness. |
+
+**RN-09i implementation checkpoint (2026-11-02):** Reuse the existing activity
+editor and original icons with a generated-type runtime settings decoder, shared
+`['settings']` account query/revision and guarded section-only writes. The tab
+summary and detail route activate only beneath the existing account provider.
+Verified absence permits explicit empty save; outages cannot create defaults.
+Keep raw custom text (including inactive input) through validation/background
+reads. Definite conflict or uncertain save requires GET plus explicit keep/use
+latest; neither review choice writes. Dirty base revisions stay fixed, pending
+GETs are cancelled around accepted writes, and newer cached revisions win.
+Protocol-invalid reads quarantine the old value without a reload loop.
+
+Checks: `npm run check` (325 portable / 416 component / 590 API, types/lint/assets/
+contracts), `npm run mobile:export` (38-file isolation / 71 original assets) and
+Android isolated QA Hermes export pass. No physical-device/hosted/Auth acceptance
+is inferred from these. Hosted settings migration 0002, real Auth/root wiring,
+authenticated phone journeys and later RN-09j/l simultaneous editor acceptance
+remain pending. Full RN-09 is open; current top-level counts remain 46/21/25.
+See the latest RN-09i [implementation entry](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md).
 
 **Files:** Extend existing `features/preferences`, `plans`, `settings`, `home`, the
 scoped API/query consumers and thin Settings/detail routes. Generated types belong
@@ -611,7 +631,8 @@ Mobile drafts stay volatile within their account scope; this adds server-side
 draft persistence, not an offline/onboarding storage contract.
 
 **Original deferral mapping:** RN09D-D01 still includes real RN-07/Auth acceptance.
-RN09D-D02 gains activity preference and plan-draft persistence through i/j; native
+RN09D-D02 has activity preference persistence through i; plan-draft persistence
+remains j. Native
 selection, installed plans and enforcement remain gated. RN09D-D03 demographics
 and calendars are unchanged. RN09D-D04 device/accessibility checks gain l alongside
 RN-10. Home's unavailable inputs gain only the real producers implemented in k.

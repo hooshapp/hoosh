@@ -55,7 +55,7 @@ function decodeProfile(value: unknown, { account }: ResponseContext): ProfileVie
     updated_at: value.updated_at as string,
   };
 }
-function utcTimestamp(value: unknown): value is string {
+export function utcTimestamp(value: unknown): value is string {
   return (
     typeof value === 'string' &&
     /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,6})?Z$/.test(value) &&
