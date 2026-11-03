@@ -1,0 +1,42 @@
+{
+  "date": "2026-11-02",
+  "scope": "RN-07 consumer wiring; full application acceptance remains pending",
+  "automated": {
+    "workspaceCheck": "passed",
+    "portableMobileTests": 273,
+    "componentTestsAcrossAndroidAndIos": 384,
+    "apiDeterministicTests": 473,
+    "postgresqlTests": 104,
+    "databaseFixture": "First check failed because the disposable fixture was stopped; api:db:up started it and all 104 checks then passed",
+    "mobileExport": "passed",
+    "productionIsolationFilesChecked": 38,
+    "originalDesignAssetsChecked": 71
+  },
+  "physicalDevice": {
+    "model": "Pixel 8 Pro",
+    "android": "16",
+    "runtime": "Expo Go; development bundle; not a standalone signed application",
+    "profileQaEntry": "compiled and loaded; secure credential input and safe 401 rejection observed; no native credential verification success",
+    "initialOperatorTokenVerification": "A/B identity requests succeeded before token expiry",
+    "laterVerification": "Native attempts returned INVALID_TOKEN; host verification later confirmed the saved token had expired. Native input was not proven byte-identical to the saved token; do not infer a native expired-token-specific result.",
+    "authenticatedProfileRoundTrip": "not completed; user deferred token refresh and authenticated phone testing",
+    "applicationAuthSdk": "not present; separate operator credential adapter is not Auth SDK evidence",
+    "deviceAtHandoff": "Disconnected before final cleanup; no phone settings changed",
+    "iosOrAssistiveOrStandalone": "not run"
+  },
+  "hostedLifecycle": {
+    "status": "deferred by user",
+    "selection": "separate disposable C account only; never A/B",
+    "authUsersDeleted": 0,
+    "managedProfileWritesThisRun": 0,
+    "managedSchemaChanges": 0,
+    "localStorageCascade": "covered by passing PostgreSQL suite; not managed Auth deletion acceptance"
+  },
+  "remaining": [
+    "Anisha Auth/root/guard/account-actions composition",
+    "Fresh A/B credentials and native profile save/reload/restart/conflict/lost-response/keyboard/account-switch journeys",
+    "Separate C account coordinated permanent deletion and real session/cache teardown",
+    "iOS, signed builds and screen-reader acceptance",
+    "Shared storage contract before durable drafts"
+  ]
+}

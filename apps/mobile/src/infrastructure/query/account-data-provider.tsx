@@ -4,7 +4,9 @@ import { createContext, type ReactNode, useContext, useRef, useSyncExternalStore
 import { type AccountDataController, type AccountDataSnapshot } from './account-controller';
 import type { AccountOperation, AccountScope, AccountWork } from './account-scope';
 
-const AccountContext = createContext<AccountDataSnapshot | null>(null);
+const AccountContext = createContext<
+  (AccountDataSnapshot & { controller: AccountDataController }) | null
+>(null);
 
 /** Put private forms/toasts inside children: scope replacement remounts the whole subtree. */
 export function AccountDataProvider({
@@ -22,7 +24,7 @@ export function AccountDataProvider({
     controller.getServerSnapshot,
   );
   return (
-    <AccountContext.Provider value={snapshot}>
+    <AccountContext.Provider value={{ ...snapshot, controller }}>
       {snapshot.scope ? (
         <QueryClientProvider key={snapshot.scope.id} client={snapshot.scope.client}>
           {children}
@@ -37,6 +39,10 @@ export function useAccountData() {
   const context = useContext(AccountContext);
   if (!context) throw new Error('Account data requires AccountDataProvider.');
   return context;
+}
+/** Preview routes stay unavailable until the Auth owner mounts the private provider. */
+export function useOptionalAccountData() {
+  return useContext(AccountContext);
 }
 function useScope(): AccountScope {
   const { scope } = useAccountData();

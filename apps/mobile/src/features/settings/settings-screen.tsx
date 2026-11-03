@@ -22,6 +22,8 @@ export type SettingsScreenProps = {
   onRetry?: () => void;
   /** Host owns draft/validation/persistence. Never instantiated with a fake session. */
   profileForm?: ProfileFormProps;
+  /** Account-scoped live consumer supplied by the host; previews use the neutral header. */
+  accountContent?: ReactNode;
   inlineEditor?: { field: 'gender' | 'days' | 'hours' | 'sessions'; content: ReactNode };
 };
 export function SettingsScreen({
@@ -31,6 +33,7 @@ export function SettingsScreen({
   onEditProfile,
   onRetry,
   profileForm,
+  accountContent,
   inlineEditor,
 }: SettingsScreenProps) {
   const values = [
@@ -56,10 +59,10 @@ export function SettingsScreen({
           Settings
         </Text>
       </View>
-      <AccountHeader
+      {accountContent ?? <AccountHeader
         identity={model.account?.identity ?? null}
         displayName={model.account?.displayName}
-      />
+      />}
       <View style={styles.divider} />
       <View style={styles.body}>
         {hasError ? (

@@ -618,3 +618,14 @@ account administration, schema or mobile production behavior was added here.
 | Real managed A/B M1/M2 API | Identity, writes/clear/conflicts/isolation/refetch and restart pass | Auth/root/RN-07 integration and coordinated cascade/lifecycle |
 | Liveness/readiness | Explicit liveness semantics and bounded operator checks documented | No automatic readiness endpoint or cloud worker added |
 | Onboarding extension | Review checklist prepared with existing field/ownership limits | Anisha/Ishmum review plus PM/native inputs before another schema/plan |
+
+
+RN-07 handoff checkpoint (2026-11-02): the shared mobile consumer now uses the
+API-08/09 profile contract with scoped drafts, strict decoding and explicit
+conflict/uncertain-save reconciliation. The actual root still awaits Anisha's
+Auth composition. Isolated PostgreSQL checks, including storage-only cascade,
+were rerun; no managed Auth deletion was performed. User deferred authenticated
+phone testing after access-token expiry and separately deferred hosted cascade.
+[Coordinated C-account procedure](../qa/profile-cascade-acceptance.md) preserves
+A/B and distinguishes unexpired JWT behavior from Auth/session teardown. Full
+API-10/application M1/M2 remains open; see the Plan 04 wiring notes for this commit.

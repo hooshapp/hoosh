@@ -49,7 +49,7 @@
     "web": "expo start --web",
     "export:web": "expo export --platform web",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint src dev/ui dev/native dev/shared jest.setup.ts jest.config.cjs",
+    "lint": "eslint src dev/ui dev/native dev/profile dev/shared jest.setup.ts jest.config.cjs",
     "test": "npm run test:unit && npm run test:components",
     "test:unit": "vitest run",
     "test:components": "jest --runInBand",

@@ -27,6 +27,7 @@
     "mobile:check-ui-isolation": "node scripts/check-ui-preview-isolation.mjs",
     "mobile:check-assets": "node scripts/check-design-assets.mjs",
     "mobile:qa:android": "expo start apps/mobile/dev/native --go --lan --port 8090",
+    "mobile:qa:profile": "expo start apps/mobile/dev/profile --go --localhost --port 8091",
     "api:generate": "uv run --project services/api python scripts/export-openapi.py && npm run generate --workspace @disconnect/api-codegen",
     "api:check-contracts": "uv run --project services/api python scripts/export-openapi.py --check && npm run check --workspace @disconnect/api-codegen",
     "api:db:up": "uv run --project services/api python scripts/db-test.py up",

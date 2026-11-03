@@ -1,6 +1,6 @@
 # Disconnect — Core Development Plans
 
-**Status:** Plan 00 is complete and validated (foundation commit `0b50900`, recorded in its ledger); Plan 04 RN-01–04 producers now supply shared UI/testing, authentic-asset navigation and bounded HTTP and account query/lifecycle producers with recorded evidence; real RN-04 Auth/root wiring, Anisha-owned Plan 01/Auth acceptance, Plan 02, full API-10 and RN-06/11 remain pending; API-10 operational diagnostics/tools and independent checks are implemented; RN-10 shared UI/lifecycle hardening exists with device/live acceptance pending; RN-09a–h main/detail/editor UI exists with live integration pending; RN-05 consumer, RN-07 UI-only and RN-08 presentation/read-consumer preparation exist, with their real integration/acceptance pending. API-01–09 backend identity, contracts, scoped database units, profile migrations/RLS and isolated revisioned profile GET/PATCH are implemented; mobile Auth, database and native adapter integration remain pending.\
+**Status:** Plan 00 is complete and validated (foundation commit `0b50900`, recorded in its ledger); Plan 04 RN-01–04 producers now supply shared UI/testing, authentic-asset navigation and bounded HTTP and account query/lifecycle producers with recorded evidence; real RN-04 Auth/root wiring, Anisha-owned Plan 01/Auth acceptance, Plan 02, full API-10 and RN-06/11 remain pending; API-10 operational diagnostics/tools and independent checks are implemented; RN-10 shared UI/lifecycle hardening exists with device/live acceptance pending; RN-09a–h main/detail/editor UI exists with live integration pending; RN-05 consumer, RN-07 revisioned profile consumer and RN-08 presentation/read-consumer preparation exist, with their real integration/acceptance pending. API-01–09 backend identity, contracts, scoped database units, profile migrations/RLS and isolated revisioned profile GET/PATCH are implemented; mobile Auth, database and native adapter integration remain pending.\
 **Baseline inspected:** `c7a8f73` — `Set up mobile and API foundation`.\
 **Reviewed:** 2026-10-28.\
 **Product answers:** [PM_QUESTIONS.md](<../Context (AGENT)/PM_QUESTIONS.md>); no PM question is answered by an engineering default in these plans.
@@ -9,7 +9,7 @@
 
 Read [Plan 00](00_shared_contracts.md) first, then your area plan and the specific part you are about to implement. Before coding, read the [implementation knowledge-base workflow](../core_plan_implementation_notes/README.md), create that plan's notes file if absent, and read any existing entries. Build on the scaffold; do not reinstall it, rewrite the tested Swift core, create every future table, or complete an entire area before integrating.
 
-There are **44 parts**: 19 implemented parts/producers (SC-01–04, RN-01–04, API-01–09 and SB-04–05) and 25 parts awaiting acceptance (including API-10 with its operational slice implemented, RN-05 consumer, RN-07 UI, RN-08 presentation preparation, RN-09 main-screen presentation with live acceptance pending and RN-10 shared hardening); real RN-04 root integration remains pending. See each ledger/Git reference for commit and validation details. They are reviewable work boundaries, not 44 completed commits or immediately unblocked tasks. Some onboarding/provider/native presentation parts are conditional. Split a concrete part further if its diff is too large, preserving stable IDs and dependencies.
+There are **44 parts**: 19 implemented parts/producers (SC-01–04, RN-01–04, API-01–09 and SB-04–05) and 25 parts awaiting acceptance (including API-10 with its operational slice implemented, RN-05 consumer, RN-07 consumer, RN-08 presentation preparation, RN-09 main-screen presentation with live acceptance pending and RN-10 shared hardening); real RN-04 root integration remains pending. See each ledger/Git reference for commit and validation details. They are reviewable work boundaries, not 44 completed commits or immediately unblocked tasks. Some onboarding/provider/native presentation parts are conditional. Split a concrete part further if its diff is too large, preserving stable IDs and dependencies.
 
 | Plan | Parts | Main owner | Initial result |
 |---|---:|---|---|
@@ -112,7 +112,7 @@ After local M1, a small **development deployment plan** can provide one shared H
 
 Each plan includes goals, files, owners, proposed commits, dependencies, tests/acceptance, edge cases, recovery, and an implementation ledger. Plan 00 records its local implementation; the others remain pending. Linked technical guidance must be rechecked against the package/project versions selected during implementation.
 
-Documentation checks cover local links, stable part IDs, matching ledgers, dependency ordering, canonical contract names/paths, and scaffold boundaries. Plan 00 additionally checks its actual type-only package and consumer compile scenarios. RN-01–04 add the UI, asset/navigation, HTTP/query producers and test evidence recorded in their notes. The 36 remaining parts await acceptance, with RN-05 consumer, RN-07 UI, RN-08 native presentation preparation, RN-09a/b/c/d Home/Quests/History/Settings presentation and RN-10 shared hardening distinguished from live acceptance and remaining live feature integration; no live Auth/cloud/database/device result is claimed from contract or UI primitive work.
+Documentation checks cover local links, stable part IDs, matching ledgers, dependency ordering, canonical contract names/paths, and scaffold boundaries. Plan 00 additionally checks its actual type-only package and consumer compile scenarios. RN-01–04 add the UI, asset/navigation, HTTP/query producers and test evidence recorded in their notes. The 25 remaining parts await acceptance, with RN-05 consumer, RN-07 consumer, RN-08 native presentation preparation, RN-09a/b/c/d Home/Quests/History/Settings presentation and RN-10 shared hardening distinguished from live acceptance and remaining live feature integration; no live Auth/cloud/database/device result is claimed from contract or UI primitive work.
 
 **Next work from the committed Plan 00 foundation:** Ishmum starts RN-01 (shared UI/test harness) and/or API-01 (testable API configuration/errors), with Android investigation independently. Anisha owns SB-01–03 (Supabase Auth/project setup) and AUTH-01/02 (mobile Auth). She can develop configuration/storage tests against injected settings before live setup is complete. Ishmum owns SB-04/05 when adding product database persistence. Wire M1/M2 when their producer outputs are ready; record actual integration evidence separately from module completion.
 
@@ -186,3 +186,13 @@ unavailable-profile mode; 473 deterministic / 104 PostgreSQL checks and full
 workspace pass. Backend Auth implementation/verification is done. Actual app
 session/root/RN-07 and native/device/cascade acceptance are joint work, so full
 API-10 and application M1/M2 remain open and counts stay 19/25.
+
+
+RN-07 consumer checkpoint (2026-11-02): scoped profile GET/PATCH, strict same-owner
+decoding, revisioned raw drafts, validation, conflict/latest review, uncertain-save
+recovery and conditional Settings mounting are implemented. No real Auth/root
+producer is installed. The separate native QA entry loaded on Pixel 8 Pro, but
+expired credentials prevented authenticated device profile acceptance; user
+deferred token refresh. Hosted cascade is also deferred with a separate disposable
+C required; A/B remain intact. See Plan 04 notes and docs/qa/profile-cascade-acceptance.md.
+Counts remain 19 implemented producers / 25 parts awaiting full acceptance.

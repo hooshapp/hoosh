@@ -3,7 +3,8 @@
 **Status: prepared, not live RN-05 acceptance.** The real Auth producer/guard and application wiring remain absent. Backend
 API-04/05 and API-08/09 now provide verified identity, profiles and generated types;
 API-10 supplies operational checks, with joint acceptance still open.
-The current Settings route and development navigation links are unchanged. This
+The Settings route now conditionally mounts the RN-07 profile consumer inside the
+account provider; development navigation remains preview-only without Auth. This
 module does not make public Settings an authenticated screen or install a fixture
 session. RN-05 stays incomplete until the real round trip is exercised.
 
@@ -89,3 +90,14 @@ Before RN-05 can be marked complete:
    bundle and deterministic Auth doubles do not satisfy live M1 acceptance.
 
 RN-07 now supplies [controlled profile presentation](PROFILE_UI.md) independently. AccountHeader accepts an optional supplied validated display name; absent/null remains neutral. The sample name lives only in the isolated developer UI, and actual profile API/query/controller integration remains deferred.
+
+
+## RN-07 handoff (2026-11-02)
+
+The real Settings route now supplies `ProfileSurface` as its account region when
+an account provider is present. It includes a profile-backed header/editor and
+deliberate API recovery through that provider's controller. See [PROFILE_UI.md](PROFILE_UI.md).
+Anisha still supplies the actual Auth/root/guard and account-actions composition;
+no fake sign-in or SDK replacement is installed. The isolated
+[device QA project](../../../dev/profile/README.md) accepts operator tokens in
+memory only and does not count as SDK/application Auth acceptance.

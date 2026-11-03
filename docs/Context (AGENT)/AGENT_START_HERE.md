@@ -8,7 +8,7 @@
 
 **Engineering ownership:** Ishmum owns main/shared React Native UI, Android, backend/product database and shared testing. Anisha owns all Supabase Auth/project setup (SB-01–03), mobile Auth/onboarding and iOS. Ishmum owns only the Supabase product database work (SB-04/05), not Auth administration. Build against the shared contracts independently, then wire real outputs when ready; mark integration-dependent parts complete only after joint validation. Read [the accepted decisions](../architecture/identity-foundation.md) and [core execution order](../core_plan/README.md) before foundation work.
 
-**Implementation records:** Before starting a plan, read the [knowledge-base workflow](../core_plan_implementation_notes/README.md) and create that plan's notes file. Give every commit its own entry with all changed files, exact line ranges, what/why, validation and remaining work. Keep the plan ledger synchronized. New chats/agents must read the relevant notes and inspect Git/current code before resuming. Plan 04's [implementation record](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md) contains the current RN-01–04 producer status, RN-05 consumer, RN-07 UI-only, RN-08 native presentation preparation, RN-09a–h main/detail/editor UI and RN-10 shared UI/lifecycle hardening, evidence and next step; read it before resuming.
+**Implementation records:** Before starting a plan, read the [knowledge-base workflow](../core_plan_implementation_notes/README.md) and create that plan's notes file. Give every commit its own entry with all changed files, exact line ranges, what/why, validation and remaining work. Keep the plan ledger synchronized. New chats/agents must read the relevant notes and inspect Git/current code before resuming. Plan 04's [implementation record](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md) contains the current RN-01–04 producer status, RN-05 consumer, RN-07 revisioned profile consumer, RN-08 native presentation preparation, RN-09a–h main/detail/editor UI and RN-10 shared UI/lifecycle hardening, evidence and next step; read it before resuming.
 
 ## 1. Founder-provided facts that override generic assumptions
 
@@ -127,7 +127,7 @@ capability tests remain separate; a web export does not establish native behavio
 - **`TSD.md`** — architecture, native boundaries, Swift/Android requirements, TypeScript interfaces, FastAPI endpoints, Pydantic/SQL examples, event sync, security, database, tests, infra, agent work packages.
 - **`OPEN_DECISIONS.yaml`** — machine-readable unresolved founder choices, intentionally unapproved.
 - **[`PM_QUESTIONS.md`](PM_QUESTIONS.md)** — 22 PM questions with stable IDs and space to append dated answers, clarifications, and agreed decisions.
-- **[`core_plan/README.md`](../core_plan/README.md)** — execution order and index for five detailed foundation plans, with 44 parts (Plan 00 committed as `0b50900`, RN-01–04, API-01–09 and SB-04–05 producers implemented with evidence, 25 parts awaiting acceptance, including RN-05 consumer, RN-07 UI-only, RN-08 native presentation preparation, RN-09a–h UI with live integration pending and RN-10 shared hardening; RN-04 real root wiring pending), cross-plan dependencies, implementation/commit ledgers, and explicit PM/native gates.
+- **[`core_plan/README.md`](../core_plan/README.md)** — execution order and index for five detailed foundation plans, with 44 parts (Plan 00 committed as `0b50900`, RN-01–04, API-01–09 and SB-04–05 producers implemented with evidence, 25 parts awaiting acceptance, including RN-05 consumer, RN-07 revisioned profile consumer, RN-08 native presentation preparation, RN-09a–h UI with live integration pending and RN-10 shared hardening; RN-04 real root wiring pending), cross-plan dependencies, implementation/commit ledgers, and explicit PM/native gates.
 
 **Source of truth:** This is a context-rich implementation baseline. A full repo audit and explicit product policy answers may require updates before coding core session/reward rules. The documents must be revised whenever founder decisions, platform behavior, or existing code evidence contradicts assumptions.
 
@@ -217,3 +217,14 @@ Anisha's mobile Auth/root and RN-07 real consumer/native-device/cascade gates st
 open. Do not start another session manager or mark full API-10 accepted. Managed
 HTTP evidence follow-up hash is 138387f. No hosted credential/schema/Auth setting
 or mobile production code changed.
+
+
+RN-07 consumer checkpoint (2026-11-02): generated profile GET/PATCH, same-owner
+decoding, raw revisioned drafts, canonical success, explicit conflict/uncertain
+review and conditional Settings mounting are implemented. Real Auth/root/actions
+remain Anisha's work. The isolated profile QA project loaded on Pixel 8 Pro /
+Android 16; expired tokens blocked authenticated profile testing, which Ishmum
+then deferred. Hosted deletion was also deferred with a separate disposable C
+required. No A/B Auth user or profile was modified. Read Plan 04 notes,
+apps/mobile/dev/profile/README.md and docs/qa/profile-cascade-acceptance.md before
+resuming; these partial results do not complete RN-07/API-10/application M1/M2.
