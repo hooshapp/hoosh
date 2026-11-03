@@ -1,0 +1,544 @@
+{
+  "status": "API-11 data contract only; endpoints follow in API-12",
+  "activity_choices": [
+    {
+      "id": "gym",
+      "legacy_ui_id": "Gym",
+      "label": "Gym"
+    },
+    {
+      "id": "reading",
+      "legacy_ui_id": "Reading",
+      "label": "Reading"
+    },
+    {
+      "id": "arts_and_crafts",
+      "legacy_ui_id": "Arts and crafts",
+      "label": "Arts and crafts"
+    },
+    {
+      "id": "walking",
+      "legacy_ui_id": "Walking",
+      "label": "Walking"
+    },
+    {
+      "id": "music",
+      "legacy_ui_id": "Music",
+      "label": "Music"
+    },
+    {
+      "id": "cooking",
+      "legacy_ui_id": "Cooking",
+      "label": "Cooking"
+    }
+  ],
+  "empty_activities": {
+    "selected_activity_ids": [],
+    "custom_text": null
+  },
+  "empty_plan_draft": {
+    "weekdays": [],
+    "hours": null,
+    "timezone_id": null,
+    "session_count": null,
+    "session_minutes": null
+  },
+  "valid_patches": [
+    {
+      "id": "clear_activities",
+      "input": {
+        "expected_revision": 0,
+        "activities": null
+      },
+      "canonical": {
+        "expected_revision": 0,
+        "activities": null
+      }
+    },
+    {
+      "id": "empty_activities",
+      "input": {
+        "expected_revision": 0,
+        "activities": {
+          "selected_activity_ids": [],
+          "custom_text": null
+        }
+      },
+      "canonical": {
+        "expected_revision": 0,
+        "activities": {
+          "selected_activity_ids": [],
+          "custom_text": null
+        }
+      }
+    },
+    {
+      "id": "custom_unicode",
+      "input": {
+        "expected_revision": 3,
+        "activities": {
+          "selected_activity_ids": [
+            "reading",
+            "gym"
+          ],
+          "custom_text": " \u001cRead \ud83e\udd96\u00a0 "
+        }
+      },
+      "canonical": {
+        "expected_revision": 3,
+        "activities": {
+          "selected_activity_ids": [
+            "reading",
+            "gym"
+          ],
+          "custom_text": "Read \ud83e\udd96"
+        }
+      }
+    },
+    {
+      "id": "empty_draft",
+      "input": {
+        "expected_revision": 0,
+        "plan_draft": {
+          "weekdays": [],
+          "hours": null,
+          "timezone_id": null,
+          "session_count": null,
+          "session_minutes": null
+        }
+      },
+      "canonical": {
+        "expected_revision": 0,
+        "plan_draft": {
+          "weekdays": [],
+          "hours": null,
+          "timezone_id": null,
+          "session_count": null,
+          "session_minutes": null
+        }
+      }
+    },
+    {
+      "id": "clear_draft",
+      "input": {
+        "expected_revision": 4,
+        "plan_draft": null
+      },
+      "canonical": {
+        "expected_revision": 4,
+        "plan_draft": null
+      }
+    },
+    {
+      "id": "partial_draft",
+      "input": {
+        "expected_revision": 1,
+        "plan_draft": {
+          "weekdays": [
+            6,
+            0,
+            2
+          ],
+          "hours": {
+            "start_local": "22:30",
+            "end_local": null,
+            "next_day": true
+          },
+          "timezone_id": "America/New_York",
+          "session_count": 2,
+          "session_minutes": null
+        }
+      },
+      "canonical": {
+        "expected_revision": 1,
+        "plan_draft": {
+          "weekdays": [
+            0,
+            2,
+            6
+          ],
+          "hours": {
+            "start_local": "22:30",
+            "end_local": null,
+            "next_day": true
+          },
+          "timezone_id": "America/New_York",
+          "session_count": 2,
+          "session_minutes": null
+        }
+      }
+    },
+    {
+      "id": "overnight",
+      "input": {
+        "expected_revision": 1,
+        "plan_draft": {
+          "weekdays": [],
+          "hours": {
+            "start_local": "22:30",
+            "end_local": "07:00",
+            "next_day": true
+          },
+          "timezone_id": "UTC",
+          "session_count": null,
+          "session_minutes": null
+        }
+      },
+      "canonical": {
+        "expected_revision": 1,
+        "plan_draft": {
+          "weekdays": [],
+          "hours": {
+            "start_local": "22:30",
+            "end_local": "07:00",
+            "next_day": true
+          },
+          "timezone_id": "UTC",
+          "session_count": null,
+          "session_minutes": null
+        }
+      }
+    }
+  ],
+  "invalid_patches": [
+    {
+      "id": "missing_section",
+      "input": {
+        "expected_revision": 0
+      }
+    },
+    {
+      "id": "boolean_revision",
+      "input": {
+        "expected_revision": true,
+        "activities": null
+      }
+    },
+    {
+      "id": "owner_injection",
+      "input": {
+        "expected_revision": 0,
+        "activities": null,
+        "user_id": "synthetic"
+      }
+    },
+    {
+      "id": "revision_overflow",
+      "input": {
+        "expected_revision": 2147483647,
+        "activities": null
+      }
+    },
+    {
+      "id": "unknown_activity",
+      "input": {
+        "expected_revision": 0,
+        "activities": {
+          "selected_activity_ids": [
+            "unknown"
+          ],
+          "custom_text": null
+        }
+      }
+    },
+    {
+      "id": "duplicate_activity",
+      "input": {
+        "expected_revision": 0,
+        "activities": {
+          "selected_activity_ids": [
+            "gym",
+            "gym"
+          ],
+          "custom_text": null
+        }
+      }
+    },
+    {
+      "id": "missing_custom_text",
+      "input": {
+        "expected_revision": 0,
+        "activities": {
+          "selected_activity_ids": []
+        }
+      }
+    },
+    {
+      "id": "blank_custom",
+      "input": {
+        "expected_revision": 0,
+        "activities": {
+          "selected_activity_ids": [],
+          "custom_text": "\u001c\u0085"
+        }
+      }
+    },
+    {
+      "id": "nul_custom",
+      "input": {
+        "expected_revision": 0,
+        "activities": {
+          "selected_activity_ids": [],
+          "custom_text": "a\u0000b"
+        }
+      }
+    },
+    {
+      "id": "long_custom",
+      "input": {
+        "expected_revision": 0,
+        "activities": {
+          "selected_activity_ids": [],
+          "custom_text": "\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96\ud83e\udd96"
+        }
+      }
+    },
+    {
+      "id": "unknown_plan_field",
+      "input": {
+        "expected_revision": 0,
+        "plan_draft": {
+          "weekdays": [],
+          "hours": null,
+          "timezone_id": null,
+          "session_count": null,
+          "session_minutes": null,
+          "active": true
+        }
+      }
+    },
+    {
+      "id": "missing_plan_field",
+      "input": {
+        "expected_revision": 0,
+        "plan_draft": {
+          "weekdays": [],
+          "timezone_id": null,
+          "session_count": null,
+          "session_minutes": null
+        }
+      }
+    },
+    {
+      "id": "boolean_weekday",
+      "input": {
+        "expected_revision": 0,
+        "plan_draft": {
+          "weekdays": [
+            true
+          ],
+          "hours": null,
+          "timezone_id": null,
+          "session_count": null,
+          "session_minutes": null
+        }
+      }
+    },
+    {
+      "id": "duplicate_weekday",
+      "input": {
+        "expected_revision": 0,
+        "plan_draft": {
+          "weekdays": [
+            0,
+            0
+          ],
+          "hours": null,
+          "timezone_id": null,
+          "session_count": null,
+          "session_minutes": null
+        }
+      }
+    },
+    {
+      "id": "bad_weekday",
+      "input": {
+        "expected_revision": 0,
+        "plan_draft": {
+          "weekdays": [
+            7
+          ],
+          "hours": null,
+          "timezone_id": null,
+          "session_count": null,
+          "session_minutes": null
+        }
+      }
+    },
+    {
+      "id": "float_sessions",
+      "input": {
+        "expected_revision": 0,
+        "plan_draft": {
+          "weekdays": [],
+          "hours": null,
+          "timezone_id": null,
+          "session_count": 1.0,
+          "session_minutes": null
+        }
+      }
+    },
+    {
+      "id": "zero_sessions",
+      "input": {
+        "expected_revision": 0,
+        "plan_draft": {
+          "weekdays": [],
+          "hours": null,
+          "timezone_id": null,
+          "session_count": 0,
+          "session_minutes": null
+        }
+      }
+    },
+    {
+      "id": "unbounded_sessions",
+      "input": {
+        "expected_revision": 0,
+        "plan_draft": {
+          "weekdays": [],
+          "hours": null,
+          "timezone_id": null,
+          "session_count": 1001,
+          "session_minutes": null
+        }
+      }
+    },
+    {
+      "id": "unbounded_minutes",
+      "input": {
+        "expected_revision": 0,
+        "plan_draft": {
+          "weekdays": [],
+          "hours": null,
+          "timezone_id": null,
+          "session_count": null,
+          "session_minutes": 1441
+        }
+      }
+    },
+    {
+      "id": "unknown_timezone",
+      "input": {
+        "expected_revision": 0,
+        "plan_draft": {
+          "weekdays": [],
+          "hours": null,
+          "timezone_id": "Not/A_Zone",
+          "session_count": null,
+          "session_minutes": null
+        }
+      }
+    },
+    {
+      "id": "path_timezone",
+      "input": {
+        "expected_revision": 0,
+        "plan_draft": {
+          "weekdays": [],
+          "hours": null,
+          "timezone_id": "../UTC",
+          "session_count": null,
+          "session_minutes": null
+        }
+      }
+    },
+    {
+      "id": "ambiguous_timezone",
+      "input": {
+        "expected_revision": 0,
+        "plan_draft": {
+          "weekdays": [],
+          "hours": null,
+          "timezone_id": "localtime",
+          "session_count": null,
+          "session_minutes": null
+        }
+      }
+    },
+    {
+      "id": "bad_hours",
+      "input": {
+        "expected_revision": 0,
+        "plan_draft": {
+          "weekdays": [],
+          "hours": {
+            "start_local": "24:00",
+            "end_local": "07:00",
+            "next_day": true
+          },
+          "timezone_id": null,
+          "session_count": null,
+          "session_minutes": null
+        }
+      }
+    },
+    {
+      "id": "wrong_next_day",
+      "input": {
+        "expected_revision": 0,
+        "plan_draft": {
+          "weekdays": [],
+          "hours": {
+            "start_local": "22:30",
+            "end_local": "07:00",
+            "next_day": false
+          },
+          "timezone_id": null,
+          "session_count": null,
+          "session_minutes": null
+        }
+      }
+    },
+    {
+      "id": "equal_hours",
+      "input": {
+        "expected_revision": 0,
+        "plan_draft": {
+          "weekdays": [],
+          "hours": {
+            "start_local": "07:00",
+            "end_local": "07:00",
+            "next_day": true
+          },
+          "timezone_id": null,
+          "session_count": null,
+          "session_minutes": null
+        }
+      }
+    },
+    {
+      "id": "string_boolean",
+      "input": {
+        "expected_revision": 0,
+        "plan_draft": {
+          "weekdays": [],
+          "hours": {
+            "start_local": null,
+            "end_local": null,
+            "next_day": "false"
+          },
+          "timezone_id": null,
+          "session_count": null,
+          "session_minutes": null
+        }
+      }
+    }
+  ],
+  "absent_response": {
+    "settings": null
+  },
+  "existing_response": {
+    "settings": {
+      "user_id": "a46e48ad-c742-4e18-b57d-2c9a56544944",
+      "revision": 1,
+      "activities": {
+        "selected_activity_ids": [],
+        "custom_text": null
+      },
+      "plan_draft": null,
+      "created_at": "2026-11-02T12:00:00Z",
+      "updated_at": "2026-11-02T12:00:00Z"
+    }
+  }
+}

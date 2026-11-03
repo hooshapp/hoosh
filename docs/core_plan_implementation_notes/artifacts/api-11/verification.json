@@ -1,0 +1,43 @@
+{
+  "date": "2026-11-02",
+  "part": "API-11",
+  "scope": "Settings data contract and local storage; no settings HTTP routes yet",
+  "head": "20261102_0002",
+  "previousImmutableHead": "20261102_0001",
+  "validation": {
+    "workspaceCheck": "passed",
+    "apiDeterministicTests": 526,
+    "realPostgresqlTests": 173,
+    "portableMobileTests": 273,
+    "componentTests": 384,
+    "settingsContractTests": 53,
+    "newSettingsStorageTests": 69,
+    "frozenDependencySync": "passed",
+    "publishedOpenapiAndTypes": "unchanged; drift check passed",
+    "profileMigration": "unchanged",
+    "localUpgradeAndDowngrade": "passed, preserving profile data",
+    "explicitGuardedMigrationCheck": "passed",
+    "offlineMigrationSql": "generated without environment/connection",
+    "taskOwnedFixtureCleanup": "stopped; volume retained"
+  },
+  "resources": {
+    "ownedProductTables": [
+      "public.profiles",
+      "public.user_settings"
+    ],
+    "newSettingsTables": 1,
+    "settingsRoutesPublished": false,
+    "newGeneratedHttpTypesPublished": false,
+    "hostedUpgradePerformed": false,
+    "managedAuthChanges": false,
+    "nativePolicyChanges": false
+  },
+  "notes": [
+    "Initial local upgrade dry run found SQLAlchemy text parsing a JSON default colon as a bind; fixed the unpublished new migration/default with valid literal spacing and reran real upgrades.",
+    "Prior fixture test hard-coded the old head; now checks the single reviewed HEAD.",
+    "Constraint fingerprints use reviewed PostgreSQL 17 deparsed definitions; actual weakened constraint/policy/grant/trigger tests reject drift.",
+    "Timezone membership and weekday canonical ordering are Python checks; JSONB guards enforce structural/domain bounds, not original numeric lexemes.",
+    "Mobile Auth/iOS/phone/cascade deferrals are unchanged."
+  ],
+  "next": "API-12 protected GET/PATCH, coordinated error fields/codes and generated endpoint types; deliberate hosted upgrade separately through existing guarded workflow"
+}

@@ -16,6 +16,7 @@
 
 ## Resume here
 
+- **API-11 handoff (2026-11-02):** Settings data contract/models and local migration now exist; see Plan 03's API-11 notes for exact changes/tests. Settings HTTP endpoints/generated types remain API-12, so RN-09i/j are not started yet. Next backend step is API-12; RN-08a remains independent. Current totals are 46 top-level parts / 20 implemented producers / 26 pending. This changes no frontend/Auth/native behavior or previous phone/deletion deferrals; earlier planning checkpoints below remain historical.
 - **Planning update (2026-11-02):** Branch `task/plans/rn-08-09-expansion` adds planned RN-08a–d and RN-09i–l inside the existing parts; no implementation started. API-11/12 in Plan 03 are their settings dependencies. Next: API-11 independently or RN-08a with build/device access. Anisha's Auth/onboarding/iOS and unanswered product behavior remain out of scope. Read the latest planning entry at the end; full RN-08/09 acceptance is still open. Current totals are 46 top-level parts / 19 implemented producers / 27 pending.
 - Latest RN-07 wiring: branch `task/react-native/rn-07-profile-wiring`, parent `f201d0c`, subject `feat(mobile): wire revisioned profile editing through account scopes`. Consumer/Settings/API decoder tests pass; full acceptance remains open. Read the latest entry at the end of this file before resuming; the RN-10c bullets below describe earlier physical UI evidence.
 - Current checks: `npm run check` passes 273 portable / 384 component / 473 API tests, types, lint, assets and contract checks; `npm run api:db:up` then `npm run api:db:test` passes 104 PostgreSQL checks. `npm run mobile:export` passes 38-file QA isolation and 71 original assets. Native profile QA compiled/loaded on Pixel 8 Pro / Android 16, but credentials expired before a profile round trip. User deferred authenticated phone testing and hosted C deletion. No managed profile or Auth mutation occurred; no release/signed/iOS/screen-reader acceptance is claimed.
@@ -2222,7 +2223,7 @@ Use the following structure for future commits, including corrective commits.
 ### Planning expansion — RN-08/RN-09 and bounded backend dependencies
 
 **Commit message:** `docs: expand RN-08 and RN-09 execution steps`.
-**Hash:** Pending; resolve by the unique subject until the next normal update.
+**Hash:** `d590858` (recorded during the API-11 handoff update).
 **Date:** 2026-11-02. **Owner:** Ishmum. **Branch:** `task/plans/rn-08-09-expansion`.
 **Parent:** `f32e87c`. **Status:** Planning complete; all new execution parts planned/not started.
 

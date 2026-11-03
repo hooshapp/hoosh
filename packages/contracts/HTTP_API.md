@@ -1,4 +1,4 @@
-# Identity and profile HTTP contract
+# Identity, profile and settings data contracts
 
 **Status:** Adopted for M1/M2 on 2026-10-28 at Ishmum's direction. These endpoints
 now have implemented `/healthz`, identity GET and profile GET/PATCH (API-01–09). Ishmum owns the
@@ -184,3 +184,146 @@ is accepted locally; real managed-user/mobile integration remains API-10 joint w
 The applied int32 revision storage never wraps: an exhausted revision returns
 409 with that own current revision and needs a reviewed forward schema change,
 not automatic replay. Larger positive expectations return ordinary own conflicts.
+
+## Settings data contract — API-11; endpoints reserved for API-12
+
+**2026-11-02:** Strict Python data models and the `user_settings` storage migration
+exist. **GET/PATCH `/v1/settings` are not registered yet** and are not in the
+published OpenAPI/TypeScript endpoint exports. The following is the adopted
+storage/consumer handoff for API-12, not a claim that a settings HTTP call succeeds.
+Synthetic cases live in [settings-v1.json](fixtures/settings-v1.json).
+
+One resource belongs to the verified Auth UUID and has its **own** revision. It
+is independent of the profile and of any installed native revision. It stores
+activity preferences and draft intentions only; saving it does not activate
+restrictions, allocate sessions, change quests/rewards, or complete onboarding.
+
+### Resource and section shapes
+
+Reserved GET returns `{"settings":null}` for an absent row. An existing/saved
+resource has all of `user_id`, `revision`, `activities`, `plan_draft`, `created_at`
+and `updated_at`. Revision is 1–2147483647; timestamps are server-owned UTC RFC3339
+with `Z`. Saved-response `settings` is nonnullable. No owner is accepted in PATCH.
+
+`activities` always has both fields:
+
+```json
+{"selected_activity_ids":["reading","gym"],"custom_text":"Read a chapter"}
+```
+
+| Stable ID | Existing UI label / legacy specimen ID |
+|---|---|
+| `gym` | Gym |
+| `reading` | Reading |
+| `arts_and_crafts` | Arts and crafts |
+| `walking` | Walking |
+| `music` | Music |
+| `cooking` | Cooking |
+
+These IDs map the existing preference editor/assets. They are not default selected
+values or a recommendation ranking. Preserve selected order, allow empty selection,
+reject duplicate/unknown/case-changed IDs; maximum six entries. Mobile maps label
+IDs to these keys instead of sending a translated label as storage identity. Custom
+selection maps to raw `custom_text`; deselected Custom maps to explicit null even
+if its volatile input still contains text. No SDK/onboarding storage is rewritten
+by adopting this mapping; Anisha consumes it during later integration.
+
+Custom text is strict string or null. Reject NUL/unpaired surrogates, apply Python
+3.12 `str.strip()` once, then require 1–200 Unicode code points. No NFC, case or JS
+trim normalization. Blank text is an error, not a clear. Null clears. A custom
+activity may exist without a predefined selection. These are storage bounds.
+
+`plan_draft` is null or an object with all five fields:
+
+```json
+{
+  "weekdays":[0,2,6],
+  "hours":{"start_local":"22:30","end_local":null,"next_day":true},
+  "timezone_id":"America/New_York",
+  "session_count":2,
+  "session_minutes":null
+}
+```
+
+- Weekdays: strict integer list, Monday=0 through Sunday=6, maximum seven, no
+  duplicates; canonical output sorts ascending. Empty is a valid draft.
+- Hours: null or a strict object requiring `start_local`, `end_local`, `next_day`.
+  Each time is null or an ASCII `HH:mm` 24-hour string; next_day is a strict boolean.
+  Partially entered times are valid. When both times exist, next_day=false requires
+  end>start and next_day=true requires end<start; equal times are rejected. This
+  matches the existing editor's representation, not a 24-hour enforcement rule.
+- Timezone: null or a known available IANA identifier/alias, 1–128 ASCII letters,
+  digits, `_`, `+`, `/`, `-`. Preserve spelling; reject unknown/path/host-local
+  keys. The locked `tzdata` package supplies names when system data is absent;
+  `localtime`, `posixrules` and posix/right trees are not accepted. No automatic
+  travel conversion, timezone default, DST execution or reset behavior is defined.
+- Session count: null or strict integer 1–1000. Session minutes: null or strict
+  integer 1–1440. They are independent nullable inputs with engineering storage
+  ceilings, not approved allowances, per-app/global scope or a consumption rule.
+- Incomplete drafts are valid. No field is populated from Figma example values.
+  Nested section fields remain explicit/required even when their values are null.
+  Reject unknown fields such as `active`, `installed_revision`, app inventories,
+  selection tokens, credits and onboarding-completion state.
+
+### Reserved write and conflict semantics
+
+PATCH requires a strict object with `expected_revision` (integer 0–2147483646,
+no boolean/float/string coercion) and at least one of activities/plan_draft:
+
+```json
+{"expected_revision":0,"activities":{"selected_activity_ids":[],"custom_text":null}}
+```
+
+| Input | Meaning |
+|---|---|
+| Section omitted | Preserve the current section; never infer clear from a default Python None |
+| `activities:null` | Reset to `{"selected_activity_ids":[],"custom_text":null}` |
+| `plan_draft:null` | Remove the draft (SQL NULL), retaining the settings row |
+| Section object | Replace that complete section; no recursive arbitrary JSON merge |
+| Both omitted | Reject as required-section validation failure |
+
+Use `model_fields_set` / `exclude_unset=True`; `exclude_none=True` would erase
+clear intent. On explicit first create, omitted sections use empty activities/null
+draft. GET never inserts. Revision 0 creates only when absent; a positive expected
+revision updates only an existing match. Each accepted write, including an equal
+value, increments once. The upper expected-revision bound leaves room for that
+increment. Preserve omitted sections atomically in the same CAS, not a read/merge
+race. Share the settings revision between activity and schedule editors so stale
+cross-section edits receive a conflict rather than silently overriding data.
+
+API-12 must enforce the existing 16 KiB raw JSON-body bound, strict JSON/media-type
+rules and private transport protections. Planned errors reuse safe 401/403/413/
+422/503 handling; 409 adds **SETTINGS_CONFLICT** with own `current_revision` (0 when
+absent), retryable=false. A deleted Auth owner cannot be recreated by a settings
+write. No automatic write replay after conflict, timeout or possible commit.
+
+Before exposing routes, API-12 must extend the backend envelope and mobile decoder
+whitelists together. Validation details use only fixed fields: `body`,
+`expected_revision`, `activities`, `activities.selected_activity_ids`,
+`activities.custom_text`, `plan_draft`, `plan_draft.weekdays`, `plan_draft.hours`,
+`plan_draft.hours.start_local`, `plan_draft.hours.end_local`,
+`plan_draft.hours.next_day`, `plan_draft.timezone_id`, `plan_draft.session_count`,
+`plan_draft.session_minutes`. Collapse list indices/unknown keys to these paths;
+never echo input/key names. In addition to existing issue codes, settings needs
+`duplicate`, `invalid_choice`, `invalid_time`, `invalid_range`, `invalid_timezone`.
+Those HTTP error changes are reserved for API-12, not silently added to current
+profile responses or generated types by API-11.
+
+### Storage boundary
+
+One `public.user_settings` table holds the owner UUID, nonnull activities JSONB,
+nullable plan_draft JSONB, integer revision and timestamps. The owner FK points
+directly to managed Auth, not to profiles; either resource may exist independently.
+Canonical empty activities is a DB default; clearing a draft is SQL NULL, not a
+JSON scalar null. RLS/default deny, owner checks, explicit runtime SELECT/INSERT/
+UPDATE only, no public/Data API grants, and server timestamp triggers mirror the
+existing product boundary. No native/app/session/reward table is introduced.
+
+Database constraints check exact keys, JSON types, bounded/unique selected IDs and
+weekdays, canonical custom text, entered clock relationships, timezone shape and
+numeric ceilings. Python additionally validates actual timezone catalog membership
+and canonicalizes weekday order. JSONB preserves semantic numbers, not the original
+JSON number spelling; strict integer token validation belongs to Python before
+storage. The unchanged profile history precedes revision `20261102_0002`. Local
+migration/security/cascade evidence is separate from a managed Auth deletion test;
+no hosted upgrade or account operation is implied by this contract commit.

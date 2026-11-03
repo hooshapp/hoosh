@@ -7,6 +7,7 @@ import psycopg
 import pytest
 from dotenv import dotenv_values
 
+from app.db.migrations import HEAD
 from tests.support import database
 
 pytestmark = pytest.mark.database
@@ -31,9 +32,7 @@ def test_real_fixture_identity_major_marker_and_minimal_auth(test_environment):
             "WHERE table_schema='auth' AND table_name='users'"
         ).fetchall() == [("id",)]
         assert admin.execute("SELECT count(*) FROM auth.users").fetchone() == (0,)
-        assert admin.execute("SELECT version_num FROM public.alembic_version").fetchone() == (
-            "20261102_0001",
-        )
+        assert admin.execute("SELECT version_num FROM public.alembic_version").fetchone() == (HEAD,)
 
 
 def test_bootstrap_is_repeatable_and_runtime_can_only_connect(test_environment):

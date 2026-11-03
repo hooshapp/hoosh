@@ -75,6 +75,22 @@ roles, so **each future table/function migration must revoke unintended ambient
 grants, then add its own reviewed access policy**. New objects are private before
 the transaction commits; retaining defaults is not a claim they are globally safe.
 
+## Settings revision `20261102_0002` — API-11
+
+Adds only `public.user_settings` and its own server-clock function/trigger, after
+the unchanged profile revision. One row per Auth UUID stores bounded activities
+and a nullable non-enforcing plan draft as JSONB, with an independent revision.
+Explicit grants/default deny, three owner policies and forced RLS mirror profiles.
+The migration imports no application models and changes no managed Auth objects,
+shared default privileges or profile schema. A shared external FK reference stays
+outside the owned ORM metadata.
+
+`check` now compares both owned tables and verifies settings constraint definitions,
+policies, clocks and grants. Tests cover a profile-head upgrade preserving profile
+data and disposable downgrade of only settings, plus base/head replay. Downgrade
+is still exposed only for the guarded disposable target. The API-11 implementation
+ran these checks locally; it did not upgrade hosted development or publish routes.
+
 ## Recovery and evidence
 
 Review offline SQL and actual target/history before applying. The initial hosted

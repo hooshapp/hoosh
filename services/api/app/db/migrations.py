@@ -1,6 +1,7 @@
 """Explicit product migration tooling; no environment reads or runtime URL fallback."""
 
 import re
+from hashlib import sha256
 from io import StringIO
 from pathlib import Path
 
@@ -12,7 +13,7 @@ from alembic import command
 from app.models.profile import STRIP_CHARACTERS
 
 API_ROOT = Path(__file__).resolve().parents[2]
-HEAD = "20261102_0001"
+HEAD = "20261102_0002"
 LOCK_ID = 7529304120701
 
 
@@ -141,7 +142,7 @@ def verify(connection: Connection) -> dict:
     ).all()
     if set(privileges) != {("SELECT", False), ("INSERT", False), ("UPDATE", False)}:
         raise MigrationSafetyError("Runtime product privileges differ from SELECT/INSERT/UPDATE")
-    for table in ("public.profiles", "public.alembic_version"):
+    for table in ("public.profiles", "public.user_settings", "public.alembic_version"):
         if (
             connection.scalar(
                 text(
@@ -156,7 +157,7 @@ def verify(connection: Connection) -> dict:
             text(
                 "SELECT count(*) FROM pg_class c, LATERAL aclexplode(c.relacl) a "
                 "WHERE c.oid=to_regclass(:table) AND a.grantee<>c.relowner "
-                "AND NOT (:table='public.profiles' AND a.grantee="
+                "AND NOT (:table IN ('public.profiles','public.user_settings') AND a.grantee="
                 "(SELECT oid FROM pg_roles WHERE rolname='disconnect_api'))"
             ),
             {"table": table},
@@ -172,16 +173,125 @@ def verify(connection: Connection) -> dict:
             {"table": table},
         ):
             raise MigrationSafetyError("Unexpected column-level grants remain")
+    _verify_policies_and_clock(connection, "profiles", "profiles")
+    _verify_settings(connection)
+    for role_name in ("anon", "authenticated", "service_role"):
+        for table in ("public.profiles", "public.user_settings"):
+            for privilege in (
+                "SELECT",
+                "INSERT",
+                "UPDATE",
+                "DELETE",
+                "TRUNCATE",
+                "REFERENCES",
+                "TRIGGER",
+            ):
+                if connection.scalar(
+                    text("SELECT has_table_privilege(:role,:table,:privilege)"),
+                    {"role": role_name, "table": table, "privilege": privilege},
+                ):
+                    raise MigrationSafetyError("A Data API role has product-table privileges")
+    revision = (
+        connection.execute(text("SELECT version_num FROM public.alembic_version")).scalars().all()
+    )
+    if revision != [HEAD]:
+        raise MigrationSafetyError("Expected exactly the single reviewed Alembic head")
+    return {
+        "revision": HEAD,
+        "owner": row[0],
+        "rls": True,
+        "forceRls": True,
+        "runtimePrivileges": ["SELECT", "INSERT", "UPDATE"],
+        "mobileOrPublicCrud": False,
+    }
+
+
+# PG17 deparsed check definitions are pinned after review against the frozen migration
+# and model. Exact fingerprints detect weakened expressions, not merely renamed checks.
+SETTINGS_CHECK_FINGERPRINTS = {
+    "ck_user_settings_activities_shape": (
+        "ea191c017fb920c89e73fe6e014e5d9e" + "869018455ab442f322b5aa8e9e8a9c9e"
+    ),
+    "ck_user_settings_activity_ids_valid": (
+        "74dd5a7c465be3a0597f73157627a06b" + "4f35bc5c41ee955cb3e13a45914d648e"
+    ),
+    "ck_user_settings_custom_text_valid": (
+        "506c293b1a2b23927e17a474efab9c16" + "3afc13547ed2b75cfdab5490d6cdff34"
+    ),
+    "ck_user_settings_hours_valid": (
+        "7db1dc90a81bce6e1b305f83b9d069bd" + "48f458f8b570150d81029a34383d735a"
+    ),
+    "ck_user_settings_plan_draft_shape": (
+        "6d29b2f4f3baefc973d8deeb5d4e767e" + "dae3a50ac1ce2cec210b3b64550438f0"
+    ),
+    "ck_user_settings_revision_positive": (
+        "734367bcd98f308d31796dc121a196c4" + "4de1e0adfb565fc8f724bc6f078ca6ea"
+    ),
+    "ck_user_settings_session_count_valid": (
+        "4e3777c2724b51ea43e6fc0d6993c3e6" + "4bc4745627d23494f47c0230c937fe80"
+    ),
+    "ck_user_settings_session_minutes_valid": (
+        "cb0497fdaadaba646acace31fe6c902e" + "4d5796eeca1a29f5ebe7118b918a0dd1"
+    ),
+    "ck_user_settings_timezone_bounded": (
+        "e6dd79603600fc46c9bef0586a22d4b0" + "1240572543eef47589186c478ff08c8c"
+    ),
+    "ck_user_settings_weekdays_valid": (
+        "5c1a6e5e033f65bd8908ee7961d7253d" + "464be9cc5fd099a78bea310025077aa5"
+    ),
+    "fk_user_settings_user_id_users": (
+        "7dffc1fe5c72443147ef9227e966626c" + "dc6e5997f36e90bcc553577512766d2a"
+    ),
+    "pk_user_settings": ("44756d887704fc88d8d0adc5c0c43110" + "3c555b4f8e6a4ddef6f7a7f6b4110606"),
+}
+
+
+def _verify_settings(connection: Connection) -> None:
+    row = connection.execute(
+        text(
+            "SELECT pg_get_userbyid(c.relowner), c.relrowsecurity, c.relforcerowsecurity "
+            "FROM pg_class c WHERE c.oid=to_regclass('public.user_settings')"
+        )
+    ).one_or_none()
+    if row != ("postgres", True, True):
+        raise MigrationSafetyError("Settings ownership/RLS differs from the reviewed schema")
+    constraints = connection.execute(
+        text(
+            "SELECT conname,pg_get_constraintdef(oid),convalidated FROM pg_constraint "
+            "WHERE conrelid='public.user_settings'::regclass"
+        )
+    ).all()
+    observed = {
+        name: sha256(definition.encode()).hexdigest()
+        for name, definition, validated in constraints
+        if validated
+    }
+    if observed != SETTINGS_CHECK_FINGERPRINTS or len(constraints) != len(observed):
+        raise MigrationSafetyError("Settings constraints differ from the reviewed schema")
+    privileges = connection.execute(
+        text(
+            "SELECT a.privilege_type,a.is_grantable FROM pg_class c, "
+            "LATERAL aclexplode(c.relacl) a WHERE c.oid='public.user_settings'::regclass "
+            "AND a.grantee=(SELECT oid FROM pg_roles WHERE rolname='disconnect_api')"
+        )
+    ).all()
+    if set(privileges) != {("SELECT", False), ("INSERT", False), ("UPDATE", False)}:
+        raise MigrationSafetyError("Settings privileges differ from SELECT/INSERT/UPDATE")
+    _verify_policies_and_clock(connection, "user_settings", "settings")
+
+
+def _verify_policies_and_clock(connection: Connection, table: str, prefix: str) -> None:
     policies = connection.execute(
         text(
             "SELECT policyname, cmd, roles, qual, with_check FROM pg_policies "
-            "WHERE schemaname='public' AND tablename='profiles' ORDER BY policyname"
-        )
+            "WHERE schemaname='public' AND tablename=:table ORDER BY policyname"
+        ),
+        {"table": table},
     ).all()
     expected = {
-        "profiles_select_own": "SELECT",
-        "profiles_insert_own": "INSERT",
-        "profiles_update_own": "UPDATE",
+        prefix + "_select_own": "SELECT",
+        prefix + "_insert_own": "INSERT",
+        prefix + "_update_own": "UPDATE",
     }
     if len(policies) != 3 or any(
         expected.get(name) != cmd
@@ -196,60 +306,42 @@ def verify(connection: Connection) -> dict:
         for expression in (qual, check):
             if expression and re.sub(r"\s+", "", expression) != re.sub(r"\s+", "", predicate):
                 raise MigrationSafetyError("A row policy predicate changed")
-    trigger = connection.execute(
+    triggers = connection.execute(
         text(
-            "SELECT t.tgname, t.tgtype, t.tgenabled, p.prosecdef, p.proconfig, p.prosrc "
+            "SELECT t.tgname, t.tgtype, t.tgenabled, p.prosecdef, p.proconfig, p.prosrc, "
+            "p.oid=to_regprocedure(:function), pg_get_userbyid(p.proowner) "
             "FROM pg_trigger t JOIN pg_proc p ON p.oid=t.tgfoid "
-            "WHERE t.tgrelid='public.profiles'::regclass AND NOT t.tgisinternal"
-        )
-    ).one_or_none()
+            "WHERE t.tgrelid=to_regclass(:relation) AND NOT t.tgisinternal"
+        ),
+        {
+            "relation": "public." + table,
+            "function": "public.disconnect_" + prefix + "_server_times()",
+        },
+    ).all()
+    if len(triggers) != 1:
+        raise MigrationSafetyError("Expected exactly one reviewed server timestamp trigger")
+    trigger = triggers[0]
     body = (
         "BEGIN IF TG_OP = 'UPDATE' THEN NEW.created_at := OLD.created_at; ELSE "
         "NEW.created_at := pg_catalog.statement_timestamp(); END IF; "
         "NEW.updated_at := pg_catalog.statement_timestamp(); RETURN NEW; END"
     )
     if (
-        not trigger
-        or trigger[:5] != ("profiles_server_times", 23, "O", False, ["search_path=pg_catalog"])
+        trigger[:5] != (prefix + "_server_times", 23, "O", False, ["search_path=pg_catalog"])
         or " ".join(trigger[5].split()) != body
+        or not trigger[6]
+        or trigger[7] != "postgres"
     ):
         raise MigrationSafetyError("Server timestamp trigger differs from the reviewed function")
     if connection.scalar(
         text(
             "SELECT count(*) FROM pg_proc p, LATERAL aclexplode(p.proacl) a "
-            "WHERE p.oid='public.disconnect_profiles_server_times()'::regprocedure "
+            "WHERE p.oid=to_regprocedure(:function) "
             "AND a.grantee<>p.proowner"
-        )
+        ),
+        {"function": "public.disconnect_" + prefix + "_server_times()"},
     ):
         raise MigrationSafetyError("Timestamp function has unintended execute grants")
-    for role_name in ("anon", "authenticated", "service_role"):
-        for privilege in (
-            "SELECT",
-            "INSERT",
-            "UPDATE",
-            "DELETE",
-            "TRUNCATE",
-            "REFERENCES",
-            "TRIGGER",
-        ):
-            if connection.scalar(
-                text("SELECT has_table_privilege(:role,'public.profiles',:privilege)"),
-                {"role": role_name, "privilege": privilege},
-            ):
-                raise MigrationSafetyError("A Data API role has product-table privileges")
-    revision = (
-        connection.execute(text("SELECT version_num FROM public.alembic_version")).scalars().all()
-    )
-    if revision != [HEAD]:
-        raise MigrationSafetyError("Expected exactly the single reviewed Alembic head")
-    return {
-        "revision": HEAD,
-        "owner": row[0],
-        "rls": True,
-        "forceRls": True,
-        "runtimePrivileges": ["SELECT", "INSERT", "UPDATE"],
-        "mobileOrPublicCrud": False,
-    }
 
 
 def run(connection: Connection, action: str = "upgrade") -> dict:

@@ -127,7 +127,7 @@ capability tests remain separate; a web export does not establish native behavio
 - **`TSD.md`** — architecture, native boundaries, Swift/Android requirements, TypeScript interfaces, FastAPI endpoints, Pydantic/SQL examples, event sync, security, database, tests, infra, agent work packages.
 - **`OPEN_DECISIONS.yaml`** — machine-readable unresolved founder choices, intentionally unapproved.
 - **[`PM_QUESTIONS.md`](PM_QUESTIONS.md)** — 22 PM questions with stable IDs and space to append dated answers, clarifications, and agreed decisions.
-- **[`core_plan/README.md`](../core_plan/README.md)** — execution order and index for five detailed foundation plans, with 46 top-level parts (the original 44 plus planned API-11/12; Plan 00 committed as `0b50900`, RN-01–04, API-01–09 and SB-04–05 producers implemented with evidence, 27 parts awaiting implementation/acceptance, including RN-05 consumer, RN-07 revisioned profile consumer, RN-08 native presentation preparation, RN-09a–h UI with live integration pending and RN-10 shared hardening; RN-04 real root wiring pending), cross-plan dependencies, implementation/commit ledgers, and explicit PM/native gates.
+- **[`core_plan/README.md`](../core_plan/README.md)** — execution order and index for five detailed foundation plans, with 46 top-level parts (the original 44 plus API-11/12; Plan 00 committed as `0b50900`, RN-01–04, API-01–09, API-11 and SB-04–05 producers implemented with evidence, 26 parts awaiting implementation/acceptance, including RN-05 consumer, RN-07 revisioned profile consumer, RN-08 native presentation preparation, RN-09a–h UI with live integration pending and RN-10 shared hardening; RN-04 real root wiring pending), cross-plan dependencies, implementation/commit ledgers, and explicit PM/native gates.
 
 **Source of truth:** This is a context-rich implementation baseline. A full repo audit and explicit product policy answers may require updates before coding core session/reward rules. The documents must be revised whenever founder decisions, platform behavior, or existing code evidence contradicts assumptions.
 
@@ -241,3 +241,13 @@ build/device access exists. Anisha's Auth/onboarding/iOS and all unanswered prod
 rules remain outside this slice. No installed rules, rewards, usage metrics or
 onboarding completion follow from a saved draft. Read both plans' latest planning
 entries in the existing implementation notes before starting code.
+
+
+API-11 checkpoint (2026-11-02): settings data models/consumer fixtures and the local
+`user_settings` migration/security boundary are implemented. Repository head is
+`20261102_0002`; original profile migration/schema unchanged. No hosted upgrade or
+settings route was performed/published. API-12 now implements protected GET/PATCH,
+safe settings errors and generated types before RN-09i/j can wire real settings.
+Checks: 526 deterministic API / 173 PostgreSQL plus full workspace pass. Current
+producer counts are 20 implemented / 26 pending across 46 parts. Read Plan 03 notes.
+Anisha's ownership, PM questions and authenticated-phone/C-deletion deferrals remain.

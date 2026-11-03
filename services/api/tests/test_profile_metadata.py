@@ -9,8 +9,8 @@ from app.models import Profile
 from app.models.profile import STRIP_CHARACTERS
 
 
-def test_only_minimal_owned_profile_and_external_auth_reference_are_registered():
-    assert set(Base.metadata.tables) == {"public.profiles"}
+def test_profile_shape_and_external_auth_reference_remain_unchanged():
+    assert set(Base.metadata.tables) == {"public.profiles", "public.user_settings"}
     assert set(Profile.__table__.columns.keys()) == {
         "user_id",
         "display_name",

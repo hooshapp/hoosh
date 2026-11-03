@@ -1,31 +1,12 @@
 import psycopg
 import pytest
-from sqlalchemy import create_engine, text
-from sqlalchemy.pool import NullPool
+from sqlalchemy import text
 
 from alembic import command
-from app.core.database_config import migration_database_url
 from app.db.migrations import HEAD, MigrationSafetyError, config, run, verify
 from tests.support import database
 
 pytestmark = pytest.mark.database
-
-
-@pytest.fixture
-def migration_engine(db_environment):
-    target = migration_database_url(
-        db_environment["TEST_MIGRATION_DATABASE_URL"], app_env="test", project_origin=None
-    )
-    value = create_engine(
-        target,
-        poolclass=NullPool,
-        hide_parameters=True,
-        connect_args={"options": "-c search_path=pg_catalog -c lock_timeout=5000"},
-    )
-    try:
-        yield value
-    finally:
-        value.dispose()
 
 
 def test_actual_upgrade_head_repeat_noop_and_autogenerate_no_drift(migration_engine):

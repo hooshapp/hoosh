@@ -4,7 +4,7 @@
 psycopg 3, a two-connection QueuePool by default, zero overflow, pre-ping and
 rollback on return. There is no second driver pool, global Session, startup
 connection probe, automatic migration or `metadata.create_all`. `Base.metadata`
-registers only the owned minimal profile table and supplies stable constraint
+registers the owned profile and settings tables and supplies stable constraint
 names for the single Alembic history. SQLAlchemy 2.0.55 is the tested maintained 2.0 line; Alembic 1.20.1 is
 development/migration tooling only; API-07 now owns the configuration/history.
 
@@ -136,3 +136,26 @@ connection failure rather than guessing from a password-bearing message. Error
 mapping, rollback and mutation no-replay behavior are unchanged. Current checks:
 469 deterministic / 102 DB; managed identity/mobile gates remain separate in the
 [operator guide](../../OPERATIONS.md).
+
+## API-11 settings storage
+
+`UserSettings` adds one independent owner/revision resource with activities and
+an optional plan-draft JSONB document. See the [wire/data contract](../../../../packages/contracts/HTTP_API.md#settings-data-contract--api-11-endpoints-reserved-for-api-12).
+The models validate data only; no settings route, native install, session engine
+or onboarding completion is introduced. API-12 will expose scoped GET/PATCH.
+The external Auth FK reference is shared outside owned metadata; settings does
+not require a profile row. No mobile product-table grants or additional pool.
+
+The new head is `20261102_0002`. Migration verification covers both product tables,
+including exact PG17 constraint fingerprints and shared row-policy/server-clock
+checks. These fingerprints are tied to the frozen SQL predicates and tested by
+deliberately weakening constraints; they do not replace domain validation tests.
+Canonical custom text and structural/time/numeric bounds are checked in PostgreSQL.
+Python also validates timezone catalog membership and sorts weekdays. The locked
+tzdata dependency supports environments without system timezone data.
+
+API-11 was upgraded/checked only against the guarded local PostgreSQL fixture.
+Hosted development was not upgraded or inspected in this commit. A hosted target
+on the previous head must receive the deliberate guarded additive upgrade before
+new-head drift diagnostics/settings endpoints can be accepted. Existing private
+token inputs and the user-deferred hosted account-deletion check are unchanged.

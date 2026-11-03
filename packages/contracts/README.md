@@ -58,3 +58,13 @@ shapes are now consumed by API-09 revisioned PATCH. API-08 validates nullable GE
 successes; API-09 adds strict input and a nonnullable saved-profile response.
 Raw draft names have no misleading maxLength; the server canonicalizes once and
 bounds normalized code points independently of raw body bytes. Generated types do not replace runtime response/subject validation.
+
+## API-11 settings handoff (data/storage only)
+
+The [settings section](HTTP_API.md#settings-data-contract--api-11-endpoints-reserved-for-api-12)
+and synthetic [settings cases](fixtures/settings-v1.json) specify stable activity
+IDs, bounded nullable plan drafts, section replacement/clear semantics and their
+independent revision. Strict Python models and storage exist. API-12 publishes
+routes/generated endpoint types and coordinates new error whitelist entries; do
+not handwrite HTTP TypeScript DTOs or treat these fixtures as production defaults.
+Auth/onboarding/iOS ownership and unanswered product behavior are unchanged.

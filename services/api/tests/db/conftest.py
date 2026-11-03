@@ -5,10 +5,12 @@ from uuid import uuid4
 import pytest
 from fastapi.testclient import TestClient
 from psycopg import sql
-from sqlalchemy import Column, ForeignKey, MetaData, Table, Text
+from sqlalchemy import Column, ForeignKey, MetaData, Table, Text, create_engine
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.pool import NullPool
 
 from app.core.config import Settings
+from app.core.database_config import migration_database_url
 from app.core.identity import VerifiedIdentity
 from app.db.engine import Database
 from app.models import Profile
@@ -115,3 +117,20 @@ def profile_client(monkeypatch, db_settings):
     )
     with TestClient(app) as client:
         yield client, app.state.database, signer
+
+
+@pytest.fixture
+def migration_engine(db_environment):
+    target = migration_database_url(
+        db_environment["TEST_MIGRATION_DATABASE_URL"], app_env="test", project_origin=None
+    )
+    value = create_engine(
+        target,
+        poolclass=NullPool,
+        hide_parameters=True,
+        connect_args={"options": "-c search_path=pg_catalog -c lock_timeout=5000"},
+    )
+    try:
+        yield value
+    finally:
+        value.dispose()

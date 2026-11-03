@@ -1,6 +1,6 @@
 # Disconnect — Core Development Plans
 
-**Status:** Plan 00 is complete and validated (foundation commit `0b50900`, recorded in its ledger); Plan 04 RN-01–04 producers now supply shared UI/testing, authentic-asset navigation and bounded HTTP and account query/lifecycle producers with recorded evidence; real RN-04 Auth/root wiring, Anisha-owned Plan 01/Auth acceptance, Plan 02, full API-10 and RN-06/11 remain pending; API-10 operational diagnostics/tools and independent checks are implemented; RN-10 shared UI/lifecycle hardening exists with device/live acceptance pending; RN-09a–h main/detail/editor UI exists with live integration pending; RN-05 consumer, RN-07 revisioned profile consumer and RN-08 presentation/read-consumer preparation exist, with their real integration/acceptance pending. API-01–09 backend identity, contracts, scoped database units, profile migrations/RLS and isolated revisioned profile GET/PATCH are implemented; mobile Auth, database and native adapter integration remain pending.\
+**Status:** Plan 00 is complete and validated (foundation commit `0b50900`, recorded in its ledger); Plan 04 RN-01–04 producers now supply shared UI/testing, authentic-asset navigation and bounded HTTP and account query/lifecycle producers with recorded evidence; real RN-04 Auth/root wiring, Anisha-owned Plan 01/Auth acceptance, Plan 02, full API-10 and RN-06/11 remain pending; API-10 operational diagnostics/tools and independent checks are implemented; RN-10 shared UI/lifecycle hardening exists with device/live acceptance pending; RN-09a–h main/detail/editor UI exists with live integration pending; RN-05 consumer, RN-07 revisioned profile consumer and RN-08 presentation/read-consumer preparation exist, with their real integration/acceptance pending. API-01–09 backend identity/profile producers and API-11 settings contract/local storage are implemented; settings endpoints remain API-12 work; mobile Auth, database and native adapter integration remain pending.\
 **Baseline inspected:** `c7a8f73` — `Set up mobile and API foundation`.\
 **Reviewed:** 2026-11-02 (bounded planning expansion; implementation evidence remains recorded per part).\
 **Product answers:** [PM_QUESTIONS.md](<../Context (AGENT)/PM_QUESTIONS.md>); no PM question is answered by an engineering default in these plans.
@@ -9,10 +9,10 @@
 
 Read [Plan 00](00_shared_contracts.md) first, then your area plan and the specific part you are about to implement. Before coding, read the [implementation knowledge-base workflow](../core_plan_implementation_notes/README.md), create that plan's notes file if absent, and read any existing entries. Build on the scaffold; do not reinstall it, rewrite the tested Swift core, create every future table, or complete an entire area before integrating.
 
-There are now **46 top-level parts**: the original 44 plus planned API-11/12.
-The original part IDs and implementation history are preserved. **19 parts/producers
-are implemented and 27 await acceptance or implementation**; the two added parts
-are planned, not started. RN-08a–d and RN-09i–l are commit-sized subparts inside
+There are now **46 top-level parts**: the original 44 plus API-11/12.
+The original part IDs and implementation history are preserved. **20 parts/producers
+are implemented and 26 await acceptance or implementation**; API-11 is implemented
+for its local storage scope and API-12 remains planned. RN-08a–d and RN-09i–l are commit-sized subparts inside
 RN-08/09, not extra top-level parts. Real RN-04 root wiring and full parent-part
 acceptance remain pending. See each ledger for actual evidence and dependencies.
 
@@ -21,7 +21,7 @@ acceptance remain pending. See each ledger for actual evidence and dependencies.
 | [00 — Shared contracts](00_shared_contracts.md) | SC-01–04 (4) | Ishmum implemented at his direction; Anisha owns downstream Auth/iOS | Identity/API/auth lifecycle contracts, ownership, fixture and handoff rules |
 | [01 — Supabase Auth/database](01_supabase_foundation.md) | SB-01–06 (6) | Anisha: SB-01–03; Ishmum: SB-04/05; Anisha leads joint SB-06 | Development identity provider; later database roles/test environment |
 | [02 — Auth and onboarding](02_auth_onboarding.md) | AUTH-01–13 (13) | Anisha | Session/sign-in and guards; signup/recovery; gated onboarding |
-| [03 — Backend foundation](03_backend_foundation.md) | API-01–12 (12) | Ishmum | Identity/profile foundation; planned settings preferences and non-enforcing draft persistence |
+| [03 — Backend foundation](03_backend_foundation.md) | API-01–12 (12) | Ishmum | Identity/profile foundation and settings contract/storage; settings endpoints planned |
 | [04 — React Native integration](04_react_native_integration.md) | RN-01–11 (11) | Ishmum; Anisha owns auth/root guard wiring | Shared UI/tests, account lifecycle, identity/profile screens, truthful feature states |
 
 Plan numbers group ownership; **part dependencies determine execution order**. AUTH-07's basic guards/sign-out can precede callback/signup/recovery completion AUTH-04–06, allowing the first controlled existing-user round trip sooner.
@@ -63,7 +63,7 @@ These are dependency waves, not fixed dates or equal-workload requirements. Ishm
 | 3 — when producers are ready to wire | RN-05 identity surface → RN-06 joint M1 | Exercise sign-in/sign-out/recovery handshake; AUTH-04–06 can progress alongside this proof | Needs AUTH-01/02/03/07, SB-03, API-04/05; not all future Auth work |
 | 4 | SB-04/05 → API-06–09 → RN-07 profile | Finish AUTH-04–06, then AUTH-08; AUTH-09 consumes the profile/draft contract when agreed | SB-06 records M1/Auth evidence without blocking earlier producers. M2 uses real PostgreSQL and separate runtime/migration identities. |
 | 5 | RN-08/09 presentation, RN-10 accessibility, RN-11 profile/platform handoff; API-10 evidence | Native Auth acceptance with audited signed builds; conditional AUTH-10–13 only with prerequisites | Record missing device/source/product evidence. Never promote a web result to native release readiness. |
-| 6 — planned independent extension | RN-08a → b → c → d; independently API-11 → 12 → RN-09i → j; then RN-09k → l | Continue owned Auth/onboarding/iOS; later consume reviewed settings schema | No session/reward/History/enforcement defaults. Joint Auth/iOS acceptance stays open; these planned parts do not require finished Auth screens. |
+| 6 — bounded extension; API-11 producer implemented | RN-08a → b → c → d; independently API-11 → 12 → RN-09i → j; then RN-09k → l | Continue owned Auth/onboarding/iOS; later consume reviewed settings schema | No session/reward/History/enforcement defaults. Joint Auth/iOS acceptance stays open; these planned parts do not require finished Auth screens. |
 
 Database preparation and other independent RN/Android parts may proceed before the M1 join when their own prerequisites are met; this table does not require Ishmum to wait for completed Auth screens. Investigate Android feasibility early alongside these foundations as Ishmum's schedule allows. Native investigations do not depend on Supabase, and shared UI/backend work does not depend on finished native enforcement. Revise shared native assumptions before large implementation if the investigations reveal a gap.
 
@@ -123,7 +123,7 @@ After local M1, a small **development deployment plan** can provide one shared H
 
 Each plan includes goals, owners, commit scope, dependencies, acceptance, recovery and an implementation ledger. Use those ledgers for current implementation evidence; the newly added extension parts are planned only. Recheck linked technical guidance against the selected project versions during implementation.
 
-Documentation checks cover local links, stable part IDs, matching ledgers, dependency ordering, canonical contract names/paths, and scaffold boundaries. Plan 00 additionally checks its actual type-only package and consumer compile scenarios. RN-01–04 add the UI, asset/navigation, HTTP/query producers and test evidence recorded in their notes. The 27 remaining parts await implementation/acceptance, with RN-05 consumer, RN-07 consumer, RN-08 native presentation preparation, RN-09a/b/c/d Home/Quests/History/Settings presentation and RN-10 shared hardening distinguished from live acceptance and remaining live feature integration; no live Auth/cloud/database/device result is claimed from contract or UI primitive work.
+Documentation checks cover local links, stable part IDs, matching ledgers, dependency ordering, canonical contract names/paths, and scaffold boundaries. Plan 00 additionally checks its actual type-only package and consumer compile scenarios. RN-01–04 add the UI, asset/navigation, HTTP/query producers and test evidence recorded in their notes. The 26 remaining parts await implementation/acceptance, with RN-05 consumer, RN-07 consumer, RN-08 native presentation preparation, RN-09a/b/c/d Home/Quests/History/Settings presentation and RN-10 shared hardening distinguished from live acceptance and remaining live feature integration; no live Auth/cloud/database/device result is claimed from contract or UI primitive work.
 
 **Next work from the committed Plan 00 foundation:** Ishmum starts RN-01 (shared UI/test harness) and/or API-01 (testable API configuration/errors), with Android investigation independently. Anisha owns SB-01–03 (Supabase Auth/project setup) and AUTH-01/02 (mobile Auth). She can develop configuration/storage tests against injected settings before live setup is complete. Ishmum owns SB-04/05 when adding product database persistence. Wire M1/M2 when their producer outputs are ready; record actual integration evidence separately from module completion.
 
@@ -223,3 +223,12 @@ independent lanes; API-12 then unlocks RN-09i/j. Use one new settings document a
 revision, current SQL/query infrastructure and existing editors. Retain Anisha's
 Auth/onboarding/iOS ownership and every PM gate. Do not mark RN-08/09 fully accepted
 merely because this bounded extension is complete.
+
+
+API-11 producer checkpoint (2026-11-02): strict settings data contract, one owned
+settings table/migration and 526 deterministic / 173 actual DB checks pass; full
+workspace checks pass. No settings endpoint or hosted upgrade was published.
+**Next: API-12**, then RN-09i/j; RN-08a remains independent. Current totals are
+46 parts / 20 implemented producers / 26 pending, superseding earlier 19/27
+checkpoints. No Auth/onboarding/iOS, native activation or product-rule decision
+changed. See the latest Plan 03 implementation notes for exact files and checks.

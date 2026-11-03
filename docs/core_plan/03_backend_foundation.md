@@ -1,7 +1,7 @@
 # Plan 03 — FastAPI Identity and Profile Foundation
 
 **Status:** API-01–09 are implemented: strict trust/errors, JWT/JWKS, database-independent identity, generated contracts and bounded lazy PostgreSQL units of work. API-06 passed 337 deterministic tests, 24 real PostgreSQL checks and a read-only hosted runtime/TLS smoke check. API-07 added the model, single Alembic history and profile constraints/grants/RLS, with 344 deterministic and 66 real DB tests plus hosted upgrade/check. API-08 now adds nonmutating own-profile GET and generated shapes (374 deterministic / 75 real DB tests). API-09 now adds strict bounded PATCH, canonical validation, atomic insert/CAS and own conflicts (453 deterministic / 96 real DB checks). API-10 operational diagnostics/tooling and independent checks are now implemented; managed-account HTTP identity/profile/restart checks now pass; actual browser protocol now passes; authenticated application M1/M2 and cascade/native-device acceptance remain pending.\
-**Planned extension (2026-11-02):** API-11/12 below add one settings resource for alternative-activity preferences and non-enforcing plan drafts. Both are planned/not started; API-01–10 and their acceptance requirements are unchanged.
+**Settings extension (2026-11-02):** API-11 data models, fixtures, local storage migration and security checks are implemented. API-12 endpoints remain planned/not started. API-01–10 and their joint acceptance requirements are unchanged.
 **Owner:** Ishmum (backend/database). Anisha reviews Auth contracts and participates in live session checks.\
 **Area branch:** `area/backend`; task branches `task/backend/<part>`.\
 **Milestones:** M1 = verified identity without a database; M2 = minimal, isolated, revisioned profile persistence.
@@ -399,7 +399,7 @@ increment; do not mark API-10 accepted before its joint gates pass.\
 
 ### API-11 — Define bounded settings preferences and plan-draft storage
 
-**Status:** Planned, not started. **Owner:** Ishmum. **Dependencies:** API-06–09
+**Status:** Implemented and accepted for local contract/storage producer scope; hosted upgrade and settings endpoints are not included. **Owner:** Ishmum. **Dependencies:** API-06–09
 producers and the current contract/export pipeline. API-10's joint Auth/device/
 cascade acceptance remains open but does not block independent implementation.
 **Suggested commit:** `feat(settings): define revisioned settings draft storage`.
@@ -550,7 +550,7 @@ Auth can finish its session work without profiles. The main frontend must not cl
 | API-08 | Implemented producer; real signed-token GET/runtime-DB reads and failures accepted locally | `ca275af` | 374 deterministic / 75 real DB tests; generated GET schemas/types; managed tokens/mobile integration remain API-10 joint work |
 | API-09 | Implemented producer; local M2 backend read/write/concurrency/isolation accepted | `c563ff6` | 453 deterministic / 96 real DB tests; strict raw body/name/revision contract, two-connection races, rollback/deletion/replay; actual managed-user/mobile acceptance remains API-10 |
 | API-10 | Operational, managed A/B HTTP and actual browser protocol accepted; app/native/lifecycle acceptance pending | `188c5dd`, `138387f`; current follow-up resolves by `test(api): verify browser protocol and isolated startup modes` | 473 deterministic / 104 PostgreSQL checks; actual browser and separated startup modes, real managed A/B identity, profile writes/clear/conflict/isolation/refetch and actual API restart persistence pass. [Operator guide](../../services/api/OPERATIONS.md). Browser protocol now passes in Opera GX; authenticated Auth/RN-07/root/native and managed cascade gates still open; not full Plan 03 acceptance |
-| API-11 | Planned; not started | — | Bounded settings/draft contract and one migration; no active policy or Auth change |
+| API-11 | Implemented contract/local storage producer; no hosted upgrade/routes | Commit resolves by `feat(settings): define revisioned settings draft storage` | 526 deterministic / 173 PostgreSQL tests, full workspace and unchanged published contract checks; strict schemas/fixtures, head `20261102_0002`, isolation/security/drift and profile-preserving upgrade |
 | API-12 | Planned; not started | — | Scoped GET/PATCH, generated types, isolation/CAS and restart evidence before RN-09i/j wiring |
 
 ## 10. Sources and verification notes
@@ -733,3 +733,24 @@ phone testing after access-token expiry and separately deferred hosted cascade.
 [Coordinated C-account procedure](../qa/profile-cascade-acceptance.md) preserves
 A/B and distinguishes unexpired JWT behavior from Auth/session teardown. Full
 API-10/application M1/M2 remains open; see the Plan 04 wiring notes for this commit.
+
+
+### API-11 settings contract/storage checkpoint — 2026-11-02
+
+Implemented one settings document with independent revision, strict activity/plan
+draft schemas and synthetic consumer fixtures. Stable activity IDs map the six
+existing source choices; the contract defines omit/null/empty/partial semantics,
+Unicode, local-hour consistency, timezone membership and engineering bounds.
+The new migration follows the unchanged profile revision and enforces JSON shape,
+bounds, owner FK/cascade, forced RLS, private grants and server clocks. Verification
+checks both tables; actual guarded tests include constraint/policy/grant/trigger
+drift and settings-only downgrade/profile-head upgrade without profile data loss.
+
+`npm run check`: 526 deterministic API, 273 portable mobile and 384 component tests
+plus types/lint/assets/contracts passed. `npm run api:db:test`: 173 actual PostgreSQL
+checks passed. Frozen dependency sync passed; old profile migration, OpenAPI and
+generated HTTP types remain byte-identical. New data models do not register
+GET/PATCH /v1/settings; API-12 handles routes, safe error extensions and exports.
+Hosted development, Auth, native behavior, iOS and private inputs were untouched.
+Producer totals now 20 implemented / 26 pending across 46 top-level parts. Joint
+API-10/M1/M2 and prior authenticated-phone/C-deletion deferrals remain open.
