@@ -447,14 +447,14 @@ If a part grows beyond one reviewable behavior change, split it into suffixed pa
 
 #### RN-08 execution expansion — Android and shared integration (2026-11-02)
 
-**Status: planned; not implemented.** Keep RN-08 and RN08-D01–D06. The existing
+**Status: RN-08a probe/build baseline implemented; b–d in progress.** Keep RN-08 and RN08-D01–D06. The existing
 presentation commit is retained. These four commits cover Ishmum's independent
 Android/read-permission work; they do not finish native enforcement or iOS.
 Anisha continues to own Auth/onboarding, the root Auth guard and Swift integration.
 
 | Part / suggested commit | Work and dependencies | Done when / focused verification |
 |---|---|---|
-| **RN-08a** — `chore(android): add a bounded capability probe` | Inventory the current Expo/native setup, Android SDK/JDK/build access and actual device availability. Use the current mobile project and one local module for the smallest Android-only probe of usage-access state and bounded usage-event reads; retain that probe for b rather than creating another standalone app. Record observed API/device versions, missing/denied/revoked access, locked-device/empty-window behavior and package visibility. Keep identifiers/events local; record sanitized observations. No Supabase/Auth dependency. | Reproducible probe/build instructions and evidence distinguish available, denied, unsupported and untested behavior. No blocking/parity claim. Missing physical access is recorded, not replaced with mock success. Choose the implementation path for RN-08b from the evidence. |
+| **RN-08a** — `chore(android): add a bounded capability probe` **Implemented; initial device baseline observed** | Inventory the current Expo/native setup, Android SDK/JDK/build access and actual device availability. Use the current mobile project and one local module for the smallest Android-only probe of usage-access state and bounded usage-event reads; retain that probe for b rather than creating another standalone app. Record observed API/device versions, missing/denied/revoked access, locked-device/empty-window behavior and package visibility. Keep identifiers/events local; record sanitized observations. No Supabase/Auth dependency. | Reproducible probe/build instructions and evidence distinguish available, denied, unsupported and untested behavior. No blocking/parity claim. Missing physical access is recorded, not replaced with mock success. Choose the implementation path for RN-08b from the evidence. |
 | **RN-08b** — `feat(android): expose measured capabilities and usage access` | After RN-08a, extend that same small local Expo/Kotlin module and add its JS adapter using the installed toolchain. Expose truthful capabilities, authorization reads, an explicit usage-access settings action and fresh status. Reuse `ProtectionService`; operations outside this slice reject explicitly as unavailable. Keep usage access separate from permission to enforce restrictions. Package selection remains unavailable until the investigation establishes an appropriate visibility/selection approach. | Native build and JS contract checks pass; absent module, repeated permission taps, denied/revoked access, unavailable settings activity and malformed native values fail safely. A permission grant never fabricates an installed rule/revision or active protection. No write/timer/override/event-drain success stubs. |
 | **RN-08c** — `feat(protection-ui): connect Android status and foreground refresh` | After RN-08b, register the Android adapter and reuse the RN-08 mapper/read hook. Supply actual route visibility and AppState foreground inputs; refresh after an explicit permission action. Reuse operation-long busy/error controls. Preserve iOS/web fallback and Anisha's root ownership. | Focus/foreground/return-from-settings reads update the existing UI; listeners are cleaned up, stale reads cannot update an unmounted owner, and retry cannot silently request permission. No installed desired revision is inferred from backend draft saves. |
 | **RN-08d** — `test(android): verify permission and status lifecycle` | After RN-08c, run the development-build device matrix: grant, deny, revoke externally, background/foreground, cold start, disconnected API, absent native module and unsupported device/build. Check permission/status accessibility and responsive layout. Test notification/overlay/service behavior only if separately implemented and approved. | Record exact build/device, actions and results; distinguish Kotlin/module execution from Expo Go or JS-only tests. No native rules are installed by this slice. Remaining enforcement/iOS/assistive gaps stay open. |
@@ -998,3 +998,12 @@ User explicitly deferred refreshing tokens and hosted deletion. Accounts A/B wer
 not deleted or modified. Follow [device QA](../../apps/mobile/dev/profile/README.md)
 and [dedicated-account lifecycle acceptance](../qa/profile-cascade-acceptance.md)
 when resuming. Existing full RN-07/API-10/Plan 04 acceptance remains OPEN.
+
+
+RN-08a checkpoint (2026-11-03): one Android-only local Expo module and development
+host build/install on Pixel 8 Pro / Android 16. Actual Kotlin instrumentation
+observes initial denied access/null count, own-package visibility and unlocked
+state. Bounded count-only probe exports no package/event identifiers. Overlay/
+storage permissions removed, release signing unset, iOS unchanged. Continue b/d
+for grant/revocation/lock/empty-window evidence; no enforcement/parity claim. See
+[probe runbook](../qa/android-capability-probe.md) and implementation notes.

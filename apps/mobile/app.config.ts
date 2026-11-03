@@ -11,6 +11,15 @@ const config: ExpoConfig = {
   web: { output: 'static' },
   plugins: ['expo-router', 'expo-image', ['expo-splash-screen', { backgroundColor: '#FFF1DD' }]],
   experiments: { typedRoutes: true },
+  // Isolated Android development identity; production/store identity remains unassigned.
+  android: {
+    package: 'com.hoosh.disconnect.dev',
+    blockedPermissions: [
+      'android.permission.SYSTEM_ALERT_WINDOW',
+      'android.permission.READ_EXTERNAL_STORAGE',
+      'android.permission.WRITE_EXTERNAL_STORAGE',
+    ],
+  },
   // Production bundle/package IDs, App Groups, and entitlements belong to the
   // existing native app. Add them only after inspecting that source and signing.
 };

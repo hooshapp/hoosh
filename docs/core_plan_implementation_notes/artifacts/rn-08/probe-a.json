@@ -1,0 +1,36 @@
+{
+  "part": "RN-08a",
+  "date": "2026-11-03",
+  "device": {
+    "model": "Pixel 8 Pro",
+    "android": "16",
+    "api": 36
+  },
+  "host": {
+    "jdk": "Temurin 17.0.21+9",
+    "gradle": "9.4.1",
+    "compile_sdk": 37,
+    "target_sdk": 36,
+    "min_sdk": 24
+  },
+  "development_package": "com.hoosh.disconnect.dev",
+  "actual_probe": {
+    "apiLevel": 36,
+    "authorization": "denied",
+    "userUnlocked": true,
+    "deviceLocked": false,
+    "windowMinutes": 1,
+    "selfPackageVisible": true,
+    "eventLimit": 1000,
+    "state": "denied",
+    "eventCount": null,
+    "capped": false
+  },
+  "debug_apk_sha256": "97b6cb92fa45b99f0f576e5f3503784d31c57f2747ef1e78a7b4efe689dec58a",
+  "actual_apk_build": true,
+  "actual_instrumentation": true,
+  "ios_changed": false,
+  "overlay_storage_permissions": false,
+  "native_enforcement": false,
+  "grant_revocation_lock_empty_window": "continued in RN-08b/d"
+}

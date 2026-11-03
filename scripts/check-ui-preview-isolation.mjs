@@ -30,6 +30,7 @@ const forbiddenMarkers = [
   'RN10_NATIVE_LONG_ONLY',
   'RN07_DEVICE_QA_ONLY',
   'RN09L_HTTP_ACCEPTANCE_ONLY',
+  'RN08_ANDROID_PROBE_ONLY',
 ];
 
 async function exportedFiles(directory) {

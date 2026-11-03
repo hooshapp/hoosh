@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { UsageProbe } from './usage-probe';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -64,6 +65,7 @@ import {
 } from '../shared/ui-samples';
 
 const screens = [
+  'Android probe',
   'Home',
   'Quests',
   'Settings',
@@ -121,7 +123,7 @@ function QaHost() {
   const action = () => setNotice('UI intent only. Nothing saved, connected, earned or installed.');
   return (
     <View testID="RN10_NATIVE_QA_ONLY" style={styles.app}>
-      {page ? (
+      {page === 'Android probe' ? <UsageProbe /> : page ? (
         <QaScreen
           key={`${page}:${scenario}:${reset}`}
           page={page}
