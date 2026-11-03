@@ -127,7 +127,7 @@ capability tests remain separate; a web export does not establish native behavio
 - **`TSD.md`** — architecture, native boundaries, Swift/Android requirements, TypeScript interfaces, FastAPI endpoints, Pydantic/SQL examples, event sync, security, database, tests, infra, agent work packages.
 - **`OPEN_DECISIONS.yaml`** — machine-readable unresolved founder choices, intentionally unapproved.
 - **[`PM_QUESTIONS.md`](PM_QUESTIONS.md)** — 22 PM questions with stable IDs and space to append dated answers, clarifications, and agreed decisions.
-- **[`core_plan/README.md`](../core_plan/README.md)** — execution order and index for five detailed foundation plans, with 44 parts (Plan 00 committed as `0b50900`, RN-01–04, API-01–09 and SB-04–05 producers implemented with evidence, 25 parts awaiting acceptance, including RN-05 consumer, RN-07 revisioned profile consumer, RN-08 native presentation preparation, RN-09a–h UI with live integration pending and RN-10 shared hardening; RN-04 real root wiring pending), cross-plan dependencies, implementation/commit ledgers, and explicit PM/native gates.
+- **[`core_plan/README.md`](../core_plan/README.md)** — execution order and index for five detailed foundation plans, with 46 top-level parts (the original 44 plus planned API-11/12; Plan 00 committed as `0b50900`, RN-01–04, API-01–09 and SB-04–05 producers implemented with evidence, 27 parts awaiting implementation/acceptance, including RN-05 consumer, RN-07 revisioned profile consumer, RN-08 native presentation preparation, RN-09a–h UI with live integration pending and RN-10 shared hardening; RN-04 real root wiring pending), cross-plan dependencies, implementation/commit ledgers, and explicit PM/native gates.
 
 **Source of truth:** This is a context-rich implementation baseline. A full repo audit and explicit product policy answers may require updates before coding core session/reward rules. The documents must be revised whenever founder decisions, platform behavior, or existing code evidence contradicts assumptions.
 
@@ -228,3 +228,16 @@ then deferred. Hosted deletion was also deferred with a separate disposable C
 required. No A/B Auth user or profile was modified. Read Plan 04 notes,
 apps/mobile/dev/profile/README.md and docs/qa/profile-cascade-acceptance.md before
 resuming; these partial results do not complete RN-07/API-10/application M1/M2.
+
+
+Planning expansion checkpoint (2026-11-02): continue the existing plans rather
+than creating new plan files. Plan 03 adds planned API-11/12 for one revisioned
+settings resource (activity preferences plus non-enforcing plan drafts). Plan 04
+adds RN-08a–d (Android capability/permission/status) and RN-09i–l (settings consumers,
+Home composition and tests). Original IDs and historical evidence remain intact;
+current counts are 46 top-level parts, 19 implemented producers and 27 pending.
+These additions are planning only. Start API-11 independently or RN-08a when native
+build/device access exists. Anisha's Auth/onboarding/iOS and all unanswered product
+rules remain outside this slice. No installed rules, rewards, usage metrics or
+onboarding completion follow from a saved draft. Read both plans' latest planning
+entries in the existing implementation notes before starting code.

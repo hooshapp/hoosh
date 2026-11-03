@@ -191,11 +191,20 @@ RN-01/02/03 and the RN-04 producer are implemented with evidence linked below; R
 | RN-04 | `feat(mobile): isolate account server state and lifecycle` | RN-01/03, SC-03; AUTH-02 for real root integration | 42 new portable cases + 26 iOS/Android cases; two-account/draft/callback/retry/event cleanup; direct native compilation | Complete for producer scope; real root wiring pending | `610f570` (producer; real root wiring pending) |
 | RN-05 | `feat(account): connect verified API identity to settings` | RN-01/04; AUTH-01/02/03/07; SB-03; API-04/05 | Real sign-in → `/v1/me` account screen evidence | Consumer prepared/tested; real integration and acceptance pending | `0c6e4db` (preparation only) |
 | RN-06 | `test(mobile): cover authenticated round trip and recovery` | RN-05; auth guards/recovery integrated | M1 acceptance matrix, no development bypass, build evidence | Not started | — |
-| RN-07 | `feat(account): integrate versioned profile reads and edits` | RN-04/05; approved profile contract/API/migration | Real profile round trip, conflict and ambiguous-save handling | Revisioned consumer wired; real Auth/root/device acceptance pending | `5790302` (UI); wiring commit resolved by subject in notes |
-| RN-08 | `feat(protection-ui): show native capability and installation states` | RN-01; agreed native read boundary; actual adapters for integration | Status mapper tests; device evidence only where adapter exists | Presentation/read consumer prepared; native wiring/device acceptance pending | `71da2d5` (presentation/read preparation only) |
-| RN-09 | `feat(mobile): compose main app surfaces with explicit feature states` | RN-01/02; RN-07/08 where live data is used | Figma comparisons + no invented production data | RN-09a–h independent UI implemented; live integration pending | `ff75039`, `2bbebad`, `c1c84c3`; RN-09d resolved by its notes/unique commit subject |
+| RN-07 | `feat(account): integrate versioned profile reads and edits` | RN-04/05; approved profile contract/API/migration | Real profile round trip, conflict and ambiguous-save handling | Revisioned consumer wired; real Auth/root/device acceptance pending | `5790302` (UI); `f32e87c` (consumer wiring) |
+| RN-08 | `feat(protection-ui): show native capability and installation states` | RN-01; agreed native read boundary; actual adapters for integration | Status mapper tests; device evidence only where adapter exists | Presentation/read consumer prepared; RN-08a–d planned; remaining native/product gates open | `71da2d5` (presentation/read preparation only) |
+| RN-09 | `feat(mobile): compose main app surfaces with explicit feature states` | RN-01/02; RN-07/08 where live data is used | Figma comparisons + no invented production data | RN-09a–h UI implemented; RN-09i–l planned; remaining product/live gates open | `ff75039`, `2bbebad`, `c1c84c3`; RN-09d resolved by its notes/unique commit subject |
 | RN-10 | `fix(mobile): complete accessibility layout and lifecycle handling` | Implemented RN parts; relevant device build access | Accessibility/device-size checks and targeted regression tests | Shared hardening/icons and partial Pixel 8 Pro Expo Go QA implemented; remaining platform/live acceptance pending | RN-10 notes; RN-10a `ab7d855`, b `704bc49`, c by unique subject |
 | RN-11 | `test(integration): document profile and platform handoff acceptance` | RN-06/07/10; RN-08/09 evidence as applicable | M2 matrix, native capability handoff, reproducible runbook | Awaiting live Auth/API/profile prerequisites; not executed | — |
+
+**Planning expansion (2026-11-02):** The original RN-01–11, RN-09a–h and
+D-ref IDs are unchanged. RN-08a–d and RN-09i–l below are planned subparts, not
+completed work or additional top-level RN parts. API-11/12 are their bounded
+backend dependencies in the existing Plan 03. Start RN-08a independently, or
+API-11 → API-12 → RN-09i → RN-09j. RN-08c plus RN-09i/j feed RN-09k → RN-09l.
+Anisha's Auth/onboarding/iOS and unanswered product behavior remain outside this
+implementation slice. Full parent-part/RN-11 acceptance still requires the
+original live/native/product evidence.
 
 Independent UI work RN-01/02 may start while Supabase/Auth/backend are being built. RN-03 can use deterministic test responses once the HTTP contract is agreed. RN-04 can use injected test auth snapshots, but no production fixture mode. RN-05/06 are the first real identity milestone. RN-07 is a later profile milestone. RN-08 must not block M1 when no native adapter exists; only its pure presentation boundary can proceed without one. RN-09 is bounded presentation work, not completion of all app business logic.
 
@@ -435,6 +444,49 @@ If a part grows beyond one reviewable behavior change, split it into suffixed pa
 
 **Commit done when:** UI claims match supplied native evidence and degrade honestly. A pure presentation commit can be complete while native integration remains separately blocked; distinguish those statuses in evidence. **Recovery:** revert presentation/actions while leaving native installed policy intact; never clear restrictions as a UI rollback shortcut.
 
+#### RN-08 execution expansion — Android and shared integration (2026-11-02)
+
+**Status: planned; not implemented.** Keep RN-08 and RN08-D01–D06. The existing
+presentation commit is retained. These four commits cover Ishmum's independent
+Android/read-permission work; they do not finish native enforcement or iOS.
+Anisha continues to own Auth/onboarding, the root Auth guard and Swift integration.
+
+| Part / suggested commit | Work and dependencies | Done when / focused verification |
+|---|---|---|
+| **RN-08a** — `chore(android): add a bounded capability probe` | Inventory the current Expo/native setup, Android SDK/JDK/build access and actual device availability. Use the current mobile project and one local module for the smallest Android-only probe of usage-access state and bounded usage-event reads; retain that probe for b rather than creating another standalone app. Record observed API/device versions, missing/denied/revoked access, locked-device/empty-window behavior and package visibility. Keep identifiers/events local; record sanitized observations. No Supabase/Auth dependency. | Reproducible probe/build instructions and evidence distinguish available, denied, unsupported and untested behavior. No blocking/parity claim. Missing physical access is recorded, not replaced with mock success. Choose the implementation path for RN-08b from the evidence. |
+| **RN-08b** — `feat(android): expose measured capabilities and usage access` | After RN-08a, extend that same small local Expo/Kotlin module and add its JS adapter using the installed toolchain. Expose truthful capabilities, authorization reads, an explicit usage-access settings action and fresh status. Reuse `ProtectionService`; operations outside this slice reject explicitly as unavailable. Keep usage access separate from permission to enforce restrictions. Package selection remains unavailable until the investigation establishes an appropriate visibility/selection approach. | Native build and JS contract checks pass; absent module, repeated permission taps, denied/revoked access, unavailable settings activity and malformed native values fail safely. A permission grant never fabricates an installed rule/revision or active protection. No write/timer/override/event-drain success stubs. |
+| **RN-08c** — `feat(protection-ui): connect Android status and foreground refresh` | After RN-08b, register the Android adapter and reuse the RN-08 mapper/read hook. Supply actual route visibility and AppState foreground inputs; refresh after an explicit permission action. Reuse operation-long busy/error controls. Preserve iOS/web fallback and Anisha's root ownership. | Focus/foreground/return-from-settings reads update the existing UI; listeners are cleaned up, stale reads cannot update an unmounted owner, and retry cannot silently request permission. No installed desired revision is inferred from backend draft saves. |
+| **RN-08d** — `test(android): verify permission and status lifecycle` | After RN-08c, run the development-build device matrix: grant, deny, revoke externally, background/foreground, cold start, disconnected API, absent native module and unsupported device/build. Check permission/status accessibility and responsive layout. Test notification/overlay/service behavior only if separately implemented and approved. | Record exact build/device, actions and results; distinguish Kotlin/module execution from Expo Go or JS-only tests. No native rules are installed by this slice. Remaining enforcement/iOS/assistive gaps stay open. |
+
+**Implementation footprint:** `apps/mobile/modules/` for one Android local module,
+the Android host/config needed to load it, `src/infrastructure/native/` for the
+adapter, and existing `src/features/protection/` consumers/tests. Choose exact
+paths in RN-08a after inspecting the current toolchain. Use an Android development
+build for new native code; Expo Go alone cannot prove that module runs. Do not run
+an unrestricted `prebuild --clean` over the imported iOS tree. Any required native
+generation is Android-only, reviewed in Git, with original iOS files intact.
+See the official [local module guide](https://docs.expo.dev/modules/get-started/)
+and [development build guide](https://docs.expo.dev/develop/development-builds/introduction/).
+
+**Narrow Android investigation:** Start with the documented
+[UsageStatsManager](https://developer.android.com/reference/android/app/usage/UsageStatsManager)
+API and [package visibility rules](https://developer.android.com/training/package-visibility).
+Check current platform/store requirements before choosing an intervention. Do not
+add AccessibilityService, overlay permissions, a foreground service or broad
+package access merely to populate a UI capability. Accessibility use requires its
+own [Play policy assessment](https://support.google.com/googleplay/android-developer/answer/10964491).
+These sources were checked on 2026-11-02; they do not prove feasibility on our
+actual build or authorize user-visible enforcement behavior.
+
+**Original deferral mapping:** RN08-D01 is addressed for Android by a/b; iOS stays
+with Anisha. D02 maps to c/d; the installed desired revision still needs actual
+policy installation. D03 maps to b/c for observed permission/recovery flows only;
+app selection/setup/install actions remain gated where unsupported. D04 (rule
+installation/overlap), D05 (native account ownership/transfer) and the corresponding
+D06 signed-device enforcement tests remain open. This extension adds no session
+engine, persistent background monitor, native outbox, Android hard-block promise
+or automatic cleanup at sign-out. Reverting the shared UI never clears rules.
+
 ### RN-09 — Main screen composition within approved data boundaries
 
 **Owner:** Ishmum.\
@@ -534,6 +586,51 @@ with their respective owners. RN-09e `3c9d20d`, f `d0206b4`, g `b319d75`; h reso
 by its unique commit subject in the notes.
 
 RN-09b source: read-only Figma `27:155`, session `26dd22ea-c87c-4b6c-a571-5e74d6eff5e8`. Quests presentation is independent; no editor/persistence/native action is connected. Deferred: **RN09B-D01** approved quest/editor/recurrence API and persistence; **RN09B-D02** actual Auth/account-scoped data/actions and recovery; **RN09B-D03** approved completion/reward/native restriction evidence; **RN09B-D04** signed-device/accessibility acceptance. Source examples remain isolated. See the implementation notes for exact commit/checks and copied icon-pack provenance.
+
+#### RN-09 execution expansion — preferences and non-enforcing drafts (2026-11-02)
+
+**Status: planned; not implemented.** Preserve RN-09a–h and their original UI
+history. Continue with i–l below; do not redo the completed screen/editor work.
+Use the single settings resource planned in API-11/12. Profile remains the separate
+RN-07 resource; app-selection tokens remain device-native. No new state library,
+persisted query cache, generic settings framework or automatic write queue.
+
+| Part / suggested commit | Work and dependencies | Done when / focused verification |
+|---|---|---|
+| **RN-09i** — `feat(settings): persist alternative activity preferences` | After API-12, use its generated DTOs/runtime decoder and one account-scoped settings query. Map the existing ActivitiesEditor IDs/custom text to the agreed settings contract. Add read/save/discard, canonical revision handling, fixed server validation and deliberate conflict/uncertain-save review using RN-07 patterns. The API-11 contract records stable existing activity IDs; no Figma sample selection is a production default. | Missing settings is distinct from an outage. Explicit empty selection persists; raw drafts survive validation/conflict/background reads. Two editors share the same settings revision; neither blindly overwrites the other's section. Late A responses cannot populate B. The real route remains unavailable without the real provider. |
+| **RN-09j** — `feat(settings): persist non-enforcing plan drafts` | After RN-09i, wire existing days/hours/session editors to the same settings query/resource, including its draft timezone field. Reuse the same request/review machinery rather than a second profile-style framework. Omitted sections preserve data; explicit null clears a section. Preserve partially filled nullable draft fields. | Save/reload restores the accepted draft, with validation, revision conflicts and failed/uncertain saves covered. UI explicitly says **Saved draft — not active**; it does not claim a plan is installed, onboarding is complete or protection is enabled. Schedule/session labels must describe draft values without assuming counting/reset/overlap rules. No `applyRules`, native revision change or background installation occurs. |
+| **RN-09k** — `feat(home): consume saved preferences and device availability` | After i/j, compose accepted preferences/draft summaries into existing Home/Settings models. After RN-08c, include real Android protection availability/status where applicable; before then retain the existing unavailable native state. Keep Home thin and derive state from those producers. | Home/Settings agree after save/refetch, and still render during API/native failures. Saved draft, authorization and installed protection remain distinct. No synthetic quest, usage, streak, Dino health, Feed result or saved-time value is introduced. Suggestions/actions whose product meaning is unresolved stay unavailable. |
+| **RN-09l** — `test(mobile): verify settings persistence and isolation` | After i–k, test save/reload, two-user isolation, same-user generation change, concurrent activity/schedule edits, explicit clear, dirty navigation, lost response, API restart, offline edits and native absence/revocation where implemented. Reuse existing scoped test ports and QA entry; do not build another Auth system. | Deterministic/component/real-DB checks pass. Run actual HTTP and Android development-build checks when credentials/device exist; otherwise record those exact gates pending. Full application Auth/root, iOS, signed-device accessibility and RN-11 handoff remain joint acceptance, not inferred from an operator-token harness. |
+
+**Files:** Extend existing `features/preferences`, `plans`, `settings`, `home`, the
+scoped API/query consumers and thin Settings/detail routes. Generated types belong
+to API-12, not handwritten duplicate mobile DTOs. Keep the actual Auth/root and
+onboarding route changes with Anisha. Share the new contract for her later review,
+but do not wait for finished Auth screens to implement/test these consumers.
+Mobile drafts stay volatile within their account scope; this adds server-side
+draft persistence, not an offline/onboarding storage contract.
+
+**Original deferral mapping:** RN09D-D01 still includes real RN-07/Auth acceptance.
+RN09D-D02 gains activity preference and plan-draft persistence through i/j; native
+selection, installed plans and enforcement remain gated. RN09D-D03 demographics
+and calendars are unchanged. RN09D-D04 device/accessibility checks gain l alongside
+RN-10. Home's unavailable inputs gain only the real producers implemented in k.
+Existing RN-09e quest editors and RN-09h History detail views remain UI-only until
+the following decisions and producers exist; no quest/metrics database is added
+by API-11/12.
+
+| Still outside this implementation slice | Required input before activation |
+|---|---|
+| Active plans, session accounting/reset, override and overlapping restrictions | Q02–Q08 / PD-01–04; measured native mechanisms and installation contract |
+| Quest scheduling/recurrence, completion/release and app scope | Q09–Q11, approved quest state/schema and backend/native producers |
+| Credits, feeding, Dino health and streaks | Q12–Q14 / PD-05–08; versioned product rules and real evidence |
+| History/saved-time/baselines/life-years | Q15–Q16 / PD-11/12; permitted measured sources and approved definitions; forecast stays excluded |
+| Account-bound native rule/event transfer or cleanup | Q17 / PD-15 and coordinated native/Auth ownership |
+| Demographics, calendars, AI personalization and multi-device enforcement | Q19–Q21 and relevant scope/provider/privacy decisions |
+
+Completing i–l proves this bounded settings/draft integration. It does not mark
+all of RN-09 or the product complete. Keep parent RN-09 pending for its remaining
+live features, with these subparts individually recorded in the existing notes.
 
 ### RN-10 — Accessibility, responsive layout, and lifecycle completion
 

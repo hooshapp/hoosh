@@ -1,13 +1,14 @@
 # Plan 03 — FastAPI Identity and Profile Foundation
 
 **Status:** API-01–09 are implemented: strict trust/errors, JWT/JWKS, database-independent identity, generated contracts and bounded lazy PostgreSQL units of work. API-06 passed 337 deterministic tests, 24 real PostgreSQL checks and a read-only hosted runtime/TLS smoke check. API-07 added the model, single Alembic history and profile constraints/grants/RLS, with 344 deterministic and 66 real DB tests plus hosted upgrade/check. API-08 now adds nonmutating own-profile GET and generated shapes (374 deterministic / 75 real DB tests). API-09 now adds strict bounded PATCH, canonical validation, atomic insert/CAS and own conflicts (453 deterministic / 96 real DB checks). API-10 operational diagnostics/tooling and independent checks are now implemented; managed-account HTTP identity/profile/restart checks now pass; actual browser protocol now passes; authenticated application M1/M2 and cascade/native-device acceptance remain pending.\
+**Planned extension (2026-11-02):** API-11/12 below add one settings resource for alternative-activity preferences and non-enforcing plan drafts. Both are planned/not started; API-01–10 and their acceptance requirements are unchanged.
 **Owner:** Ishmum (backend/database). Anisha reviews Auth contracts and participates in live session checks.\
 **Area branch:** `area/backend`; task branches `task/backend/<part>`.\
 **Milestones:** M1 = verified identity without a database; M2 = minimal, isolated, revisioned profile persistence.
 
 ## 1. Goal and boundaries
 
-Deliver a small FastAPI service that trusts only access tokens from the configured Supabase development project, identifies the user from verified claims, and later persists only that user's minimal profile. Keep authentication, database access, and native protection as separate concerns.
+The original API-01–10 foundation delivers a small FastAPI service that trusts only access tokens from the configured Supabase development project, identifies the user from verified claims, and later persists only that user's minimal profile. Keep authentication, database access, and native protection as separate concerns.
 
 The current app factory, settings, CORS configuration, health response, and eight foundation checks are reusable. Extend them instead of replacing the workspace. Existing Python runtime dependencies are FastAPI, Pydantic Settings, and Uvicorn; the test stack uses `httpx2`, pytest, and Ruff. Add only the dependencies needed by the current part and lock them in `services/api/uv.lock`.
 
@@ -20,13 +21,13 @@ The current app factory, settings, CORS configuration, health response, and eigh
 
 ### Intentional adaptation to the TSD
 
-SC-01 adopted **identity-only `GET /v1/me`**, then separate **`GET/PATCH /v1/profile`**, and updated TSD §8.3. The [accepted decision record](../architecture/identity-foundation.md) and exact [HTTP contract](../../packages/contracts/HTTP_API.md) keep the first integration database-independent. Implement that single shape; these routes do not exist yet.
+SC-01 adopted **identity-only `GET /v1/me`**, then separate **`GET/PATCH /v1/profile`**, and updated TSD §8.3. The [accepted decision record](../architecture/identity-foundation.md) and exact [HTTP contract](../../packages/contracts/HTTP_API.md) keep the first integration database-independent. API-04/08/09 now implement those shapes. The settings extension remains proposed until API-11/12 are implemented.
 
 ### Out of scope
 
 - Password verification, issuing JWTs, refresh tokens, email delivery, or provider OAuth: Supabase Auth owns those.
 - Production login/guest policies, signup age eligibility, demographics, or required providers: PM decisions remain open.
-- Saved plan/session policies, quest scheduling, event ingestion, reward ledgers, usage summaries, AI, and calendars.
+- Active plan/session policies, quest scheduling, event ingestion, reward ledgers, usage summaries, AI, and calendars. API-11/12 add stored settings and non-enforcing drafts only; their exact contract is specified in those parts.
 - Native enforcement, temporary allowance timing, account-deletion/native cleanup, production deployment, or production database changes.
 
 ## 2. Canonical HTTP contract
@@ -396,6 +397,102 @@ increment; do not mark API-10 accepted before its joint gates pass.\
 
 **Recovery:** Leave the failing scenario and owning part open, record reproducible evidence, and fix the affected increment. Do not mark the whole milestone passed, loosen authentication, or reset a shared database to finish a handoff checklist.
 
+### API-11 — Define bounded settings preferences and plan-draft storage
+
+**Status:** Planned, not started. **Owner:** Ishmum. **Dependencies:** API-06–09
+producers and the current contract/export pipeline. API-10's joint Auth/device/
+cascade acceptance remains open but does not block independent implementation.
+**Suggested commit:** `feat(settings): define revisioned settings draft storage`.
+
+**Scope:** One account-owned settings resource/table with one revision, alternative
+activity preferences and an optional non-enforcing plan draft. Keep the minimal
+profile table/contract unchanged. No quest/session/event/reward tables, install
+jobs, notifications or Auth/onboarding-completion flags.
+
+**Implementation steps:**
+
+1. Record exact versioned request/response shapes in the existing HTTP contract;
+   add strict Pydantic models and synthetic schema fixtures. Use the existing
+   ActivitiesEditor/DaysEditor/HoursEditor/SessionsEditor as input, not a new form
+   model. Define stable IDs for existing source activity choices without importing
+   developer sample records into production. Record the mapping for Anisha's later
+   onboarding consumer; never silently rewrite her local storage schema.
+2. Proposed `GET /v1/settings` returns `{settings:null}` when absent, otherwise
+   owner/revision/timestamps plus `activities` and nullable `plan_draft`. Activities
+   hold selected stable IDs and explicit nullable custom text. A plan draft holds
+   weekdays (Monday=0), nullable local hours/next-day intent, nullable timezone and
+   nullable session-count/minutes fields. These are stored intentions; no quota,
+   reset boundary, DST execution rule or app scope is inferred.
+3. Proposed `PATCH /v1/settings` requires `expected_revision` and at least one of
+   `activities` / `plan_draft`. Omission preserves that section. `activities:null`
+   resets to empty selected IDs and null custom text; `plan_draft:null` removes
+   the draft. Supplied objects replace their section, not arbitrary JSON merge
+   patches. Absent-row creation uses revision 0 and neutral empty/null sections;
+   accepted writes advance the resource revision once. No auto-create on GET.
+4. Specify strict field types, ID allowlist, duplicate handling, bounded text/list/
+   integer/body sizes, custom-text normalization and safe validation paths before
+   adding handlers. Reject unknown/owner fields, bool-as-integer and invalid text.
+   Empty selections and incomplete nullable drafts are valid. Validate entered
+   local-time pairs/weekday ranges and timezone IDs as data; changing a timezone
+   never activates or reschedules anything. Storage limits are engineering bounds,
+   not PM-approved session allowances. Do not generate defaults from Figma examples.
+5. Add one new Alembic revision for a `user_settings` table: Auth-owner FK with
+   cascade, positive revision, server timestamps and two strictly validated
+   section payloads. A small typed JSONB representation is sufficient; no activity
+   catalog service, per-field history, per-device copy or general settings registry.
+   Reuse existing nonowner runtime role, owner predicates, transaction-local RLS
+   and single migration history. Revoke access beyond needed SELECT/INSERT/UPDATE.
+
+**Expected files:** existing HTTP contract, API schemas/model, one migration and
+focused schema/real-PostgreSQL tests. Generated endpoint types follow when routes
+are published in API-12; never hand-edit generated TypeScript to expose fake routes.
+
+**Acceptance:** Exact omit/null/empty/partial-section semantics and engineering
+limits are documented/tested. Upgrade, constraints, runtime grants/default deny,
+A/B isolation and local storage-only owner cascade pass on the guarded fixture.
+Profile behavior and Auth settings remain unchanged. No hosted migration runs
+implicitly as part of creating this planning/implementation commit; deliberate
+development upgrade follows the existing migration workflow and drift checks.
+**Recovery:** Disable the new resource exposure or fix forward; do not reset shared
+Auth/database state or rewrite an applied migration.
+
+### API-12 — Serve revision-safe settings reads and edits
+
+**Status:** Planned, not started. **Owner:** Ishmum. **Dependencies:** API-11.
+**Suggested commit:** `feat(settings): add scoped settings reads and updates`.
+
+1. Implement the protected GET/PATCH through the existing JWT verifier, runtime
+   database unit of work and a small settings repository/service. Ownership comes
+   from the verified identity only. Reuse current raw-body bounds, no-store,
+   correlation, failure mapping and CAS approach; avoid a generic CRUD framework.
+2. GET is nonmutating. PATCH performs atomic first-create or expected-revision
+   update; preserving an omitted section happens in that transaction, not in an
+   unguarded read-modify-write. No-op accepted writes follow the same revision
+   increment rule. Return only the committed canonical resource.
+3. Add a settings-specific safe 409 code with current own revision (0 when absent)
+   and extend the mobile error/validation whitelist together with the wire models.
+   Keep existing profile error semantics intact. Map deletion-owner FK failures
+   safely; missing data is never a successful response to a DB outage. No client
+   owner ID, native package inventory, selection token or policy activation field.
+4. Export actual OpenAPI/generated TypeScript with the existing pipeline. Publish
+   the endpoint examples, omit/null/section-replacement semantics and handoff to
+   RN-09i/j. No Supabase table CRUD from mobile and no second Auth client.
+5. Test missing/read/create/update/explicit clear, invalid fields/body, same-revision
+   races, activity-vs-draft concurrent edits, preserving omitted data, A/B isolation,
+   deleted owner, rollback, possible-commit response loss and process restart.
+   Restore/retain data explicitly in any approved managed-account checks; credentials
+   and hosted C deletion remain separate optional inputs, not test bypasses.
+
+**Acceptance:** Deterministic and real PostgreSQL tests, migration/security drift,
+OpenAPI/type checks and relevant workspace checks pass. A committed settings draft
+survives API restart and conflicts cannot overwrite another section silently.
+It never changes the profile, native installed revision, restrictions, quest state,
+credits or onboarding completion. Record managed-account/phone evidence separately;
+use synthetic signed-token fixtures for independent tests, not a production bypass.
+**Recovery:** Make live settings writes unavailable while retaining safe reads;
+retain data and fix forward. If the implementation exceeds a reviewable commit,
+split API-12 into suffixed commits without renumbering API-01–12.
+
 ## 6. Required test matrix
 
 | Category | Essential cases | Evidence |
@@ -423,6 +520,11 @@ The implementation adds clearly named database setup/test and OpenAPI-generation
 
 ## 8. Cross-plan dependency map
 
+**Extension:** API-06–09 producers → API-11 → API-12 → RN-09i/j. RN-08a–d
+(Android) can proceed independently. API-10's real Auth/device/cascade join stays
+open; do not require Anisha's finished mobile screens for isolated settings work.
+No native activation or onboarding completion depends on saving these drafts.
+
 | This plan needs | Supplied by | Unblocks |
 |---|---|---|
 | Identity/error/settings contract | Plan 00 | API-01/02 and parallel mobile mocks |
@@ -448,6 +550,8 @@ Auth can finish its session work without profiles. The main frontend must not cl
 | API-08 | Implemented producer; real signed-token GET/runtime-DB reads and failures accepted locally | `ca275af` | 374 deterministic / 75 real DB tests; generated GET schemas/types; managed tokens/mobile integration remain API-10 joint work |
 | API-09 | Implemented producer; local M2 backend read/write/concurrency/isolation accepted | `c563ff6` | 453 deterministic / 96 real DB tests; strict raw body/name/revision contract, two-connection races, rollback/deletion/replay; actual managed-user/mobile acceptance remains API-10 |
 | API-10 | Operational, managed A/B HTTP and actual browser protocol accepted; app/native/lifecycle acceptance pending | `188c5dd`, `138387f`; current follow-up resolves by `test(api): verify browser protocol and isolated startup modes` | 473 deterministic / 104 PostgreSQL checks; actual browser and separated startup modes, real managed A/B identity, profile writes/clear/conflict/isolation/refetch and actual API restart persistence pass. [Operator guide](../../services/api/OPERATIONS.md). Browser protocol now passes in Opera GX; authenticated Auth/RN-07/root/native and managed cascade gates still open; not full Plan 03 acceptance |
+| API-11 | Planned; not started | — | Bounded settings/draft contract and one migration; no active policy or Auth change |
+| API-12 | Planned; not started | — | Scoped GET/PATCH, generated types, isolation/CAS and restart evidence before RN-09i/j wiring |
 
 ## 10. Sources and verification notes
 
