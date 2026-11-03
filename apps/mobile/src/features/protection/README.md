@@ -125,3 +125,10 @@ module identity and unmount fencing. Foreground return re-reads actual permissio
 A grant, API response or navigation cannot claim protection active. No Auth/root
 changes, native sign-out cleanup or fabricated installed revision are added.
 See [actual Android evidence](../../../../../docs/qa/android-capability-probe.md).
+
+RN-08d's [device matrix](../../../../../docs/qa/android-capability-probe.md)
+physically verifies actual Home grant/deny/return/revoke/cold-start and large-text
+permission controls on Pixel Android 16. Same-reader instrumentation distinguishes
+locked/null from ready/zero with Metro/API absent; Expo Go shows unavailable.
+This verifies read/permission behavior only. Enforcement/install, Auth/root,
+signed release, assistive speech, iOS and other devices remain separate gates.

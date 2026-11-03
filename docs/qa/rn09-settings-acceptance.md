@@ -46,10 +46,10 @@ for the commit, exact files and checks, and the [sanitized evidence](../core_pla
 | Offline edits/reconnect | Real scope prevents dispatch; existing controlled editor/Home tests preserve dirty input and never replay writes | Pass locally; actual phone network lifecycle pending |
 | API restart and cold reload | Kill first task-owned FastAPI process; new PID and new mobile client recover same DB data; B isolated/C absent/profile unchanged | Pass locally; no hosted deployment involved |
 | Dirty navigation | Actual Router removal/confirmation and real routes on both Jest platform presets | Pass locally; hardware Back, gestures and speech need device evidence |
-| Native module absent | Existing Home/protection tests retain unavailable status despite successful saves | Pass for absence; revocation/install lifecycle awaits RN-08a–d |
+| Native module absent | Existing Home/protection tests retain unavailable status despite successful saves | Pass for absence; RN-08d later verifies independent Android permission revocation; installation remains unimplemented |
 | Hosted settings migration/managed accounts | Not run; development migration 0002 remains coordinated separately | Pending |
 | Real Auth/root and authenticated Android journey | User previously deferred token refresh/phone acceptance | Pending; do not treat operator-token or ephemeral-JWT fixture as M1/M2 completion |
-| Native grant/deny/revoke, signed Android/iOS, assistive speech | No native adapter/build/device operation in this slice | Pending; Anisha owns iOS |
+| Native grant/deny/revoke; signed release/iOS/speech | RN-09l itself performed no native operation; later RN-08d independently verifies actual Android permission/status on Pixel | Read-only Android matrix passes separately; combined authenticated settings phone journey, enforcement, signed release/iOS/speech pending; Anisha owns iOS |
 | Dedicated disposable-C hosted deletion | Previously deferred by user; unrelated to local fixture cleanup | Pending under coordinated API-10 acceptance |
 
 ## Reproduce and resume
@@ -81,6 +81,8 @@ helper rejects managed/unsafe URLs before connecting or cleaning up.
 
 No hosted project, Supabase account or phone was touched. This run started/stopped
 only the named disposable Compose stack and retained its volume; no global Docker
-cleanup or production migration occurred. Next independent work is RN-08a. Resume
+cleanup or production migration occurred during RN-09l. Later RN-08a–d implements
+and verifies the independent Android read/permission slice; see the
+[device matrix](android-capability-probe.md). Resume
 hosted/Auth/phone acceptance only with the required coordinated setup and approved
 current test accounts. Keep all real credentials local and out of the notes.

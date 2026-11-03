@@ -307,3 +307,16 @@ and latest Plan 04 notes for precise limits and commands. Next independent work:
 RN-08a. Hosted migration/Auth/root/phone, native revocation/status, signing/speech,
 iOS and user-deferred C deletion remain open; Plan 04 is not complete. Counts stay
 46/21/25. The task-started disposable DB was stopped without deleting its volume.
+
+RN-08a–d current checkpoint (2026-11-03): Android-only local module, measured
+read/usage-access adapter, actual Home registration and physical Pixel/Android 16
+matrix are implemented. Usage grant stays separate from unimplemented protection;
+actual return/revoke/cold/locked/empty/Expo-Go absence and font-2.0 checks pass.
+Temporary phone settings and task servers/connections are restored. Read the
+[runbook](../qa/android-capability-probe.md) and latest Plan 04 notes before resuming.
+Checks: 382 portable / 502 component / 590 API, web 38-file isolation / 71 assets,
+Android native builds/Hermes. This supplies k's read-only native dependency, not
+joint settings/Auth or enforcement acceptance. Next coordinated gates are real
+Auth/root, hosted settings migration 0002 and authenticated phone journeys;
+Anisha owns iOS/Auth. Signing/speech, product enforcement decisions and user-deferred
+hosted C deletion remain open. Counts 46/21/25; earlier checkpoints are historical.

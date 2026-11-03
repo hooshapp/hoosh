@@ -146,6 +146,8 @@ Dino, credits, usage, streak and recommendation regions remain unavailable.
 
 Tests cover shared reads/canonical labels, read/save/clear/uncertain flows, errors,
 retry/recovery, offline and account/generation isolation. Current results and exact
-file/line evidence are in the Plan 04 implementation notes. RN-09k's native status
-acceptance, RN-09l HTTP/device journeys, real Auth/root, signing and assistive speech
-remain separate open gates.
+file/line evidence are in the Plan 04 implementation notes. RN-08d now verifies
+Android read-only status/permission on actual Home (grant, deny, external revoke,
+foreground, cold start, large text); see the Android runbook. Joint authenticated
+settings/profile phone journeys, native enforcement, real Auth/root, signing and
+assistive speech remain open gates.

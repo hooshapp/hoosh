@@ -131,3 +131,57 @@ component checks cover real Router/AppState reads and cleanup, hide/foreground,
 revocation, failed read retry, duplicate Settings action, errors, stale/unmounted
 callbacks and module absence. Actual Pixel UI launch does not certify assistive
 speech or signed release acceptance.
+
+## RN-08d — physical-device acceptance (2026-11-03)
+
+The rebuilt Android debug app and instrumentation APK passed on Pixel 8 Pro,
+Android 16/API 36. See [sanitized device/build evidence](../core_plan_implementation_notes/artifacts/rn-08/device-d.json)
+for exact APK hashes, native return values, UI bounds, checks and cleanup. Earlier
+a/b/c observations above are historical, not the final permission state.
+
+| Actual action | Observed result |
+|---|---|
+| Production Home, no API/Auth configured; Review usage access | Own-app Android Settings page opened; usage permission and inactive protection remained separate |
+| Settings switch off/on, then Back | Home re-read denied/allowed respectively; neither result claimed installed/active protection |
+| External own-package AppOps revoke while backgrounded | Foreground return showed denied rather than retaining the old grant |
+| Allow, force-stop and cold launch | Home showed current grant and unimplemented/inactive protection |
+| Current keyguard locked, then user unlock | Same Kotlin probe returned locked/null count, then ready/bounded count after unlock |
+| Actual zero-width query | Ready with count 0; distinct from locked/denied/null; not a usage-duration measurement |
+| Both task Metro servers stopped, API unconfigured | Native instrumentation still returned locked, unlocked, revoked and restored status; this does not make development JS UI independent of Metro |
+| Expo Go without local module | Actual native-QA entry showed module absent/unavailable, disabled probe and no permission action |
+| Font scale 1.15 and 2.0 | Labels wrapped, permission control remained reachable by scrolling and opened Settings; clickable outer heights 160px (~53dp) and 192px (64dp), density 480dpi |
+
+Build commands above produce both APKs. With own development package granted
+usage access and the phone unlocked, the **test APK only** adds this deterministic
+empty-window case:
+
+```bash
+adb shell am instrument -w -e emptyWindow true com.hoosh.disconnect.dev.test/com.hoosh.disconnect.dev.UsageProbeInstrumentation
+```
+
+It runs `queryEvents(end, end)` through the same reader. The production Expo probe
+continues to accept only a 1–15 minute window; it exposes no empty-window flag.
+For locked acceptance, lock the phone, run the ordinary instrumentation command,
+then have its owner unlock it and repeat. Require `deviceLocked:true`, state
+`locked`, and null count before claiming a locked pass; merely turning the screen
+off can race keyguard activation. Denied/unknown/error also never mean zero.
+
+**Cleanup verified:** own-package GET_USAGE_STATS restored to initial `default`
+(final denied/needs_permission/null count); font 1.15 restored; USB stay-awake 0
+restored; screen timeout unchanged at 30000ms. Both task Metro servers stopped,
+only task reverse mappings 8090/8092 removed (final list empty), own phone UI dump
+removed. Development/test APKs and local SDK/JDK/cache retained for reproducibility.
+No Auth, hosted database, other app data, iOS or restriction policy was changed.
+
+**Checks:** final `npm run check` passed 382 portable / 502 component / 590 API,
+types/lint/contracts/assets; 192 DB tests excluded because no backend change.
+`npm run mobile:export` passed 38-file isolation and 71 original SVGs; production
+Android Hermes export passed. Both actual native APK builds passed.
+
+**Limits:** this completes a–d's read/permission scope, not RN-08 as a whole.
+No enforcement/install/selection/outbox/background engine or measured metrics;
+first-unlock-after-reboot, other devices/API levels, unavailable Settings activity
+and malformed native payloads are not all physically exercised (adapter tests
+cover safe failures). TalkBack/VoiceOver speech, signed release, iOS/Auth/root,
+authenticated settings journeys and hosted acceptance remain open. Mode
+`unsupported` describes this build's unimplemented protection, not Android as an OS.

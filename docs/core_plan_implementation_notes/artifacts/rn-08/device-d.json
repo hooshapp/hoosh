@@ -1,0 +1,308 @@
+{
+  "part": "RN-08d",
+  "date": "2026-11-03",
+  "owner": "Ishmum",
+  "scope": "Android read/usage-access/status only; no enforcement or iOS/Auth changes",
+  "build": {
+    "device_model": "Pixel 8 Pro",
+    "android_version": "16",
+    "api_level": 36,
+    "application_id": "com.hoosh.disconnect.dev",
+    "build_type": "debug; locally generated debug key; release signing unset",
+    "react_native": "0.88.1",
+    "jdk": "Temurin 17.0.21+9",
+    "gradle": "9.4.1",
+    "compile_sdk": 37,
+    "target_sdk": 36,
+    "architecture": "arm64-v8a",
+    "debug_apk_sha256": "6c45312a97337ce2fecdc20ea0a343c1cccf0ef81cd20def8510bc7e672ed7d7",
+    "test_apk_sha256": "cff11071dd2aa2bb04ab88a9a66527f71736419600b31d1f6653152fc25c8ef7"
+  },
+  "actual_native_instrumentation": {
+    "empty": {
+      "capabilities": {
+        "platform": "android",
+        "mode": "unsupported",
+        "selectionUI": "unavailable",
+        "supportsUsageThreshold": false,
+        "supportsScheduledRestriction": false,
+        "supportsTemporaryAllowance": false,
+        "supportsAdvanceWarning": false,
+        "supportsUsageSummary": false
+      },
+      "probe": {
+        "apiLevel": 36,
+        "authorization": "authorized",
+        "userUnlocked": true,
+        "deviceLocked": false,
+        "windowMinutes": 0,
+        "selfPackageVisible": true,
+        "eventLimit": 1000,
+        "state": "ready",
+        "eventCount": 0,
+        "capped": false
+      },
+      "status": {
+        "authorization": "authorized",
+        "state": "inactive",
+        "installedRevision": null,
+        "installedReasonIds": []
+      }
+    },
+    "locked": {
+      "capabilities": {
+        "platform": "android",
+        "mode": "unsupported",
+        "selectionUI": "unavailable",
+        "supportsUsageThreshold": false,
+        "supportsScheduledRestriction": false,
+        "supportsTemporaryAllowance": false,
+        "supportsAdvanceWarning": false,
+        "supportsUsageSummary": false
+      },
+      "probe": {
+        "apiLevel": 36,
+        "authorization": "authorized",
+        "userUnlocked": true,
+        "deviceLocked": true,
+        "windowMinutes": 1,
+        "selfPackageVisible": true,
+        "eventLimit": 1000,
+        "state": "locked",
+        "eventCount": null,
+        "capped": false
+      },
+      "status": {
+        "authorization": "authorized",
+        "state": "inactive",
+        "installedRevision": null,
+        "installedReasonIds": []
+      }
+    },
+    "unlocked": {
+      "capabilities": {
+        "platform": "android",
+        "mode": "unsupported",
+        "selectionUI": "unavailable",
+        "supportsUsageThreshold": false,
+        "supportsScheduledRestriction": false,
+        "supportsTemporaryAllowance": false,
+        "supportsAdvanceWarning": false,
+        "supportsUsageSummary": false
+      },
+      "probe": {
+        "apiLevel": 36,
+        "authorization": "authorized",
+        "userUnlocked": true,
+        "deviceLocked": false,
+        "windowMinutes": 1,
+        "selfPackageVisible": true,
+        "eventLimit": 1000,
+        "state": "ready",
+        "eventCount": 0,
+        "capped": false
+      },
+      "status": {
+        "authorization": "authorized",
+        "state": "inactive",
+        "installedRevision": null,
+        "installedReasonIds": []
+      }
+    },
+    "revoked": {
+      "capabilities": {
+        "platform": "android",
+        "mode": "unsupported",
+        "selectionUI": "unavailable",
+        "supportsUsageThreshold": false,
+        "supportsScheduledRestriction": false,
+        "supportsTemporaryAllowance": false,
+        "supportsAdvanceWarning": false,
+        "supportsUsageSummary": false
+      },
+      "probe": {
+        "apiLevel": 36,
+        "authorization": "denied",
+        "userUnlocked": true,
+        "deviceLocked": false,
+        "windowMinutes": 1,
+        "selfPackageVisible": true,
+        "eventLimit": 1000,
+        "state": "denied",
+        "eventCount": null,
+        "capped": false
+      },
+      "status": {
+        "authorization": "denied",
+        "state": "needs_permission",
+        "installedRevision": null,
+        "installedReasonIds": []
+      }
+    },
+    "restored": {
+      "capabilities": {
+        "platform": "android",
+        "mode": "unsupported",
+        "selectionUI": "unavailable",
+        "supportsUsageThreshold": false,
+        "supportsScheduledRestriction": false,
+        "supportsTemporaryAllowance": false,
+        "supportsAdvanceWarning": false,
+        "supportsUsageSummary": false
+      },
+      "probe": {
+        "apiLevel": 36,
+        "authorization": "denied",
+        "userUnlocked": true,
+        "deviceLocked": false,
+        "windowMinutes": 1,
+        "selfPackageVisible": true,
+        "eventLimit": 1000,
+        "state": "denied",
+        "eventCount": null,
+        "capped": false
+      },
+      "status": {
+        "authorization": "denied",
+        "state": "needs_permission",
+        "installedRevision": null,
+        "installedReasonIds": []
+      }
+    }
+  },
+  "actual_phone_ui": {
+    "host": "Actual production Home route in Android development build; API/Auth unconfigured",
+    "grant_and_deny": "Own-app Android Settings switch changed off/on; Back refreshed Home to denied/allowed respectively",
+    "external_revocation": "Own-package AppOps ignore while backgrounded; foreground return showed denied",
+    "cold_start": "Own-package AppOps allow, force-stop and cold launch; allowed, protection inactive",
+    "permission_action": "Review usage access opened own-app Disconnect usage-access Settings page",
+    "grant_never_active": true,
+    "large_text": "Font scale 2.0; labels wrapped, button reachable by scrolling and actual tap opened Settings",
+    "default_font_button": [
+      {
+        "label": "Protection unavailable here",
+        "bounds": "[100,1569][1243,1652]",
+        "enabled": "true",
+        "clickable": "false"
+      },
+      {
+        "label": "Usage access",
+        "bounds": "[111,2062][1233,2153]",
+        "enabled": "true",
+        "clickable": "false"
+      },
+      {
+        "label": "Usage access allowed. App protection is not active.",
+        "bounds": "[111,2183][1233,2331]",
+        "enabled": "true",
+        "clickable": "false"
+      },
+      {
+        "label": "Review usage access",
+        "bounds": "[48,2430][1296,2590]",
+        "enabled": "true",
+        "clickable": "true"
+      },
+      {
+        "label": "Review usage access",
+        "bounds": "[367,2472][977,2548]",
+        "enabled": "true",
+        "clickable": "false"
+      }
+    ],
+    "large_font_button": [
+      {
+        "label": "Protection unavailable here",
+        "bounds": "[100,905][1243,1127]",
+        "enabled": "true",
+        "clickable": "false"
+      },
+      {
+        "label": "Usage access",
+        "bounds": "[111,1743][1233,1881]",
+        "enabled": "true",
+        "clickable": "false"
+      },
+      {
+        "label": "Usage access allowed. App protection is not active.",
+        "bounds": "[111,1911][1233,2125]",
+        "enabled": "true",
+        "clickable": "false"
+      },
+      {
+        "label": "Review usage access",
+        "bounds": "[48,2224][1296,2416]",
+        "enabled": "true",
+        "clickable": "true"
+      },
+      {
+        "label": "Review usage access",
+        "bounds": "[214,2266][1129,2374]",
+        "enabled": "true",
+        "clickable": "false"
+      }
+    ],
+    "density_dpi": 480,
+    "missing_module": "Actual Expo Go native-QA entry showed module absent, Protection unavailable, disabled probe and no permission action",
+    "missing_module_control": [
+      {
+        "label": "Read bounded usage probe",
+        "bounds": "[60,1296][1284,1456]",
+        "enabled": "false",
+        "clickable": "true"
+      },
+      {
+        "label": "Read bounded usage probe",
+        "bounds": "[273,1338][1070,1414]",
+        "enabled": "true",
+        "clickable": "false"
+      },
+      {
+        "label": "REAL ANDROID CAPABILITY PROBE",
+        "bounds": "[24,2519][1320,2575]",
+        "enabled": "true",
+        "clickable": "false"
+      }
+    ]
+  },
+  "dependency_independence": {
+    "native_locked_unlocked_revoked_restored_tests": "Instrumentation executed with both task Metro servers stopped and no API configured; calls the same Kotlin reader",
+    "whole_app_without_metro": "Not claimed; development JS UI still needs Metro",
+    "native_rules_survive_termination": "Not claimed; no native rule engine exists"
+  },
+  "checks": {
+    "native_debug_and_test_apk_build": true,
+    "portable_mobile_tests": 382,
+    "component_tests": 502,
+    "api_tests": 590,
+    "db_tests_deselected": 192,
+    "types_lint_contracts_assets": true,
+    "web_export_files": 38,
+    "original_svg_assets": 71,
+    "android_production_hermes_export": true,
+    "ios_tracked_diff_empty": true
+  },
+  "cleanup": {
+    "usage_access_appop": "Restored initial default; actual final denied/needs_permission/null count verified",
+    "font_scale": "Restored initial 1.15",
+    "stay_on_while_plugged_in": "Restored initial 0",
+    "screen_off_timeout_ms": "Unchanged 30000",
+    "adb_reverse": "Removed own 8090/8092 mappings; final list empty",
+    "task_metro_servers": "Both stopped before final instrumentation",
+    "phone_ui_dump": "Removed task-owned /sdcard/hoosh-rn08.xml",
+    "installed_test_apps": "Own development app and instrumentation APK retained; no user app/data removed",
+    "local_build_tools": "SDK/JDK/cache retained locally, ignored/outside repository"
+  },
+  "not_proven": [
+    "Android enforcement/overlap/allowance/session engine",
+    "Package picker/broad package visibility",
+    "Usage/savings/History metrics or reward rules",
+    "Background monitor/native outbox/event sync",
+    "First unlock after reboot (observed already-unlocked user and current keyguard only)",
+    "Other Android devices/API levels or OEM Settings fallback",
+    "TalkBack/VoiceOver speech/traversal",
+    "Signed production release/iOS",
+    "Real Auth/root or authenticated phone settings/profile acceptance",
+    "Hosted settings migration and user-deferred hosted deletion"
+  ]
+}

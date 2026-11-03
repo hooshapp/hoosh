@@ -50,15 +50,16 @@ class UsageReader(private val context: Context) {
     } catch (_: Exception) { "error" }
   }
 
-  fun probe(minutes: Int): Map<String, Any?> {
+  fun probe(minutes: Int, emptyWindow: Boolean = false): Map<String, Any?> {
     require(minutes in 1..15) { "Window must be between 1 and 15 minutes" }
     val end = System.currentTimeMillis()
-    val start = end - minutes * 60_000L
+    // Zero-width query is reachable only from the development test instrumentation.
+    val start = if (emptyWindow) end else end - minutes * 60_000L
     val access = authorization()
     val unlocked = (context.getSystemService(Context.USER_SERVICE) as? UserManager)?.isUserUnlocked == true
     val locked = (context.getSystemService(Context.KEYGUARD_SERVICE) as? KeyguardManager)?.isDeviceLocked != false
     val base = mapOf<String, Any?>("apiLevel" to Build.VERSION.SDK_INT, "authorization" to access,
-      "userUnlocked" to unlocked, "deviceLocked" to locked, "windowMinutes" to minutes,
+      "userUnlocked" to unlocked, "deviceLocked" to locked, "windowMinutes" to if (emptyWindow) 0 else minutes,
       "selfPackageVisible" to selfPackageVisible(), "eventLimit" to 1000)
     if (!unlocked || locked) return base + mapOf("state" to "locked", "eventCount" to null, "capped" to false)
     if (access != "authorized") return base + mapOf("state" to access, "eventCount" to null, "capped" to false)

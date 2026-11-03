@@ -1,6 +1,6 @@
 # Disconnect — Core Development Plans
 
-**Status:** Plan 00 is complete and validated (foundation commit `0b50900`, recorded in its ledger); Plan 04 RN-01–04 producers now supply shared UI/testing, authentic-asset navigation and bounded HTTP and account query/lifecycle producers with recorded evidence; real RN-04 Auth/root wiring, Anisha-owned Plan 01/Auth acceptance, Plan 02, full API-10 and RN-06/11 remain pending; API-10 operational diagnostics/tools and independent checks are implemented; RN-10 shared UI/lifecycle hardening exists with device/live acceptance pending; RN-09a–h main/detail/editor UI exists with live integration pending; RN-05 consumer, RN-07 revisioned profile consumer and RN-08 presentation/read-consumer preparation exist, with their real integration/acceptance pending. API-01–09 backend identity/profile producers and API-11/12 settings storage/HTTP producers are implemented; mobile Auth, database and native adapter integration remain pending.\
+**Status:** Plan 00 is complete and validated (foundation commit `0b50900`, recorded in its ledger); Plan 04 RN-01–04 producers now supply shared UI/testing, authentic-asset navigation and bounded HTTP and account query/lifecycle producers with recorded evidence; real RN-04 Auth/root wiring, Anisha-owned Plan 01/Auth acceptance, Plan 02, full API-10 and RN-06/11 remain pending; API-10 operational diagnostics/tools and independent checks are implemented; RN-10 shared UI/lifecycle hardening exists with device/live acceptance pending; RN-09a–h main/detail/editor UI exists with live integration pending; RN-05 consumer, RN-07 revisioned profile consumer and RN-08a–d Android read/usage-permission/status integration exist; its Pixel debug-device matrix passes while enforcement/iOS and joint acceptance remain open. API-01–09 backend identity/profile producers and API-11/12 settings storage/HTTP producers are implemented; mobile Auth/root, hosted settings and native enforcement/iOS integration remain pending; the Android read-only adapter is registered.\
 **Baseline inspected:** `c7a8f73` — `Set up mobile and API foundation`.\
 **Reviewed:** 2026-11-02 (bounded planning expansion; implementation evidence remains recorded per part).\
 **Product answers:** [PM_QUESTIONS.md](<../Context (AGENT)/PM_QUESTIONS.md>); no PM question is answered by an engineering default in these plans.
@@ -292,3 +292,12 @@ acceptance remains open. See the [matrix](../qa/rn09-settings-acceptance.md) and
 Plan 04 notes. Next independent implementation is RN-08a. k native integration
 still awaits c; parent counts stay 46/21/25. User-deferred hosted C deletion and
 authenticated phone acceptance are unchanged. Task-owned DB stopped, volume kept.
+
+**Latest RN-08 checkpoint (2026-11-03):** Android a–d read/permission/status
+scope and actual Pixel debug-device matrix are implemented. See [Plan 04](04_react_native_integration.md),
+[device runbook](../qa/android-capability-probe.md) and per-commit Plan 04 notes.
+RN-09k now has the Android read-only status producer; RN-09l native absence/revoke
+checks have separate device evidence. No enforcement/metrics/iOS/Auth completion.
+Next joint gates: Auth/root, hosted settings migration 0002 and authenticated
+phone settings/profile acceptance; speech/signing and user-deferred deletion
+remain open. Preserve 46/21/25 counts and original part IDs.
