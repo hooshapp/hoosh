@@ -1,0 +1,39 @@
+{
+  "date": "2026-11-02",
+  "part": "API-12",
+  "scope": "Locally accepted protected settings HTTP producer; no hosted/native acceptance",
+  "migrationHead": "20261102_0002",
+  "newMigration": false,
+  "validation": {
+    "workspaceCheck": "passed",
+    "apiDeterministicTests": 590,
+    "postgresqlTests": 191,
+    "portableMobileTests": 290,
+    "componentTests": 384,
+    "settingsHttpUnitTestsAdded": 64,
+    "settingsDbTestsAdded": 18,
+    "mobileSettingsErrorTestsAdded": 17,
+    "mobileExport": "passed",
+    "qaIsolationFiles": 38,
+    "originalAssets": 71,
+    "guardedMigrationCheck": "passed",
+    "frozenSync": "passed"
+  },
+  "evidence": {
+    "atomicCreatesAndSectionEdits": "two distinct PostgreSQL backend PIDs; one success and one SETTINGS_CONFLICT; explicit retry preserves both sections",
+    "commitAndRollback": "post-write exception and actual deferred commit failure return safe errors and persist no settings",
+    "deletedOwner": "real FK wait during concurrent local deletion; 403 only for the exact owner FK; unexpired synthetic JWT identity remains independent",
+    "restart": "two actual HTTP API subprocesses with ephemeral public JWKS and real JWT verification; committed settings survive and profile remains absent",
+    "bodyBoundary": "same 16 KiB streamed-byte/strict JSON boundary for profile/settings; nested duplicates and unsafe input rejected",
+    "typeSafety": "complete typed anyOf branches; compile checks reject revision-only/unknown/owner/boolean/label/null-success inputs",
+    "clientErrors": "whitelisted nested fields/new codes; conflict and lost-response writes never replay automatically"
+  },
+  "remaining": {
+    "hostedUpgradePerformed": false,
+    "managedAccountRunPerformed": false,
+    "authSdkOrPhoneAcceptance": false,
+    "iosOrNativePolicyChanged": false,
+    "priorPhoneAndCDeletionDeferrals": "unchanged",
+    "next": "RN-09i activity preferences; then RN-09j plan drafts; RN-08a remains independent"
+  }
+}

@@ -31,6 +31,7 @@ const codeStatus = {
   TOKEN_EXPIRED: 401,
   FORBIDDEN: 403,
   PROFILE_CONFLICT: 409,
+  SETTINGS_CONFLICT: 409,
   REQUEST_TOO_LARGE: 413,
   VALIDATION_ERROR: 422,
   AUTH_UNAVAILABLE: 503,
@@ -38,7 +39,23 @@ const codeStatus = {
   INTERNAL_ERROR: 500,
 } as const;
 export type ApiErrorCode = keyof typeof codeStatus;
-const fields = ['body', 'expected_revision', 'display_name'] as const;
+const fields = [
+  'body',
+  'expected_revision',
+  'display_name',
+  'activities',
+  'activities.selected_activity_ids',
+  'activities.custom_text',
+  'plan_draft',
+  'plan_draft.weekdays',
+  'plan_draft.hours',
+  'plan_draft.hours.start_local',
+  'plan_draft.hours.end_local',
+  'plan_draft.hours.next_day',
+  'plan_draft.timezone_id',
+  'plan_draft.session_count',
+  'plan_draft.session_minutes',
+] as const;
 const fieldCodes = [
   'required',
   'invalid_type',
@@ -48,6 +65,11 @@ const fieldCodes = [
   'out_of_range',
   'extra_field',
   'invalid_json',
+  'duplicate',
+  'invalid_choice',
+  'invalid_time',
+  'invalid_range',
+  'invalid_timezone',
 ] as const;
 export type ValidationIssue = { field: (typeof fields)[number]; code: (typeof fieldCodes)[number] };
 export type SafeErrorDetails = { current_revision: number } | { fields: ValidationIssue[] };
@@ -75,7 +97,11 @@ export class ApiError extends Error {
     public readonly kind: ApiErrorKind,
     metadata: ApiErrorMetadata = {},
   ) {
-    super(messages[kind]);
+    super(
+      kind === 'conflict' && metadata.code === 'SETTINGS_CONFLICT'
+        ? 'Your settings changed. Review the latest version before saving.'
+        : messages[kind],
+    );
     this.name = 'ApiError';
     this.status = metadata.status;
     this.code = metadata.code;
@@ -109,9 +135,10 @@ export function retryAfterMs(value: string | null, now: number): number | undefi
   return Number.isFinite(delay) && delay <= 60_000 ? Math.max(0, delay) : undefined;
 }
 function safeDetails(code: ApiErrorCode | undefined, value: unknown): SafeErrorDetails | undefined {
-  if (code !== 'PROFILE_CONFLICT' && code !== 'VALIDATION_ERROR') return undefined;
+  if (code !== 'PROFILE_CONFLICT' && code !== 'SETTINGS_CONFLICT' && code !== 'VALIDATION_ERROR')
+    return undefined;
   if (!isRecord(value)) throw new Error();
-  if (code === 'PROFILE_CONFLICT') {
+  if (code === 'PROFILE_CONFLICT' || code === 'SETTINGS_CONFLICT') {
     if (!Number.isSafeInteger(value.current_revision) || (value.current_revision as number) < 0)
       throw new Error();
     return { current_revision: value.current_revision as number };

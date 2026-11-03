@@ -2,7 +2,8 @@
 
 **Status:** Adopted for M1/M2 on 2026-10-28 at Ishmum's direction. These endpoints
 now have implemented `/healthz`, identity GET and profile GET/PATCH (API-01–09). Ishmum owns the
-server/schema/client; Anisha owns the Auth session consumed by the client.
+server/schema/client; Anisha owns the Auth session consumed by the client. API-11/12
+add bounded settings storage and HTTP as described below.
 
 See [architecture](../../docs/architecture/identity-foundation.md),
 [Plan 00](../../docs/core_plan/00_shared_contracts.md), and the synthetic
@@ -185,13 +186,13 @@ The applied int32 revision storage never wraps: an exhausted revision returns
 409 with that own current revision and needs a reviewed forward schema change,
 not automatic replay. Larger positive expectations return ordinary own conflicts.
 
-## Settings data contract — API-11; endpoints reserved for API-12
+## Settings HTTP contract — API-12
 
-**2026-11-02:** Strict Python data models and the `user_settings` storage migration
-exist. **GET/PATCH `/v1/settings` are not registered yet** and are not in the
-published OpenAPI/TypeScript endpoint exports. The following is the adopted
-storage/consumer handoff for API-12, not a claim that a settings HTTP call succeeds.
-Synthetic cases live in [settings-v1.json](fixtures/settings-v1.json).
+**2026-11-02:** API-11 supplied the data models and storage; API-12 now publishes
+protected GET/PATCH `/v1/settings` and generated OpenAPI/TypeScript DTOs. The
+following is the implemented contract. Synthetic examples remain test-only in
+[settings-v1.json](fixtures/settings-v1.json). Local API/DB/process evidence is
+separate from hosted and mobile Auth/device acceptance.
 
 One resource belongs to the verified Auth UUID and has its **own** revision. It
 is independent of the profile and of any installed native revision. It stores
@@ -200,7 +201,7 @@ restrictions, allocate sessions, change quests/rewards, or complete onboarding.
 
 ### Resource and section shapes
 
-Reserved GET returns `{"settings":null}` for an absent row. An existing/saved
+GET returns `{"settings":null}` for an absent row. An existing/saved
 resource has all of `user_id`, `revision`, `activities`, `plan_draft`, `created_at`
 and `updated_at`. Revision is 1–2147483647; timestamps are server-owned UTC RFC3339
 with `Z`. Saved-response `settings` is nonnullable. No owner is accepted in PATCH.
@@ -265,7 +266,7 @@ activity may exist without a predefined selection. These are storage bounds.
   Reject unknown fields such as `active`, `installed_revision`, app inventories,
   selection tokens, credits and onboarding-completion state.
 
-### Reserved write and conflict semantics
+### Write and conflict semantics
 
 PATCH requires a strict object with `expected_revision` (integer 0–2147483646,
 no boolean/float/string coercion) and at least one of activities/plan_draft:
@@ -291,23 +292,24 @@ increment. Preserve omitted sections atomically in the same CAS, not a read/merg
 race. Share the settings revision between activity and schedule editors so stale
 cross-section edits receive a conflict rather than silently overriding data.
 
-API-12 must enforce the existing 16 KiB raw JSON-body bound, strict JSON/media-type
-rules and private transport protections. Planned errors reuse safe 401/403/413/
+The shared product-PATCH middleware enforces the 16 KiB raw JSON-body bound, strict
+JSON/media-type rules and private transport protections. Errors reuse safe 401/403/
 422/503 handling; 409 adds **SETTINGS_CONFLICT** with own `current_revision` (0 when
 absent), retryable=false. A deleted Auth owner cannot be recreated by a settings
 write. No automatic write replay after conflict, timeout or possible commit.
 
-Before exposing routes, API-12 must extend the backend envelope and mobile decoder
-whitelists together. Validation details use only fixed fields: `body`,
+The backend envelope and mobile decoder whitelists were extended together.
+Validation details use only fixed fields: `body`,
 `expected_revision`, `activities`, `activities.selected_activity_ids`,
 `activities.custom_text`, `plan_draft`, `plan_draft.weekdays`, `plan_draft.hours`,
 `plan_draft.hours.start_local`, `plan_draft.hours.end_local`,
 `plan_draft.hours.next_day`, `plan_draft.timezone_id`, `plan_draft.session_count`,
 `plan_draft.session_minutes`. Collapse list indices/unknown keys to these paths;
-never echo input/key names. In addition to existing issue codes, settings needs
+never echo input/key names. In addition to existing issue codes, settings uses
 `duplicate`, `invalid_choice`, `invalid_time`, `invalid_range`, `invalid_timezone`.
-Those HTTP error changes are reserved for API-12, not silently added to current
-profile responses or generated types by API-11.
+These codes/fields are published in the shared generated envelope. Profile
+validation still maps only its own fields; extra/private keys remain body-level
+errors, and its existing conflict and write behavior are unchanged.
 
 ### Storage boundary
 
@@ -327,3 +329,11 @@ JSON number spelling; strict integer token validation belongs to Python before
 storage. The unchanged profile history precedes revision `20261102_0002`. Local
 migration/security/cascade evidence is separate from a managed Auth deletion test;
 no hosted upgrade or account operation is implied by this contract commit.
+
+
+API-12 publishes generated `SettingsPatch` as a union requiring expected_revision
+and at least one settings section. The JSON Schema uses complete typed anyOf
+branches; required-only branches previously degraded to unknown in the generator.
+Compile checks reject revision-only bodies, unknown input, owners, boolean
+revisions, display-label activity IDs and null saved successes. Generated DTOs
+do not replace runtime owner/response validation in RN-09i.

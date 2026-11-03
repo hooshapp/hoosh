@@ -9,7 +9,7 @@ from sqlalchemy.exc import IntegrityError
 
 from app.application import create_app
 from app.core.errors import safe_validation_details
-from app.core.profile_body import PROFILE_BODY_LIMIT
+from app.core.json_body import PATCH_BODY_LIMIT as PROFILE_BODY_LIMIT
 from app.repositories.profiles import save_own_profile
 from app.schemas.profiles import ProfilePatch
 from tests.auth.support import USER_A, settings
@@ -189,7 +189,7 @@ def test_non_json_malformed_unicode_and_nonobject_bodies_are_safe_422(body, cont
 
 
 def test_body_boundary_preserves_disconnect_and_cancellation_and_other_methods():
-    from app.core.profile_body import ProfileBodyMiddleware
+    from app.core.json_body import JsonPatchBodyMiddleware
 
     async def run():
         called = []
@@ -206,7 +206,7 @@ def test_body_boundary_preserves_disconnect_and_cancellation_and_other_methods()
         async def no_send(message):
             pytest.fail("Disconnected request must not start a response")
 
-        app = ProfileBodyMiddleware(downstream)
+        app = JsonPatchBodyMiddleware(downstream)
         scope = {"type": "http", "method": "PATCH", "path": "/v1/profile"}
         await app(scope, disconnected, no_send)
         assert not called

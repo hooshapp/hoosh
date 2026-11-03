@@ -13,6 +13,7 @@ class ErrorCode(StrEnum):
     TOKEN_EXPIRED = "TOKEN_EXPIRED"
     FORBIDDEN = "FORBIDDEN"
     PROFILE_CONFLICT = "PROFILE_CONFLICT"
+    SETTINGS_CONFLICT = "SETTINGS_CONFLICT"
     REQUEST_TOO_LARGE = "REQUEST_TOO_LARGE"
     VALIDATION_ERROR = "VALIDATION_ERROR"
     AUTH_UNAVAILABLE = "AUTH_UNAVAILABLE"
@@ -28,7 +29,23 @@ class WireModel(BaseModel):
 
 
 class ValidationField(WireModel):
-    field: Literal["body", "expected_revision", "display_name"]
+    field: Literal[
+        "body",
+        "expected_revision",
+        "display_name",
+        "activities",
+        "activities.selected_activity_ids",
+        "activities.custom_text",
+        "plan_draft",
+        "plan_draft.weekdays",
+        "plan_draft.hours",
+        "plan_draft.hours.start_local",
+        "plan_draft.hours.end_local",
+        "plan_draft.hours.next_day",
+        "plan_draft.timezone_id",
+        "plan_draft.session_count",
+        "plan_draft.session_minutes",
+    ]
     code: Literal[
         "required",
         "invalid_type",
@@ -38,6 +55,11 @@ class ValidationField(WireModel):
         "out_of_range",
         "extra_field",
         "invalid_json",
+        "duplicate",
+        "invalid_choice",
+        "invalid_time",
+        "invalid_range",
+        "invalid_timezone",
     ]
 
 
@@ -89,7 +111,7 @@ class ValidationErrorBody(CommonErrorBody):
 
 
 class ConflictErrorBody(CommonErrorBody):
-    code: Literal[ErrorCode.PROFILE_CONFLICT]
+    code: Literal[ErrorCode.PROFILE_CONFLICT, ErrorCode.SETTINGS_CONFLICT]
     retryable: Literal[False]
     details: ConflictDetails
 

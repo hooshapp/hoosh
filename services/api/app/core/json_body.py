@@ -1,4 +1,4 @@
-"""Bound only profile PATCH bodies before JSON parsing/dependency acquisition."""
+"""Bound the two product PATCH bodies before JSON/dependency acquisition."""
 
 import json
 
@@ -9,7 +9,7 @@ from starlette.types import ASGIApp, Message, Receive, Scope, Send
 from app.core.errors import ApiError, error_response
 from app.schemas.errors import ErrorCode, ValidationDetails, ValidationField
 
-PROFILE_BODY_LIMIT = 16 * 1024
+PATCH_BODY_LIMIT = 16 * 1024
 
 
 def _unique_object(pairs: list[tuple[str, object]]) -> dict[str, object]:
@@ -25,7 +25,7 @@ def _reject_constant(value: str):
     raise ValueError
 
 
-class ProfileBodyMiddleware:
+class JsonPatchBodyMiddleware:
     def __init__(self, app: ASGIApp) -> None:
         self.app = app
 
@@ -33,7 +33,7 @@ class ProfileBodyMiddleware:
         if (
             scope["type"] != "http"
             or scope["method"] != "PATCH"
-            or scope["path"].rstrip("/") != "/v1/profile"
+            or scope["path"].rstrip("/") not in {"/v1/profile", "/v1/settings"}
         ):
             await self.app(scope, receive, send)
             return
@@ -43,7 +43,7 @@ class ProfileBodyMiddleware:
             if message["type"] == "http.disconnect":
                 return
             chunk = message.get("body", b"")
-            if len(buffer) + len(chunk) > PROFILE_BODY_LIMIT:
+            if len(buffer) + len(chunk) > PATCH_BODY_LIMIT:
                 response = error_response(Request(scope), ApiError(ErrorCode.REQUEST_TOO_LARGE))
                 await response(scope, receive, send)
                 return

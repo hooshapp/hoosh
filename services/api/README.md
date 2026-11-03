@@ -15,7 +15,7 @@ npm run api:lint
 
 The adopted [M1/M2 contract](../../packages/contracts/HTTP_API.md) specifies identity-only `GET /v1/me`, implemented `GET /v1/profile`, and implemented revisioned PATCH (API-09). Ishmum owns Pydantic/OpenAPI schemas and the sole Alembic history. Derive user IDs from verified Supabase access tokens; no client-provided identity or production auth bypass. Supabase Auth owns credentials and mobile session refresh. The API owns token verification and server-authoritative product mutations.
 
-The JWT verifier, bounded public-key resolver and lazy PostgreSQL unit of work are implemented. The minimal profile model/Alembic schema/RLS and profile GET/PATCH are also implemented. API-11 adds settings data models/storage; its endpoints remain API-12 work. Cloud deployment and Auth/mobile integration remain pending. Configuration is read from `services/api/.env`, independently of the shell working directory. Copy `.env.example` when you need browser CORS or later integration settings.
+The JWT verifier, bounded public-key resolver and lazy PostgreSQL unit of work are implemented. The minimal profile model/Alembic schema/RLS and profile GET/PATCH are also implemented. API-11/12 add settings data models/storage and protected revisioned GET/PATCH. Cloud deployment and Auth/mobile integration remain pending. Configuration is read from `services/api/.env`, independently of the shell working directory. Copy `.env.example` when you need browser CORS or later integration settings.
 
 Dependencies are locked in `uv.lock`. Add them using `uv add --project services/api ...` (or `--dev` for tooling), and commit both the project file and lockfile.
 
@@ -306,19 +306,31 @@ operator guide/evidence for recovery and exact remaining authenticated-app/nativ
 lifecycle gates. No mobile Auth implementation was taken over from Anisha.
 
 
-## API-11 — Settings contract/storage (no endpoints yet)
+## API-11/12 — Settings contract/storage and HTTP
 
 One `user_settings` row per Auth UUID stores activities and an optional non-enforcing
 plan draft with its own revision and server clocks. See the
-[contract](../../packages/contracts/HTTP_API.md#settings-data-contract--api-11-endpoints-reserved-for-api-12)
+[contract](../../packages/contracts/HTTP_API.md#settings-http-contract--api-12)
 and [migration guide](alembic/README.md#settings-revision-20261102_0002--api-11).
 Schema models/fixtures validate explicit omit/null/empty/partial sections, Unicode,
 timezones and numeric/storage bounds. The locked tzdata dependency supports hosts
-without system timezone data. No settings route or new generated endpoint type is
-published; API-12 supplies GET/PATCH and the coordinated safe error extensions.
+without system timezone data. API-12 publishes GET/PATCH and generated endpoint types with coordinated safe
+error extensions. A settings save stores draft data only.
 
 The repository head is now `20261102_0002`, tested on guarded local PostgreSQL 17.
 Profiles and the original applied revision are unchanged. This commit does not
 upgrade hosted development, change Auth/users/native behavior or install plans.
 Use the explicit migration workflow when deliberately adopting the new head on
 a shared development target; older-head diagnostics are not current-head proof.
+
+
+API-12 reuses the current identity and database units, and shares bounded strict
+JSON middleware with profile PATCH. GET returns explicit absence without creation;
+PATCH uses first-create/revision CAS and changes only submitted sections. Commit
+precedes success; 409 SETTINGS_CONFLICT exposes only the own current revision.
+Updated nested-field/error whitelists contain no input/key echo. See the settings
+contract for omit/null/replacement rules and API-12 implementation notes for exact
+local HTTP/security/race/rollback and true process-restart evidence. Hosted schema
+was not upgraded or exercised by this implementation; run the explicit guarded
+development upgrade before managed settings use. Anisha's mobile Auth and the
+previously deferred authenticated phone/C-deletion tests remain separate.

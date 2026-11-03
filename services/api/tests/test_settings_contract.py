@@ -160,9 +160,9 @@ def test_owned_metadata_and_new_migration_preserve_the_original_profile_history(
     assert "CREATE TABLE auth.users" not in offline_sql()
 
 
-def test_settings_endpoints_and_openapi_are_not_published_by_the_storage_commit():
+def test_settings_endpoints_publish_the_storage_contract_without_auth_bypass():
     app = create_app()
-    assert "/v1/settings" not in app.openapi()["paths"]
+    assert set(app.openapi()["paths"]["/v1/settings"]) == {"get", "patch"}
     with TestClient(app) as client:
-        assert client.get("/v1/settings").status_code == 404
-        assert client.patch("/v1/settings", json={"expected_revision": 0}).status_code == 404
+        assert client.get("/v1/settings").status_code == 401
+        assert client.patch("/v1/settings", json={"expected_revision": 0}).status_code == 401

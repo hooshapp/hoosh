@@ -1,7 +1,7 @@
 # Plan 03 — FastAPI Identity and Profile Foundation
 
 **Status:** API-01–09 are implemented: strict trust/errors, JWT/JWKS, database-independent identity, generated contracts and bounded lazy PostgreSQL units of work. API-06 passed 337 deterministic tests, 24 real PostgreSQL checks and a read-only hosted runtime/TLS smoke check. API-07 added the model, single Alembic history and profile constraints/grants/RLS, with 344 deterministic and 66 real DB tests plus hosted upgrade/check. API-08 now adds nonmutating own-profile GET and generated shapes (374 deterministic / 75 real DB tests). API-09 now adds strict bounded PATCH, canonical validation, atomic insert/CAS and own conflicts (453 deterministic / 96 real DB checks). API-10 operational diagnostics/tooling and independent checks are now implemented; managed-account HTTP identity/profile/restart checks now pass; actual browser protocol now passes; authenticated application M1/M2 and cascade/native-device acceptance remain pending.\
-**Settings extension (2026-11-02):** API-11 data models, fixtures, local storage migration and security checks are implemented. API-12 endpoints remain planned/not started. API-01–10 and their joint acceptance requirements are unchanged.
+**Settings extension (2026-11-02):** API-11 data models, fixtures, local storage migration and security checks are implemented. API-12 protected endpoints, coordinated errors and generated DTOs are now implemented and locally tested; hosted/mobile acceptance remains separate. API-01–10 and their joint acceptance requirements are unchanged.
 **Owner:** Ishmum (backend/database). Anisha reviews Auth contracts and participates in live session checks.\
 **Area branch:** `area/backend`; task branches `task/backend/<part>`.\
 **Milestones:** M1 = verified identity without a database; M2 = minimal, isolated, revisioned profile persistence.
@@ -458,7 +458,7 @@ Auth/database state or rewrite an applied migration.
 
 ### API-12 — Serve revision-safe settings reads and edits
 
-**Status:** Planned, not started. **Owner:** Ishmum. **Dependencies:** API-11.
+**Status:** Implemented for local HTTP producer scope; hosted migration/managed-token/mobile checks not performed. **Owner:** Ishmum. **Dependencies:** API-11.
 **Suggested commit:** `feat(settings): add scoped settings reads and updates`.
 
 1. Implement the protected GET/PATCH through the existing JWT verifier, runtime
@@ -551,7 +551,7 @@ Auth can finish its session work without profiles. The main frontend must not cl
 | API-09 | Implemented producer; local M2 backend read/write/concurrency/isolation accepted | `c563ff6` | 453 deterministic / 96 real DB tests; strict raw body/name/revision contract, two-connection races, rollback/deletion/replay; actual managed-user/mobile acceptance remains API-10 |
 | API-10 | Operational, managed A/B HTTP and actual browser protocol accepted; app/native/lifecycle acceptance pending | `188c5dd`, `138387f`; current follow-up resolves by `test(api): verify browser protocol and isolated startup modes` | 473 deterministic / 104 PostgreSQL checks; actual browser and separated startup modes, real managed A/B identity, profile writes/clear/conflict/isolation/refetch and actual API restart persistence pass. [Operator guide](../../services/api/OPERATIONS.md). Browser protocol now passes in Opera GX; authenticated Auth/RN-07/root/native and managed cascade gates still open; not full Plan 03 acceptance |
 | API-11 | Implemented contract/local storage producer; no hosted upgrade/routes | Commit resolves by `feat(settings): define revisioned settings draft storage` | 526 deterministic / 173 PostgreSQL tests, full workspace and unchanged published contract checks; strict schemas/fixtures, head `20261102_0002`, isolation/security/drift and profile-preserving upgrade |
-| API-12 | Planned; not started | — | Scoped GET/PATCH, generated types, isolation/CAS and restart evidence before RN-09i/j wiring |
+| API-12 | Implemented local HTTP producer; hosted/mobile acceptance pending | Commit resolves by `feat(settings): add scoped settings reads and updates` | 590 deterministic / 191 PostgreSQL checks, 290 mobile unit / 384 component checks; actual two-writer races, rollback/deleted-owner FK, process restart, generated type safety and export isolation pass |
 
 ## 10. Sources and verification notes
 
@@ -754,3 +754,28 @@ GET/PATCH /v1/settings; API-12 handles routes, safe error extensions and exports
 Hosted development, Auth, native behavior, iOS and private inputs were untouched.
 Producer totals now 20 implemented / 26 pending across 46 top-level parts. Joint
 API-10/M1/M2 and prior authenticated-phone/C-deletion deferrals remain open.
+
+
+### API-12 settings HTTP checkpoint — 2026-11-02
+
+Protected GET/PATCH /v1/settings now publish the adopted settings contract through
+the existing verified-user unit. Missing GET is nonmutating; CAS writes set only
+supplied section columns, preserve omitted sections in SQL and commit before
+success. SETTINGS_CONFLICT reveals only the own revision; nested validation paths
+are fixed/whitelisted and unknown inputs are not echoed. The shared strict 16 KiB
+PATCH middleware preserves profile behavior. SettingsPatch exports a genuinely
+typed at-least-one-section union, with compile failures guarding against unknown
+generation, owners, boolean revisions, labels and absent saved successes.
+
+Full workspace checks pass: 590 deterministic API / 290 portable mobile / 384
+component tests, types/lint/assets/contract checks. Required PostgreSQL group: 191
+passes, including real two-connection create/update races across activity/draft
+edits, explicit retry, rollback, FK deletion wait, commit-time failure and a true
+HTTP process restart preserving settings. Export/QA isolation passes. New-head
+migration checks pass locally; API-12 changes no migration. No hosted upgrade or
+managed-user/device run was made, and prior token/phone/C-deletion deferrals stand.
+
+Next is RN-09i (activity preference consumer), then RN-09j (draft editors); RN-08a
+remains independent. Anisha's Auth/onboarding/iOS and PM/native policy gates remain.
+Across 46 parts, 21 producers are implemented and 25 await full implementation or
+acceptance. This does not close API-10/application M1/M2 or the whole Plan 03.

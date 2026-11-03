@@ -1,5 +1,6 @@
 """Safe public exceptions; never serialize request input or exception text."""
 
+from typing import get_args
 from uuid import UUID
 
 from fastapi import FastAPI, Request
@@ -22,6 +23,7 @@ ERRORS = {
     ErrorCode.TOKEN_EXPIRED: (401, "The access token has expired."),
     ErrorCode.FORBIDDEN: (403, "This operation is not available to this account."),
     ErrorCode.PROFILE_CONFLICT: (409, "Your profile changed. Review the latest version."),
+    ErrorCode.SETTINGS_CONFLICT: (409, "Your settings changed. Review the latest version."),
     ErrorCode.REQUEST_TOO_LARGE: (413, "The request body is too large."),
     ErrorCode.VALIDATION_ERROR: (422, "Check the highlighted fields."),
     ErrorCode.AUTH_UNAVAILABLE: (503, "Identity verification is temporarily unavailable."),
@@ -65,26 +67,65 @@ def error_response(request: Request, error: ApiError, *, status: int | None = No
     )
 
 
-def safe_validation_details(errors: list[dict]) -> ValidationDetails:
+def safe_validation_details(errors: list[dict], *, settings: bool = False) -> ValidationDetails:
     """Whitelist field names/codes, not Pydantic input/msg/ctx or attacker key names."""
     fields = []
     for error in errors[:10]:
         kind = error.get("type", "")
         loc = error.get("loc", ())
-        field = loc[1] if len(loc) > 1 and loc[0] == "body" else "body"
-        if field not in ("expected_revision", "display_name"):
-            field = "body"
-        if kind in ("json_invalid", "model_attributes_type", "model_type"):
+        if settings:
+            path = (
+                ".".join(part for part in loc[1:] if isinstance(part, str))
+                if loc and loc[0] == "body"
+                else "body"
+            )
+            allowed = set(get_args(ValidationField.model_fields["field"].annotation)) - {
+                "display_name"
+            }
+            field = path if path in allowed else "body"
+        else:
+            field = loc[1] if len(loc) > 1 and loc[0] == "body" else "body"
+            if field not in ("expected_revision", "display_name"):
+                field = "body"
+        if kind == "json_invalid" or (
+            field == "body" and kind in ("model_attributes_type", "model_type")
+        ):
             field, code = "body", "invalid_json"
         elif kind == "extra_forbidden":
             field, code = "body", "extra_field"
-        elif kind == "missing":
+        elif kind == "missing" or (settings and kind == "required"):
             code = "required"
-        elif field == "display_name" and kind in ("invalid_text", "blank", "too_long"):
+        elif field in ("display_name", "activities.custom_text") and kind in (
+            "invalid_text",
+            "blank",
+            "too_long",
+        ):
             code = kind
+        elif (
+            settings
+            and field in ("activities.selected_activity_ids", "plan_draft.weekdays")
+            and kind == "duplicate"
+        ):
+            code = "duplicate"
+        elif settings and field == "activities.selected_activity_ids" and kind == "literal_error":
+            code = "invalid_choice"
+        elif settings and field == "plan_draft.hours" and kind == "invalid_range":
+            code = "invalid_range"
+        elif (
+            settings
+            and field in ("plan_draft.hours.start_local", "plan_draft.hours.end_local")
+            and kind == "string_pattern_mismatch"
+        ):
+            code = "invalid_time"
+        elif (
+            settings
+            and field == "plan_draft.timezone_id"
+            and kind in ("invalid_timezone", "string_pattern_mismatch")
+        ):
+            code = "invalid_timezone"
         elif kind in ("greater_than_equal", "greater_than", "less_than_equal", "less_than"):
             code = "out_of_range"
-        elif kind == "string_too_long":
+        elif kind == "string_too_long" or (settings and kind == "too_long"):
             code = "too_long"
         else:
             code = "invalid_type"
@@ -101,7 +142,12 @@ def install_error_handlers(application: FastAPI) -> None:
     async def handle_validation(request: Request, error: RequestValidationError) -> JSONResponse:
         return error_response(
             request,
-            ApiError(ErrorCode.VALIDATION_ERROR, details=safe_validation_details(error.errors())),
+            ApiError(
+                ErrorCode.VALIDATION_ERROR,
+                details=safe_validation_details(
+                    error.errors(), settings=request.url.path.rstrip("/") == "/v1/settings"
+                ),
+            ),
         )
 
     @application.exception_handler(HTTPException)

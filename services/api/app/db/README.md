@@ -140,9 +140,9 @@ mapping, rollback and mutation no-replay behavior are unchanged. Current checks:
 ## API-11 settings storage
 
 `UserSettings` adds one independent owner/revision resource with activities and
-an optional plan-draft JSONB document. See the [wire/data contract](../../../../packages/contracts/HTTP_API.md#settings-data-contract--api-11-endpoints-reserved-for-api-12).
-The models validate data only; no settings route, native install, session engine
-or onboarding completion is introduced. API-12 will expose scoped GET/PATCH.
+an optional plan-draft JSONB document. See the [wire/data contract](../../../../packages/contracts/HTTP_API.md#settings-http-contract--api-12).
+API-12 exposes scoped GET/PATCH using these models and the same verified-user
+units. No native install, session engine or onboarding completion is introduced.
 The external Auth FK reference is shared outside owned metadata; settings does
 not require a profile row. No mobile product-table grants or additional pool.
 
@@ -159,3 +159,13 @@ Hosted development was not upgraded or inspected in this commit. A hosted target
 on the previous head must receive the deliberate guarded additive upgrade before
 new-head drift diagnostics/settings endpoints can be accepted. Existing private
 token inputs and the user-deferred hosted account-deletion check are unchanged.
+
+
+API-12 settings writes use one INSERT ON CONFLICT DO NOTHING or owner/revision
+UPDATE ... RETURNING, setting only supplied section columns. There is no prior
+read/merge; omitted data stays in PostgreSQL. A miss performs a fresh READ COMMITTED
+own-revision query for SETTINGS_CONFLICT. Only the exact settings owner FK maps
+to 403; unrelated integrity failures remain errors and roll back. Settings GET
+snapshots UTC DTOs inside the live unit, and writes commit before returning.
+Real two-connection races, deleted-owner FK wait, deferred-commit failure and a
+fresh HTTP process read after restart are tested on the guarded local database.

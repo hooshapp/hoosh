@@ -52,7 +52,7 @@ class RequestContextMiddleware:
         finally:
             # Values are fixed enums/literals or server-generated, never raw target,
             # query, headers, account identifiers, body, exception or SQL text.
-            paths = {"/healthz", "/v1/me", "/v1/profile", "/openapi.json", "/docs"}
+            paths = {"/healthz", "/v1/me", "/v1/profile", "/v1/settings", "/openapi.json", "/docs"}
             method = (
                 scope.get("method", "OTHER")
                 if scope.get("method")

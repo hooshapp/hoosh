@@ -67,10 +67,44 @@ export interface paths {
         patch: operations["save_own_profile"];
         trace?: never;
     };
+    "/v1/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Read the authenticated user's settings without creating a row
+         * @description Returns {settings:null} only when absent. Owner comes only from the verified token; database failures are not absence. Nullable fields are explicit; timestamps are UTC with Z. No-store; no Auth or native policy mutation.
+         */
+        get: operations["get_own_settings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /**
+         * Create or edit own settings with an atomic revision check
+         * @description Strict JSON, at most 16384 raw bytes. Expected revision 0 creates only if absent; positive expectations update only matching own revision. Submit activities and/or plan_draft: omission preserves, activities null resets empty, plan_draft null clears; objects replace their whole section. Each accepted write increments once. Custom text strips once and has 1–200 Unicode code points; incomplete nullable plan drafts are valid. No installed-rule, onboarding, session, reward or profile mutation. 409 SETTINGS_CONFLICT gives only the own current revision; refetch/review and never blindly replay. Deleted-owner FK is 403. Commit precedes success; UTC clocks and no-store.
+         */
+        patch: operations["save_own_settings"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** ActivityPreferences */
+        ActivityPreferences: {
+            /**
+             * Custom Text
+             * @description Null clears custom activity. Otherwise reject invalid text, strip once, 1–200 code points.
+             */
+            custom_text: string | null;
+            /** Selected Activity Ids */
+            selected_activity_ids: ("gym" | "reading" | "arts_and_crafts" | "walking" | "music" | "cooking")[];
+        };
         /** ConflictDetails */
         ConflictDetails: {
             /** Current Revision */
@@ -82,7 +116,7 @@ export interface components {
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
-            code: "PROFILE_CONFLICT";
+            code: "PROFILE_CONFLICT" | "SETTINGS_CONFLICT";
             details: components["schemas"]["ConflictDetails"];
             /** Message */
             message: string;
@@ -96,6 +130,15 @@ export interface components {
              * @constant
              */
             retryable: false;
+        };
+        /** DraftHours */
+        DraftHours: {
+            /** End Local */
+            end_local: string | null;
+            /** Next Day */
+            next_day: boolean;
+            /** Start Local */
+            start_local: string | null;
         };
         /** ErrorEnvelope */
         ErrorEnvelope: {
@@ -148,6 +191,18 @@ export interface components {
              */
             user_id: string;
         };
+        /** PlanDraft */
+        PlanDraft: {
+            hours: components["schemas"]["DraftHours"] | null;
+            /** Session Count */
+            session_count: number | null;
+            /** Session Minutes */
+            session_minutes: number | null;
+            /** Timezone Id */
+            timezone_id: string | null;
+            /** Weekdays */
+            weekdays: number[];
+        };
         /** ProfilePatch */
         ProfilePatch: {
             /**
@@ -185,6 +240,48 @@ export interface components {
              * Updated At
              * Format: date-time
              * @description Server-updated UTC RFC 3339 timestamp with Z.
+             */
+            updated_at: string;
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+        };
+        /** SettingsPatch */
+        SettingsPatch: {
+            activities: components["schemas"]["ActivityPreferences"] | null;
+            /** Expected Revision */
+            expected_revision: number;
+            plan_draft?: components["schemas"]["PlanDraft"] | null;
+        } | {
+            activities?: components["schemas"]["ActivityPreferences"] | null;
+            /** Expected Revision */
+            expected_revision: number;
+            plan_draft: components["schemas"]["PlanDraft"] | null;
+        };
+        /** SettingsResponse */
+        SettingsResponse: {
+            settings: components["schemas"]["SettingsView"] | null;
+        };
+        /** SettingsSavedResponse */
+        SettingsSavedResponse: {
+            settings: components["schemas"]["SettingsView"];
+        };
+        /** SettingsView */
+        SettingsView: {
+            activities: components["schemas"]["ActivityPreferences"];
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            plan_draft: components["schemas"]["PlanDraft"] | null;
+            /** Revision */
+            revision: number;
+            /**
+             * Updated At
+             * Format: date-time
              */
             updated_at: string;
             /**
@@ -245,12 +342,12 @@ export interface components {
              * Code
              * @enum {string}
              */
-            code: "required" | "invalid_type" | "blank" | "too_long" | "invalid_text" | "out_of_range" | "extra_field" | "invalid_json";
+            code: "required" | "invalid_type" | "blank" | "too_long" | "invalid_text" | "out_of_range" | "extra_field" | "invalid_json" | "duplicate" | "invalid_choice" | "invalid_time" | "invalid_range" | "invalid_timezone";
             /**
              * Field
              * @enum {string}
              */
-            field: "body" | "expected_revision" | "display_name";
+            field: "body" | "expected_revision" | "display_name" | "activities" | "activities.selected_activity_ids" | "activities.custom_text" | "plan_draft" | "plan_draft.weekdays" | "plan_draft.hours" | "plan_draft.hours.start_local" | "plan_draft.hours.end_local" | "plan_draft.hours.next_day" | "plan_draft.timezone_id" | "plan_draft.session_count" | "plan_draft.session_minutes";
         };
     };
     responses: never;
@@ -490,6 +587,190 @@ export interface operations {
                 };
             };
             /** @description Own revision mismatch or storage exhaustion */
+            409: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Raw request exceeds 16 KiB */
+            413: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Safe JSON/field validation failure */
+            422: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Safe unexpected failure */
+            500: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Identity trust or database unavailable */
+            503: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    get_own_settings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SettingsResponse"];
+                };
+            };
+            /** @description Missing, invalid or expired credentials */
+            401: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    "WWW-Authenticate": "Bearer";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Anonymous identity excluded */
+            403: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Safe unexpected failure */
+            500: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Identity trust or database unavailable */
+            503: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    save_own_settings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SettingsPatch"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SettingsSavedResponse"];
+                };
+            };
+            /** @description Missing, invalid or expired credentials */
+            401: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    "WWW-Authenticate": "Bearer";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Anonymous or deleted owner excluded */
+            403: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Own settings revision conflict */
             409: {
                 headers: {
                     "Cache-Control": "no-store";

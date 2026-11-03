@@ -1,5 +1,6 @@
-"""Settings data contracts only. Routes and generated endpoint DTOs follow in API-12."""
+"""Strict settings wire shapes; drafts never imply installed native policy."""
 
+from copy import deepcopy
 from datetime import UTC, datetime
 from functools import lru_cache
 from typing import Annotated, Literal
@@ -24,7 +25,6 @@ ActivityId = Literal["gym", "reading", "arts_and_crafts", "walking", "music", "c
 Weekday = Annotated[StrictInt, Field(ge=0, le=6)]
 LocalTime = Annotated[StrictStr, Field(pattern=r"^(?:[01][0-9]|2[0-3]):[0-5][0-9]$")]
 MAX_REVISION = 2_147_483_647
-SETTINGS_BODY_LIMIT = 16_384  # Reserved route limit, enforced by API-12's raw body reader.
 
 
 @lru_cache(maxsize=1)
@@ -109,10 +109,27 @@ class PlanDraft(WireModel):
         return value
 
 
+def _patch_schema(schema: dict) -> None:
+    # Typed complete branches preserve at-least-one-section in JSON Schema AND
+    # generated clients; required-only anyOf branches degrade to unknown in codegen.
+    properties = schema.pop("properties")
+    schema.pop("required", None)
+    schema.pop("additionalProperties", None)
+    schema["anyOf"] = [
+        {
+            "type": "object",
+            "properties": deepcopy(properties),
+            "required": ["expected_revision", section],
+            "additionalProperties": False,
+        }
+        for section in ("activities", "plan_draft")
+    ]
+
+
 class SettingsPatch(WireModel):
     model_config = ConfigDict(
         extra="forbid",
-        json_schema_extra={"anyOf": [{"required": ["activities"]}, {"required": ["plan_draft"]}]},
+        json_schema_extra=_patch_schema,
     )
     expected_revision: StrictInt = Field(ge=0, le=MAX_REVISION - 1)
     # model_fields_set/exclude_unset distinguish omission from an explicit null.

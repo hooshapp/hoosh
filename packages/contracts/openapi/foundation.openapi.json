@@ -1,6 +1,46 @@
 {
   "components": {
     "schemas": {
+      "ActivityPreferences": {
+        "additionalProperties": false,
+        "properties": {
+          "custom_text": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Null clears custom activity. Otherwise reject invalid text, strip once, 1\u2013200 code points.",
+            "title": "Custom Text"
+          },
+          "selected_activity_ids": {
+            "items": {
+              "enum": [
+                "gym",
+                "reading",
+                "arts_and_crafts",
+                "walking",
+                "music",
+                "cooking"
+              ],
+              "type": "string"
+            },
+            "maxItems": 6,
+            "title": "Selected Activity Ids",
+            "type": "array",
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "selected_activity_ids",
+          "custom_text"
+        ],
+        "title": "ActivityPreferences",
+        "type": "object"
+      },
       "ConflictDetails": {
         "additionalProperties": false,
         "properties": {
@@ -20,7 +60,10 @@
         "additionalProperties": false,
         "properties": {
           "code": {
-            "const": "PROFILE_CONFLICT",
+            "enum": [
+              "PROFILE_CONFLICT",
+              "SETTINGS_CONFLICT"
+            ],
             "title": "Code",
             "type": "string"
           },
@@ -52,6 +95,46 @@
         "title": "ConflictErrorBody",
         "type": "object"
       },
+      "DraftHours": {
+        "additionalProperties": false,
+        "properties": {
+          "end_local": {
+            "anyOf": [
+              {
+                "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "End Local"
+          },
+          "next_day": {
+            "title": "Next Day",
+            "type": "boolean"
+          },
+          "start_local": {
+            "anyOf": [
+              {
+                "pattern": "^(?:[01][0-9]|2[0-3]):[0-5][0-9]$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Start Local"
+          }
+        },
+        "required": [
+          "start_local",
+          "end_local",
+          "next_day"
+        ],
+        "title": "DraftHours",
+        "type": "object"
+      },
       "ErrorEnvelope": {
         "additionalProperties": false,
         "properties": {
@@ -69,6 +152,7 @@
                 "NOT_FOUND": "#/components/schemas/GeneralErrorBody",
                 "PROFILE_CONFLICT": "#/components/schemas/ConflictErrorBody",
                 "REQUEST_TOO_LARGE": "#/components/schemas/GeneralErrorBody",
+                "SETTINGS_CONFLICT": "#/components/schemas/ConflictErrorBody",
                 "TOKEN_EXPIRED": "#/components/schemas/GeneralErrorBody",
                 "VALIDATION_ERROR": "#/components/schemas/ValidationErrorBody"
               },
@@ -188,6 +272,80 @@
         "title": "MeResponse",
         "type": "object"
       },
+      "PlanDraft": {
+        "additionalProperties": false,
+        "properties": {
+          "hours": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/DraftHours"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "session_count": {
+            "anyOf": [
+              {
+                "maximum": 1000.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Session Count"
+          },
+          "session_minutes": {
+            "anyOf": [
+              {
+                "maximum": 1440.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Session Minutes"
+          },
+          "timezone_id": {
+            "anyOf": [
+              {
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9_+/-]+$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Timezone Id"
+          },
+          "weekdays": {
+            "items": {
+              "maximum": 6.0,
+              "minimum": 0.0,
+              "type": "integer"
+            },
+            "maxItems": 7,
+            "title": "Weekdays",
+            "type": "array",
+            "uniqueItems": true
+          }
+        },
+        "required": [
+          "weekdays",
+          "hours",
+          "timezone_id",
+          "session_count",
+          "session_minutes"
+        ],
+        "title": "PlanDraft",
+        "type": "object"
+      },
       "ProfilePatch": {
         "additionalProperties": false,
         "properties": {
@@ -301,6 +459,168 @@
         "title": "ProfileView",
         "type": "object"
       },
+      "SettingsPatch": {
+        "anyOf": [
+          {
+            "additionalProperties": false,
+            "properties": {
+              "activities": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/ActivityPreferences"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "expected_revision": {
+                "maximum": 2147483646.0,
+                "minimum": 0.0,
+                "title": "Expected Revision",
+                "type": "integer"
+              },
+              "plan_draft": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/PlanDraft"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "expected_revision",
+              "activities"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "activities": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/ActivityPreferences"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "expected_revision": {
+                "maximum": 2147483646.0,
+                "minimum": 0.0,
+                "title": "Expected Revision",
+                "type": "integer"
+              },
+              "plan_draft": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/PlanDraft"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "expected_revision",
+              "plan_draft"
+            ],
+            "type": "object"
+          }
+        ],
+        "title": "SettingsPatch",
+        "type": "object"
+      },
+      "SettingsResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "settings": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SettingsView"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "settings"
+        ],
+        "title": "SettingsResponse",
+        "type": "object"
+      },
+      "SettingsSavedResponse": {
+        "additionalProperties": false,
+        "properties": {
+          "settings": {
+            "$ref": "#/components/schemas/SettingsView"
+          }
+        },
+        "required": [
+          "settings"
+        ],
+        "title": "SettingsSavedResponse",
+        "type": "object"
+      },
+      "SettingsView": {
+        "additionalProperties": false,
+        "properties": {
+          "activities": {
+            "$ref": "#/components/schemas/ActivityPreferences"
+          },
+          "created_at": {
+            "format": "date-time",
+            "pattern": "Z$",
+            "title": "Created At",
+            "type": "string"
+          },
+          "plan_draft": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PlanDraft"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "revision": {
+            "maximum": 2147483647.0,
+            "minimum": 1.0,
+            "title": "Revision",
+            "type": "integer"
+          },
+          "updated_at": {
+            "format": "date-time",
+            "pattern": "Z$",
+            "title": "Updated At",
+            "type": "string"
+          },
+          "user_id": {
+            "format": "uuid",
+            "title": "User Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_id",
+          "revision",
+          "activities",
+          "plan_draft",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "SettingsView",
+        "type": "object"
+      },
       "UnavailableErrorBody": {
         "additionalProperties": false,
         "properties": {
@@ -403,7 +723,12 @@
               "invalid_text",
               "out_of_range",
               "extra_field",
-              "invalid_json"
+              "invalid_json",
+              "duplicate",
+              "invalid_choice",
+              "invalid_time",
+              "invalid_range",
+              "invalid_timezone"
             ],
             "title": "Code",
             "type": "string"
@@ -412,7 +737,19 @@
             "enum": [
               "body",
               "expected_revision",
-              "display_name"
+              "display_name",
+              "activities",
+              "activities.selected_activity_ids",
+              "activities.custom_text",
+              "plan_draft",
+              "plan_draft.weekdays",
+              "plan_draft.hours",
+              "plan_draft.hours.start_local",
+              "plan_draft.hours.end_local",
+              "plan_draft.hours.next_day",
+              "plan_draft.timezone_id",
+              "plan_draft.session_count",
+              "plan_draft.session_minutes"
             ],
             "title": "Field",
             "type": "string"
@@ -435,7 +772,7 @@
     }
   },
   "info": {
-    "description": "Verified identity and isolated, revision-safe profiles.",
+    "description": "Verified identity and isolated, revision-safe profiles and settings.",
     "title": "Disconnect API",
     "version": "0.0.0"
   },
@@ -1063,6 +1400,413 @@
         "summary": "Create or edit the authenticated user's profile with a revision check",
         "tags": [
           "profile"
+        ]
+      }
+    },
+    "/v1/settings": {
+      "get": {
+        "description": "Returns {settings:null} only when absent. Owner comes only from the verified token; database failures are not absence. Nullable fields are explicit; timestamps are UTC with Z. No-store; no Auth or native policy mutation.",
+        "operationId": "get_own_settings",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SettingsResponse"
+                }
+              }
+            },
+            "description": "Successful Response",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Missing, invalid or expired credentials",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "WWW-Authenticate": {
+                "required": true,
+                "schema": {
+                  "const": "Bearer",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Anonymous identity excluded",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Safe unexpected failure",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Identity trust or database unavailable",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "SupabaseAccessToken": []
+          }
+        ],
+        "summary": "Read the authenticated user's settings without creating a row",
+        "tags": [
+          "settings"
+        ]
+      },
+      "patch": {
+        "description": "Strict JSON, at most 16384 raw bytes. Expected revision 0 creates only if absent; positive expectations update only matching own revision. Submit activities and/or plan_draft: omission preserves, activities null resets empty, plan_draft null clears; objects replace their whole section. Each accepted write increments once. Custom text strips once and has 1\u2013200 Unicode code points; incomplete nullable plan drafts are valid. No installed-rule, onboarding, session, reward or profile mutation. 409 SETTINGS_CONFLICT gives only the own current revision; refetch/review and never blindly replay. Deleted-owner FK is 403. Commit precedes success; UTC clocks and no-store.",
+        "operationId": "save_own_settings",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SettingsPatch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SettingsSavedResponse"
+                }
+              }
+            },
+            "description": "Successful Response",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Missing, invalid or expired credentials",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "WWW-Authenticate": {
+                "required": true,
+                "schema": {
+                  "const": "Bearer",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Anonymous or deleted owner excluded",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Own settings revision conflict",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Raw request exceeds 16 KiB",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Safe JSON/field validation failure",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Safe unexpected failure",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Identity trust or database unavailable",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "SupabaseAccessToken": []
+          }
+        ],
+        "summary": "Create or edit own settings with an atomic revision check",
+        "tags": [
+          "settings"
         ]
       }
     }

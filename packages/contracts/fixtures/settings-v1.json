@@ -1,5 +1,5 @@
 {
-  "status": "API-11 data contract only; endpoints follow in API-12",
+  "status": "API-12 published settings HTTP contract; all examples are synthetic",
   "activity_choices": [
     {
       "id": "gym",

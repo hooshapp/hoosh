@@ -35,11 +35,12 @@ mobile routes/imports. See [handoff and release-isolation rules](../../docs/arch
 ## Implemented HTTP authority — API-05
 
 FastAPI/Pydantic models are executable authority for implemented `/healthz`,
-`/v1/me` and `GET/PATCH /v1/profile`, plus shared safe errors. `openapi/foundation.openapi.json` and
+`/v1/me` and `GET/PATCH /v1/profile` and `/v1/settings`, plus shared safe errors. `openapi/foundation.openapi.json` and
 `src/http.generated.ts` are committed together. The public entry exports type-only
 `paths`, `operations`, `components`, `HealthResponse`, `MeResponse`, `ProfileView`,
 `ProfileResponse`, `ProfilePatch`, `ProfileSavedResponse`, `ApiErrorEnvelope`
-and `ApiErrorCode`. Auth/native domain ports remain handwritten and type-only.
+and `ApiErrorCode`. Settings also exports `ActivityPreferences`, `PlanDraft`,
+`SettingsView`, `SettingsResponse`, `SettingsPatch`, `SettingsSavedResponse`. Auth/native domain ports remain handwritten and type-only.
 
 From the repository root:
 
@@ -59,12 +60,17 @@ successes; API-09 adds strict input and a nonnullable saved-profile response.
 Raw draft names have no misleading maxLength; the server canonicalizes once and
 bounds normalized code points independently of raw body bytes. Generated types do not replace runtime response/subject validation.
 
-## API-11 settings handoff (data/storage only)
+## API-11/12 settings handoff
 
-The [settings section](HTTP_API.md#settings-data-contract--api-11-endpoints-reserved-for-api-12)
-and synthetic [settings cases](fixtures/settings-v1.json) specify stable activity
-IDs, bounded nullable plan drafts, section replacement/clear semantics and their
-independent revision. Strict Python models and storage exist. API-12 publishes
-routes/generated endpoint types and coordinates new error whitelist entries; do
-not handwrite HTTP TypeScript DTOs or treat these fixtures as production defaults.
-Auth/onboarding/iOS ownership and unanswered product behavior are unchanged.
+The [settings section](HTTP_API.md#settings-http-contract--api-12) and synthetic
+[settings cases](fixtures/settings-v1.json) specify stable activity IDs, bounded
+nullable plan drafts, section replacement/clear semantics and an independent
+revision. API-12 publishes protected GET/PATCH, generated endpoint types and
+coordinated safe error fields/codes. No handwritten HTTP DTO or production fixture
+selector is added. Auth/onboarding/iOS ownership and product gates are unchanged.
+
+`SettingsPatch` requires a revision and at least one supplied section in generated
+TypeScript as well as server validation. Null clears, omission preserves, and
+objects replace their section. The server atomically preserves omitted data during
+CAS; conflicts and uncertain results require a fresh read and deliberate review.
+This API stores drafts and never installs native rules or completes onboarding.
