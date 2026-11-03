@@ -16,6 +16,8 @@ import { SettingsRow } from './settings-row';
 
 export type SettingsScreenProps = {
   model: SettingsModel;
+  /** Server-stored preferences, with no claim of native installation. */
+  planDraftOnly?: boolean;
   onEdit?: Partial<Record<SettingsField, () => void>>;
   onOpen?: Partial<Record<SettingsField, () => void>>;
   onEditProfile?: () => void;
@@ -28,6 +30,7 @@ export type SettingsScreenProps = {
 };
 export function SettingsScreen({
   model,
+  planDraftOnly = false,
   onEdit = {},
   onOpen = {},
   onEditProfile,
@@ -127,9 +130,9 @@ export function SettingsScreen({
             onPress={onEdit.activities} onView={onOpen.activities}
           />
         </Section>
-        <Section title="My Plan">
+        <Section title={planDraftOnly ? "Plan draft — not active" : "My Plan"}>
           <SettingsRow
-            label="Active Days"
+            label={planDraftOnly ? "Draft days" : "Active Days"}
             value={model.days}
             icon={settingsAssets.calendar}
             iconID="settings-calendar"
@@ -137,7 +140,7 @@ export function SettingsScreen({
           inlineEditor={inlineEditor?.field === 'days' ? inlineEditor.content : undefined}
           />
           <SettingsRow
-            label="Active Hours"
+            label={planDraftOnly ? "Draft hours" : "Active Hours"}
             value={model.hours}
             icon={settingsAssets.clock}
             iconID="settings-clock"
@@ -146,7 +149,7 @@ export function SettingsScreen({
           />
           <View style={styles.sessionGroup}>
             <SettingsRow
-              label="App Sessions"
+              label={planDraftOnly ? "Draft sessions" : "App Sessions"}
               value={model.sessions}
               icon={settingsAssets.timer}
               iconID="settings-timer"
@@ -161,8 +164,7 @@ export function SettingsScreen({
                 testID="settings-info"
               />
               <Text style={styles.contextText}>
-                These are your planned times to use distracting apps — not how
-                long nudges run.
+                {planDraftOnly ? 'Saved draft preferences do not activate protection or change an installed plan.' : 'These are your planned times to use distracting apps — not how long nudges run.'}
               </Text>
             </View>
           </View>

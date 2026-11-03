@@ -6,7 +6,14 @@ import { useRuntime } from '../runtime';
 export default function Profile() {
   const { runtime } = useRuntime();
   return runtime ? (
-    <ConnectedSettingsScreen onOpen={{ activities: () => router.push('./activities') }} />
+    <ConnectedSettingsScreen
+      onOpen={{
+        activities: () => router.push('./activities'),
+        days: () => router.push('./plan?field=days'),
+        hours: () => router.push('./plan?field=hours'),
+        sessions: () => router.push('./plan?field=sessions'),
+      }}
+    />
   ) : (
     <SettingsScreen model={unavailableSettings} />
   );

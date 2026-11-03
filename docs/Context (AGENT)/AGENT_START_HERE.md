@@ -272,3 +272,15 @@ component / 590 API), web isolation/assets and Android QA Hermes export pass;
 no hosted migration, authenticated phone or signed-device acceptance was run.
 Next: RN-09j non-enforcing plan draft editors using the same settings resource;
 RN-08a independent. Counts remain 46 parts / 21 producers / 25 pending.
+
+
+RN-09j checkpoint (2026-11-02): day/hour/session draft consumers now share settings
+revision/review state with activities. They persist partial nullable fields,
+explicit clears and timezone without installing restrictions or defining session
+policy. Existing UI controls, scope guards and original assets are reused; live
+status is Saved draft — not active. Full checks pass (342 mobile unit / 448
+component / 590 API), plus web isolation/assets and Android QA compilation.
+Read the latest Plan 04 notes before continuing. Next RN-09k composes real saved
+preferences/drafts; native status remains unavailable until RN-08c. Hosted
+migration, real Auth/root, authenticated phone, iOS and deferred C deletion remain
+separate. Parent counts stay 46 parts / 21 producers / 25 pending.

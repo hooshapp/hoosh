@@ -67,3 +67,39 @@ RN-09i has deterministic/component and Android Hermes compilation evidence only.
 Hosted upgrade, real Auth/root, authenticated phone round trips, signing and
 assistive speech are separate acceptance gates. Earlier user deferrals remain in
 force. This QA credential adapter is still excluded from production exports.
+
+## Non-enforcing plan drafts (RN-09j)
+
+Under the same approved account, open **Draft days**, **Draft hours** or **Draft
+sessions** from live Settings. Each view uses the same account query and settings
+revision as activities. These screens store preferences only; the status reads
+**Saved draft — not active** after a verified save. No native plan, authorization,
+onboarding completion or session budget follows from it.
+
+- Save and reopen days, one or both hours, timezone and nullable session values.
+  Leave unset fields blank; no timezone is inferred. Use an IANA name or alias such
+  as `America/New_York` or `US/Eastern`. Invalid raw timezone text must remain
+  editable after authoritative server validation. Overnight ranges need explicit
+  **Ends the next day**; equal or malformed entered times cannot save.
+- Clear days, hours or either session field independently. Blank timezone means
+  unset. **Clear entire plan draft** changes local intent first; **Save cleared
+  draft** sends explicit section null. Confirm the activities remain unchanged.
+- Keep the days editor dirty while another client changes hours or activities.
+  Saving days must conflict against its original revision. Check latest, compare,
+  then Keep my edits or Use latest draft. Keep requires another Save and replaces
+  only this view's field group against the reviewed base: days; hours + timezone;
+  or session count + minutes. Other fields/activities must survive. Clearing the
+  whole draft is deliberately broader and clears all draft fields.
+- Use the existing one-shot lost-response control, fail the latest read, restore
+  access and review. No automatic rebase/replay or successful-save claim may
+  precede verified read/acceptance. Check offline edits, dirty Back, duplicate
+  taps, account changes and a same-user new session generation.
+- Restore any modified test preferences with revision checks, preserving other
+  clients' work. Keep every live token local; the operator adapter still does
+  not refresh credentials or replace Anisha's Auth/root integration.
+
+RN-09j deterministic/component tests cover the real shared query/forms with
+synthetic account ports, including concurrent editors and a committed save whose
+response is lost. Actual hosted/HTTP phone journeys, signing and assistive speech
+remain unexecuted here. The hosted migration and earlier authenticated-phone/C
+account-deletion deferrals are unchanged.

@@ -18,9 +18,22 @@ import { useRouteDraftGuard } from '@/features/editors/use-route-draft-guard';
 import { EmptyCard } from '@/components/ui/empty-card';
 import { useOptionalAccountData } from '@/infrastructure/query/account-data-provider';
 import { ActivityPreferencesScreen } from '@/features/settings/activity-preferences-screen';
+import { PlanDraftScreen } from '@/features/settings/plan-draft-screen';
+import { isPlanField } from '@/features/plans/plan-draft-model';
 export default function PreferenceDetail() {
   const { field } = useLocalSearchParams<{ field: string }>();
   const account = useOptionalAccountData();
+  if (isPlanField(field) && account?.scope)
+    return (
+      <PlanDraftScreen
+        key={field}
+        field={field}
+        onBack={() => {
+          if (router.canGoBack()) router.back();
+          else router.replace('/(tabs)/settings');
+        }}
+      />
+    );
   if (field === 'activities' && account?.scope)
     return (
       <ActivityPreferencesScreen

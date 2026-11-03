@@ -384,7 +384,7 @@ test('Settings observes canonical preferences from the same query without activa
   expect(screen.getAllByText('Not available yet').length).toBeGreaterThan(0);
   app.get.mockRejectedValueOnce(new ApiError('forbidden'));
   await app.refresh();
-  await screen.findByText('Couldn’t load');
+  expect(await screen.findAllByText('Couldn’t load')).toHaveLength(4);
   expect(screen.queryByText('Gym, Custom: Sketch')).toBeNull();
 });
 test('real detail route stays unavailable without the provider and activates the same editor with it', async () => {

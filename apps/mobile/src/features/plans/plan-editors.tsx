@@ -15,6 +15,7 @@ import {
 } from '@/features/editors/editor-controls';
 import { parseTime } from '@/features/editors/draft-utils';
 import { TimeRangeControl, minutesTime } from './time-range-control';
+import { validDraftHours } from './plan-draft-model';
 export type PlanActions = {
   dirty: boolean;
   state?: EditorState;
@@ -39,11 +40,20 @@ function Actions({
 export function DaysEditor({
   days,
   onChange,
+  draftOnly = false,
   ...actions
-}: PlanActions & { days: readonly number[]; onChange: (days: readonly number[]) => void }) {
+}: PlanActions & {
+  days: readonly number[];
+  onChange: (days: readonly number[]) => void;
+  draftOnly?: boolean;
+}) {
   return (
     <View style={editorStyles.panel}>
-      <Text style={editorStyles.body}>Choose the days you want nudges.</Text>
+      <Text style={editorStyles.body}>
+        {draftOnly
+          ? 'Choose days for your draft. Saving does not schedule nudges.'
+          : 'Choose the days you want nudges.'}
+      </Text>
       <View style={editorStyles.row}>
         {[
           ['Weekdays', [0, 1, 2, 3, 4]],
@@ -83,15 +93,25 @@ export type HoursDraft = Readonly<{ start: string; end: string; nextDay: boolean
 export function HoursEditor({
   draft,
   onChange,
+  draftOnly = false,
   ...actions
-}: PlanActions & { draft: HoursDraft; onChange: (draft: HoursDraft) => void }) {
+}: PlanActions & {
+  draft: HoursDraft;
+  onChange: (draft: HoursDraft) => void;
+  draftOnly?: boolean;
+}) {
   const start = parseTime(draft.start),
     end = parseTime(draft.end);
-  const valid = start !== null && end !== null && (draft.nextDay ? end < start : end > start);
+  const complete = start !== null && end !== null;
+  const valid = draftOnly
+    ? validDraftHours(draft)
+    : complete && (draft.nextDay ? end < start : end > start);
   return (
     <View style={editorStyles.panel}>
       <Text style={editorStyles.body}>
-        Choose the time range for nudges. Move either handle or edit the times.
+        {draftOnly
+          ? 'Optional draft hours. Either time can be left blank. Saving does not schedule nudges.'
+          : 'Choose the time range for nudges. Move either handle or edit the times.'}
       </Text>
       <View style={editorStyles.row}>
         <TimeControl
@@ -122,7 +142,7 @@ export function HoursEditor({
         <Text style={styles.endpoint}>12:00 PM</Text>
         <Text style={styles.endpoint}>11:59 PM</Text>
       </View>
-      {draft.nextDay || (start !== null && end !== null && end <= start) ? (
+      {draftOnly || draft.nextDay || (start !== null && end !== null && end <= start) ? (
         <Choice
           label="Ends the next day"
           checked={draft.nextDay}
@@ -144,10 +164,10 @@ export type SessionsDraft = Readonly<{ count: number | null; minutes: number | n
 function validBounds(bounds?: NumberBounds): bounds is NumberBounds {
   return Boolean(
     bounds &&
-    [bounds.min, bounds.max, bounds.step].every(Number.isSafeInteger) &&
-    bounds.min >= 0 &&
-    bounds.max >= bounds.min &&
-    bounds.step > 0,
+      [bounds.min, bounds.max, bounds.step].every(Number.isSafeInteger) &&
+      bounds.min >= 0 &&
+      bounds.max >= bounds.min &&
+      bounds.step > 0,
   );
 }
 function within(value: number | null, bounds?: NumberBounds): boolean {
@@ -163,31 +183,56 @@ export function SessionsEditor({
   draft,
   bounds,
   onChange,
+  draftOnly = false,
   ...actions
 }: PlanActions & {
   draft: SessionsDraft;
   bounds?: { count: NumberBounds; minutes: NumberBounds };
   onChange: (draft: SessionsDraft) => void;
+  draftOnly?: boolean;
 }) {
-  const valid = within(draft.count, bounds?.count) && within(draft.minutes, bounds?.minutes);
+  const valid =
+    ((draftOnly && draft.count === null) || within(draft.count, bounds?.count)) &&
+    ((draftOnly && draft.minutes === null) || within(draft.minutes, bounds?.minutes));
   return (
     <View style={editorStyles.panel}>
-      <Text style={editorStyles.body}>Plan a little time for your apps, on your terms.</Text>
+      <Text style={editorStyles.body}>
+        {draftOnly
+          ? 'Optional session draft values. They do not create an allowance or define a daily reset.'
+          : 'Plan a little time for your apps, on your terms.'}
+      </Text>
       <Stepper
-        label="Sessions per day"
+        label={draftOnly ? 'Draft session count' : 'Sessions per day'}
         value={draft.count}
         bounds={bounds?.count}
         disabled={actions.state === 'saving'}
         onChange={(count) => onChange({ ...draft, count })}
       />
+      {draftOnly ? (
+        <Button
+          label="Clear draft session count"
+          variant="secondary"
+          disabled={actions.state === 'saving' || draft.count === null}
+          onPress={() => onChange({ ...draft, count: null })}
+        />
+      ) : null}
       <Stepper
-        label="Minutes per session"
+        label={draftOnly ? 'Draft session minutes' : 'Minutes per session'}
         value={draft.minutes}
         bounds={bounds?.minutes}
         disabled={actions.state === 'saving'}
         onChange={(minutes) => onChange({ ...draft, minutes })}
       />
-      {draft.count !== null &&
+      {draftOnly ? (
+        <Button
+          label="Clear draft session minutes"
+          variant="secondary"
+          disabled={actions.state === 'saving' || draft.minutes === null}
+          onPress={() => onChange({ ...draft, minutes: null })}
+        />
+      ) : null}
+      {!draftOnly &&
+      draft.count !== null &&
       draft.minutes !== null &&
       valid &&
       Number.isSafeInteger(draft.count * draft.minutes) ? (

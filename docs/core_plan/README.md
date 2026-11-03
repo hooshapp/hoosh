@@ -63,7 +63,7 @@ These are dependency waves, not fixed dates or equal-workload requirements. Ishm
 | 3 — when producers are ready to wire | RN-05 identity surface → RN-06 joint M1 | Exercise sign-in/sign-out/recovery handshake; AUTH-04–06 can progress alongside this proof | Needs AUTH-01/02/03/07, SB-03, API-04/05; not all future Auth work |
 | 4 | SB-04/05 → API-06–09 → RN-07 profile | Finish AUTH-04–06, then AUTH-08; AUTH-09 consumes the profile/draft contract when agreed | SB-06 records M1/Auth evidence without blocking earlier producers. M2 uses real PostgreSQL and separate runtime/migration identities. |
 | 5 | RN-08/09 presentation, RN-10 accessibility, RN-11 profile/platform handoff; API-10 evidence | Native Auth acceptance with audited signed builds; conditional AUTH-10–13 only with prerequisites | Record missing device/source/product evidence. Never promote a web result to native release readiness. |
-| 6 — bounded extension; API-11/12 producers and RN-09i consumer implemented | RN-08a → b → c → d; independently API-11 → 12 → RN-09i → j; then RN-09k → l | Continue owned Auth/onboarding/iOS; later consume reviewed settings schema | No session/reward/History/enforcement defaults. Joint Auth/iOS acceptance stays open; these planned parts do not require finished Auth screens. |
+| 6 — bounded extension; API-11/12 producers and RN-09i/j consumers implemented | RN-08a → b → c → d; independently API-11 → 12 → RN-09i → j; then RN-09k → l | Continue owned Auth/onboarding/iOS; later consume reviewed settings schema | No session/reward/History/enforcement defaults. Joint Auth/iOS acceptance stays open; these planned parts do not require finished Auth screens. |
 
 Database preparation and other independent RN/Android parts may proceed before the M1 join when their own prerequisites are met; this table does not require Ishmum to wait for completed Auth screens. Investigate Android feasibility early alongside these foundations as Ishmum's schedule allows. Native investigations do not depend on Supabase, and shared UI/backend work does not depend on finished native enforcement. Revise shared native assumptions before large implementation if the investigations reveal a gap.
 
@@ -254,3 +254,16 @@ and Android QA Hermes compilation pass. No hosted upgrade, real Auth/root wiring
 or authenticated phone run occurred. **Next: RN-09j**, reusing the exact settings
 query/revision/request helpers; RN-08a remains independent. Top-level totals stay
 46/21/25; full RN-09/RN-11 and existing user-deferred acceptance remain open.
+
+
+RN-09j consumer checkpoint (2026-11-02): the existing days/hours/session editors
+now persist partial nullable plan drafts through the same settings resource as
+activities. Shared revision/review code is extracted from RN-09i; no second Auth,
+cache or replay mechanism is added. Views preserve unrelated fields and require
+explicit review after conflicts/uncertain writes. Live summaries say draft/not
+active; nullable fields and explicit entire-section clear are supported. Full
+checks pass (342 mobile unit / 448 component / 590 API), as do web isolation/assets
+and Android QA Hermes compilation. Hosted upgrade, real Auth/root and actual
+HTTP/authenticated phone acceptance remain pending. Next RN-09k can compose these
+accepted producers, with native status unavailable until RN-08c; RN-08a stays
+independent and RN-09l retains live acceptance. Parent counts remain 46/21/25.
