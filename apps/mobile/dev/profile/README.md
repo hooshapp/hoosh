@@ -123,3 +123,19 @@ independent edits, and disconnect the QA account when finished.
 This entry compiles on Android but no live phone journey was run for RN-09k.
 Hosted migration, real Auth/root integration and RN-08c native status remain
 pending; earlier authenticated-phone/disposable-C deletion deferrals still apply.
+
+## Local HTTP/database acceptance (RN-09l)
+
+The separate `acceptance/` Vitest config/file is invoked by the guarded Python
+PostgreSQL test, not by Expo Go or the ordinary mobile unit suite. It exercises the
+production portable HTTP client/scope/settings projections over actual loopback
+HTTP, normal JWT verification with ephemeral keys, and migrated PostgreSQL. The
+server really stops/restarts and cold mobile clients verify persistence. The
+fixture supplies only disposable credentials in the child environment, with no
+hosted URL/token read. Do not invoke this file with real credentials.
+
+Run `npm run api:db:up` then `npm run api:db:test` from the repository root; stop
+with `npm run api:db:down` when finished. Node/mobile dependencies and the normal
+Python test dependencies must be installed. See the [acceptance matrix](../../../../docs/qa/rn09-settings-acceptance.md)
+for exact evidence and unexecuted hosted/Auth/phone/native boundaries. These tests
+do not replace the manual QA steps above or Anisha's Auth/root integration.

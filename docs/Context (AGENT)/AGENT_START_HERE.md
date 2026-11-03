@@ -295,3 +295,15 @@ Checks: 352 mobile unit / 478 component / 590 API plus web isolation/assets and
 Android QA compilation. Read the latest Plan 04 notes. Next RN-09l independent
 acceptance work or RN-08a; hosted migration, Auth/root, authenticated phone, native/
 iOS/product and user-deferred C-deletion gates remain open. Counts stay 46/21/25.
+
+
+RN-09l checkpoint (2026-11-03): local automated settings acceptance now crosses
+the production portable mobile client, actual TCP FastAPI and isolated PostgreSQL,
+including normal ephemeral-JWT verification and actual API-process restart. Real
+Router component tests cover dirty navigation and uncertain saves. Checks pass:
+352 mobile unit / 488 component / 590 API / 192 DB, eight nested mobile HTTP
+scenarios, web isolation/assets. Read the [matrix](../qa/rn09-settings-acceptance.md)
+and latest Plan 04 notes for precise limits and commands. Next independent work:
+RN-08a. Hosted migration/Auth/root/phone, native revocation/status, signing/speech,
+iOS and user-deferred C deletion remain open; Plan 04 is not complete. Counts stay
+46/21/25. The task-started disposable DB was stopped without deleting its volume.

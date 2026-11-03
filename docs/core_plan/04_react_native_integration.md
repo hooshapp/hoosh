@@ -193,7 +193,7 @@ RN-01/02/03 and the RN-04 producer are implemented with evidence linked below; R
 | RN-06 | `test(mobile): cover authenticated round trip and recovery` | RN-05; auth guards/recovery integrated | M1 acceptance matrix, no development bypass, build evidence | Not started | — |
 | RN-07 | `feat(account): integrate versioned profile reads and edits` | RN-04/05; approved profile contract/API/migration | Real profile round trip, conflict and ambiguous-save handling | Revisioned consumer wired; real Auth/root/device acceptance pending | `5790302` (UI); `f32e87c` (consumer wiring) |
 | RN-08 | `feat(protection-ui): show native capability and installation states` | RN-01; agreed native read boundary; actual adapters for integration | Status mapper tests; device evidence only where adapter exists | Presentation/read consumer prepared; RN-08a–d planned; remaining native/product gates open | `71da2d5` (presentation/read preparation only) |
-| RN-09 | `feat(mobile): compose main app surfaces with explicit feature states` | RN-01/02; RN-07/08 where live data is used | Figma comparisons + no invented production data | RN-09a–h UI, i/j consumers and k saved-preference composition implemented; k native status, l and remaining product/live gates open | `ff75039`, `2bbebad`, `c1c84c3`; RN-09d resolved by its notes/unique commit subject |
+| RN-09 | `feat(mobile): compose main app surfaces with explicit feature states` | RN-01/02; RN-07/08 where live data is used | Figma comparisons + no invented production data | RN-09a–h UI, i/j consumers and k saved-preference composition implemented; k native status, l live acceptance and remaining product/live gates open | `ff75039`, `2bbebad`, `c1c84c3`; RN-09d resolved by its notes/unique commit subject |
 | RN-10 | `fix(mobile): complete accessibility layout and lifecycle handling` | Implemented RN parts; relevant device build access | Accessibility/device-size checks and targeted regression tests | Shared hardening/icons and partial Pixel 8 Pro Expo Go QA implemented; remaining platform/live acceptance pending | RN-10 notes; RN-10a `ab7d855`, b `704bc49`, c by unique subject |
 | RN-11 | `test(integration): document profile and platform handoff acceptance` | RN-06/07/10; RN-08/09 evidence as applicable | M2 matrix, native capability handoff, reproducible runbook | Awaiting live Auth/API/profile prerequisites; not executed | — |
 
@@ -590,7 +590,7 @@ RN-09b source: read-only Figma `27:155`, session `26dd22ea-c87c-4b6c-a571-5e74d6
 
 #### RN-09 execution expansion — preferences and non-enforcing drafts (2026-11-02)
 
-**Status: RN-09i/j consumers and k saved-preference composition implemented; k native status and l acceptance pending.** Preserve RN-09a–h and their original UI
+**Status: RN-09i/j consumers and k saved-preference composition implemented; l local automated checks implemented; k native status and l live acceptance pending.** Preserve RN-09a–h and their original UI
 history. Continue with i–l below; do not redo the completed screen/editor work.
 Use the single settings resource planned in API-11/12. Profile remains the separate
 RN-07 resource; app-selection tokens remain device-native. No new state library,
@@ -601,7 +601,7 @@ persisted query cache, generic settings framework or automatic write queue.
 | **RN-09i** — `feat(settings): persist alternative activity preferences` **Consumer implemented; live acceptance pending** | After API-12, use its generated DTOs/runtime decoder and one account-scoped settings query. Map the existing ActivitiesEditor IDs/custom text to the agreed settings contract. Add read/save/discard, canonical revision handling, fixed server validation and deliberate conflict/uncertain-save review using RN-07 patterns. The API-11 contract records stable existing activity IDs; no Figma sample selection is a production default. | Missing settings is distinct from an outage. Explicit empty selection persists; raw drafts survive validation/conflict/background reads. Two editors share the same settings revision; neither blindly overwrites the other's section. Late A responses cannot populate B. The real route remains unavailable without the real provider. |
 | **RN-09j** — `feat(settings): persist non-enforcing plan drafts` **Consumer implemented; live acceptance pending** | After RN-09i, wire existing days/hours/session editors to the same settings query/resource, including its draft timezone field. Reuse the same request/review machinery rather than a second profile-style framework. Omitted sections preserve data; explicit null clears a section. Preserve partially filled nullable draft fields. | Save/reload restores the accepted draft, with validation, revision conflicts and failed/uncertain saves covered. UI explicitly says **Saved draft — not active**; it does not claim a plan is installed, onboarding is complete or protection is enabled. Schedule/session labels must describe draft values without assuming counting/reset/overlap rules. No `applyRules`, native revision change or background installation occurs. |
 | **RN-09k** — `feat(home): consume saved preferences and device availability` **Preferences implemented; native status awaits RN-08c** | After i/j, compose accepted preferences/draft summaries into existing Home/Settings models. After RN-08c, include real Android protection availability/status where applicable; before then retain the existing unavailable native state. Keep Home thin and derive state from those producers. | Home/Settings agree after save/refetch, and still render during API/native failures. Saved draft, authorization and installed protection remain distinct. No synthetic quest, usage, streak, Dino health, Feed result or saved-time value is introduced. Suggestions/actions whose product meaning is unresolved stay unavailable. |
-| **RN-09l** — `test(mobile): verify settings persistence and isolation` | After i–k, test save/reload, two-user isolation, same-user generation change, concurrent activity/schedule edits, explicit clear, dirty navigation, lost response, API restart, offline edits and native absence/revocation where implemented. Reuse existing scoped test ports and QA entry; do not build another Auth system. | Deterministic/component/real-DB checks pass. Run actual HTTP and Android development-build checks when credentials/device exist; otherwise record those exact gates pending. Full application Auth/root, iOS, signed-device accessibility and RN-11 handoff remain joint acceptance, not inferred from an operator-token harness. |
+| **RN-09l** — `test(mobile): verify settings persistence and isolation` **Local automated acceptance implemented; hosted/Auth/device gates open** | After i–k, test save/reload, two-user isolation, same-user generation change, concurrent activity/schedule edits, explicit clear, dirty navigation, lost response, API restart, offline edits and native absence/revocation where implemented. Reuse existing scoped test ports and QA entry; do not build another Auth system. | Deterministic/component/real-DB checks pass. Run actual HTTP and Android development-build checks when credentials/device exist; otherwise record those exact gates pending. Full application Auth/root, iOS, signed-device accessibility and RN-11 handoff remain joint acceptance, not inferred from an operator-token harness. |
 
 **RN-09i implementation checkpoint (2026-11-02):** Reuse the existing activity
 editor and original icons with a generated-type runtime settings decoder, shared
@@ -670,6 +670,34 @@ isolated Android QA Home compiles to Hermes. No hosted/real HTTP/phone/Auth/nati
 operation occurred. Continue RN-09l's independent checks or RN-08a; wire the rest
 of k's native status only after RN-08c and its device evidence. Parent RN-09/
 Plan 04 stays open, counts 46/21/25. See the latest implementation notes.
+
+**RN-09l implementation checkpoint (2026-11-03):** The production portable
+mobile client, settings decoder, scope/controller and activity/plan/summary
+projections now run over actual loopback TCP against the existing FastAPI process
+fixture, normal JWT verifier with ephemeral public JWKS, migrated PostgreSQL and
+random disposable users. Seven scenarios cover read/save/partial data, safe nested
+validation, concurrent section CAS/review, committed lost response, account/
+generation fences, offline no-dispatch and explicit clears. After stopping the
+first API process, a second PID and cold mobile client recover the exact data.
+Independent SQL confirms revision/data persistence, B isolation, C absence and
+unchanged profiles. No hosted credentials, Auth SDK or live user is used.
+
+Actual Router tests now exercise the existing Home/detail routes and removal
+guard with dirty keep/discard, local Back, accepted save and uncertain-save
+navigation on both component presets. Existing editor tests remain the source of
+multi-editor/raw-draft behavior. The HTTP process context manager is shared with
+the API-12 restart test; the database CI job installs Node/mobile dependencies.
+A new acceptance marker is forbidden from production exports.
+
+Checks: 352 portable / 488 component / 590 API and 192 PostgreSQL checks pass,
+including eight nested real mobile HTTP scenarios. Web export passes 38-file
+isolation and 71 assets. The task-started local DB was stopped, volume retained.
+See the [acceptance matrix](../qa/rn09-settings-acceptance.md) and latest notes.
+Local automated l scope is implemented; hosted migration 0002, real Auth/root,
+authenticated phone, native revocation/installation, signed builds/assistive speech,
+iOS and user-deferred disposable-C hosted deletion remain separate. Parent counts
+stay 46/21/25 and full RN-09/Plan 04 is open. Next independent implementation:
+RN-08a, then b/c/d before finishing k's native status and remaining l native gates.
 
 **Files:** Extend existing `features/preferences`, `plans`, `settings`, `home`, the
 scoped API/query consumers and thin Settings/detail routes. Generated types belong

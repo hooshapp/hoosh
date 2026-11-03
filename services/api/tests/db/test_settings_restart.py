@@ -1,65 +1,9 @@
-import json
-import socket
-import subprocess
-import sys
-import time
-from contextlib import contextmanager
-from pathlib import Path
-
-import httpx2
 import pytest
 
 from tests.auth.support import LocalSigner, settings
-from tests.support.http import signed_headers
+from tests.support.http import running_process, signed_headers
 
 pytestmark = pytest.mark.database
-API_ROOT = Path(__file__).resolve().parents[2]
-
-
-@contextmanager
-def running_process(config, public_jwk):
-    with socket.socket() as probe:
-        probe.bind(("127.0.0.1", 0))
-        port = probe.getsockname()[1]
-    values = config.model_dump(mode="json", exclude_none=True)
-    values["database_url"] = config.database_url.get_secret_value()
-    process = subprocess.Popen(
-        [sys.executable, "-m", "tests.support.settings_process"],
-        cwd=API_ROOT,
-        stdin=subprocess.PIPE,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-        text=True,
-    )
-    try:
-        process.stdin.write(
-            json.dumps({"settings": values, "public_jwk": public_jwk, "port": port}) + "\n"
-        )
-        process.stdin.close()
-        with httpx2.Client(
-            base_url=f"http://127.0.0.1:{port}", timeout=2, trust_env=False
-        ) as client:
-            deadline = time.monotonic() + 8
-            while time.monotonic() < deadline:
-                if process.poll() is not None:
-                    pytest.fail("Settings process exited before readiness")
-                try:
-                    if client.get("/healthz").status_code == 200:
-                        break
-                except httpx2.RequestError:
-                    pass
-                time.sleep(0.02)
-            else:
-                pytest.fail("Settings process did not become ready")
-            yield client, process.pid
-    finally:
-        if process.poll() is None:
-            process.terminate()
-        try:
-            process.wait(timeout=5)
-        except subprocess.TimeoutExpired:
-            process.kill()
-            process.wait(timeout=5)
 
 
 def test_committed_settings_survive_a_real_http_api_process_restart(db_settings, profile_accounts):

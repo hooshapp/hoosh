@@ -278,3 +278,17 @@ unavailable. Full checks pass (352 mobile unit / 478 component / 590 API), web
 isolation/assets and Android QA Hermes compilation. No hosted/real Auth/phone/native
 acceptance occurred. Next RN-09l independent checks or RN-08a; retain remaining k
 native and parent live/product gates. Top-level counts stay 46/21/25.
+
+
+RN-09l local acceptance checkpoint (2026-11-03): the production portable mobile
+client now verifies settings over real HTTP against normal JWT verification,
+ephemeral signing keys and the guarded PostgreSQL fixture, including a true API
+process restart/cold mobile reload. Actual Router tests cover dirty keep/discard,
+local Back, accepted save and uncertain navigation. Full checks: 352 mobile unit /
+488 component / 590 API plus 192 PostgreSQL (eight nested mobile HTTP scenarios);
+web isolation/assets pass. The database CI job installs Node/mobile dependencies.
+Local automated l scope is implemented; hosted/Auth/root/phone/native/iOS/speech
+acceptance remains open. See the [matrix](../qa/rn09-settings-acceptance.md) and
+Plan 04 notes. Next independent implementation is RN-08a. k native integration
+still awaits c; parent counts stay 46/21/25. User-deferred hosted C deletion and
+authenticated phone acceptance are unchanged. Task-owned DB stopped, volume kept.

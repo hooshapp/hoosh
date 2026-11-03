@@ -78,3 +78,26 @@ Unicode/revision/FK constraints, server clocks and selective Auth-deletion casca
 Auth accounts are seeded/deleted only in this guarded local fixture and cleaned
 by exact UUIDs. No shared/managed Auth user is created or deleted. See the
 [migration guide](../../alembic/README.md) for private hosted commands and recovery.
+
+## RN-09l production mobile HTTP acceptance
+
+The required database group now includes `db/test_mobile_settings_acceptance.py`.
+Install the pinned Node toolchain and `npm ci` as well as Python dependencies;
+the database CI job does the same. The test reuses `support.http.running_process`
+(the API-12 restart fixture, now shared) to run actual FastAPI TCP processes with
+normal JWT verification against ephemeral public signing keys and the guarded
+local DB. No production verifier override or Auth route is added.
+
+The existing portable mobile client, account scopes and settings projections run
+through the dedicated developer Vitest config in `apps/mobile/dev/profile/acceptance`.
+Seven scenarios run before process termination and one cold-client recovery check
+after restart. The parent independently checks persisted settings/profile SQL,
+then existing random-user cleanup removes only local fixture rows. Child JWTs
+stay in a private process environment; raw subprocess output is withheld, and
+transient JSON reports are deleted even on failure. No real credentials, hosted
+URLs or API development `.env` are used.
+
+Run through `npm run api:db:test`, or focus the named database test with explicit
+`-o addopts= -m database`. Missing Node/dependencies is a failed prerequisite,
+not a skipped success. The [RN-09l matrix](../../../../docs/qa/rn09-settings-acceptance.md)
+separates this local HTTP/DB evidence from real Auth, hosted and native/device gates.

@@ -1,0 +1,54 @@
+{
+  "part": "RN-09l",
+  "date": "2026-11-03",
+  "scope": "local automated settings acceptance",
+  "environment": {
+    "host": "Darwin arm64",
+    "node": "24.20.0",
+    "python": "3.12.14",
+    "postgresql": "17.11"
+  },
+  "checks": {
+    "mobile_portable": 352,
+    "mobile_component": 488,
+    "api_deterministic": 590,
+    "postgresql": 192,
+    "mobile_real_http_scenarios": 8,
+    "production_export_files": 38,
+    "original_svg_assets": 71,
+    "types_lint_contracts": "passed"
+  },
+  "real_http": {
+    "production_mobile_client": true,
+    "normal_server_jwt_verifier": true,
+    "ephemeral_public_jwks_fixture": true,
+    "actual_loopback_tcp": true,
+    "actual_postgresql": true,
+    "separate_api_process_restart": true,
+    "new_mobile_client_after_restart": true,
+    "profiles_unchanged": true,
+    "third_user_settings_absent": true,
+    "child_credentials_in_logs_or_reports": false
+  },
+  "acceptance": {
+    "local_settings_flow": "passed",
+    "real_router_removal_presets": "passed",
+    "hosted_migration": false,
+    "managed_auth": false,
+    "real_auth_root": false,
+    "authenticated_phone": false,
+    "native_revocation": false,
+    "signed_build": false,
+    "assistive_speech": false,
+    "hosted_disposable_deletion": false
+  },
+  "retained_gates": [
+    "RN-08a-d native evidence",
+    "RN-09k native integration",
+    "joint Auth/root and RN-11",
+    "coordinated hosted migration 0002",
+    "user-deferred authenticated phone and hosted disposable-C deletion"
+  ],
+  "no_hosted_or_native_mutations": true,
+  "fixture_volume_removed": false
+}

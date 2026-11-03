@@ -29,6 +29,7 @@ const forbiddenMarkers = [
   'RN10_NATIVE_QA_ONLY',
   'RN10_NATIVE_LONG_ONLY',
   'RN07_DEVICE_QA_ONLY',
+  'RN09L_HTTP_ACCEPTANCE_ONLY',
 ];
 
 async function exportedFiles(directory) {
