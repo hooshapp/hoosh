@@ -34,8 +34,11 @@ import {
 import { getScreenTimeAuthorization, requestScreenTimeAuthorization } from '@/infrastructure/screen-time/authorization';
 import type { AuthorizationState } from '@disconnect/contracts';
 import { figmaIcons } from './figma-icons';
+import { ManualPlanScreen } from './ManualPlanScreen';
+import { manualPlanKey, parseManualPlan, validateManualPlan } from './manual-plan';
+import { PlanScreens } from './PlanScreens';
 
-type QuestionStep = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+type QuestionStep = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 type Answers = { apps: string[]; hobbies: string[] };
 type SelectionKind = 'apps' | 'hobbies';
 type DraftLoadResult = { accountId: string; status: 'ready'; notice?: string } | { accountId: string; status: 'failed' };
@@ -59,7 +62,7 @@ const HOBBY_OPTIONS = [
 ] as const;
 
 const STEP_COUNT = 7;
-const LAST_STEP: QuestionStep = 6;
+const LAST_STEP: QuestionStep = 7;
 const AGE_MIN = 18;
 const AGE_MAX = 80;
 const AGE_ROW_HEIGHT = 28;
@@ -72,6 +75,7 @@ const QUESTION_COPY = [
   'Screen Time access',
   'We are creating a plan for you',
   'We created a plan for you',
+  'You’re all set!',
 ] as const;
 
 /** The five preference/permission frames, in Figma order: 27:113, 48:79, 48:81, 50:83, 50:85. */
@@ -85,6 +89,7 @@ export function OnboardingQuestions() {
   const selectedAge = useRef(24);
   const draftWrites = useRef<Promise<void>>(Promise.resolve());
   const [step, setStep] = useState<QuestionStep>(0);
+  const [planChoice, setPlanChoice] = useState<'manual' | 'suggested'>('suggested');
   const [gender, setGender] = useState<string | null>(null);
   const [age, setAge] = useState(24);
   const [ageChosen, setAgeChosen] = useState(false);
@@ -94,6 +99,10 @@ export function OnboardingQuestions() {
   });
   const [customHobby, setCustomHobby] = useState('');
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const finishInFlight = useRef(false);
+  const currentAccount = useRef(accountId);
+  useEffect(() => { currentAccount.current = accountId; return () => { currentAccount.current = null; }; }, [accountId]);
   const [permissionNotice, setPermissionNotice] = useState(false);
   const [authorization, setAuthorization] = useState<AuthorizationState>('not_requested');
   const [requestingPermission, setRequestingPermission] = useState(false);
@@ -145,6 +154,7 @@ export function OnboardingQuestions() {
       if (cancelled) return;
       if (draft) {
         setStep((draft.gender && draft.age ? draft.step : 0) as QuestionStep);
+        setPlanChoice(draft.planChoice ?? 'suggested');
         setGender(draft.gender ?? null);
         setAge(draft.age ?? 24);
         selectedAge.current = draft.age ?? 24;
@@ -171,14 +181,14 @@ export function OnboardingQuestions() {
 
   const saveDraft = useCallback(() => {
     if (!accountId) return Promise.reject(new Error('Sign in required'));
-    const value = serializeQuestionDraft({ step: Math.min(step, 4), apps: answers.apps, hobbies: answers.hobbies, age: ageChosen ? age : undefined, gender: gender ?? undefined });
+    const value = serializeQuestionDraft({ step, planChoice, apps: answers.apps, hobbies: answers.hobbies, age: ageChosen ? age : undefined, gender: gender ?? undefined });
     const nextWrite = draftWrites.current.catch(() => undefined).then(() =>
       AsyncStorage.setItem(questionDraftKey(accountId), value),
     );
     draftWrites.current = nextWrite;
     void nextWrite.then(() => setDraftWriteFailed(false)).catch(() => setDraftWriteFailed(true));
     return nextWrite;
-  }, [accountId, answers.apps, answers.hobbies, step, age, ageChosen, gender]);
+  }, [accountId, answers.apps, answers.hobbies, step, age, ageChosen, gender, planChoice]);
 
   useEffect(() => {
     if (!draftReady) return;
@@ -203,20 +213,28 @@ export function OnboardingQuestions() {
       return;
     }
     if (!gender || !ageChosen) { setStep(!gender ? 0 : 1); return; }
+    if (finishInFlight.current) return;
+    finishInFlight.current = true;
     setSaving(true);
+    setSaveError(null);
     try {
       await saveDraft();
-      const savedAnswers = makeSavedQuestionAnswers(answers.apps, answers.hobbies, authorization, { age, gender });
+      if (currentAccount.current !== accountId) return;
+      const manualPlan = planChoice === 'manual' ? parseManualPlan(await AsyncStorage.getItem(manualPlanKey(accountId))) : null;
+      if (planChoice === 'manual' && (!manualPlan || validateManualPlan(manualPlan))) throw new Error('Manual plan unavailable');
+      const savedAnswers = { ...makeSavedQuestionAnswers(answers.apps, answers.hobbies, authorization, { age, gender }), ...(manualPlan ? { apps: manualPlan.apps, manualPlan } : {}) };
       await AsyncStorage.setItem(questionAnswersKey(accountId), JSON.stringify(savedAnswers));
+      if (currentAccount.current !== accountId) return;
       await AsyncStorage.setItem(questionCompleteKey(accountId), '1');
-      await AsyncStorage.removeItem(questionDraftKey(accountId));
-      router.replace('/(tabs)');
+      await AsyncStorage.removeItem(questionDraftKey(accountId)).catch(() => undefined);
+      if (currentAccount.current === accountId) router.replace('/(tabs)');
     } catch {
-      Alert.alert('Could not save', 'Your setup wasn’t saved. Please try again.');
+      if (currentAccount.current === accountId) setSaveError('Your setup could not be saved. Please try again.');
     } finally {
+      finishInFlight.current = false;
       setSaving(false);
     }
-  }, [accountId, answers.apps, answers.hobbies, router, saveDraft, authorization, age, ageChosen, gender]);
+  }, [accountId, answers.apps, answers.hobbies, router, saveDraft, authorization, age, ageChosen, gender, planChoice]);
 
   const finishOnboarding = useCallback(async () => {
     await finish();
@@ -310,7 +328,10 @@ export function OnboardingQuestions() {
     );
   }
 
-  if (step >= 5) return <PlanPreview loading={step === 5} answers={answers} saving={saving} onContinue={() => { void finishOnboarding(); }} onBack={() => setStep(4)} />;
+  if (step === 8) return <ManualPlanScreen key={accountId} accountId={accountId} initialApps={answers.apps} onBack={() => setStep(6)} onSaved={() => { setPlanChoice('manual'); setStep(7); }} />;
+
+  if (step >= 5) return <PlanScreens stage={step === 5 ? 'loading' : step === 6 ? 'plan' : 'complete'} apps={answers.apps} hobbies={answers.hobbies} saving={saving} error={saveError}
+    onPrepared={() => setStep(6)} onAccept={() => { setPlanChoice('suggested'); setStep(7); }} onEdit={() => setStep(8)} onBack={() => setStep(4)} onFinish={() => { void finishOnboarding(); }} />;
 
   return (
     <KeyboardAvoidingView style={styles.screen} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
@@ -336,7 +357,7 @@ export function OnboardingQuestions() {
             <Text style={styles.draftRetry}>Retry</Text>
           </Pressable>
         </View>}
-        <Text accessibilityRole="header" style={styles.title}>{QUESTION_COPY[step]}</Text>
+        <Text accessibilityRole="header" style={styles.title}>{QUESTION_COPY[step as 0 | 1 | 2 | 3 | 4]}</Text>
 
         {step === 0 && <GenderStep value={gender} onChange={setGender} />}
         {step === 1 && <><Text style={styles.description}>Select your age to continue. Hoosh supports ages 18–80.</Text><AgeStep value={age} listRef={ageList} onScrollEnd={onAgeScrollEnd} onChange={value => { selectedAge.current = value; setAge(value); setAgeChosen(true); }} /></>}
@@ -366,64 +387,6 @@ export function OnboardingQuestions() {
     </KeyboardAvoidingView>
   );
 }
-
-function PlanPreview({ loading, answers, saving, onContinue, onBack }: { loading: boolean; answers: Answers; saving: boolean; onContinue(): void; onBack(): void }) {
-  const insets = useSafeAreaInsets();
-  return <View style={[planStyles.screen, { paddingTop: Math.min(insets.top || 44, 44), paddingBottom: Math.max(insets.bottom, 24) }]}>
-    <Pressable accessibilityRole="button" onPress={onBack} style={planStyles.skip}><Text style={styles.skip}>Back</Text></Pressable>
-    <View style={styles.progress} accessibilityRole="progressbar" accessibilityLabel="Onboarding step 6 of 7" accessibilityValue={{ min: 1, max: 7, now: 6 }}>
-      {Array.from({ length: 7 }, (_, i) => <View key={i} style={[styles.progressSegment, i < 6 && styles.progressSegmentActive]} />)}
-    </View>
-    <Text style={styles.stepCount}>6 of 7</Text>
-    <ScrollView contentContainerStyle={planStyles.content}>
-      <Text accessibilityRole="header" style={styles.title}>{loading ? 'We are creating a plan for you' : 'Your plan preview'}</Text>
-      <Text style={styles.description}>{loading ? 'A little less scrolling. A little more time for what you love.' : 'Here is an example based on your choices. Your personalized plan will be available later.'}</Text>
-      {loading ? <>
-        <View style={planStyles.mascot}><View style={planStyles.mascotInner}><SvgXmlIcon name="permission-dinosaur" width={60} height={60} /></View></View>
-        <Text style={planStyles.loadingText}>Preparing your preview ···</Text>
-        <View style={planStyles.card}>
-          <PlanStage title="Your apps are chosen" detail={answers.apps.join(' · ') || 'No apps chosen'} />
-          <PlanStage title="Your hobbies are chosen" detail={answers.hobbies.join(' · ') || 'No activities chosen'} />
-          <PlanStage title="Preparing your suggestion" detail="Making room for what you love" />
-        </View>
-      </> : <>
-        {answers.apps.length === 0 && <Text style={planStyles.empty}>You haven’t chosen any apps yet.</Text>}
-        {answers.apps.map((app, index) => <View key={app} style={planStyles.card}>
-          <View style={planStyles.cardRow}><View style={styles.appIcon}><Text style={planStyles.iconText}>{app.slice(0, 1)}</Text></View><View style={planStyles.cardTitle}><Text style={styles.cardLabel}>{app}</Text><Text style={styles.appDetail}>Example: 10 min break</Text></View><Text style={planStyles.badge}>10 MIN</Text></View>
-          <Text style={planStyles.detail}>An example break that could make room for {answers.hobbies[index % Math.max(answers.hobbies.length, 1)] || 'an activity you enjoy'}.</Text>
-        </View>)}
-        <View style={[planStyles.card, planStyles.estimate]}><Text style={planStyles.cardHeading}>Weekly estimate</Text><Text style={planStyles.detail}>Illustration only: one 10-minute break per selected app each day could add up to {answers.apps.length * 70} minutes per week. This is not measured screen time.</Text></View>
-        <Text style={styles.note}>Suggestions are a preview and are not applied yet.</Text>
-        <PrimaryButton label={saving ? 'Saving…' : 'Continue'} onPress={onContinue} disabled={saving} wide />
-        <SecondaryButton label="Back" onPress={onBack} wide />
-      </>}
-    </ScrollView>
-  </View>;
-}
-
-function PlanStage({ title, detail }: { title: string; detail: string }) {
-  return <View style={planStyles.stage}><Text style={planStyles.check}>✓</Text><View style={planStyles.cardTitle}><Text style={planStyles.cardHeading}>{title}</Text><Text style={styles.appDetail}>{detail}</Text></View></View>;
-}
-
-const planStyles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: colors.darkCanvas, paddingHorizontal: 24 },
-  skip: { alignSelf: 'flex-end', height: 32, justifyContent: 'center' },
-  content: { paddingTop: 18, paddingBottom: 30, gap: 14 },
-  mascot: { width: 160, height: 160, borderRadius: 80, borderWidth: 3, borderColor: colors.action, alignSelf: 'center', alignItems: 'center', justifyContent: 'center', marginTop: 20 },
-  mascotInner: { width: 120, height: 120, borderRadius: 24, backgroundColor: '#26332a', alignItems: 'center', justifyContent: 'center' },
-  loadingText: { color: colors.action, fontFamily: fonts.medium, textAlign: 'center', fontSize: 14, marginVertical: 8 },
-  card: { backgroundColor: colors.darkCard, borderRadius: 14, borderWidth: 1, borderColor: 'rgba(255,255,255,0.08)', padding: 16, gap: 12 },
-  estimate: { borderColor: colors.action },
-  cardRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  cardTitle: { flex: 1, alignItems: 'flex-start', gap: 2 },
-  cardHeading: { color: colors.white, fontFamily: fonts.bold, fontSize: 13 },
-  detail: { color: colors.darkMuted, fontFamily: fonts.light, fontSize: 12, lineHeight: 16 },
-  badge: { overflow: 'hidden', backgroundColor: colors.action, color: '#111', borderRadius: 20, paddingHorizontal: 10, paddingVertical: 6, fontFamily: fonts.bold, fontSize: 10 },
-  iconText: { color: colors.action, fontFamily: fonts.bold, fontSize: 18 },
-  empty: { color: colors.darkMuted, fontFamily: fonts.regular },
-  stage: { flexDirection: 'row', alignItems: 'center', gap: 12, minHeight: 48 },
-  check: { color: colors.action, fontSize: 20, width: 28, textAlign: 'center' },
-});
 
 function GenderStep({ value, onChange }: { value: string | null; onChange(value: string | null): void }) {
   return (

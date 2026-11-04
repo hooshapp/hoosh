@@ -34,6 +34,17 @@ The screen UI lives in `apps/mobile/src/features/onboarding/OnboardingQuestions.
 - Onboarding completion and actual Screen Time authorization/protection are distinct states. Do not represent a completed questionnaire as protected.
 - The source-only SwiftUI project in `apps/mobile/ios` is not a React Native host. Keep it intact; do not run Expo prebuild into that directory. Native integration needs a separately planned, tested bridge.
 
+## Plan loading, plan review and congratulations — November 2, 2026
+
+- Figma frames `52:690`, `50:87`, `50:89` now compose the final flow in `PlanScreens.tsx`. Original frame exports, cropped artwork and 3x PNG renders are recorded with SHA-256 hashes in `apps/mobile/assets/onboarding/plan/manifest.json`. Text, cards, progress and controls remain accessible React Native UI.
+- Permission deferral/continuation opens local preparation, then plan review (step 6 of 7), then congratulations (7 of 7). Preparation retains the existing 1.8-second presentation interval with an immediate View my plan action. It performs no AI/network work. Copy explicitly labels the local preview.
+- Plan cards use the selected apps and activities. Weekly estimates are explicitly hypothetical, never measured savings. Go with suggestion and Skip open congratulations without completing or applying restrictions. Set up on my own now opens the five-state manual editor; see [manual authoring scope and checks](manual-plan.md). Native enforcement remains separate.
+- Let’s start saves account-scoped preferences/completion before opening Home. A single-flight guard prevents repeated saves; inline failure supports retry. Drafts now resume preparation/review/congratulations (internal steps 5–7). Completed-marker writes precede best-effort draft cleanup. Account remount and in-flight account checks prevent navigating a replacement account.
+- Production guards remain unchanged. Localhost UI acceptance used an isolated copy under the chat scratch workspace with a synthetic Auth provider; no bypass or fixture was added to release source.
+- Validation: workspace typecheck/lint; 90 Vitest + 58 Jest tests; production web export (26 routes); `services/api/.venv/bin/ruff check services/api`; `services/api/.venv/bin/pytest services/api/tests` (3 passed); `git diff --check`. Root `npm run check` initially stopped because `uv` was absent from PATH; its API checks passed through the existing Python environment.
+- Browser: localhost at 393×852 and 320×568; permission deferral; loading and immediate continuation; app/activity cards; manual-choice return; congratulations; reload resume; narrow-screen scrolling and text bounds; Enter on final action; navigation to actual Home. No warnings/errors on the final app page. Fixed a narrow-screen completion-copy overflow. Storage failure/retry and rapid taps are covered by component tests, not browser fault injection.
+- Signed native builds, physical-device behavior, VoiceOver/TalkBack, production Auth round trip, real plan persistence/generation and restriction installation remain unverified or unimplemented. This increment completes these three preview screens, not all AUTH-12 acceptance.
+
 ## Validation performed
 
 - Automated mobile validation: typecheck, lint, Jest/Vitest suites passed (12 Vitest files / 87 tests; 11 Jest suites / 53 tests).
@@ -43,3 +54,8 @@ The screen UI lives in `apps/mobile/src/features/onboarding/OnboardingQuestions.
 - No signed-device Screen Time picker, authorization, monitoring, or restriction behavior was tested. No AI plan generation was tested or implemented.
 
 Re-run `npm run typecheck`, `npm run lint`, and `npm test` from `apps/mobile` after changes. Native acceptance must be tracked separately from web/UI validation.
+
+
+## Manual editor follow-up — November 2, 2026
+
+The five requested manual-plan Figma presentations are implemented with local saving, draft recovery, validation and completed-answer integration. See [manual-plan.md](manual-plan.md) for exact source frames, behavior, 182 passing mobile tests, browser acceptance and retained native/server boundaries. This supersedes the earlier preference-question return action.

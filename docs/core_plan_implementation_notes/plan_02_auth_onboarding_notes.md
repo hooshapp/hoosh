@@ -204,3 +204,67 @@ November 2: the owner selected an 18–80 supported signup range and clarified t
 The plan preview UI and its focused test changes are uncommitted. Typecheck and nine focused onboarding tests passed when last run; the implemented preview has not been visually compared against Figma in a running app or validated on a physical device. It does not generate or apply a real plan. Documentation was reorganized to match the `main` structure and these notes/ledgers were updated. Recheck the full diff and verify integration with `main` before committing.
 
 Historical inventories above are generated from Git hunk headers; deleted lines have no new-file line number, and binary assets have no line ranges. The existing detailed runbooks are the source for dated validation; do not infer unrecorded checks.
+
+
+## AUTH-12 — Plan preview and congratulations UI, pending commit
+
+**Date:** November 2, 2026. **Owner:** Anisha / requested implementation. **Branch:** `landing-page`, starting at `4cbe8c3`. **Commit:** Pending; owner retains commit/push control.
+
+**Requirements:** FR-007/008, NFR-002/008; Figma `52:690`, `50:87`, `50:89`. This is a UI/local-preference slice; the full AUTH-12 policy, API and native gates remain open.
+
+| File / current lines | Changes and purpose |
+|---|---|
+| `apps/mobile/src/features/onboarding/PlanScreens.tsx`: 1–124 | New shared preparation/review/congratulations presentation, original artwork, actual selected choices, hypothetical estimates, editing/skip/final controls, scrollable short-screen layout and inline retry. |
+| `apps/mobile/src/features/onboarding/OnboardingQuestions.tsx`: 37–115, 178–192, 206–231, 325–326 | Compose the final screens, persist every final stage, single-flight completion, account/mount checks, inline errors and best-effort completed-draft cleanup. Removes superseded embedded PlanPreview styles/component. |
+| `apps/mobile/src/app/(onboarding)/welcome.tsx`: 9 | Key questionnaire state to authenticated UUID for account replacement. |
+| `apps/mobile/src/features/onboarding/draft.ts`: 3 | Permit eight internal states (loading and plan both display 6/7); existing version-1 drafts remain readable. |
+| `apps/mobile/src/features/onboarding/draft.test.ts`: 35–53 | Reject step 8; cover resumed states 5–7. |
+| `apps/mobile/src/features/onboarding/OnboardingQuestions.test.tsx`: 1–250 | Adapt existing completion cases; add resumed celebration, editing, storage retry and rapid-tap single-flight acceptance. |
+| `apps/mobile/assets/onboarding/plan/`: manifest, original SVGs, crop SVGs, PNGs | Preserve frame sources and reproducible artifact hashes; export original hero artwork instead of inventing replacements. |
+| `docs/implementation/onboarding-questions.md`: final-screen increment | Record exact behavior, browser evidence, checks and retained boundaries. |
+| `docs/core_plan/02_auth_onboarding.md`: AUTH-12 ledger | Distinguish completed preview slice from outstanding real plan integration. |
+| This notes file: this entry | Resume checkpoint and handoff. |
+
+**Validation:** `npm run typecheck`, `npm run lint`, `npm test` (90 Vitest + 58 Jest), `npm run mobile:export` (26 routes), `services/api/.venv/bin/ruff check services/api`, `services/api/.venv/bin/pytest services/api/tests` (3), `git diff --check` passed. `npm run check` initially stopped at missing `uv`; equivalent API executables passed.
+
+**Localhost evidence:** isolated QA copy with synthetic Auth outside repository; same source components and storage. 393×852 and 320×568 review, permission deferral, loading/advance, app/activity details, manual preference return, congratulations/reload, narrow scrolling, keyboard Enter and real Home destination. Fixed completion-copy overflow; final app warning/error log empty. Retry/single-flight faults tested automatically. Screenshots saved with the chat outputs. Production Auth gates were never replaced in the repository.
+
+**Adaptations:** Local preparation explicitly says preview rather than claiming remote generation. Completion celebrates chosen preferences and states protection is inactive. Manual CTA returns to editable preferences; full manual protection-plan editing is outside these three requested frames and awaits the existing plan/native contracts.
+
+**Next:** Owner review/commit; later native device acceptance, and separately approve/implement real suggested/manual plan authoring, server storage and native installation. Do not declare AUTH-12 production-complete from these preview checks.
+
+
+## AUTH-12 — Five manual-plan states and local saving, pending commit
+
+**Date:** November 2, 2026. **Owner:** Anisha / requested implementation. **Branch:** `landing-page`. **Commit:** Pending. Continues the prior uncommitted preview work; no commit or push performed.
+
+**Scope:** FR-007/008/013, NFR-002/008. Figma `10556:120`, `10596:1767`, `10596:1861`, `10596:1968`, `10596:2062`. Full production AUTH-12 remains open.
+
+| File / current lines | Change and reason |
+|---|---|
+| `apps/mobile/src/features/onboarding/ManualPlanScreen.tsx`: 1–123 | Four accessible accordion sections, day presets, hour fields, session chips, app preferences, local draft load/save/retry and single-flight accepted-plan persistence before congratulations. |
+| `apps/mobile/src/features/onboarding/manual-plan.ts`: 1–58 | Versioned local-only model, schema/time parsing, validation, formatters and per-account storage keys. No shared native or server contract changes. |
+| `apps/mobile/src/features/onboarding/TimeRangeSlider.tsx`: 1–39 | Stable native responder with gesture-only refs and accessibility adjustment; callbacks use current props without rebuilding native gesture state. Narrow compiler-lint exceptions document PanResponder's registration-only behavior. |
+| `apps/mobile/src/features/onboarding/TimeRangeSlider.web.tsx`: 1–17; `TimeRangeSlider.types.ts`: 1 | Two native HTML range inputs for pointer/keyboard behavior with shared prop types. |
+| `apps/mobile/src/features/onboarding/manual-plan-icons.ts`: 1–9; `assets/onboarding/manual-plan/` | Original Figma paths; five frame exports, icon crops and SHA-256 provenance manifest. |
+| `apps/mobile/src/features/onboarding/draft.ts`: 1–91 | Add manual/suggested choice and optional completed manual plan; allow internal manual-editor step 8 while keeping version-1 compatibility. |
+| `apps/mobile/src/features/onboarding/OnboardingQuestions.tsx`: 37–44, 87–90, 155–167, 183–197, 220–242, 334–339 | Open editor from suggestion CTA, restore setup choice, load saved manual plan on completion, preserve selected manual apps and keep account/lifecycle boundaries. |
+| `apps/mobile/src/features/onboarding/PlanScreens.tsx`: 76–79 | Explain the manual CTA's actual days/hours/sessions/apps scope. |
+| `apps/mobile/src/features/onboarding/ManualPlanScreen.test.tsx`: 1–68 | Edit/save all sections, validate/correct hours and apps, account draft recovery, read/write retry, rapid-save single-flight and unmount race. |
+| `apps/mobile/src/features/onboarding/manual-plan.test.ts`: 1–35 | Time format boundaries, malformed stored values, preset summaries and storage isolation. |
+| `apps/mobile/src/features/onboarding/draft.test.ts`: 35–51; `OnboardingQuestions.test.tsx`: 196–208, 252–266 | Expand step validation and verify manual save → congratulations → completed-answer integration; adapt previous editor-return expectation. |
+| `docs/implementation/manual-plan.md`: full file | Exact behavior, original frames, authoring limits, persistence and verification evidence. |
+| `docs/implementation/onboarding-questions.md`: manual CTA/follow-up; `docs/core_plan/02_auth_onboarding.md`: AUTH-12 ledger; this entry | Current scope/handoff and distinction from production enforcement. |
+
+**Validation:** Workspace typecheck/lint; 116 Vitest + 66 Jest tests; production web export (26 routes); Ruff; 3 API pytest tests; whitespace checks passed. API checks used the existing `.venv` executables because `uv` is absent from PATH.
+
+**Browser:** All five states compared with Figma at 393×852. 320×568 scrolling, wrapping and input bounds checked. Actual pointer and keyboard slider actions, invalid-time disabled Save, day presets, session/duration/app changes, draft reload, keyboard Save to congratulations, reload and final Home navigation passed. Final app warning/error log empty. Isolated synthetic-Auth QA copy remains outside release source. Failure/race coverage is automated; no browser storage fault injection or real Auth-provider retest claimed.
+
+**Decisions:** Save locally before congratulating; distinguish draft vs accepted record; invalid text still prevents Save when its section is collapsed. Hours authoring is same-day only; this does not approve overnight/native session semantics. App preferences include Figma Facebook plus preexisting X when relevant. Original questionnaire app limits remain separate. No fake native installation or AI step.
+
+**Remaining:** Physical devices, native selection/restriction installation, approved accounting/override/overlap policy, timezone/DST semantics, server revision/storage and later Settings editor integration. This completes the five requested UI states with local functionality only. Owner review/commit is next.
+
+
+## Commit authorization — November 3, 2026
+
+The owner requested committing the preview/completion and five manual-plan states together on `landing-page` with the exact message `implmented the set your own plan pages and it is tested`. This supersedes the earlier instruction to leave this work uncommitted. The implementation commit can be resolved by that message in Git history. Previous automated/browser evidence above applies; native/device acceptance remains pending. Push authentication must match the owner's requested GitHub account.

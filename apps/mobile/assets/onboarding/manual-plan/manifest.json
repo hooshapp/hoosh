@@ -1,0 +1,57 @@
+{
+  "figmaFile": "ukmD2ZidJ9UR2XxUkvdPoJ",
+  "frames": {
+    "set up on my own": "10556:120",
+    "Personal plan \u00b7 Active Days expanded": "10596:1767",
+    "Personal plan \u00b7 Active Hours expanded": "10596:1861",
+    "Personal plan \u00b7 App Sessions expanded": "10596:1968",
+    "Personal plan \u00b7 Select Apps expanded": "10596:2062"
+  },
+  "source": "Original Figma SVG frame exports, November 2, 2026. Icons extracted without changing paths.",
+  "assets": [
+    {
+      "path": "apps.svg",
+      "sha256": "a48d07d2dc25199fc84af91b8abe5cfb03cff64a6e5c1e925bd7648651fca7f7"
+    },
+    {
+      "path": "calendar.svg",
+      "sha256": "f71d9e6ccd70fcfb809b711e0e035ba06c2072ae333c3d262cca7d70fea2e44a"
+    },
+    {
+      "path": "chevron.svg",
+      "sha256": "1ceff961a323b19a5280ab665638ee0f111f49318765eae7e7717ad6cf6c8797"
+    },
+    {
+      "path": "clock.svg",
+      "sha256": "4affba463e3e28acca14c575fd12b11814904becab3706185f76b5134176c3f4"
+    },
+    {
+      "path": "info.svg",
+      "sha256": "4e6148eef62ee5639972742996ec549d92ea3a2d225efd0d29965d6994a0ee41"
+    },
+    {
+      "path": "originals/Personal plan \u00b7 Active Days expanded.svg",
+      "sha256": "0c3413751956b5750076802868c9e5ba51cabd7c097dafc1dc0c40e842a85424"
+    },
+    {
+      "path": "originals/Personal plan \u00b7 Active Hours expanded.svg",
+      "sha256": "b54eb71bffb2065778c5756149b9dac1671d2a6125f566bfac54bedf02192b94"
+    },
+    {
+      "path": "originals/Personal plan \u00b7 App Sessions expanded.svg",
+      "sha256": "63b09e38280e83ab4ecac4665ed590c52a85564c2f204a4cd086df436802ad55"
+    },
+    {
+      "path": "originals/Personal plan \u00b7 Select Apps expanded.svg",
+      "sha256": "56a3af0a72c2869e565d96e90d577c571b287a188bfced7eb78c58ccb6f0aed8"
+    },
+    {
+      "path": "originals/set up on my own.svg",
+      "sha256": "2214b3f605bce7e9280acd6b847f508bfadcdaeb6a4e2ce102ec4edbf103a045"
+    },
+    {
+      "path": "timer.svg",
+      "sha256": "d6ce4fd3d2a4bb35f9d39d9f7da5f102d7b5fcb70f788aa9adf01b8ed039de68"
+    }
+  ]
+}

@@ -354,7 +354,7 @@ Each commit includes its relevant tests and honest UI states. Avoid snapshot-onl
 | AUTH-09 | Onboarding draft and profile | In progress | `bb4b540` | Account-scoped local draft exists; profile handoff and cross-device behavior remain pending. |
 | AUTH-10 | Introduction and questions | In progress | `a9feec4`, `bb4b540` | [Introduction](../implementation/landing-intro.md) and [five questions](../implementation/onboarding-questions.md) implemented; age/gender persistence, accessibility and device checks remain. |
 | AUTH-11 | Native permission and selection | In progress | `bb4b540` | [Permission bridge](../implementation/screen-time-authorization.md) exists; native picker and device authorization acceptance remain. |
-| AUTH-12 | Plan authoring and completion | In progress | Uncommitted preview | UI preview work has begun; plan rules, persistence, native install and recovery remain unimplemented. |
+| AUTH-12 | Plan authoring and completion | In progress | Uncommitted preview | Three preview screens plus five manual-plan states, local draft/save and completion integration implemented; 182 mobile tests, web export and localhost acceptance passed. Real policy/API persistence/native installation and device acceptance remain pending. |
 | AUTH-13 | Apple and Google providers | In progress | `32165ea` | Browser provider work recorded in [social runbook](../runbooks/social-auth-development.md); native acceptance remains. |
 
 Use `In progress`, `Ready for review`, and `Completed` only as real work advances. Preserve actual commit hashes and test evidence; planning is not a completed implementation commit.

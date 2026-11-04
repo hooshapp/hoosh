@@ -24,12 +24,17 @@ describe('account-scoped onboarding question drafts', () => {
     null,
     '{broken',
     JSON.stringify({ version: 2, step: 0, apps: [], hobbies: [] }),
-    JSON.stringify({ version: 1, step: 5, apps: [], hobbies: [] }),
+    JSON.stringify({ version: 1, step: 9, apps: [], hobbies: [] }),
     JSON.stringify({ version: 1, step: 0, apps: ['Unknown app'], hobbies: [] }),
     JSON.stringify({ version: 1, step: 0, apps: [], hobbies: [''] }),
     JSON.stringify({ version: 1, step: 0, apps: [], hobbies: Array(13).fill('hobby') }),
   ])('rejects invalid or incompatible drafts: %s', raw => {
     expect(parseQuestionDraft(raw)).toBeNull();
+  });
+
+  it.each([5, 6, 7])('resumes plan preparation, review and completion at step %s', step => {
+    const draft = { step, apps: ['X'], hobbies: ['Walking'], age: 25, gender: 'Other' };
+    expect(parseQuestionDraft(serializeQuestionDraft(draft))).toMatchObject(draft);
   });
 
   it('normalizes duplicates and does not persist gender or age', () => {

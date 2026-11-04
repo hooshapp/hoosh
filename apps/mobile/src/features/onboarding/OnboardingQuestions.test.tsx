@@ -3,6 +3,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react-nativ
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import type { PropsWithChildren } from 'react';
 import { getScreenTimeAuthorization, requestScreenTimeAuthorization } from '@/infrastructure/screen-time/authorization';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { OnboardingQuestions } from './OnboardingQuestions';
 import { questionAnswersKey, questionCompleteKey, questionDraftKey, serializeQuestionDraft } from './draft';
 
@@ -110,8 +111,10 @@ it('resumes the account-scoped last step and saves only approved preference fiel
   await render(<OnboardingQuestions />, { wrapper: Wrapper });
   expect(await screen.findByText('Screen Time access')).toBeTruthy();
   await fireEvent.press(screen.getByRole('button', { name: 'Not now' }));
-  await screen.findByText('Your plan preview', {}, { timeout: 4000 });
-  await fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
+  await screen.findByText('We created a plan for you', {}, { timeout: 4000 });
+  await fireEvent.press(screen.getByRole('button', { name: 'Go with suggestion' }));
+  await screen.findByText('You’re all set!');
+  await fireEvent.press(screen.getByRole('button', { name: 'Let’s start →' }));
   await waitFor(() => expect(mockReplace).toHaveBeenCalledWith('/(tabs)'));
   const saved = JSON.parse(mockStorage.get(questionAnswersKey('account-a')) ?? '{}') as Record<string, unknown>;
   expect(saved).toMatchObject({ apps: ['X'], hobbies: ['Walking'], screenTimeAccess: 'unavailable' });
@@ -148,8 +151,10 @@ it('continues only after native authorization is confirmed, and saves that obser
   expect(await screen.findByRole('button', { name: 'Continue →' })).toBeTruthy();
   expect(mockReplace).not.toHaveBeenCalled();
   await fireEvent.press(screen.getByRole('button', { name: 'Continue →' }));
-  await screen.findByText('Your plan preview', {}, { timeout: 4000 });
-  await fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
+  await screen.findByText('We created a plan for you', {}, { timeout: 4000 });
+  await fireEvent.press(screen.getByRole('button', { name: 'Go with suggestion' }));
+  await screen.findByText('You’re all set!');
+  await fireEvent.press(screen.getByRole('button', { name: 'Let’s start →' }));
   await waitFor(() => expect(mockReplace).toHaveBeenCalledWith('/(tabs)'));
   expect(JSON.parse(mockStorage.get(questionAnswersKey('account-a')) ?? '{}').screenTimeAccess).toBe('authorized');
 });
@@ -172,8 +177,90 @@ it('includes a typed custom activity when the user presses Next without the plus
   await fireEvent.press(screen.getByRole('button', { name: 'Next →' }));
   await screen.findByText('Screen Time access');
   await fireEvent.press(screen.getByRole('button', { name: 'Not now' }));
-  await screen.findByText('Your plan preview', {}, { timeout: 4000 });
-  await fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
+  await screen.findByText('We created a plan for you', {}, { timeout: 4000 });
+  await fireEvent.press(screen.getByRole('button', { name: 'Go with suggestion' }));
+  await screen.findByText('You’re all set!');
+  await fireEvent.press(screen.getByRole('button', { name: 'Let’s start →' }));
   await waitFor(() => expect(mockReplace).toHaveBeenCalled());
   expect(JSON.parse(mockStorage.get(questionAnswersKey('account-a')) ?? '{}').hobbies).toEqual(['Gardening']);
+});
+
+it('resumes congratulations without completing or navigating until the final action', async () => {
+  mockStorage.set(questionDraftKey('account-a'), serializeQuestionDraft({ age: 25, gender: 'Other', step: 7, apps: ['X'], hobbies: ['Gardening'] }));
+  await render(<OnboardingQuestions />, { wrapper: Wrapper });
+  await screen.findByText('You’re all set!');
+  expect(screen.getByText('Gardening')).toBeTruthy();
+  expect(mockStorage.has(questionCompleteKey('account-a'))).toBe(false);
+  expect(mockReplace).not.toHaveBeenCalled();
+  await fireEvent.press(screen.getByRole('button', { name: 'Let’s start →' }));
+  await waitFor(() => expect(mockReplace).toHaveBeenCalledTimes(1));
+});
+
+it('lets users skip local preparation and edit their own choices without completing setup', async () => {
+  mockStorage.set(questionDraftKey('account-a'), serializeQuestionDraft({ age: 25, gender: 'Other', step: 5, apps: [], hobbies: [] }));
+  await render(<OnboardingQuestions />, { wrapper: Wrapper });
+  await screen.findByText('Preparing your plan preview');
+  await fireEvent.press(screen.getByRole('button', { name: 'View my plan' }));
+  await screen.findByText('No apps chosen yet');
+  await fireEvent.press(screen.getByRole('button', { name: 'Set up on my own' }));
+  await screen.findByText('Set up on your own');
+  expect(mockStorage.has(questionCompleteKey('account-a'))).toBe(false);
+  expect(mockReplace).not.toHaveBeenCalled();
+});
+
+it('keeps completion retryable when storage fails', async () => {
+  const storage = AsyncStorage;
+  mockStorage.set(questionDraftKey('account-a'), serializeQuestionDraft({ age: 25, gender: 'Other', step: 7, apps: ['X'], hobbies: [] }));
+  await render(<OnboardingQuestions />, { wrapper: Wrapper });
+  await screen.findByText('You’re all set!');
+  const original = jest.mocked(storage.setItem).getMockImplementation()!;
+  jest.mocked(storage.setItem).mockImplementation(async (key, value) => {
+    if (key === questionAnswersKey('account-a')) throw new Error('storage full');
+    return original(key, value);
+  });
+  await fireEvent.press(screen.getByRole('button', { name: 'Let’s start →' }));
+  await screen.findByRole('alert');
+  expect(mockReplace).not.toHaveBeenCalled();
+  expect(mockStorage.has(questionCompleteKey('account-a'))).toBe(false);
+  jest.mocked(storage.setItem).mockImplementation(original);
+  await fireEvent.press(screen.getByRole('button', { name: 'Try again →' }));
+  await waitFor(() => expect(mockReplace).toHaveBeenCalledTimes(1));
+});
+
+it('single-flights rapid final taps while storage is pending', async () => {
+  mockStorage.set(questionDraftKey('account-a'), serializeQuestionDraft({ age: 25, gender: 'Other', step: 7, apps: ['X'], hobbies: [] }));
+  await render(<OnboardingQuestions />, { wrapper: Wrapper });
+  await screen.findByText('You’re all set!');
+  const original = jest.mocked(AsyncStorage.setItem).getMockImplementation()!;
+  let release!: () => void;
+  const pending = new Promise<void>(resolve => { release = resolve; });
+  let answerWrites = 0;
+  jest.mocked(AsyncStorage.setItem).mockImplementation(async (key, value) => {
+    if (key === questionAnswersKey('account-a')) { answerWrites++; await pending; }
+    return original(key, value);
+  });
+  const button = screen.getByRole('button', { name: 'Let’s start →' });
+  await fireEvent.press(button);
+  await fireEvent.press(button);
+  await waitFor(() => expect(answerWrites).toBe(1));
+  expect(mockReplace).not.toHaveBeenCalled();
+  release();
+  await waitFor(() => expect(mockReplace).toHaveBeenCalledTimes(1));
+  jest.mocked(AsyncStorage.setItem).mockImplementation(original);
+});
+
+it('saves a manual plan before congratulations and includes it in completed answers', async () => {
+  mockStorage.set(questionDraftKey('account-a'), serializeQuestionDraft({ age: 25, gender: 'Other', step: 6, apps: ['Instagram','Snapchat'], hobbies: ['Reading'] }));
+  await render(<OnboardingQuestions />, { wrapper: Wrapper });
+  await screen.findByText('We created a plan for you');
+  await fireEvent.press(screen.getByRole('button', {name:'Set up on my own'}));
+  await screen.findByText('Set up on your own');
+  await fireEvent.press(screen.getByRole('button', {name:'App Sessions'}));
+  await fireEvent.press(screen.getByRole('button', {name:'3 sessions per day'}));
+  await fireEvent.press(screen.getByRole('button', {name:'Save my plan'}));
+  await screen.findByText('You’re all set!');
+  expect(mockStorage.has(questionCompleteKey('account-a'))).toBe(false);
+  await fireEvent.press(screen.getByRole('button', {name:'Let’s start →'}));
+  await waitFor(()=>expect(mockReplace).toHaveBeenCalledWith('/(tabs)'));
+  expect(JSON.parse(mockStorage.get(questionAnswersKey('account-a'))!)).toMatchObject({manualPlan:{version:1,sessionsPerDay:3,durationMinutes:15,apps:['Instagram','Snapchat']}});
 });

@@ -1,10 +1,12 @@
+import type { ManualPlan } from './manual-plan';
 import type { AuthorizationState } from '@disconnect/contracts';
 export const QUESTION_DRAFT_VERSION = 1 as const;
-export const QUESTION_STEPS = 5 as const;
+export const QUESTION_STEPS = 9 as const;
 
 export type QuestionDraft = {
   version: typeof QUESTION_DRAFT_VERSION;
   step: number;
+  planChoice?: 'manual' | 'suggested';
   apps: string[];
   hobbies: string[];
   age?: number;
@@ -16,6 +18,7 @@ export type SavedQuestionAnswers = {
   apps: string[];
   hobbies: string[];
   screenTimeAccess: AuthorizationState;
+  manualPlan?: ManualPlan;
   age?: number;
   gender?: string;
 };
@@ -51,6 +54,7 @@ export function parseQuestionDraft(raw: string | null): QuestionDraft | null {
   return {
     version: QUESTION_DRAFT_VERSION,
     step: value.step as number,
+    ...(value.planChoice === 'manual' || value.planChoice === 'suggested' ? {planChoice: value.planChoice} : {}),
     apps: uniqueStrings(value.apps as string[]),
     hobbies: uniqueStrings((value.hobbies as string[]).map(item => item.trim().replace(/\s+/g, ' '))),
     age: typeof value.age === 'number' && Number.isInteger(value.age) && value.age >= 18 && value.age <= 80 ? value.age : undefined,
