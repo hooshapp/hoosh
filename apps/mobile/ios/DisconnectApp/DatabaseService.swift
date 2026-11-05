@@ -1,286 +1,220 @@
-//
-//  DatabaseService.swift
-//  DisconnectApp
-//
-//  Created by Anisha Dasgupta on 5/21/26.
-//
-
 import Foundation
 import FamilyControls
-import FirebaseAnalytics
-import FirebaseAuth
-import FirebaseFirestore
 
+/// Supabase uses the same Auth accounts as the new app. Apple selection tokens
+/// and calendar/reminder titles remain on-device. No Firebase fallback writes.
 class DatabaseService {
     static let shared = DatabaseService()
-
-    private let db = Firestore.firestore()
-    private let installIDKey = "anonymousInstallID"
-
-    private var defaults: UserDefaults {
-        UserDefaults(suiteName: OnboardingResponseStore.appGroupID) ?? .standard
-    }
-
+    static let statusKey = "disconnect.supabaseSyncStatus"
+    static let successKey = "disconnect.supabaseLastSync"
+    private var defaults: UserDefaults { ShieldPresentationStore.defaults }
     var anonymousInstallID: String {
-        if let existingID = defaults.string(forKey: installIDKey), !existingID.isEmpty {
-            return existingID
-        }
-
-        let newID = UUID().uuidString
-        defaults.set(newID, forKey: installIDKey)
-        return newID
+        let key = "anonymousInstallID"
+        if let existing = defaults.string(forKey:key) { return existing }
+        let value = UUID().uuidString; defaults.set(value,forKey:key); return value
     }
-
-    func saveUserPreferences(userId: String, email: String, goal: String, genre: String, tone: String) {
-        let userData: [String: Any] = [
-            "email": email,
-            "goal": goal,
-            "genre": genre,
-            "tone": tone,
-            "updatedAt": Timestamp(date: Date())
-        ]
-
-        db.collection("users").document(userId).setData(userData, merge: true) { error in
-            if let error = error {
-                print("Error saving user data: \(error.localizedDescription)")
-            } else {
-                print("User preferences saved successfully!")
-            }
+    private func status(_ text: String) { defaults.set(text,forKey:Self.statusKey) }
+    private func plan() throws -> [[String:Any]] {
+        try PerAppProtection.rules(for:PerAppProtection.selection()).map {
+            ["localRuleID":$0.id,"appLabel":$0.researchLabel ?? "","appLabelSource":"participant_entered","dailyMinutes":$0.minutes,"sessionMinutes":$0.sessionMinutes]
         }
     }
-
-    func fetchUserPreferences(userId: String, completion: @escaping (User?) -> Void) {
-        db.collection("users").document(userId).getDocument { (document, error) in
-            if let document = document, document.exists {
-                do {
-                    let user = try document.data(as: User.self)
-                    completion(user)
-                } catch {
-                    print("Error: \(error)")
-                    completion(nil)
-                }
-            } else {
-                completion(nil)
-            }
+    func saveEnrollment(uploadEvents:Bool=true) async throws {
+        guard let id = await NativeSupabase.shared.identity()?.0 else { throw NativeBackendError.signedOut }
+        guard let participant = await NativeSupabase.shared.participant() else { throw NativeBackendError.studyDetailsRequired }
+        if SimulatorUITestSupport.consumeEnrollmentFailure() { throw URLError(.notConnectedToInternet) }
+        let body = try JSONSerialization.data(withJSONObject:["user_id":id.uuidString,"participant_name":participant.name,"contact_email":participant.email,"telemetry_gap_detected":defaults.bool(forKey:"disconnect.researchQueueFull")])
+        _ = try await NativeSupabase.shared.rest(table:"legacy_swift_participants",owner:id,method:"POST",body:body,
+            query:[.init(name:"on_conflict",value:"user_id")],prefer:"resolution=merge-duplicates,return=minimal")
+        let data = try await NativeSupabase.shared.rest(table:"legacy_swift_participants",owner:id,method:"GET",
+            query:[.init(name:"user_id",value:"eq."+id.uuidString),.init(name:"select",value:"participant_name,contact_email")])
+        guard let rows = try JSONSerialization.jsonObject(with:data) as? [[String:String]], rows.count == 1,
+              rows[0]["participant_name"] == participant.name, rows[0]["contact_email"] == participant.email else { throw URLError(.cannotParseResponse) }
+        defaults.set(id.uuidString,forKey:StudyEnrollmentGate.verifiedOwnerKey)
+        defaults.set(true,forKey:"disconnect.study.enrollmentVerified")
+        if uploadEvents { try await flushEvents(for:id) }
+    }
+    func syncNow() async throws {
+        do {
+            try await performSync()
+        } catch {
+            status(error.localizedDescription)
+            throw error
         }
     }
-
-    func logEvent(_ name: String, properties: [String: Any] = [:]) {
-        let cleanName = analyticsName(name)
-        let analyticsProperties = cleanAnalyticsProperties(properties)
-
-        Analytics.setUserID(anonymousInstallID)
-        Analytics.logEvent(cleanName, parameters: analyticsProperties)
-
-        ensureAnonymousAuth {
-            var firestoreData = self.cleanFirestoreProperties(properties)
-            firestoreData["eventName"] = cleanName
-            firestoreData["installID"] = self.anonymousInstallID
-            firestoreData["firebaseUID"] = Auth.auth().currentUser?.uid ?? "unknown"
-            firestoreData["createdAt"] = Timestamp(date: Date())
-            firestoreData["appVersion"] = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "unknown"
-            firestoreData["buildNumber"] = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "unknown"
-
-            self.db.collection("analytics_events").addDocument(data: firestoreData) { error in
-                if let error {
-                    print("Error logging analytics event: \(error.localizedDescription)")
-                }
-            }
+    private func performSync() async throws {
+        guard let (id, _) = await NativeSupabase.shared.identity() else { throw NativeBackendError.signedOut }
+        let workspace = AccountWorkspace(defaults:defaults,domain:ShieldPresentationStore.group)
+        guard workspace.completed(for:id.uuidString) else { throw NativeBackendError.setupRequired }
+        NativeResearchQueue.setUser(id)
+        try await saveEnrollment()
+        PerAppProtection.recordActiveSessionSamples()
+        StudyConfigurationHistory.capture(reason:"sync_snapshot")
+        try await syncConfigurationHistory(for:id)
+        status("Syncing your preferences…")
+        let responses = OnboardingResponseStore.load()
+        let preferences = try JSONSerialization.jsonObject(with:JSONEncoder().encode(responses))
+        let currentPlan = try plan()
+        let body = try JSONSerialization.data(withJSONObject:["user_id":id.uuidString,"preferences":preferences,"plan":currentPlan,"updated_at":ISO8601DateFormatter().string(from:Date())])
+        _ = try await NativeSupabase.shared.rest(table:"legacy_swift_profiles",owner:id,method:"POST",body:body,
+            query:[.init(name:"on_conflict",value:"user_id")],prefer:"resolution=merge-duplicates,return=minimal")
+        // Verify the owner's actual saved row rather than treating a write attempt as sync.
+        let read = try await NativeSupabase.shared.rest(table:"legacy_swift_profiles",owner:id,method:"GET",
+            query:[.init(name:"user_id",value:"eq."+id.uuidString),.init(name:"select",value:"user_id,preferences,plan")])
+        guard let rows = try JSONSerialization.jsonObject(with:read) as? [[String:Any]], rows.count == 1,
+              (rows[0]["user_id"] as? String)?.lowercased() == id.uuidString.lowercased(),
+              let restored = rows[0]["preferences"] as? NSDictionary,
+              restored.isEqual(to:preferences as? [AnyHashable:Any] ?? [:]),
+              let restoredPlan = rows[0]["plan"] as? NSArray, restoredPlan.isEqual(to:currentPlan) else { throw URLError(.cannotParseResponse) }
+        try await flushEvents(for:id)
+        try await verifySavedProgress(for:id)
+        defaults.set(Date(),forKey:Self.successKey)
+        status("Synced and read back successfully.")
+    }
+    func flushConfigurationOnly() async throws {
+        guard let id=await NativeSupabase.shared.identity()?.0,
+              defaults.string(forKey:AccountWorkspace.ownerKey)==id.uuidString else { return }
+        try await syncConfigurationHistory(for:id)
+    }
+    private func syncConfigurationHistory(for id: UUID) async throws {
+        let pending=StudyConfigurationHistory.pending(for:id)
+        for item in pending {
+            let data=try JSONEncoder().encode(item.1)
+            _=try await NativeSupabase.shared.rest(table:"legacy_swift_configuration_history",owner:id,method:"POST",body:data,
+                query:[.init(name:"on_conflict",value:"id")],prefer:"resolution=ignore-duplicates,return=minimal")
+            guard await NativeSupabase.shared.identity()?.0==id else { throw NativeBackendError.staleSession }
+            try? FileManager.default.removeItem(at:item.0)
         }
     }
-
+    private func verifySavedProgress(for id: UUID) async throws {
+        var events: [StoredStudyEvent] = [], cursor: UUID?
+        while true {
+            var query: [URLQueryItem] = [.init(name:"user_id",value:"eq."+id.uuidString),
+                .init(name:"select",value:"id,event_name,occurred_at,properties"),
+                .init(name:"order",value:"id.asc"),.init(name:"limit",value:"500")]
+            if let cursor { query.append(.init(name:"id",value:"gt."+cursor.uuidString)) }
+            let data = try await NativeSupabase.shared.rest(table:"legacy_swift_events",owner:id,method:"GET",query:query)
+            let page = try NudgeResponseDecoder.decode([StoredStudyEvent].self,from:data)
+            events.append(contentsOf:page)
+            if page.count < 500 { break }
+            guard events.count < 10000, let next = page.last?.id, next != cursor else { throw URLError(.dataLengthExceedsMaximum) }
+            cursor = next
+        }
+        guard await NativeSupabase.shared.identity()?.0 == id,
+              defaults.string(forKey:AccountWorkspace.ownerKey) == id.uuidString else { throw NativeBackendError.staleSession }
+        var progress = VerifiedStudyProgress(events:events)
+        progress.feedbackEntries=try await verifiedFeedbackCount(for:id)
+        guard await NativeSupabase.shared.identity()?.0==id,
+              defaults.string(forKey:AccountWorkspace.ownerKey)==id.uuidString else { throw NativeBackendError.staleSession }
+        try HistoryTurnOffStore.save(events:events,owner:id)
+        defaults.set(try JSONEncoder().encode(progress),forKey:VerifiedStudyProgress.storageKey)
+    }
+    func refreshHistory() async throws {
+        guard let id=await NativeSupabase.shared.identity()?.0,
+              defaults.string(forKey:AccountWorkspace.ownerKey)==id.uuidString else { throw NativeBackendError.signedOut }
+        try await flushEvents(for:id)
+        let now=Date()
+        let start=min(HistoryPeriod.week.window(now:now).currentStart,HistoryPeriod.month.window(now:now).currentStart)
+        var events:[StoredStudyEvent]=[],cursor:UUID?
+        while true {
+            var query:[URLQueryItem]=[.init(name:"user_id",value:"eq."+id.uuidString),
+                .init(name:"select",value:"id,event_name,occurred_at,properties"),
+                .init(name:"event_name",value:"in.(shield_quit_chosen,nudge_end_session)"),
+                .init(name:"occurred_at",value:"gte."+ISO8601DateFormatter().string(from:start)),
+                .init(name:"order",value:"id.asc"),.init(name:"limit",value:"500")]
+            if let cursor { query.append(.init(name:"id",value:"gt."+cursor.uuidString)) }
+            let data=try await NativeSupabase.shared.rest(table:"legacy_swift_events",owner:id,method:"GET",query:query)
+            let rows=try NudgeResponseDecoder.decode([StoredStudyEvent].self,from:data)
+            events.append(contentsOf:rows)
+            if rows.count<500 { break }
+            guard events.count<10000,let next=rows.last?.id,next != cursor else { throw URLError(.dataLengthExceedsMaximum) }
+            cursor=next
+        }
+        guard await NativeSupabase.shared.identity()?.0==id,
+              defaults.string(forKey:AccountWorkspace.ownerKey)==id.uuidString else { throw NativeBackendError.staleSession }
+        try HistoryTurnOffStore.save(events:events,owner:id,coverageStart:start)
+    }
+    private func verifiedFeedbackCount(for id: UUID) async throws -> Int {
+        struct Row: Decodable { var id: UUID }
+        var count=0,cursor:UUID?
+        while true {
+            var query:[URLQueryItem]=[.init(name:"user_id",value:"eq."+id.uuidString),.init(name:"select",value:"id"),.init(name:"order",value:"id.asc"),.init(name:"limit",value:"500")]
+            if let cursor { query.append(.init(name:"id",value:"gt."+cursor.uuidString)) }
+            let data=try await NativeSupabase.shared.rest(table:"legacy_swift_feedback",owner:id,method:"GET",query:query)
+            let page=try JSONDecoder().decode([Row].self,from:data)
+            count += page.count
+            if page.count<500 { return count }
+            guard count<10000,let next=page.last?.id,next != cursor else { throw URLError(.dataLengthExceedsMaximum) }
+            cursor=next
+        }
+    }
+    func flushEvents(for id: UUID) async throws {
+        let pending = NativeResearchQueue.pending(for:id)
+        for start in stride(from:0,to:pending.count,by:50) {
+            let batch = Array(pending[start..<min(start+50,pending.count)])
+            let data = try JSONEncoder().encode(batch.map(\.1))
+            _ = try await NativeSupabase.shared.rest(table:"legacy_swift_events",owner:id,method:"POST",body:data,
+                query:[.init(name:"on_conflict",value:"id")],prefer:"resolution=ignore-duplicates,return=minimal")
+            guard await NativeSupabase.shared.identity()?.0 == id else { throw NativeBackendError.staleSession }
+            for item in batch { try? FileManager.default.removeItem(at:item.0) }
+        }
+    }
     func syncUserProfile(responses: OnboardingResponses, selection: FamilyActivitySelection? = nil) {
-        ensureAnonymousAuth {
-            var data: [String: Any] = [
-                "installID": self.anonymousInstallID,
-                "firebaseUID": Auth.auth().currentUser?.uid ?? "unknown",
-                "focusGoal": responses.focusGoal,
-                "focusGoalIconName": responses.focusGoalIconName,
-                "primaryGoal": responses.primaryGoal,
-                "focusFeeling": responses.focusFeeling,
-                "tinyTask": responses.tinyTask,
-                "scrollTemptation": responses.scrollTemptation,
-                "scrollCost": responses.scrollCost,
-                "accountabilityAnchor": responses.accountabilityAnchor,
-                "bypassMinutes": responses.bypassMinutes,
-                "aiFrictionStyle": responses.aiFrictionStyle,
-                "aiTone": responses.aiTone,
-                "persuasionStyle": responses.persuasionStyle,
-                "selectedQuestionCount": responses.selectedQuestions.count,
-                "hasCustomQuestion": !responses.customQuestion.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
-                "updatedAt": Timestamp(date: Date())
-            ]
-
-            if let selection {
-                data.merge(self.selectionSummary(selection)) { _, new in new }
-            }
-
-            self.db.collection("users").document(self.anonymousInstallID).setData(data, merge: true) { error in
-                if let error {
-                    print("Error syncing user profile: \(error.localizedDescription)")
-                }
-            }
+        Task {
+            do { try await syncNow() }
+            catch { status(error.localizedDescription) }
         }
     }
-
+    func logEvent(_ name: String, properties: [String:Any] = [:]) {
+        let safeKeys: Set<String> = ["rating","context","protectedAppCount","protectedCategoryCount","protectedWebDomainCount","totalSelected","has_calendar_item","has_reminder_item"]
+        var values: [String:String] = [:]
+        for (key,value) in properties where safeKeys.contains(key) && !(value is String) { values[key] = String(describing:value) }
+        NativeResearchQueue.enqueue(name,properties:values)
+    }
     func logProtectedSelectionChanged(_ selection: FamilyActivitySelection) {
-        var properties = selectionSummary(selection)
-        properties["totalSelected"] = selectedItemCount(selection)
-        logEvent("protected_selection_changed", properties: properties)
-        syncUserProfile(responses: OnboardingResponseStore.load(), selection: selection)
+        logEvent("protected_selection_changed",properties:["protectedAppCount":selection.applicationTokens.count])
+        syncUserProfile(responses:OnboardingResponseStore.load(),selection:selection)
     }
-
-    func submitFeedback(
-        rating: Int,
-        message: String,
-        context: String,
-        responses: OnboardingResponses,
-        completion: @escaping (Result<Void, Error>) -> Void
-    ) {
-        let trimmedMessage = message.trimmingCharacters(in: .whitespacesAndNewlines)
-        let data: [String: Any] = [
-            "installID": anonymousInstallID,
-            "rating": rating,
-            "message": trimmedMessage,
-            "context": context,
-            "focusGoal": responses.focusGoal,
-            "bypassMinutes": responses.bypassMinutes,
-            "aiTone": responses.aiTone,
-            "aiFrictionStyle": responses.aiFrictionStyle,
-            "persuasionStyle": responses.persuasionStyle,
-            "createdAt": Timestamp(date: Date())
-        ]
-
-        ensureAnonymousAuth {
-            var feedbackData = data
-            feedbackData["firebaseUID"] = Auth.auth().currentUser?.uid ?? "unknown"
-
-            self.db.collection("feedback").addDocument(data: feedbackData) { error in
-                if let error {
-                    completion(.failure(error))
-                } else {
-                    self.logEvent("feedback_submitted", properties: ["rating": rating, "context": context])
-                    completion(.success(()))
-                }
-            }
+    func submitFeedback(rating: Int, message: String, context: String, responses: OnboardingResponses,
+                        completion: @escaping (Result<Void,Error>) -> Void) {
+        Task {
+            do {
+                guard let id = await NativeSupabase.shared.identity()?.0 else { throw NativeBackendError.signedOut }
+                guard (1...5).contains(rating), message.count <= 2000, context.count <= 100 else { throw CocoaError(.validationMissingMandatoryProperty) }
+                let feedbackID=UUID().uuidString
+                let text=message.trimmingCharacters(in:.whitespacesAndNewlines)
+                let body = try JSONSerialization.data(withJSONObject:["id":feedbackID,"user_id":id.uuidString,"rating":rating,"message":text,"context":context])
+                let returned = try await NativeSupabase.shared.rest(table:"legacy_swift_feedback",owner:id,method:"POST",body:body,prefer:"return=representation")
+                guard let rows=try JSONSerialization.jsonObject(with:returned) as? [[String:Any]],rows.count==1,
+                      (rows[0]["id"] as? String)?.lowercased()==feedbackID.lowercased(),
+                      rows[0]["rating"] as? Int==rating,rows[0]["message"] as? String==text else { throw URLError(.cannotParseResponse) }
+                await MainActor.run { completion(.success(())) }
+                try? await syncNow()
+            } catch { await MainActor.run { completion(.failure(error)) } }
         }
     }
-
-    func submitResearchOptIn(
-        name: String,
-        contact: String,
-        userType: String,
-        biggestDistraction: String,
-        notes: String,
-        responses: OnboardingResponses,
-        selection: FamilyActivitySelection,
-        completion: @escaping (Result<Void, Error>) -> Void
-    ) {
-        var data: [String: Any] = [
-            "installID": anonymousInstallID,
-            "name": name.trimmingCharacters(in: .whitespacesAndNewlines),
-            "contact": contact.trimmingCharacters(in: .whitespacesAndNewlines),
-            "userType": userType,
-            "biggestDistraction": biggestDistraction.trimmingCharacters(in: .whitespacesAndNewlines),
-            "notes": notes.trimmingCharacters(in: .whitespacesAndNewlines),
-            "focusGoal": responses.focusGoal,
-            "primaryGoal": responses.primaryGoal,
-            "bypassMinutes": responses.bypassMinutes,
-            "aiTone": responses.aiTone,
-            "aiFrictionStyle": responses.aiFrictionStyle,
-            "createdAt": Timestamp(date: Date())
-        ]
-        data.merge(selectionSummary(selection)) { _, new in new }
-
-        ensureAnonymousAuth {
-            data["firebaseUID"] = Auth.auth().currentUser?.uid ?? "unknown"
-
-            self.db.collection("research_opt_ins").addDocument(data: data) { error in
-                if let error {
-                    completion(.failure(error))
-                } else {
-                    self.logEvent("research_opt_in_submitted", properties: ["userType": userType])
-                    completion(.success(()))
-                }
-            }
+    func submitResearchOptIn(name: String, contact: String, userType: String, biggestDistraction: String,
+                             notes: String, responses: OnboardingResponses, selection: FamilyActivitySelection,
+                             completion: @escaping (Result<Void,Error>) -> Void) {
+        Task {
+            do {
+                guard let id = await NativeSupabase.shared.identity()?.0 else { throw NativeBackendError.signedOut }
+                let contact=contact.trimmingCharacters(in:.whitespacesAndNewlines)
+                guard !contact.isEmpty else { throw CocoaError(.validationMissingMandatoryProperty) }
+                let answers = ["name":name,"contact":contact,"userType":userType,"biggestDistraction":biggestDistraction,"notes":notes,"interviewConsent":"true"]
+                let recordID=UUID().uuidString
+                let body = try JSONSerialization.data(withJSONObject:["id":recordID,"user_id":id.uuidString,"answers":answers])
+                let returned=try await NativeSupabase.shared.rest(table:"legacy_swift_research",owner:id,method:"POST",body:body,prefer:"return=representation")
+                guard let rows=try JSONSerialization.jsonObject(with:returned) as? [[String:Any]],rows.count==1,
+                      (rows[0]["id"] as? String)?.lowercased()==recordID.lowercased(),
+                      let saved=rows[0]["answers"] as? [String:String],saved==answers else { throw URLError(.cannotParseResponse) }
+                await MainActor.run { completion(.success(())) }
+            } catch { await MainActor.run { completion(.failure(error)) } }
         }
     }
-
-    private func ensureAnonymousAuth(completion: @escaping () -> Void) {
-        if Auth.auth().currentUser != nil {
-            completion()
-            return
-        }
-
-        Auth.auth().signInAnonymously { _, error in
-            if let error {
-                print("Anonymous Firebase sign-in failed: \(error.localizedDescription)")
-            }
-            completion()
-        }
+    // Compatibility for inactive imported demo views; no implicit account creation.
+    func saveUserPreferences(userId: String, email: String, goal: String, genre: String, tone: String) {
+        syncUserProfile(responses:OnboardingResponseStore.load())
     }
-
-    private func selectedItemCount(_ selection: FamilyActivitySelection) -> Int {
-        selection.applicationTokens.count + selection.categoryTokens.count + selection.webDomainTokens.count
-    }
-
-    private func selectionSummary(_ selection: FamilyActivitySelection) -> [String: Any] {
-        [
-            "protectedAppCount": selection.applicationTokens.count,
-            "protectedCategoryCount": selection.categoryTokens.count,
-            "protectedWebDomainCount": selection.webDomainTokens.count
-        ]
-    }
-
-    private func analyticsName(_ name: String) -> String {
-        let allowed = name.map { character in
-            character.isLetter || character.isNumber || character == "_" ? character : "_"
-        }
-        return String(allowed).prefix(40).isEmpty ? "event" : String(String(allowed).prefix(40))
-    }
-
-    private func cleanAnalyticsProperties(_ properties: [String: Any]) -> [String: Any] {
-        var clean: [String: Any] = ["install_id": anonymousInstallID]
-
-        for (key, value) in properties {
-            let cleanKey = analyticsName(key)
-            switch value {
-            case let value as String:
-                clean[cleanKey] = String(value.prefix(100))
-            case let value as Int:
-                clean[cleanKey] = value
-            case let value as Double:
-                clean[cleanKey] = value
-            case let value as Float:
-                clean[cleanKey] = value
-            case let value as Bool:
-                clean[cleanKey] = value
-            default:
-                clean[cleanKey] = String(describing: value).prefix(100).description
-            }
-        }
-
-        return clean
-    }
-
-    private func cleanFirestoreProperties(_ properties: [String: Any]) -> [String: Any] {
-        properties.mapValues { value in
-            switch value {
-            case let value as String:
-                return value
-            case let value as Int:
-                return value
-            case let value as Double:
-                return value
-            case let value as Float:
-                return value
-            case let value as Bool:
-                return value
-            case let value as [String]:
-                return value
-            default:
-                return String(describing: value)
-            }
-        }
-    }
+    func fetchUserPreferences(userId: String, completion: @escaping (User?) -> Void) { completion(nil) }
 }

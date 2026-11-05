@@ -49,3 +49,6 @@ DerivedData/
 
 # Separate generated Expo development host; legacy iOS remains under apps/mobile/ios
 .native-dev/
+
+# Native client config uses public values from the ignored mobile .env.
+apps/mobile/ios/DisconnectApp/NativeSupabaseConfig.plist

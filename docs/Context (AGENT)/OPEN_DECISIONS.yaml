@@ -1,20 +1,26 @@
 # Disconnect pending decisions. Status is deliberately unresolved.
 # Copy approved choices into a versioned ADR and revise PRD/TSD before shipping.
 version: 1
-updated_at: '2026-10-28'
+updated_at: '2026-11-04'
 decisions:
   - id: PD-01
     topic: sessions_accounting_scope
-    status: unresolved
+    status: partially_resolved
+    legacy_swift_2026_11_04: owner_approved_per_app_daily_budget_and_user_chosen_session_duration
+    evidence: docs/implementation/legacy-session-concept-draft.md
     options: [combined_selected_apps, per_app, global]
     recommendation: combined_selected_apps
   - id: PD-02
     topic: session_start_end_and_inactivity_grace
-    status: unresolved
+    status: partially_resolved
+    legacy_swift_2026_11_04: initial_shield_then_explicit_session_start_reopen_continues_active_usage_midnight_reset
+    evidence: docs/implementation/legacy-session-concept-draft.md
     recommendation: define_state_machine_and_day_boundary
   - id: PD-03
     topic: open_anyway_allowance_and_max_extensions
-    status: unresolved
+    status: partially_resolved
+    legacy_swift_2026_11_04: owner_approved_explicit_extra_time_separate_from_normal_allowance
+    engineering_default_pending_product_cap_review: ten_minutes_once_per_app_per_day
     recommendation: bounded_reason_scoped_allowance_with_no_reward
   - id: PD-04
     topic: quest_vs_session_precedence
@@ -72,3 +78,13 @@ decisions:
     topic: minimum_supported_age_and_distribution_rating
     status: partially_resolved
     recommendation: supported_signup_ages_18_to_80_inclusive_privacy_and_store_review_pending
+
+legacy_swift_study_override_2026_11_04:
+  source: owner_requested_name_and_email_only_for_research_progress
+  entry: participant_name_email_then_questionnaire_then_session_setup
+  identity: anonymous_authenticated_device_id_with_unverified_contact_labels
+  accounts: same_phone_resumes_private_keychain_session
+  existing_app_email_verification: unchanged
+  researcher_views: admin_only_progress_and_daily_usage
+  measurement: selected_app_minute_checkpoints_and_explicit_choices_not_total_phone_usage
+  status: implemented_build_api_tests_and_phone_install_passed_enrollment_acceptance_pending

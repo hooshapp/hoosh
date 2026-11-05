@@ -25,86 +25,14 @@ class AIService {
     }
 
     static func localNudgePack(responses: OnboardingResponses, context: ProductivityContextSnapshot) -> AIGeneratedNudgePack {
-        let title = firstUseful([context.contextTitle, context.nextReminderTitle, context.nextCalendarTitle], fallback: "")
-        let kind = firstUseful([context.contextKind, context.nextReminderTitle.isEmpty ? "calendar" : "reminder"], fallback: "reminder")
-        let action = firstUseful([context.actionLine, concreteAction(for: responses.primaryGoal, task: responses.tinyTask)], fallback: "take one useful step")
-        let goal = firstUseful([responses.primaryGoal, responses.focusGoal], fallback: "your real goal")
-        let tone = firstUseful([responses.aiTone], fallback: "Supportive")
-        let label = kind.lowercased() == "calendar" ? "Calendar" : "Reminder"
-
-        let shield: String
-        let active: [String]
-        let final: [String]
-
-        if !title.isEmpty {
-            switch tone {
-            case "Direct":
-                shield = "\(label): \(short(title, 30)). \(short(action, 42))."
-                active = [
-                    "\(label): \(short(title, 28)). \(short(action, 32)).",
-                    "\(short(title, 30)) beats this scroll.",
-                    "\(short(action, 34)). Then decide."
-                ]
-                final = [
-                    "Time is up. \(short(action, 34)).",
-                    "Relock. Return to \(short(title, 30))."
-                ]
-            case "Playful":
-                shield = "Plot twist: \(short(title, 30)) gets the next scene. \(short(action, 34))."
-                active = [
-                    "Plot twist: \(short(title, 28)).",
-                    "\(label) cameo: \(short(action, 32)).",
-                    "Give \(short(title, 28)) the next scene."
-                ]
-                final = [
-                    "Feed break is over. \(short(title, 30)) is up.",
-                    "Credits roll. \(short(action, 34))."
-                ]
-            case "Intense":
-                shield = "\(short(title, 30)) is waiting. \(short(action, 36)), not the feed."
-                active = [
-                    "\(short(title, 28)) is waiting. Leave.",
-                    "Do not trade \(short(title, 24)) for this.",
-                    "\(short(action, 34)). Protect your day."
-                ]
-                final = [
-                    "No overtime. \(short(action, 34)).",
-                    "Close the loop. \(short(title, 30))."
-                ]
-            default:
-                shield = "Your \(label.lowercased()) says \(short(title, 30)). \(short(action, 38))."
-                active = [
-                    "Return to \(short(title, 28)).",
-                    "Your \(label.lowercased()) is next: \(short(action, 30)).",
-                    "\(short(action, 34)). Make this interruption useful."
-                ]
-                final = [
-                    "Time is up. Return to \(short(title, 30)).",
-                    "Leave cleanly. \(short(action, 34))."
-                ]
-            }
-        } else {
-            shield = AIFrictionPromptEngine.shieldNudge(for: responses, appName: "{app}")
-            active = [
-                "\(short(goal, 28)) gets the next minute.",
-                "\(short(action, 34)). Make this real.",
-                "Leave before this turns automatic."
-            ]
-            final = [
-                "Time is up. Return to \(short(goal, 30)).",
-                "Relock. \(short(action, 34))."
-            ]
-        }
-
-        return AIGeneratedNudgePack(
-            shieldPrompt: shield,
-            activeReminders: active,
-            finalReminders: final,
-            contextTitle: title,
-            contextKind: kind,
-            tone: tone,
-            generatedAt: Date()
-        )
+        let messages = PersonalizedNudgeLibrary.messages(answers: [
+            "primaryGoal":responses.primaryGoal,"focusGoal":responses.focusGoal,
+            "tinyTask":responses.tinyTask,"feeling":responses.focusFeeling
+        ])
+        return AIGeneratedNudgePack(shieldPrompts: messages,
+            shieldPrompt: messages[0], activeReminders: messages,
+            finalReminders: ["Your session has ended. Take a moment to choose what comes next."],
+            contextTitle: "", contextKind: "", tone: responses.aiTone, generatedAt: Date())
     }
 
     private var aiEndpoint: URL? {
@@ -121,14 +49,14 @@ class AIService {
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.timeoutInterval = 12
-        request.httpBody = try JSONEncoder().encode(AINudgeRequest(responses: responses, context: context))
+        request.httpBody = try JSONEncoder().encode(AINudgeRequest(responses: responses, context: .empty))
 
         let (data, response) = try await URLSession.shared.data(for: request)
         guard let http = response as? HTTPURLResponse, (200..<300).contains(http.statusCode) else {
             throw URLError(.badServerResponse)
         }
 
-        return try JSONDecoder().decode(AIGeneratedNudgePack.self, from: data)
+        return try NudgeResponseDecoder.decode(AIGeneratedNudgePack.self, from: data)
     }
     
     private func simulateAIResponse(goal: String, tone: String, screenTime: Int) -> String {

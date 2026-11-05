@@ -131,6 +131,22 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+        EE0000010000000000000001 /* SharedHistory */ = {
+            isa = PBXFileSystemSynchronizedRootGroup;
+            path = SharedHistory;
+            sourceTree = "<group>";
+        };
+
+        DD0000010000000000000001 /* SharedPresentation */ = {
+            isa = PBXFileSystemSynchronizedRootGroup;
+            path = SharedPresentation;
+            sourceTree = "<group>";
+        };
+		CC0000010000000000000001 /* SharedProtection */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SharedProtection;
+			sourceTree = "<group>";
+		};
 		0C08602F2FBFA948001B9C60 /* DisconnectApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = DisconnectApp;
@@ -240,6 +256,9 @@
 		0C0860242FBFA948001B9C60 = {
 			isa = PBXGroup;
 			children = (
+                EE0000010000000000000001 /* SharedHistory */,
+				CC0000010000000000000001 /* SharedProtection */,
+                DD0000010000000000000001 /* SharedPresentation */,
 				0C08602F2FBFA948001B9C60 /* DisconnectApp */,
 				AA0000010000000000000001 /* DisconnectShieldConfigurationExtension */,
 				AA0000020000000000000002 /* DisconnectShieldActionExtension */,
@@ -287,6 +306,9 @@
 				BB0000090000000000000009 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
+                EE0000010000000000000001 /* SharedHistory */,
+				CC0000010000000000000001 /* SharedProtection */,
+                DD0000010000000000000001 /* SharedPresentation */,
 				0C08602F2FBFA948001B9C60 /* DisconnectApp */,
 			);
 			name = DisconnectApp;
@@ -359,6 +381,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+                EE0000010000000000000001 /* SharedHistory */,
 				0C85A3FD2FE0DE450097BC0D /* Disconnect */,
 			);
 			name = Disconnect;
@@ -381,6 +404,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+                DD0000010000000000000001 /* SharedPresentation */,
 				AA0000010000000000000001 /* DisconnectShieldConfigurationExtension */,
 			);
 			name = DisconnectShieldConfigurationExtension;
@@ -403,6 +427,8 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				CC0000010000000000000001 /* SharedProtection */,
+                DD0000010000000000000001 /* SharedPresentation */,
 				AA0000020000000000000002 /* DisconnectShieldActionExtension */,
 			);
 			name = DisconnectShieldActionExtension;
@@ -425,6 +451,8 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
+				CC0000010000000000000001 /* SharedProtection */,
+                DD0000010000000000000001 /* SharedPresentation */,
 				BB0000010000000000000001 /* DisconnectDeviceActivityMonitorExtension */,
 			);
 			name = DisconnectDeviceActivityMonitorExtension;

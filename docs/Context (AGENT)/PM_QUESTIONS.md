@@ -2,7 +2,7 @@
 
 **Created:** 2026-10-28  
 **Purpose:** Preserve the 22 questions sent to the PM and append answers, clarifications, and resulting decisions as they arrive.  
-**Current status:** All questions are unanswered in this log. Recommendations in other documents are not approved answers.
+**Current status:** Original broader-product questions below are preserved. November 4 legacy-iOS pilot answers are appended at the end; unrelated recommendations remain unapproved.
 
 ## How to maintain this file
 
@@ -277,3 +277,16 @@ _No answer recorded._
 **Answers and follow-ups:**
 
 _No answer recorded._
+
+## November 4, 2026 — owner-approved legacy iOS pilot clarification
+
+Source: owner approved the concrete session model in chat with “let’s go with this model,” choosing user-configurable session lengths.
+
+- Q01: iOS-only legacy pilot; preserve existing SwiftUI design. This does not expand scope to Android or gamification.
+- Q02: per-app daily allowances, with a separate user-chosen session duration. A 30-minute allowance may support one 30-minute session or two full 15-minute sessions; early exits need not consume the unused rest.
+- Q03/Q06: initial reflection shield gates new sessions; an explicit Start action grants access. Reopening during a live session continues it. Native usage milestones, not elapsed wall time, advance the session; quarter milestones notify; session expiry restores the shield.
+- Q04: local calendar day resets normal/extra eligibility, with no overnight grant carryover. Device rollover/travel behavior remains to be validated.
+- Q07: extra time must be explicit and separate. Once/day, 10 minutes per app is this increment’s engineering default; exact cap was not a separately quoted owner answer.
+- Q05/Q08: scheduling and quest-overlap policy are not covered by this pilot increment; no claims of those features working.
+
+Implementation and verification boundaries: `../implementation/legacy-session-concept-draft.md`. PRD, TSD and OPEN_DECISIONS have matching scoped updates. This pilot decision does not silently approve the broader React Native enforcement contract.

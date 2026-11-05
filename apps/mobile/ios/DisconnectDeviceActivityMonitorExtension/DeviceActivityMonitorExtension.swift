@@ -12,6 +12,13 @@ final class DeviceActivityMonitorExtension: DeviceActivityMonitor {
     override func intervalDidStart(for activity: DeviceActivityName) {
         super.intervalDidStart(for: activity)
 
+        if activity == PerAppProtection.activity {
+            PerAppProtection.defaults.set(Date(), forKey: PerAppProtection.lastIntervalStartKey)
+            do { try PerAppProtection.reconcileShields() }
+            catch { PerAppProtection.defaults.set("Could not reconcile daily app protection.", forKey: PerAppProtection.errorKey) }
+            return
+        }
+        if PerAppProtection.enabled { return }
         guard activity == .disconnectShieldBypass else { return }
         logger.notice("Bypass interval started; reapplying shields")
         endBypassAndReapplyShields()
@@ -21,6 +28,17 @@ final class DeviceActivityMonitorExtension: DeviceActivityMonitor {
     override func intervalDidEnd(for activity: DeviceActivityName) {
         super.intervalDidEnd(for: activity)
 
+        if activity == PerAppProtection.activity || activity.rawValue.hasPrefix(PerAppProtection.allowanceActivityPrefix) {
+            do {
+                if activity == PerAppProtection.activity {
+                    PerAppProtection.defaults.set(Date(), forKey: PerAppProtection.lastIntervalEndKey)
+                    try PerAppProtection.reconcileShields()
+                }
+                else { try PerAppProtection.finishAllowance(activity: activity) }
+            } catch { PerAppProtection.defaults.set("Could not restore daily app protection.", forKey: PerAppProtection.errorKey) }
+            return
+        }
+        if PerAppProtection.enabled { return }
         if activity == .disconnectShieldBypass {
             logger.notice("Bypass interval ended; reapplying shields")
             endBypassAndReapplyShields()
@@ -33,6 +51,17 @@ final class DeviceActivityMonitorExtension: DeviceActivityMonitor {
     override func eventDidReachThreshold(_ event: DeviceActivityEvent.Name, activity: DeviceActivityName) {
         super.eventDidReachThreshold(event, activity: activity)
 
+        if activity == PerAppProtection.activity {
+            do { try PerAppProtection.handleDailyEvent(event) }
+            catch { PerAppProtection.defaults.set("Could not apply the daily app limit.", forKey: PerAppProtection.errorKey) }
+            return
+        }
+        if activity.rawValue.hasPrefix(PerAppProtection.allowanceActivityPrefix) {
+            do { try PerAppProtection.handleSessionEvent(event, activity: activity) }
+            catch { PerAppProtection.defaults.set("Could not update your app session. Reopen Disconnect to retry.", forKey: PerAppProtection.errorKey) }
+            return
+        }
+        if PerAppProtection.enabled { return }
         if activity == .disconnectShieldBypass, event == .disconnectShieldBypassLimit {
             logger.notice("Bypass usage threshold reached; reapplying shields")
             endBypassAndReapplyShields()
@@ -132,6 +161,7 @@ private enum SharedMonitorReminder {
         content.title = minute >= totalMinutes ? "Time is up" : "Tap to end session early"
         content.body = reminderBody(minute: minute, totalMinutes: totalMinutes)
         content.sound = .default
+        content.categoryIdentifier = "disconnect.breakReminder.category"
 
         let request = UNNotificationRequest(
             identifier: "\(reminderPrefix)\(minute)",
@@ -153,6 +183,15 @@ private enum SharedMonitorReminder {
     }
 
     private static func reminderBody(minute: Int, totalMinutes: Int) -> String {
+        let defaults = UserDefaults(suiteName: appGroupID) ?? .standard
+        if let data = defaults.data(forKey: "aiGeneratedNudgePack"),
+           let pack = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+           let generated = pack["generatedAt"] as? TimeInterval,
+           Date().timeIntervalSince(Date(timeIntervalSinceReferenceDate: generated)) < 86400,
+           let messages = pack[minute >= totalMinutes ? "finalReminders" : "activeReminders"] as? [String] {
+            let useful = messages.map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty }
+            if !useful.isEmpty { return String(useful[max(0, minute - 1) % useful.count].prefix(120)) }
+        }
         let responses = loadResponses()
         let goal = clean(responses["primaryGoal"] as? String, fallback: "your goal")
         let feeling = clean(responses["focusFeeling"] as? String, fallback: "in control")

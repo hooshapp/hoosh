@@ -13,9 +13,23 @@ final class AppleProductivityContextService: ObservableObject {
         snapshot.calendarAccess = accessState(for: EKEventStore.authorizationStatus(for: .event))
         snapshot.remindersAccess = accessState(for: EKEventStore.authorizationStatus(for: .reminder))
         ProductivityContextStore.save(snapshot)
+        recordConnection(provider:"calendar",state:snapshot.calendarAccess)
+        recordConnection(provider:"reminders",state:snapshot.remindersAccess)
+        if snapshot.calendarAccess != .authorized && snapshot.remindersAccess != .authorized {
+            LocalProductivityNudgeStore.save(nil)
+        }
+    }
+
+    private func recordConnection(provider:String,state:ProductivityContextSnapshot.AccessState) {
+        let key="disconnect.connectionStatus."+provider
+        let defaults=ShieldPresentationStore.defaults
+        guard defaults.string(forKey:key) != state.rawValue else { return }
+        defaults.set(state.rawValue,forKey:key)
+        NativeResearchQueue.enqueue("productivity_connection_status",properties:["provider":provider,"status":state.rawValue])
     }
 
     func requestCalendarAccess() async {
+        NativeResearchQueue.enqueue("productivity_connection_requested",properties:["provider":"calendar"])
         do {
             let granted: Bool
             if #available(iOS 17.0, *) {
@@ -26,16 +40,21 @@ final class AppleProductivityContextService: ObservableObject {
 
             snapshot.calendarAccess = granted ? .authorized : .denied
             ProductivityContextStore.save(snapshot)
-            DatabaseService.shared.logEvent("calendar_permission_result", properties: ["granted": granted])
+            NativeResearchQueue.enqueue("productivity_permission_result",properties:["provider":"calendar","granted":String(granted)])
             await refreshContext()
         } catch {
+            NativeResearchQueue.enqueue("productivity_permission_error",properties:["provider":"calendar"])
             errorMessage = error.localizedDescription
             snapshot.calendarAccess = .denied
             ProductivityContextStore.save(snapshot)
+            recordConnection(provider:"calendar",state:.denied)
+            LocalProductivityNudgeStore.save(nil)
+            try? await DatabaseService.shared.saveEnrollment()
         }
     }
 
     func requestReminderAccess() async {
+        NativeResearchQueue.enqueue("productivity_connection_requested",properties:["provider":"reminders"])
         do {
             let granted: Bool
             if #available(iOS 17.0, *) {
@@ -46,12 +65,16 @@ final class AppleProductivityContextService: ObservableObject {
 
             snapshot.remindersAccess = granted ? .authorized : .denied
             ProductivityContextStore.save(snapshot)
-            DatabaseService.shared.logEvent("reminders_permission_result", properties: ["granted": granted])
+            NativeResearchQueue.enqueue("productivity_permission_result",properties:["provider":"reminders","granted":String(granted)])
             await refreshContext()
         } catch {
+            NativeResearchQueue.enqueue("productivity_permission_error",properties:["provider":"reminders"])
             errorMessage = error.localizedDescription
             snapshot.remindersAccess = .denied
             ProductivityContextStore.save(snapshot)
+            recordConnection(provider:"reminders",state:.denied)
+            LocalProductivityNudgeStore.save(nil)
+            try? await DatabaseService.shared.saveEnrollment()
         }
     }
 
@@ -74,6 +97,13 @@ final class AppleProductivityContextService: ObservableObject {
         snapshot.contextTitle = priorityItem?.title ?? ""
         snapshot.lastUpdated = Date()
         ProductivityContextStore.save(snapshot)
+        if let item=priorityItem {
+            LocalProductivityNudgeStore.save(LocalProductivityNudge(provider:item.kind == .calendar ? "calendar" : "reminders",
+                title:item.title,dueAt:item.date,refreshedAt:Date(),reminderTasks:item.reminderTasks))
+        } else { LocalProductivityNudgeStore.save(nil) }
+        // Refresh presentation immediately; extensions can then use the local context offline.
+        try? PerAppProtection.reconcileShields()
+        try? await DatabaseService.shared.saveEnrollment()
         await AIService().refreshCachedNudgePack(responses: OnboardingResponseStore.load(), context: snapshot)
 
         DatabaseService.shared.logEvent(
@@ -91,7 +121,7 @@ final class AppleProductivityContextService: ObservableObject {
         let predicate = eventStore.predicateForEvents(withStart: now, end: end, calendars: nil)
 
         return eventStore.events(matching: predicate)
-            .filter { $0.endDate >= now || ($0.isAllDay && $0.endDate >= Calendar.current.startOfDay(for: now)) }
+            .filter { !$0.isAllDay && $0.startDate > now }
             .sorted { $0.startDate < $1.startDate }
             .first
             .map { ProductivityItem(title: cleanTitle($0.title), date: $0.startDate, kind: .calendar) }
@@ -102,14 +132,11 @@ final class AppleProductivityContextService: ObservableObject {
 
         return await withCheckedContinuation { continuation in
             eventStore.fetchReminders(matching: predicate) { reminders in
-                let next = reminders?
-                    .compactMap { reminder -> ProductivityItem? in
-                        let dueDate = reminder.dueDateComponents?.date ?? Date.distantFuture
-                        return ProductivityItem(title: self.cleanTitle(reminder.title), date: dueDate, kind: .reminder)
-                    }
-                    .filter { !$0.title.isEmpty }
-                    .sorted { $0.date < $1.date }
-                    .first
+                let tasks=(reminders ?? []).map { reminder in
+                    LocalReminderTask(title:self.cleanTitle(reminder.title),dueAt:LocalProductivityNudge.reminderDueDate(reminder.dueDateComponents))
+                }
+                let selected=LocalProductivityNudge.selectReminders(tasks,now:Date())
+                let next=selected.map { ProductivityItem(title:$0.title,date:$0.dueAt,kind:.reminder,reminderTasks:$0.reminderTasks) }
 
                 continuation.resume(returning: next)
             }
@@ -117,15 +144,11 @@ final class AppleProductivityContextService: ObservableObject {
     }
 
     private func priorityItem(calendarItem: ProductivityItem?, reminderItem: ProductivityItem?) -> ProductivityItem? {
-        if let reminderItem, reminderItem.date <= nextFewHours {
-            return reminderItem
+        let now=Date()
+        return [calendarItem,reminderItem].compactMap { $0 }.min {
+            LocalProductivityNudge(provider:$0.kind == .calendar ? "calendar" : "reminders",title:$0.title,dueAt:$0.date,refreshedAt:now).priority(now:now) <
+            LocalProductivityNudge(provider:$1.kind == .calendar ? "calendar" : "reminders",title:$1.title,dueAt:$1.date,refreshedAt:now).priority(now:now)
         }
-
-        if let calendarItem, calendarItem.date <= nextFewHours {
-            return calendarItem
-        }
-
-        return reminderItem ?? calendarItem
     }
 
     private func actionLine(for priorityItem: ProductivityItem?, calendarItem: ProductivityItem?, reminderItem: ProductivityItem?) -> String {
@@ -133,12 +156,12 @@ final class AppleProductivityContextService: ObservableObject {
 
         switch priorityItem.kind {
         case .reminder:
-            if priorityItem.date <= nextFewHours {
+            if priorityItem.date.map({$0 <= nextFewHours}) ?? true {
                 return "start \(priorityItem.title)"
             }
             return "make progress on \(priorityItem.title)"
         case .calendar:
-            if priorityItem.date <= nextFewHours {
+            if priorityItem.date.map({$0 <= nextFewHours}) ?? true {
                 return "prepare for \(priorityItem.title)"
             }
             return "prep one thing for \(priorityItem.title)"
@@ -172,7 +195,7 @@ final class AppleProductivityContextService: ObservableObject {
         let cleaned = (title ?? "")
             .replacingOccurrences(of: "\n", with: " ")
             .trimmingCharacters(in: .whitespacesAndNewlines)
-        return String(cleaned.prefix(48))
+        return cleaned
     }
 }
 
@@ -192,6 +215,7 @@ private struct ProductivityItem {
     }
 
     let title: String
-    let date: Date
+    let date: Date?
     let kind: Kind
+    var reminderTasks:[LocalReminderTask]? = nil
 }

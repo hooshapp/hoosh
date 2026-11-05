@@ -1182,3 +1182,7 @@ In parallel to PR-01–05, a distinct Android owner can execute `WP-02` without 
 **After work:** report implementation versus mock/placeholder status, build/test results, physical-device coverage, API and migration changes, user-privacy implications, known issues, cost impact, and any intentional differences from Figma or from Android/iOS behavior.
 
 **Definition of success:** A real person can install the new release, authorize appropriate functionality, select apps, configure a plan, receive a native intervention without opening Disconnect, use or skip a goal-based suggestion, and see accurate progress. Existing iOS monitoring functionality is preserved, Android limitations are honestly communicated, and no network or AI dependency can disable local restriction enforcement.
+
+## November 4 legacy iOS session-model update
+
+Owner approved per-app daily allowances with separately chosen session lengths, an initial reflection shield, quarter-session personalized notifications and a session-end shield. Reopening continues an active session rather than renewing it. Extra time is explicit and separate. The legacy Swift implementation uses a 10-minute once/day per-app extension as an engineering default. See `../implementation/legacy-session-concept-draft.md` for exact accounting, migration, validation and physical-device limits. This supersedes earlier combined-budget recommendations for the legacy iOS pilot only; it does not establish React Native enforcement, quests, rewards, active-hour scheduling or full lifecycle acceptance.

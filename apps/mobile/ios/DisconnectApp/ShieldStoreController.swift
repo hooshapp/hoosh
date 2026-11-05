@@ -10,38 +10,31 @@ class ShieldStoreController {
     private let logger = Logger(subsystem: "com.AnishaDasgupta.DisconnectApp", category: "ShieldStore")
 
     func shieldSelectedApps() {
-        if let bypassUntil = OnboardingResponseStore.bypassUntil() {
-            if bypassUntil > Date() {
-                removeAllShields()
-                scheduleShieldReapply(at: bypassUntil)
-                return
-            } else {
-                OnboardingResponseStore.clearBypass()
-            }
-        }
-
-        let selection = AppSelectionStore.load()
-        applySelection(selection)
+        refreshShieldStateAfterInstallOrRun()
     }
 
     func refreshShieldStateAfterInstallOrRun() {
         guard OnboardingResponseStore.hasCompletedOnboarding else { return }
-        guard OnboardingResponseStore.bypassUntil() == nil else {
-            shieldSelectedApps()
+        guard AuthorizationCenter.shared.authorizationStatus == .approved else {
+            DailyUsageMonitoring.defaults.set("Screen Time permission is required.", forKey: DailyUsageMonitoring.errorKey)
             return
         }
-
         let selection = AppSelectionStore.load()
-        guard !selection.applicationTokens.isEmpty ||
-              !selection.categoryTokens.isEmpty ||
-              !selection.webDomainTokens.isEmpty else {
+        guard !selection.applicationTokens.isEmpty else {
+            try? PerAppProtection.stop()
             removeAllShields()
+            if !selection.categoryTokens.isEmpty || !selection.webDomainTokens.isEmpty {
+                DailyUsageMonitoring.defaults.set("Choose individual apps inside Apple's picker to enable daily limits. Whole categories and websites do not have per-app limits.", forKey: DailyUsageMonitoring.errorKey)
+            } else { DailyUsageMonitoring.defaults.removeObject(forKey: DailyUsageMonitoring.errorKey) }
             return
         }
-
-        removeAllShields()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { [weak self] in
-            self?.applySelection(AppSelectionStore.load())
+        do {
+            try DailyUsageMonitoring.install(selection: selection)
+            DailyUsageMonitoring.defaults.removeObject(forKey: DailyUsageMonitoring.errorKey)
+            // DailyUsageMonitoring reconciles only reached individual-app rules.
+        } catch {
+            DailyUsageMonitoring.defaults.set("Could not start Screen Time monitoring. Please retry.", forKey: DailyUsageMonitoring.errorKey)
+            logger.error("Daily usage monitoring failed: \(String(describing: error), privacy: .public)")
         }
     }
 
@@ -55,6 +48,7 @@ class ShieldStoreController {
 
     func removeAllShields() {
         logger.notice("Removing all shields")
+        PerAppProtection.settings.clearAllSettings()
         store.shield.applications = nil
         store.shield.applicationCategories = nil
         store.shield.webDomains = nil
@@ -62,6 +56,7 @@ class ShieldStoreController {
     }
 
     func startBypass(minutes: Int) {
+        guard !PerAppProtection.enabled else { return }
         OnboardingResponseStore.setBypass(minutes: minutes)
         BreakReminderScheduler.scheduleBreakReminders(minutes: minutes, responses: OnboardingResponseStore.load())
         DeviceActivityBypassMonitorScheduler.scheduleBypassMonitor(minutes: minutes)
@@ -70,6 +65,10 @@ class ShieldStoreController {
     }
 
     func endBypassBecauseUserReturnedToDisconnect() {
+        if PerAppProtection.enabled {
+            refreshShieldStateAfterInstallOrRun()
+            return
+        }
         guard OnboardingResponseStore.bypassUntil() != nil else {
             shieldSelectedApps()
             return

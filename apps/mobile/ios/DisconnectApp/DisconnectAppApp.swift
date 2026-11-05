@@ -6,13 +6,11 @@
 //
 
 import SwiftUI
-import FirebaseCore
 import UserNotifications
 
 class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
   func application(_ application: UIApplication,
                    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-    FirebaseApp.configure()
     UNUserNotificationCenter.current().delegate = self
     BreakReminderScheduler.registerNotificationActions()
     ShieldStoreController().refreshShieldStateAfterInstallOrRun()
@@ -23,11 +21,28 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
   func userNotificationCenter(_ center: UNUserNotificationCenter,
                               didReceive response: UNNotificationResponse,
                               withCompletionHandler completionHandler: @escaping () -> Void) {
+    if [PerAppProtection.nudgeCategory,DayTwoSettingsTipStore.category].contains(response.notification.request.content.categoryIdentifier),
+       response.actionIdentifier == PerAppProtection.endSessionAction,
+       let id = response.notification.request.content.userInfo["ruleID"] as? String,
+       let activity = response.notification.request.content.userInfo["sessionActivity"] as? String,
+       PerAppProtection.allowance(for: id)?.activity == activity {
+      do {
+        try PerAppProtection.endAllowance(for: id)
+        NativeResearchQueue.enqueue("nudge_end_session",properties:["local_rule_id":id,"session_id":activity])
+      }
+      catch { PerAppProtection.defaults.set("Could not end the session. Please retry in Disconnect.", forKey: PerAppProtection.errorKey) }
+    }
     if response.notification.request.content.categoryIdentifier == BreakReminderScheduler.reminderCategoryIdentifier,
        response.actionIdentifier == UNNotificationDefaultActionIdentifier || response.actionIdentifier == BreakReminderScheduler.doneScrollingActionIdentifier {
       ShieldStoreController().endBypassBecauseUserReturnedToDisconnect()
     }
 
+    if response.notification.request.content.categoryIdentifier == DayTwoSettingsTipStore.category,
+       [UNNotificationDefaultActionIdentifier,DayTwoSettingsTipStore.openAction].contains(response.actionIdentifier) {
+      ShieldPresentationStore.defaults.set(true,forKey:DayTwoSettingsTipStore.pendingRoute)
+      NativeResearchQueue.enqueue("settings_tip_opened")
+      DispatchQueue.main.async { NotificationCenter.default.post(name:DayTwoSettingsTipStore.routeNotification,object:nil) }
+    }
     completionHandler()
   }
 }
@@ -40,13 +55,6 @@ struct DisconnectAppApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .onChange(of: scenePhase) { phase in
-                    guard phase == .active else { return }
-                    ShieldStoreController().endBypassBecauseUserReturnedToDisconnect()
-                    Task {
-                        await AppleProductivityContextService().refreshContext()
-                    }
-                }
         }
     }
 }

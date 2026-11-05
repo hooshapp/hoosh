@@ -402,3 +402,7 @@ Agents should record answers in a machine-readable ADR/decision log, update the 
 ---
 
 **PRD implementation rule:** If a user-visible decision is absent from this document and Figma, implement a clearly labeled fallback and request a product decision in the issue. **Do not silently invent product behavior.**
+
+## November 4 legacy iOS session-model update
+
+Owner approved per-app daily allowances with separately chosen session lengths, an initial reflection shield, quarter-session personalized notifications and a session-end shield. Reopening continues an active session rather than renewing it. Extra time is explicit and separate. The legacy Swift implementation uses a 10-minute once/day per-app extension as an engineering default. See `../implementation/legacy-session-concept-draft.md` for exact accounting, migration, validation and physical-device limits. This supersedes earlier combined-budget recommendations for the legacy iOS pilot only; it does not establish React Native enforcement, quests, rewards, active-hour scheduling or full lifecycle acceptance.

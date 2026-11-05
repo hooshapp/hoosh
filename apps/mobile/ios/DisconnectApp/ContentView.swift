@@ -1,22 +1,68 @@
 import SwiftUI
+import UIKit
 import FamilyControls
 import DeviceActivity
 import ManagedSettings
 
 struct ContentView: View {
-    @State private var hasCompletedOnboarding = OnboardingResponseStore.hasCompletedOnboarding
+    @StateObject private var flow = NativeAppFlow()
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         NavigationStack {
-            if hasCompletedOnboarding {
-                DashboardView()
-            } else {
+            Group {
+            switch flow.phase {
+            case .restoring:
+                ProgressView(flow.loadingMessage)
+            case .signedOut:
+                ScrollView {
+                    VStack(spacing:24) {
+                        DisconnectHeaderBar(title:"DISCONNECT",showsLogo:true)
+                        DisconnectLogo(size:78,cornerRadius:15)
+                        Text(flow.needsStudyDetails ? "Complete your study profile" : "Start your study profile")
+                            .font(.system(size:26,weight:.heavy)).foregroundStyle(DisconnectTheme.ink)
+                        Text("Next, set your intentions and choose your app sessions.")
+                            .font(.subheadline).foregroundStyle(DisconnectTheme.mutedInk).multilineTextAlignment(.center)
+                        StudyEnrollmentCard()
+                    }.padding(24)
+                }.background(DisconnectTheme.softBackground)
+            case .onboarding:
                 WelcomeOnboardingView()
+            case .dashboard:
+                DashboardView()
+            case .failed:
+                VStack(spacing:16) {
+                    Text(flow.errorMessage).multilineTextAlignment(.center)
+                    Button("Retry account setup") { Task { await flow.refresh() } }.frame(minHeight:44)
+                    Button("Sign out") { Task { await NativeSupabase.shared.signOut() } }.frame(minHeight:44)
+                }.padding(24)
+            }
+            }
+        .toolbar {
+            ToolbarItemGroup(placement:.keyboard) {
+                Spacer()
+                Button("Done") {
+                    UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder),to:nil,from:nil,for:nil)
+                }.accessibilityIdentifier("keyboard.done")
             }
         }
+        }
+        .id(flow.navigationID)
         .tint(DisconnectTheme.green)
-        .onReceive(NotificationCenter.default.publisher(for: .disconnectOnboardingCompleted)) { _ in
-            hasCompletedOnboarding = true
+        .preferredColorScheme(.light)
+        .task { if flow.navigationID == "restoring" { await flow.refresh() } }
+        .onChange(of:scenePhase) { phase in
+            if phase == .active { Task { await flow.refresh() } }
+            if phase == .background {
+                StudyConfigurationHistory.capture(reason:"app_background")
+                StudyAppVisitTracker.shared.enteredBackground()
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for:.disconnectAccountChanged)) { _ in
+            Task { await flow.refresh() }
+        }
+        .onReceive(NotificationCenter.default.publisher(for:.disconnectOnboardingCompleted)) { _ in
+            Task { await flow.refresh() }
         }
     }
 }
@@ -374,7 +420,7 @@ struct DisconnectHeaderBar: View {
             }
             .padding(.horizontal, 24)
         }
-        .frame(height: 72)
+        .frame(height: title == "SETTINGS" ? 48 : 72)
         .frame(maxWidth: .infinity)
         .background(Color.white)
         .overlay(alignment: .bottom) {
@@ -417,10 +463,11 @@ struct PrimaryButtonStyle: ButtonStyle {
 }
 
 struct FocusGoalsView: View {
+    @State private var showQuestions = false
     @Environment(\.dismiss) private var dismiss
-    @State private var selectedGoalIDs: Set<String> = ["gym"]
-    @State private var customGoals: [CustomFocusGoal] = []
-    @State private var selectedCustomGoalIDs: Set<UUID> = []
+    @State private var selectedGoalIDs: Set<String> = OnboardingGoalDraftStore.load()?.presetIDs ?? ["gym"]
+    @State private var customGoals: [CustomFocusGoal] = OnboardingGoalDraftStore.load()?.customGoals ?? []
+    @State private var selectedCustomGoalIDs: Set<UUID> = OnboardingGoalDraftStore.load()?.selectedCustomIDs ?? []
     @State private var editingCustomGoalID: UUID?
 
     private let goals = [
@@ -518,7 +565,10 @@ struct FocusGoalsView: View {
 
                     InsightCallout(text: "Choosing clear alternatives makes it 40% easier to\nbreak a bad habit.")
 
-                    NavigationLink(destination: ConfigureQuestionsView()) {
+                    Button {
+                        saveGoalDraft()
+                        showQuestions = true
+                    } label: {
                         HStack(spacing: 12) {
                             Text("Get Started")
                             Image(systemName: "arrow.right")
@@ -526,12 +576,8 @@ struct FocusGoalsView: View {
                         .frame(maxWidth: .infinity)
                     }
                     .buttonStyle(PrimaryButtonStyle())
-                    .simultaneousGesture(TapGesture().onEnded {
-                        var responses = OnboardingResponseStore.load()
-                        responses.focusGoal = selectedFocusTitles.isEmpty ? OnboardingResponses.fallback.focusGoal : selectedFocusTitles.joined(separator: ", ")
-                        responses.focusGoalIconName = selectedFocusIconName
-                        OnboardingResponseStore.save(responses)
-                    })
+                    .disabled(selectedFocusTitles.isEmpty)
+
                 }
                 .padding(.horizontal, 24)
                 .padding(.top, 28)
@@ -540,6 +586,18 @@ struct FocusGoalsView: View {
         }
         .background(Color.white)
         .toolbar(.hidden, for: .navigationBar)
+        .navigationDestination(isPresented:$showQuestions) { ConfigureQuestionsView() }
+        .onChange(of:selectedGoalIDs) { _ in saveGoalDraft() }
+        .onChange(of:customGoals) { _ in saveGoalDraft() }
+        .onChange(of:selectedCustomGoalIDs) { _ in saveGoalDraft() }
+    }
+
+    private func saveGoalDraft() {
+        OnboardingGoalDraftStore.save(OnboardingGoalDraft(presetIDs:selectedGoalIDs,customGoals:customGoals,selectedCustomIDs:selectedCustomGoalIDs))
+        var responses=OnboardingResponseStore.load()
+        responses.focusGoal=selectedFocusTitles.joined(separator:", ")
+        responses.focusGoalIconName=selectedFocusIconName
+        OnboardingResponseStore.save(responses)
     }
 
     private func togglePresetGoal(_ id: String) {
@@ -602,16 +660,7 @@ private struct FocusGoal: Identifiable {
     let iconName: String
 }
 
-private struct CustomFocusGoal: Identifiable {
-    let id = UUID()
-    var title: String
-    var iconName: String
-
-    var displayTitle: String {
-        let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
-        return trimmedTitle.isEmpty ? "Custom Focus" : trimmedTitle
-    }
-}
+private typealias CustomFocusGoal = StudyCustomFocusGoal
 
 private struct FocusGoalCard: View {
     let goal: FocusGoal
@@ -656,6 +705,8 @@ private struct FocusGoalCard: View {
             .shadow(color: .black.opacity(0.08), radius: 4, x: 0, y: 2)
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier("goal."+goal.id)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
 
@@ -794,6 +845,7 @@ private struct CustomGoalEditor: View {
 }
 
 struct ConfigureQuestionsView: View {
+    @State private var showIntentions = false
     @Environment(\.dismiss) private var dismiss
     @State private var selectedQuestions: Set<String> = ["timing"]
     @State private var customQuestion = ""
@@ -892,24 +944,36 @@ struct ConfigureQuestionsView: View {
             }
 
             BottomBar {
-                NavigationLink(destination: IntentionSetupView()) {
+                Button {
+                    saveQuestions()
+                    showIntentions = true
+                    } label: {
                     Text("Next Step")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(PrimaryButtonStyle())
-                .simultaneousGesture(TapGesture().onEnded {
-                    var responses = OnboardingResponseStore.load()
-                    responses.selectedQuestions = questions
-                        .filter { selectedQuestions.contains($0.id) }
-                        .map(\.text)
-                    responses.customQuestion = customQuestion
-                    OnboardingResponseStore.save(responses)
-                })
+                .disabled(selectedQuestions.isEmpty && customQuestion.trimmingCharacters(in:.whitespacesAndNewlines).isEmpty)
+
             }
         }
         .background(Color.white)
         .toolbar(.hidden, for: .navigationBar)
+        .navigationDestination(isPresented:$showIntentions) { IntentionSetupView() }
+        .onAppear {
+            let saved=OnboardingResponseStore.load()
+            selectedQuestions=Set(questions.filter { saved.selectedQuestions.contains($0.text) }.map(\.id))
+            customQuestion=saved.customQuestion
+        }
+        .onChange(of:selectedQuestions) { _ in saveQuestions() }
+        .onChange(of:customQuestion) { _ in saveQuestions() }
     }
+    private func saveQuestions() {
+        var responses=OnboardingResponseStore.load()
+        responses.selectedQuestions=questions.filter { selectedQuestions.contains($0.id) }.map(\.text)
+        responses.customQuestion=customQuestion
+        OnboardingResponseStore.save(responses)
+    }
+
 }
 
 private struct TriggerQuestion: Identifiable {
@@ -949,17 +1013,20 @@ private struct TriggerQuestionRow: View {
             .shadow(color: .black.opacity(isSelected ? 0 : 0.08), radius: 4, x: 0, y: 2)
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier("trigger."+question.id)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
 }
 
 struct IntentionSetupView: View {
+    @State private var showConnections = false
     @Environment(\.dismiss) private var dismiss
-    @State private var primaryGoal = ""
-    @State private var focusFeeling = ""
-    @State private var tinyTask = ""
-    @State private var scrollTemptation = ""
-    @State private var scrollCost = ""
-    @State private var accountabilityAnchor = ""
+    @State private var primaryGoal = OnboardingResponseStore.hasSavedIntentions ? OnboardingResponseStore.load().primaryGoal : ""
+    @State private var focusFeeling = OnboardingResponseStore.hasSavedIntentions ? OnboardingResponseStore.load().focusFeeling : ""
+    @State private var tinyTask = OnboardingResponseStore.hasSavedIntentions ? OnboardingResponseStore.load().tinyTask : ""
+    @State private var scrollTemptation = OnboardingResponseStore.hasSavedIntentions ? OnboardingResponseStore.load().scrollTemptation : ""
+    @State private var scrollCost = OnboardingResponseStore.hasSavedIntentions ? OnboardingResponseStore.load().scrollCost : ""
+    @State private var accountabilityAnchor = OnboardingResponseStore.hasSavedIntentions ? OnboardingResponseStore.load().accountabilityAnchor : ""
     @State private var bypassMinutes = OnboardingResponseStore.load().bypassMinutes
     @State private var aiFrictionStyle = OnboardingResponseStore.load().aiFrictionStyle
     @State private var aiTone = OnboardingResponseStore.load().aiTone
@@ -1040,7 +1107,8 @@ struct IntentionSetupView: View {
                         )
                     }
 
-                    BreakDurationCard(selectedMinutes: $bypassMinutes)
+                    PerAppDailyLimitCard()
+
 
                     AIFrictionStyleCard(selectedStyle: $aiFrictionStyle)
 
@@ -1067,14 +1135,15 @@ struct IntentionSetupView: View {
             }
 
             BottomBar {
-                NavigationLink(destination: ProductivityConnectOnboardingView()) {
+                Button {
+                    saveIntentions()
+                        showConnections = true
+                    } label: {
                     Text("Continue")
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(PrimaryButtonStyle())
-                .simultaneousGesture(TapGesture().onEnded {
-                    saveIntentions()
-                })
+
 
                 Text("One optional connection step remains.")
                     .font(.system(size: 10, weight: .medium))
@@ -1084,6 +1153,8 @@ struct IntentionSetupView: View {
         }
         .background(Color.white)
         .toolbar(.hidden, for: .navigationBar)
+        .navigationDestination(isPresented:$showConnections) { ProductivityConnectOnboardingView() }
+        .onChange(of:[primaryGoal,focusFeeling,tinyTask,scrollTemptation,scrollCost,accountabilityAnchor]) { _ in saveIntentions() }
     }
 
     private func saveIntentions() {
@@ -1098,6 +1169,7 @@ struct IntentionSetupView: View {
         responses.aiFrictionStyle = aiFrictionStyle
         responses.aiTone = aiTone
         responses.persuasionStyle = persuasionStyle
+        OnboardingResponseStore.markIntentionsSaved()
         OnboardingResponseStore.save(responses)
     }
 }
@@ -1184,6 +1256,9 @@ private struct ProductivityConnectOnboardingView: View {
                         .padding(.top, 10)
                 }
                 .buttonStyle(.plain)
+                .simultaneousGesture(TapGesture().onEnded {
+                    NativeResearchQueue.enqueue("productivity_connection_skipped",properties:["provider":"calendar_and_reminders"])
+                })
             }
         }
         .background(Color.white)
@@ -1237,11 +1312,177 @@ private struct OnboardingProductivityRow: View {
     }
 }
 
+private struct PerAppDailyLimitCard: View {
+    @State private var rules: [DailyAppRule] = []
+    @State private var loadError = ""
+    @State private var hasUnsupportedSelection = false
+    @State private var notificationStatus = ""
+    @AppStorage(PerAppProtection.errorKey, store: PerAppProtection.defaults) private var monitoringError = ""
+    @AppStorage(PerAppProtection.countKey, store: PerAppProtection.defaults) private var registeredCount = 0
+    @Environment(\.scenePhase) private var scenePhase
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Label("Your app sessions", systemImage: "hourglass")
+                .font(.system(size: 17, weight: .heavy))
+                .foregroundStyle(DisconnectTheme.ink)
+            Text("Set each app’s daily allowance and session length. A reflection shield appears before you start; it returns when the session ends.")
+                .font(.system(size: 12, weight: .medium))
+                .foregroundStyle(DisconnectTheme.mutedInk)
+                .fixedSize(horizontal: false, vertical: true)
+            if rules.isEmpty {
+                Text("No individual apps selected. Use Edit Protected Apps in Settings and choose individual apps inside the categories.")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(DisconnectTheme.ink)
+            }
+            ForEach(rules) { rule in
+                VStack(alignment: .leading, spacing: 10) {
+                    if let token = try? PerAppProtection.token(for: rule) {
+                        ProtectedAppIdentityLabel(token:token,name:rule.researchLabel)
+                            .font(.system(size:15,weight:.bold))
+                    }
+                    ResearchAppLabelField(ruleID:rule.id,initialValue:rule.researchLabel ?? "")
+                    Text("Daily allowance: \(rule.minutes) minutes")
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundStyle(DisconnectTheme.ink)
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 8) {
+                            ForEach([5, 10, 15, 30, 60], id: \.self) { minutes in
+                                Button { update(rule, minutes: minutes) } label: {
+                                    Text("\(minutes) min")
+                                        .font(.system(size: 13, weight: .heavy))
+                                        .foregroundStyle(rule.minutes == minutes ? Color.white : DisconnectTheme.ink)
+                                        .padding(.horizontal, 12)
+                                        .frame(minHeight: 44)
+                                        .background(RoundedRectangle(cornerRadius: 8).fill(rule.minutes == minutes ? DisconnectTheme.green : DisconnectTheme.softBackground))
+                                }
+                                .buttonStyle(.plain)
+                                .accessibilityLabel("Set daily limit to \(minutes) minutes")
+                                .accessibilityAddTraits(rule.minutes == minutes ? .isSelected : [])
+                            }
+                        }
+                    }
+                    DisclosureGroup("Custom daily allowance") {
+                    Stepper("Daily minutes: \(rule.minutes)", value: Binding(
+                        get: { rule.minutes }, set: { update(rule, minutes: $0) }
+                    ), in: 5...240, step: 5)
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundStyle(DisconnectTheme.ink)
+                    }
+                    Text("Session length: \(rule.sessionMinutes) minutes")
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundStyle(DisconnectTheme.ink)
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 8) {
+                            ForEach([5, 10, 15, 30].filter { $0 <= rule.minutes }, id: \.self) { minutes in
+                                Button { updateSession(rule, minutes: minutes) } label: {
+                                    Text("\(minutes) min")
+                                        .font(.system(size: 13, weight: .heavy))
+                                        .foregroundStyle(rule.sessionMinutes == minutes ? Color.white : DisconnectTheme.ink)
+                                        .padding(.horizontal, 12).frame(minHeight: 44)
+                                        .background(RoundedRectangle(cornerRadius: 8).fill(rule.sessionMinutes == minutes ? DisconnectTheme.green : DisconnectTheme.softBackground))
+                                }
+                                .buttonStyle(.plain)
+                                .accessibilityLabel("Set session length to \(minutes) minutes")
+                                .accessibilityAddTraits(rule.sessionMinutes == minutes ? .isSelected : [])
+                            }
+                        }
+                    }
+                    DisclosureGroup("Custom session length") {
+                    Stepper("Session minutes: \(rule.sessionMinutes)", value: Binding(
+                        get: { rule.sessionMinutes }, set: { updateSession(rule, minutes: $0) }
+                    ), in: 5...rule.minutes, step: 5)
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundStyle(DisconnectTheme.ink)
+                    }
+                    Text("Personalized check-ins around \(AppSessionPolicy.nudgeMinutes(duration: rule.sessionMinutes).map(String.init).joined(separator: ", ")) active minutes; shield at \(rule.sessionMinutes) minutes.")
+                        .font(.caption).foregroundStyle(DisconnectTheme.mutedInk)
+                    if PerAppProtection.allowance(for: rule.id) != nil {
+                        Text("Session active. Leaving the app pauses usage; reopening resumes it. Use End this session to finish now. New session-length choices apply next time.")
+                            .font(.caption).foregroundStyle(DisconnectTheme.mutedInk)
+                        Button("End this session") {
+                            do { try PerAppProtection.endAllowance(for: rule.id); load() }
+                            catch { loadError = "Could not end this session. Please retry." }
+                        }.frame(minHeight: 44)
+                    }
+
+                }
+                .padding(12)
+                .background(RoundedRectangle(cornerRadius: 10).fill(DisconnectTheme.softBackground))
+                .accessibilityElement(children: .contain)
+            }
+            if hasUnsupportedSelection {
+                Text("Category and website selections do not get individual app limits. Select the apps themselves in Apple's picker.")
+                    .font(.caption).foregroundStyle(DisconnectTheme.mutedInk)
+            }
+            if !loadError.isEmpty || !monitoringError.isEmpty {
+                Text(loadError.isEmpty ? monitoringError : loadError)
+                    .font(.caption).foregroundStyle(.red)
+                Button("Retry app monitoring") { ShieldStoreController().refreshShieldStateAfterInstallOrRun(); load() }
+            } else if OnboardingResponseStore.hasCompletedOnboarding && registeredCount > 0 {
+                Text("OS monitoring registered for \(registeredCount) app(s).")
+                    .font(.caption).foregroundStyle(DisconnectTheme.mutedInk)
+            } else {
+                Text("Choose your limits, then finish setup to start monitoring.")
+                    .font(.caption).foregroundStyle(DisconnectTheme.mutedInk)
+            }
+            Button("Enable personalized nudge notifications") {
+                Task {
+                    await BreakReminderScheduler.requestAuthorization()
+                    let settings = await UNUserNotificationCenter.current().notificationSettings()
+                    notificationStatus = settings.authorizationStatus == .authorized || settings.authorizationStatus == .provisional
+                        ? "Notifications are enabled. iOS controls banner delivery and Focus settings."
+                        : "Notifications are off. Enable them for Disconnect in iPhone Settings. Shields still work."
+                }
+            }.frame(minHeight: 44)
+            if !notificationStatus.isEmpty { Text(notificationStatus).font(.caption).foregroundStyle(DisconnectTheme.mutedInk) }
+            DisclosureGroup("How sessions and nudges work") {
+            Text("Nudges appear at quarter-session usage milestones. Locking your phone does not run an app timer. Earlier usage today may count toward your daily allowance. After it is used, one optional 10-minute extension is available per app each day. Daily allowances renew at midnight. Protection is active every day; scheduled hours are not configured in this build.")
+                .font(.system(size: 11, weight: .medium))
+                .foregroundStyle(DisconnectTheme.mutedInk)
+                .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .padding(14)
+        .background(RoundedRectangle(cornerRadius: 14).fill(Color.white))
+        .overlay(RoundedRectangle(cornerRadius: 14).stroke(DisconnectTheme.border, lineWidth: 1))
+        .onAppear(perform: load)
+        .onChange(of: scenePhase) { phase in if phase == .active { load() } }
+        .onReceive(NotificationCenter.default.publisher(for: .disconnectSelectionChanged)) { _ in load() }
+    }
+    private func load() {
+        do {
+            let selection = try PerAppProtection.selection()
+            rules = try DailyUsageMonitoring.prepareRules(selection: selection)
+            hasUnsupportedSelection = !selection.categoryTokens.isEmpty || !selection.webDomainTokens.isEmpty
+            loadError = ""
+        } catch {
+            loadError = "Could not load your daily app limits. Your existing settings have been kept. Please retry."
+        }
+    }
+    private func updateSession(_ rule: DailyAppRule, minutes: Int) {
+        do {
+            try DailyUsageMonitoring.setSessionMinutes(minutes, for: rule.id)
+            ShieldStoreController().refreshShieldStateAfterInstallOrRun()
+            load()
+        } catch { loadError = "Could not save the session length. Please retry." }
+    }
+    private func update(_ rule: DailyAppRule, minutes: Int) {
+        do {
+            try DailyUsageMonitoring.setMinutes(minutes, for: rule.id)
+            ShieldStoreController().refreshShieldStateAfterInstallOrRun()
+            load()
+        } catch {
+            loadError = "Could not save the daily limit. Please retry."
+        }
+    }
+}
+
 private struct BreakDurationCard: View {
     @Binding var selectedMinutes: Int
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .top, spacing: 12) {
                 Image(systemName: "timer")
                     .font(.system(size: 18, weight: .semibold))
@@ -1285,7 +1526,7 @@ private struct BreakDurationCard: View {
                 }
             }
         }
-        .padding(20)
+        .padding(14)
         .background(RoundedRectangle(cornerRadius: 14).fill(Color.white))
         .overlay(RoundedRectangle(cornerRadius: 14).stroke(DisconnectTheme.border, lineWidth: 1))
         .shadow(color: .black.opacity(0.08), radius: 4, x: 0, y: 2)
@@ -1458,6 +1699,8 @@ private struct PreferenceChoiceCard: View {
                         .overlay(RoundedRectangle(cornerRadius: 10).stroke(selectedValue == value ? DisconnectTheme.green : DisconnectTheme.border, lineWidth: 1))
                     }
                     .buttonStyle(.plain)
+                    .accessibilityIdentifier("preference."+title+"."+value)
+                    .accessibilityAddTraits(selectedValue == value ? .isSelected : [])
                 }
             }
         }
@@ -1504,7 +1747,7 @@ struct SetupCompleteView: View {
     @State private var protectedSelection = AppSelectionStore.load()
 
     private var protectedSelectionCount: Int {
-        protectedSelection.applicationTokens.count + protectedSelection.categoryTokens.count + protectedSelection.webDomainTokens.count
+        protectedSelection.applicationTokens.count
     }
 
     var body: some View {
@@ -1861,6 +2104,14 @@ struct DashboardView: View {
         }
         .background(Color.white)
         .toolbar(.hidden, for: .navigationBar)
+        .onAppear { openRequestedSettings() }
+        .onReceive(NotificationCenter.default.publisher(for:DayTwoSettingsTipStore.routeNotification)) { _ in openRequestedSettings() }
+    }
+    private func openRequestedSettings() {
+        let defaults=ShieldPresentationStore.defaults
+        guard defaults.bool(forKey:DayTwoSettingsTipStore.pendingRoute) else { return }
+        defaults.removeObject(forKey:DayTwoSettingsTipStore.pendingRoute)
+        selectedTab = .settings
     }
 }
 
@@ -1909,6 +2160,7 @@ private struct DashboardFeedbackView: View {
             .padding(.top, 24)
             .padding(.bottom, 24)
         }
+        .scrollDismissesKeyboard(.interactively)
         .onAppear {
             responses = OnboardingResponseStore.load()
             selection = AppSelectionStore.load()
@@ -1923,7 +2175,7 @@ private struct DashboardStatsView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 22) {
-                VictoryCard(metrics: metrics)
+                PerAppDailyLimitCard()
                 ScreenTimeUsageCard()
                 WeeklyProgressCard(data: metrics.weeklySavedTime)
                 InsightsSection(metrics: metrics)
@@ -2037,47 +2289,6 @@ private struct ScreenTimeUsageCard: View {
 
 extension DeviceActivityReport.Context {
     static let totalActivity = Self("Total Activity")
-}
-
-private struct VictoryCard: View {
-    let metrics: DashboardMetrics
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            HStack(spacing: 8) {
-                Image(systemName: "shield.checkered")
-                    .font(.system(size: 13, weight: .bold))
-                Text("TODAY'S VICTORY")
-                    .font(.system(size: 12, weight: .heavy))
-                    .tracking(1)
-            }
-            .foregroundStyle(DisconnectTheme.green)
-
-            HStack(alignment: .firstTextBaseline, spacing: 8) {
-                Text(metrics.todaySavedText)
-                    .font(.system(size: 34, weight: .heavy))
-                    .foregroundStyle(DisconnectTheme.ink)
-                Text("Saved")
-                    .font(.system(size: 13, weight: .bold))
-                    .foregroundStyle(DisconnectTheme.mutedInk)
-            }
-
-            Text(metrics.reclaimedWakingHoursText)
-                .font(.system(size: 14, weight: .medium))
-                .foregroundStyle(DisconnectTheme.mutedInk)
-                .lineSpacing(4)
-                .fixedSize(horizontal: false, vertical: true)
-
-            Text(metrics.yesterdayDeltaText)
-                .font(.system(size: 12, weight: .heavy))
-                .foregroundStyle(DisconnectTheme.ink)
-                .padding(.top, 12)
-        }
-        .padding(24)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(RoundedRectangle(cornerRadius: 15).fill(DisconnectTheme.green.opacity(0.09)))
-        .overlay(RoundedRectangle(cornerRadius: 15).stroke(DisconnectTheme.green.opacity(0.2), lineWidth: 1))
-    }
 }
 
 private struct WeeklyProgressCard: View {
@@ -2246,75 +2457,22 @@ private struct DashboardTab: View {
     }
 }
 
-private struct DashboardHistoryView: View {
-    @State private var sessions = InterventionHistoryStore.load()
-
-    var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 18) {
-                Text("Recent interventions")
-                    .font(.system(size: 22, weight: .heavy))
-                    .foregroundStyle(DisconnectTheme.ink)
-
-                if sessions.isEmpty {
-                    InsightCallout(text: "Your real interventions will appear here after you respond to a Disconnect shield.")
-                } else {
-                    ForEach(sessions) { session in
-                        HistorySessionRow(session: session)
-                    }
-
-                    InsightCallout(text: "History now comes from real shield decisions. Full Screen Time duration reports can be added later with a DeviceActivity report extension.")
-                }
-            }
-            .padding(.horizontal, 24)
-            .padding(.top, 24)
-            .padding(.bottom, 24)
+private struct CompactSettingsSection<Content:View>: View {
+    let title:String
+    let value:String
+    @ViewBuilder let content:Content
+    var body:some View {
+        DisclosureGroup {
+            content.padding(.top,8)
+        } label: {
+            VStack(alignment:.leading,spacing:3) {
+                Text(title).font(.system(size:14,weight:.bold)).foregroundStyle(DisconnectTheme.ink)
+                Text(value).font(.system(size:12)).foregroundStyle(DisconnectTheme.mutedInk)
+            }.frame(minHeight:44,alignment:.leading)
         }
-        .onAppear {
-            sessions = InterventionHistoryStore.load()
-        }
-    }
-}
-
-private struct HistorySessionRow: View {
-    let session: InterventionHistoryEvent
-
-    var body: some View {
-        HStack(spacing: 14) {
-            Image(systemName: session.savedMinutes == 0 ? "arrow.uturn.right" : "checkmark")
-                .font(.system(size: 18, weight: .heavy))
-                .foregroundStyle(session.savedMinutes == 0 ? DisconnectTheme.subtleInk : DisconnectTheme.green)
-                .frame(width: 42, height: 42)
-                .background(Circle().fill(DisconnectTheme.softBackground))
-
-            VStack(alignment: .leading, spacing: 5) {
-                Text(session.appName)
-                    .font(.system(size: 15, weight: .heavy))
-                    .foregroundStyle(DisconnectTheme.ink)
-                Text(session.decision.label)
-                    .font(.system(size: 13, weight: .medium))
-                    .foregroundStyle(DisconnectTheme.mutedInk)
-                Text(historyDateFormatter.localizedString(for: session.date, relativeTo: Date()))
-                    .font(.system(size: 11, weight: .medium))
-                    .foregroundStyle(DisconnectTheme.subtleInk)
-            }
-
-            Spacer()
-
-            Text("\(session.savedMinutes)m")
-                .font(.system(size: 16, weight: .heavy))
-                .foregroundStyle(session.savedMinutes == 0 ? DisconnectTheme.subtleInk : DisconnectTheme.green)
-        }
-        .padding(18)
-        .background(RoundedRectangle(cornerRadius: 10).fill(Color.white))
-        .overlay(RoundedRectangle(cornerRadius: 10).stroke(DisconnectTheme.border, lineWidth: 1))
-        .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
-    }
-
-    private var historyDateFormatter: RelativeDateTimeFormatter {
-        let formatter = RelativeDateTimeFormatter()
-        formatter.unitsStyle = .full
-        return formatter
+        .padding(12)
+        .background(RoundedRectangle(cornerRadius:12).fill(Color.white))
+        .overlay(RoundedRectangle(cornerRadius:12).stroke(DisconnectTheme.border,lineWidth:1))
     }
 }
 
@@ -2327,7 +2485,7 @@ private struct DashboardSettingsView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 18) {
+            VStack(alignment: .leading, spacing: 12) {
                 Text("Protection")
                     .font(.system(size: 22, weight: .heavy))
                     .foregroundStyle(DisconnectTheme.ink)
@@ -2344,25 +2502,25 @@ private struct DashboardSettingsView: View {
                     detail: protectedSelectionSummary
                 )
 
-                SettingsInfoRow(
-                    iconName: "timer",
-                    title: "Break Length",
-                    detail: "\(responses.bypassMinutes) minutes, with friction returning after the break"
-                )
+                PerAppDailyLimitCard()
 
-                BreakDurationCard(selectedMinutes: breakMinutesBinding)
 
-                AIFrictionStyleCard(selectedStyle: frictionStyleBinding)
-
-                AIToneCard(selectedTone: aiToneBinding)
-
-                PersuasionStyleCard(selectedStyle: persuasionStyleBinding)
-
-                PersonalizedFrictionProfileCard(
-                    scrollTemptation: scrollTemptationBinding,
-                    scrollCost: scrollCostBinding,
-                    accountabilityAnchor: accountabilityAnchorBinding
-                )
+                CompactSettingsSection(title:"AI friction style",value:responses.aiFrictionStyle) {
+                    AIFrictionStyleCard(selectedStyle: frictionStyleBinding)
+                }
+                CompactSettingsSection(title:"AI tone",value:responses.aiTone) {
+                    AIToneCard(selectedTone: aiToneBinding)
+                }
+                CompactSettingsSection(title:"Persuasion style",value:responses.persuasionStyle) {
+                    PersuasionStyleCard(selectedStyle: persuasionStyleBinding)
+                }
+                CompactSettingsSection(title:"Personal friction profile",value:"Edit your answers") {
+                    PersonalizedFrictionProfileCard(
+                        scrollTemptation: scrollTemptationBinding,
+                        scrollCost: scrollCostBinding,
+                        accountabilityAnchor: accountabilityAnchorBinding
+                    )
+                }
 
                 AppleProductivityContextCard(service: productivityService)
 
@@ -2379,6 +2537,7 @@ private struct DashboardSettingsView: View {
 
                 Button {
                     DatabaseService.shared.logEvent("protection_turned_off")
+                    try? PerAppProtection.stop()
                     ShieldStoreController().removeAllShields()
                     AppSelectionStore.clear()
                     selection = FamilyActivitySelection()
@@ -2393,16 +2552,13 @@ private struct DashboardSettingsView: View {
                 }
                 .buttonStyle(.plain)
 
-                Text("Dashboard stats now use real Disconnect shield decisions. Full Apple Screen Time duration totals require a DeviceActivity report extension.")
-                    .font(.system(size: 12, weight: .medium))
-                    .foregroundStyle(DisconnectTheme.mutedInk)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .padding(.top, 6)
+
             }
-            .padding(.horizontal, 24)
-            .padding(.top, 24)
-            .padding(.bottom, 24)
+            .padding(.horizontal, 16)
+            .padding(.top, 12)
+            .padding(.bottom, 16)
         }
+        .environment(\.colorScheme,.light)
         .familyActivityPicker(isPresented: $isPickerPresented, selection: $selection)
         .onAppear {
             authorizationService.refreshStatus()
@@ -2424,11 +2580,8 @@ private struct DashboardSettingsView: View {
     }
 
     private var protectedSelectionSummary: String {
-        let appCount = selection.applicationTokens.count
-        let categoryCount = selection.categoryTokens.count
-        let webCount = selection.webDomainTokens.count
-        let total = appCount + categoryCount + webCount
-        return total == 0 ? "No apps, websites, or categories selected yet" : "\(total) app\(total == 1 ? "" : "s"), website\(total == 1 ? "" : "s"), or categor\(total == 1 ? "y" : "ies") selected"
+        let count=selection.applicationTokens.count
+        return count == 0 ? "No individual apps selected yet" : "\(count) individual app\(count == 1 ? "" : "s") selected"
     }
 
     private var breakMinutesBinding: Binding<Int> {
@@ -2916,10 +3069,12 @@ private struct FeedbackLabCard: View {
 
     private var statusMessage: String? {
         switch (feedbackStatus, researchStatus) {
-        case (.success, _), (_, .success):
-            return "Saved. Thank you for helping shape Disconnect."
         case (.failure(let message), _), (_, .failure(let message)):
             return message
+        case (.submitting, _), (_, .submitting):
+            return nil
+        case (.success, _), (_, .success):
+            return "Saved. Thank you for helping shape Disconnect."
         default:
             return nil
         }
@@ -3050,11 +3205,11 @@ private struct SettingsInfoRow: View {
     let detail: String
 
     var body: some View {
-        HStack(spacing: 14) {
+        HStack(spacing: 10) {
             Image(systemName: iconName)
                 .font(.system(size: 18, weight: .semibold))
                 .foregroundStyle(DisconnectTheme.green)
-                .frame(width: 42, height: 42)
+                .frame(width: 32, height: 32)
                 .background(Circle().fill(DisconnectTheme.green.opacity(0.1)))
 
             VStack(alignment: .leading, spacing: 4) {
@@ -3068,7 +3223,7 @@ private struct SettingsInfoRow: View {
 
             Spacer()
         }
-        .padding(18)
+        .padding(12)
         .background(RoundedRectangle(cornerRadius: 10).fill(Color.white))
         .overlay(RoundedRectangle(cornerRadius: 10).stroke(DisconnectTheme.border, lineWidth: 1))
         .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
@@ -3143,6 +3298,7 @@ private struct PlaceholderTextEditor: View {
     var body: some View {
         ZStack(alignment: .topLeading) {
             TextEditor(text: $text)
+                .accessibilityLabel(placeholder)
                 .font(.system(size: 16, weight: .medium))
                 .foregroundStyle(DisconnectTheme.ink)
                 .scrollContentBackground(.hidden)
@@ -3180,17 +3336,7 @@ private struct BottomBar<Content: View>: View {
     }
 }
 
-enum DisconnectTheme {
-    static let green = Color(red: 0.13, green: 0.79, blue: 0.33)
-    static let blue = Color(red: 0.16, green: 0.49, blue: 1.0)
-    static let orange = Color(red: 1.0, green: 0.52, blue: 0.13)
-    static let pink = Color(red: 1.0, green: 0.18, blue: 0.47)
-    static let ink = Color(red: 0.09, green: 0.11, blue: 0.14)
-    static let mutedInk = Color(red: 0.29, green: 0.33, blue: 0.42)
-    static let subtleInk = Color(red: 0.55, green: 0.59, blue: 0.66)
-    static let border = Color(red: 0.88, green: 0.9, blue: 0.93)
-    static let softBackground = Color(red: 0.985, green: 0.987, blue: 0.992)
-}
+
 
 #Preview("Welcome") {
     ContentView()

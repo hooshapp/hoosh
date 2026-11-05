@@ -25,7 +25,7 @@ struct AppSelectionView: View {
                             .foregroundStyle(DisconnectTheme.ink)
                             .lineSpacing(2)
 
-                        Text("Pick specific apps, websites, or a whole category from Apple's Screen Time picker. Disconnect will protect exactly what you choose.")
+                        Text("Choose individual apps inside Apple’s Screen Time picker. Daily allowances and sessions apply separately to each selected app.")
                             .font(.system(size: 14, weight: .medium))
                             .foregroundStyle(DisconnectTheme.mutedInk)
                             .lineSpacing(3)
@@ -49,7 +49,7 @@ struct AppSelectionView: View {
                                     .font(.system(size: 14, weight: .bold))
                                     .foregroundStyle(DisconnectTheme.ink)
 
-                                Text("Select Instagram, TikTok, YouTube, X, Snapchat, games, or any category you want protected.")
+                                Text("Select individual apps such as Instagram, TikTok, YouTube, or games.")
                                     .font(.system(size: 13, weight: .medium))
                                     .foregroundStyle(DisconnectTheme.mutedInk)
                                     .fixedSize(horizontal: false, vertical: true)
@@ -75,6 +75,10 @@ struct AppSelectionView: View {
                     }
                     .buttonStyle(.plain)
 
+                    if SimulatorUITestSupport.enabled {
+                        Text("SIMULATOR UI TEST: Screen Time picker is substituted. No apps are protected.")
+                            .font(.caption).foregroundStyle(.orange)
+                    }
                     if let selectionPrompt {
                         Text(selectionPrompt)
                             .font(.system(size: 12, weight: .medium))
@@ -137,7 +141,7 @@ struct AppSelectionView: View {
     }
 
     private var protectedSelectionTitle: String {
-        let total = selection.applicationTokens.count + selection.categoryTokens.count + selection.webDomainTokens.count
+        let total = selection.applicationTokens.count
         return total == 0 ? "Choose apps to protect" : "\(total) protected item\(total == 1 ? "" : "s") selected"
     }
 
@@ -149,7 +153,7 @@ struct AppSelectionView: View {
 
         if authorizationService.isApproved {
             isPickerPresented = true
-            selectionPrompt = "Choose specific apps, websites, or full categories. Categories like Social or Games will be protected too."
+            selectionPrompt = "Expand a category and choose the individual apps you want to protect."
         }
     }
 
@@ -158,6 +162,10 @@ struct AppSelectionView: View {
         isContinuing = true
         defer { isContinuing = false }
 
+        if SimulatorUITestSupport.enabled {
+            showDidYouKnow = true
+            return
+        }
         if !authorizationService.isApproved {
             await authorizationService.requestAuthorization()
         }
@@ -167,9 +175,9 @@ struct AppSelectionView: View {
             return
         }
 
-        guard !selection.applicationTokens.isEmpty || !selection.categoryTokens.isEmpty || !selection.webDomainTokens.isEmpty else {
+        guard !selection.applicationTokens.isEmpty else {
             isPickerPresented = true
-            selectionPrompt = "Choose at least one app, website, or category from Apple's picker so Disconnect has something to protect."
+            selectionPrompt = "Choose at least one individual app inside Apple’s picker. Categories and websites alone do not support this build’s per-app limits."
             return
         }
 

@@ -28,26 +28,22 @@ enum BreakReminderScheduler {
             intentIdentifiers: [],
             options: []
         )
-        UNUserNotificationCenter.current().setNotificationCategories([category])
+        let sessionCategory = UNNotificationCategory(identifier: PerAppProtection.nudgeCategory,
+            actions: [UNNotificationAction(identifier: PerAppProtection.endSessionAction, title: "End session", options: [.foreground])],
+            intentIdentifiers: [], options: [])
+        let tipCategory=UNNotificationCategory(identifier:DayTwoSettingsTipStore.category,
+            actions:[UNNotificationAction(identifier:DayTwoSettingsTipStore.openAction,title:"Open Settings",options:[.foreground]),
+                     UNNotificationAction(identifier:PerAppProtection.endSessionAction,title:"End session",options:[.foreground])],
+            intentIdentifiers:[],options:[])
+        UNUserNotificationCenter.current().setNotificationCategories([category, sessionCategory, tipCategory])
     }
 
     static func scheduleBreakReminders(minutes: Int, responses: OnboardingResponses) {
         cancelBreakReminders()
 
-        let clampedMinutes = min(max(minutes, 5), 60)
-        let center = UNUserNotificationCenter.current()
-
-        for minute in reminderMinutes(for: clampedMinutes) {
-            let content = UNMutableNotificationContent()
-            content.title = minute == clampedMinutes ? "Time is up" : "Tap to end session early"
-            content.body = reminderBody(for: responses, minute: minute, totalMinutes: clampedMinutes)
-            content.sound = .default
-            content.categoryIdentifier = reminderCategoryIdentifier
-
-            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: TimeInterval(minute * 60), repeats: false)
-            let request = UNNotificationRequest(identifier: "\(requestPrefix)\(minute)", content: content, trigger: trigger)
-            center.add(request)
-        }
+        // Elapsed time is not selected-app usage. Cancel legacy wall-clock
+        // notifications; only DeviceActivity threshold callbacks may notify.
+        registerNotificationActions()
     }
 
     static func cancelBreakReminders() {

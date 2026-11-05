@@ -1,6 +1,7 @@
 import Foundation
 
 struct AIGeneratedNudgePack: Codable {
+    var shieldPrompts: [String]? = nil
     var shieldPrompt: String
     var activeReminders: [String]
     var finalReminders: [String]

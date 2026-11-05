@@ -9,19 +9,22 @@ import Foundation
 
 struct CheckpointStore {
     private static let key = "userCheckpoint"
+    private static var defaults: UserDefaults { ShieldPresentationStore.defaults }
     
     static func save(_ checkpoint: IdentityCheckpoint) {
         if let encoded = try? JSONEncoder().encode(checkpoint) {
-            UserDefaults.standard.set(encoded, forKey: key)
+            defaults.set(encoded, forKey:key)
         }
     }
     
     static func load() -> IdentityCheckpoint? {
-        guard let data = UserDefaults.standard.data(forKey: key) else { return nil }
+        let legacy = defaults.string(forKey:AccountWorkspace.ownerKey) == nil ? UserDefaults.standard.data(forKey:key) : nil
+        guard let data = defaults.data(forKey:key) ?? legacy else { return nil }
         return try? JSONDecoder().decode(IdentityCheckpoint.self, from: data)
     }
     
     static func clear() {
-        UserDefaults.standard.removeObject(forKey: key)
+        defaults.removeObject(forKey:key)
+        UserDefaults.standard.removeObject(forKey:key)
     }
 }

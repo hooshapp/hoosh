@@ -12,6 +12,9 @@ enum AppSelectionStore {
         do {
             let data = try PropertyListEncoder().encode(selection)
             defaults.set(data, forKey: key)
+            _ = try? DailyUsageMonitoring.prepareRules(selection:selection)
+            StudyConfigurationHistory.capture(reason:"protected_apps_changed")
+            NotificationCenter.default.post(name: .disconnectSelectionChanged, object: nil)
         } catch {
             print("Failed to save FamilyActivitySelection:", error)
         }
@@ -22,7 +25,8 @@ enum AppSelectionStore {
     }
 
     static func load() -> FamilyActivitySelection {
-        guard let data = defaults.data(forKey: key) ?? UserDefaults.standard.data(forKey: key) else {
+        let legacy = defaults.string(forKey:AccountWorkspace.ownerKey) == nil ? UserDefaults.standard.data(forKey:key) : nil
+        guard let data = defaults.data(forKey: key) ?? legacy else {
             return FamilyActivitySelection()
         }
 
@@ -37,5 +41,10 @@ enum AppSelectionStore {
     static func clear() {
         defaults.removeObject(forKey: key)
         UserDefaults.standard.removeObject(forKey: key)
+        StudyConfigurationHistory.capture(reason:"protection_cleared")
     }
+}
+
+extension Notification.Name {
+    static let disconnectSelectionChanged = Notification.Name("disconnectSelectionChanged")
 }

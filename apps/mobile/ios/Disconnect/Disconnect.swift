@@ -15,6 +15,7 @@ struct Disconnect: DeviceActivityReportExtension {
         TotalActivityReport { totalActivity in
             TotalActivityView(totalActivity: totalActivity)
         }
-        // Add more reports here...
+        HistoryActivityReport(period: .week) { HistoryReportView(summary: $0, period: .week) }
+        HistoryActivityReport(period: .month) { HistoryReportView(summary: $0, period: .month) }
     }
 }

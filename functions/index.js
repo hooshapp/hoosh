@@ -76,7 +76,8 @@ function buildPrompt(responses, context) {
 
   return JSON.stringify({
     requiredShape: {
-      shieldPrompt: "one sentence, max 92 characters, may include {app}",
+      shieldPrompt: "one complete grammatical sentence, max 92 characters, may include {app}",
+      shieldPrompts: "8 different complete grammatical sentences, each max 92 characters; personalize using the preferences",
       activeReminders: "5 unique strings, each max 72 characters",
       finalReminders: "3 unique strings, each max 72 characters",
       contextTitle: "echo the selected calendar/reminder title",
@@ -118,7 +119,8 @@ function normalizePack(parsed, responses, context) {
   const tone = clean(responses.aiTone || "Supportive");
 
   return {
-    shieldPrompt: clip(clean(parsed.shieldPrompt), 96),
+    shieldPrompt: completePrompt(parsed.shieldPrompt),
+    shieldPrompts: uniqueStrings(parsed.shieldPrompts).map(completePrompt).filter(Boolean).slice(0, 8),
     activeReminders: uniqueStrings(parsed.activeReminders).map((line) => clip(line, 78)).slice(0, 5),
     finalReminders: uniqueStrings(parsed.finalReminders).map((line) => clip(line, 78)).slice(0, 3),
     contextTitle: taskTitle,
@@ -149,4 +151,9 @@ function clean(value) {
 function clip(value, limit) {
   const cleaned = clean(value);
   return cleaned.length > limit ? cleaned.slice(0, limit).trim() : cleaned;
+}
+
+function completePrompt(value) {
+  const text = clean(value);
+  return text.length <= 92 && /[.!?]$/.test(text) ? text : "";
 }

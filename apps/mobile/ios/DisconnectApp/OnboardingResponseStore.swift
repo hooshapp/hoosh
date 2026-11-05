@@ -117,6 +117,7 @@ enum OnboardingResponseStore {
     static func save(_ responses: OnboardingResponses) {
         guard let data = try? JSONEncoder().encode(responses) else { return }
         defaults.set(data, forKey: key)
+        StudyConfigurationHistory.scheduleCapture(reason:"questionnaire_saved")
     }
 
     static func load() -> OnboardingResponses {
@@ -148,7 +149,14 @@ enum OnboardingResponseStore {
         defaults.bool(forKey: onboardingCompletedKey)
     }
 
+    static var hasSavedIntentions:Bool {
+        defaults.bool(forKey:"disconnect.intentionsSaved") || hasCompletedOnboarding
+    }
+    static func markIntentionsSaved() { defaults.set(true,forKey:"disconnect.intentionsSaved") }
+
     static func markOnboardingCompleted() {
+        DayTwoSettingsTipStore.startIfNeeded()
         defaults.set(true, forKey: onboardingCompletedKey)
+        StudyConfigurationHistory.capture(reason:"onboarding_completed")
     }
 }
