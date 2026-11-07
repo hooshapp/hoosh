@@ -1,5 +1,5 @@
 import { ConfirmationDialog } from '@/features/editors/confirmation-dialog';
-import { focusControl } from '@/components/ui/focus-control';
+import { useDialogFocusReturn } from '@/components/ui/use-dialog-focus-return';
 import { useRef, useState, type ComponentRef, type PropsWithChildren, type ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button } from '@/components/ui/button';
@@ -51,6 +51,7 @@ export function QuestEditor({
     [durationOpen, setDurationOpen] = useState(false),
     [cancel, setCancel] = useState(false);
   const cancelTrigger = useRef<ComponentRef<typeof Button>>(null);
+  const restoreCancelFocus = useDialogFocusReturn(cancelTrigger);
   const busy = state === 'saving',
     issue = questDraftIssue(draft);
   const change = (patch: Partial<QuestDraft>) => {
@@ -262,8 +263,8 @@ export function QuestEditor({
           discardLabel="Confirm cancellation"
           discardDisabled={busy}
           onKeep={() => {
+            restoreCancelFocus();
             setCancel(false);
-            focusControl(cancelTrigger.current);
           }}
           onDiscard={() => {
             setCancel(false);

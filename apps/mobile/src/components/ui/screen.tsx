@@ -42,6 +42,10 @@ export function Screen({
   const insets = useSafeAreaInsets();
   const tabBarMetrics = useFloatingTabBarMetrics();
   const clearance = bottomClearance ?? tabBarMetrics?.clearance ?? 0;
+  // Android scroll-to-focus uses the actual viewport, not trailing content padding.
+  // Exclude the floating footer so keyboard/TalkBack focus cannot land behind it.
+  const footerViewport =
+    Platform.OS === 'android' && clearance > 0 ? clearance + insets.bottom : 0;
   const theme = uiRecipes[dark ? 'dark' : 'warm'];
   return (
     <UiThemeProvider theme={dark ? 'dark' : 'warm'}>
@@ -56,7 +60,9 @@ export function Screen({
           keyboardVerticalOffset={keyboardVerticalOffset}>
           <ScrollView
             testID={testID}
-            accessibilityLabel={title}
+            style={footerViewport > 0 ? { marginBottom: footerViewport } : undefined}
+            accessibilityLabel={Platform.OS === 'android' ? undefined : title}
+            accessible={Platform.OS === 'android' ? false : undefined}
             {...(Platform.OS === 'web' ? { role: 'region' as const } : {})}
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
@@ -64,7 +70,7 @@ export function Screen({
             contentContainerStyle={[
               styles.content,
               contentStyle,
-              { paddingBottom: insets.bottom + 24 + clearance },
+              { paddingBottom: insets.bottom + 24 + clearance - footerViewport },
             ]}>
             {header === undefined ? (
               <>

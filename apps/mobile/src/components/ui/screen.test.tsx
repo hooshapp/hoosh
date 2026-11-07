@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react-native';
-import { Platform, Text } from 'react-native';
+import { Platform, StyleSheet, Text } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { Button } from './button';
@@ -20,9 +20,14 @@ describe('Screen', () => {
       </Screen>,
     );
     expect(screen.queryByRole('header', { name: 'Home' })).toBeNull();
-    expect(screen.getByTestId('custom-screen')).toHaveAccessibleName('Home');
+    if (Platform.OS !== 'android') {
+      expect(screen.getByTestId('custom-screen')).toHaveAccessibleName('Home');
+    } else {
+      expect(screen.getByTestId('custom-screen').props.accessibilityLabel).toBeUndefined();
+      expect(screen.getByTestId('custom-screen').props.accessible).toBe(false);
+    }
     expect(screen.getByTestId('custom-screen').props.contentContainerStyle.at(-1)).toEqual({
-      paddingBottom: 114,
+      paddingBottom: Platform.OS === 'android' ? 24 : 114,
     });
   });
   it.each([false, true])('composes readable, ordered form content in dark=%s', async (dark) => {
@@ -57,8 +62,14 @@ describe('Screen', () => {
     );
     const scroll = screen.getByTestId('account-content');
     expect(scroll.props.contentContainerStyle).toEqual(
-      expect.arrayContaining([{ paddingBottom: 148 }]),
+      expect.arrayContaining([{ paddingBottom: Platform.OS === 'android' ? 24 : 148 }]),
     );
+    if (Platform.OS === 'android') {
+      // Focus scrolling must see a viewport ending ABOVE the measured overlay.
+      expect(StyleSheet.flatten(scroll.props.style).marginBottom).toBe(124);
+    } else {
+      expect(StyleSheet.flatten(scroll.props.style)?.marginBottom).toBeUndefined();
+    }
     expect(scroll.props.keyboardShouldPersistTaps).toBe('handled');
     expect(scroll.props.keyboardDismissMode).toBe(
       Platform.OS === 'ios' ? 'interactive' : 'on-drag',
@@ -75,6 +86,9 @@ describe('Screen', () => {
         <Screen title="Standalone form" testID="standalone-content" />
       </SafeAreaProvider>,
     );
+    expect(
+      StyleSheet.flatten(screen.getByTestId('standalone-content').props.style)?.marginBottom,
+    ).toBeUndefined();
     expect(screen.getByTestId('standalone-content').props.contentContainerStyle).toEqual(
       expect.arrayContaining([{ paddingBottom: 58 }]),
     );

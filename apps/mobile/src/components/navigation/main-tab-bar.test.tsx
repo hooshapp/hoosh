@@ -1,7 +1,7 @@
 import { act, fireEvent, screen, userEvent } from '@testing-library/react-native';
 import { router, Stack, Tabs } from 'expo-router';
 import { renderRouter } from 'expo-router/testing-library';
-import { Dimensions } from 'react-native';
+import { Dimensions, Platform, StyleSheet } from 'react-native';
 import { useState } from 'react';
 import { SafeAreaProvider, type EdgeInsets } from 'react-native-safe-area-context';
 
@@ -139,8 +139,16 @@ describe('Main navigation', () => {
   it('uses the measured large-text bar height with the safe inset exactly once', async () => {
     await renderRouter({
       ...actualRoutes,
-      '(tabs)/index': () => <Screen title="Content" testID="main-content" />,
+      '(tabs)/index': function DraftContent() {
+        const [draft, setDraft] = useState('');
+        return (
+          <Screen title="Content" testID="main-content">
+            <Field label="Viewport draft" value={draft} onChangeText={setDraft} />
+          </Screen>
+        );
+      },
     });
+    await fireEvent.changeText(screen.getByLabelText('Viewport draft'), 'Keep this draft');
     expect(screen.queryByText('Quests')).not.toBeOnTheScreen();
     await act(() =>
       Dimensions.set({ window: { width: 320, height: 568, scale: 3, fontScale: 2 } }),
@@ -152,14 +160,22 @@ describe('Main navigation', () => {
       nativeEvent: { layout: { x: 20, y: 384, width: 280, height: 150 } },
     });
     expect(screen.getByTestId('main-content').props.contentContainerStyle).toEqual(
-      expect.arrayContaining([{ paddingBottom: 208 }]),
+      expect.arrayContaining([{ paddingBottom: Platform.OS === 'android' ? 24 : 208 }]),
     );
+    expect(StyleSheet.flatten(screen.getByTestId('main-content').props.style)?.marginBottom).toBe(
+      Platform.OS === 'android' ? 184 : undefined,
+    );
+    expect(screen.getByLabelText('Viewport draft')).toHaveDisplayValue('Keep this draft');
     await fireEvent(screen.getByTestId('main-tab-bar'), 'layout', {
       nativeEvent: { layout: { x: 20, y: 456, width: 280, height: 78 } },
     });
     expect(screen.getByTestId('main-content').props.contentContainerStyle).toEqual(
-      expect.arrayContaining([{ paddingBottom: 136 }]),
+      expect.arrayContaining([{ paddingBottom: Platform.OS === 'android' ? 24 : 136 }]),
     );
+    expect(StyleSheet.flatten(screen.getByTestId('main-content').props.style)?.marginBottom).toBe(
+      Platform.OS === 'android' ? 112 : undefined,
+    );
+    expect(screen.getByLabelText('Viewport draft')).toHaveDisplayValue('Keep this draft');
   });
 
   it('reveals the destination name if a local image fails and keeps the tab usable', async () => {

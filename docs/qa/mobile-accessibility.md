@@ -58,7 +58,7 @@ consumer bundles validate the prepared profile/protection/focus/lifecycle source
 Source-map equality establishes compilation of the actual final source, not
 native linking, speech, keyboard behavior, signing or device execution.
 
-## Device/live acceptance still required
+## Device/live acceptance still required (updated by RN-10d)
 
 Record actual model/OS/build, commit/schema versions, steps and observed result
 when executing these checks. Do not replace them with a checkbox inferred from
@@ -66,12 +66,12 @@ browser emulation or mocked public native APIs.
 
 | Ref | Remaining work | Owner / acceptance evidence |
 |---|---|---|
-| RN10-D01 | VoiceOver/TalkBack traversal, selected-tab announcements, confirmation/status/error speech and focus | Anisha iOS; Ishmum Android. Signed builds on supported devices; no duplicate/hidden/off-screen announcements. |
-| RN10-D02 | Actual Dynamic Type/font scaling, software/hardware keyboard, safe areas, focus scrolling and SVG rendering | RN-10c has Pixel 8 Pro Expo Go at 1.15/2.0, software IME and SVG observations; hardware keyboard, iOS, other devices and signed-build checks remain. Portrait stays configured. |
+| RN10-D01 | VoiceOver/TalkBack traversal, selected-tab announcements, confirmation/status/error speech and focus | RN-10d has Android selected-tab/control/checkbox speech and modal focus/return. Anisha owns iOS. Full manual traversal/async speech, supported devices and signed release remain. |
+| RN10-D02 | Actual Dynamic Type/font scaling, software/hardware keyboard, safe areas, focus scrolling and SVG rendering | RN-10c/d have Pixel 8 Pro Expo Go/debug host at 1.15/2.0, IME/SVG/detail navigation and measured focus/footer fixes. Physical keyboard, iOS, other devices and signed release remain; portrait stays configured. |
 | RN10-D03 | Real Auth/account/profile lifecycle, guarded root provider integration and two-account/restored-session transitions | Anisha + Ishmum. RN-05/06 and RN-07 live evidence; current callbacks/provider tests do not establish integration. |
-| RN10-D04 | Real native authorization/status visibility and foreground reconciliation | Native owners; RN08-D01–D06. No adapter/action is activated by these UI fixes. |
-| RN10-D05 | Native accessibility of implemented Quests/History/Settings and detail/editor composition | Ishmum; Anisha reviews iOS impact. Browser/component and RN-10c Android layout/navigation/control results are recorded; screen-reader traversal/focus, other platforms/builds and full state matrices remain. |
-| RN10-D06 | Cold start, memory pressure, process death, background/foreground/offline restoration and measured responsiveness | Platform/integration owners. Reproducible real-device observations; no promised latency SLA, persisted private cache or synthetic enforcement from JS. |
+| RN10-D04 | Real native authorization/status visibility and foreground reconciliation | RN-08d (`cadc91d`) accepts Android read/usage Settings/foreground scope. Enforcement, iOS and release integration remain separate; RN-10d preserves existing usage access. |
+| RN10-D05 | Native accessibility of implemented Quests/History/Settings and detail/editor composition | RN-10c/d Android layout, details, dirty navigation, modal return and bounded sample states are recorded. Full traversal/state matrices, other platforms/devices and release builds remain; Anisha owns iOS. |
+| RN10-D06 | Cold start, memory pressure, process death, background/foreground/offline restoration and measured responsiveness | RN-10d records local-draft background, injected trim callback, radio toggle and safe cold start. True OS memory-pressure kill, authenticated offline/process restoration and release integration remain; no SLA. |
 
 ## RN-11 readiness — live milestone cannot run yet
 
@@ -197,3 +197,44 @@ states and actual Auth/native integration remain pending. Cold start of Expo Go
 for test setup does not establish D06's released-app process/offline/low-memory or
 native protection behavior. No native permission, restriction, backend or cloud
 state was changed.
+
+
+## RN-10d — Android development-build accessibility/lifecycle, 2026-11-07
+
+See [device results and reproduction](../core_plan_implementation_notes/artifacts/rn-10d/README.md).
+Actual Pixel 8 Pro / Android 16/API 36 reused the RN-08 local debug host with current
+JavaScript, separately from production Hermes/web exports. No native source changed.
+
+| Check | Actual observation |
+|---|---|
+| Focus scrolling | Found Home's focused last action could sit under floating navigation. Android viewport now ends at measured bar top (2662 versus previous 2992); font-2.0 button ends at 2416 above bar top 2488. Safe inset counted once. |
+| TalkBack | Visible output identifies selected Quests tab and Create custom quest button; safe modal action/focus observed. Owner confirmed announcements audible. After Keep editing, Back has assistive focus and text remains. |
+| Modal return fix | Immediate focus was lost during native window dismissal. Explicit Android request listens for activity focus, settles once for 150ms, expires at 1000ms and cancels on background/unmount/replacement. iOS/web behavior unchanged. |
+| Large text / IME | Actual four tabs and Settings apps/activities/days/hours/sessions, History progress/month/reclaimed, custom quest long input/footer/Back/discard checked at font 2.0. Unavailable values/saves remain explicit. |
+| Sample states | Separate native QA Days checkbox toggles and reports checked speech/focus; busy day controls disable. Profile Error leaves text/retry editable; Busy disables save/input/discard/remove. No account/API operation. |
+| Reduced motion | Isolated Profile Busy indicator: separate button-frame pairs changed 385 pixels normally, 0 with reduced motion and 686 after restoring the preference. Spinner hides; Saving text remains. Original scale 0.5 restored. This is bounded indicator evidence. |
+| Local lifecycle | Quest draft remains after Home/background return, injected RUNNING_LOW, and temporary radios off/on. Hardware Back keeps/discards correctly. Own-app force-stop/cold start returns safe Home; unsaved process-death persistence not promised. |
+| Cleanup | Baseline font 1.15, timeout 600000, stay-awake 0, TalkBack/services/touch exploration/display speech output off and radios on verified. Existing usage-access allow unchanged. Own servers/reverse mappings/XML removed; no app data erased. |
+
+Important method correction: UI automation dumps disturbed active TalkBack focus,
+so early results using that combination were discarded. Clean speech/focus checks
+use screenshots/direct input only; hierarchy checks run with TalkBack off. Input
+Tab/direct taps do not prove external physical-keyboard or full manual swipe
+traversal. Speech captions were remotely observed; owner confirmed audibility,
+not every spoken phrase or audio quality. First-use TalkBack tutorial was completed;
+optional notification prompt was canceled, not granted. One notification-overlaid
+private capture was excluded; tracked images are inspected app-only crops.
+
+`RUNNING_LOW` is an injected callback, not real memory-pressure process death. USB
+Metro remained reachable with radios off, so this is local draft continuity, not
+API offline/replay acceptance. Rapid project switching/HMR caused development
+navigation warnings; one force-stop/single launch cleared them. No warning was
+suppressed or represented as a fixed production defect.
+
+Validation passed: full `npm run check` (382 portable / 518 component / 601 API,
+199 DB deselected, types/lint/Ruff/contracts/assets), focused final 64/64, web
+38-file isolation/71 original SVGs and Android production Hermes export. Existing
+11 unrelated lint warnings remain; gallery build has dependency eval/chunk warnings.
+Reduced-motion automated and bounded physical indicator checks pass; exhaustive
+motion/state matrix, landscape and full manual traversal remain unaccepted.
+The parent RN-10 and its joint Auth/iOS/release gates remain open.

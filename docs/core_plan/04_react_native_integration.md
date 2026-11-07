@@ -194,7 +194,7 @@ RN-01/02/03 and the RN-04 producer are implemented with evidence linked below; R
 | RN-07 | `feat(account): integrate versioned profile reads and edits` | RN-04/05; approved profile contract/API/migration | Real profile round trip, conflict and ambiguous-save handling | Revisioned consumer wired; real Auth/root/device acceptance pending | `5790302` (UI); `f32e87c` (consumer wiring) |
 | RN-08 | `feat(protection-ui): show native capability and installation states` | RN-01; agreed native read boundary; actual adapters for integration | Status mapper tests; device evidence only where adapter exists | Android a–d read/permission scope implemented and device-verified; enforcement/iOS/product gates open | `71da2d5`; a `6117b96`, b `6734a26`, c `d1aa6ee`; d see notes/artifact |
 | RN-09 | `feat(mobile): compose main app surfaces with explicit feature states` | RN-01/02; RN-07/08 where live data is used | Figma comparisons + no invented production data | RN-09a–h UI, i/j consumers and k saved-preference composition implemented; k native status, l live acceptance and remaining product/live gates open | `ff75039`, `2bbebad`, `c1c84c3`; RN-09d resolved by its notes/unique commit subject |
-| RN-10 | `fix(mobile): complete accessibility layout and lifecycle handling` | Implemented RN parts; relevant device build access | Accessibility/device-size checks and targeted regression tests | Shared hardening/icons and partial Pixel 8 Pro Expo Go QA implemented; remaining platform/live acceptance pending | RN-10 notes; RN-10a `ab7d855`, b `704bc49`, c by unique subject |
+| RN-10 | `fix(mobile): complete accessibility layout and lifecycle handling` | Implemented RN parts; relevant device build access | Accessibility/device-size checks and targeted regression tests | Shared hardening/icons, Expo Go and RN-10d Android debug-device acceptance recorded; full platform/live acceptance pending | RN-10 notes; RN-10a `ab7d855`, b `704bc49`, c by unique subject |
 | RN-11 | `test(integration): document profile and platform handoff acceptance` | RN-06/07/10; RN-08/09 evidence as applicable | M2 matrix, native capability handoff, reproducible runbook | Awaiting live Auth/API/profile prerequisites; not executed | — |
 
 **Planning expansion (2026-11-02):** The original RN-01–11, RN-09a–h and
@@ -755,17 +755,18 @@ intrinsic footer reflow and late lifecycle callback/cleanup suppression. All
 original SVGs remain unedited. RN-10a now completes the user-authorized original-pack refresh; prior captures remain in Git history.
 
 The following checks remain pending; these IDs match the QA record. RN-10 is not
-full signed-device/live acceptance. RN-09b–h now have recorded browser/component
-checks; actual device checks for those screens remain pending.
+full signed-release/live acceptance. RN-09b–h have browser/component and bounded
+Android device evidence; full device/state coverage remains pending. RN-10d below
+records the latest actual development-build scope without closing the parent part.
 
 | Ref | Remaining acceptance | Owner / required evidence |
 |---|---|---|
-| RN10-D01 | VoiceOver/TalkBack traversal, announcements and focus | Platform owners; actual signed-device steps/results. |
-| RN10-D02 | Remaining platform/device font scale, keyboard, safe areas, focus scrolling and SVG acceptance | RN-10c records Pixel 8 Pro Expo Go at 1.15/2.0 and software IME; hardware keyboard, iOS, additional devices and signed-build evidence remain. |
+| RN10-D01 | Remaining VoiceOver/TalkBack traversal, announcements and focus | RN-10d verifies Android selected-tab/control/checkbox speech and modal focus/return. Full manual traversal/async speech, signed release, other devices and Anisha’s VoiceOver remain. |
+| RN10-D02 | Remaining platform/device font scale, keyboard, safe areas, focus scrolling and SVG acceptance | RN-10c/d record Pixel 8 Pro Expo Go/debug host at 1.15/2.0, software IME, measured focus viewport/footer and detail navigation. Physical keyboard, iOS, other devices and signed release remain. |
 | RN10-D03 | Real Auth/account/profile lifecycle and root integration | Anisha + Ishmum; live RN-05/06/07 round trips and account transitions. |
-| RN10-D04 | Native authorization/status foreground reconciliation | Native owners; RN08-D01–D06 with actual adapters. |
-| RN10-D05 | Native accessibility of implemented Quests/History/Settings and detail/editor composition | Ishmum; RN-10c records actual Android layout/navigation/control checks; screen-reader traversal/focus, other platforms/builds and full state matrices remain. |
-| RN10-D06 | Cold start, memory pressure, background/termination/offline restoration and responsiveness | Integration/platform owners; measured device evidence without invented SLAs. |
+| RN10-D04 | Native authorization/status foreground reconciliation | RN-08d accepts Android read/usage-permission/foreground scope (`cadc91d`); enforcement, other devices, iOS and release integration remain separate. |
+| RN10-D05 | Native accessibility of implemented Quests/History/Settings and detail/editor composition | Ishmum; RN-10c/d record actual Android tabs/details/editors, selected controls, dirty Back/modal focus, large text and bounded sample error/busy states. Full state/speech matrices and other platforms/builds remain. |
+| RN10-D06 | Cold start, memory pressure, background/termination/offline restoration and responsiveness | RN-10d verifies local draft background return, injected RUNNING_LOW, radio off/on and safe own-package cold start. True OS memory-pressure kill, authenticated offline/process restoration and release integration remain; no SLA. |
 
 ### RN-11 — Profile milestone and platform handoff evidence
 
@@ -1050,3 +1051,25 @@ and authenticated phone checks remain user-deferred; real Auth/root and joint
 RN-06/07/09l/10/11 acceptance remain open. See
 [backend evidence](../core_plan_implementation_notes/artifacts/api-10/hosted-settings-acceptance.json).
 Do not repeat the applied migration or equate backend acceptance with app success.
+
+
+**RN-10d current checkpoint (2026-11-07):** independent Android debug-device
+checks and two measured fixes are implemented. Native focus scrolling now reserves
+the measured floating footer outside the ScrollView viewport; explicit modal return
+waits for Android window focus and one bounded settle. Pixel 8 Pro / Android 16
+actual Router: font 1.15/2.0, four tabs, Settings/History details, quest IME/Back/
+Keep/discard, selected tab/control speech, modal focus/return and local-draft
+background/radio/cold-start checks pass within the recorded scope. Isolated sample
+checkbox/error/busy and measured reduced-motion indicator checks remain labeled separately. See [RN-10d device evidence](../core_plan_implementation_notes/artifacts/rn-10d/README.md)
+and [per-file notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md).
+
+Full check passes 382 portable / 518 component / 601 API; focused final retest
+64/64, web isolation 38 files / 71 original SVGs, Android production Hermes export.
+Existing debug host reused; no native rebuild, Auth/root, API/cloud/iOS or signing
+change. Phone settings restored to this run's baseline (font 1.15, timeout 600000,
+stay-awake 0, TalkBack off/display output off, radios on); existing usage access
+allow preserved. Owned Metro servers/reverse mappings/XML removed. RN10-D01–D06
+retain the explicit remaining gates above; RN-10 and Plan 04 are not fully accepted.
+Next joint Auth/root plus approved current accounts for RN-06/07/09l/10/11; hosted
+schema is ready, but refreshed tokens and hosted C deletion remain user-deferred.
+Counts remain 46 top-level / 21 producers / 25 pending. No new parent plan/ID.

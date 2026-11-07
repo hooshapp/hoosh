@@ -1,0 +1,216 @@
+{
+  "part": "RN-10d",
+  "date": "2026-11-07",
+  "owner": "Ishmum",
+  "branch": "task/react-native/rn-10-android-acceptance",
+  "parent": "e55e314",
+  "commit": "Pending; resolve by commit subject in implementation notes",
+  "device": {
+    "model": "Pixel 8 Pro",
+    "android": "16",
+    "api": 36,
+    "pixels": [
+      1344,
+      2992
+    ],
+    "density": 480,
+    "package": "com.hoosh.disconnect.dev",
+    "host": "Existing RN-08 local debug development build; current JS from Metro, not a release-signed APK",
+    "font_scales": [
+      1.15,
+      2.0
+    ]
+  },
+  "fixes": {
+    "scroll_viewport": {
+      "before_bottom": 2992,
+      "after_bottom": 2662,
+      "floating_bar_top": 2662,
+      "description": "Reserve measured Android footer outside actual scroll viewport; count safe inset once; do not group all descendants as one named target"
+    },
+    "dialog_return": {
+      "description": "Explicit Android return waits for window focus plus one 150ms settle, expires at 1000ms, cancels on background/unmount/owner replacement/new request; no retries",
+      "observed_target": "Back after Keep editing, with draft retained",
+      "limits": "Observed on this device; timing is not a latency SLA or all-device guarantee"
+    }
+  },
+  "talkback": {
+    "user_confirmed_audible": true,
+    "method": "Android input Tab and direct taps plus screenshots and Display speech output. No UI automation dumps while TalkBack active. Direct taps are not touch exploration or double taps.",
+    "observed": [
+      "selected. Quests. Tab",
+      "Create a custom quest. Button",
+      "safe Keep editing action/modal focus",
+      "Back focus rectangle after Keep editing",
+      "checked. Monday. Check box in isolated sample"
+    ],
+    "not_accepted": [
+      "Exhaustive manual swipe traversal",
+      "Every asynchronous error/save speech state",
+      "External physical keyboard",
+      "VoiceOver"
+    ]
+  },
+  "actual_router_large_text": {
+    "large_home": {
+      "button_bounds": [
+        48,
+        2224,
+        1296,
+        2416
+      ],
+      "bar_bounds": [
+        60,
+        2488,
+        1284,
+        2848
+      ],
+      "viewport_bounds": [
+        0,
+        151,
+        1344,
+        2488
+      ],
+      "passed": true
+    },
+    "large_keyboard": {
+      "input_entered": true,
+      "ime_shown": true
+    },
+    "large_quest": "Keyboard input, footer, hardware Back keep/discard passed; saves remain unavailable",
+    "history_buttons": [
+      "Next history page"
+    ],
+    "settings_buttons": [
+      "Distracting Apps. Not available yet",
+      "Redirect Me To. Not available yet",
+      "Active Days. Not available yet",
+      "Active Hours. Not available yet",
+      "App Sessions. Not available yet"
+    ]
+  },
+  "actual_router_details": {
+    "apps": {
+      "opened": true,
+      "back_reachable": true,
+      "saving_or_selection_unavailable": true
+    },
+    "activities": {
+      "opened": true,
+      "back_reachable": true,
+      "saving_or_selection_unavailable": true
+    },
+    "days": {
+      "opened": true,
+      "back_reachable": true,
+      "saving_or_selection_unavailable": true
+    },
+    "hours": {
+      "opened": true,
+      "back_reachable": true,
+      "saving_or_selection_unavailable": true
+    },
+    "sessions": {
+      "opened": true,
+      "back_reachable": true,
+      "saving_or_selection_unavailable": true
+    },
+    "history": "Summary/progress, month selection, reclaimed and Back passed; real measurements unavailable"
+  },
+  "actual_router_lifecycle": {
+    "lifecycle-before": "passed",
+    "background-trim-return": "passed",
+    "network-off-draft": "passed",
+    "network-restored-draft": "passed",
+    "hardware-back-dialog": "passed",
+    "hardware-back-keeps-draft": "passed",
+    "cold-start-after-termination": "passed",
+    "notes": "RUNNING_LOW is an injected callback, not proof of OS memory-pressure kill. USB Metro remained reachable during network toggle; no authenticated requests, offline data replay or durable draft claim."
+  },
+  "isolated_sample_states": {
+    "scope": "Developer-only native component preview; no account/API/protection connected",
+    "days": "Native checkbox checked->unchecked verified; checked speech and focus observed separately",
+    "busy_days": "Weekday shortcuts and visible checkbox controls disabled",
+    "profile_error": "Error visible, input/retry editable; draft remains",
+    "profile_busy": "Saving, busy button/input/discard/remove disabled",
+    "reduced_motion": {
+      "scope": "Isolated native QA Profile Busy indicator; no account save",
+      "normal": {
+        "changed_pixels": 385,
+        "bounds": [
+          70,
+          1421,
+          1274,
+          1561
+        ]
+      },
+      "reduced": {
+        "changed_pixels": 0,
+        "bounds": [
+          70,
+          1421,
+          1274,
+          1561
+        ]
+      },
+      "restored": {
+        "changed_pixels": 686,
+        "bounds": [
+          70,
+          1421,
+          1274,
+          1561
+        ]
+      },
+      "preference_baseline_restored": true
+    }
+  },
+  "validation": {
+    "workspace": "npm run check",
+    "portable_tests": 382,
+    "native_component_tests": 518,
+    "api_tests": 601,
+    "database_tests_deselected": 199,
+    "lint": "0 errors; 11 pre-existing warnings outside changed files",
+    "focused_retest": "64 tests / 8 suites, both native presets",
+    "web_export": "38 production JS/HTML files isolated, 71 original SVGs passed",
+    "android_export": "Production Hermes bundle exported; export is separate from phone execution",
+    "native_build": "Existing debug host reused; no Kotlin/Gradle/iOS change"
+  },
+  "cleanup": {
+    "system.font_scale": "1.15",
+    "system.screen_off_timeout": "600000",
+    "global.stay_on_while_plugged_in": "0",
+    "secure.accessibility_enabled": "0",
+    "secure.enabled_accessibility_services": "null",
+    "secure.touch_exploration_enabled": "0",
+    "global.wifi_on": "1",
+    "global.mobile_data": "1",
+    "global.transition_animation_scale": "0.5",
+    "global.animator_duration_scale": "0.5",
+    "global.window_animation_scale": "0.5",
+    "system.accelerometer_rotation": "0",
+    "system.user_rotation": "0",
+    "talkback_display_speech_output": "false",
+    "usage_access": "allow",
+    "temporary_settings_restored": true,
+    "owned_reverse_ports_removed": [
+      8090,
+      8092
+    ],
+    "owned_phone_xml_removed": true,
+    "owned_metro_stopped": true,
+    "app_data_erased": false
+  },
+  "limits": [
+    "No real Auth/root/profile/settings round trip; token refresh remains user-deferred",
+    "No hosted deletion; C acceptance remains deferred",
+    "No native restriction/enforcement or saved quest outcome",
+    "RUNNING_LOW injection is not an OS memory-pressure kill",
+    "USB Metro stayed reachable when Wi-Fi/data were disabled; no authenticated offline replay proven",
+    "Unsaved local draft persistence across process death is not promised",
+    "Portrait configured; landscape, exhaustive motion/state matrices, other devices and signed release remain separate acceptance",
+    "Developer HMR/navigation warnings were cleared by force-stop and a single correct project launch; not suppressed or claimed as product fixes"
+  ],
+  "privacy": "No serial, tokens, account identifiers, raw UI trees, personal notifications or full phone captures tracked. Images are inspected app-only crops."
+}

@@ -10,6 +10,15 @@
 
 **Implementation records:** Before starting a plan, read the [knowledge-base workflow](../core_plan_implementation_notes/README.md) and create that plan's notes file. Give every commit its own entry with all changed files, exact line ranges, what/why, validation and remaining work. Keep the plan ledger synchronized. New chats/agents must read the relevant notes and inspect Git/current code before resuming. Plan 04's [implementation record](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md) contains the current RN-01–04 producer status, RN-05 consumer, RN-07 revisioned profile consumer, RN-08 native presentation preparation, RN-09a–h main/detail/editor UI and RN-10 shared UI/lifecycle hardening, evidence and next step; read it before resuming.
 
+**Latest independent Android work (2026-11-07):** RN-10d records debug-device
+TalkBack focus/selected speech, large text/detail/IME/navigation and bounded local
+lifecycle checks, with measured scroll-footer/modal-return fixes and complete
+per-file notes. Phone temporary settings/connections restored. Read the latest
+[Plan 04 entry](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md)
+and [device record](../core_plan_implementation_notes/artifacts/rn-10d/README.md).
+Auth/root/current-account, iOS, signed release and remaining device/state matrices
+are still separate gates; unavailable data is not a saved/enforced outcome.
+
 ## 1. Founder-provided facts that override generic assumptions
 
 - Disconnect is an existing, released iOS app, not a brand-new proof of concept.

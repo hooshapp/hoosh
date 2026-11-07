@@ -4,21 +4,23 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN-08d implemented within the Android read/permission scope; continue the sequential a–d entries below. No enforcement/iOS/Auth completion is implied.
+**Current part:** RN-10d independent Android fixes and bounded development-device acceptance recorded; full RN-10 release/joint matrices remain open. Existing RN-08 read/permission integration stays intact; real Auth/iOS/current-account acceptance remains separate.
 
-**Implementation branch:** `task/react-native/rn-08-android-foundation`; sequential a–d commits, local only; no push/main merge.
+**Implementation branch:** `task/react-native/rn-10-android-acceptance`; parent `e55e314`; no main merge or iOS/Auth change.
 
 **Commit reference:** RN-01 `2f88102`; RN-02 `2d5c0d1`; RN-03 `0741758`; RN-04 `610f570`; RN-05 preparation `0c6e4db`; RN-07 UI `5790302`; RN-08 preparation `71da2d5`; RN-09a `ff75039`. RN-10 is `9b5fbd0`.
 
-**Last updated:** 2026-11-03.
+**Last updated:** 2026-11-07.
 
 **Shared workflow:** [Implementation knowledge base](README.md).
 
 ## Resume here
 
+- **RN-10d Android follow-up (2026-11-07):** branch `task/react-native/rn-10-android-acceptance`, parent `e55e314`; commit by subject `fix(mobile): improve Android focus and record RN-10 device checks`. Two actual-device defects fixed: focused content beneath the floating bar, and TalkBack return after native dismissal. Pixel debug host checked at font 1.15/2.0, actual tabs/details/IME/dirty navigation, selected speech, bounded sample states and local lifecycle. Full checks 382 portable / 518 component / 601 API; final focused 64/64; web 38/71, Android Hermes and UI gallery build pass. Settings/connections restored to this run's baseline; usage access allow preserved. Full manual/async speech, physical keyboard/exhaustive motion-state matrix, additional devices/release, Auth/root/current-account and Anisha's iOS remain open. Next joint RN-06/07/09l/10/11 when Auth/root and fresh approved tokens exist; tokens/C deletion stay user-deferred. Read the final entry and RN-10d device record; original 46/21/25 counts remain.
+
 - **Plan 03 hosted handoff (2026-11-07):** development settings migration 0002 is applied/security-verified, profiles preserved, settings empty. The hosted schema prerequisite for RN-09i/j/l is satisfied; existing HTTP/generated contracts are unchanged. Current A/B tokens are expired and user explicitly leaves real-account checks pending. Joint Auth/root/profile/settings phone and signed/native/C-deletion acceptance remain open. Backend follow-up, exact file changes and 601 API/199 DB evidence are recorded in the latest Plan 03 entry; no Plan 04 implementation is claimed by this documentation handoff. Earlier resume entries are historical.
 
-- **RN-08a–d Android read/permission scope implemented (2026-11-03):** a `6117b96`, b `6734a26`, c `d1aa6ee`, d see final entry/Git. Actual Pixel Android 16 Home Settings grant/deny/foreground/revoke/cold, native keyguard/empty/null and Expo Go absence/font-2.0 checks pass. Native final reads work with Metro/API absent; user settings and task connections restored. Full checks 382 portable / 502 component / 590 API, web 38/71, native builds/Hermes. RN-09k's Android read-only producer and l's independent native-revoke evidence now exist. Next joint Auth/root + hosted migration 0002 + authenticated settings/profile phone acceptance; enforcement/product policies, iOS/signing/speech and user-deferred hosted-C deletion stay open. See the final a–d entries/runbook; earlier resume bullets below are historical.
+- **RN-08a–d Android read/permission scope implemented (2026-11-03):** a `6117b96`, b `6734a26`, c `d1aa6ee`, d `cadc91d`. Actual Pixel Android 16 Home Settings grant/deny/foreground/revoke/cold, native keyguard/empty/null and Expo Go absence/font-2.0 checks pass. Native final reads work with Metro/API absent; user settings and task connections restored. Full checks 382 portable / 502 component / 590 API, web 38/71, native builds/Hermes. RN-09k's Android read-only producer and l's independent native-revoke evidence now exist. Next joint Auth/root + hosted migration 0002 + authenticated settings/profile phone acceptance; enforcement/product policies, iOS/signing/speech and user-deferred hosted-C deletion stay open. See the final a–d entries/runbook; earlier resume bullets below are historical.
 
 - **RN-09l local acceptance implemented (2026-11-03):** production mobile HTTP client/scope/settings projections pass eight actual TCP/FastAPI/PostgreSQL scenarios, including true API process restart and cold mobile reload. Real Router tests cover dirty navigation and uncertain saves. Checks: 352 portable / 488 component / 590 API / 192 DB, web isolation/assets. CI's required DB job now installs mobile/Node prerequisites. Next RN-08a; hosted migration, Auth/root, authenticated phone, k native status/native revocation, iOS/signing/speech and deferred hosted C deletion remain open. Task-owned disposable DB stopped, volume kept. Read the latest RN-09l entry and QA matrix.
 
@@ -2895,7 +2897,7 @@ Use the following structure for future commits, including corrective commits.
 
 ### RN-08d — Android device permission/status acceptance
 
-**Commit:** `test(android): verify permission and status lifecycle`. **Hash:** Pending (resolve by message/Git; record in the next normal update).
+**Commit:** `test(android): verify permission and status lifecycle`. **Hash:** `cadc91d` (recorded during RN-10d).
 **Date:** 2026-11-03. **Owner:** Ishmum. **Branch:** `task/react-native/rn-08-android-foundation`. **Parent:** `d1aa6ee`.
 **Status:** Implemented and physically verified within the Android read/usage-permission/status scope. All a–d commits are local; no push/merge.
 
@@ -2947,3 +2949,55 @@ Use the following structure for future commits, including corrective commits.
 | `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 2842–2842 | Record the preceding part hash during this normal update; retain its historical evidence. |
 | `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 7–13 | Update current part/branch checkpoint; previous evidence remains historical. |
 | `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 2894–2947 | Record this part’s decisions, actual checks/failures, every file/line and remaining work. Own hash stays Pending until next normal update. |
+
+
+### RN-10d — Independent Android accessibility, navigation and lifecycle acceptance
+
+**Commit:** `fix(mobile): improve Android focus and record RN-10 device checks`. **Hash:** Pending; resolve by unique subject/Git, record in the next normal update.
+
+**Date:** 2026-11-07. **Owner:** Ishmum. **Branch:** `task/react-native/rn-10-android-acceptance`. **Parent:** `e55e314`.
+
+**Scope:** Existing RN-10, NFR-008/009/011 and AC-12 within implemented independent Android UI. This is a JS/layout/focus fix plus actual development-device evidence, not full RN-10, Auth/root or release acceptance. Existing RN-08 debug host reused. No native/backend/migration/dependency/icon/iOS change; no real credentials, account save, hosted operation or deletion. User's continued phone authorization and confirmation of audible TalkBack carry across the usage-limit interruption.
+
+#### Decisions and actual findings
+
+- **Android scroll-to-focus:** Home's last action could be focused beneath the floating navigation even though manual scrolling had enough trailing padding. Reserve measured footer plus safe inset outside the Android ScrollView viewport, retaining 24px inner padding. At font 1.15 the viewport bottom changed from y=2992 to y=2662, matching the bar top. At 2.0 button bottom 2416 is above bar top 2488. Standalone forms keep their inset padding; iOS/web keep existing behavior. Android container no longer names/groups the entire screen; headings/controls remain individual targets.
+- **Native modal return:** immediate assistive focus could be overwritten by Android's native-window dismissal. Subscribe before closing, wait for activity focus and one 150ms settle, focus the existing trigger, and clean up. Missing event expires at 1000ms; background, target-owner replacement, unmount and a later explicit request cancel it. No retry loop, focus during revalidation, new dependency or claimed latency SLA. Both dirty-exit Back and quest cancellation triggers consume the hook. Actual clean phone screenshot shows Back focus after Keep editing; cancellation caller also has component coverage, not a live saved-quest acceptance claim.
+- **Corrected test method:** initial `uiautomator dump` calls while TalkBack was active disturbed assistive focus. Early inferred timing/focus results were discarded, and an interim hook was removed before clean retesting. Screenshot/direct-input-only retests reproduced the dismissal race and verified the final bounded hook. Tree automation now runs only with TalkBack off. Visible captions and owner-confirmed audibility are separate observations; direct taps/Tab do not establish touch exploration, double taps, physical keyboard or exhaustive manual traversal.
+- **Local continuity:** typed quest input survives background/return, an injected RUNNING_LOW callback and temporary Wi-Fi/mobile data off/on. Back opens confirmation; Back in the dialog keeps input; explicit discard exits. Own-app force-stop/cold start reaches safe unavailable Home. Unsaved process-death persistence is not promised. Injected callback is not a real OS low-memory kill, and USB Metro remains reachable with radios off; no authenticated offline replay claim.
+- **Sample boundaries:** Days checkbox checked/unchecked and TalkBack selected output, disabled busy day controls, Profile error with editable input/retry and disabled busy profile actions were checked in the isolated native QA project. Reduced-motion Profile Busy frame pairs changed 385 pixels normally, 0 with reduced motion and 686 after preference restoration; inspected button crops show the spinner hidden while Saving text stays. This verifies one native indicator, not every animation. These are component-state evidence, not account/API saves or installed rules. Original source data never becomes production metrics.
+- **Development interruptions/privacy:** stale project HMR/linking produced duplicate-navigation warnings; own-app force-stop and one correct project launch cleared them. Nothing was suppressed or called a fixed production defect. TalkBack tutorial completed, optional notification prompt canceled. One private notification-overlaid capture excluded; only three inspected app-only crops are tracked. No serial/raw tree/full phone capture/token/account identifier recorded.
+
+#### Validation actually run
+
+- `npm run check` passed TypeScript, ESLint (0 errors; 11 existing warnings outside changed files), original assets, 382 portable tests, 518 native-component tests / 62 suites, Ruff, 601 API tests and generated contracts. 199 PostgreSQL tests deselected, not rerun for JS-only changes.
+- `npm run test:components --workspace @disconnect/mobile -- --runTestsByPath src/components/ui/use-dialog-focus-return.test.tsx src/components/ui/screen.test.tsx src/components/navigation/main-tab-bar.test.tsx src/features/quests/quest-editor.test.tsx` passed 64 tests / 8 suites in both native presets after final test formatting. New hook's eight cases run in each preset (16 results).
+- `npm run mobile:export` passed production web isolation (38 JS/HTML files) and 71 original SVGs. From `apps/mobile`, `npx expo export --platform android --output-dir .expo/rn10d-production` produced the production Hermes bundle. `npm run mobile:ui:build` passed the isolated Vite gallery build, with existing dependency eval/chunk-size warnings. Exports/builds do not certify device execution or release signing.
+- Actual Pixel 8 Pro / Android 16/API 36, 1344×2992/density 480: existing local debug host + current JS, four Router tabs at font 1.15/2.0, quest long input/software IME/footer/Back/Keep/discard, five Settings details, History summary/progress/month/reclaimed, selected-tab/control speech and modal return. Sample checkbox/error/busy checked separately. Runtime data and unsupported saves remain unavailable.
+- Existing automated reduced-motion preference tests and the bounded physical indicator check pass; exhaustive motion/state matrix/landscape, real OS memory-pressure kill, full manual/async speech, physical keyboard, additional devices, release signing and authenticated process/offline integration are not accepted by this run. Portrait remains configured. No iOS physical claim.
+- Cleanup verified against this run's private baseline: font 1.15, timeout **600000ms** (do not reuse RN-10c's old 30000), stay-awake 0, TalkBack/services/touch exploration/display speech output off, Wi-Fi/mobile data on, rotation and animation values unchanged. Existing usage access **allow** preserved. Removed owned ports 8090/8092 and own phone XML, stopped both owned Metro processes; debug app/data retained. No lock bypass or app-data erase.
+
+#### Every changed file and logical change
+
+- `apps/mobile/src/components/ui/screen.tsx`: lines 45–48, 63–65, 73. Reserve the measured Android floating footer outside native focus-scroll bounds, avoid duplicate inset padding, and expose child controls individually. Other platforms and standalone forms preserve prior layout.
+- `apps/mobile/src/components/ui/screen.test.tsx`: lines 2, 23–28, 30, 65, 67–72, 89–91. Assert Android container semantics and viewport/padding math, iOS behavior and standalone inset handling; prevent source-specific content padding from erasing clearance.
+- `apps/mobile/src/components/navigation/main-tab-bar.test.tsx`: lines 4, 142–149, 151, 163, 165–168, 173–176, 178. Verify measured bar height changes update Android viewport versus iOS padding and retain an actual input draft during layout changes.
+- `apps/mobile/src/components/ui/use-dialog-focus-return.ts`: lines 1–50. New explicit-return hook: Android window-focus subscription, one settle, bounded deadline and cancellation on background/unmount/owner/new request. Non-Android uses existing immediate focusControl.
+- `apps/mobile/src/components/ui/use-dialog-focus-return.test.tsx`: lines 1–121. Eight cases cover one-shot settle, duplicate/late events, timeout/background/unmount/owner replacement, pending-settle cleanup, repeated explicit requests and detached targets across both native presets.
+- `apps/mobile/src/features/editors/editor-controls.tsx`: lines 19, 193, 228. Use the scoped modal-return hook for Back before dismissing dirty-exit confirmation, retaining the existing safe-action and draft behavior.
+- `apps/mobile/src/features/quests/quest-editor.tsx`: lines 2, 54, 266. Use the same scoped hook for Keep quest cancellation dismissal; no live quest cancellation or save semantics change.
+- `apps/mobile/dev/native/README.md`: lines 102–114. Add current debug-host sample-state evidence and the corrected TalkBack automation method, restoration requirements and release/Auth boundaries.
+- `docs/Context (AGENT)/AGENT_START_HERE.md`: lines 13–21. Add latest RN-10d handoff pointers and explicit remaining Auth/iOS/release/device acceptance without changing ownership or earlier history.
+- `docs/core_plan/README.md`: lines 8–15. Add current Android checkpoint and implementation/device links; preserve original plan IDs and counts.
+- `docs/core_plan/04_react_native_integration.md`: lines 197, 758–760, 764–765, 767–769, 1054–1075. Update RN-10 ledger and D01–D06 evidence/gates, then append current scope, validations, cleanup and next joint handoff; do not mark the parent complete.
+- `docs/qa/mobile-accessibility.md`: lines 61, 69–70, 72–74, 200–240. Update current acceptance matrix and append actual Android findings, sample/Router separation, corrected method, validation, cleanup and precise limits.
+- `docs/core_plan_implementation_notes/artifacts/rn-10d/README.md`: lines 1–73. Reproduction, three image meanings, actual findings, scope/validation and remaining device/joint gates, including primary Android accessibility testing reference.
+- `docs/core_plan_implementation_notes/artifacts/rn-10d/device-results.json`: lines 1–216. Sanitized device/build identity, measured geometry, TalkBack/Router/sample/lifecycle results, validation counts, restored settings/connections and explicit unverified limits.
+- `docs/core_plan_implementation_notes/artifacts/rn-10d/large-font-footer.png`: binary PNG, 118,549 bytes; no line numbers. Inspected app-only crop: font-2.0 Home action and footer separation.
+- `docs/core_plan_implementation_notes/artifacts/rn-10d/modal-return-focus.png`: binary PNG, 16,262 bytes; no line numbers. Inspected app-only crop: actual Back assistive-focus rectangle after Keep editing, excluding stale caption.
+- `docs/core_plan_implementation_notes/artifacts/rn-10d/sample-checkbox-focus.png`: binary PNG, 23,594 bytes; no line numbers. Inspected app-only crop: isolated sample Monday checkbox/focus, not account data.
+- `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 7, 9, 13, 19–20, 23, 2900, 2952–3003. Update current/resume status and record prior RN-08d hash; this entry accounts for every changed file, rationale, test method correction, actual checks, cleanup and remaining gates.
+
+#### Remaining work and handoff
+
+RN10-D01/D02/D05/D06 now have explicit bounded Android debug-device evidence; RN-08d `cadc91d` already supplies D04's read/permission scope. Parent RN-10 and Plan 04 remain open for joint Auth/root/current-account flows, iOS/VoiceOver, release and additional-device/physical-keyboard matrices, full manual/async speech, exhaustive motion/state checks and true OS/authenticated process/offline integration. Do not treat untested states as passed or report every independent Android matrix complete. Hosted schema is ready from Plan 03; refreshed A/B tokens, authenticated phone and hosted-C deletion remain user-deferred. Next coordinated RN-06/07/09l/10/11 once the real Auth/root producer and approved accounts are available, or separately schedule the explicitly remaining Android/release checks. Stable IDs and 46 top-level / 21 producers / 25 pending are unchanged. Local commit only; no push/merge requested for this task. Unrelated icon packs and workspace file excluded.

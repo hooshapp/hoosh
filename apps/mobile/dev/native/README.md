@@ -99,3 +99,16 @@ the Router entry against the nested QA server and stopped Metro; restart Metro a
 reopen the intended project if this occurs. It is a development-server failure, not
 a successful app lifecycle result. Do not inspect screenshots while the device is
 locked or another app is foreground; ask the owner to unlock before continuing.
+
+
+### RN-10d development-host follow-up
+
+The 2026-11-07 Pixel run used the existing Android development build and current
+JavaScript, including the real Router separately from this sample project. See
+[RN-10d reproduction/evidence](../../../../docs/core_plan_implementation_notes/artifacts/rn-10d/README.md).
+Days checked speech/focus and Profile error/busy controls are sample evidence only.
+Do not run `uiautomator dump` while TalkBack is active; it disturbed assistive focus.
+Use screenshots/direct input for speech, and hierarchy automation only with the
+service off. Preserve/restore the owner's current settings rather than older run
+baselines. Production exports and local debug execution do not certify a signed
+release, Auth integration or protection.

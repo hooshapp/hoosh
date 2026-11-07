@@ -5,6 +5,14 @@
 **Reviewed:** 2026-11-02 (bounded planning expansion; implementation evidence remains recorded per part).\
 **Product answers:** [PM_QUESTIONS.md](<../Context (AGENT)/PM_QUESTIONS.md>); no PM question is answered by an engineering default in these plans.
 
+**Latest Android checkpoint (2026-11-07):** RN-10d fixes measured focus/footer and
+modal-return defects and records Pixel debug-device TalkBack, large-text, local
+lifecycle and sample-state evidence. Full parent RN-10 stays open for joint Auth,
+iOS, release/additional-device and remaining accessibility matrices. Read the
+[RN-10d notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md)
+and [device record](../core_plan_implementation_notes/artifacts/rn-10d/README.md).
+Original part IDs and 46/21/25 counts are unchanged.
+
 ## 1. Start here
 
 Read [Plan 00](00_shared_contracts.md) first, then your area plan and the specific part you are about to implement. Before coding, read the [implementation knowledge-base workflow](../core_plan_implementation_notes/README.md), create that plan's notes file if absent, and read any existing entries. Build on the scaffold; do not reinstall it, rewrite the tested Swift core, create every future table, or complete an entire area before integrating.

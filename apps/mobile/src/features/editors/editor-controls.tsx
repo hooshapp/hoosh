@@ -16,7 +16,7 @@ import { Field } from '@/components/ui/field';
 import { DesignArtwork, type DesignAsset } from '@/components/ui/design-artwork';
 import { InlineStatus } from '@/components/ui/inline-status';
 import { Screen } from '@/components/ui/screen';
-import { focusControl } from '@/components/ui/focus-control';
+import { useDialogFocusReturn } from '@/components/ui/use-dialog-focus-return';
 import { usePressGuard } from '@/components/ui/use-press-guard';
 import { colors, fonts } from '@/design/tokens';
 import { questeditorAssets as assets } from '@/design/questeditor-assets';
@@ -190,6 +190,7 @@ export function EditorPage({
 }>) {
   const [leaving, setLeaving] = useState(false);
   const back = useRef<ComponentRef<typeof Button>>(null);
+  const restoreBackFocus = useDialogFocusReturn(back);
   return (
     <Screen
       title={title}
@@ -224,8 +225,8 @@ export function EditorPage({
       {leaving ? (
         <LeaveConfirmation
           onKeep={() => {
+            restoreBackFocus();
             setLeaving(false);
-            focusControl(back.current);
           }}
           onDiscard={onBack}
         />
