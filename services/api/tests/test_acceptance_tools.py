@@ -292,3 +292,152 @@ def test_unavailable_profile_mode_rejects_false_absence_or_auth_error(status, bo
                 {"A": USER_A, "B": USER_B},
                 origin="http://localhost:8081",
             )
+
+
+@pytest.mark.parametrize(
+    "flags",
+    [
+        ["--write-settings", "--write-profiles"],
+        ["--write-settings", "--expect-profile-unavailable"],
+        ["--with-settings", "--expect-profile-unavailable"],
+    ],
+)
+def test_settings_modes_reject_incompatible_acceptance(flags, monkeypatch):
+    module = script("api-acceptance")
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "api-acceptance.py",
+            "--project",
+            "example",
+            "--base-url",
+            "http://127.0.0.1:8000",
+            *flags,
+        ],
+    )
+    monkeypatch.setattr(
+        module,
+        "development_settings",
+        lambda project: pytest.fail("Mode guard must precede configuration/network"),
+    )
+    with pytest.raises(SystemExit) as error:
+        module.main()
+    assert error.value.code == 2
+
+
+@pytest.mark.parametrize("flag,write", [("--with-settings", False), ("--write-settings", True)])
+def test_settings_cli_verifies_both_tokens_and_never_writes_profiles(
+    private_input, monkeypatch, capsys, flag, write
+):
+    from tests.auth.support import USER_A, USER_B
+
+    module = script("api-acceptance")
+    acceptance.save_token("A", "private-a")
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["api-acceptance.py", "--project", "example", "--base-url", "http://127.0.0.1:8000", flag],
+    )
+    monkeypatch.setattr(module, "development_settings", lambda project: settings())
+    seen = []
+
+    async def identities(config, tokens):
+        assert tokens == {"A": "private-a", "B": "old-b"}
+        seen.append("verified")
+        return {"A": USER_A, "B": USER_B}
+
+    monkeypatch.setattr(module, "identities", identities)
+    monkeypatch.setattr(module, "transport_checks", lambda *args: {})
+
+    def accounts(client, tokens, expected, **kwargs):
+        assert seen == ["verified"] and kwargs["write"] is False
+        seen.append("accounts")
+        return {"managedProfileWriteAB": "not_run"}
+
+    def settings_journey(client, tokens, expected, **kwargs):
+        assert seen == ["verified", "accounts"] and kwargs["write"] is write
+        return {"managedSettingsWriteAB": "requested" if write else "not_run"}
+
+    monkeypatch.setattr(module, "account_checks", accounts)
+    monkeypatch.setattr(module, "settings_checks", settings_journey)
+    module.main()
+    output = capsys.readouterr().out
+    assert "private-a" not in output and str(USER_A) not in output
+    assert json.loads(output)["managedProfileWriteAB"] == "not_run"
+
+
+@pytest.mark.parametrize("flag", ["--with-settings", "--write-settings"])
+def test_settings_cli_missing_tokens_stops_before_api(private_input, monkeypatch, flag):
+    module = script("api-acceptance")
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["api-acceptance.py", "--project", "example", "--base-url", "http://127.0.0.1:8000", flag],
+    )
+    monkeypatch.setattr(module, "development_settings", lambda project: settings())
+    monkeypatch.setattr(
+        module.httpx2, "Client", lambda **kwargs: pytest.fail("No API without both tokens")
+    )
+    with pytest.raises(SystemExit, match="both approved"):
+        module.main()
+
+
+def test_settings_read_rejects_other_owner_without_writing():
+    from tests.auth.support import USER_A, USER_B
+
+    calls = []
+
+    def handler(request):
+        calls.append((request.method, request.url.path))
+        assert request.method == "GET"
+        body = (
+            {"profile": None}
+            if request.url.path == "/v1/profile"
+            else {
+                "settings": {
+                    "user_id": str(USER_B),
+                    "revision": 1,
+                    "activities": {"selected_activity_ids": [], "custom_text": None},
+                    "plan_draft": None,
+                    "created_at": "2026-11-07T12:00:00Z",
+                    "updated_at": "2026-11-07T12:00:00Z",
+                }
+            }
+        )
+        return httpx2.Response(
+            200,
+            headers={
+                "X-Request-ID": "a46e48ad-c742-4e18-b57d-2c9a56544945",
+                "Cache-Control": "no-store",
+            },
+            json=body,
+        )
+
+    with httpx2.Client(
+        base_url="https://api.example", transport=httpx2.MockTransport(handler)
+    ) as client:
+        with pytest.raises(acceptance.AcceptanceError, match="Settings owner mismatch"):
+            acceptance.settings_checks(
+                client,
+                {"A": "a", "B": "b"},
+                {"A": USER_A, "B": USER_B},
+                write=True,
+                origin="https://browser.example",
+            )
+    assert calls == [("GET", "/v1/profile"), ("GET", "/v1/settings")]
+
+
+@pytest.mark.parametrize(
+    "tokens,expected",
+    [
+        ({}, {}),
+        ({"A": "a", "B": ""}, {"A": "one", "B": "two"}),
+        ({"A": "a", "B": "b"}, {"A": "same", "B": "same"}),
+    ],
+)
+def test_settings_refuses_missing_or_same_accounts_before_requests(tokens, expected):
+    with pytest.raises(acceptance.AcceptanceError, match="Two distinct"):
+        acceptance.settings_checks(
+            None, tokens, expected, write=True, origin="https://browser.example"
+        )

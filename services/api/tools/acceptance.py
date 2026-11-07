@@ -16,6 +16,7 @@ from app.core.config import API_ROOT, Settings
 from app.schemas.errors import ErrorCode, ErrorEnvelope
 from app.schemas.identity import MeResponse
 from app.schemas.profiles import ProfileResponse, ProfileSavedResponse
+from app.schemas.settings import MAX_REVISION, SettingsResponse, SettingsSavedResponse
 
 PRIVATE_INPUT = API_ROOT / ".local/live-acceptance.env"
 TOKEN_KEYS = {label: f"API_ACCEPTANCE_ACCESS_TOKEN_{label}" for label in ("A", "B")}
@@ -137,21 +138,22 @@ def transport_checks(client, origin: str) -> dict:
             raise AcceptanceError("Missing-credential boundary failed")
         if extra_origin and response.headers.get("Access-Control-Allow-Origin") != origin:
             raise AcceptanceError("Configured browser origin is not allowed")
-    for candidate, allowed in ((origin, True), ("https://disallowed.invalid", False)):
-        preflight = client.options(
-            "/v1/profile",
-            headers={
-                "Origin": candidate,
-                "Access-Control-Request-Method": "PATCH",
-                "Access-Control-Request-Headers": "authorization,content-type",
-            },
-        )
-        if preflight.status_code != (200 if allowed else 400):
-            raise AcceptanceError("Browser preflight status mismatch")
-        if allowed and preflight.headers.get("Access-Control-Allow-Origin") != origin:
-            raise AcceptanceError("Browser preflight origin mismatch")
-        if not allowed and "Access-Control-Allow-Origin" in preflight.headers:
-            raise AcceptanceError("Disallowed browser origin was exposed")
+    for path in ("/v1/profile", "/v1/settings"):
+        for candidate, allowed in ((origin, True), ("https://disallowed.invalid", False)):
+            preflight = client.options(
+                path,
+                headers={
+                    "Origin": candidate,
+                    "Access-Control-Request-Method": "PATCH",
+                    "Access-Control-Request-Headers": "authorization,content-type",
+                },
+            )
+            if preflight.status_code != (200 if allowed else 400):
+                raise AcceptanceError("Browser preflight status mismatch")
+            if allowed and preflight.headers.get("Access-Control-Allow-Origin") != origin:
+                raise AcceptanceError("Browser preflight origin mismatch")
+            if not allowed and "Access-Control-Allow-Origin" in preflight.headers:
+                raise AcceptanceError("Disallowed browser origin was exposed")
     return {
         "liveness": "passed",
         "corsProtocol": "passed",
@@ -331,3 +333,149 @@ def unavailable_profile_checks(client, tokens: dict, expected_users: dict, *, or
         "browserExecution": "not_run",
         "nativeDevice": "not_run",
     }
+
+
+def settings_checks(
+    client, tokens: dict, expected_users: dict, *, write: bool, origin: str
+) -> dict:
+    """Explicit disposable-account journey; never changes profiles or native policy."""
+    if (
+        set(tokens) != {"A", "B"}
+        or set(expected_users) != {"A", "B"}
+        or not all(tokens.values())
+        or len(set(expected_users.values())) != 2
+    ):
+        raise AcceptanceError("Two distinct approved development identities are required")
+
+    def read(label, *, browser_origin=None, path="/v1/settings"):
+        _, body = checked(client, "GET", path, 200, token=tokens[label], origin=browser_origin)
+        value = SettingsResponse.model_validate(body).settings
+        if value is not None and value.user_id != expected_users[label]:
+            raise AcceptanceError("Settings owner mismatch; stop all writes")
+        return value
+
+    def profile(label):
+        _, body = checked(client, "GET", "/v1/profile", 200, token=tokens[label])
+        value = ProfileResponse.model_validate(body).profile
+        if value is not None and value.user_id != expected_users[label]:
+            raise AcceptanceError("Profile owner mismatch; stop all writes")
+        return value
+
+    current, profiles = {}, {}
+    for label in ("A", "B"):
+        profiles[label] = profile(label)
+        current[label] = read(label)
+        if read(label, browser_origin=origin) != current[label]:
+            raise AcceptanceError("Settings changed during read acceptance; inspect privately")
+    for label, other in (("A", "B"), ("B", "A")):
+        if read(label, path=f"/v1/settings?user_id={expected_users[other]}") != current[label]:
+            raise AcceptanceError("Client-supplied owner changed settings scope")
+    report = {
+        "managedSettingsReadAB": "passed",
+        "managedSettingsWriteAB": "not_run",
+        "settingsProfilesUnchanged": "passed",
+        "settingsRestartPersistence": "not_run; requires a separate actual process restart",
+        "accountLifecycleAndMobile": "not_run",
+    }
+    if not write:
+        return report
+    # Five accepted writes per account, including explicit restoration. Refuse
+    # exhausted revisions BEFORE either account can be changed.
+    if any(value is not None and value.revision > MAX_REVISION - 5 for value in current.values()):
+        raise AcceptanceError("Insufficient revision headroom; no settings writes started")
+    neutral = {"selected_activity_ids": [], "custom_text": None}
+    draft = {
+        "weekdays": [0, 2],
+        "hours": {"start_local": "22:30", "end_local": "07:00", "next_day": True},
+        "timezone_id": "America/New_York",
+        "session_count": 2,
+        "session_minutes": None,
+    }
+    for label, other in (("A", "B"), ("B", "A")):
+        before = current[label]
+        state = before
+
+        def unchanged_controls():
+            if read(other) != current[other] or any(
+                profile(key) != profiles[key] for key in ("A", "B")
+            ):
+                raise AcceptanceError("Control settings/profile changed; stop all writes")
+
+        def save(**sections):
+            nonlocal state
+            revision = state.revision if state is not None else 0
+            _, body = checked(
+                client,
+                "PATCH",
+                "/v1/settings",
+                200,
+                token=tokens[label],
+                origin=origin if label == "A" else None,
+                body={"expected_revision": revision, **sections},
+            )
+            saved = SettingsSavedResponse.model_validate(body).settings
+            activities = sections.get(
+                "activities", state.activities.model_dump() if state else neutral
+            )
+            plan = sections.get(
+                "plan_draft", state.plan_draft.model_dump() if state and state.plan_draft else None
+            )
+            if (
+                saved.user_id != expected_users[label]
+                or saved.revision != revision + 1
+                or saved.activities.model_dump() != (activities or neutral)
+                or (saved.plan_draft.model_dump() if saved.plan_draft else None) != plan
+                or (state is not None and saved.created_at != state.created_at)
+                or saved.updated_at < saved.created_at
+                or (state is not None and saved.updated_at < state.updated_at)
+            ):
+                raise AcceptanceError("Settings save differs from contract; refetch without replay")
+            if read(label) != saved:
+                raise AcceptanceError("Settings refetch differs from committed save")
+            state = saved
+            unchanged_controls()
+
+        original_revision = state.revision if state else 0
+        save(
+            activities={
+                "selected_activity_ids": ["reading"],
+                "custom_text": f"Acceptance {label} 🦖",
+            }
+        )
+        _, error = checked(
+            client,
+            "PATCH",
+            "/v1/settings",
+            409,
+            token=tokens[label],
+            body={"expected_revision": original_revision, "activities": None},
+        )
+        if (
+            error.code != ErrorCode.SETTINGS_CONFLICT
+            or getattr(error.details, "current_revision", None) != state.revision
+        ):
+            raise AcceptanceError("Settings stale revision was not rejected safely")
+        if read(label) != state:
+            raise AcceptanceError("Conflicting settings request changed data")
+        save(plan_draft=draft)
+        _, error = checked(
+            client,
+            "PATCH",
+            "/v1/settings",
+            422,
+            token=tokens[label],
+            body={"expected_revision": state.revision, "plan_draft": {**draft, "weekdays": [0, 0]}},
+        )
+        if error.code != ErrorCode.VALIDATION_ERROR or read(label) != state:
+            raise AcceptanceError("Invalid settings draft changed data or error contract")
+        save(plan_draft=None)
+        save(activities=None)
+        save(
+            activities=before.activities.model_dump() if before else neutral,
+            plan_draft=before.plan_draft.model_dump() if before and before.plan_draft else None,
+        )
+        current[label] = state
+    report["managedSettingsWriteAB"] = (
+        "passed; original values restored; revisions/timestamps advance; created rows retained"
+    )
+    return report

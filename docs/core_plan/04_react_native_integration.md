@@ -1041,3 +1041,12 @@ and approved current test accounts for RN-06/07/09l/10/11, or separately agreed
 native enforcement/product policy. User-deferred token refresh and hosted-C
 deletion remain deferred. Counts stay 46 top-level / 21 producers / 25 pending;
 full parent RN-08/09 and Plan 04 remain open. Earlier checkpoints are historical.
+
+**Plan 03 handoff (2026-11-07):** hosted development settings migration 0002
+is now applied and security-verified; existing profiles exactly preserved, settings
+empty. This removes the hosted schema prerequisite for RN-09i/j/l. Existing
+consumers need no generated-contract or frontend code change. Fresh A/B tokens
+and authenticated phone checks remain user-deferred; real Auth/root and joint
+RN-06/07/09l/10/11 acceptance remain open. See
+[backend evidence](../core_plan_implementation_notes/artifacts/api-10/hosted-settings-acceptance.json).
+Do not repeat the applied migration or equate backend acceptance with app success.

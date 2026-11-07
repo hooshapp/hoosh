@@ -1,6 +1,8 @@
 # Plan 03 — FastAPI Identity and Profile Foundation
 
 **Status:** API-01–09 are implemented: strict trust/errors, JWT/JWKS, database-independent identity, generated contracts and bounded lazy PostgreSQL units of work. API-06 passed 337 deterministic tests, 24 real PostgreSQL checks and a read-only hosted runtime/TLS smoke check. API-07 added the model, single Alembic history and profile constraints/grants/RLS, with 344 deterministic and 66 real DB tests plus hosted upgrade/check. API-08 now adds nonmutating own-profile GET and generated shapes (374 deterministic / 75 real DB tests). API-09 now adds strict bounded PATCH, canonical validation, atomic insert/CAS and own conflicts (453 deterministic / 96 real DB checks). API-10 operational diagnostics/tooling and independent checks are now implemented; managed-account HTTP identity/profile/restart checks now pass; actual browser protocol now passes; authenticated application M1/M2 and cascade/native-device acceptance remain pending.\
+**Latest checkpoint (2026-11-07):** Independent backend work and hosted settings migration/security acceptance are complete: development head `20261102_0002`, existing profiles unchanged. Settings operator read/write checks and actual local HTTP restart pass; 601 deterministic / 199 real PostgreSQL checks. Saved A/B tokens expired and user deferred live-account checks. Full API-10/Plan 03 remains OPEN for managed settings, joint Auth/root/native/device and coordinated deferred deletion acceptance. See [latest evidence](../core_plan_implementation_notes/artifacts/api-10/hosted-settings-acceptance.json) and notes.
+
 **Settings extension (2026-11-02):** API-11 data models, fixtures, local storage migration and security checks are implemented. API-12 protected endpoints, coordinated errors and generated DTOs are now implemented and locally tested; hosted/mobile acceptance remains separate. API-01–10 and their joint acceptance requirements are unchanged.
 **Owner:** Ishmum (backend/database). Anisha reviews Auth contracts and participates in live session checks.\
 **Area branch:** `area/backend`; task branches `task/backend/<part>`.\
@@ -21,7 +23,7 @@ The current app factory, settings, CORS configuration, health response, and eigh
 
 ### Intentional adaptation to the TSD
 
-SC-01 adopted **identity-only `GET /v1/me`**, then separate **`GET/PATCH /v1/profile`**, and updated TSD §8.3. The [accepted decision record](../architecture/identity-foundation.md) and exact [HTTP contract](../../packages/contracts/HTTP_API.md) keep the first integration database-independent. API-04/08/09 now implement those shapes. The settings extension remains proposed until API-11/12 are implemented.
+SC-01 adopted **identity-only `GET /v1/me`**, then separate **`GET/PATCH /v1/profile`**, and updated TSD §8.3. The [accepted decision record](../architecture/identity-foundation.md) and exact [HTTP contract](../../packages/contracts/HTTP_API.md) keep the first integration database-independent. API-04/08/09 now implement those shapes. API-11/12 implement the settings extension; current hosted and joint-acceptance status is recorded above.
 
 ### Out of scope
 
@@ -549,9 +551,9 @@ Auth can finish its session work without profiles. The main frontend must not cl
 | API-07 | Implemented producer; local migrations/RLS and hosted empty upgrade/security checks passed | `4d8d1fc` | 344 deterministic / 66 real DB checks; head `20261102_0001`; [Plan 03 notes](../core_plan_implementation_notes/plan_03_backend_foundation_notes.md); actual managed Auth A/B/cascade remains API-10 joint smoke |
 | API-08 | Implemented producer; real signed-token GET/runtime-DB reads and failures accepted locally | `ca275af` | 374 deterministic / 75 real DB tests; generated GET schemas/types; managed tokens/mobile integration remain API-10 joint work |
 | API-09 | Implemented producer; local M2 backend read/write/concurrency/isolation accepted | `c563ff6` | 453 deterministic / 96 real DB tests; strict raw body/name/revision contract, two-connection races, rollback/deletion/replay; actual managed-user/mobile acceptance remains API-10 |
-| API-10 | Operational, managed A/B HTTP and actual browser protocol accepted; app/native/lifecycle acceptance pending | `188c5dd`, `138387f`; current follow-up resolves by `test(api): verify browser protocol and isolated startup modes` | 473 deterministic / 104 PostgreSQL checks; actual browser and separated startup modes, real managed A/B identity, profile writes/clear/conflict/isolation/refetch and actual API restart persistence pass. [Operator guide](../../services/api/OPERATIONS.md). Browser protocol now passes in Opera GX; authenticated Auth/RN-07/root/native and managed cascade gates still open; not full Plan 03 acceptance |
-| API-11 | Implemented contract/local storage producer; no hosted upgrade/routes | Commit resolves by `feat(settings): define revisioned settings draft storage` | 526 deterministic / 173 PostgreSQL tests, full workspace and unchanged published contract checks; strict schemas/fixtures, head `20261102_0002`, isolation/security/drift and profile-preserving upgrade |
-| API-12 | Implemented local HTTP producer; hosted/mobile acceptance pending | Commit resolves by `feat(settings): add scoped settings reads and updates` | 590 deterministic / 191 PostgreSQL checks, 290 mobile unit / 384 component checks; actual two-writer races, rollback/deleted-owner FK, process restart, generated type safety and export isolation pass |
+| API-10 | Independent operations/settings tools and hosted schema accepted; historical A/B profile/browser checks passed; current managed settings/app/native/lifecycle acceptance pending | `188c5dd`, `138387f`; current follow-up resolves by `test(api): verify browser protocol and isolated startup modes` | Latest 601 deterministic / 199 PostgreSQL checks; historical actual browser and separated startup modes, real managed A/B identity, profile writes/clear/conflict/isolation/refetch and actual API restart persistence pass. [Operator guide](../../services/api/OPERATIONS.md). Browser protocol now passes in Opera GX; authenticated Auth/RN-07/root/native and managed cascade gates still open; not full Plan 03 acceptance |
+| API-11 | Contract/storage implemented; hosted upgrade/security passed 2026-11-07; routes supplied by API-12 | `21477df`; hosted follow-up resolves by notes/Git | 526 deterministic / 173 PostgreSQL tests, full workspace and unchanged published contract checks; strict schemas/fixtures, head `20261102_0002`, isolation/security/drift and profile-preserving upgrade |
+| API-12 | HTTP producer and hosted schema accepted; settings operator/local restart passed; managed-token/mobile acceptance pending | `90fe8e3`; hosted follow-up resolves by notes/Git | 590 deterministic / 191 PostgreSQL checks, 290 mobile unit / 384 component checks; actual two-writer races, rollback/deleted-owner FK, process restart, generated type safety and export isolation pass |
 
 ## 10. Sources and verification notes
 
@@ -779,3 +781,20 @@ Next is RN-09i (activity preference consumer), then RN-09j (draft editors); RN-0
 remains independent. Anisha's Auth/onboarding/iOS and PM/native policy gates remain.
 Across 46 parts, 21 producers are implemented and 25 await full implementation or
 acceptance. This does not close API-10/application M1/M2 or the whole Plan 03.
+
+## Current remaining acceptance — 2026-11-07
+
+| Remaining row | Why it is open / owner |
+|---|---|
+| Managed settings A/B reads/writes and actual API restart | Saved tokens fail production verification with TOKEN_EXPIRED; Ishmum explicitly leaves real-account checks pending. Tool is implemented/tested; do not substitute local ephemeral identities for managed acceptance. |
+| Real signed-in app profile/settings/account lifecycle | Anisha supplies Auth/session/root; Ishmum consumes through existing RN-05/06/07/09i–l and records joint evidence. No second session manager or bypass. |
+| Native/signed-device storage, links and account transitions | Joint platform acceptance; Android permission/status evidence does not prove Auth storage/links/profile; iOS remains Anisha. |
+| Managed account-deletion cascade | User-deferred separate disposable C only, coordinated with Anisha; never delete A/B or managed Auth rows directly with SQL. |
+| Hosted GitHub workflow | Not executed or inferred from local checks; no push/deployment requested. |
+
+The owned backend implementation is ready for these consumers. Preserve the
+original API-01–12 IDs and 46/21/25 parent accounting; do not relabel full Plan 03
+complete merely because independent implementation passes. The
+[operator runbook](../../services/api/OPERATIONS.md#hosted-settings-follow-up--2026-11-07)
+and latest notes record exactly what to resume. No additional product domain,
+active plan, quest/reward/measurement policy or new migration was invented.

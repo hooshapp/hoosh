@@ -1,0 +1,89 @@
+{
+  "date": "2026-11-07",
+  "parts": [
+    "API-10",
+    "API-11 hosted adoption",
+    "API-12 settings acceptance"
+  ],
+  "branch": "task/backend/plan-03-hosted-acceptance",
+  "parent": "cadc91d",
+  "status": "Independent backend implementation and hosted schema acceptance complete; full Plan 03 joint acceptance remains open",
+  "hosted_development": {
+    "project": "eaisvwqfbgdkzdfmxkvm",
+    "access": "Existing ignored administrator/runtime URIs; verified TLS; no MCP/admin Auth access",
+    "before_revision": "20261102_0001",
+    "after_revision": "20261102_0002",
+    "private_recovery_snapshot": "Product rows/revision saved mode 600 in ignored services/api/.local before DDL; no payload copied into evidence",
+    "profile_rows_before": 2,
+    "profile_rows_after": 2,
+    "profile_rows_exactly_unchanged": true,
+    "settings_table_before": false,
+    "settings_rows_after": 0,
+    "existing_migration_used": true,
+    "new_or_edited_migration": false,
+    "guarded_upgrade": "passed",
+    "metadata_and_security_check": "passed; no new upgrade operations",
+    "security": [
+      "forced per-user RLS",
+      "exact constraints/policies/server clocks",
+      "runtime non-owner/non-bypass",
+      "runtime SELECT/INSERT/UPDATE only",
+      "no mobile/public/Data API product CRUD"
+    ],
+    "runtime": "Actual disconnect_api login with client TLS; no-context profile/settings reads return zero rows",
+    "auth_settings_users_credentials_changed": false,
+    "managed_profile_or_settings_writes": false,
+    "final_read_only_recheck": "Profiles still exactly match snapshot; settings table remains empty"
+  },
+  "operator_tool": {
+    "default": "No token read or product write; preflight covers profiles and settings",
+    "--with-settings": "Verified distinct A/B, identity/profile read checks and read-only settings checks",
+    "--write-settings": "Explicit approved disposable-account mode; five accepted saves per account, stale/invalid rejection, other-account/profile controls, original value restoration",
+    "write_side_effects": "Existing revisions/timestamps advance; created neutral rows retained; no DELETE grant",
+    "ambiguous_write": "Stop without retry or speculative restoration; refetch/reconcile privately",
+    "revision_exhaustion": "Check both accounts before any write",
+    "never_claimed": [
+      "Installed native policy",
+      "Onboarding completion",
+      "App SDK/root acceptance",
+      "Process-restart acceptance from one CLI invocation"
+    ]
+  },
+  "actual_checks": {
+    "root_check": "passed",
+    "portable_mobile": 382,
+    "android_ios_component": 502,
+    "deterministic_api": 601,
+    "real_postgresql": 199,
+    "focused_operator_tests": 27,
+    "focused_database_cases": 15,
+    "actual_local_http_restart": "Two distinct API processes; real runtime/JWT verifier/DB; only ephemeral public JWKS transport supplied by test fixture; operator write journey then unchanged profile/settings readback after restart",
+    "actual_configured_process": "Loopback normal app.main; liveness, profiles/settings allowed/denied preflight and missing-token GET/PATCH with/without Origin passed; owned process stopped",
+    "frozen_python_sync": "passed; 48 packages checked",
+    "generated_openapi_types": "unchanged and check passed",
+    "ruff_types_lint_assets": "passed; 71 original assets",
+    "no_mobile_native_source_change": true
+  },
+  "real_accounts": {
+    "production_verifier_A": "TOKEN_EXPIRED",
+    "production_verifier_B": "TOKEN_EXPIRED",
+    "fresh_tokens": "User explicitly chose to leave real-account checks pending on 2026-11-07",
+    "hosted_settings_read_write_restart": "not_run; do not infer from local ephemeral identities",
+    "prior_managed_profile_acceptance": "Historical 2026-11-02 evidence remains valid for that run, not current token freshness"
+  },
+  "remaining_acceptance": [
+    "Fresh approved A/B settings HTTP and actual process-restart acceptance on hosted DB (user deferred)",
+    "Anisha real Auth/session/root plus RN-07 app profile/settings/account-transition journeys",
+    "Actual native/signed-device session/storage/deep-link acceptance; iOS remains Anisha",
+    "Coordinated separate disposable-C managed deletion cascade (user deferred; A/B never deletion targets)",
+    "Hosted GitHub workflow execution (not triggered; no push)"
+  ],
+  "cleanup": {
+    "owned_api_process": "stopped",
+    "isolated_test_database": "task-started Compose stack stopped; named migrated volume retained",
+    "docker_desktop": "Started as required for tests; left running, no global cleanup",
+    "private_snapshot": "Retained ignored mode 600 for recovery",
+    "tokens": "Not refreshed/overwritten; no passwords read or changed",
+    "push_merge_deployment": "not performed"
+  }
+}

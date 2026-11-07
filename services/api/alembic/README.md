@@ -112,3 +112,25 @@ for exact commits, reviewed SQL and local/hosted evidence. Local Auth-FK cascade
 is tested against the minimal fixture; actual managed A/B/cascade smoke remains
 API-10/joint work with Anisha's approved disposable accounts. Profile HTTP routes
 are still API-08/09, and schema export still publishes only health/identity.
+
+## Hosted settings adoption — 2026-11-07
+
+The pinned development project now runs `20261102_0002`. Before DDL, the existing
+head `20261102_0001`, two profiles and absent settings table were inspected; a
+private product-row/revision snapshot was saved with mode 600 under the ignored
+`services/api/.local/plan03-before-settings-*.json`. The existing additive revision
+was applied through `api:db:migrate upgrade --target development --project ...`;
+no revision was edited/stamped, no Auth object changed, and no shared downgrade
+was attempted. Exact profile data remained unchanged. `check` reported no schema
+changes and all security predicates/grants/clocks passed. The actual runtime
+login uses client TLS and no-context reads remain default-denied. Final settings
+row count is zero because real-account writes remain user-deferred.
+
+This supersedes the earlier statement about API-11 not applying its revision to
+hosted development. It does not establish current managed-token settings or app
+acceptance. Read the latest Plan 03 notes and
+[evidence](../../../docs/core_plan_implementation_notes/artifacts/api-10/hosted-settings-acceptance.json).
+The private snapshot remains local for recovery review; it is not a production
+backup service or authorization to restore/drop shared data. Runtime routes now
+include identity, profile and settings; the initial API-07 route description above
+is historical.

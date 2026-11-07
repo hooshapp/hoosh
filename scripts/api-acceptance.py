@@ -17,6 +17,7 @@ from tools.acceptance import (
     base_url,
     development_settings,
     private_values,
+    settings_checks,
     transport_checks,
     unavailable_profile_checks,
 )
@@ -40,6 +41,9 @@ def main():
     parser.add_argument("--base-url", required=True)
     parser.add_argument("--origin", default="http://localhost:8081")
     parser.add_argument("--with-accounts", action="store_true")
+    parser.add_argument(
+        "--with-settings", action="store_true", help="Read A/B settings without writes"
+    )
     profile_mode = parser.add_mutually_exclusive_group()
     profile_mode.add_argument(
         "--write-profiles",
@@ -51,13 +55,28 @@ def main():
         action="store_true",
         help="Verify A/B identity while GET/PATCH profile fail with dependency 503; no DB setup",
     )
+    profile_mode.add_argument(
+        "--write-settings",
+        action="store_true",
+        help="Approved disposable accounts only; restore values, retain rows and advance revisions",
+    )
     args = parser.parse_args()
+    if args.with_settings and args.expect_profile_unavailable:
+        parser.error(
+            "Settings reads cannot be combined with unavailable-database acceptance"
+        )
     try:
         config = development_settings(args.project)
         origin = base_url(args.origin)
         target = base_url(args.base_url)
         tokens, expected = {}, {}
-        if args.with_accounts or args.write_profiles or args.expect_profile_unavailable:
+        if (
+            args.with_accounts
+            or args.write_profiles
+            or args.expect_profile_unavailable
+            or args.with_settings
+            or args.write_settings
+        ):
             values = private_values()
             tokens = {label: values.get(key) or "" for label, key in TOKEN_KEYS.items()}
             if not all(tokens.values()):
@@ -91,6 +110,16 @@ def main():
                         origin=origin,
                     )
                 )
+                if args.with_settings or args.write_settings:
+                    report.update(
+                        settings_checks(
+                            client,
+                            tokens,
+                            expected,
+                            write=args.write_settings,
+                            origin=origin,
+                        )
+                    )
             else:
                 report["managedAccounts"] = "not_run; no user tokens requested"
         print(json.dumps(report, indent=2))

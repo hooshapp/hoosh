@@ -47,7 +47,7 @@ for the commit, exact files and checks, and the [sanitized evidence](../core_pla
 | API restart and cold reload | Kill first task-owned FastAPI process; new PID and new mobile client recover same DB data; B isolated/C absent/profile unchanged | Pass locally; no hosted deployment involved |
 | Dirty navigation | Actual Router removal/confirmation and real routes on both Jest platform presets | Pass locally; hardware Back, gestures and speech need device evidence |
 | Native module absent | Existing Home/protection tests retain unavailable status despite successful saves | Pass for absence; RN-08d later verifies independent Android permission revocation; installation remains unimplemented |
-| Hosted settings migration/managed accounts | Not run; development migration 0002 remains coordinated separately | Pending |
+| Hosted settings migration/managed accounts | Plan 03 follow-up applied/verified development 0002 on 2026-11-07; profiles unchanged. Fresh A/B tokens remain user-deferred | Schema/security pass separately; real-account settings acceptance pending |
 | Real Auth/root and authenticated Android journey | User previously deferred token refresh/phone acceptance | Pending; do not treat operator-token or ephemeral-JWT fixture as M1/M2 completion |
 | Native grant/deny/revoke; signed release/iOS/speech | RN-09l itself performed no native operation; later RN-08d independently verifies actual Android permission/status on Pixel | Read-only Android matrix passes separately; combined authenticated settings phone journey, enforcement, signed release/iOS/speech pending; Anisha owns iOS |
 | Dedicated disposable-C hosted deletion | Previously deferred by user; unrelated to local fixture cleanup | Pending under coordinated API-10 acceptance |
@@ -86,3 +86,9 @@ and verifies the independent Android read/permission slice; see the
 [device matrix](android-capability-probe.md). Resume
 hosted/Auth/phone acceptance only with the required coordinated setup and approved
 current test accounts. Keep all real credentials local and out of the notes.
+
+Plan 03 hosted follow-up (2026-11-07): development migration 0002 and runtime
+security/TLS now pass; see [evidence](../core_plan_implementation_notes/artifacts/api-10/hosted-settings-acceptance.json).
+Saved A/B tokens are expired and user again deferred real-account checks. Hosted
+settings writes and authenticated phone/root acceptance remain pending. This does
+not rewrite the historical RN-09l local artifact or accept the full joint journey.

@@ -320,3 +320,13 @@ joint settings/Auth or enforcement acceptance. Next coordinated gates are real
 Auth/root, hosted settings migration 0002 and authenticated phone journeys;
 Anisha owns iOS/Auth. Signing/speech, product enforcement decisions and user-deferred
 hosted C deletion remain open. Counts 46/21/25; earlier checkpoints are historical.
+
+Plan 03 current handoff (2026-11-07): existing development settings migration
+0002 is applied and schema/security/runtime TLS accepted; both prior profiles
+unchanged, settings empty. Independent backend implementation/tools pass 601 API /
+199 PostgreSQL checks, actual local HTTP restart and full workspace (382 portable /
+502 component). Read [Plan 03 notes](../core_plan_implementation_notes/plan_03_backend_foundation_notes.md)
+and operator runbook. Saved A/B tokens are expired; user explicitly leaves current
+real-account checks pending. Full Plan 03/04 joint Auth/root/native/signed-device
+and separate C deletion gates stay open. Do not redo hosted DDL or introduce an
+Auth bypass to close those gates. No push/merge/deployment occurred.

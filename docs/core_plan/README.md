@@ -1,6 +1,6 @@
 # Disconnect — Core Development Plans
 
-**Status:** Plan 00 is complete and validated (foundation commit `0b50900`, recorded in its ledger); Plan 04 RN-01–04 producers now supply shared UI/testing, authentic-asset navigation and bounded HTTP and account query/lifecycle producers with recorded evidence; real RN-04 Auth/root wiring, Anisha-owned Plan 01/Auth acceptance, Plan 02, full API-10 and RN-06/11 remain pending; API-10 operational diagnostics/tools and independent checks are implemented; RN-10 shared UI/lifecycle hardening exists with device/live acceptance pending; RN-09a–h main/detail/editor UI exists with live integration pending; RN-05 consumer, RN-07 revisioned profile consumer and RN-08a–d Android read/usage-permission/status integration exist; its Pixel debug-device matrix passes while enforcement/iOS and joint acceptance remain open. API-01–09 backend identity/profile producers and API-11/12 settings storage/HTTP producers are implemented; mobile Auth/root, hosted settings and native enforcement/iOS integration remain pending; the Android read-only adapter is registered.\
+**Status:** Plan 00 is complete and validated (foundation commit `0b50900`, recorded in its ledger); Plan 04 RN-01–04 producers now supply shared UI/testing, authentic-asset navigation and bounded HTTP and account query/lifecycle producers with recorded evidence; real RN-04 Auth/root wiring, Anisha-owned Plan 01/Auth acceptance, Plan 02, full API-10 and RN-06/11 remain pending; API-10 operational diagnostics/tools and independent checks are implemented; RN-10 shared UI/lifecycle hardening exists with device/live acceptance pending; RN-09a–h main/detail/editor UI exists with live integration pending; RN-05 consumer, RN-07 revisioned profile consumer and RN-08a–d Android read/usage-permission/status integration exist; its Pixel debug-device matrix passes while enforcement/iOS and joint acceptance remain open. API-01–09 backend identity/profile producers and API-11/12 settings storage/HTTP producers are implemented; mobile Auth/root, real-account settings and native enforcement/iOS integration remain pending; the Android read-only adapter is registered.\
 **Baseline inspected:** `c7a8f73` — `Set up mobile and API foundation`.\
 **Reviewed:** 2026-11-02 (bounded planning expansion; implementation evidence remains recorded per part).\
 **Product answers:** [PM_QUESTIONS.md](<../Context (AGENT)/PM_QUESTIONS.md>); no PM question is answered by an engineering default in these plans.
@@ -301,3 +301,11 @@ checks have separate device evidence. No enforcement/metrics/iOS/Auth completion
 Next joint gates: Auth/root, hosted settings migration 0002 and authenticated
 phone settings/profile acceptance; speech/signing and user-deferred deletion
 remain open. Preserve 46/21/25 counts and original part IDs.
+
+**Latest Plan 03 checkpoint (2026-11-07):** independent backend/settings tools
+and hosted migration/security are accepted at 0002, with existing profiles intact.
+601 API / 199 PostgreSQL checks and actual local HTTP restart pass. Current
+managed-account settings checks are explicitly user-deferred (expired A/B tokens);
+Anisha Auth/root, joint app/native/device and separate hosted-C deletion remain
+open. Read [Plan 03](03_backend_foundation.md) and its latest notes before resuming.
+Counts remain 46/21/25; neither full Plan 03 nor Plan 04 is declared complete.

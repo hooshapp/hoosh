@@ -166,3 +166,225 @@ def test_unavailable_probe_cannot_create_when_database_recovers_between_requests
         with pytest.raises(AcceptanceError):
             unavailable_profile_checks(client, tokens, identities, origin="http://localhost:8081")
     assert snapshot(db_environment, profile_accounts) == before
+
+
+@pytest.mark.parametrize("existing", [False, True])
+@pytest.mark.parametrize("write", [False, True])
+def test_settings_operator_journey_preserves_controls_and_original_values(
+    monkeypatch, db_settings, profile_accounts, db_environment, existing, write
+):
+    from tests.auth.support import LocalSigner
+    from tests.support.profiles import snapshot
+    from tools.acceptance import settings_checks
+
+    signer = LocalSigner()
+    config = settings(
+        **(
+            db_settings.model_dump(exclude_none=True)
+            | {"cors_allowed_origins": ["http://localhost:8081"]}
+        )
+    )
+    app, _ = authenticated_app(monkeypatch, config, signer=signer)
+    # B has an Auth owner but no profile: settings must not manufacture one.
+    identities = {"A": profile_accounts[0].user_id, "B": profile_accounts[2].user_id}
+    tokens = {
+        label: signed_headers(signer, {"sub": str(user)})["Authorization"][7:]
+        for label, user in identities.items()
+    }
+    before_profiles = snapshot(db_environment, profile_accounts)
+    with TestClient(app) as client:
+        before = {}
+        for label, token in tokens.items():
+            auth = {"Authorization": "Bearer " + token}
+            if existing:
+                response = client.patch(
+                    "/v1/settings",
+                    headers=auth,
+                    json={
+                        "expected_revision": 0,
+                        "activities": {
+                            "selected_activity_ids": ["music"],
+                            "custom_text": "Original 🦖",
+                        },
+                        "plan_draft": {
+                            "weekdays": [1, 5],
+                            "hours": None,
+                            "timezone_id": "UTC",
+                            "session_count": None,
+                            "session_minutes": 17,
+                        },
+                    },
+                )
+                assert response.status_code == 200
+            before[label] = client.get("/v1/settings", headers=auth).json()["settings"]
+        report = settings_checks(
+            client, tokens, identities, write=write, origin="http://localhost:8081"
+        )
+        assert report["managedSettingsReadAB"] == "passed"
+        if write:
+            assert report["managedSettingsWriteAB"].startswith("passed")
+        else:
+            assert report["managedSettingsWriteAB"] == "not_run"
+        for label, token in tokens.items():
+            after = client.get("/v1/settings", headers={"Authorization": "Bearer " + token}).json()[
+                "settings"
+            ]
+            if not write:
+                assert after == before[label]
+            else:
+                assert after["revision"] == (6 if existing else 5)
+                assert after["activities"] == (
+                    before[label]["activities"]
+                    if existing
+                    else {"selected_activity_ids": [], "custom_text": None}
+                )
+                assert after["plan_draft"] == (before[label]["plan_draft"] if existing else None)
+                if existing:
+                    assert after["created_at"] == before[label]["created_at"]
+        assert app.state.database.engine.pool.checkedout() == 0
+    assert snapshot(db_environment, profile_accounts) == before_profiles
+
+
+def test_settings_operator_does_not_replay_or_restore_after_lost_success(
+    monkeypatch, db_settings, profile_accounts, db_environment
+):
+    from tests.auth.support import LocalSigner
+    from tools import acceptance
+
+    signer = LocalSigner()
+    config = settings(
+        **(
+            db_settings.model_dump(exclude_none=True)
+            | {"cors_allowed_origins": ["http://localhost:8081"]}
+        )
+    )
+    app, _ = authenticated_app(monkeypatch, config, signer=signer)
+    identities = {"A": profile_accounts[0].user_id, "B": profile_accounts[1].user_id}
+    tokens = {
+        label: signed_headers(signer, {"sub": str(user)})["Authorization"][7:]
+        for label, user in identities.items()
+    }
+    checked = acceptance.checked
+    writes = []
+
+    def lost_response(client, method, path, status, **kwargs):
+        result = checked(client, method, path, status, **kwargs)
+        if method == "PATCH":
+            writes.append(method)
+            raise acceptance.AcceptanceError("Ambiguous transport; refetch without replay")
+        return result
+
+    monkeypatch.setattr(acceptance, "checked", lost_response)
+    with TestClient(app) as client:
+        with pytest.raises(acceptance.AcceptanceError, match="refetch without replay"):
+            acceptance.settings_checks(
+                client, tokens, identities, write=True, origin="http://localhost:8081"
+            )
+        assert writes == ["PATCH"]
+        a = client.get("/v1/settings", headers={"Authorization": "Bearer " + tokens["A"]}).json()[
+            "settings"
+        ]
+        assert a["revision"] == 1 and a["activities"]["selected_activity_ids"] == ["reading"]
+        assert client.get(
+            "/v1/settings", headers={"Authorization": "Bearer " + tokens["B"]}
+        ).json() == {"settings": None}
+
+
+def test_settings_operator_revision_exhaustion_refuses_all_writes(
+    monkeypatch, db_settings, profile_accounts, db_environment
+):
+    from app.schemas.settings import MAX_REVISION
+    from tests.auth.support import LocalSigner
+    from tools import acceptance
+
+    signer = LocalSigner()
+    config = settings(
+        **(
+            db_settings.model_dump(exclude_none=True)
+            | {"cors_allowed_origins": ["http://localhost:8081"]}
+        )
+    )
+    app, _ = authenticated_app(monkeypatch, config, signer=signer)
+    identities = {"A": profile_accounts[0].user_id, "B": profile_accounts[1].user_id}
+    tokens = {
+        label: signed_headers(signer, {"sub": str(user)})["Authorization"][7:]
+        for label, user in identities.items()
+    }
+    with TestClient(app) as client:
+        assert (
+            client.patch(
+                "/v1/settings",
+                headers={"Authorization": "Bearer " + tokens["B"]},
+                json={"expected_revision": 0, "activities": None},
+            ).status_code
+            == 200
+        )
+        with database.connect(db_environment, "TEST_MIGRATION_DATABASE_URL") as admin:
+            admin.execute(
+                "UPDATE public.user_settings SET revision=%s WHERE user_id=%s",
+                (MAX_REVISION - 4, identities["B"]),
+            )
+        before = client.get(
+            "/v1/settings", headers={"Authorization": "Bearer " + tokens["B"]}
+        ).json()
+        with pytest.raises(acceptance.AcceptanceError, match="no settings writes started"):
+            acceptance.settings_checks(
+                client, tokens, identities, write=True, origin="http://localhost:8081"
+            )
+        assert client.get(
+            "/v1/settings", headers={"Authorization": "Bearer " + tokens["A"]}
+        ).json() == {"settings": None}
+        assert (
+            client.get("/v1/settings", headers={"Authorization": "Bearer " + tokens["B"]}).json()
+            == before
+        )
+
+
+def test_settings_operator_actual_http_restart_preserves_saved_results(
+    db_settings, profile_accounts
+):
+    from tests.auth.support import LocalSigner
+    from tests.support.http import running_process
+    from tools.acceptance import settings_checks
+
+    signer = LocalSigner()
+    config = settings(
+        **(
+            db_settings.model_dump(exclude_none=True)
+            | {"cors_allowed_origins": ["http://localhost:8081"]}
+        )
+    )
+    identities = {"A": profile_accounts[0].user_id, "B": profile_accounts[1].user_id}
+    tokens = {
+        label: signed_headers(signer, {"sub": str(user)})["Authorization"][7:]
+        for label, user in identities.items()
+    }
+
+    def capture(client):
+        result = {}
+        for label, token in tokens.items():
+            result[label] = {}
+            for resource in ("profile", "settings"):
+                response = client.get(
+                    "/v1/" + resource, headers={"Authorization": "Bearer " + token}
+                )
+                assert response.status_code == 200
+                result[label][resource] = response.json()
+        return result
+
+    with running_process(config, signer.jwk) as (client, first_pid):
+        profiles_before = {label: row["profile"] for label, row in capture(client).items()}
+        report = settings_checks(
+            client, tokens, identities, write=True, origin="http://localhost:8081"
+        )
+        assert report["managedSettingsWriteAB"].startswith("passed")
+        before_restart = capture(client)
+        assert {label: row["profile"] for label, row in before_restart.items()} == profiles_before
+    with running_process(config, signer.jwk) as (client, second_pid):
+        assert second_pid != first_pid
+        assert capture(client) == before_restart
+        report = settings_checks(
+            client, tokens, identities, write=False, origin="http://localhost:8081"
+        )
+        assert report["managedSettingsReadAB"] == "passed"
+        assert capture(client) == before_restart

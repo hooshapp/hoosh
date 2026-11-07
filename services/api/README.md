@@ -334,3 +334,24 @@ local HTTP/security/race/rollback and true process-restart evidence. Hosted sche
 was not upgraded or exercised by this implementation; run the explicit guarded
 development upgrade before managed settings use. Anisha's mobile Auth and the
 previously deferred authenticated phone/C-deletion tests remain separate.
+
+## Current Plan 03 checkpoint — 2026-11-07
+
+Independent backend implementation and hosted settings schema adoption pass.
+Development now runs `20261102_0002`; both existing profiles are exactly unchanged,
+settings remains empty, and schema/security plus runtime TLS/default-deny checks
+pass. The existing operator utility adds read-only `--with-settings` and explicit
+approved-account `--write-settings`; see [operations](OPERATIONS.md#hosted-settings-follow-up--2026-11-07)
+for side effects, no-retry behavior and exact remaining acceptance.
+
+Latest checks: 601 deterministic API / 199 real PostgreSQL, 382 portable mobile /
+502 component, types/lint/contracts/assets and frozen Python sync pass. Operator
+coverage includes real HTTP and actual process restart on the disposable DB,
+existing/absent settings, value restoration, profile/account controls, lost success
+without replay, and revision exhaustion before writes.
+
+Both saved A/B tokens are expired; user explicitly leaves real-account checks
+pending. No hosted settings writes/Auth administration/root/iOS/deletion/deployment
+occurred. Full API-10/Plan 03 remains open for those managed-account and joint
+application/native/lifecycle acceptance rows; hosted GitHub execution is unverified.
+Historical notes above describe their original runs, not current token freshness.

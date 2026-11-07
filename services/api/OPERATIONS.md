@@ -271,3 +271,57 @@ remains open for joint authenticated application/root/RN-07, real native
 client/device and coordinated managed account-cascade acceptance. Hosted GitHub
 execution remains unverified; no push or deployment was requested. The independently
 implementable backend Auth work is complete; Anisha's mobile Auth remains hers.
+
+## Hosted settings follow-up — 2026-11-07
+
+**Current independent backend evidence:** 601 deterministic API / 199 real
+PostgreSQL checks, 382 portable mobile / 502 component checks and full workspace
+validation pass. The guarded development upgrade adopted existing revision
+`20261102_0002`; both existing profiles match the private pre-upgrade snapshot
+exactly and the new settings table is empty. Schema drift, forced RLS, exact
+constraints/policies/clocks/grants and runtime client TLS/default deny pass. See
+[sanitized evidence](../../docs/core_plan_implementation_notes/artifacts/api-10/hosted-settings-acceptance.json).
+Earlier dated checkpoints above remain historical.
+
+The existing operator tool now supports settings without a second login/session
+manager. It verifies both privately supplied tokens before contacting the API.
+First run read-only settings acceptance against the configured development API:
+
+```sh
+npm run api:acceptance -- --project eaisvwqfbgdkzdfmxkvm --base-url http://127.0.0.1:8000 --with-settings
+```
+
+Only for approved disposable A/B accounts, explicit settings writes are:
+
+```sh
+npm run api:acceptance -- --project eaisvwqfbgdkzdfmxkvm --base-url http://127.0.0.1:8000 --write-settings
+```
+
+This mode reads identity/profiles/settings, checks browser and no-Origin ownership,
+then performs **five accepted settings writes per account**: activities, partial
+plan draft, clear draft, clear activities, restore original values. It checks stale
+revision rejection, invalid draft rejection, omitted-section preservation,
+committed refetch and unchanged other-account settings/both profiles. It checks
+revision headroom for BOTH accounts before starting either. It never writes profiles,
+installs native policy, marks onboarding complete or deletes a row/account.
+
+Restoring values still advances revisions/timestamps; newly created neutral rows
+remain. A concurrent edit or ambiguous response stops the run. There is **no**
+automatic write retry or speculative restoration after failure. Read/reconcile
+privately before any further write. Successful CLI completion does not prove
+restart persistence: stop/start a genuine API process and compare current saved
+results through a fresh read-only client separately. The local required DB suite
+executes this across two actual process PIDs; that uses disposable identities,
+not managed Supabase accounts. `--write-settings` is mutually exclusive with
+`--write-profiles` and `--expect-profile-unavailable`; unavailable-DB mode also
+rejects `--with-settings`. Default acceptance reads no token inputs and writes no
+product data. Both product routes now receive preflight checks.
+
+**Current live-account limit:** the production verifier reports TOKEN_EXPIRED for
+saved A/B. Ishmum explicitly chose to leave real-account checks pending. No live
+settings read/write/restart acceptance, token refresh, Auth setting/user change or
+hosted-C deletion occurred. Joint Auth/root/RN-07/native/signed-device/lifecycle
+and hosted workflow evidence remain open. Full API-10/Plan 03 is not marked
+complete. Resume only the approved missing rows, not the already-passed migration
+or local foundation. All task-owned API/test DB processes stopped; volume and
+ignored private recovery snapshot retained. No push/merge/deployment.
