@@ -1073,3 +1073,12 @@ retain the explicit remaining gates above; RN-10 and Plan 04 are not fully accep
 Next joint Auth/root plus approved current accounts for RN-06/07/09l/10/11; hosted
 schema is ready, but refreshed tokens and hosted C deletion remain user-deferred.
 Counts remain 46 top-level / 21 producers / 25 pending. No new parent plan/ID.
+
+
+**RN-10d publication verified (2026-11-07):** `0f7f74e` is pushed on
+`task/react-native/rn-10-android-acceptance`; its actual GitHub Foundation
+[run 42420522051](https://github.com/hooshapp/hoosh/actions/runs/42420522051)
+completed successfully for mobile, API and database. See
+[exact commit/job/step evidence](../core_plan_implementation_notes/artifacts/rn-10d/github-checks.json).
+This closes publication verification for this implementation, not joint/native
+release acceptance. No main merge, deployment or change to the existing gates.

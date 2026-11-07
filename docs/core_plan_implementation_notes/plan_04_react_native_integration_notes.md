@@ -16,6 +16,8 @@
 
 ## Resume here
 
+- **RN-10d publication verified (2026-11-07):** pushed implementation `0f7f74e` on `task/react-native/rn-10-android-acceptance`; Foundation run 42420522051 passed all mobile/API/database jobs and their steps. See final publication entry and artifact. This follow-up documentation receives its own subsequent run, checked before reporting completion. No main merge/deployment or change to Auth/account/iOS/release gates; previous local-only status is historical.
+
 - **RN-10d Android follow-up (2026-11-07):** branch `task/react-native/rn-10-android-acceptance`, parent `e55e314`; commit by subject `fix(mobile): improve Android focus and record RN-10 device checks`. Two actual-device defects fixed: focused content beneath the floating bar, and TalkBack return after native dismissal. Pixel debug host checked at font 1.15/2.0, actual tabs/details/IME/dirty navigation, selected speech, bounded sample states and local lifecycle. Full checks 382 portable / 518 component / 601 API; final focused 64/64; web 38/71, Android Hermes and UI gallery build pass. Settings/connections restored to this run's baseline; usage access allow preserved. Full manual/async speech, physical keyboard/exhaustive motion-state matrix, additional devices/release, Auth/root/current-account and Anisha's iOS remain open. Next joint RN-06/07/09l/10/11 when Auth/root and fresh approved tokens exist; tokens/C deletion stay user-deferred. Read the final entry and RN-10d device record; original 46/21/25 counts remain.
 
 - **Plan 03 hosted handoff (2026-11-07):** development settings migration 0002 is applied/security-verified, profiles preserved, settings empty. The hosted schema prerequisite for RN-09i/j/l is satisfied; existing HTTP/generated contracts are unchanged. Current A/B tokens are expired and user explicitly leaves real-account checks pending. Joint Auth/root/profile/settings phone and signed/native/C-deletion acceptance remain open. Backend follow-up, exact file changes and 601 API/199 DB evidence are recorded in the latest Plan 03 entry; no Plan 04 implementation is claimed by this documentation handoff. Earlier resume entries are historical.
@@ -2953,7 +2955,7 @@ Use the following structure for future commits, including corrective commits.
 
 ### RN-10d — Independent Android accessibility, navigation and lifecycle acceptance
 
-**Commit:** `fix(mobile): improve Android focus and record RN-10 device checks`. **Hash:** Pending; resolve by unique subject/Git, record in the next normal update.
+**Commit:** `fix(mobile): improve Android focus and record RN-10 device checks`. **Hash:** `0f7f74e` (recorded during publication verification).
 
 **Date:** 2026-11-07. **Owner:** Ishmum. **Branch:** `task/react-native/rn-10-android-acceptance`. **Parent:** `e55e314`.
 
@@ -3001,3 +3003,28 @@ Use the following structure for future commits, including corrective commits.
 #### Remaining work and handoff
 
 RN10-D01/D02/D05/D06 now have explicit bounded Android debug-device evidence; RN-08d `cadc91d` already supplies D04's read/permission scope. Parent RN-10 and Plan 04 remain open for joint Auth/root/current-account flows, iOS/VoiceOver, release and additional-device/physical-keyboard matrices, full manual/async speech, exhaustive motion/state checks and true OS/authenticated process/offline integration. Do not treat untested states as passed or report every independent Android matrix complete. Hosted schema is ready from Plan 03; refreshed A/B tokens, authenticated phone and hosted-C deletion remain user-deferred. Next coordinated RN-06/07/09l/10/11 once the real Auth/root producer and approved accounts are available, or separately schedule the explicitly remaining Android/release checks. Stable IDs and 46 top-level / 21 producers / 25 pending are unchanged. Local commit only; no push/merge requested for this task. Unrelated icon packs and workspace file excluded.
+
+
+### RN-10d follow-up — Publish and verify GitHub Foundation checks
+
+**Commit:** `docs(mobile): record RN-10 GitHub verification`. **Hash:** Pending; resolve by subject/Git and record in the next normal update.
+
+**Date:** 2026-11-07. **Owner:** Ishmum. **Branch:** `task/react-native/rn-10-android-acceptance`. **Parent:** `0f7f74e`.
+
+**Authorization/scope:** User requested push and verification. Normal non-force `git push -u origin HEAD` published this feature branch and its existing ancestors. Exact remote HEAD and push workflow matched implementation SHA `0f7f74ee455ee0497c2348fca993c4b62e2ea85b`. No main merge/push, PR, deployment, Auth action, Supabase write, phone operation or workflow/source change. Unrelated untracked workspace/icon packs remain excluded.
+
+**Actual hosted result:** [Foundation run 42420522051](https://github.com/hooshapp/hoosh/actions/runs/42420522051), attempt 1, event push, completed/success. All three expected jobs and their completed steps were inspected through the GitHub connector's workflow API. The combined legacy commit-status endpoint returned no statuses, which was not treated as success; the actual Actions run/jobs provide acceptance. No inference from local test success.
+
+- Mobile: clean npm install, types/lint, original assets, portable/native-component tests, isolated gallery build and production web export passed.
+- API: frozen setup, Ruff, deterministic tests and reproducible OpenAPI/generated HTTP types passed.
+- Database: disposable PostgreSQL setup, required migration/RLS/mobile HTTP acceptance and labeled fixture cleanup passed.
+
+**Decisions/validation:** Record only sanitized run/job/step metadata for the exact implementation, not account records, logs, tokens or future self-referential CI claims. Documentation publication is monitored against its own subsequent exact-SHA run before task completion; its final hash/run belongs in Git history/final response, avoiding an endless series of documentation commits. JSON, file/line ledger, staged-only scope and `git diff --check` checked. No new local runtime suite needed for documentation-only changes; actual hosted checks cover the pushed implementation.
+
+#### Every changed file and logical change
+
+- `docs/core_plan_implementation_notes/artifacts/rn-10d/github-checks.json`: lines 1–293. New sanitized exact-SHA workflow and required job/step results; no private logs/credentials. Separate hosted execution from physical-device and full parent acceptance.
+- `docs/core_plan/04_react_native_integration.md`: lines 1076–1084. Append published implementation/run/job evidence while preserving original part IDs, counts, ownership and remaining gates.
+- `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 19–20, 2958, 3006–3030. Record prior implementation hash and latest resume checkpoint; this entry documents authorized publication, actual hosted checks, every changed file and remaining handoff.
+
+**Remaining/handoff:** RN-10d publication verification is complete. Parent RN-10/Plan 04 still require the explicitly listed joint Auth/root/current-account, iOS/VoiceOver, release/additional-device and remaining accessibility/lifecycle evidence. Fresh A/B tokens and hosted-C deletion remain user-deferred. No part IDs/counts or implementation claims changed. Teammate can pull this feature branch and read the same implementation/device/CI records.

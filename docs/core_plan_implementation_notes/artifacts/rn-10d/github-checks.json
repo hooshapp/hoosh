@@ -1,0 +1,293 @@
+{
+  "repository": "hooshapp/hoosh",
+  "head_branch": "task/react-native/rn-10-android-acceptance",
+  "head_sha": "0f7f74ee455ee0497c2348fca993c4b62e2ea85b",
+  "workflow": "Foundation checks",
+  "path": ".github/workflows/checks.yml",
+  "run_id": 42420522051,
+  "run_attempt": 1,
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "html_url": "https://github.com/hooshapp/hoosh/actions/runs/42420522051",
+  "created_at": "2026-11-07T22:25:11Z",
+  "updated_at": "2026-11-07T22:27:42Z",
+  "scope": "Implementation commit; subsequent documentation publication verified separately without self-referential artifacts",
+  "jobs": [
+    {
+      "id": 128547738996,
+      "name": "api",
+      "head_sha": "0f7f74ee455ee0497c2348fca993c4b62e2ea85b",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/hooshapp/hoosh/actions/runs/42420522051/job/128547738996",
+      "started_at": "2026-11-07T22:25:13Z",
+      "completed_at": "2026-11-07T22:25:39Z",
+      "steps": [
+        {
+          "number": 1,
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 2,
+          "name": "Run actions/checkout@v7.0.1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 3,
+          "name": "Run astral-sh/setup-uv@v10.3.3",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 4,
+          "name": "Run actions/setup-node@v7.1.0",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 5,
+          "name": "Install only build-time API generator dependencies",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 6,
+          "name": "Run uv sync --project services/api --frozen",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 7,
+          "name": "Run uv run --project services/api ruff check services/api scripts/export-openapi.py scripts/configure-db-access.py scripts/db-test.py scripts/migrate-db.py scripts/api-acceptance.py scripts/acceptance-login.py",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 8,
+          "name": "Run uv run --project services/api pytest services/api/tests",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 9,
+          "name": "Reproducible OpenAPI and generated HTTP types",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 16,
+          "name": "Post Run actions/setup-node@v7.1.0",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 17,
+          "name": "Post Run astral-sh/setup-uv@v10.3.3",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 18,
+          "name": "Post Run actions/checkout@v7.0.1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 19,
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "id": 128547739190,
+      "name": "database",
+      "head_sha": "0f7f74ee455ee0497c2348fca993c4b62e2ea85b",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/hooshapp/hoosh/actions/runs/42420522051/job/128547739190",
+      "started_at": "2026-11-07T22:25:13Z",
+      "completed_at": "2026-11-07T22:27:24Z",
+      "steps": [
+        {
+          "number": 1,
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 2,
+          "name": "Run actions/checkout@v7.0.1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 3,
+          "name": "Run actions/setup-node@v7.1.0",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 4,
+          "name": "Install mobile client acceptance dependencies",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 5,
+          "name": "Run astral-sh/setup-uv@v10.3.3",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 6,
+          "name": "Run uv sync --project services/api --frozen",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 7,
+          "name": "Start pinned disposable PostgreSQL",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 8,
+          "name": "Required migrations, RLS and mobile HTTP settings acceptance",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 9,
+          "name": "Remove only the labeled disposable fixture",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 16,
+          "name": "Post Run astral-sh/setup-uv@v10.3.3",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 17,
+          "name": "Post Run actions/setup-node@v7.1.0",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 18,
+          "name": "Post Run actions/checkout@v7.0.1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 19,
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "id": 128547739198,
+      "name": "mobile",
+      "head_sha": "0f7f74ee455ee0497c2348fca993c4b62e2ea85b",
+      "status": "completed",
+      "conclusion": "success",
+      "html_url": "https://github.com/hooshapp/hoosh/actions/runs/42420522051/job/128547739198",
+      "started_at": "2026-11-07T22:25:13Z",
+      "completed_at": "2026-11-07T22:27:41Z",
+      "steps": [
+        {
+          "number": 1,
+          "name": "Set up job",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 2,
+          "name": "Run actions/checkout@v7.0.1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 3,
+          "name": "Run actions/setup-node@v7.1.0",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 4,
+          "name": "Run npm ci",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 5,
+          "name": "Run npm run typecheck",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 6,
+          "name": "Run npm run lint",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 7,
+          "name": "Original local design asset integrity",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 8,
+          "name": "Portable unit and iOS/Android component tests",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 9,
+          "name": "Isolated shared UI specimen build",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 10,
+          "name": "Run npm run mobile:export",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 19,
+          "name": "Post Run actions/setup-node@v7.1.0",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 20,
+          "name": "Post Run actions/checkout@v7.0.1",
+          "status": "completed",
+          "conclusion": "success"
+        },
+        {
+          "number": 21,
+          "name": "Complete job",
+          "status": "completed",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "limits": [
+    "Feature-branch CI, not main merge or deployment",
+    "No physical-device/release/Auth/account acceptance inferred",
+    "No private credentials or logs included"
+  ]
+}
