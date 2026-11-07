@@ -355,3 +355,10 @@ pending. No hosted settings writes/Auth administration/root/iOS/deletion/deploym
 occurred. Full API-10/Plan 03 remains open for those managed-account and joint
 application/native/lifecycle acceptance rows; hosted GitHub execution is unverified.
 Historical notes above describe their original runs, not current token freshness.
+
+GitHub follow-up (2026-11-07): the feature branch is now pushed and actual
+Foundation checks pass for code `7fe2c55` (api/database/mobile). See
+[run](https://github.com/hooshapp/hoosh/actions/runs/42412686249) and the operator
+runbook for exact scope. The former hosted-workflow verification item is closed;
+current-account/Auth/root/native/device/deletion acceptance remains open. No main
+merge or deployment occurred.

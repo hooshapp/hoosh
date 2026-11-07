@@ -4,9 +4,11 @@
 **Owner:** Ishmum. Anisha owns Supabase Auth setup and mobile sessions/onboarding.
 **Current branch:** `task/backend/plan-03-hosted-acceptance`; **parent:** `cadc91d`. Previous API-12 branch `task/backend/api-12-settings-http`, parent `21477df`. Original API-01–05 branch `task/backend/api-01-05`, starting commit `2703a23`; later planning/implementation branches are recorded per entry.
 **Last updated:** 2026-11-07.
-**Current part:** API-10/API-12 independent hosted follow-up implemented: development 0002 applied, profiles preserved, security/runtime TLS accepted, settings operator/local HTTP restart checked. Full Plan 03 remains open for user-deferred current managed-token checks, joint Auth/root/native/device and hosted-C acceptance. Totals 46/21/25; no new migration, mobile/Auth change, push or deployment.
+**Current part:** API-10 hosted CI verification passed for published code 7fe2c55: Foundation api/database/mobile jobs accepted. Hosted settings revision 0002 and prior independent backend work remain accepted. Full Plan 03 remains open for user-deferred current managed-token checks and joint Auth/root/native/device/C acceptance. Totals 46/21/25; feature branch pushed, no main merge/deployment.
 
 ## Resume here
+
+- **Hosted GitHub CI verified (2026-11-07):** pushed `task/backend/plan-03-hosted-acceptance`; actual Foundation api/database/mobile jobs passed for code `7fe2c55`, run 42412686249. See final entry and artifact for exact job/step evidence; documentation gets a separate subsequent run. This closes the independent workflow row. `main` is three commits ahead of this branch's shared history; no merge/main push/deployment. Current-token/Auth/root/native/device and C-deletion gates remain deferred/joint. Earlier “GitHub unverified/no push” entries describe historical runs.
 
 - **API-10/API-12 hosted follow-up implemented (2026-11-07):** branch `task/backend/plan-03-hosted-acceptance`, parent `cadc91d`; see final entry. Development now 0002, two profiles exactly preserved, settings empty, private snapshot retained, security/runtime TLS/default-deny pass. Existing operator adds explicit settings reads/writes with controls/restoration/no replay; 601 API / 199 DB / 382 portable / 502 component checks pass, including real local HTTP restart. User explicitly left current real-account checks pending; production verifier reports TOKEN_EXPIRED for both saved slots. No managed settings writes, Auth/root/iOS/deletion or deployment. Resume the remaining joint rows in Plan 03; do not redo migration. Earlier checkpoints below are historical.
 
@@ -1514,7 +1516,7 @@ Ranges refer to this commit; deleted ranges refer to parent 138387f. Its Pending
 
 ### API-10/API-12 follow-up — Hosted settings adoption and acceptance
 
-**Commit message:** `test(api): verify hosted settings readiness and acceptance`. **Hash:** Pending (record in the next normal update; resolve by subject/Git).
+**Commit message:** `test(api): verify hosted settings readiness and acceptance`. **Hash:** `7fe2c55` (recorded during GitHub verification follow-up).
 **Date:** 2026-11-07. **Owner:** Ishmum. **Branch:** `task/backend/plan-03-hosted-acceptance`. **Parent:** `cadc91d`.
 **Status:** Independently implementable backend/settings work and hosted schema acceptance complete. **Full API-10/Plan 03 remains OPEN** for explicit user-deferred and joint acceptance below. No push/merge/deployment.
 
@@ -1571,3 +1573,37 @@ For approved disposable accounts, the settings journey snapshots current setting
 | `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 11–11 | Refresh current backend resume/branch/evidence and record known API-12 hash during this normal follow-up; keep prior entries historical. |
 | `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 1332–1332 | Refresh current backend resume/branch/evidence and record known API-12 hash during this normal follow-up; keep prior entries historical. |
 | `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 1515–1573 | Record this follow-up’s decisions, actual commands/results, private snapshot/cleanup boundaries, each changed file/range, and explicit remaining acceptance. Own hash remains Pending until a later normal update. |
+
+
+### API-10 follow-up — GitHub Foundation checks verification
+
+**Commit message:** `docs(api): record successful GitHub foundation checks`. **Hash:** Pending (resolve by subject/Git; record in next normal update).
+**Date:** 2026-11-07. **Owner:** Ishmum. **Branch:** `task/backend/plan-03-hosted-acceptance`. **Parent:** `7fe2c55`.
+**Status:** Actual hosted Foundation checks passed for the exact pushed code SHA `7fe2c558dd34f32a960dd284bb54f4a3b466cc7a`. Independent Plan 03 workflow verification is closed; required joint/account acceptance remains open. This documentation commit triggers and is verified against its own subsequent run before task completion; the artifact intentionally records the preceding tested code commit, not an invented self-referential CI result.
+
+**Publication / decisions:** User explicitly requested pushing current work and checking GitHub. Inspect current branch/worktree, workflow and tracked-private-file exclusions; preserve unrelated untracked `docs/core_plan/hoosh.code-workspace`, root `icon pack/` and `scripts/icon pack/`. Fetch origin/main, then normal non-force `git push -u origin HEAD` publishes ONLY current feature branch and its ancestors. No main push/merge, PR creation, deployment, Auth action or Supabase write. Remote main has three commits outside this branch (latest f65095f); branch CI is not acceptance of a future merge. GitHub CLI/connector was unavailable; existing SSH credentials performed the authorized Git operations, and the public GitHub REST API supplied actual read-only run/job evidence with no private token lookup. No credential config, workflow or executable source change was needed.
+
+**Actual hosted evidence:** [Foundation run 42412686249](https://github.com/hooshapp/hoosh/actions/runs/42412686249), attempt 1, event push, exact code SHA above; overall completed/success. Inspect the run and all three job results, not merely push success or status inferred from local tests. **api** passed frozen Python setup, Ruff, deterministic tests and reproducible OpenAPI/generated types. **database** passed clean npm/Python setup, guarded PostgreSQL startup, required migrations/RLS/mobile settings HTTP acceptance and labeled fixture cleanup. **mobile** passed clean npm install, types/lint, original assets, portable/iOS/Android component tests, isolated specimen build and production web export. All job steps completed successfully; exact job IDs, step outcomes, times and URLs are retained in `artifacts/api-10/github-checks.json`. Counts 601 API/199 DB/382 portable/502 component describe previously recorded local suites; this follow-up relies on actual GitHub job/step statuses, without claiming to parse authenticated private job logs.
+
+**Changed documentation:** Store a new sanitized GitHub evidence artifact instead of rewriting older dated artifacts. Plan 03 ledger/remaining rows, operator/API docs, core index, agent entry point and Plan 01 resume note now mark hosted CI verified and link actual evidence. Refresh Plan 03 current status/resume and record preceding implementation hash 7fe2c55 during this normal update. Earlier “no push/GitHub unverified” commit entries remain historical. Original API/RN part IDs and 46/21/25 parent counts stay unchanged. No source change means no new local runtime/test/DB mutation is necessary; actual GitHub runs provide the requested verification.
+
+**Validation / limitations:** Exact branch/SHA/run/job matching, complete required job set and all conclusions checked through GitHub's API; JSON, local Markdown links, every file/line range, secret/private exclusions, staged-only scope and `git diff --check` checked before commit. Initial SSH/reference checks completed; no force push, SSH verification bypass or authentication reset. No CI failure or source fix occurred. Documentation publication is monitored separately; own hash/result belongs in Git history/final run link rather than an endless sequence of notes-only commits. No signed Android/iOS APK/Xcode, actual Auth SDK/root, authenticated phone, current managed-token settings or hosted deletion result is inferred from component/database/export success.
+
+**Next / remaining:** Hosted GitHub verification is finished. Full Plan 03 remains open for user-deferred fresh A/B settings acceptance/actual hosted-backed restart, Anisha-owned Auth/session/root and joint profile/settings/account-transition/native/signed-device journeys, and coordinated separately approved disposable-C managed cascade (still deferred). No additional independent backend implementation or workflow verification is pending for this published feature branch. Integrating the three newer main commits is a separate future task, not silently performed as part of pushing this branch.
+
+#### Exact file and line change record
+
+| File / lines in this commit | Change and reason |
+|---|---|
+| `docs/Context (AGENT)/AGENT_START_HERE.md`: lines 333–339 | Make verified hosted CI discoverable to a new agent while retaining token/Auth/root/native/deletion deferrals. |
+| `docs/core_plan/03_backend_foundation.md`: lines 793–793 | Close only the hosted GitHub verification row with exact tested SHA/run/job evidence. Retain joint/account-dependent acceptance, original IDs/counts and feature-branch-only scope. |
+| `docs/core_plan/03_backend_foundation.md`: lines 801–809 | Close only the hosted GitHub verification row with exact tested SHA/run/job evidence. Retain joint/account-dependent acceptance, original IDs/counts and feature-branch-only scope. |
+| `docs/core_plan/README.md`: lines 312–318 | Synchronize the cross-plan CI checkpoint with actual run evidence; counts and joint gates unchanged. |
+| `docs/core_plan_implementation_notes/plan_01_supabase_foundation_notes.md`: lines 10–11 | Record that the shared hosted workflow now exercises the required disposable PostgreSQL checks successfully; SB-06 remains joint/pending. |
+| `services/api/OPERATIONS.md`: lines 328–341 | Document the actual hosted API/database/mobile job results, evidence links, separate subsequent docs run and remaining Auth/native/account limits; older dated statements remain historical. |
+| `services/api/README.md`: lines 358–364 | Publish current hosted-workflow success and its exact scope without accepting the full application milestone. |
+| `docs/core_plan_implementation_notes/artifacts/api-10/github-checks.json`: lines 1–223 | Record sanitized GitHub API run/job/step IDs, times, outcomes and URLs matched to the exact published code SHA; distinguish branch CI from native/app or future merge acceptance. |
+| `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 7–7 | Refresh current hosted-CI resume state and record preceding commit hash 7fe2c55; preserve original history and joint limits. |
+| `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 11–11 | Refresh current hosted-CI resume state and record preceding commit hash 7fe2c55; preserve original history and joint limits. |
+| `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 1519–1519 | Refresh current hosted-CI resume state and record preceding commit hash 7fe2c55; preserve original history and joint limits. |
+| `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 1578–1609 | Record exact push/run verification, all changed file ranges, evidence scope and remaining gates. Own hash stays Pending until next normal update. |

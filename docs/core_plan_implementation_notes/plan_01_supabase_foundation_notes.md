@@ -7,6 +7,8 @@
 
 ## Resume here
 
+- **Hosted CI follow-up (2026-11-07, Plan 03):** feature branch code 7fe2c55 passed actual GitHub Foundation api/database/mobile jobs, including required disposable PostgreSQL checks/cleanup. Earlier hosted-workflow-unverified statements are historical; see the latest Plan 03 notes/run artifact. This does not accept SB-06 real Auth/app/lifecycle or the user-deferred account/deletion gates.
+
 - **Product database handoff (2026-11-07, Plan 03):** hosted development now runs existing settings revision 0002; profiles unchanged, settings empty, exact schema/security and runtime TLS/default deny pass. See the latest Plan 03 notes for the owned migration/acceptance work and private snapshot boundary. No SB-01–03 Auth administration or SB-06 joint acceptance was performed. Current managed-token checks and separate C deletion remain user-deferred.
 
 - Latest: **SB-05 — Disposable PostgreSQL infrastructure and SB-04 hosted acceptance**, subject `test(db): add disposable PostgreSQL integration environment`, parent `53d6c8b`.

@@ -330,3 +330,10 @@ and operator runbook. Saved A/B tokens are expired; user explicitly leaves curre
 real-account checks pending. Full Plan 03/04 joint Auth/root/native/signed-device
 and separate C deletion gates stay open. Do not redo hosted DDL or introduce an
 Auth bypass to close those gates. No push/merge/deployment occurred.
+
+GitHub CI checkpoint (2026-11-07): the current backend feature branch is pushed;
+Foundation checks on code `7fe2c55` pass api/database/mobile, including required
+PostgreSQL checks and mobile exports. See Plan 03's latest notes and
+[run](https://github.com/hooshapp/hoosh/actions/runs/42412686249). Hosted GitHub
+verification is no longer pending; current real-account checks and joint
+Auth/root/native/device/C deletion remain open. No merge to main or deployment.

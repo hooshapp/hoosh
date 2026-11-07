@@ -325,3 +325,17 @@ and hosted workflow evidence remain open. Full API-10/Plan 03 is not marked
 complete. Resume only the approved missing rows, not the already-passed migration
 or local foundation. All task-owned API/test DB processes stopped; volume and
 ignored private recovery snapshot retained. No push/merge/deployment.
+
+## GitHub verification — 2026-11-07
+
+The independent hosted workflow item is now **passed**. Foundation checks on
+pushed code `7fe2c55` passed **api**, **database** and **mobile** jobs. The database
+job ran the required guarded PostgreSQL migration/RLS/mobile HTTP group and cleanup;
+mobile includes specimen build and production web export. See
+[actual run](https://github.com/hooshapp/hoosh/actions/runs/42412686249) and
+[sanitized job/step evidence](../../docs/core_plan_implementation_notes/artifacts/api-10/github-checks.json).
+This supersedes older dated “hosted GitHub unverified” notes. It proves the pushed
+feature branch's workflow, not signed native builds, current managed tokens,
+Anisha's Auth/root, authenticated phone or deferred C deletion. `main` was fetched
+and has three commits absent from this branch; no merge/main push/deployment was
+performed. Documentation publication is checked against its own subsequent run.

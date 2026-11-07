@@ -790,7 +790,7 @@ acceptance. This does not close API-10/application M1/M2 or the whole Plan 03.
 | Real signed-in app profile/settings/account lifecycle | Anisha supplies Auth/session/root; Ishmum consumes through existing RN-05/06/07/09i–l and records joint evidence. No second session manager or bypass. |
 | Native/signed-device storage, links and account transitions | Joint platform acceptance; Android permission/status evidence does not prove Auth storage/links/profile; iOS remains Anisha. |
 | Managed account-deletion cascade | User-deferred separate disposable C only, coordinated with Anisha; never delete A/B or managed Auth rows directly with SQL. |
-| Hosted GitHub workflow | Not executed or inferred from local checks; no push/deployment requested. |
+| Hosted GitHub workflow | **Passed 2026-11-07** on pushed `7fe2c55`: API, database and mobile jobs. See [run](https://github.com/hooshapp/hoosh/actions/runs/42412686249) and [evidence](../core_plan_implementation_notes/artifacts/api-10/github-checks.json). This row is closed; joint account/app acceptance stays open. |
 
 The owned backend implementation is ready for these consumers. Preserve the
 original API-01–12 IDs and 46/21/25 parent accounting; do not relabel full Plan 03
@@ -798,3 +798,12 @@ complete merely because independent implementation passes. The
 [operator runbook](../../services/api/OPERATIONS.md#hosted-settings-follow-up--2026-11-07)
 and latest notes record exactly what to resume. No additional product domain,
 active plan, quest/reward/measurement policy or new migration was invented.
+
+**GitHub verification checkpoint (2026-11-07):** feature branch
+`task/backend/plan-03-hosted-acceptance` was pushed normally. Actual Foundation
+checks on code commit `7fe2c55` passed all three jobs: API, database and mobile,
+including the required PostgreSQL group and mobile exports. See the linked run
+and sanitized evidence above. This closes the previously unverified hosted CI
+item. Full Plan 03 remains open only for the previously listed current managed
+settings and joint Auth/application/native/lifecycle acceptance. No main merge,
+production deployment, hosted account action or credential change occurred.

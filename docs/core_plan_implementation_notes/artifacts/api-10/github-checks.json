@@ -1,0 +1,223 @@
+{
+  "date": "2026-11-07",
+  "part": "API-10 hosted CI verification",
+  "repository": "hooshapp/hoosh",
+  "branch": "task/backend/plan-03-hosted-acceptance",
+  "verified_code_sha": "7fe2c558dd34f32a960dd284bb54f4a3b466cc7a",
+  "workflow": {
+    "name": "Foundation checks",
+    "id": 42412686249,
+    "attempt": 1,
+    "event": "push",
+    "status": "completed",
+    "conclusion": "success",
+    "url": "https://github.com/hooshapp/hoosh/actions/runs/42412686249",
+    "created_at": "2026-11-07T20:46:53Z"
+  },
+  "jobs": [
+    {
+      "name": "mobile",
+      "id": 128524017840,
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-11-07T20:46:56Z",
+      "completed_at": "2026-11-07T20:50:16Z",
+      "url": "https://github.com/hooshapp/hoosh/actions/runs/42412686249/job/128524017840",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7.0.1",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v7.1.0",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm ci",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run typecheck",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run lint",
+          "conclusion": "success"
+        },
+        {
+          "name": "Original local design asset integrity",
+          "conclusion": "success"
+        },
+        {
+          "name": "Portable unit and iOS/Android component tests",
+          "conclusion": "success"
+        },
+        {
+          "name": "Isolated shared UI specimen build",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run npm run mobile:export",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v7.1.0",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7.0.1",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "api",
+      "id": 128524018086,
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-11-07T20:46:56Z",
+      "completed_at": "2026-11-07T20:47:30Z",
+      "url": "https://github.com/hooshapp/hoosh/actions/runs/42412686249/job/128524018086",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7.0.1",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run astral-sh/setup-uv@v10.3.3",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v7.1.0",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install only build-time API generator dependencies",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run uv sync --project services/api --frozen",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run uv run --project services/api ruff check services/api scripts/export-openapi.py scripts/configure-db-access.py scripts/db-test.py scripts/migrate-db.py scripts/api-acceptance.py scripts/acceptance-login.py",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run uv run --project services/api pytest services/api/tests",
+          "conclusion": "success"
+        },
+        {
+          "name": "Reproducible OpenAPI and generated HTTP types",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v7.1.0",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run astral-sh/setup-uv@v10.3.3",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7.0.1",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    },
+    {
+      "name": "database",
+      "id": 128524018110,
+      "status": "completed",
+      "conclusion": "success",
+      "started_at": "2026-11-07T20:46:56Z",
+      "completed_at": "2026-11-07T20:48:56Z",
+      "url": "https://github.com/hooshapp/hoosh/actions/runs/42412686249/job/128524018110",
+      "steps": [
+        {
+          "name": "Set up job",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/checkout@v7.0.1",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run actions/setup-node@v7.1.0",
+          "conclusion": "success"
+        },
+        {
+          "name": "Install mobile client acceptance dependencies",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run astral-sh/setup-uv@v10.3.3",
+          "conclusion": "success"
+        },
+        {
+          "name": "Run uv sync --project services/api --frozen",
+          "conclusion": "success"
+        },
+        {
+          "name": "Start pinned disposable PostgreSQL",
+          "conclusion": "success"
+        },
+        {
+          "name": "Required migrations, RLS and mobile HTTP settings acceptance",
+          "conclusion": "success"
+        },
+        {
+          "name": "Remove only the labeled disposable fixture",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run astral-sh/setup-uv@v10.3.3",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/setup-node@v7.1.0",
+          "conclusion": "success"
+        },
+        {
+          "name": "Post Run actions/checkout@v7.0.1",
+          "conclusion": "success"
+        },
+        {
+          "name": "Complete job",
+          "conclusion": "success"
+        }
+      ]
+    }
+  ],
+  "validation": "Actual GitHub API run/job status checked for exact pushed SHA, not inferred from local checks",
+  "scope": {
+    "api": "Frozen Python deps, Ruff, deterministic tests and generated HTTP contracts",
+    "database": "Required guarded PostgreSQL migrations/RLS/settings HTTP acceptance and fixture cleanup",
+    "mobile": "Clean npm install, types/lint/assets, portable/iOS/Android component tests, UI specimen build and production web export"
+  },
+  "limits": [
+    "Feature-branch push; no merge or push to main",
+    "No signed Android/iOS native build or authenticated phone run",
+    "No hosted Supabase credential/token/account needed by CI",
+    "Existing current-account/Auth/root/device/C-deletion acceptance remains deferred or joint",
+    "This artifact records the tested code commit; later docs commit has its own GitHub run verified separately"
+  ],
+  "upstream_main": "Fetched main f65095f; three commits outside this branch. Integration with main is separate from these branch checks",
+  "publication": "Normal non-force push of current feature branch; existing tracked code only; private local files and unrelated untracked packs/workspace excluded"
+}

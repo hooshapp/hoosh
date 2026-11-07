@@ -309,3 +309,10 @@ managed-account settings checks are explicitly user-deferred (expired A/B tokens
 Anisha Auth/root, joint app/native/device and separate hosted-C deletion remain
 open. Read [Plan 03](03_backend_foundation.md) and its latest notes before resuming.
 Counts remain 46/21/25; neither full Plan 03 nor Plan 04 is declared complete.
+
+**Hosted CI verified (2026-11-07):** the current backend feature branch is
+published; actual Foundation api/database/mobile jobs passed for code `7fe2c55`.
+See [run](https://github.com/hooshapp/hoosh/actions/runs/42412686249) and Plan 03's
+latest evidence/notes. This closes the independent workflow item. Parent plan
+counts and joint account/Auth/native acceptance remain unchanged; no main merge
+or deployment is implied.
