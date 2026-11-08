@@ -1,0 +1,76 @@
+{
+  "artifact": "Existing local RN-08 debug APK, not rebuilt in this investigation",
+  "sha256": "6c45312a97337ce2fecdc20ea0a343c1cccf0ef81cd20def8510bc7e672ed7d7",
+  "package": "com.hoosh.disconnect.dev",
+  "target_sdk": "36",
+  "min_sdk": "24",
+  "permissions": [
+    "android.permission.ACCESS_LOCAL_NETWORK",
+    "android.permission.ACCESS_NETWORK_STATE",
+    "android.permission.ACCESS_WIFI_STATE",
+    "android.permission.CHANGE_WIFI_MULTICAST_STATE",
+    "android.permission.INTERNET",
+    "android.permission.PACKAGE_USAGE_STATS",
+    "android.permission.VIBRATE",
+    "com.hoosh.disconnect.dev.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+  ],
+  "intent_queries": [
+    {
+      "action": [
+        "android.intent.action.VIEW"
+      ],
+      "category": [
+        "android.intent.category.BROWSABLE"
+      ],
+      "schemes": [
+        "https"
+      ]
+    },
+    {
+      "action": [
+        "android.intent.action.OPEN_DOCUMENT_TREE"
+      ],
+      "category": [],
+      "schemes": []
+    },
+    {
+      "action": [
+        "android.intent.action.VIEW"
+      ],
+      "category": [],
+      "schemes": []
+    },
+    {
+      "action": [
+        "android.settings.USAGE_ACCESS_SETTINGS"
+      ],
+      "category": [],
+      "schemes": []
+    }
+  ],
+  "launcher_visibility_query_present": false,
+  "query_all_packages_present": false,
+  "selection_methods_implemented": false,
+  "authorized_android_device_count": 0,
+  "app_context_selection_probe": "not run; no authorized device connected",
+  "scope": "Static source and existing APK audit only; no runtime catalog, installs, permissions, account or network product operations",
+  "part_refs": [
+    "RN08-D03",
+    "RN-09f"
+  ],
+  "owner": "Ishmum",
+  "investigated_on": "2026-11-07",
+  "source_baseline": "f2fae3985b19a5217411cf9bf61bfd62929b7dba",
+  "branch": "task/react-native/rn-08-selection-investigation",
+  "source_paths_inspected": [
+    "packages/contracts/src/protection.ts",
+    "apps/mobile/src/infrastructure/native/android-usage-adapter.ts",
+    "apps/mobile/modules/hoosh-usage/android/src/main/AndroidManifest.xml",
+    "apps/mobile/android/app/src/main/AndroidManifest.xml",
+    "apps/mobile/src/features/preferences/preference-editors.tsx",
+    "apps/mobile/src/app/settings/[field].tsx"
+  ],
+  "proposed_direction": "Targeted current-profile MAIN/LAUNCHER query plus app-owned native multi-select; summary-only bridge; no QUERY_ALL_PACKAGES",
+  "implementation_status": "No runtime/manifest/shared contract change; physical selection tests not run",
+  "auth_and_tokens": "Explicitly user-deferred"
+}

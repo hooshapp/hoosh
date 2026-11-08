@@ -488,6 +488,39 @@ D06 signed-device enforcement tests remain open. This extension adds no session
 engine, persistent background monitor, native outbox, Android hard-block promise
 or automatic cleanup at sign-out. Reverting the shared UI never clears rules.
 
+#### RN08-D03 / RN-09f — App visibility and selection investigation (2026-11-07)
+
+**Investigation complete; implementation/device acceptance pending.** Ishmum reviewed
+current Android/Play documentation, the existing summary-only native port, Apps
+editor/route/adapter and the local debug APK. See the [investigation and source links](../qa/android-app-selection-investigation.md)
+and [sanitized static audit](../core_plan_implementation_notes/artifacts/rn-08-selection/visibility-audit.json).
+The candidate direction is current-profile MAIN/LAUNCHER intent visibility plus an
+app-owned native multi-select picker, retaining package identities natively and
+reusing AppsEditor’s native chooser/summary path. No QUERY_ALL_PACKAGES, new
+library, manifest/capability/runtime change or installed-app inventory is added.
+
+The research does not establish actual catalog coverage: no authorized Android
+device was connected. Next is a debug-only app-context discovery probe with
+aggregate-only evidence, then a volatile picker producer in the existing QA host.
+A privileged shell query or the older usage-access probe does not close that gate.
+Production save/discard semantics, owner/group/revision and cancellation handling
+must be explicit before persistent selection/root wiring. Keep prototype data
+memory-only; never silently assign global selection/account cleanup or per-quest
+scope. Tokens/Auth remain explicitly deferred. Native confirmation is not rule
+installation, and package visibility is independent of usage permission.
+
+| Existing ref / next commit-sized scope | Status and dependency |
+|---|---|
+| RN08-D03 investigation | Complete for documented API/repository/static APK scope; report and notes record limits. |
+| RN08-D03 app-context discovery probe | Next independent implementation; narrow debug-only launcher query, current app UID, sanitized counts/resource checks and actual device evidence. |
+| RN08-D03 native picker producer | Planned after discovery; volatile QA draft/search/confirm/cancel and lifecycle/error tests, no account persistence or enforcement. |
+| RN-09f actual editor integration | Pending explicit commit/owner contract and tested native producer; reuse existing native entry. Account persistence/Auth acceptance stays deferred. |
+| RN08-D06 / RN-10 device acceptance | Actual picker/resource/profile/Back/reentry/large-text/TalkBack checks after implementation; no coverage inferred from this research. |
+
+Keep original RN-08a–d history, RN08-D01–D06 and RN-09f; no new top-level part.
+Counts remain 46 top-level / 21 producers / 25 pending. This investigation completes
+only the user-requested first step, not the picker, parent RN-08/RN-09 or Plan 04.
+
 ### RN-09 — Main screen composition within approved data boundaries
 
 **Owner:** Ishmum.\

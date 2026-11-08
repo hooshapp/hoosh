@@ -13,6 +13,16 @@ iOS, release/additional-device and remaining accessibility matrices. Read the
 and [device record](../core_plan_implementation_notes/artifacts/rn-10d/README.md).
 Original part IDs and 46/21/25 counts are unchanged.
 
+**Next independent Android checkpoint (2026-11-07):** RN08-D03 / RN-09f app
+visibility/selection investigation is documented. Recommended prototype uses
+narrow current-profile launcher discovery and a native-owned multi-select picker
+with a summary-only bridge. No picker/runtime/manifest change is implemented;
+actual app-context device evidence remains pending. Tokens/Auth integration stay
+user-deferred. Next: bounded discovery probe, then volatile QA picker; production
+selection ownership/commit semantics remain explicit gates. See the
+[investigation](../qa/android-app-selection-investigation.md) and latest Plan 04
+notes. Existing part IDs/counts remain unchanged.
+
 ## 1. Start here
 
 Read [Plan 00](00_shared_contracts.md) first, then your area plan and the specific part you are about to implement. Before coding, read the [implementation knowledge-base workflow](../core_plan_implementation_notes/README.md), create that plan's notes file if absent, and read any existing entries. Build on the scaffold; do not reinstall it, rewrite the tested Swift core, create every future table, or complete an entire area before integrating.

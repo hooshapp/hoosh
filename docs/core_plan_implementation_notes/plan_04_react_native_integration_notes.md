@@ -4,9 +4,9 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN-10d independent Android fixes and bounded development-device acceptance recorded; full RN-10 release/joint matrices remain open. Existing RN-08 read/permission integration stays intact; real Auth/iOS/current-account acceptance remains separate.
+**Current part:** RN08-D03 / RN-09f Android app visibility and selection investigation complete for API/source/static APK scope; discovery probe and picker remain unimplemented. Existing RN-08 read/permission and RN-10 evidence remain intact. Tokens/Auth integration remain explicitly user-deferred.
 
-**Implementation branch:** `task/react-native/rn-10-android-acceptance`; parent `e55e314`; no main merge or iOS/Auth change.
+**Implementation branch:** `task/react-native/rn-08-selection-investigation`; parent `f2fae39`; no main merge or iOS/Auth change.
 
 **Commit reference:** RN-01 `2f88102`; RN-02 `2d5c0d1`; RN-03 `0741758`; RN-04 `610f570`; RN-05 preparation `0c6e4db`; RN-07 UI `5790302`; RN-08 preparation `71da2d5`; RN-09a `ff75039`. RN-10 is `9b5fbd0`.
 
@@ -15,6 +15,8 @@
 **Shared workflow:** [Implementation knowledge base](README.md).
 
 ## Resume here
+
+- **RN08-D03 / RN-09f selection investigation (2026-11-07):** branch `task/react-native/rn-08-selection-investigation`, parent `f2fae39`; API/source/existing-APK research complete, no picker/runtime/manifest/shared-port change. Recommend targeted current-profile MAIN/LAUNCHER discovery and a native-owned multi-select returning the existing summary. No broad package permission/library, inventory upload or guessed persistent account/global group. Zero authorized Android devices at inspection; actual app-UID coverage/resources remain untested. Next debug-only aggregate discovery probe, then volatile native QA picker. Production commit/cancel/owner semantics remain explicit prerequisites. Tokens/Auth integration stay user-deferred. Read [investigation](../qa/android-app-selection-investigation.md) and final entry; stable IDs/counts and all prior gates preserved. Previous documentation `f2fae39` passed Foundation run 42420770085, as verified in the preceding publication task.
 
 - **RN-10d publication verified (2026-11-07):** pushed implementation `0f7f74e` on `task/react-native/rn-10-android-acceptance`; Foundation run 42420522051 passed all mobile/API/database jobs and their steps. See final publication entry and artifact. This follow-up documentation receives its own subsequent run, checked before reporting completion. No main merge/deployment or change to Auth/account/iOS/release gates; previous local-only status is historical.
 
@@ -3007,7 +3009,7 @@ RN10-D01/D02/D05/D06 now have explicit bounded Android debug-device evidence; RN
 
 ### RN-10d follow-up — Publish and verify GitHub Foundation checks
 
-**Commit:** `docs(mobile): record RN-10 GitHub verification`. **Hash:** Pending; resolve by subject/Git and record in the next normal update.
+**Commit:** `docs(mobile): record RN-10 GitHub verification`. **Hash:** `f2fae39` (recorded during the selection investigation).
 
 **Date:** 2026-11-07. **Owner:** Ishmum. **Branch:** `task/react-native/rn-10-android-acceptance`. **Parent:** `0f7f74e`.
 
@@ -3028,3 +3030,48 @@ RN10-D01/D02/D05/D06 now have explicit bounded Android debug-device evidence; RN
 - `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 19–20, 2958, 3006–3030. Record prior implementation hash and latest resume checkpoint; this entry documents authorized publication, actual hosted checks, every changed file and remaining handoff.
 
 **Remaining/handoff:** RN-10d publication verification is complete. Parent RN-10/Plan 04 still require the explicitly listed joint Auth/root/current-account, iOS/VoiceOver, release/additional-device and remaining accessibility/lifecycle evidence. Fresh A/B tokens and hosted-C deletion remain user-deferred. No part IDs/counts or implementation claims changed. Teammate can pull this feature branch and read the same implementation/device/CI records.
+
+
+### RN08-D03 / RN-09f — Android app visibility and selection investigation
+
+**Commit:** `docs(android): investigate app visibility and selection`. **Hash:** Pending; resolve by subject/Git and record in the next normal update.
+
+**Date:** 2026-11-07. **Owner:** Ishmum. **Branch:** `task/react-native/rn-08-selection-investigation`. **Parent:** `f2fae39`.
+
+**Status/scope:** User-requested first investigation step complete for primary Android/Play API documentation, existing source/shared-contract/UI audit and static inspection of the existing local debug APK. Plan 04 RN08-D03 / RN-09f, FR-004/034, NFR-005 and later NFR-008 acceptance. No new top-level plan/part, native picker/runtime/manifest/capability/dependency/shared contract or UI implementation. Existing Apps source frame `10601:5968` is referenced from the plan, not freshly inspected or redesigned in Figma. Anisha's Auth/onboarding/iOS remains untouched; tokens/Auth integration explicitly remain deferred. No independent teammate review, Play approval or complete device feasibility is claimed.
+
+#### Findings, decisions and relationships
+
+- Android documents filtered package visibility for target API 30+ and targeted intent declarations. Recommend MAIN/LAUNCHER query in current app/profile with ordinary query flags; avoid MATCH_DEFAULT_ONLY, broad package permission, app-name allowlist or new native dependency. This is the direction for an actual app-context probe, not a claim of a complete inventory or measured package coverage.
+- The summary-only ProtectionService already exposes pickApps/getSelectedApps; AppsEditor already has a native Choose apps/summary branch. Prefer a Kotlin-owned multi-select that keeps package identifiers/drawables native; a full React Native inventory would require another reviewed catalog/icon boundary. Native picker means app-owned UI, not an OS authorization picker. ACTION_PICK_ACTIVITY is a single-activity result, while LauncherApps introduces profile/synthesized-entry considerations. Existing capabilities and unsupported methods remain unchanged.
+- Found a concrete contract boundary: cancellation, owner/group/revision and native confirm versus outer Save are not fully defined. Recommend a distinct native cancellation rejection handled as no-op, before implementation; do not turn cancel into an empty saved selection. Independent probe/QA picker can use volatile local drafts without tokens. Persistent account/global selection, per-quest scope and sign-out/deletion behavior remain deferred rather than invented from missing parameters.
+- Record deduplication by package within current profile, enabled/exported/current candidates, native labels/icons/fallbacks, locale sorting, duplicate/long/bidirectional labels, stale/uninstalled/disabled apps, hidden/work/private profile limits, lifecycle/reentry/late-result fencing and TalkBack/large text. Do not classify all preinstalled apps as ineligible from FLAG_SYSTEM, claim Most used from launcher data, upload inventory or equate selection/usage grant with enforcement.
+- Static APK audit finds target 36/minimum 24, no QUERY_ALL_PACKAGES and no MAIN/LAUNCHER visibility declaration. Existing dependency queries are retained and recorded, not assumed absent or sufficient. Binary hash identifies the pre-existing file; no new build/source attestation is made. ADB reports zero authorized devices. No package inventory, permission grant, native UI/app-context discovery or current phone acceptance occurred.
+
+#### Validation and limits
+
+- Read the current primary Android package visibility/declaration/testing, PackageManager, LauncherApps, Intent, ResolveInfo, ApplicationInfo/private-space and Google Play package-visibility guidance on 2026-11-07; report links support each factual API/policy finding. Engineering recommendations and unrun device assertions are explicitly separate.
+- Inspected existing port, Android adapter/module/manifests, actual Apps route/editor and tests at parent f2fae39. Decoded the existing `apps/mobile/android/app/build/outputs/apk/debug/app-debug.apk` with local JDK 17 / Android `apkanalyzer manifest print`, parsed permissions/intent queries/SDKs and SHA-256; sanitized audit contains no installed-app inventory or device identifier.
+- `adb devices` yields 0 authorized devices, so physical probe/picker/label/icon coverage stays pending. No shell package query substitutes for app UID; no APK install, app data/permission/radio change, mapping/server, Auth/Supabase/backend/iOS operation performed.
+- Validation passed for JSON fields/source/APK hash, illustrative XML syntax, local links, every changed file/line ledger and `git diff --check`. No executable code changed; runtime suites/native builds are not rerun. Earlier RN-08/RN-10/CI results are historical, not a passed selection test.
+- Preceding documentation hash f2fae39 and its successful Foundation run [42420770085](https://github.com/hooshapp/hoosh/actions/runs/42420770085) are recorded during this normal update. This investigation is a local documentation commit; no new push/CI result is claimed.
+
+#### Every changed file and logical change
+
+- `docs/qa/android-app-selection-investigation.md`: lines 1–25. Record part/owner/baseline and the recommended narrow discovery/native-summary approach, separating documented Android filtering from untested engineering inference.
+- `docs/qa/android-app-selection-investigation.md`: lines 26–42. Audit actual port/editor/route/adapter/module and existing APK, including the missing launcher declaration and unavailable runtime selection; point to sanitized evidence.
+- `docs/qa/android-app-selection-investigation.md`: lines 43–84. Specify the future debug-only intent/query sketch, ordinary matching flags and separate visibility/usage/enforcement boundaries, with primary platform/Play citations; no executable change.
+- `docs/qa/android-app-selection-investigation.md`: lines 85–102. Compare PackageManager, broad/fixed inventories, LauncherApps, single-activity chooser, RN catalog and dependencies; explain the native summary route choice and limits.
+- `docs/qa/android-app-selection-investigation.md`: lines 103–134. Record deduplication, resource/fallback/locale behavior, preinstalled/profile/empty-list/race boundaries and the separate Most used measurement requirement.
+- `docs/qa/android-app-selection-investigation.md`: lines 135–159. Identify cancellation, commit, owner/group/revision, stale candidates, lifecycle and capability gaps; define safe volatile prototype work and persistent/account prerequisites.
+- `docs/qa/android-app-selection-investigation.md`: lines 160–185. Refine remaining existing-plan commits into discovery probe, volatile picker, eventual editor wiring and actual device acceptance without claiming their implementation.
+- `docs/qa/android-app-selection-investigation.md`: lines 186–201. Separate documentation/source/static-binary validation from unavailable device tests and runtime suites that were not run.
+- `docs/qa/android-app-selection-investigation.md`: lines 202–209. Give the next concrete probe and account/storage/enforcement handoff without changing existing capability or Auth/root behavior.
+- `docs/core_plan_implementation_notes/artifacts/rn-08-selection/visibility-audit.json`: lines 1–76. New sanitized static APK/source audit: binary hash/SDKs, exact permissions and intent queries, missing launcher/broad query flags, source paths, deferred Auth and zero-device/unimplemented status. No inventory or personal identifier.
+- `docs/core_plan/04_react_native_integration.md`: lines 491–523. Add current investigation evidence and candidate direction, concrete next commit scopes, device/contract gates and preserved IDs/counts. Earlier a–d history and remaining full-parent acceptance stay intact.
+- `docs/core_plan/README.md`: lines 16–25. Expose latest independent Android investigation and next probe in the execution entry point; explicitly preserve token/Auth deferral and pending production semantics.
+- `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 7, 9, 19–20, 3012, 3033–3077. Update current branch/status and resume, record prior publication hash, and document this investigation, all file/line changes, actual validations, limits and concrete next action.
+
+#### Next action and remaining gates
+
+Next independent implementation: use the existing Android instrumentation/local module path for a debug-only current-profile launcher-discovery probe; record sanitized aggregate counts/deduplication/resources with/without the narrow declaration under our app UID and denied usage access. Actual authorized device acceptance must precede claiming our catalog works. Then build a volatile native QA picker with cancellation/confirm/search/lifecycle tests. Real Apps editor save/persistence/root wiring follows explicit owner/group/revision/stage/commit/discard semantics and later account acceptance; no new Auth bypass, global store or product rule is introduced by a prototype. Tokens/Auth remain user-deferred; iOS remains Anisha's. Keep RN-08a–d history, RN08-D01–D06, RN-09f and 46 top-level / 21 producers / 25 pending counts. Full RN-08/RN-09/Plan 04, enforcement and release gates remain open. Unrelated untracked workspace/icon packs are excluded; no push requested for this investigation.
