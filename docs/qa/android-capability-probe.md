@@ -185,3 +185,13 @@ and malformed native payloads are not all physically exercised (adapter tests
 cover safe failures). TalkBack/VoiceOver speech, signed release, iOS/Auth/root,
 authenticated settings journeys and hosted acceptance remain open. Mode
 `unsupported` describes this build's unimplemented protection, not Android as an OS.
+
+
+## App-selection discovery follow-up — 2026-11-09
+
+The separate [debug/test-only discovery probe](android-selection-discovery-probe.md)
+now extends the existing instrumentation with `-e probe selection`. Actual
+baseline/query app-context counts and denied-usage-access independence are
+recorded without inventory identities. Original usage instrumentation/emptyWindow
+and production unavailable-selection/unsupported-protection behavior are retained
+and physically regression-checked. This does not implement a picker or blocking.

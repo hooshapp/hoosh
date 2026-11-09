@@ -1,0 +1,223 @@
+{
+  "part": "RN08-D03",
+  "date": "2026-11-09",
+  "owner": "Ishmum",
+  "branch": "task/react-native/rn-08-selection-probe",
+  "parent": "9fda458",
+  "commit": "Pending; resolve by implementation entry/commit subject",
+  "variants": {
+    "baseline": {
+      "application_apk_sha256": "3d977cd5d0e9da679391e87ebfc20d4e1f434c40c05362c59014d9986dd048b8",
+      "test_apk_sha256": "bdd5f30ffc1d8132b2302199dc54566c8ddbc04194faec8570c5b6c19967d740",
+      "launcher_query": false,
+      "permissions": [
+        "android.permission.ACCESS_LOCAL_NETWORK",
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.ACCESS_WIFI_STATE",
+        "android.permission.CHANGE_WIFI_MULTICAST_STATE",
+        "android.permission.INTERNET",
+        "android.permission.PACKAGE_USAGE_STATS",
+        "android.permission.VIBRATE",
+        "com.hoosh.disconnect.dev.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+      ],
+      "probe_classes_in_application_apk": false,
+      "probe_classes_in_test_apk": true,
+      "native_build": "passed",
+      "installation": "installed and instrumented on Pixel/API 36; see runtime results"
+    },
+    "query": {
+      "application_apk_sha256": "2ba32109cc3b54c44283d1af7166f42fcdece9b01a4d5109add28cbb0f6f8b4f",
+      "test_apk_sha256": "bdd5f30ffc1d8132b2302199dc54566c8ddbc04194faec8570c5b6c19967d740",
+      "launcher_query": true,
+      "permissions": [
+        "android.permission.ACCESS_LOCAL_NETWORK",
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.ACCESS_WIFI_STATE",
+        "android.permission.CHANGE_WIFI_MULTICAST_STATE",
+        "android.permission.INTERNET",
+        "android.permission.PACKAGE_USAGE_STATS",
+        "android.permission.VIBRATE",
+        "com.hoosh.disconnect.dev.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+      ],
+      "probe_classes_in_application_apk": false,
+      "probe_classes_in_test_apk": true,
+      "native_build": "passed",
+      "installation": "installed and instrumented on Pixel/API 36; see runtime results"
+    }
+  },
+  "isolation": {
+    "release_merged_launcher_query": false,
+    "application_bytecode_identical_between_variants": true,
+    "test_bytecode_identical_between_variants": true,
+    "merged_manifest_contents_only_differ_by_launcher_query": true,
+    "manifest_comparison_ignores_element_order": true,
+    "baseline_debug_overrides_preserved": true
+  },
+  "toolchain": {
+    "jdk": "Temurin 17.0.21",
+    "gradle": "9.4.1",
+    "compile_sdk": "37.0",
+    "target_sdk": 36,
+    "minimum_sdk": 24,
+    "architecture": "arm64-v8a",
+    "restored_missing_local_sdk_packages": true,
+    "project_versions_changed": false
+  },
+  "source_sha256": {
+    "apps/mobile/android/app/build.gradle": "36c8db346ea8258123d39a9cacfa3cbf4bd3f605c38c2eb79db2fd0c814eeca6",
+    "apps/mobile/android/app/src/debug/AndroidManifest.xml": "f285eff6b9d6e9b95f758a4a34b1edd9f2b33b846e5ef8550b264646e3363fa9",
+    "apps/mobile/android/app/src/selectionProbeBaseline/AndroidManifest.xml": "76b20b9d46b61878b3fd67eefd3cb8eb2233e826809a0f35996b45966c418800",
+    "apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/UsageProbeInstrumentation.kt": "d132f5e0ec5b77bc0dc62c49fdd4dc0d1cd7192e61692aa0ac3e1564c1a33e38",
+    "apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/SelectionDiscoveryProbe.kt": "cddb8e5464686c4c0c92d5d154787090113b26702646ffbafaf3968600a4f3db",
+    "apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/SelectionDiscoveryProbeChecks.kt": "9f3d6ac6cce9f08a07533ef95286a6f854c93ad93bcc16c89e1971313000881a"
+  },
+  "runtime_validation": {
+    "authorized_devices_observed": 1,
+    "model": "Pixel 8 Pro",
+    "android_api": 36,
+    "synthetic_checks_defined": 10,
+    "synthetic_checks_executed": true,
+    "synthetic_checks_per_run": 10,
+    "successful_selection_probe_runs": 3,
+    "synthetic_case_results_total": 30,
+    "app_context_discovery_executed": true,
+    "usage_denied_discovery_executed": true,
+    "device_state": "accepted within recorded Pixel debug/aggregate scope",
+    "results": {
+      "baseline-usage-denied": {
+        "self_checks_passed": 10,
+        "summary": {
+          "schemaVersion": 1,
+          "scope": "current_profile_launcher_candidates",
+          "identitiesExported": false,
+          "resourceCheckLimit": 64,
+          "usageAuthorization": "denied",
+          "queryAllPackagesDeclared": false,
+          "overlayDeclared": false,
+          "accessibilityServiceDeclared": false,
+          "targetUidVerified": true,
+          "matchedActivityCount": 54,
+          "eligibleActivityCount": 53,
+          "excludedActivityCount": 0,
+          "selfActivityCount": 1,
+          "uniquePackageCount": 53,
+          "duplicateActivityCount": 0,
+          "sampledPackageCount": 53,
+          "labelResolutionSuccessCount": 53,
+          "labelResolutionFailureCount": 0,
+          "blankLabelCount": 0,
+          "iconResolutionSuccessCount": 53,
+          "iconResolutionFailureCount": 0,
+          "resourceChecksCapped": false,
+          "state": "ready",
+          "failureCode": null,
+          "elapsedMs": 379
+        }
+      },
+      "query-usage-denied": {
+        "self_checks_passed": 10,
+        "summary": {
+          "schemaVersion": 1,
+          "scope": "current_profile_launcher_candidates",
+          "identitiesExported": false,
+          "resourceCheckLimit": 64,
+          "usageAuthorization": "denied",
+          "queryAllPackagesDeclared": false,
+          "overlayDeclared": false,
+          "accessibilityServiceDeclared": false,
+          "targetUidVerified": true,
+          "matchedActivityCount": 185,
+          "eligibleActivityCount": 183,
+          "excludedActivityCount": 1,
+          "selfActivityCount": 1,
+          "uniquePackageCount": 183,
+          "duplicateActivityCount": 0,
+          "sampledPackageCount": 64,
+          "labelResolutionSuccessCount": 64,
+          "labelResolutionFailureCount": 0,
+          "blankLabelCount": 0,
+          "iconResolutionSuccessCount": 64,
+          "iconResolutionFailureCount": 0,
+          "resourceChecksCapped": true,
+          "state": "ready",
+          "failureCode": null,
+          "elapsedMs": 322
+        }
+      },
+      "query-original-usage-mode": {
+        "self_checks_passed": 10,
+        "summary": {
+          "schemaVersion": 1,
+          "scope": "current_profile_launcher_candidates",
+          "identitiesExported": false,
+          "resourceCheckLimit": 64,
+          "usageAuthorization": "authorized",
+          "queryAllPackagesDeclared": false,
+          "overlayDeclared": false,
+          "accessibilityServiceDeclared": false,
+          "targetUidVerified": true,
+          "matchedActivityCount": 185,
+          "eligibleActivityCount": 183,
+          "excludedActivityCount": 1,
+          "selfActivityCount": 1,
+          "uniquePackageCount": 183,
+          "duplicateActivityCount": 0,
+          "sampledPackageCount": 64,
+          "labelResolutionSuccessCount": 64,
+          "labelResolutionFailureCount": 0,
+          "blankLabelCount": 0,
+          "iconResolutionSuccessCount": 64,
+          "iconResolutionFailureCount": 0,
+          "resourceChecksCapped": true,
+          "state": "ready",
+          "failureCode": null,
+          "elapsedMs": 302
+        }
+      },
+      "legacy_usage_probe": "passed; original emptyWindow path retained; no usage events exported",
+      "cleanup": {
+        "usage_access_restored": true,
+        "original_mode": "allow",
+        "font_and_stay_awake_unchanged": true,
+        "reverse_mappings_unchanged": true,
+        "no_app_data_cleared": true
+      }
+    },
+    "production_capabilities_unchanged": true,
+    "all_visible_resources_covered": false,
+    "timing_is_sla": false
+  },
+  "scope": {
+    "production_picker_implemented": false,
+    "production_bridge_changed": false,
+    "auth_tokens": "user-deferred",
+    "account_or_database_operations": false,
+    "app_inventory_exported": false,
+    "metro_or_reverse_mapping_started": false,
+    "debug_and_test_apks_installed": true,
+    "temporary_usage_access_change": true,
+    "usage_access_restored": true,
+    "app_data_cleared": false,
+    "persistent_permission_change": false
+  },
+  "limits": [
+    "Actual current-profile app-context comparison on Pixel/API 36 only; no complete inventory, other-OEM/profile/API or store approval claim",
+    "Resource resolution capped at 64 unique candidates; native fallback may satisfy loadIcon; no original-icon completeness claim",
+    "Synthetic lock/unavailable/race guards passed; no new physical lock/unlock, cross-profile or uninstall-race matrix",
+    "Release manifest processed and app/test DEX isolation verified; no release APK signing/build/device acceptance",
+    "No catalog output, picker, selection save, usage ranking or blocking implementation"
+  ],
+  "local_apks": "apps/mobile/.expo/selection-probe/2026-11-09 (ignored; not committed)",
+  "configuration_checks": [
+    {
+      "value": "invalid",
+      "rejected": true
+    },
+    {
+      "value": "",
+      "rejected": true
+    }
+  ],
+  "final_default_apks_match_device_tested_query_apks": true,
+  "final_apk_identity_retested_after_rebuild": true
+}

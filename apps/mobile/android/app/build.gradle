@@ -98,6 +98,15 @@ android {
 
         buildConfigField "String", "REACT_NATIVE_RELEASE_LEVEL", "\"${findProperty('reactNativeReleaseLevel') ?: 'stable'}\""
     }
+    // Repeat the identical app-context test without the experiment's visibility.
+    // This changes only the debug manifest; release and debugOptimized are untouched.
+    def selectionProbeBaseline = providers.gradleProperty('hooshSelectionProbeBaseline').orElse('false').get()
+    if (!(selectionProbeBaseline in ['true', 'false'])) {
+        throw new GradleException('hooshSelectionProbeBaseline must be true or false')
+    }
+    if (selectionProbeBaseline == 'true') {
+        sourceSets.debug.manifest.srcFile('src/selectionProbeBaseline/AndroidManifest.xml')
+    }
     // Use AGP's standard local debug key; never commit signing material.
     buildTypes {
         debug {

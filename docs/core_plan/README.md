@@ -13,7 +13,18 @@ iOS, release/additional-device and remaining accessibility matrices. Read the
 and [device record](../core_plan_implementation_notes/artifacts/rn-10d/README.md).
 Original part IDs and 46/21/25 counts are unchanged.
 
-**Next independent Android checkpoint (2026-11-07):** RN08-D03 / RN-09f app
+**Latest selection checkpoint (2026-11-09):** RN08-D03 debug-only app-context
+discovery probe is implemented and Pixel/API 36 tested. Same-UID/no-query versus
+launcher-query controls return 53/183 unique candidates with usage access denied;
+metadata is bounded to 64 resources, and only aggregate results leave the probe.
+Both builds/release manifest/DEX isolation and 10 synthetic cases per run pass.
+Settings are restored; no production picker/capability/Auth change. Next volatile
+native QA picker, then explicit persistent ownership/commit semantics before real
+Apps editor saves. See [runbook](../qa/android-selection-discovery-probe.md) and
+[build/device record](../core_plan_implementation_notes/artifacts/rn-08-selection/discovery-build.json).
+Tokens/Auth remain deferred; original IDs/counts and remaining release gates stay.
+
+**Investigation checkpoint (2026-11-07; historical next step is now implemented above):** RN08-D03 / RN-09f app
 visibility/selection investigation is documented. Recommended prototype uses
 narrow current-profile launcher discovery and a native-owned multi-select picker
 with a summary-only bridge. No picker/runtime/manifest change is implemented;

@@ -6,6 +6,12 @@
 probe, picker implementation and production integration are not performed.
 Tokens and Auth integration remain explicitly deferred by the user.
 
+**Implementation follow-up (2026-11-09):** the debug-only discovery probe now
+has native build/isolation and Pixel/API 36 app-context evidence; see the
+[probe runbook](android-selection-discovery-probe.md). The dated investigation
+below describes its original 9fda458 baseline, including then-unavailable device
+access. Picker/production selection are still unimplemented; tokens/Auth deferred.
+
 ## Recommended approach
 
 Use a narrowly declared launcher-intent query to discover candidate apps in the

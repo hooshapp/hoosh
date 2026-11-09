@@ -512,7 +512,7 @@ installation, and package visibility is independent of usage permission.
 | Existing ref / next commit-sized scope | Status and dependency |
 |---|---|
 | RN08-D03 investigation | Complete for documented API/repository/static APK scope; report and notes record limits. |
-| RN08-D03 app-context discovery probe | Next independent implementation; narrow debug-only launcher query, current app UID, sanitized counts/resource checks and actual device evidence. |
+| RN08-D03 app-context discovery probe | Implemented 2026-11-09; debug/test-only query and no-query controls compile. Pixel/API 36 app-UID tests pass with usage denied: 53 baseline versus 183 query candidates; capped resource checks and 10 synthetic cases per run. |
 | RN08-D03 native picker producer | Planned after discovery; volatile QA draft/search/confirm/cancel and lifecycle/error tests, no account persistence or enforcement. |
 | RN-09f actual editor integration | Pending explicit commit/owner contract and tested native producer; reuse existing native entry. Account persistence/Auth acceptance stays deferred. |
 | RN08-D06 / RN-10 device acceptance | Actual picker/resource/profile/Back/reentry/large-text/TalkBack checks after implementation; no coverage inferred from this research. |
@@ -520,6 +520,26 @@ installation, and package visibility is independent of usage permission.
 Keep original RN-08a–d history, RN08-D01–D06 and RN-09f; no new top-level part.
 Counts remain 46 top-level / 21 producers / 25 pending. This investigation completes
 only the user-requested first step, not the picker, parent RN-08/RN-09 or Plan 04.
+
+**RN08-D03 discovery probe checkpoint (2026-11-09):** implemented in the
+existing test instrumentation, with collector/checks in androidTest only and a
+debug manifest query. Strict `hooshSelectionProbeBaseline=true` selects the same
+debug overrides without launcher visibility. Both APK pairs compile; release
+manifest has no query, test classes are absent from the application APK, and
+control APKs have identical app/test bytecode and permissions. Final APKs were
+installed/retested on Pixel/API 36: baseline/query are ready with usage denied,
+53/183 unique candidates; resources resolve for baseline 53/query capped 64;
+restored-mode query and original usage instrumentation pass. Ten synthetic checks
+pass per selection run (30 results); original usage mode allow restored, font/
+stay-awake/USB mappings unchanged. No inventory identities or images exported.
+See [reproduction and exact scope](../qa/android-selection-discovery-probe.md),
+[sanitized evidence](../core_plan_implementation_notes/artifacts/rn-08-selection/discovery-build.json)
+and the latest implementation entry. No picker/shared bridge/root/Auth/iOS or
+selection capability change. Next volatile native QA picker, with explicit
+cancellation/lifecycle behavior; persistent owner/group/commit semantics and
+production editor saves remain separate. Tokens/Auth stay user-deferred.
+Physical lock/race/profile/other-device and signed release/picker acceptance
+remain open. Existing IDs/counts and previous dated investigation are preserved.
 
 ### RN-09 — Main screen composition within approved data boundaries
 
