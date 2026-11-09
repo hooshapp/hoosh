@@ -6,4 +6,5 @@ import android.content.Context
 internal object SelectionPreviewFactory {
   const val enabled = false
   fun create(context: Context): SelectionPreview? = null
+  fun createEditor(context: Context): SelectionEditor? = null
 }

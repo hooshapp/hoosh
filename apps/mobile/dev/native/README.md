@@ -27,7 +27,7 @@ If LAN access is unavailable, `adb reverse tcp:8090 tcp:8090` allows opening
 `exp://127.0.0.1:8090` in Expo Go on the connected Android phone.
 Do not record device serials, account tokens, email addresses or personal screens.
 
-Use **Screens** to choose among 21 pages (19 source examples plus two native diagnostics), **State** to cycle Ready, Loading, Error,
+Use **Screens** to choose among 22 pages (19 source examples plus three native diagnostics), **State** to cycle Ready, Loading, Error,
 Unavailable, Busy and Long text, and **Reset** to restore the local draft. State
 changes also reset drafts. Not every component has a distinct presentation for
 all six states; editor Loading uses unavailable and a missing monthly series
@@ -125,3 +125,15 @@ saved to an account. Expo Go/iOS/release have no preview methods and show an
 explicit unavailable fallback. Build/run, exact evidence, privacy and cleanup:
 [selection preview runbook](../../../../docs/qa/android-selection-preview.md).
 Never commit owner app lists, raw phone logs or screenshots containing app names.
+
+
+### Saved apps editor (debug only)
+
+The **Saved apps editor** entry reuses the real AppsEditor and a native durable
+transaction under a clearly labeled synthetic owner. Use these choices in the
+picker only stages a draft; Save selected apps persists it. Discard/Reset/Screens
+release the draft, preserving saved data; cold process restart reloads the saved
+count. State is disabled. No account/Auth/Router or blocking integration is claimed.
+See [contract](../../../../docs/architecture/native-global-selection.md) and
+[checks/runbook](../../../../docs/qa/android-durable-selection.md). Do not clear app
+data or commit owner inventories to demonstrate persistence.

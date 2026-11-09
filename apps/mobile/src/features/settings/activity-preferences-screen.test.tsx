@@ -113,7 +113,7 @@ async function mount(app: ReturnType<typeof setup>, summary = false, onBack = je
   return result;
 }
 const press = async (label: string) => {
-  await fireEvent.press(screen.getByText(label));
+  await fireEvent.press(screen.getByRole('button', { name: label }));
 };
 const choice = (label: string) => screen.getByRole('checkbox', { name: label });
 const choose = async (label: string) => {

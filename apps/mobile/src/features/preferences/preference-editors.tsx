@@ -18,6 +18,7 @@ import {
 
 export type PreferenceActions = {
   dirty: boolean;
+  disabled?: boolean;
   state?: EditorState;
   onSave?: () => void;
   onDiscard?: () => void;
@@ -262,12 +263,13 @@ export type AppSelection =
       sourceLabel: string;
       onChange: (ids: readonly string[]) => void;
     }
-  | { kind: 'native'; summary: string | null; onChoose?: () => void };
+  | { kind: 'native'; summary: string | null; onChoose?: () => void; busy?: boolean; disabled?: boolean };
 export function AppsEditor({
   selection,
   onBack,
+  feedback,
   ...actions
-}: PreferenceActions & { selection: AppSelection; onBack: () => void }) {
+}: PreferenceActions & { selection: AppSelection; onBack: () => void; feedback?: ReactNode }) {
   const [query, setQuery] = useState('');
   const selected = selection.kind === 'catalog' ? [...new Set(selection.selected)] : [];
   const options =
@@ -282,9 +284,10 @@ export function AppsEditor({
       backAsset={assets.back}
       title="Distracting Apps"
       dirty={actions.dirty}
-      busy={actions.state === 'saving'}
+      busy={actions.state === 'saving' || (selection.kind === 'native' && selection.busy)}
       onBack={onBack}>
       <Heading>Make room for focus</Heading>
+      {feedback}
       {selection.kind === 'native' ? (
         <>
           <Text style={editorStyles.body}>
@@ -292,8 +295,10 @@ export function AppsEditor({
           </Text>
           <Button
             label="Choose apps"
+            busy={selection.busy}
+            busyLabel="Choosing apps…"
             variant="secondary"
-            disabled={!selection.onChoose || actions.state === 'saving'}
+            disabled={!selection.onChoose || selection.busy || selection.disabled || actions.state === 'saving'}
             onPress={() => selection.onChoose?.()}
           />
           {!selection.onChoose ? (
@@ -356,6 +361,7 @@ export function AppsEditor({
       )}
       <SaveActions
         {...actions}
+        disabled={actions.disabled || (selection.kind === 'native' && selection.busy)}
         label={
           selection.kind === 'catalog'
             ? `Save ${selected.length} selected apps`

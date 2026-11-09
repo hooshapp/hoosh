@@ -21,6 +21,17 @@ here. Tokens/Auth remain deferred, iOS Anisha-owned, counts 46/21/25 unchanged.
 Read [Plan 00 reconciliation notes](../core_plan_implementation_notes/plan_00_shared_contracts_notes.md)
 for this documentation follow-up; prior Plan 04 implementation evidence stays dated.
 
+**Current RN08-D03 / RN-09f checkpoint (2026-11-09):** durable local global-selection
+transactions now exist in debug source sets: explicit owner/draft/version, picker
+staging, editor Save/Discard, atomic per-owner storage and revision conflicts.
+The isolated Saved apps editor reuses the real shared AppsEditor with a labeled
+synthetic owner. It is not mounted in the production Router; production selection
+capability, account binding/Auth, installation/enforcement and iOS remain unchanged.
+See [transaction contract](../architecture/native-global-selection.md),
+[verification runbook](../qa/android-durable-selection.md) and latest notes for
+actual checks and remaining production/account/occurrence/device gates. Earlier
+next-step text is historical; parent counts remain 46/21/25.
+
 ## 1. Outcome and deliberate scope
 
 The first outcome is a real authenticated round trip: the mobile app obtains a current session through the auth integration, calls FastAPI `GET /v1/me`, and displays the verified account without leaking an earlier account's data. The second outcome is minimal profile integration, with honest loading, failure, offline, and conflict handling. Neither outcome depends on guessing session allowances, rewards, or Android blocking capabilities.
@@ -526,8 +537,8 @@ installation, and package visibility is independent of usage permission.
 |---|---|
 | RN08-D03 investigation | Complete for documented API/repository/static APK scope; report and notes record limits. |
 | RN08-D03 app-context discovery probe | Implemented 2026-11-09; debug/test-only query and no-query controls compile. Pixel/API 36 app-UID tests pass with usage denied: 53 baseline versus 183 query candidates; capped resource checks and 10 synthetic cases per run. |
-| RN08-D03 native picker producer | Implemented debug-only volatile native chooser in isolated QA host; search/retained checks, confirm/cancel, count-only bridge and owner/lifecycle cleanup. See current preview checkpoint below for device results and remaining gates. |
-| RN-09f actual editor integration | Pending explicit commit/owner contract and tested native producer; reuse existing native entry. Account persistence/Auth acceptance stays deferred. |
+| RN08-D03 native picker producer | Volatile chooser plus durable debug-native draft/Save producer in isolated QA host. Current transaction checkpoint/runbook distinguish saved native state from draft, account binding and installed rules. |
+| RN-09f actual editor integration | Existing AppsEditor now consumes the durable transaction via controlled QA owner. Production Router/verified account scope and native installed-rule integration remain pending; Auth user-deferred. |
 | RN08-D06 / RN-10 device acceptance | Pixel/API 36 debug preview search/confirm/cancel/Back/reset/background, usage-denied and font 1.15/2.0 + IME checks recorded in preview evidence. Complete spoken TalkBack, profile/race/other-device and signed release matrix remain open. |
 
 Keep original RN-08a–d history, RN08-D01–D06 and RN-09f; no new top-level part.
@@ -616,7 +627,7 @@ account, app inventory or usage is supplied by actual routes.
 | Part | Source / scope | Status |
 |---|---|---|
 | RN-09e | Quest personalize `10487:126` / custom `10577:427`, reusable draft fields, times/repeat/weekdays, validation, dirty exit, action states and routes | UI implemented; live quest persistence/recurrence/native policies remain deferred |
-| RN-09f | Age `10601:5908`, activities `10601:6057`, apps `10601:5968`, inline gender `10601:6146`; search/selection/custom drafts, cancellation and save states | UI implemented; real preference persistence/native selection remain deferred |
+| RN-09f | Age `10601:5908`, activities `10601:6057`, apps `10601:5968`, inline gender `10601:6146`; search/selection/custom drafts, cancellation and save states | UI and debug-native local Apps draft/Save producer implemented; production/account selection, demographics and native rule installation remain deferred |
 | RN-09g | Inline days `10601:6315`, hours `10601:6513`, sessions `10601:6690`; shared controlled editors reusable by AUTH-12, explicit limits and unavailable saves | UI implemented; approved shared schema, real saves/install and device checks remain deferred |
 | RN-09h | Progress `10570:192`, reduction/time reclaimed `10570:193`, period changes, honest evidence/eligibility states and navigation | UI implemented; live measurements and signed-device acceptance remain deferred |
 

@@ -9,4 +9,5 @@ internal object SelectionPreviewFactory {
     if (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0)
       NativeSelectionPreview(context.applicationContext)
     else null
+  fun createEditor(context: Context): SelectionEditor? = if (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0) NativeSelectionEditor(context.applicationContext) else null
 }

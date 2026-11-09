@@ -4,9 +4,9 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN08-D03 preview implemented; Q09 now confirms global selection. Next durable native selection/Save–Cancel contract under existing RN08-D03/RN-09f; Auth remains deferred.
+**Current part:** RN08-D03/RN-09f debug-native durable selection and existing AppsEditor consumer implemented; production owner/Auth/root/capability and native rule integration remain deferred.
 
-**Implementation branch:** `task/react-native/rn-08-selection-preview`; parent `6e36788`; no main merge or iOS/Auth change.
+**Implementation branch:** `task/react-native/rn-09f-durable-selection`; parent `e9e2d90`; no main merge or iOS/Auth change.
 
 **Commit reference:** RN-01 `2f88102`; RN-02 `2d5c0d1`; RN-03 `0741758`; RN-04 `610f570`; RN-05 preparation `0c6e4db`; RN-07 UI `5790302`; RN-08 preparation `71da2d5`; RN-09a `ff75039`. RN-10 is `9b5fbd0`.
 
@@ -15,6 +15,8 @@
 **Shared workflow:** [Implementation knowledge base](README.md).
 
 ## Resume here
+
+- **RN08-D03 / RN-09f durable local selection (2026-11-09):** debug native owner/global-group draft/Save transaction and existing AppsEditor consumer in Saved apps editor QA. Native picker confirmation stages; editor Save performs bounded atomic revision CAS and readback. Cancel/Discard/release do not erase saved state; restart reloads it. Final native tests, phone flows, large-text header correction and cleanup are recorded in the final entry and [runbook](../qa/android-durable-selection.md). No default production owner, Router/Auth binding, installed rule or capability/iOS change. Next production owner-generation/account lifecycle and active-occurrence contract before enabling real selection; user tokens/Auth still deferred. Existing IDs/counts unchanged. Parent PM documentation is `e9e2d90`; own hash Pending until next normal update.
 
 - **PM reconciliation (2026-11-09):** [ADR](../architecture/pm-decisions-2026-11-09.md) records the supplied Q02–Q22 responses; Q09 explicitly settles global selection for quests, so older global/per-quest follow-ups below are historical. Next durable native owner/group/revision and stage/commit/discard semantics, then existing RN-09f Apps editor wiring. No runtime capability, storage, enforcement, account/Auth/iOS change in this documentation follow-up; full parents/counts stay open. Tokens/Auth user-deferred. [Plan 00 notes](plan_00_shared_contracts_notes.md) contain this commit's complete file/line ledger and verification; previous preview commit is `90cdc44`.
 
@@ -3262,7 +3264,7 @@ workspace and original icon-pack untracked directories are excluded.
 
 ### SC-01–04 documentation handoff — PM product answers
 
-**Commit:** `docs: reconcile PM answers and update implementation gates`. **Hash:** Pending.
+**Commit:** `docs: reconcile PM answers and update implementation gates`. **Hash:** `e9e2d90` (recorded during durable selection implementation).
 **Date:** 2026-11-09. **Owner:** Ishmum. **Branch:** `task/docs/pm-answer-reconciliation`.
 
 Documentation only: Q09 global scope is now settled; durable ownership/save/discard
@@ -3273,3 +3275,165 @@ canonical complete file/line ledger, verification, decisions and remaining gates
 for this cross-plan commit. No new RN part or completion count; Auth/tokens stay
 deferred, and Anisha's producer ownership is preserved. Historical next-action
 bullets above reflect their dates and are superseded by the current resume entry.
+
+
+### RN08-D03 / RN-09f — Durable global-selection draft and Save contract
+
+**Commit:** `feat(android): add revisioned local selection drafts and editor save`.
+**Hash:** Pending; resolve by subject/Git and record in the next normal update.
+**Date:** 2026-11-09. **Owner:** Ishmum. **Branch:** `task/react-native/rn-09f-durable-selection`.
+**Parent:** `e9e2d90`. **Status:** Implemented for debug-native/local transaction
+and controlled-owner existing AppsEditor scope; production/account integration open.
+
+#### Scope, contract and reasons
+
+Continue the PM-reconciled global-selection decision (Q09 / PD-18) under existing
+RN08-D03/RN-09f, not another parent plan. Reuse the tested current-profile native
+catalog/window and real AppsEditor. Trace FR-004/013/021/034 and NFR-001/002/004/005/
+008/011; source Apps frame 10601:5968 remains unchanged. No new Figma assets or
+replacement screen, library, dependency/lockfile, manifest permission, HTTP schema,
+DB migration, Auth store, usage capability, native restriction rule or Swift code.
+Ishmum owns this shared/native work; Anisha retains Auth/onboarding/root/iOS.
+
+The [transaction contract](../architecture/native-global-selection.md) makes owner,
+global group, ephemeral draft UUID/version and saved revision explicit. Namespace +
+UUID partitions local storage, not authentication. No anonymous/default production
+owner is created. Native chooser Use these choices stages; editor Save alone
+compares revisions and persists. Cancel/Back preserve the previous draft;
+Discard/release/remount drops unsaved edits, not saved state. Persisted empty sets
+retain an incremented revision tombstone; unchanged saves do not increment it.
+Owner/version mismatches, stale saves, missing apps and corruption reject rather
+than silently overwriting or accepting an empty record. Count equality does not
+mean set equality. Current debug bridge registrations are separate from the
+unchanged ProtectionService pickApps/getSelectedApps and capability summary.
+
+Use existing platform AtomicFile in a private no-backup debug directory, bounded
+schema/package-set records with hashed owner filenames, serialized process-wide
+compare-and-set and post-write readback. No bespoke database or encryption claim.
+Only count/draft/revision/dirty metadata crosses JS; names/IDs/icons/search remain
+native. AtomicFile is not a writer lock; the explicit lock covers read/CAS/write
+across instances. A multi-process extension writer is not supported by this slice.
+Original platform API references are linked in the contract. Disk/catalog work is
+on one worker; request/dialog state on main; synchronized draft state handles the
+short main-thread staging operation. Module shutdown drains issued writes/cleanup.
+An already-issued explicit Save may complete after leaving: release is not a
+promise to undo committed disk state. Conflict or uncertain acknowledgment requires
+explicit reload; never replay mutations blindly. Activity/module cleanup clears
+leases while preserving saved records. Background cancels only pending picker UI.
+
+The consumer receives explicit port/owner, keys account changes synchronously,
+fences async results, releases late handles, serializes actions and uses existing
+Back/discard confirmation. The isolated Saved apps editor supplies a labeled
+synthetic QA owner. The real Router remains unavailable because Auth-derived owner
+binding, production adapter/capability and lifecycle/installed-rule semantics are
+not wired. This is the existing product component with a real native local producer,
+not a successful production account flow or an account-required-policy bypass.
+Tokens/Auth remain user-deferred. Active-occurrence global-edit effects and account
+switch/deletion protocol remain separate; no production erasure is attempted.
+
+#### Corrections and actual verification
+
+- Native transaction/storage runner: **22 cases pass on Pixel 8 Pro / API 36**,
+  including actual AtomicFile reopen/backup recovery/corruption/size bounds,
+  concurrent two-instance CAS, synthetic owner/lease isolation, stale versions,
+  no-op/empty revisions, failed writes and lost acknowledgments. Test storage is a
+  unique cache directory removed in finally, never the owner's saved QA folder.
+  Existing volatile 12 and shared discovery 10 native cases also pass on the final
+  installed app/test APKs. The 22-case runner reports only count/fixed failure and
+  case index. Its first oversized-write fixture was slightly below 128 KiB; increase
+  the synthetic package lengths within bounds and rerun successfully, not a claimed
+  storage failure. No personal inventory is in committed evidence.
+- Actual phone: **14 normal-font observations** cover the existing AppsEditor,
+  stage versus Save/reset, persisted count after remount/force-stop/cold process,
+  picker Cancel, editor Discard, hardware Back keep/discard, unsaved restart,
+  background picker cancellation and explicit empty Save/restart. **Eight large-
+  text/restoration observations** cover native entry/actions, Save reachability,
+  cold saved count, explicit empty save and normal-scale restoration.
+- Visual inspection at scale 2.0 found Back wrapped onto two lines in the existing
+  detail header with fixed width 76. At large scale use its original arrow artwork alone with
+  accessibility name Back and balanced slots of 44 logical units, restoring the text label at
+  normal scale. Rechecked on phone and inspected the corrected private app image.
+  Shared activity tests that searched optional visible Back text failed; change
+  their press helper to semantic button role/name, preserving all assertions.
+  Affected activity tests **32/32** pass; final full component **572/572** pass
+  across 66 native suites, including **34 new results** for 17 transaction consumer
+  scenarios. This is not iOS native functionality or new spoken TalkBack evidence.
+- `npm run check` passes: **382 portable / 572 component / 601 API**, 199 DB
+  deselected. TypeScript, Ruff, contracts/assets and lint pass with 11 pre-existing
+  warnings. After the header polish, repeat TypeScript/lint/all 572 components and
+  affected 32 activity cases; no new warning. React best-practices review covers
+  effect cleanup, scope remount, external native synchronization, late results,
+  transitory refs, action serialization and accessible controls. No web-framework
+  changes were introduced for this native task.
+- JDK 17.0.21+9 / Gradle 9.4.1 / build tools 37.0 / target SDK 36 / min 24;
+  arm64-v8a debug app/test, release Kotlin and release main manifest compile.
+  Existing SDK/Gradle deprecations remain; no release signing is claimed. Release
+  class audit finds 10 debug durable implementation classes versus zero release,
+  no transaction method registration literals in release HooshUsageModule, and no
+  launcher discovery query in release. Ordinary SDK VIEW/document queries remain.
+- Final `npm run mobile:export` passes 38 JS/HTML isolation files and all 71 original
+  SVG checks. Android Hermes export excludes the durable QA marker; UI gallery
+  build passes (existing dependency direct-eval warning). Exports were repeated
+  after the production-shared header change; no fixture/QA import ships.
+- [Sanitized evidence](artifacts/rn-09f-selection/evidence.json) contains final APK/
+  source hashes, actual counts/flows/isolation/cleanup and pending scope. Private
+  phone hierarchy/logs/images stay ignored under `.expo/durable-selection`; no
+  selected-app labels/package IDs, user serials, credentials or screenshot is
+  committed. Current-run baseline restored: font 1.15, keep-awake 0, usage allow,
+  original accessibility and timeout; task 8094 mapping/XML/Metro removed. App data
+  and debug APKs retained; synthetic saved QA selection deliberately left empty.
+
+- Final record audit: all 28 staged files have exact line-range entries; local
+  links, source/APK hashes, observation counts and restored-settings evidence
+  match. `git diff --cached --check` passes; private outputs/unrelated files excluded.
+
+#### Every changed file and logical change
+
+- `apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/SelectionEditor.kt`: lines 1–15. Add the explicit owner/draft/version begin/pick/commit/release lifecycle boundary, separate from the unchanged ProtectionService. Common interface compiles in both variants; current producer exists only in debug.
+- `apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/SelectionDrafts.kt`: lines 1–36. Define saved persistence/CAS boundary, bounded synchronized leases, owner/version validation and count-only snapshots with native set equality. Lines 37–54 stage defensively copied sets, commit only after eligible/native durable acknowledgment, and release/clear drafts without erasing saved records. Lines 55–65 validate namespace/UUID and bounded native package sets; no default owner or authentication claim.
+- `apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/AtomicSelectionPersistence.kt`: lines 1–51. Hash validated owner paths, read bounded schema/group/revision/set records under a process-wide lock, recover atomic backups and distinguish missing from corrupt/unreadable state. Lines 52–75 compare revisions atomically, retain no-op/empty revision semantics, reject oversize writes before opening writer, finish/fail and read back before acknowledgment. It stores only package IDs in the no-backup directory selected by the controller.
+- `apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/NativeSelectionEditor.kt`: lines 1–59. Create native catalog/drafts/private store, worker/main dispatch, single-flight request and fixed-error handling, begin and eligibility-checked Save. Lines 60–93 release exact owner/handle without blocking behind chooser, and load/show the existing native window with draft copy. Lines 94–123 revalidate focus/eligibility before staging and implement picker-only background cancellation, draft teardown and draining shutdown without interrupting already-issued atomic writes.
+- `apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/SelectionPreviewDialog.kt`: lines 39, 61, 68, 107, 151. Add optional saved-draft copy/title/action/status to the existing window while preserving the original volatile preview defaults, accessibility/native rows, search and cancellation. Use these choices is explicitly a draft action, never editor Save.
+- `apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/SelectionPreviewFactory.kt`: line 12. Construct the durable editor only when the app is debuggable, reusing application context.
+- `apps/mobile/modules/hoosh-usage/android/src/release/java/expo/modules/hooshusage/SelectionPreviewFactory.kt`: line 9. Return no editor implementation in release; compile-time false registration guard remains unchanged.
+- `apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/HooshUsageModule.kt`: lines 10, 22–30. Add lazy editor availability/disposal guard with a fixed failure. Lines 54–73 register four explicit main-queue transaction calls only in debug; require a foreground Activity for picker, cancel picker on background, clear drafts on Activity teardown and dispose on module teardown. Existing usage methods/capability response are unchanged.
+- `apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/SelectionDraftChecks.kt`: lines 1–152. Add 22 native cases using synthetic owners/packages and a unique temporary directory: model/copy/privacy/stage/version/owner/release/missing-candidate/CAS/no-op/empty/failure/lost-ack/bounds cases, actual AtomicFile reopen/backup/corrupt/size cases and two-instance concurrent CAS. Retain fixed failed-case index, clean only the test directory in finally, and never touch the saved QA-owner directory.
+- `apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/UsageProbeInstrumentation.kt`: lines 14, 20, 26–30, 50–53. Add selectionDraftChecks mode, count and fixed failed-case index; preserve existing usage/volatile/discovery runner behavior without exposing exception text or identities.
+- `apps/mobile/src/infrastructure/native/selection-editor.ts`: lines 1–34. Define the count-only transaction port and strict decoder for UUID/group, integer/revision/count/dirty invariants; reconstruct allowed fields so native extras never enter state. No loader/default owner or authentication/installation interface is added.
+- `apps/mobile/src/features/preferences/native-apps-editor.tsx`: lines 1–48. Reuse AppsEditor behind an explicit port/owner with keyed scope remount, native begin, active-scope fencing, listener and late-handle cleanup. Lines 49–92 implement hardware Back, action serialization, strict acknowledgment consistency, stale/conflict/uncertain recovery and count-only notices. Lines 93–113 connect existing Choose/Save/Discard/feedback and reload with no anonymous fallback or optimistic save. The component is not mounted by the production Router.
+- `apps/mobile/src/features/preferences/native-apps-editor.test.tsx`: lines 1–145. Seventeen scenarios produce 34 native-preset results: stage versus Save/discard/cancel, three stale/expired errors, uncertain Save/reload, missing producer, single flight, scope replacement/late handle, unmount, malformed acknowledgment, hardware Back, inventory stripping and three inconsistent Save results. Synthetic values only; actual persistence is tested natively.
+- `apps/mobile/src/features/preferences/preference-editors.tsx`: lines 21, 266, 270, 272, 287, 290, 298–299, 301, 364. Add optional action disable/feedback and native picker busy/disabled inputs; lock editor writes/discard during chooser and show Choosing apps rather than Saving. Existing catalog/demographic/source layouts and icon assets stay intact.
+- `apps/mobile/src/features/editors/editor-controls.tsx`: lines 102, 111, 118, 151. Add explicit disable support for Save/Discard while a separate picker operation is pending. Lines 194–196, 207, 214, 227 fix the device-observed large-text Back wrap with original arrow/accessibility label and balanced logical slots; normal detail text label and other variants remain intact.
+- `apps/mobile/src/features/settings/activity-preferences-screen.test.tsx`: line 116. Query press targets by accessible button role/name rather than text, retaining the same clean/dirty Back and save/recovery assertions at enlarged fonts; this fixes the four failed preset results after the shared header change.
+- `apps/mobile/dev/native/durable-selection.tsx`: lines 1–21. Detect optional debug methods and render the real editor with a labeled synthetic namespace/UUID, isolated QA marker and parent Back. Native absence is unavailable; no production Auth store/guest identity/fixture save.
+- `apps/mobile/dev/native/App.tsx`: lines 4, 72, 125, 131, 160. Add Saved apps editor to the existing host, render the real consumer, identify native-local QA and disable specimen State. Existing footer Reset/Screens intentionally remount/unmount the lease; the ordinary app navigation is unchanged.
+- `scripts/check-ui-preview-isolation.mjs`: line 35. Forbid the durable-selection QA marker in ordinary production exports, alongside the previous volatile/test markers.
+- `apps/mobile/dev/native/README.md`: lines 30, 128–139. Update to 22 pages and document real editor/native local persistence versus draft/reset behavior, unavailable runtimes, scope and reproduction links.
+- `apps/mobile/src/features/preferences/README.md`: lines 33–44. Document the reusable explicit-owner consumer, failure/lifecycle handling and controlled QA integration, without claiming production account save.
+- `apps/mobile/src/infrastructure/native/README.md`: lines 28–38. Describe the separate transaction port/decoder and why the read-only usage adapter does not advertise native selection or enforcement from its presence.
+- `docs/architecture/native-global-selection.md`: lines 1–117. Specify current owner/global-group/lease/revision transaction, bounded atomic persistence, acknowledgment/conflict/lifecycle behavior, real API source links and production/multi-process/account/rule gates. Distinguish implemented debug contract from desired enforcement.
+- `docs/qa/android-durable-selection.md`: lines 1–67. Add reproducible shared editor/native build flow, 22-case runner, expected stage/save/cancel/restart behavior, private test directory/identity constraints, cleanup and remaining acceptance.
+- `docs/core_plan_implementation_notes/artifacts/rn-09f-selection/evidence.json`: lines 1–170. Publish final APK/source hashes, toolchain/check counts, 14 normal/eight enlarged/restoration phone observations, release registration/class/manifest isolation, corrections, restored settings and limits. No inventory, screenshot, raw phone log or secret.
+- `docs/core_plan/04_react_native_integration.md`: lines 24–34, 540–541, 630. Record only the durable debug producer/controlled AppsEditor sub-scope as implemented; link contract/runbook, preserve Auth/production installation/iOS and remaining acceptance gates, stable refs and parent counts.
+- `docs/core_plan/README.md`: lines 8–16, 22–24, 36, 45–46. Put current durable implementation first, mark the prior volatile next-step historical, and distinguish next production/account/occurrence work from completed local transaction without adding a new parent plan.
+- `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 7, 9, 19–20, 3267, 3280–3439. Update branch/current/resume checkpoint, record preceding PM reconciliation hash e9e2d90 and document all files/line ranges, decisions, actual checks/corrections, cleanup and remaining work in this entry.
+
+#### Remaining work and next step
+
+Local durable transaction and controlled-owner Apps consumer are complete within
+recorded scope. Before production selection, coordinate Auth-derived namespace/UUID
+and session-generation lifetime, account switch isolation, sign-out preservation
+versus credential/cache erasure, coordinated deletion/local cleanup acknowledgment
+and adapter/Router registration. Define global-selection edits affecting existing
+quest occurrences/installed configuration; saving a selection is not rule install.
+Do not enable capabilities from mere method presence. Tokens/Auth remain deferred;
+iOS belongs to Anisha. No backend selection inventory upload is introduced.
+
+Complete spoken TalkBack traversal/post-picker return, removed/disabled-app races
+and resource failures, lock/save/interruption cases beyond this bounded run,
+additional profiles/devices and signed release acceptance. Future native extension
+writers need cross-process coordination; cross-device allowance remains deferred.
+Existing volatile preview evidence and PM ADR remain dated; this entry supersedes
+prior next-step descriptions only. Full RN-08/09/Plan 04 and 46/21/25 counts stay
+open/unchanged. Local commit only, no push/CI/merge/deployment. Unrelated workspace
+and original icon-pack untracked files are excluded.

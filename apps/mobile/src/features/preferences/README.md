@@ -30,3 +30,15 @@ Real demographic launch policy, native authorized selection, profile/activities
 persistence/schema, account-generation guard/reset, calendar scope and signed-device
 validation remain RN09D-D01–D04. Future production editors must be inside real Auth
 and keyed account scope; source-frame completion is not integration acceptance.
+
+
+## Native local selection transactions
+
+`NativeAppsEditor` consumes an explicit owner/SelectionEditorPort and reuses
+AppsEditor. It separates native picker staging from editor Save/Discard, decodes
+count-only draft metadata, fences scope changes and handles conflicts/uncertain
+saves through explicit reload. Owner keys do not authenticate users. The current
+Android producer is debug-only and is exercised by Saved apps editor in the
+isolated native QA host, not the production Router. No fallback anonymous owner,
+backend mutation, installed rule or new native capability is implied. See the
+[transaction contract](../../../../../docs/architecture/native-global-selection.md).

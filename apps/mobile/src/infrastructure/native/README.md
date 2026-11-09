@@ -25,3 +25,14 @@ Metro/API-independent Kotlin reads, Expo Go absence and large-text controls. Pho
 settings/connections were restored. Exact evidence and remaining physical/release
 limits are in the runbook; no session engine, enforcement or whole-Android parity
 claim follows from these checks.
+
+
+### Separate local selection transaction port
+
+`selection-editor.ts` defines explicit owner/draft/revision/Save/release operations
+and strict count-only decoding. It is separate from the unchanged ProtectionService
+pickApps/getSelectedApps contract. The debug Android producer does not cause the
+registered read-only usage adapter to advertise selection/protection support.
+The isolated QA consumer supplies a synthetic owner; real account/Router binding
+remains deferred. See [contract](../../../../../docs/architecture/native-global-selection.md)
+and [runbook](../../../../../docs/qa/android-durable-selection.md).

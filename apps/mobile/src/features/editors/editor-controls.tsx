@@ -99,6 +99,7 @@ export function Choice({
 export function EditorActions({
   state,
   dirty,
+  disabled = false,
   valid = true,
   onSave,
   onDiscard,
@@ -107,13 +108,14 @@ export function EditorActions({
 }: {
   state: EditorState;
   dirty: boolean;
+  disabled?: boolean;
   valid?: boolean;
   onSave?: () => void;
   onDiscard?: () => void;
   saveLabel?: string;
   checkAsset?: DesignAsset;
 }) {
-  const blocked = ['saving', 'unavailable', 'conflict', 'unconfirmed'].includes(state);
+  const blocked = disabled || ['saving', 'unavailable', 'conflict', 'unconfirmed'].includes(state);
   const message =
     state === 'error'
       ? 'Changes couldn’t be saved. Your draft is still here.'
@@ -146,7 +148,7 @@ export function EditorActions({
         <Button
           label="Discard changes"
           variant="secondary"
-          disabled={state === 'saving'}
+          disabled={disabled || state === 'saving'}
           onPress={onDiscard}
         />
       ) : null}
@@ -189,6 +191,9 @@ export function EditorPage({
   backAsset?: DesignAsset;
 }>) {
   const [leaving, setLeaving] = useState(false);
+  const { fontScale } = useWindowDimensions();
+  const iconBack = variant === 'detail' && fontScale > 1.3;
+  const backWidth = iconBack ? 44 : 76;
   const back = useRef<ComponentRef<typeof Button>>(null);
   const restoreBackFocus = useDialogFocusReturn(back);
   return (
@@ -199,14 +204,14 @@ export function EditorPage({
       <View style={editorStyles.navigation}>
         <Button
           ref={back}
-          label={variant === 'detail' ? 'Back' : ''}
+          label={variant === 'detail' && !iconBack ? 'Back' : ''}
           accessibilityLabel="Back"
           variant="secondary"
           disabled={busy}
           leadingVisual={<DesignArtwork asset={backAsset} />}
           style={[
             editorStyles.back,
-            variant === 'detail' && { width: 76, borderWidth: 0, backgroundColor: 'transparent' },
+            variant === 'detail' && { width: backWidth, borderWidth: 0, backgroundColor: 'transparent' },
           ]}
           labelStyle={{ fontSize: 14 }}
           onPress={() => (dirty ? setLeaving(true) : onBack())}
@@ -219,7 +224,7 @@ export function EditorPage({
           ]}>
           {title}
         </Text>
-        {variant === 'detail' ? <View style={{ width: 76 }} /> : null}
+        {variant === 'detail' ? <View style={{ width: backWidth }} /> : null}
       </View>
       {subtitle ? <Text style={editorStyles.body}>{subtitle}</Text> : null}
       {leaving ? (

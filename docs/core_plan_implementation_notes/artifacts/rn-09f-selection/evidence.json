@@ -1,0 +1,170 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-09",
+  "owner": "Ishmum",
+  "plan_refs": [
+    "RN08-D03",
+    "RN-09f"
+  ],
+  "branch": "task/react-native/rn-09f-durable-selection",
+  "parent": "e9e2d90",
+  "scope": "debug-native durable global selection plus existing AppsEditor controlled-owner consumer; no production account or enforcement",
+  "device": {
+    "model": "Pixel 8 Pro",
+    "api": 36,
+    "normal_font_scale": 1.15,
+    "large_font_scale": 2.0
+  },
+  "toolchain": {
+    "jdk": "17.0.21+9",
+    "gradle": "9.4.1",
+    "build_tools": "37.0",
+    "target_sdk": 36,
+    "min_sdk": 24,
+    "abi": "arm64-v8a"
+  },
+  "apk_sha256": {
+    "debug_app": "e0b43aaa89ca9bb59fc6dd432b6be77ec74b98369e24a60532bed9a589ef9eb6",
+    "debug_test": "032f42ebf385c5a9b16ce66be367600da44f9f5a87055ecff4793914dbd974bc"
+  },
+  "source_sha256": {
+    "apps/mobile/dev/native/App.tsx": "7c80cadce8a0ea03fc97ff96ec5d590e36169c2e2e1e11b76ee73d6c9f5f7833",
+    "apps/mobile/dev/native/durable-selection.tsx": "8b09ad741c59794177e852fcef4590467d1c716fe299ed892ff9d7617ed3d42d",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/AtomicSelectionPersistence.kt": "314c577989bb8484f3b1061ab809a32019f1f06e2800e7d485af88bf955d56c9",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/LauncherAppCatalog.kt": "af16573179e1d651675f58ed0dbf2f5a815b8d8cc2e6b0e4c7e36863fbdea424",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/NativeSelectionEditor.kt": "c0c6cdb84d51c2cc796d6654940d08c839153b687ded0c40bf3b6fbe58078abb",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/NativeSelectionPreview.kt": "6b5248ecc6726a05686e40e512a67f0ce40b685c165868709f6b6f5373dd973a",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/SelectionDrafts.kt": "3c0042725c8ef50de6ada3ffedd2c6ac899ac331d0237ad760f3ff86fcade0e9",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/SelectionPreviewDialog.kt": "441beb36a8007bd6f9cf91cd50f396adf4a7b835d2811949f3cf8e6f2eac90fc",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/SelectionPreviewFactory.kt": "3710a894de56a159c2a59dd7e5af7411a376ab2d7d921cfb4c63a25e2378cbd6",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/VolatileSelection.kt": "9e50585e49bb6c51338f723b5e6418da714337c20c3fa81cc51fc41546c9e174",
+    "apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/HooshUsageModule.kt": "8ba8b649c2855ed0b231c3dba99195fd273eeb3a1ddd740b78dab21e35019598",
+    "apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/SelectionEditor.kt": "00ebbcdf6a1e499c8859f5c966d2486111a0aed6bc678e4f8fdcd03c45ece2b8",
+    "apps/mobile/modules/hoosh-usage/android/src/release/java/expo/modules/hooshusage/SelectionPreviewFactory.kt": "95446fb3f10f62c43e1066ef996df5c1b630f03a2b6e26cf599f294925ff64a1",
+    "apps/mobile/src/features/editors/editor-controls.tsx": "6313480fc3654dadcc47a7572dfbe8a4a8e4f7ceb85ccb87f5bc7762f0ced7d6",
+    "apps/mobile/src/features/preferences/native-apps-editor.tsx": "8057ff2abe2c76b5aa673a010da2e45917be7a324d565d0cf0a0ed027a54da84",
+    "apps/mobile/src/features/preferences/preference-editors.tsx": "352647f92a8c187ecc16d9b676e5b12295cc67f43afc76fff3b071b88449d79c",
+    "apps/mobile/src/infrastructure/native/selection-editor.ts": "ca33fa9392a27060e60949cb1ecc4eb5033519940afa99748c55afddf3415017"
+  },
+  "checks": {
+    "portable_tests": 382,
+    "component_tests": 572,
+    "component_suites": 66,
+    "new_editor_component_results_included": 34,
+    "activity_navigation_regression_results": 32,
+    "api_tests": 601,
+    "db_tests_deselected": 199,
+    "native_transaction_cases": 22,
+    "native_volatile_regressions": 12,
+    "native_discovery_regressions": 10,
+    "typecheck": "passed",
+    "lint_errors": 0,
+    "existing_lint_warnings": 11,
+    "web_export_isolation_files": 38,
+    "original_svgs": 71,
+    "ui_gallery_build": "passed",
+    "android_production_hermes_marker_absent": true,
+    "debug_app_test_and_release_kotlin_manifest_build": "passed"
+  },
+  "release_isolation": {
+    "debug_durable_classes": 10,
+    "release_durable_classes": 0,
+    "release_transaction_registrations_absent": true,
+    "release_launcher_query_absent": true
+  },
+  "native_discovery_aggregates": {
+    "schemaVersion": 1,
+    "scope": "current_profile_launcher_candidates",
+    "identitiesExported": false,
+    "resourceCheckLimit": 64,
+    "usageAuthorization": "authorized",
+    "queryAllPackagesDeclared": false,
+    "overlayDeclared": false,
+    "accessibilityServiceDeclared": false,
+    "targetUidVerified": true,
+    "matchedActivityCount": 185,
+    "eligibleActivityCount": 183,
+    "excludedActivityCount": 1,
+    "selfActivityCount": 1,
+    "uniquePackageCount": 183,
+    "duplicateActivityCount": 0,
+    "sampledPackageCount": 64,
+    "labelResolutionSuccessCount": 64,
+    "labelResolutionFailureCount": 0,
+    "blankLabelCount": 0,
+    "iconResolutionSuccessCount": 64,
+    "iconResolutionFailureCount": 0,
+    "resourceChecksCapped": true,
+    "state": "ready",
+    "failureCode": null,
+    "elapsedMs": 581
+  },
+  "normal_font_phone_observations": [
+    "existing-apps-editor-loads-owner-global-empty",
+    "native-confirm-stages-without-saving",
+    "reset-discards-staged-selection",
+    "explicit-editor-save-acknowledged",
+    "remount-loads-saved-selection",
+    "cold-process-restart-retains-saved-selection",
+    "editor-discard-reloads-saved-selection",
+    "picker-cancel-preserves-editor-draft",
+    "hardware-back-dirty-confirmation-keeps-draft",
+    "hardware-back-discard-leave-preserves-saved",
+    "cold-process-restart-drops-unsaved-draft",
+    "background-picker-cancel-preserves-saved",
+    "explicit-clear-save-retains-empty-tombstone",
+    "empty-saved-selection-survives-cold-start"
+  ],
+  "large_font_phone_observations": [
+    "font-2-existing-editor-native-entry-reachable",
+    "font-2-native-draft-and-actions-above-bars",
+    "font-2-editor-save-action-reachable",
+    "font-2-saved-count-after-cold-restart",
+    "font-2-explicit-empty-save",
+    "normal-font-restored-empty-saved-selection",
+    "font-2-accessible-arrow-back-without-wrapped-label",
+    "normal-font-header-label-restored"
+  ],
+  "cleanup": {
+    "baseline_settings_restored": true,
+    "font_scale": "1.15",
+    "usage_access_preserved": "allow",
+    "accessibility_settings_preserved": true,
+    "reverse_baseline_restored": true,
+    "own_xml_removed": true,
+    "own_metro_stopped": true,
+    "app_data_cleared": false,
+    "debug_apks_retained": true,
+    "saved_qa_selection_left_empty": true,
+    "test_cache_directory_removed": true
+  },
+  "corrections": [
+    "Oversized-write test initially below 128 KiB; fixture enlarged within identity bounds and 22 cases rerun successfully",
+    "Large-font Back label wrapped; shared detail headers use accessible original back artwork without label above scale 1.3",
+    "Activity navigation test helper uses button accessibility roles/names rather than optional visible label"
+  ],
+  "privacy": {
+    "real_inventory_exported": false,
+    "native_labels_or_packages_in_js": false,
+    "raw_phone_logs_committed": false,
+    "private_screenshots_committed": false,
+    "credentials_or_auth_changes": false
+  },
+  "remaining": [
+    "production Auth-derived owner/generation binding and Router/adapter integration (user Auth/token deferral)",
+    "account switch/native retention and coordinated account deletion protocol",
+    "active quest/installed rule effects of a changed global selection",
+    "iOS native implementation owned by Anisha",
+    "native enforcement and installation acknowledgments",
+    "complete spoken TalkBack traversal/post-picker return",
+    "signed release/additional profiles/devices/installed-app races",
+    "multi-process writer coordination before any extension writer"
+  ],
+  "limits": [
+    "Saved selection is not saved account data or installed protection",
+    "A synthetic QA owner is never a production anonymous default",
+    "Device tests use current-profile launcher candidates only",
+    "Concurrent CAS/atomic recovery/storage faults use synthetic identities and dedicated test cache directory",
+    "No released app, hosted acceptance or GitHub CI claimed"
+  ]
+}

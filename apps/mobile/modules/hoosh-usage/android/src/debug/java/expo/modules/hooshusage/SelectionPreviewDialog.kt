@@ -36,6 +36,7 @@ internal class SelectionPreviewDialog(
   private val cancelled: AtomicBoolean,
   private val onCancel: () -> Unit,
   private val onConfirm: (Set<String>) -> Unit,
+  private val editingSavedDraft: Boolean = false,
 ) {
   private val available = rows.map { it.key }.toSet()
   private val draft = previous.intersect(available).toMutableSet()
@@ -57,13 +58,14 @@ internal class SelectionPreviewDialog(
       setPadding(dp(24), dp(16), dp(24), dp(4))
     }
     header.addView(TextView(activity).apply {
-      text = "Choose apps temporarily"
+      text = if (editingSavedDraft) "Choose distracting apps" else "Choose apps temporarily"
       textSize = 22f
       if (Build.VERSION.SDK_INT >= 28) isAccessibilityHeading = true
     })
     header.addView(TextView(activity).apply {
       text = if (missing > 0)
         "$missing previously chosen apps are unavailable. Confirm to remove them."
+      else if (editingSavedDraft) "Names stay on this phone. Use these choices to edit your draft, then Save in the editor."
       else "Names stay on this phone. Nothing is saved or blocked."
     })
     search.hint = "Search apps on this profile"
@@ -102,7 +104,7 @@ internal class SelectionPreviewDialog(
     content.addView(status)
     content.addView(ListView(activity).apply { adapter = this@SelectionPreviewDialog.adapter },
       LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 3f))
-    confirm.text = "Use temporarily"
+    confirm.text = if (editingSavedDraft) "Use these choices" else "Use temporarily"
     confirm.setOnClickListener { if (!busy) onConfirm(draft.toSet()) }
     clear.text = "Clear checks"
     clear.setOnClickListener { if (!busy) { draft.clear(); adapter.notifyDataSetChanged(); updateStatus() } }
@@ -146,7 +148,7 @@ internal class SelectionPreviewDialog(
     cache.evictAll()
   }
   private fun dp(value: Int) = (value * activity.resources.displayMetrics.density).toInt()
-  private fun updateStatus() { status.text = "${draft.size} selected · ${filtered.size} matches · temporary only" }
+  private fun updateStatus() { status.text = "${draft.size} selected · ${filtered.size} matches · " + if (editingSavedDraft) "draft only" else "temporary only" }
 
   private inner class RowsAdapter : BaseAdapter() {
     override fun getCount() = filtered.size

@@ -5,15 +5,23 @@
 **Reviewed:** 2026-11-02 (bounded planning expansion; implementation evidence remains recorded per part).\
 **Product answers:** [PM_QUESTIONS.md](<../Context (AGENT)/PM_QUESTIONS.md>); no PM question is answered by an engineering default in these plans.
 
+**Latest Apps-selection implementation (2026-11-09):** RN08-D03/RN-09f now have a
+debug-native durable owner/global-group transaction and existing AppsEditor consumer
+in the isolated QA host. Native confirmation stages; explicit editor Save persists
+with atomic revision conflict checks; Cancel/Discard/unmount do not erase saved
+choices. See [contract](../architecture/native-global-selection.md) and
+[device/check runbook](../qa/android-durable-selection.md). Production Router/native
+capability, verified account binding/Auth, installed rules and iOS remain gated;
+this is not account synchronization or enforcement. Original IDs/counts stay.
+
 **PM answers reconciled (2026-11-09):** Q02–Q22 have responses, with explicit
 choices separated from partial details in [ADR v1](../architecture/pm-decisions-2026-11-09.md)
 and [register v2](<../Context (AGENT)/OPEN_DECISIONS.yaml>). Account-required use,
 per-app allowances, global quest selection and friendly tone are settled;
 calendar/multi-device sync are initially deferred. Q01 remains unanswered.
-Next independent RN08-D03/RN-09f work: durable native selection owner/revision and
-picker draft versus editor Save/Cancel, then the existing Apps editor. Global
-versus per-quest scope is no longer a blocker; active-occurrence and native/account
-cleanup behavior still need contracts. No implementation/acceptance count changes.
+The durable transaction/controlled Apps consumer is now implemented above. Global
+versus per-quest scope is settled; active-occurrence behavior, production capability
+and native/account binding/cleanup still need contracts and acceptance. No implementation/acceptance count changes.
 Tokens/Auth remain user-deferred; Anisha retains Auth/onboarding/iOS ownership.
 Full reconciliation: [Plan 00 notes](../core_plan_implementation_notes/plan_00_shared_contracts_notes.md).
 
@@ -25,7 +33,7 @@ iOS, release/additional-device and remaining accessibility matrices. Read the
 and [device record](../core_plan_implementation_notes/artifacts/rn-10d/README.md).
 Original part IDs and 46/21/25 counts are unchanged.
 
-**Latest selection checkpoint (2026-11-09):** RN08-D03 volatile native picker
+**Earlier volatile picker checkpoint (2026-11-09):** RN08-D03 volatile native picker
 implemented in debug-only module source sets and isolated native QA page. Native
 search/checked draft/confirm/cancel returns count/revision only; QA owner release
 and lifecycle fences prevent a temporary draft becoming a saved account selection.
@@ -34,8 +42,8 @@ protection capabilities remain unchanged. See [preview runbook](../qa/android-se
 [sanitized results](../core_plan_implementation_notes/artifacts/rn-08-selection/preview.json)
 and latest Plan 04 notes for observed tests/limits. Prior app-context discovery
 53/183 comparison remains in its [record](../core_plan_implementation_notes/artifacts/rn-08-selection/discovery-build.json).
-Next durable ownership/stage/commit/discard contract before production editor
-integration. Tokens/Auth deferred; original IDs/counts and remaining gates stay.
+The subsequent local transaction/controlled editor is recorded above; production
+owner/Auth/capability integration remains gated. Original IDs/counts stay.
 
 **Investigation checkpoint (2026-11-07; historical next step is now implemented above):** RN08-D03 / RN-09f app
 visibility/selection investigation is documented. Recommended prototype uses

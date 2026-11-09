@@ -11,16 +11,23 @@ class UsageProbeInstrumentation : Instrumentation() {
   private var emptyWindow = false
   private var selection = false
   private var previewChecks = false
+  private var draftChecks = false
   override fun onCreate(arguments: Bundle?) {
     super.onCreate(arguments)
     emptyWindow = arguments?.getString("emptyWindow") == "true"
     selection = arguments?.getString("probe") == "selection"
     previewChecks = arguments?.getString("probe") == "selectionPreviewChecks"
+    draftChecks = arguments?.getString("probe") == "selectionDraftChecks"
     start()
   }
   override fun onStart() {
     val result = Bundle()
     try {
+      if (draftChecks) {
+        result.putInt("selectionDraftChecksPassed", SelectionDraftChecks.run(targetContext))
+        finish(Activity.RESULT_OK, result)
+        return
+      }
       if (previewChecks) {
         result.putInt("previewChecksPassed", SelectionPreviewChecks.run())
         finish(Activity.RESULT_OK, result)
@@ -40,7 +47,10 @@ class UsageProbeInstrumentation : Instrumentation() {
       finish(Activity.RESULT_OK, result)
     } catch (_: Exception) {
       // Test assertions may fail; never print exceptions containing package/resource data.
-      if (previewChecks) {
+      if (draftChecks) {
+        result.putString("selectionDraftChecks", "failed")
+        result.putInt("selectionDraftFailedCase", SelectionDraftChecks.lastCase)
+      } else if (previewChecks) {
         result.putString("previewChecks", "failed")
       } else if (selection) {
         result.putString("selectionProbe", JSONObject(mapOf(
