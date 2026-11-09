@@ -37,6 +37,12 @@ and appropriate decision/product documents.
 4. Work through the plan's parts one commit-sized change at a time. Use the accepted
    interfaces and coordinate shared files with the other developer.
 
+Plan 00's original foundation is `0b50900`; the current
+[Plan 00 follow-up notes](plan_00_shared_contracts_notes.md) start with the
+2026-11-09 PM-answer reconciliation. They preserve original implementation history
+rather than retroactively inventing commit entries. Read the linked decision ADR
+for approved choices and remaining gates before extending a product domain.
+
 Plan 04's record is
 [plan_04_react_native_integration_notes.md](plan_04_react_native_integration_notes.md).
 Read its current resume checkpoint and the plan ledger for actual implementation status.

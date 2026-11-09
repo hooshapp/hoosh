@@ -1,14 +1,21 @@
 # Disconnect — Technical Specification Document (TSD)
 
-**Version:** 1.1 — adopted M1/M2 foundation contracts; later domains remain proposed
+**Version:** 1.2 — adopted M1/M2 contracts and PM decision reconciliation; unimplemented domains remain gated
 
-**Date:** 2026-10-28  
+**Date:** 2026-11-09 (baseline 2026-10-28)
 **Companion:** `PRD.md`, `AGENT_START_HERE.md`  
 **Design:** [Figma App-UI](https://www.figma.com/design/ukmD2ZidJ9UR2XxUkvdPoJ/App-UI?node-id=0-1)  
 **Architecture proposal:** React Native + TypeScript + Expo development builds / Expo modules + retained native Swift + native Kotlin + FastAPI + managed PostgreSQL/Supabase Auth  
 **Core constraint:** **Do not rewrite tested iOS Screen Time code.** An agent must inspect the existing repository and adapt this design to actual native targets.
 
 > **Implementation contract:** Code below is a *reference scaffold/contract*, not a claim that an existing repo has exactly these paths or that every platform snippet can be pasted unchanged. Platform APIs, entitlement scopes, and implementation semantics must be verified against the pinned SDK and tested on physical devices. Anything labeled `TODO(DECISION)` requires founder approval before production enforcement.
+
+
+**PM update:** [ADR v1](../architecture/pm-decisions-2026-11-09.md) and
+[register v2](OPEN_DECISIONS.yaml) supersede incompatible proposed policy below.
+Per-app allowances, global quest selection, required accounts and friendly tone
+are settled directions; formulas/native ownership/provider/release details remain
+gated. No schema/type/SDK/native implementation change is implied by this revision.
 
 ---
 
@@ -238,7 +245,14 @@ targets require a config plugin and explicit credentials mapping; if keeping nat
 
 ### 4.1 Shared policy semantics
 
-Keep the policy model separate from the OS hooks. **This is a proposed domain design; exact transitions require PD-01..PD-04 decisions.**
+Keep policy separate from OS hooks. PD-01 is per-app; PD-02/03/04 are partial.
+Open anyway starts an elapsed timer that continues after leaving the app. Switching
+apps does not transfer it; reentry/concurrent timers and reset boundaries remain
+undefined. Intentional pause applies to selected-app openings during active times;
+outside active days/hours everything is unrestricted. All quests use the global
+selection. PM allows bypass even during a quest; define reason/app scope and
+expiration without deleting other reasons. The following chart remains schematic,
+not an approved complete allocator or coordinator.
 
 ```text
 UNCONFIGURED --(permission + selection + valid plan)--> INSTALLING
@@ -255,7 +269,10 @@ ANY --(permission revoked)---------------------------> NEEDS_PERMISSION
 ANY --(disable/valid teardown)-----------------------> INACTIVE
 ```
 
-**Restriction coordinator algorithm (platform-agnostic):**
+**Historical restriction coordinator sketch (not production policy):**
+The code below exempts only session budgets and therefore does **not** satisfy
+Q08's quest-bypass intent. Retain it as a reason-composition example only; do not
+implement its precedence or assume a shared group budget from this snippet.
 
 ```ts
 export type Reason = {
@@ -285,7 +302,12 @@ export function isAppGroupRestricted(
 }
 ```
 
-**Critical behavior:** a temporary allowance may exempt a *session-budget reason* without clearing a quest reason. This is a **proposed safe design**, pending product decision; don't imply Apple's API automatically tracks reasons for you. Implementation must serialize/coalesce updates and write the desired state idempotently.
+**Current requirement:** bypass must be possible in product intent across quest
+and session interventions. It is a scoped, expiring exception, not deletion of
+other active reasons. Exact scope/duration remains unresolved. The historical
+session-budget-only exception above is superseded. Implement native reconciliation
+idempotently only after defining the complete protocol; OS APIs do not own this
+application reason registry automatically.
 
 ### 4.2 Accounting decisions requiring finalization
 
@@ -296,16 +318,22 @@ Before coding the session allocator, define a `SessionPolicy` JSON schema with:
   "policy_version": 1,
   "daily_session_count": 2,
   "seconds_per_session": 900,
-  "accounting_scope": "COMBINED_SELECTED_APPS",
+  "accounting_scope": "PER_APP",
   "inactivity_grace_seconds": null,
-  "overnight_carryover": false,
-  "override_seconds": 600,
+  "overnight_carryover": null,
+  "override_seconds": null,
   "max_overrides_per_day": null,
-  "day_boundary_timezone": "America/New_York"
+  "day_boundary_timezone": null
 }
 ```
 
-`COMBINED_SELECTED_APPS`, 15 minutes, +10-minute override, etc. are illustrative defaults drawn from Figma/examples, **not approved final semantics**. `null` fields are intentionally unresolved. Do not use this example as actual production configuration.
+`PER_APP` is now approved PM direction; count/duration above are examples of user
+configuration, not defaults. Reset is daily 12:00am, but zone/carryover/clock behavior
+is unresolved. `null` marks remaining decisions; bypass after exhaustion has no
+approved duration/cap. Leaving an app does not pause its elapsed timer; the earlier
+inactivity-grace field is not an approved automatic-pause behavior. Native
+usage-event thresholds alone must not silently substitute for elapsed time. This
+JSON is still a schema discussion, not production configuration.
 
 **Known Apple nuance:** `DeviceActivityEvent` thresholds measure the *combined use* of specified apps/categories/domains when grouped in one event, and `includesPastActivity` affects late monitor registration. For per-app limits, create separate tracked events where supported. Account for the possibility of implicitly associated web domains and system timing semantics. Do not implement a fake precision usage timer in JS.
 
@@ -806,7 +834,13 @@ CREATE INDEX IF NOT EXISTS outbox_pending_idx
 
 ## 11. Deterministic recommendations and safe AI extension
 
-### 11.1 V1 recommendation logic
+### 11.1 Recommendation fallback and requested personalization
+
+Q20 requests generated quests from interests and permitted usage-time patterns,
+with suggested times, friendly tone and no tone chooser initially. Model/provider,
+input aggregation, evaluation/budget and release placement remain unresolved.
+The deterministic example below is a fallback, not fulfillment of generated AI.
+Infer neither free time nor intent solely from an app-open event.
 
 Inputs: selected redirection activities, local hour (if permitted/known), activity preference, planned quest schedule, and non-sensitive available behavioral pattern. Output: `suggested_activity_id`, `template_id`, `context_reason`, `confidence_kind` (rule/not inferred).
 
@@ -834,7 +868,7 @@ def recommend_activity(activities: list[str], local_hour: int) -> Recommendation
 
 This is a demonstration of **transparent deterministic matching**, not an empirically validated recommendation algorithm. Do not claim AI personalization in the UI until it's genuinely implemented. Do not claim to know usage routines unless accurate permitted data exists.
 
-### 11.2 Optional future LLM
+### 11.2 Requested LLM experience — implementation/release gates retained
 
 - Generate copy server-side only, cache approved messages locally ahead of triggering events.
 - Never call a model synchronously from a shield/monitor extension.
@@ -846,7 +880,13 @@ This is a demonstration of **transparent deterministic matching**, not an empiri
 
 ### 12.1 Reward ledger semantics
 
-Use an immutable ledger; credit balance is `SUM(delta)` with appropriate transactional consistency/caching. Figma shows **example** amounts for +5 intentional pause, +20 session end, +30 pre-expiry nudge, +50 Home quest, −10 Feed, but these do not define a complete approved reward policy. Product must sign off `reward_rule_version` and maximum cadence.
+Use an immutable ledger; balance is `SUM(delta)` with transactional consistency.
+Q12 now supplies intended +5 opening-intervention quit, +20 session-end quit,
++30 mid-session nudge quit and +50 temporary Home quest. Exact evidence/eligibility,
+Home award timing, repeated actions/cadence, unit and `reward_rule_version` remain
+unresolved. −10 Feed is still only a Figma example. Q13 supplies feeding/decay
+direction, not cost, increment or decay rate. Q14's streak intent still conflicts
+with Q04/Q08 on reset timing; no formula can be inferred from these amounts.
 
 Rules to enforce:
 
@@ -856,6 +896,19 @@ Rules to enforce:
 - Offline rewards may be pending; synchronize idempotently.
 - Point totals have no cash value, cannot be converted to money without separate review, and cannot be fabricated.
 - Dino health uses a **separate versioned scoring formula**; no direct mapping between credits and moral status, and no demoralizing shame text.
+
+### 12.2a Measurement contract before insights implementation
+
+Q15/Q22 require selected-app usage against a fixed starting baseline, equivalent
+week/month comparisons, baseline minus current usage, and turn-offs by opening,
+session-end and mid-session intervention. Define baseline sampling/normalization,
+selection changes, incomplete coverage, negative differences and accepted quit
+evidence before an API/schema is finalized. Missing data is unavailable, not zero.
+Reduced observed usage is a comparison, not proof of causation; illustrative founder
+totals are not measured traction. Life-years remains disabled pending a defensible
+source/population/formula/uncertainty and validation (PD-12). Demographics are
+requested, but eligibility/skip/disclosure/retention and collection schemas remain
+unspecified. Current M2 profile/settings contracts do not gain demographic fields.
 
 ### 12.2 Example metrics response
 

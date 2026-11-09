@@ -4,7 +4,7 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN08-D03 volatile debug-native picker producer implemented and Pixel-tested; production/account selection and Auth remain deferred.
+**Current part:** RN08-D03 preview implemented; Q09 now confirms global selection. Next durable native selection/Save–Cancel contract under existing RN08-D03/RN-09f; Auth remains deferred.
 
 **Implementation branch:** `task/react-native/rn-08-selection-preview`; parent `6e36788`; no main merge or iOS/Auth change.
 
@@ -15,6 +15,8 @@
 **Shared workflow:** [Implementation knowledge base](README.md).
 
 ## Resume here
+
+- **PM reconciliation (2026-11-09):** [ADR](../architecture/pm-decisions-2026-11-09.md) records the supplied Q02–Q22 responses; Q09 explicitly settles global selection for quests, so older global/per-quest follow-ups below are historical. Next durable native owner/group/revision and stage/commit/discard semantics, then existing RN-09f Apps editor wiring. No runtime capability, storage, enforcement, account/Auth/iOS change in this documentation follow-up; full parents/counts stay open. Tokens/Auth user-deferred. [Plan 00 notes](plan_00_shared_contracts_notes.md) contain this commit's complete file/line ledger and verification; previous preview commit is `90cdc44`.
 
 - **RN08-D03 volatile native picker implemented (2026-11-09):** branch `task/react-native/rn-08-selection-preview`, parent `6e36788`; debug-native chooser and isolated QA page return only count/revision, with native search/checked draft/confirm/cancel and ephemeral owner/lifecycle cleanup. Final Pixel/API 36 APKs pass 14 normal-font and six font-2.0 UI observations, 12 session/10 discovery native cases; pure JVM 12 and full checks 382/538/601 pass, production exports/release isolation pass. Three observed layout defects were corrected before final runs. Current-run phone settings/usage/reverse restored, own Metro/XML removed, app data retained. Next durable owner/group/stage/commit/discard contract before real Apps integration; no account save/Auth/root/capability/enforcement/iOS changes. Complete spoken TalkBack, race/profile/other-device/signed release gates stay open; tokens/Auth user-deferred. Read [runbook](../qa/android-selection-preview.md), [sanitized results](artifacts/rn-08-selection/preview.json) and final entry; older next-action bullets below are historical. Local commit only; own hash Pending until next normal update.
 
@@ -3132,7 +3134,7 @@ Discovery producer/probe acceptance is complete within recorded Pixel/debug/curr
 
 ### RN08-D03 — Volatile native selection preview
 
-**Commit:** `feat(android): add volatile native app-selection preview`. **Hash:** Pending; resolve by subject/Git and record during the next normal update.
+**Commit:** `feat(android): add volatile native app-selection preview`. **Hash:** `90cdc44` (recorded during PM reconciliation).
 
 **Date:** 2026-11-09. **Owner:** Ishmum. **Branch:** `task/react-native/rn-08-selection-preview`. **Parent:** `6e36788`.
 
@@ -3256,3 +3258,18 @@ No account token, hosted migration, permission reset or data clear was needed.
 Original RN08-D03/RN-09f and 46/21/25 counts are preserved; full RN-08/09/Plan 04
 remain open. Local commit only; no push/CI/merge is requested or claimed. Unrelated
 workspace and original icon-pack untracked directories are excluded.
+
+
+### SC-01–04 documentation handoff — PM product answers
+
+**Commit:** `docs: reconcile PM answers and update implementation gates`. **Hash:** Pending.
+**Date:** 2026-11-09. **Owner:** Ishmum. **Branch:** `task/docs/pm-answer-reconciliation`.
+
+Documentation only: Q09 global scope is now settled; durable ownership/save/discard
+and active-occurrence/account cleanup contracts still precede production wiring.
+Preview implementation remains `90cdc44` and its recorded evidence is unchanged.
+The [Plan 00 reconciliation entry](plan_00_shared_contracts_notes.md) is the
+canonical complete file/line ledger, verification, decisions and remaining gates
+for this cross-plan commit. No new RN part or completion count; Auth/tokens stay
+deferred, and Anisha's producer ownership is preserved. Historical next-action
+bullets above reflect their dates and are superseded by the current resume entry.

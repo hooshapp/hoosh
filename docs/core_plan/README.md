@@ -5,6 +5,18 @@
 **Reviewed:** 2026-11-02 (bounded planning expansion; implementation evidence remains recorded per part).\
 **Product answers:** [PM_QUESTIONS.md](<../Context (AGENT)/PM_QUESTIONS.md>); no PM question is answered by an engineering default in these plans.
 
+**PM answers reconciled (2026-11-09):** Q02–Q22 have responses, with explicit
+choices separated from partial details in [ADR v1](../architecture/pm-decisions-2026-11-09.md)
+and [register v2](<../Context (AGENT)/OPEN_DECISIONS.yaml>). Account-required use,
+per-app allowances, global quest selection and friendly tone are settled;
+calendar/multi-device sync are initially deferred. Q01 remains unanswered.
+Next independent RN08-D03/RN-09f work: durable native selection owner/revision and
+picker draft versus editor Save/Cancel, then the existing Apps editor. Global
+versus per-quest scope is no longer a blocker; active-occurrence and native/account
+cleanup behavior still need contracts. No implementation/acceptance count changes.
+Tokens/Auth remain user-deferred; Anisha retains Auth/onboarding/iOS ownership.
+Full reconciliation: [Plan 00 notes](../core_plan_implementation_notes/plan_00_shared_contracts_notes.md).
+
 **Latest Android checkpoint (2026-11-07):** RN-10d fixes measured focus/footer and
 modal-return defects and records Pixel debug-device TalkBack, large-text, local
 lifecycle and sample-state evidence. Full parent RN-10 stays open for joint Auth,

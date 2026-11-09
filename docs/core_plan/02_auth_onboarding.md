@@ -6,6 +6,18 @@
 **Primary branch:** `area/auth-onboarding`; work on `task/auth/<part>` or `task/onboarding/<part>`, integrate working increments into `main`, then update active area branches.\
 **Companions:** [shared contracts](00_shared_contracts.md), [Supabase foundation](01_supabase_foundation.md), [backend](03_backend_foundation.md), [React Native integration](04_react_native_integration.md), [PM answer log](<../Context (AGENT)/PM_QUESTIONS.md>).
 
+**PM reconciliation (2026-11-09):** [ADR v1](../architecture/pm-decisions-2026-11-09.md)
+settles account-required use; providers remain unspecified. PM prefers no sign-out
+control, but if supplied it preserves product data/nudges. Existing sign-out
+credential/private-UI cleanup contracts remain; they do not delete product rows or
+clear installed native rules. Final UI and native ownership/deletion protocol are
+still gates. Age/gender collection is requested; required/skip/minimum-age contract
+is not supplied. Permission absence gives generic options, not measured History or
+usage-personalization. Friendly generated quests are desired but not implemented;
+calendars/multi-device sync are initially deferred. Anisha owns Auth/onboarding/iOS;
+this follow-up edits documentation only and does not revoke the user's Auth/token
+deferral. Use this update over older blanket unanswered/optional-policy wording.
+
 ## 1. Goal and delivery boundaries
 
 Deliver a real Supabase-authenticated mobile session which the application can use independently of FastAPI being finished. The first integration milestone is sign-in → current access token → FastAPI `GET /v1/me` → verified identity displayed by the integration screen. The backend validates credentials; a locally available session is not proof that a protected API request has succeeded.
@@ -16,12 +28,12 @@ This plan then prepares resumable onboarding without guessing enforcement, rewar
 
 | Stage | Included | Not implied |
 |---|---|---|
-| A — Initial Auth | Configuration, secure native storage, development web storage, session lifecycle, email/password flow, confirmation/recovery callbacks, routing, first identity integration | Production provider selection, mandatory login policy, profile row, completed onboarding, or active protection |
-| B — Profile/onboarding preparation | Minimal profile handoff, local versioned onboarding drafts, agreed optional-question screens and activity selections | Server-side onboarding completion or approved session policy |
+| A — Initial Auth | Configuration, secure native storage, development web storage, session lifecycle, email/password flow, confirmation/recovery callbacks, routing, first identity integration | Production provider selection, completed account-required root wiring, profile row, completed onboarding, or active protection |
+| B — Profile/onboarding preparation | Minimal profile handoff, local versioned onboarding drafts and activity selections; demographic collection waits for its required/skip/eligibility contract | Server-side onboarding completion or approved session policy |
 | C — Gated onboarding completion | Native permission/selection handoff, approved plan authoring/install flow, recovery and truthful completion | Android parity, rewards, usage forecasts, or an iOS migration audit that has not happened |
 | D — Conditional providers | Only providers required by an explicit PM/store decision, configured and tested per platform | A functional provider because its logo is visible in Figma |
 
-**Recommended implementation slice, not a PM answer:** use email/password for the first development integration. Keep email confirmation enabled for the representative test path. Production login requirements and sign-in methods remain Q17 / PD-09 / PD-10. Do not mark these decisions answered merely by implementing the development slice.
+**Recommended implementation slice, not a PM answer:** use email/password for the first development integration. Keep email confirmation enabled for the representative test path. Account-required use is settled by Q17/PD-09; required sign-in methods remain PD-10. Development email/password does not settle launch providers or complete Auth/root integration.
 
 ## 2. Current checkout and requirement traceability
 
@@ -50,11 +62,11 @@ Figma was rechecked during planning. It contains no wired prototype reactions, s
 |---|---|---|
 | Plan 00 contracts | Canonical `AuthSnapshot`, identity response, error classification, and session generation must be agreed before consumers integrate | Adapter/configuration tests and Figma component preparation |
 | Plan 01 SB-01–03 development Supabase Auth configuration — owned by Anisha | Required for real provider calls, redirect allowlists, email behavior, and live identity tests | Controlled SDK test doubles; never a production bypass |
-| Q17 / PD-09/10 | Required login, providers, sign-out/deletion policy | Development email/password flow; no claim that it establishes launch policy |
+| Q17 / PD-09/10 | Account required; providers, final sign-out UI/native ownership/deletion protocol still gated | Development email/password and isolated lifecycle producers; real integration remains user-deferred |
 | Q18; native source audit; PD-14/15 | Permission deferral, actual native picker, current iOS upgrade path, Android behavior | Honest unsupported/deferred UI and a port boundary |
-| Q19 / PD-17 | Demographic purpose, age range, minimum-age treatment | Optional-question components with synthetic test values; do not collect fields in a real release without the decision |
+| Q19 / PD-17 | PM wants demographics; minimum age, required/skip, validation/disclosure/retention still unspecified | Existing synthetic optional UI; do not ship collection or remove Skip by inference |
 | Q02–Q10 / PD-01–05 | Session accounting, active windows, overrides, quest precedence, installation meaning | Local onboarding draft and approved activity preferences; no enforcement |
-| Q20 / PD-16 | Personalization promises and tone | Deterministic supportive copy; no generated AI claim |
+| Q20 / PD-16/26 | Friendly tone/no chooser settled; generated interest/usage-informed quests desired, model/data/release contract pending | Generic cached/template fallback; no generated-AI claim until implemented |
 | Backend profile increment | Needed to persist display name as a product profile | Pending signup-name draft; identity Auth itself does not wait for a profile table |
 
 Non-goals: a custom password database; FastAPI login/refresh endpoints; raw native app-token uploads; a native coordinator; deletion of real accounts; multi-device session-budget synchronization; calendar access; payments; MFA/phone/passwordless methods unless separately selected. App Store submission remains a separate release gate.

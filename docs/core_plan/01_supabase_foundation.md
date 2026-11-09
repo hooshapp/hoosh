@@ -6,6 +6,13 @@
 **Prerequisite:** Agree the relevant contracts in [Plan 00](00_shared_contracts.md).\
 **Milestones:** Supplies the development identity provider for M1; supplies least-privilege database access and isolated test infrastructure for M2.
 
+**PM reconciliation (2026-11-09):** [ADR v1](../architecture/pm-decisions-2026-11-09.md)
+settles required accounts and defers calendars/multi-device sync initially. Required
+providers, age eligibility/collection contract and native deletion/ownership details
+remain open. No Supabase/project/Auth configuration or hosted action is authorized
+by this documentation update. Anisha keeps SB-01–03/SB-06 ownership; user still
+defers tokens/Auth integration. Existing SB-04/05 evidence/status is unchanged.
+
 ## 1. Outcome and scope
 
 Ishmum and Anisha can use one explicitly identified **development** Supabase project for real authentication. The mobile app receives only public client configuration; FastAPI knows the exact trusted issuer, audience, signing algorithm, and public-key discovery endpoint. Later database work has separate runtime and migration credentials, one migration authority, and an isolated test database.
@@ -19,7 +26,7 @@ This plan does not implement mobile login, server token verification, SQLAlchemy
 - PRD: FR-002, FR-003, FR-008, FR-009, NFR-005/006/007/012/013.
 - TSD: §8 identity/API boundary, §9 database ownership, §13 security, §14 configuration.
 - Figma: signup `18:2`, login `27:59`, optional demographics `27:113` / `48:79`, Settings identity `27:157`.
-- PM dependencies: Q17 / PD-09/10 for login and providers; Q19 / PD-17 for age/distribution; Q21 for device scope. Infrastructure setup must not silently resolve these product choices.
+- PM dependencies: Q17 settles required login; PD-10 providers remain open. Q19 / PD-17 eligibility/collection details remain partial; Q21 defers multi-device sync initially. Infrastructure setup does not complete product policy.
 
 ## 2. Chosen approach and boundaries
 

@@ -4,6 +4,16 @@
 **Read in order:** `PRD.md` → `TSD.md` → current Figma design → existing source repository.  
 **Design:** https://www.figma.com/design/ukmD2ZidJ9UR2XxUkvdPoJ/App-UI?node-id=0-1
 
+**Product decisions updated (2026-11-09):** Read the [PM reconciliation ADR](../architecture/pm-decisions-2026-11-09.md),
+[answer log](PM_QUESTIONS.md) and [decision register](OPEN_DECISIONS.yaml) before
+using old proposed product defaults. Required accounts, per-app session allowances,
+global app selection and friendly tone are settled choices; remaining details are
+explicitly partial, not all unanswered. Calendars/multi-device sync are deferred
+initially. Q01 release scope is unanswered; user token/Auth integration deferral
+and Anisha's Auth/onboarding/iOS ownership remain. No new runtime functionality is
+claimed. Documentation changes and next independent selection work are recorded
+in [Plan 00 notes](../core_plan_implementation_notes/plan_00_shared_contracts_notes.md).
+
 **Checkout status (2026-11-02):** A shared Expo/React Native shell, accepted type-only Auth/native interfaces with synthetic HTTP fixtures (Plan 00 committed as `0b50900`), and a FastAPI health foundation now exist. See [repository README](../../README.md) for actual setup/check commands. Mobile Auth, product persistence, and native protection are not connected. Legacy iOS source is now present in `apps/mobile/ios/` from commit `fe8f262`; its audit, signing/build validation and reuse remain prerequisites for RN/iOS integration. Source availability alone is not integration acceptance. The shell opens Home as a development preview: RN-09a composes source cards with unavailable inputs and no sample outcomes; Quests, History and Settings now also have source-aligned presentation with unavailable inputs and isolated source examples. It does not claim active protection.
 
 **Engineering ownership:** Ishmum owns main/shared React Native UI, Android, backend/product database and shared testing. Anisha owns all Supabase Auth/project setup (SB-01–03), mobile Auth/onboarding and iOS. Ishmum owns only the Supabase product database work (SB-04/05), not Auth administration. Build against the shared contracts independently, then wire real outputs when ready; mark integration-dependent parts complete only after joint validation. Read [the accepted decisions](../architecture/identity-foundation.md) and [core execution order](../core_plan/README.md) before foundation work.

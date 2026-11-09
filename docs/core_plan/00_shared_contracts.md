@@ -6,6 +6,13 @@
 **Baseline inspected:** `c7a8f73` — `Set up mobile and API foundation`.\
 **Last reviewed:** 2026-10-28.
 
+**PM reconciliation (2026-11-09):** [ADR v1](../architecture/pm-decisions-2026-11-09.md)
+updates product choices, not M1/M2 wire types. Required accounts, per-app allowances,
+global quest selection and friendly tone supersede earlier proposals. Provider,
+demographic eligibility/skip and native ownership/commit contracts remain gates.
+SC-01–04 remain complete for their original scope; no contract/schema/runtime change.
+Follow-up record: [Plan 00 notes](../core_plan_implementation_notes/plan_00_shared_contracts_notes.md).
+
 ## 1. Outcome and scope
 
 Use the accepted small set of boundaries that lets the two developers work independently. Build on the installed workspace; do not repeat the React Native/FastAPI setup or redesign the product.
@@ -37,9 +44,9 @@ The current file was re-read through Figma on 2026-10-28: screen inventory, auth
 |---|---|---|
 | Signup: name, email, password, Google | `18:2` | Email/password is a reasonable development path; Google launch scope remains PD-10. Signup name does not grant any role and is not a canonical profile until persisted through the profile API. |
 | Login placeholder says email/username | `27:59` | There is no approved username namespace or lookup flow. Proposed initial implementation uses email-only labeling and records this adaptation. |
-| Gender and age are optional | `27:113`, `48:79` | Skipping is not a validation error. Collection/age eligibility remains Q19/PD-17. |
+| Gender/age source screens offer Skip | `27:113`, `48:79` | PM requests collection; mandatory/skip and age eligibility remain unresolved. Do not remove existing Skip or ship collection without that contract (Q19/PD-17). |
 | App choices appear before Screen Time permission | `48:81`, `50:85` | Conceptual preferences do not prove native authorized selection. A later native picker must reconcile actual tokens. |
-| Suggested plan uses 10-minute breaks; manual setup uses sessions | `50:87`, `10556:120` | Do not infer a common enforcement policy until Q02–Q08 are answered. |
+| Suggested plan uses 10-minute breaks; manual setup uses sessions | `50:87`, `10556:120` | Per-app allowances now settled; remaining timer/override/reset semantics are partial under Q02–Q08/PD-02–04/24. |
 | Celebration says setup is complete | `50:89` | Never infer active protection from reaching this route; permission/install state is independent. |
 | Settings shows sample name/email | `27:157` | Replace with real identity/profile states, not Jordan's example data. Sign-out/recovery/account deletion need additional designed states. |
 | Temporary Home recommendations | `10517:138` | Accepting a Home suggestion must not silently attach a recurring quest to the user. |

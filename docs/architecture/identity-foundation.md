@@ -4,6 +4,14 @@
 implementation in Plan 00. Anisha is the named Auth/iOS owner; this record does
 not claim that she independently reviewed the patch. No PM product answer is implied.
 
+
+**Product follow-up (2026-11-09):** [PM ADR](pm-decisions-2026-11-09.md)
+settles required accounts. Providers and native account ownership/deletion protocol
+remain gates. PM prefers no sign-out UI; if offered it preserves product data and
+nudges. Credential/private-UI erasure below does not mean deleting product rows or
+clearing native rules. The user still defers Auth/token integration; no runtime
+contract or Anisha-owned implementation changes in this follow-up.
+
 ## Scope and authority
 
 M1 proves a real sign-in → verified API identity → matching account UI without a
@@ -86,11 +94,14 @@ the pinned SDK's offline/late-write behavior instead of relying on FIFO alone.
 
 ## Product gates retained
 
-- Q17/PD-09/10: production accounts/guest/providers and native ownership at sign-out
-  or deletion. Development email/password is the first engineering path.
-- Q19/PD-17: age/demographic collection and eligibility. Not in the M2 profile.
-- Q02–Q08: actual session accounting, allowance/override and overlapping rules.
-- Q09–Q16/Q21: quest/reward/Dino/measurement semantics and dependent product claims.
+- Q17/PD-09: required account settled. PD-10 providers and native ownership at
+  sign-out/deletion remain gated. Development email/password is the first path.
+- Q19/PD-17: collection requested; eligibility/mandatory-versus-skip/privacy contract
+  incomplete. Not in the M2 profile.
+- Q02–Q08: per-app scope and unrestricted inactive windows settled; remaining
+  timer/override/reset/overlap semantics are partial, not wholly unanswered.
+- Q09 global selection settled; Q10–Q16 have partial quest/reward/Dino/measurement
+  directions with remaining gates. Q21 defers calendars/multi-device sync.
 - Existing Swift access and Android evidence: actual native methods/build integration.
 
 The draft `ProtectionService` supports future adapter discussion, not approved

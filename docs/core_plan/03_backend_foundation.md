@@ -8,6 +8,14 @@
 **Area branch:** `area/backend`; task branches `task/backend/<part>`.\
 **Milestones:** M1 = verified identity without a database; M2 = minimal, isolated, revisioned profile persistence.
 
+**PM reconciliation (2026-11-09):** [ADR v1](../architecture/pm-decisions-2026-11-09.md)
+settles required accounts, global quest selection and per-app allowances; current
+API-01–12 profile/settings/draft schemas remain unchanged. Rewards, quest occurrence
+lifecycle, History baselines, demographics and enforcement still need their stated
+contracts/producers; explicit PM direction is not a new endpoint or migration.
+Provider/age/native deletion gates and user-deferred Auth/token acceptance remain.
+No new backend implementation or previously pending acceptance is claimed.
+
 ## 1. Goal and boundaries
 
 The original API-01–10 foundation delivers a small FastAPI service that trusts only access tokens from the configured Supabase development project, identifies the user from verified claims, and later persists only that user's minimal profile. Keep authentication, database access, and native protection as separate concerns.
@@ -19,7 +27,7 @@ The current app factory, settings, CORS configuration, health response, and eigh
 - PRD: FR-002, FR-008/009/034; NFR-001/002/005/006/007/010/012/013.
 - TSD: §8 API contracts, §9 relational persistence, §10 event boundaries, §13 security, §15 testing.
 - Figma: account/auth `18:2` / `27:59`; Settings `27:157`. Profile API behavior is an engineering adaptation, not implied by a Figma screenshot.
-- PM gates: Q17/PD-09/10, Q19/PD-17 for account/provider/demographic scope. Q02–Q16 and Q21 remain blockers for their later product domains, not for M1.
+- PM gates: Q17/PD-09 settles required accounts; PD-10 providers and Q19/PD-17 eligibility/collection remain partial. Q02–Q16 have accepted choices plus remaining gates in the ADR; Q21 defers multi-device/calendar work. None changes completed M1/M2 schemas.
 
 ### Intentional adaptation to the TSD
 
@@ -28,7 +36,7 @@ SC-01 adopted **identity-only `GET /v1/me`**, then separate **`GET/PATCH /v1/pro
 ### Out of scope
 
 - Password verification, issuing JWTs, refresh tokens, email delivery, or provider OAuth: Supabase Auth owns those.
-- Production login/guest policies, signup age eligibility, demographics, or required providers: PM decisions remain open.
+- Production account-required routing, signup eligibility/demographics and provider implementation: account requirement is settled; provider/collection contracts and Anisha-owned wiring remain outside this backend slice.
 - Active plan/session policies, quest scheduling, event ingestion, reward ledgers, usage summaries, AI, and calendars. API-11/12 add stored settings and non-enforcing drafts only; their exact contract is specified in those parts.
 - Native enforcement, temporary allowance timing, account-deletion/native cleanup, production deployment, or production database changes.
 

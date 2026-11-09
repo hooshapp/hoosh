@@ -1,13 +1,20 @@
 # Disconnect — Product Requirements Document (PRD)
 
-**Version:** 1.0 — agent handoff baseline  
-**Date:** 2026-10-28  
+**Version:** 1.1 — PM answer reconciliation; implementation/feasibility gates retained
+**Date:** 2026-11-09 (baseline 2026-10-28)
 **Product:** Disconnect, iOS + Android  
 **Stage:** Existing iOS app released; expanding to a cross-platform product and preparing for accelerators including YC  
 **Document owner:** Founding team (review and approve open decisions)  
 **Design source:** [Figma — App-UI](https://www.figma.com/design/ukmD2ZidJ9UR2XxUkvdPoJ/App-UI?node-id=0-1)  
 **Related:** `TSD.md`, `AGENT_START_HERE.md`  
 **Status legend:** **[VERIFIED BY TEAM]** explicitly reported tested; **[DESIGNED]** appears in Figma but not necessarily implemented; **[PROPOSED]** engineering/product recommendation; **[UNKNOWN/DECISION]** needs founder decision or code inspection. **Do not silently convert a proposed choice into a product fact.**
+
+
+**PM decision update:** [Versioned ADR](../architecture/pm-decisions-2026-11-09.md)
+and [machine-readable register](OPEN_DECISIONS.yaml) reconcile the newly supplied
+Q02–Q22 responses. Explicit PM choices replace older proposed defaults; partial
+answers do not approve unspecified formulas, platform capabilities or production
+behavior. Q01 release scope is still unanswered. Auth/tokens remain user-deferred.
 
 ---
 
@@ -133,7 +140,7 @@ No numeric growth target is asserted by the source files. Suggested experiments:
 ### Journey J-01 — First-run setup
 
 1. User sees playful landing experience (three pages about scrolling) → sign up/login (email and Google example).
-2. Gender and age are **optional**; neither determines app restrictions.
+2. PM requests age/gender collection (Q16/Q19); mandatory versus skippable and minimum age remain unresolved. Preserve the existing Skip baseline until agreed; neither determines app restrictions.
 3. User chooses 2–4 most-used/distracting apps (source Figma example; exact maximum is a UI rule, not an OS requirement).
 4. User chooses desired replacement activities such as Gym, Reading, Arts & Crafts, Walking, Music, Cooking or custom Studying.
 5. App explains the permission and hands off to the actual platform authorization flow. Denial yields useful partial experience and honest state.
@@ -146,30 +153,30 @@ No numeric growth target is asserted by the source files. Suggested experiments:
 
 1. Selected app launch hits a supported intervention condition.
 2. Native enforcement presents a platform-supported message using cached contextual copy, or a safe generic fallback.
-3. User sees "Quit Now" (Figma shows +5 example) or "Open anyway" (example 10 min, no points).
+3. User sees Quit Now (PM intended +5, full award rules pending) or Open anyway, which starts the configured per-app timed session. Ten minutes is an example, not a fixed extension.
 4. Native state transitions predictably; optional credit-event evidence is buffered for reconciliation.
 5. If continued, the configured temporary allowance expires without the main app being open.
 
 ### Journey J-03 — Session ends
 
-1. A planned app session or budget expires, with correct per-app/combined accounting once defined.
-2. Native shield presents session-ended messaging (Figma example: "Time to get back to reading Carl Max") with "Quit Now" (+20 example) or "Open anyway" (+10 min no reward).
-3. Overlapping quest restrictions retain precedence; override must not accidentally remove unrelated blocks.
+1. A per-app timed session expires. Its clock continues when the user leaves that app; switching apps does not transfer the session. Concurrent sessions/reentry and midnight handling remain to be defined.
+2. Native intervention presents session-ended messaging with Quit Now (PM intended +20, award rules pending) or Open anyway. Continued bypass remains possible; post-exhaustion duration/accounting and streak trigger remain unresolved.
+3. PM permits bypass even during overlapping quests. Define an explicit app/reason-scoped temporary exception; never remove unrelated reasons from native state. Outside configured active days/hours, access is unrestricted (quest/window boundaries need explicit reconciliation).
 
 ### Journey J-04 — Quest and redirection
 
 1. Home may show a **temporary** recommendation (example: read 20 minutes), not automatically attached to saved profile.
-2. Quests tab shows suggested Gym and Reading schedules. User accepts, personalizes or creates a custom quest.
-3. Scheduled quest restricts selected apps for its duration, using a separate restriction reason/source.
+2. Quests tab shows suggestions. Accepted quests move to the top under Accepted and stay editable/deletable; saved templates repeat until changed/deleted.
+3. Scheduled quests use the global selected-app group, not per-quest selections. Native supported intervention uses a separate reason/source and respects the PM bypass intent.
 4. On end/termination, only the quest-specific reason is removed. Other active limits remain.
-5. Quest completion may be self-reported unless verified evidence exists; rewards must not imply a verified real-world action.
+5. Occurrence completion/release, early finish and abandonment are not answered by the template-persistence response. Do not adopt user-confirmed completion as approved policy or imply verified real-world activity.
 
 ### Journey J-05 — History and progress
 
 1. History shows **turn-offs from nudges**, screen-time comparisons *if measurable*, and time saved *if validly computed*.
 2. Secondary screens provide progress narrative and screen-time reduction visualization.
 3. Figma examples such as "51 turn-offs," "12h 30m → 2h 30m," "10 hours saved," "80%," and "1.8 years" are **mock data, not actual customer outcomes**.
-4. Forecasts must be explicitly labeled hypothetical; **recommend omitting the age/gender-based life-years calculation until ethically and statistically reviewed**.
+4. PM wants an illustrative remaining-lifespan comparison. Keep it disabled until a defensible population/source/formula/uncertainty and validation exist; label it hypothetical, never measured lifetime saved. Use a fixed starting selected-app baseline and equivalent week/month comparisons; sampling/coverage rules still need definition.
 
 ## 6. Functional requirements
 
@@ -180,9 +187,9 @@ Priority labels: **P0** core release, **P1** full Figma scope, **P2** future/opt
 | ID | Prio | Status | Requirement and acceptance criteria |
 |---|---|---|---|
 | FR-001 | P0 | D/N | Landing 1–3 reproduces the intended scrolling narrative; offers accessibility skip/reduced motion |
-| FR-002 | P0 | D/N | Email/password signup/login with validation, duplicate handling, password reset; Google sign-in only if configured on both platforms |
-| FR-003 | P0 | D/N | Optional age/gender with skip; don't infer limits from demographic fields |
-| FR-004 | P0 | D/N | Let user pick distracting apps; reflect native authorized selection, not fabricated installed-app data |
+| FR-002 | P0 | D/N | Account required; development email/password signup/login with validation/recovery. Required production providers, including Google, remain undecided |
+| FR-003 | P0 | D/N | PM wants age/gender; required/skip behavior, minimum age and collection contract remain gated. No demographic-based restrictions |
+| FR-004 | P0 | D/N | One global native selected-app group shared by quests; explicit save/discard/ownership and native support required, no fabricated inventory |
 | FR-005 | P0 | D/N | Let user select at least one redirection activity or custom activity |
 | FR-006 | P0 | V/D | Permission screen explains scopes and supports Allow/Not now and recovery after revocation |
 | FR-007 | P0 | D/N | Suggested plan uses selected apps/hobbies; estimates visibly illustrative; offer Accept vs Set up on my own |
@@ -197,11 +204,11 @@ Priority labels: **P0** core release, **P1** full Figma scope, **P2** future/opt
 | FR-011 | P0 | V (iOS), U (Android) | Selected apps can be shielded/otherwise intervened on using OS-supported, policy-compliant APIs |
 | FR-012 | P0 | V (generic iOS) | Show meaningful native pause/intervention without network-dependent rendering |
 | FR-013 | P0 | D/N | Manual active days, active hours, apps, and sessions/day × minutes/session are editable and validated |
-| FR-014 | P0 | D/N | Explicit session-state semantics and accounting; no duplicate events; correct midnight and overlap logic |
+| FR-014 | P0 | D/N | Per-app count × configured elapsed duration; Open anyway starts, leaving does not pause; daily midnight reset. Reentry/concurrency/time-zone/boundary details remain gated |
 | FR-015 | P0 | D/N | Intentional pause displays correct context; "Quit Now" vs "Open anyway" actions use supported OS semantics |
-| FR-016 | P0 | D/N | Session-end shield restricts according to policy; 10-minute extension (example) has deterministic expiration if supported |
+| FR-016 | P0 | D/N | Session expiry intervenes; Open anyway remains possible, including after exhaustion. Define duration/streak/reason-scoped bypass semantics and prove native support before activation |
 | FR-017 | P0 | D/N | Multiple restriction reasons compose correctly; removing one cannot clear another active reason |
-| FR-018 | P0 | D/N | Permission denial/revocation, failure and unsupported platform behaviors show accurate status and recovery steps |
+| FR-018 | P0 | D/N | Generic options without relevant permission; measured History/usage personalization unavailable. Capability-specific denial/revocation recovery must show accurate status |
 | FR-019 | P1 | D/N | Five-minute-before-threshold recommendation, if supported by platform monitoring/warning semantics |
 | FR-020 | P1 | D/N | Personalized message references chosen activity and known context; safe generic offline fallback |
 | FR-021 | P1 | D/N | App/session settings can change mid-cycle; state and monitoring are reconciled atomically |
@@ -211,7 +218,7 @@ Priority labels: **P0** core release, **P1** full Figma scope, **P2** future/opt
 | ID | Prio | Status | Requirement and acceptance criteria |
 |---|---|---|---|
 | FR-022 | P1 | D/N | Home transient recommendation can be accepted or skipped without silently creating a permanent quest |
-| FR-023 | P1 | D/N | Quests list displays selected-interest suggestions (Gym, Reading examples), recurrence and duration |
+| FR-023 | P1 | D/N | Interest-based suggestions; accepted editable/deletable quests at top under Accepted; saved templates repeat until changed/deleted, occurrence lifecycle still gated |
 | FR-024 | P1 | D/N | User can accept, personalize, create, edit, cancel a quest with title, activity, start/end, repeat, weekdays |
 | FR-025 | P1 | D/N | Quest app restrictions activate and end correctly even when app is terminated, within platform capabilities |
 | FR-026 | P1 | D/N | Recurrences and overlapping quests are deterministic; offline edits reconcile correctly |
@@ -223,13 +230,13 @@ Priority labels: **P0** core release, **P1** full Figma scope, **P2** future/opt
 |---|---|---|---|
 | FR-028 | P1 | D/N | Home: Dino mood/health, feed/credits, weekly time/progress card, current streak, recommendation card |
 | FR-029 | P1 | D/N | Dino renders authentic supplied vector variations; mood bands 0–25, 26–50, 51–75, 76–100%, based on defined score model |
-| FR-030 | P1 | D/N | Event-based reward credits tracked with ledger/idempotency; design examples +5 pause, +20 stop, +30 early nudge, +50 home quest, −10 feed are **illustrative**, not a universal policy |
+| FR-030 | P1 | D/N | PM intended +5 opening quit, +20 session-end quit, +30 mid-session nudge quit, +50 temporary Home quest. Exact evidence/timing/cadence/versioned ledger pending; −10 Feed remains illustrative |
 | FR-031 | P1 | D/N | History "turn-offs" based on uniquely accepted quit events, not generic blocked attempts |
 | FR-032 | P1 | D/N | Usage/time stats display source, range and measurement completeness; no fabricated figures |
-| FR-033 | P1 | D/N | Show progress narrative and percentage comparisons only where baseline/current data are comparable |
+| FR-033 | P1 | D/N | Fixed starting selected-app baseline versus equivalent week/month; show comparable data/source/coverage only. Sampling, negative differences and selection changes require rules |
 | FR-034 | P1 | D/N | Profile settings, activities, apps, days, hours, app sessions, save states and errors |
-| FR-035 | P2 | D | Google/Apple Calendar connections displayed in Figma; integration optional and permission-dependent |
-| FR-036 | P2 | CONCEPT | AI-generated personalized nudges after deterministic system works; never a dependency for enforcement |
+| FR-035 | P2 | D | Calendar integration explicitly deferred from initial scope; same-user shared multi-device allowance is future intent, sync also deferred |
+| FR-036 | TBD (Q01) | PM INTENT / N | Friendly generated quests from interests/permitted usage patterns, suggested times; no tone chooser initially. Model/input/evaluation/release sequence pending; no model dependency for enforcement |
 | FR-037 | P2 | CONCEPT | App shuffle / hardware integrations: separately scoped, no iOS Home Screen manipulation claim |
 
 ### 6.5 Navigation map / Figma mapping
@@ -288,7 +295,7 @@ Open states **not defined by Figma**: all loading/error/empty/disabled/pressed s
 4. Always explain why a permission is needed, when a shield is active, and what overrides do.
 5. "Earn credits" must describe observable actions and verifiable evidence accurately.
 6. User can reconfigure or disable self-imposed plans; never imply the system permanently owns their device.
-7. No account-level age/gender-based restriction algorithms, despite those optional form fields.
+7. No account-level age/gender-based restriction algorithms. Requested collection and illustrative projection still need the unresolved collection/formula contracts.
 8. Where OS features differ, use understandable feature-availability explanations rather than pretending identical behavior.
 
 ## 9. Non-functional requirements
@@ -333,7 +340,7 @@ Latency/SLO numerical targets are **[DECISION]**; agents must instrument baselin
 
 **Phase 3 — Full Figma scope:** quests, custom schedules, overlapping rules, reward ledger/Dino, history, configuration editors, reliability, analytics, accessibility, production integration.
 
-**Phase 4 — Experimentation/scale:** AI copy personalization behind feature flag, calendar connections, paid infrastructure when necessary, experiments; hardware separately.
+**Phase 4 — Experimentation/scale:** calendar/multi-device work remains deferred; hardware separately. PM wants generated quest personalization, but its release placement/model/evaluation is not approved by this old phase sequence (Q01/Q20); retain cached/generic fallbacks.
 
 **End-of-phase sign-off criteria:** Build works from existing source, physical-device behavior documented, E2E acceptance tests for relevant `FR-*` requirements, errors/permissions handled, no invented stats, platform limitations disclosed, and a reproducible release build.
 
@@ -354,29 +361,28 @@ Latency/SLO numerical targets are **[DECISION]**; agents must instrument baselin
 | AC-11 Existing users | NFR-003/004 | Upgrade preserves existing iOS data and monitoring where possible |
 | AC-12 Accessibility | NFR-008 | Logical focus, readable labels and functional control sizing |
 
-## 13. Founder decision register — don't let AI agents guess
+## 13. Product decision register
 
-| Decision ID | Open question | Recommended default **[PROPOSED]** | Required before |
-|---|---|---|---|
-| PD-01 | Are the “2×15-minute sessions” per selected app, per group, or global? | Combined allowance for selected distracting apps, unless team specifies per-app | Session-engine production coding |
-| PD-02 | What starts/ends a session? Does a five-minute interruption count as one? | Explicitly define state machine; inactivity grace configurable | Timer logic |
-| PD-03 | Does “Open anyway” consume a session, extend one, or create a bonus? Maximum extensions? | Bounded +10 minutes, no reward, never overrides quest block | Shield action coding |
-| PD-04 | Do quests hard-block during the activity even with unused allowance? | Yes; active quest precedence | Restriction coordinator |
-| PD-05 | What counts as completing a quest? | User-confirmed, visibly labeled self-reported | Rewards/history |
-| PD-06 | What exactly awards +5/+20/+30/+50 and costs −10? | Do not hardcode Figma example amounts until approved | Ledger implementation |
-| PD-07 | What is Dino health? | Computed from verified meaningful events, not moral worth | Home/Dino implementation |
-| PD-08 | Does the app support the “Feed” feature? | Display only after behavior and credit cost defined | Home implementation |
-| PD-09 | Does onboarding require login? | Support account creation but graceful permission deferral | Auth |
-| PD-10 | Is Google sign-in required for V1 on both platforms? | Confirm provider configuration; avoid fake button | Auth release |
-| PD-11 | Which usage metrics are legally/technically available per OS? | Capability map, show unavailable as unavailable | History/analytics |
-| PD-12 | Should the life-years forecast exist? | Omit until reviewed; never infer from gender | History release |
-| PD-13 | Are Calendar connections launch-critical? | No, feature-flagged | Settings release |
-| PD-14 | What Android intervention model will Play permit? | Prove with signed prototype and policy review first | Android release |
-| PD-15 | Migration from existing iOS app architecture? | Reuse Swift code and production app identity; no rewrite without audit | RN integration |
-| PD-16 | Default voice/tone of nudges? | Supportive, opt-in stronger tone later | Personalization |
-| PD-17 | Age range and app availability? | Confirm minimum age, privacy and store rating | Publishing |
+Current authority: [OPEN_DECISIONS.yaml](OPEN_DECISIONS.yaml) and the
+[versioned PM ADR](../architecture/pm-decisions-2026-11-09.md). Older recommended
+defaults are retained there as historical, not implementation instructions.
 
-Agents should record answers in a machine-readable ADR/decision log, update the PRD/TSD after approval, and add regression tests for each resolved policy.
+| IDs | Current choice / remaining gate |
+|---|---|
+| PD-01/02/24 | Per-app configured count/duration; elapsed timer begins on Open anyway; daily midnight reset. Reentry/concurrency/time zone/overnight details remain partial |
+| PD-03/04 | Bypass always available in intent, including quests; reason/app scope, expiry and exhausted-session consequences remain partial |
+| PD-05/20 | Repeating editable/deletable saved templates and Accepted section settled; occurrence completion/release/lifecycle unresolved |
+| PD-06–08/21 | Award amounts and feeding/decay direction supplied; exact reward/Feed/health/streak rules incomplete |
+| PD-09/10 | Account required; providers not selected, sign-out UI/native deletion ownership still Q17 gates |
+| PD-11/12/23 | Selected-app fixed-baseline comparisons and turn-off goals; baseline/evidence/feasibility/formula/numeric targets incomplete; forecast disabled |
+| PD-13/22 | Calendars and multi-device sync deferred initially; future shared allowance intent is not current support |
+| PD-14/15 | Android feasibility and Anisha-owned native iOS migration acceptance unchanged |
+| PD-16/17/26 | Friendly tone/no chooser; demographics and generated quests requested, but eligibility/collection/model/release details incomplete |
+| PD-18/19/25 | Global quest selection; unrestricted outside active windows; generic permission fallback. Native contracts, quest/window reconciliation and recovery remain gates |
+
+Q01 release scope remains unanswered. Preserve FR/NFR and Q01–Q22/PD-01–17
+identifiers; PD-18–26 identify previously unregistered product questions. Add
+regression tests with implementation; a documentation answer is not test evidence.
 
 ## 14. Research, privacy and ethics notes
 

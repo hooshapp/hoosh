@@ -9,6 +9,18 @@
 
 **Implementation record:** Follow the [knowledge-base workflow](../core_plan_implementation_notes/README.md) and maintain [Plan 04 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md). Each commit needs its own file/line change record, reasoning, checks and handoff. Preparation alone does not complete a part; RN-01's actual evidence is recorded below and in its notes.
 
+**PM reconciliation (2026-11-09):** [ADR v1](../architecture/pm-decisions-2026-11-09.md)
+and [register v2](<../Context (AGENT)/OPEN_DECISIONS.yaml>) supersede older proposed
+policy/unanswered wording below. Q09 explicitly settles **global quest app selection**;
+next RN08-D03/RN-09f work is durable native owner/group/revision and picker-draft
+versus editor Save/Cancel, then the existing Apps editor consumer. Product scope is
+no longer blocked on global versus per-quest selection. Active-occurrence effects,
+account transition/deletion and native contracts still require definition.
+No runtime integration, enforcement, permission grant or capability change occurs
+here. Tokens/Auth remain deferred, iOS Anisha-owned, counts 46/21/25 unchanged.
+Read [Plan 00 reconciliation notes](../core_plan_implementation_notes/plan_00_shared_contracts_notes.md)
+for this documentation follow-up; prior Plan 04 implementation evidence stays dated.
+
 ## 1. Outcome and deliberate scope
 
 The first outcome is a real authenticated round trip: the mobile app obtains a current session through the auth integration, calls FastAPI `GET /v1/me`, and displays the verified account without leaking an earlier account's data. The second outcome is minimal profile integration, with honest loading, failure, offline, and conflict handling. Neither outcome depends on guessing session allowances, rewards, or Android blocking capabilities.
@@ -177,7 +189,7 @@ On sign-out, account switch, invalidated session, or an auth-recovery transition
 6. Use a fresh QueryClient for a newly signed-in account; never use previous-account placeholder data.
 7. Let auth owner finish its storage/session transition and navigation; do not make local cache cleanup depend on a successful network sign-out.
 
-This is application-data cleanup, not approval to remove native restrictions. Whether native rules survive sign-out, belong to an account, or must be transferred/disabled is a PM/native migration decision (Q17/PD-15). Until defined, there must be no automatic reattribution of local native rules/events to another account. Real account switching with account-bound native protection is a release gate in the platform plans.
+This is application-data cleanup, not approval to remove native restrictions. PM wants native nudges/product data preserved on sign-out and all user information removed on deletion. Native ownership/transfer, offline deletion and acknowledgment protocol are still Q17/PD-15 gates. Until defined, there must be no automatic reattribution of local native rules/events to another account. Real account switching with account-bound native protection is a release gate in the platform plans.
 
 ## 6. Commit sequence and dependencies
 
@@ -355,7 +367,7 @@ If a part grows beyond one reviewable behavior change, split it into suffixed pa
 **Implementation steps:**
 
 1. Exercise cold launch, restored session, signed-out launch, deep link to Settings, bootstrap delay, invalid/expired session, local sign-out, and account change.
-2. Confirm root routes cannot expose authenticated content before bootstrap. For the development identity milestone, use the explicitly chosen auth policy; do not accidentally define launch-wide required-login behavior while PD-09/Q17 remains open.
+2. Confirm root routes cannot expose authenticated content before bootstrap. Q17/PD-09 now requires an account; provider selection and actual Anisha-owned route guards/integration remain separate. Preserve the user's Auth/token deferral.
 3. Complete the agreed bounded `401` recovery handshake: one auth recovery, no duplicate refresh races, no blind write replay, and no logout for server/network failure.
 4. Remove release-accessible fixture selectors, preview redirects, hardcoded session flags, and bypasses. A developer harness can still instantiate screens with synthetic data outside the release tree.
 5. Add a concise reproducible acceptance record: environment identifiers safe to share, build/SDK, tested cases, pass/fail, known limitations, actual commit hashes. Never store access tokens, refresh tokens, passwords, or personal data in that record.
@@ -490,7 +502,7 @@ or automatic cleanup at sign-out. Reverting the shared UI never clears rules.
 
 #### RN08-D03 / RN-09f — App visibility and selection investigation (2026-11-07)
 
-**Investigation complete; implementation/device acceptance pending.** Ishmum reviewed
+**Historical investigation baseline; current debug implementation/device scope is recorded in the checkpoints below.** Ishmum reviewed
 current Android/Play documentation, the existing summary-only native port, Apps
 editor/route/adapter and the local debug APK. See the [investigation and source links](../qa/android-app-selection-investigation.md)
 and [sanitized static audit](../core_plan_implementation_notes/artifacts/rn-08-selection/visibility-audit.json).
@@ -504,9 +516,10 @@ device was connected. Next is a debug-only app-context discovery probe with
 aggregate-only evidence, then a volatile picker producer in the existing QA host.
 A privileged shell query or the older usage-access probe does not close that gate.
 Production save/discard semantics, owner/group/revision and cancellation handling
-must be explicit before persistent selection/root wiring. Keep prototype data
-memory-only; never silently assign global selection/account cleanup or per-quest
-scope. Tokens/Auth remain explicitly deferred. Native confirmation is not rule
+must be explicit before persistent selection/root wiring. Q09 now settles global
+selection; per-quest scope is not a remaining product question. Keep prototype data
+memory-only; do not infer durable account ownership/cleanup or introduce per-quest
+selection. Tokens/Auth remain explicitly deferred. Native confirmation is not rule
 installation, and package visibility is independent of usage permission.
 
 | Existing ref / next commit-sized scope | Status and dependency |
@@ -787,11 +800,11 @@ by API-11/12.
 | Still outside this implementation slice | Required input before activation |
 |---|---|
 | Active plans, session accounting/reset, override and overlapping restrictions | Q02–Q08 / PD-01–04; measured native mechanisms and installation contract |
-| Quest scheduling/recurrence, completion/release and app scope | Q09–Q11, approved quest state/schema and backend/native producers |
+| Quest scheduling/recurrence and completion/release | Q09 global scope settled; Q10/11 template/Accepted behavior supplied, occurrence state/schema and backend/native producers pending |
 | Credits, feeding, Dino health and streaks | Q12–Q14 / PD-05–08; versioned product rules and real evidence |
-| History/saved-time/baselines/life-years | Q15–Q16 / PD-11/12; permitted measured sources and approved definitions; forecast stays excluded |
+| History/saved-time/baselines/life-years | Q15 fixed starting selected-app benchmark settled; capture/comparability/evidence and PD-12 formula still gated; forecast stays excluded |
 | Account-bound native rule/event transfer or cleanup | Q17 / PD-15 and coordinated native/Auth ownership |
-| Demographics, calendars, AI personalization and multi-device enforcement | Q19–Q21 and relevant scope/provider/privacy decisions |
+| Demographics and AI personalization | Q19 collection requested; eligibility/skip/privacy and Q20 model/data/release contracts pending. Q21 calendars/multi-device sync explicitly deferred |
 
 Completing i–l proves this bounded settings/draft integration. It does not mark
 all of RN-09 or the product complete. Keep parent RN-09 pending for its remaining
@@ -864,17 +877,17 @@ not block identity-only M1, but cannot support claims about enabled protection.
 
 | Gate | Blocks | Does not block |
 |---|---|---|
-| PD-09/10; Q17 account/provider scope | Launch-required login/provider claims and final guest/auth route policy | Development email/password identity milestone using an explicitly scoped test flow |
+| PD-09/10; Q17 | Required account settled; providers, final sign-out UI and actual Auth/root integration pending | Existing development identity producers; user Auth/token deferral preserved |
 | PD-17; Q19 demographics/minimum age | Shipping age/gender collection/rules and age-related copy | Neutral account header and minimal approved profile |
 | PD-01–04; Q02–10 | Activating plan/session/override/quest enforcement controls | Layouts, input primitives, identity/profile integration |
 | PD-05/06; Q11/12 | Quest completion and real credit transactions | Quests card specimens and explicit unavailable production state |
 | PD-07/08; Q13/14 | Dino scoring/Feed/streak display logic | Authentic asset preparation; neutral no-score presentation |
 | PD-11/12; Q15/16 | Usage/saved-time/comparison/forecast claims | History structure and unavailable states |
-| PD-13; Q21 | Real calendar connect actions | Omitted/feature-gated calendar section |
+| PD-13/22; Q21 | Calendars and multi-device sync explicitly deferred initially; future shared allowance is not implemented | Omitted calendar flow; no cross-device enforcement claim |
 | PD-14/15; native audit and device evidence | Native action integration, production build identity, enforced-parity claims | Web/shared UI work and honest capability/status mapping |
 | Approved sign-out/account deletion/native ownership policy | Real account switching/deletion with account-bound native rules/events | Clearing remote UI caches and testing identity-only account boundaries |
 
-The answer to a product gate is not supplied by a convenient UI fixture, an SDK method name, or a successful mock. Update PM decisions and contracts when the behavior is agreed; add regression cases before enabling it.
+The PM ADR/register now supply explicit product choices; only their remaining details and implementation/acceptance are gates. A UI fixture, SDK method name or successful mock does not complete them. Add regression cases with implementation before activation.
 
 ## 9. Acceptance matrices
 
