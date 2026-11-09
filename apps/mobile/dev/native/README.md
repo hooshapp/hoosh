@@ -27,7 +27,7 @@ If LAN access is unavailable, `adb reverse tcp:8090 tcp:8090` allows opening
 `exp://127.0.0.1:8090` in Expo Go on the connected Android phone.
 Do not record device serials, account tokens, email addresses or personal screens.
 
-Use **Screens** to choose among 19 pages, **State** to cycle Ready, Loading, Error,
+Use **Screens** to choose among 21 pages (19 source examples plus two native diagnostics), **State** to cycle Ready, Loading, Error,
 Unavailable, Busy and Long text, and **Reset** to restore the local draft. State
 changes also reset drafts. Not every component has a distinct presentation for
 all six states; editor Loading uses unavailable and a missing monthly series
@@ -112,3 +112,16 @@ Use screenshots/direct input for speech, and hierarchy automation only with the
 service off. Preserve/restore the owner's current settings rather than older run
 baselines. Production exports and local debug execution do not certify a signed
 release, Auth integration or protection.
+
+
+### Temporary native app-selection preview
+
+In an Android debug development build, **Android selection preview** opens the
+app-owned native chooser for actual current-profile launcher candidates. Its
+footer identifies real native diagnostics; State is disabled. Search, check,
+Cancel and Use temporarily affect only native memory; React Native sees a count
+and revision. Reset/Screens release its ephemeral QA owner. No app is blocked or
+saved to an account. Expo Go/iOS/release have no preview methods and show an
+explicit unavailable fallback. Build/run, exact evidence, privacy and cleanup:
+[selection preview runbook](../../../../docs/qa/android-selection-preview.md).
+Never commit owner app lists, raw phone logs or screenshots containing app names.

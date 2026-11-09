@@ -13,16 +13,17 @@ iOS, release/additional-device and remaining accessibility matrices. Read the
 and [device record](../core_plan_implementation_notes/artifacts/rn-10d/README.md).
 Original part IDs and 46/21/25 counts are unchanged.
 
-**Latest selection checkpoint (2026-11-09):** RN08-D03 debug-only app-context
-discovery probe is implemented and Pixel/API 36 tested. Same-UID/no-query versus
-launcher-query controls return 53/183 unique candidates with usage access denied;
-metadata is bounded to 64 resources, and only aggregate results leave the probe.
-Both builds/release manifest/DEX isolation and 10 synthetic cases per run pass.
-Settings are restored; no production picker/capability/Auth change. Next volatile
-native QA picker, then explicit persistent ownership/commit semantics before real
-Apps editor saves. See [runbook](../qa/android-selection-discovery-probe.md) and
-[build/device record](../core_plan_implementation_notes/artifacts/rn-08-selection/discovery-build.json).
-Tokens/Auth remain deferred; original IDs/counts and remaining release gates stay.
+**Latest selection checkpoint (2026-11-09):** RN08-D03 volatile native picker
+implemented in debug-only module source sets and isolated native QA page. Native
+search/checked draft/confirm/cancel returns count/revision only; QA owner release
+and lifecycle fences prevent a temporary draft becoming a saved account selection.
+Release excludes implementation/preview registrations; actual Apps/root/Auth and
+protection capabilities remain unchanged. See [preview runbook](../qa/android-selection-preview.md),
+[sanitized results](../core_plan_implementation_notes/artifacts/rn-08-selection/preview.json)
+and latest Plan 04 notes for observed tests/limits. Prior app-context discovery
+53/183 comparison remains in its [record](../core_plan_implementation_notes/artifacts/rn-08-selection/discovery-build.json).
+Next durable ownership/stage/commit/discard contract before production editor
+integration. Tokens/Auth deferred; original IDs/counts and remaining gates stay.
 
 **Investigation checkpoint (2026-11-07; historical next step is now implemented above):** RN08-D03 / RN-09f app
 visibility/selection investigation is documented. Recommended prototype uses

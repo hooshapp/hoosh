@@ -1,18 +1,14 @@
 package com.hoosh.disconnect.dev
 
-import android.app.KeyguardManager
 import android.content.Context
-import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.os.Process
 import android.os.SystemClock
-import android.os.UserHandle
-import android.os.UserManager
 import expo.modules.hooshusage.UsageReader
+import expo.modules.hooshusage.LauncherAppCatalog
 
 /** Test APK only. No catalog/identifier, drawable, exception text or usage event is returned. */
 internal class SelectionDiscoveryProbe(
@@ -76,27 +72,8 @@ internal class SelectionDiscoveryProbe(
       }
 
       val candidates = query()
-      val unique = linkedMapOf<String, ResolveInfo>()
-      var eligible = 0
-      var excluded = 0
-      var self = 0
-      for (candidate in candidates) {
-        val activity = candidate.activityInfo
-        val application = activity?.applicationInfo
-        if (activity?.packageName == context.packageName) {
-          self++
-        } else if (
-          activity == null || application == null || activity.packageName.isNullOrBlank() ||
-          !activity.enabled || !activity.exported || !application.enabled ||
-          UserHandle.getUserHandleForUid(application.uid) != Process.myUserHandle() ||
-          (Build.VERSION.SDK_INT >= 30 && candidate.isCrossProfileIntentForwarderActivity())
-        ) {
-          excluded++
-        } else {
-          eligible++
-          unique.putIfAbsent(activity.packageName, candidate)
-        }
-      }
+      val filtered = LauncherAppCatalog(context).filter(candidates)
+      val unique = filtered.apps
 
       // Cap expensive resource resolution, not discovery counts. Never retain icon data.
       var labels = 0
@@ -124,11 +101,11 @@ internal class SelectionDiscoveryProbe(
       }
       result.putAll(mapOf(
         "matchedActivityCount" to candidates.size,
-        "eligibleActivityCount" to eligible,
-        "excludedActivityCount" to excluded,
-        "selfActivityCount" to self,
+        "eligibleActivityCount" to filtered.eligible,
+        "excludedActivityCount" to filtered.excluded,
+        "selfActivityCount" to filtered.self,
         "uniquePackageCount" to unique.size,
-        "duplicateActivityCount" to eligible - unique.size,
+        "duplicateActivityCount" to filtered.eligible - unique.size,
         "sampledPackageCount" to sampled.size,
         "labelResolutionSuccessCount" to labels,
         "labelResolutionFailureCount" to labelFailures,
@@ -153,20 +130,7 @@ internal class SelectionDiscoveryProbe(
       "blankLabelCount", "iconResolutionSuccessCount", "iconResolutionFailureCount",
     )
 
-    private fun launcherActivities(context: Context): List<ResolveInfo> {
-      val intent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
-      return if (Build.VERSION.SDK_INT >= 33) {
-        context.packageManager.queryIntentActivities(intent, PackageManager.ResolveInfoFlags.of(0L))
-      } else {
-        @Suppress("DEPRECATION")
-        context.packageManager.queryIntentActivities(intent, 0)
-      }
-    }
-
-    private fun isUnlocked(context: Context): Boolean? {
-      val users = context.getSystemService(UserManager::class.java) ?: return null
-      val keyguard = context.getSystemService(KeyguardManager::class.java) ?: return null
-      return users.isUserUnlocked && !keyguard.isDeviceLocked
-    }
+    private fun launcherActivities(context: Context): List<ResolveInfo> = LauncherAppCatalog(context).query()
+    private fun isUnlocked(context: Context): Boolean? = LauncherAppCatalog(context).isUnlocked()
   }
 }

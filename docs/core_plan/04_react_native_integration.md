@@ -513,9 +513,9 @@ installation, and package visibility is independent of usage permission.
 |---|---|
 | RN08-D03 investigation | Complete for documented API/repository/static APK scope; report and notes record limits. |
 | RN08-D03 app-context discovery probe | Implemented 2026-11-09; debug/test-only query and no-query controls compile. Pixel/API 36 app-UID tests pass with usage denied: 53 baseline versus 183 query candidates; capped resource checks and 10 synthetic cases per run. |
-| RN08-D03 native picker producer | Planned after discovery; volatile QA draft/search/confirm/cancel and lifecycle/error tests, no account persistence or enforcement. |
+| RN08-D03 native picker producer | Implemented debug-only volatile native chooser in isolated QA host; search/retained checks, confirm/cancel, count-only bridge and owner/lifecycle cleanup. See current preview checkpoint below for device results and remaining gates. |
 | RN-09f actual editor integration | Pending explicit commit/owner contract and tested native producer; reuse existing native entry. Account persistence/Auth acceptance stays deferred. |
-| RN08-D06 / RN-10 device acceptance | Actual picker/resource/profile/Back/reentry/large-text/TalkBack checks after implementation; no coverage inferred from this research. |
+| RN08-D06 / RN-10 device acceptance | Pixel/API 36 debug preview search/confirm/cancel/Back/reset/background, usage-denied and font 1.15/2.0 + IME checks recorded in preview evidence. Complete spoken TalkBack, profile/race/other-device and signed release matrix remain open. |
 
 Keep original RN-08a–d history, RN08-D01–D06 and RN-09f; no new top-level part.
 Counts remain 46 top-level / 21 producers / 25 pending. This investigation completes
@@ -540,6 +540,20 @@ cancellation/lifecycle behavior; persistent owner/group/commit semantics and
 production editor saves remain separate. Tokens/Auth stay user-deferred.
 Physical lock/race/profile/other-device and signed release/picker acceptance
 remain open. Existing IDs/counts and previous dated investigation are preserved.
+
+**RN08-D03 volatile picker checkpoint (2026-11-09):** debug-native producer
+and isolated QA page implemented; extract validated current-profile discovery,
+retain names/identities/icons natively, return only count/revision. Search retains
+hidden checks, cancel/Back preserve confirmed memory, confirmation revalidates
+eligibility and only changes revision when the selection changes. Reset/leave/
+activity or module teardown clear the ephemeral owner; background cancels pending
+work. No account meaning, storage, root/Apps route, Auth, iOS or production
+capability change. Release excludes picker implementation/method registration.
+See [preview runbook and observed limits](../qa/android-selection-preview.md),
+[sanitized results](../core_plan_implementation_notes/artifacts/rn-08-selection/preview.json)
+and the latest notes. Durable owner/group/stage/commit/discard semantics remain
+required before RN-09f production integration. Full parents stay open; counts
+46/21/25 and token/Auth deferrals remain unchanged.
 
 ### RN-09 — Main screen composition within approved data boundaries
 

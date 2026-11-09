@@ -4,9 +4,9 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN08-D03 debug-only discovery probe implemented, native-build/isolation and bounded Pixel/API 36 app-context acceptance passed; picker remains unimplemented. Existing RN-08 read/permission and RN-10 evidence remain intact. Tokens/Auth integration remain explicitly user-deferred.
+**Current part:** RN08-D03 volatile debug-native picker producer implemented and Pixel-tested; production/account selection and Auth remain deferred.
 
-**Implementation branch:** `task/react-native/rn-08-selection-probe`; parent `9fda458`; no main merge or iOS/Auth change.
+**Implementation branch:** `task/react-native/rn-08-selection-preview`; parent `6e36788`; no main merge or iOS/Auth change.
 
 **Commit reference:** RN-01 `2f88102`; RN-02 `2d5c0d1`; RN-03 `0741758`; RN-04 `610f570`; RN-05 preparation `0c6e4db`; RN-07 UI `5790302`; RN-08 preparation `71da2d5`; RN-09a `ff75039`. RN-10 is `9b5fbd0`.
 
@@ -15,6 +15,8 @@
 **Shared workflow:** [Implementation knowledge base](README.md).
 
 ## Resume here
+
+- **RN08-D03 volatile native picker implemented (2026-11-09):** branch `task/react-native/rn-08-selection-preview`, parent `6e36788`; debug-native chooser and isolated QA page return only count/revision, with native search/checked draft/confirm/cancel and ephemeral owner/lifecycle cleanup. Final Pixel/API 36 APKs pass 14 normal-font and six font-2.0 UI observations, 12 session/10 discovery native cases; pure JVM 12 and full checks 382/538/601 pass, production exports/release isolation pass. Three observed layout defects were corrected before final runs. Current-run phone settings/usage/reverse restored, own Metro/XML removed, app data retained. Next durable owner/group/stage/commit/discard contract before real Apps integration; no account save/Auth/root/capability/enforcement/iOS changes. Complete spoken TalkBack, race/profile/other-device/signed release gates stay open; tokens/Auth user-deferred. Read [runbook](../qa/android-selection-preview.md), [sanitized results](artifacts/rn-08-selection/preview.json) and final entry; older next-action bullets below are historical. Local commit only; own hash Pending until next normal update.
 
 - **RN08-D03 discovery probe implemented (2026-11-09):** branch `task/react-native/rn-08-selection-probe`, parent `9fda458`; test-APK-only collector/checks and debug-only launcher query with reproducible no-query control. Both APK variants compile; release manifest excludes query and app APK excludes probe definitions. Pixel/API 36 target-UID runs with usage denied return 53 baseline / 183 query unique candidates; baseline resources 53, query capped 64, no resolution failures. Ten synthetic checks pass in each of three final accepted runs, original-mode query and legacy usage regression pass. Final APK hashes were reinstalled/retested; usage mode allow restored, font/stay-awake/reverse unchanged, no data clear. Existing production selection/protection remain unavailable/unsupported. Next volatile native QA picker in existing module after intentionally extracting the validated candidate logic, preserving identity privacy/cancel/lifecycle boundaries; persistent owner/group/commit semantics remain separate. Tokens/Auth user-deferred, iOS Anisha-owned; no shared port/root/backend change or new parent count. See [runbook](../qa/android-selection-discovery-probe.md) and final entry; older next-action bullets below are historical.
 
@@ -3081,7 +3083,7 @@ Next independent implementation: use the existing Android instrumentation/local 
 
 ### RN08-D03 — Debug-only app-context discovery probe
 
-**Commit:** `test(android): add app-context selection discovery probe`. **Hash:** Pending; resolve by subject/Git and record in the next normal update.
+**Commit:** `test(android): add app-context selection discovery probe`. **Hash:** `6e36788` (recorded during volatile-picker implementation).
 
 **Date:** 2026-11-09. **Owner:** Ishmum. **Branch:** `task/react-native/rn-08-selection-probe`. **Parent:** `9fda458`.
 
@@ -3121,8 +3123,136 @@ Next independent implementation: use the existing Android instrumentation/local 
 - `docs/core_plan/README.md`: lines 16–27. Expose implemented/proven discovery and next volatile picker in execution index; label older investigation checkpoint historical and preserve token/Auth deferral.
 - `docs/qa/android-app-selection-investigation.md`: lines 9–14. Add current implementation/device pointer while retaining the dated original research/source/APK baseline and its then-unavailable device observation.
 - `docs/qa/android-capability-probe.md`: lines 188–197. Link separate discovery diagnostic and new runner option, explicitly retain the physically checked original usage scope and unavailable production selection.
-- `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 7, 9, 13, 19–20, 3039, 3080–3128. Update current/resume branch/status/date, record prior research hash, and account for every changed file/line, choices, native/device validation, audit corrections, cleanup and remaining work.
+- `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 7, 9, 13, 19–20, 3086, 3133–3258. Update current/resume branch/status/date, record prior research hash, and account for every changed file/line, choices, native/device validation, audit corrections, cleanup and remaining work.
 
 #### Remaining work and next step
 
 Discovery producer/probe acceptance is complete within recorded Pixel/debug/current-profile scope. Next: volatile native multi-select picker in the existing module and isolated QA host, extracting candidate discovery deliberately while leaving aggregate test reporting outside production. Add search/retained draft/cancel/confirm, single-flight/lifecycle/late-result cleanup and actual picker accessibility tests. Explicit owner/group/revision and stage/commit/discard semantics are required before durable selection or real Apps editor saves; tokens/Auth stay user-deferred and iOS remains Anisha's. No global selection ownership, account cleanup, per-quest scope, usage ranking or restriction policy is invented. Full parent plans and signed release/other-device/profile/race matrices remain open. Local commit only; unrelated untracked workspace and icon packs excluded.
+
+
+### RN08-D03 — Volatile native selection preview
+
+**Commit:** `feat(android): add volatile native app-selection preview`. **Hash:** Pending; resolve by subject/Git and record during the next normal update.
+
+**Date:** 2026-11-09. **Owner:** Ishmum. **Branch:** `task/react-native/rn-08-selection-preview`. **Parent:** `6e36788`.
+
+#### Scope and decisions
+
+Implement the next bounded RN08-D03 producer following the accepted discovery
+experiment. Reuse the existing hoosh-usage module, extract its tested narrow
+current-profile launcher query/filter, and expose three explicitly preview-only
+methods to the isolated QA host. Package names, labels, icons, searches, drafts
+and confirmed sets remain native; JS receives only nonnegative count/revision.
+The single ephemeral QA owner is deliberately separate from Auth/account scope.
+No new library, dependency, manifest/permission, backend/database, production
+ProtectionService/native adapter/capability, real Apps route or iOS file changes.
+Tokens/Auth remain user-deferred, iOS Anisha-owned. Requirements FR-006/010/018/021
+and NFR-001/002/003/004/011 remain the existing scope; Apps frame 10601:5968 is a
+future production consumer, not redesigned or integrated by this QA producer.
+
+Search filters labels without removing hidden checks. Cancel/hardware Back discard
+only the working draft; Clear checks requires explicit confirmation. Confirmation
+requeries eligible candidates while unlocked, rejects stale candidates without
+changing memory, copies the accepted set and increments revision only on change.
+One main-thread request/controller and one worker prevent overlapping dialogs and
+keep catalog/resource work off the UI thread. Worker callbacks, dismissal and
+module/Activity/owner lifecycle are fenced; background cancels pending work,
+destruction clears memory, and dispose shuts the worker down. Release an old owner
+without clearing the new owner. JS separately normalizes errors, rejects malformed
+summaries, blocks double opening and ignores late reads/results after unmount.
+
+Release uses a compile-time false source-set factory: no preview method
+registrations or catalog/dialog/session implementation classes compile into that
+variant. Existing Expo VIEW/document queries remain in the merged release
+manifest; the debug MAIN/LAUNCHER discovery query and broad permission are absent.
+This precise check replaced an overly broad audit assertion that wrongly expected
+all SDK queries to disappear; no manifest change was required.
+
+#### Actual-device corrections before acceptance
+
+The first native AlertDialog clipped its neutral/bottom actions at the owner's
+font scale 1.15. Replace it with an app-owned full-height native Dialog, independent
+scrolling header/list regions and three native actions. Apply system bar, cutout
+and IME insets so a bottom action cannot hit Android navigation. Keep selected/
+match status outside the header scroller after an actual keyboard check found it
+hidden by the reduced header viewport. The initial flow attempts stopped on these
+layout observations; only reruns against the final APK count as acceptance. Native
+checkbox semantics and decorative icon exclusion are retained, not emulated in JS.
+
+#### Validation
+
+- `npm run check`: 382 portable tests, 538 component tests (64 suites), 601 API
+  tests pass; 199 DB tests deselected, not rerun for this native/QA-only change.
+  TypeScript, lint, Ruff, original assets and generated contracts pass. Eleven
+  pre-existing ESLint warnings remain; the new cleanup-ref warning was removed.
+  Twenty component results across Android/iOS presets cover 10 preview scenarios;
+  passing iOS mocks does not implement an iOS picker.
+- `npm run mobile:export`: 38 JS/HTML files pass QA isolation, all 71 original SVGs
+  pass export checks. Android production Hermes export excludes the preview marker.
+  `npm run mobile:ui:build` passes (existing dependency direct-eval warning).
+- Debug app/test APKs, release Kotlin and release main manifest compile with
+  JDK 17.0.21+9 / SDK build tools 37.0 / target 36 / min 24 / Gradle 9.4.1;
+  arm64-v8a device build. Existing Gradle deprecations and Android's deprecated
+  ADJUST_RESIZE compatibility constant warning remain. No release signing claimed.
+- Compiled bytecode audit: nine debug picker implementation classes, zero release;
+  release HooshUsageModule has no preview method registration literals. The
+  release main manifest has no targeted launcher discovery/broad package permission.
+- Pure JVM checks: 12 volatile-owner/session cases pass. Final on-device native
+  regressions pass 12 session + 10 discovery cases using the final APK pair. Pixel
+  API 36 UI passes 14 normal-font observations and six at scale 2.0, including
+  search retention, cancel/no-op/change revision, clear/Back/reset/leave/background,
+  denied usage, header scroll and IME action/status access. See [sanitized evidence](artifacts/rn-08-selection/preview.json).
+- Cleanup matches this run's private baseline: font 1.15, usage allow, accessibility
+  off/original services, original timeout and USB keep-awake restored. Only task
+  port 8094/XML and owned Metro listener removed. APKs/data retained. No inventory
+  screenshots or raw logs committed; private output stays ignored under `.expo`.
+  No current TalkBack spoken/focus check is claimed.
+
+- Final React checklist review covers stable component definitions, lazy native
+  setup, effect listener/owner cleanup, transient operation refs, derived state,
+  interaction-owned async work and accessible busy/status controls. Production
+  export isolation is verified separately; no Next.js/web-only framework change.
+- Staged-file audit: all 23 files appear in the ledger, exact ranges fit their
+  files, source hashes/counts match the artifact, runbook links resolve and
+  `git diff --cached --check` passes.
+
+#### Every changed file and logical change
+
+- `apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/SelectionPreview.kt`: lines 1–14. Add the narrow internal preview lifecycle/summary boundary shared by variant factories. No package list, persistent group or account API crosses the bridge.
+- `apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/HooshUsageModule.kt`: lines 5–20, 28–46. Add lazy preview construction, disposed/unavailable guards and debug-gated main-queue pick/read/release functions; cancel on background, clear on Activity destruction and dispose on module teardown. Existing usage reads/settings/capabilities at lines 21–27 are preserved.
+- `apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/SelectionPreviewFactory.kt`: lines 1–12. Construct the preview only in a debuggable application, using application context for the catalog.
+- `apps/mobile/modules/hoosh-usage/android/src/release/java/expo/modules/hooshusage/SelectionPreviewFactory.kt`: lines 1–9. Compile-time disabled factory prevents preview registrations; no catalog/session/dialog implementation is available in release.
+- `apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/LauncherAppCatalog.kt`: lines 1–56. Extract validated API-version-aware launcher query, current-profile lock checks, own/disabled/nonexported/cross-profile exclusion and per-package dedup into debug code reused by picker and instrumentation. Lines 58–82 add cancellable label loading/native fallback/locale sort and unlock-fenced confirmation requery. Identities/resources stay native.
+- `apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/VolatileSelection.kt`: lines 1–31. One main-thread ephemeral owner/set/revision with defensive copies, no-op revision stability, old-owner isolation and explicit release/reset. No disk/account/rule state.
+- `apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/NativeSelectionPreview.kt`: lines 1–55. Single-flight request, activity/owner/disposal guards, background catalog loading and late-result fencing before opening native UI. Lines 57–110 revalidate eligibility/focus, normalize errors, settle exactly once, safely dismiss detached windows, cancel/release/clear and shut down the worker.
+- `apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/SelectionPreviewDialog.kt`: lines 1–84. Build native-only rows/draft/search/availability notice and live selected/match status. Lines 85–149 implement the device-corrected full-height window, scroll regions, status/action placement, system/IME insets, explicit confirm/clear/cancel, busy state and dismissal/keyboard cleanup. Lines 151–193 implement native checkboxes, decorative icons, recycled-view guards and bounded asynchronous icon cache; names never serialize into JS.
+- `apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/SelectionDiscoveryProbe.kt`: lines 1–11, 74–76, 103–108, 133–134. Replace duplicate native query/filter/lock helpers with debug catalog calls and map aggregate counts from the extracted result; retain capped resource reporting and security guards. Parent `6e36788` lines 3, 5, 10, 13–14, 79–99 and 156–170 are removed/moved imports/helper logic; their replacements are in LauncherAppCatalog, not deleted behavior.
+- `apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/SelectionPreviewChecks.kt`: lines 1–39. Add 12 synthetic session cases covering empty/new owner, defensive copy/count privacy, unchanged/canceled draft, other-owner read/release isolation, owner switch, confirmed clear, invalid owner, release and module clear. Emit only the case count.
+- `apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/UsageProbeInstrumentation.kt`: lines 13, 18, 24–28, 43–45. Add explicit selectionPreviewChecks dispatch and fixed failure marker; retain original usage, empty-window and selection modes without exposing exceptions.
+- `apps/mobile/dev/native/selection-preview.tsx`: lines 1–36. Detect optional Android debug methods and decode safe count/revision only; never echo native inventory or messages. Lines 38–78 add per-mount owner, mounted/operation/single-flight fences, foreground refresh, release/listener cleanup and explicit close-only focus request. Lines 79–121 present the temporary/no-save/no-block notice and trigger, normalized cancellation/change/failure notices and busy state; no production route consumes it.
+- `apps/mobile/dev/native/App.tsx`: lines 3, 70, 123, 130, 158–161, 172. Add the separate preview entry/rendering, identify real native diagnostics in footer and disable sample State controls for them. Reset/Screens remount/unmount behavior releases the QA owner.
+- `apps/mobile/src/features/protection/selection-preview.test.tsx`: lines 1–118. Ten scenarios (20 results across presets) verify missing native fallback, count-only decoding/privacy, dialog-wide single flight, cancel/changed/unknown normalization, malformed confirmation, stale read fencing, unmount/new-owner/late result and foreground/listener cleanup. Uses explicit injected preview ports, never owner inventory fixtures.
+- `scripts/check-ui-preview-isolation.mjs`: line 34. Forbid RN08_SELECTION_PREVIEW_ONLY in ordinary exported app content, complementing native release-class/registration auditing.
+- `apps/mobile/dev/native/README.md`: lines 30, 116–127. Correct menu total to 21, explain native temporary behavior/fallback/owner reset and link the detailed build/privacy runbook.
+- `docs/qa/android-selection-preview.md`: lines 1–106. Add reproducible build/run and synthetic instrumentation commands, exact temporary semantics, threading/privacy/release boundaries, safe recording/cleanup, bounded actual phone results and remaining production/spoken/device gates.
+- `docs/qa/android-selection-discovery-probe.md`: lines 169–178. Add current debug-helper extraction/new session runner handoff while preserving the original dated control experiment and aggregate schema.
+- `docs/qa/android-app-selection-investigation.md`: lines 13–16. Point research readers at the implemented volatile picker, distinguish the historical baseline from current production capabilities and preserve Auth deferral.
+- `docs/core_plan/04_react_native_integration.md`: lines 516, 518, 544–556. Mark only the debug producer/recorded device subset implemented, link evidence/runbook and retain durable ownership/production/root/speech/other-device gates and stable IDs/counts.
+- `docs/core_plan/README.md`: lines 16–26. Replace the current discovery-only next-action checkpoint with the volatile producer/next durable semantics handoff; retain prior discovery evidence, deferrals and full-parent status.
+- `docs/core_plan_implementation_notes/artifacts/rn-08-selection/preview.json`: lines 1–156. Record final APK/source hashes, toolchain, full check counts, native/model/device results, release audit, precise corrections, baseline cleanup and remaining gates. No personal inventory, raw device logs or screenshot is published.
+- `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 7, 9, 13, 19–20, 3086, 3133–3258. Update current/resume checkpoint, record preceding discovery commit hash, and document every change, reason, failed-prototype correction, actual validation, cleanup, limitation and next step in this entry.
+
+#### Remaining work and handoff
+
+This completes only the volatile debug producer/recorded Pixel scope. Next define
+native durable owner/group/revision and stage/commit/discard behavior, then reuse
+RN-09f's existing native chooser entry for a real editor consumer. Define scope
+(global versus per quest) with product owners rather than silently choosing it.
+Persistent storage, account switch/sign-out/deletion cleanup, Auth/root/backend
+wiring, enforcement, iOS, signed release, other devices/profiles, installation/
+uninstall races, resource-failure UI and complete TalkBack spoken traversal/focus
+acceptance remain open. Native checkable semantics are not heard speech evidence.
+No account token, hosted migration, permission reset or data clear was needed.
+Original RN08-D03/RN-09f and 46/21/25 counts are preserved; full RN-08/09/Plan 04
+remain open. Local commit only; no push/CI/merge is requested or claimed. Unrelated
+workspace and original icon-pack untracked directories are excluded.

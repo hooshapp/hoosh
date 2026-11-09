@@ -164,3 +164,15 @@ levels/profiles, full picker accessibility and signed release are not accepted b
 this probe. Existing production selection capabilities remain unavailable; no
 native rule, selection persistence or blocking is implemented. Original plan IDs
 and 46/21/25 counts stay unchanged.
+
+
+## Volatile picker follow-up (2026-11-09)
+
+The next [debug-native picker preview](android-selection-preview.md) now reuses
+the validated query/filter/lock helpers in the module's **debug** source set.
+The aggregate collector and its 10-case checks stay in androidTest; they retain
+the original bounded output schema. Release excludes both the collector and the
+picker implementation. This extraction does not invalidate the dated baseline/
+query experiment above. A new runner option `-e probe selectionPreviewChecks`
+executes 12 synthetic volatile-owner cases without emitting identities. No
+production app selection, account save, capability or enforcement is enabled.

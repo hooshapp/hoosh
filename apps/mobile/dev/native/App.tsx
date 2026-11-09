@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { UsageProbe } from './usage-probe';
+import { AppSelectionPreview } from './selection-preview';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -66,6 +67,7 @@ import {
 
 const screens = [
   'Android probe',
+  'Android selection preview',
   'Home',
   'Quests',
   'Settings',
@@ -118,12 +120,13 @@ function QaHost() {
   const [notice, setNotice] = useState(
     'Sample data only. No account, API or protection connected.',
   );
+  const realNative = page === 'Android probe' || page === 'Android selection preview';
   const metrics = useFloatingTabBarMetrics(),
     insets = useSafeAreaInsets();
   const action = () => setNotice('UI intent only. Nothing saved, connected, earned or installed.');
   return (
     <View testID="RN10_NATIVE_QA_ONLY" style={styles.app}>
-      {page === 'Android probe' ? <UsageProbe key={reset} /> : page ? (
+      {page === 'Android probe' ? <UsageProbe key={reset} /> : page === 'Android selection preview' ? <AppSelectionPreview key={reset} /> : page ? (
         <QaScreen
           key={`${page}:${scenario}:${reset}`}
           page={page}
@@ -152,10 +155,10 @@ function QaHost() {
         onLayout={(e) => metrics?.reportHeight(Math.ceil(e.nativeEvent.layout.height))}
         style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 8) }]}>
         <Text style={styles.qaLabel}>
-          {page === 'Android probe' ? 'REAL ANDROID CAPABILITY PROBE' : `UI QA SAMPLE · ${page ?? 'Screens'} · ${scenario}`}
+          {realNative ? (page === 'Android probe' ? 'REAL ANDROID CAPABILITY PROBE' : 'TEMPORARY ANDROID SELECTION PREVIEW') : `UI QA SAMPLE · ${page ?? 'Screens'} · ${scenario}`}
         </Text>
         <Text accessibilityLiveRegion="polite" style={styles.notice}>
-          {page === 'Android probe' ? 'Actual native reads. No account/API connection, metrics or installed protection.' : notice}
+          {realNative ? 'Device-native preview. No account/API save or installed protection.' : notice}
         </Text>
         <View style={styles.actions}>
           <Button
@@ -166,7 +169,7 @@ function QaHost() {
           />
           <Button
             label="State"
-            disabled={page === 'Android probe'}
+            disabled={realNative}
             accessibilityLabel={`Change QA state, currently ${scenario}`}
             variant="secondary"
             onPress={() => setScenario(states[(states.indexOf(scenario) + 1) % states.length])}

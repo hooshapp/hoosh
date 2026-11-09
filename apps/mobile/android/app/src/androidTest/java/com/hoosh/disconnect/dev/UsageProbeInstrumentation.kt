@@ -10,15 +10,22 @@ import org.json.JSONObject
 class UsageProbeInstrumentation : Instrumentation() {
   private var emptyWindow = false
   private var selection = false
+  private var previewChecks = false
   override fun onCreate(arguments: Bundle?) {
     super.onCreate(arguments)
     emptyWindow = arguments?.getString("emptyWindow") == "true"
     selection = arguments?.getString("probe") == "selection"
+    previewChecks = arguments?.getString("probe") == "selectionPreviewChecks"
     start()
   }
   override fun onStart() {
     val result = Bundle()
     try {
+      if (previewChecks) {
+        result.putInt("previewChecksPassed", SelectionPreviewChecks.run())
+        finish(Activity.RESULT_OK, result)
+        return
+      }
       if (selection) {
         result.putInt("selfChecksPassed", SelectionDiscoveryProbeChecks.run(targetContext))
         val summary = SelectionDiscoveryProbe(targetContext).read()
@@ -33,7 +40,9 @@ class UsageProbeInstrumentation : Instrumentation() {
       finish(Activity.RESULT_OK, result)
     } catch (_: Exception) {
       // Test assertions may fail; never print exceptions containing package/resource data.
-      if (selection) {
+      if (previewChecks) {
+        result.putString("previewChecks", "failed")
+      } else if (selection) {
         result.putString("selectionProbe", JSONObject(mapOf(
           "state" to "error", "failureCode" to "self_check_failed",
         )).toString())

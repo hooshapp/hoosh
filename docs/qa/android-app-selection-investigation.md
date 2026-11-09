@@ -10,7 +10,10 @@ Tokens and Auth integration remain explicitly deferred by the user.
 has native build/isolation and Pixel/API 36 app-context evidence; see the
 [probe runbook](android-selection-discovery-probe.md). The dated investigation
 below describes its original 9fda458 baseline, including then-unavailable device
-access. Picker/production selection are still unimplemented; tokens/Auth deferred.
+access. A [volatile debug picker](android-selection-preview.md) is now implemented;
+production/account selection remains unimplemented and tokens/Auth deferred. The
+original recommendations below describe research at that baseline, not current
+production capabilities.
 
 ## Recommended approach
 

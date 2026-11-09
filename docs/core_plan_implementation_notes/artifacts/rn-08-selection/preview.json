@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-09",
+  "owner": "Ishmum",
+  "plan_refs": [
+    "RN08-D03",
+    "RN-09f"
+  ],
+  "branch": "task/react-native/rn-08-selection-preview",
+  "parent": "6e36788",
+  "scope": "debug-only volatile native picker; no account save or enforcement",
+  "device": {
+    "model": "Pixel 8 Pro",
+    "api": 36,
+    "normal_font_scale": 1.15,
+    "enlarged_font_scale": 2.0
+  },
+  "toolchain": {
+    "jdk": "17.0.21+9",
+    "gradle": "9.4.1",
+    "build_tools": "37.0",
+    "target_sdk": 36,
+    "min_sdk": 24,
+    "abi": "arm64-v8a"
+  },
+  "apk_sha256": {
+    "debug_app": "0f2099f1fbb83f2e0c2a3cfe54ab92bb181d1f73414a43d14960b4ff8588c0bf",
+    "debug_test": "9e70fa26ad62590660bce396e0ba9bd79a10951ccfa23735d1589828d0a60d47"
+  },
+  "source_sha256": {
+    "apps/mobile/dev/native/selection-preview.tsx": "d1f613a559b2bb1ca0e7f0228b54b0f2cb807010a82614aa44493439188e6440",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/LauncherAppCatalog.kt": "af16573179e1d651675f58ed0dbf2f5a815b8d8cc2e6b0e4c7e36863fbdea424",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/NativeSelectionPreview.kt": "6b5248ecc6726a05686e40e512a67f0ce40b685c165868709f6b6f5373dd973a",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/SelectionPreviewDialog.kt": "52d2c6c7d39c262e203647513e260b82525a9780479810d364d1443b1d22d4d4",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/SelectionPreviewFactory.kt": "a3a3659073a41c45c8797e2717f1b114ef672f65f7aa73ce97eaff99f8058952",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/VolatileSelection.kt": "9e50585e49bb6c51338f723b5e6418da714337c20c3fa81cc51fc41546c9e174",
+    "apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/HooshUsageModule.kt": "1fe82112965792a2a97708a6e5a3021e24543c09ed70aeaeb13c4d19d1fbfe34"
+  },
+  "automated": {
+    "portable_tests": 382,
+    "component_tests": 538,
+    "component_suites": 64,
+    "preview_component_results_included": 20,
+    "api_tests": 601,
+    "database_tests_deselected": 199,
+    "existing_eslint_warnings": 11,
+    "new_eslint_warnings": 0,
+    "type_lint_assets_contracts": "passed",
+    "web_export_js_html_files": 38,
+    "export_original_svgs": 71,
+    "android_production_hermes_preview_marker_absent": true,
+    "ui_gallery_build": "passed",
+    "debug_app_and_test_build": "passed",
+    "release_kotlin_and_main_manifest": "passed",
+    "native_session_cases": 12,
+    "native_discovery_cases": 10,
+    "jvm_session_cases": 12
+  },
+  "release_isolation": {
+    "debug_implementation_class_count": 9,
+    "release_implementation_class_count": 0,
+    "release_preview_registrations_absent": true,
+    "release_launcher_discovery_query_absent": true,
+    "release_broad_permission_absent": true
+  },
+  "final_native_discovery_aggregates": {
+    "schemaVersion": 1,
+    "scope": "current_profile_launcher_candidates",
+    "identitiesExported": false,
+    "resourceCheckLimit": 64,
+    "usageAuthorization": "authorized",
+    "queryAllPackagesDeclared": false,
+    "overlayDeclared": false,
+    "accessibilityServiceDeclared": false,
+    "targetUidVerified": true,
+    "matchedActivityCount": 185,
+    "eligibleActivityCount": 183,
+    "excludedActivityCount": 1,
+    "selfActivityCount": 1,
+    "uniquePackageCount": 183,
+    "duplicateActivityCount": 0,
+    "sampledPackageCount": 64,
+    "labelResolutionSuccessCount": 64,
+    "labelResolutionFailureCount": 0,
+    "blankLabelCount": 0,
+    "iconResolutionSuccessCount": 64,
+    "iconResolutionFailureCount": 0,
+    "resourceChecksCapped": true,
+    "state": "ready",
+    "failureCode": null,
+    "elapsedMs": 394
+  },
+  "normal_font_device_observations": [
+    "normal-font-native-actions-visible",
+    "native-checkbox-selected-state",
+    "search-hides-rows-retains-draft",
+    "search-clear-restores-checked-row",
+    "cancel-discards-draft",
+    "confirm-returns-count-revision",
+    "unchanged-confirm-keeps-revision",
+    "clear-then-cancel-preserves-confirmed",
+    "clear-then-confirm-advances-revision",
+    "hardware-back-discards-draft",
+    "reset-releases-owner-clears-memory",
+    "leave-screen-releases-owner",
+    "background-cancels-pending-draft",
+    "usage-denied-picker-still-works"
+  ],
+  "font_2_device_observations": [
+    "cold-restart-clears-memory",
+    "font-2-native-actions-above-system-bars",
+    "font-2-native-checkable-rows",
+    "font-2-search-reachable-by-header-scroll",
+    "font-2-ime-no-match-status-and-three-actions",
+    "font-2-ime-back-then-cancel"
+  ],
+  "cleanup": {
+    "settings_match_baseline": true,
+    "font_scale": "1.15",
+    "usage_access_restored": "allow",
+    "accessibility_baseline_preserved": true,
+    "usb_reverse_baseline_restored": true,
+    "own_phone_xml_removed": true,
+    "app_data_cleared": false,
+    "apks_retained": true,
+    "own_metro_stopped": true
+  },
+  "corrections_before_final_acceptance": [
+    "AlertDialog clipped actions: replaced with full-height native window",
+    "System/IME insets protect bottom controls",
+    "Selected/match status moved outside scrolling header"
+  ],
+  "privacy": {
+    "inventory_exported": false,
+    "owner_app_labels_or_ids_in_evidence": false,
+    "raw_device_logs_committed": false,
+    "screenshots_committed": false
+  },
+  "pending": [
+    "durable ownership/group/revision and stage/commit/discard contract",
+    "real Apps route and account storage",
+    "Auth/root and token integration (user deferred)",
+    "native enforcement",
+    "iOS (Anisha)",
+    "signed release and additional device/profile coverage",
+    "installed/disabled/uninstall races and resource failure UI",
+    "complete spoken TalkBack traversal and post-dismissal accessibility focus"
+  ],
+  "limits": [
+    "Current-profile launcher candidates are not a full installed inventory",
+    "Mocked iOS tests do not implement iOS preview",
+    "Device observations cover the final debug APK pair only",
+    "Existing SDK VIEW/document manifest queries remain; launcher discovery is debug only",
+    "No signed release, GitHub CI, hosted data or auth acceptance claimed"
+  ]
+}
