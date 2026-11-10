@@ -49,6 +49,7 @@ class ShieldStoreController {
     func removeAllShields() {
         logger.notice("Removing all shields")
         PerAppProtection.settings.clearAllSettings()
+        PerAppProtection.dailyCapSettings.clearAllSettings()
         store.shield.applications = nil
         store.shield.applicationCategories = nil
         store.shield.webDomains = nil

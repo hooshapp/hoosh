@@ -7,11 +7,11 @@ import Foundation
         catalog.reconcile(tokens: [a,b], defaultMinutes: 30)
         let aID = catalog.rules.first { $0.tokenData == a }!.id
         let bID = catalog.rules.first { $0.tokenData == b }!.id
-        let previousEvent = catalog.rules.first { $0.id == aID }!.eventName
+        let previousRevision = catalog.rules.first { $0.id == aID }!.revision
         catalog.setMinutes(5, for: aID); catalog.setMinutes(15, for: bID)
         precondition(catalog.rules.first { $0.id == aID }!.minutes == 5)
         precondition(catalog.rules.first { $0.id == bID }!.minutes == 15)
-        precondition(catalog.rules.first { $0.id == aID }!.eventName != previousEvent)
+        precondition(catalog.rules.first { $0.id == aID }!.revision == previousRevision + 1)
         let configured = catalog
         catalog.reconcile(tokens: [b,a], defaultMinutes: 60)
         precondition(catalog.rules == configured.rules, "Reordering/relaunch must retain identity and limits")

@@ -9,7 +9,6 @@ struct DailyAppRule: Codable, Identifiable, Equatable {
     var configuredSessionMinutes: Int? = nil
     var researchLabel: String? = nil
     var sessionMinutes: Int { min(minutes, max(5, configuredSessionMinutes ?? 15)) }
-    var eventName: String { "disconnect.perApp.\(id).\(revision)" }
 }
 struct DailyRuleCatalog: Codable {
     var version = 1
@@ -110,8 +109,8 @@ struct AppSessionLedger: Codable {
     }
 }
 enum AppSessionPolicy {
-    static func nextMinutes(rule: DailyAppRule, used: Int, reached: Bool) -> Int {
-        reached ? 0 : min(rule.sessionMinutes, max(0, rule.minutes - used))
+    static func nextMinutes(rule: DailyAppRule, used: Int) -> Int {
+        min(rule.sessionMinutes, max(0, rule.minutes - used))
     }
     static func nudgeMinutes(duration: Int) -> [Int] {
         Array(Set((1...3).map { Int(ceil(Double(duration * $0) / 4)) })).filter { $0 > 0 && $0 < duration }.sorted()

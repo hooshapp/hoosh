@@ -1207,7 +1207,7 @@ private struct PerAppDailyLimitCard: View {
             }.frame(minHeight: 44)
             if !notificationStatus.isEmpty { Text(notificationStatus).font(.caption).foregroundStyle(DisconnectTheme.mutedInk) }
             DisclosureGroup("How sessions and nudges work") {
-            Text("Nudges appear at quarter-session usage milestones. Locking your phone does not run an app timer. Earlier usage today may count toward your daily allowance. Daily allowances renew at midnight. Protection is active every day; scheduled hours are not configured in this build.")
+            Text("Nudges appear at quarter-session usage milestones. Locking your phone does not run an app timer. Only active use during Hoosh sessions counts toward your daily allowance. Daily allowances renew at midnight. Protection is active every day; scheduled hours are not configured in this build.")
                 .font(.system(size: 11, weight: .medium))
                 .foregroundStyle(DisconnectTheme.mutedInk)
                 .fixedSize(horizontal: false, vertical: true)

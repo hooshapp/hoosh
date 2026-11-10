@@ -51,11 +51,7 @@ final class DeviceActivityMonitorExtension: DeviceActivityMonitor {
     override func eventDidReachThreshold(_ event: DeviceActivityEvent.Name, activity: DeviceActivityName) {
         super.eventDidReachThreshold(event, activity: activity)
 
-        if activity == PerAppProtection.activity {
-            do { try PerAppProtection.handleDailyEvent(event) }
-            catch { PerAppProtection.defaults.set("Could not apply the daily app limit.", forKey: PerAppProtection.errorKey) }
-            return
-        }
+        if activity == PerAppProtection.activity { return }
         if activity.rawValue.hasPrefix(PerAppProtection.allowanceActivityPrefix) {
             do { try PerAppProtection.handleSessionEvent(event, activity: activity) }
             catch { PerAppProtection.defaults.set("Could not update your app session. Reopen Hoosh to retry.", forKey: PerAppProtection.errorKey) }

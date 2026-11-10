@@ -141,6 +141,11 @@ struct ShieldPresentation: Codable {
         return "Continue to \(name)"
     }
 
+    static func actionLabel(for presentation: Self?, appName: String?, canCheckAvailability: Bool) -> String? {
+        if let presentation { return presentation.actionLabel(appName: appName) }
+        return canCheckAvailability ? "Check session availability" : nil
+    }
+
     func forFirstDay(_ isFirstDay: Bool) -> Self {
         guard isFirstDay, dailyLimitReached == true else { return self }
         var guidance = self
@@ -152,6 +157,7 @@ struct ShieldPresentation: Codable {
 }
 enum ShieldPresentationStore {
     static let group = "group.com.AnishaDasgupta.DisconnectApp"
+    static let protectionEnabledKey = "disconnect.perAppMonitoringEnabled"
     static var defaults: UserDefaults { UserDefaults(suiteName: group)! }
     static func synchronize() {
         // The host and shield extensions can read this suite from different processes.

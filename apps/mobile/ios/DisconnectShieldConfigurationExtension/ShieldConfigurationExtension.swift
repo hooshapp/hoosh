@@ -28,6 +28,8 @@ final class ShieldConfigurationExtension: ShieldConfigurationDataSource {
         let tokenData = token.flatMap { try? encoder.encode($0) }
         let isFirstDay = DayTwoSettingsTipStore.isFirstDay()
         let presentation = tokenData.flatMap { ShieldPresentationStore.load(tokenData: $0)?.forFirstDay(isFirstDay) }
+        let canCheckAvailability = tokenData != nil && defaults.bool(forKey: ShieldPresentationStore.protectionEnabledKey)
+        let actionLabel = ShieldPresentation.actionLabel(for: presentation, appName: appName, canCheckAvailability: canCheckAvailability)
         let historyKey = "disconnect.recentShieldPrompts.v1"
         let recent = defaults.stringArray(forKey:historyKey) ?? []
         let localContext = LocalProductivityNudgeStore.messages()
@@ -45,7 +47,9 @@ final class ShieldConfigurationExtension: ShieldConfigurationDataSource {
         defaults.set(presentation != nil, forKey: "disconnect.shieldSnapshotFound")
         let explanation = presentation?.dailyLimitReached == false
             ? ShieldPresentation.sessionExplanation
-            : presentation?.explanation ?? "Open Hoosh to review your session settings."
+            : presentation?.explanation ?? (canCheckAvailability
+                ? "Check whether you have time for a session."
+                : "Open Hoosh to review your session settings.")
         return ShieldConfiguration(
             backgroundBlurStyle: .systemMaterialDark,
             backgroundColor: UIColor(red: 0.07, green: 0.08, blue: 0.10, alpha: 1),
@@ -54,7 +58,7 @@ final class ShieldConfigurationExtension: ShieldConfigurationDataSource {
             subtitle: .init(text: showsFirstDayGuidance ? explanation : message + "\n\n" + explanation, color: UIColor(white: 0.78, alpha: 1)),
             primaryButtonLabel: .init(text: "Close App & Stay Focused", color: .black),
             primaryButtonBackgroundColor: UIColor(red: 0.13, green: 0.79, blue: 0.33, alpha: 1),
-            secondaryButtonLabel: presentation?.actionLabel(appName: appName).map { .init(text: $0, color: UIColor(white: 0.82, alpha: 1)) }
+            secondaryButtonLabel: actionLabel.map { .init(text: $0, color: UIColor(white: 0.82, alpha: 1)) }
         )
     }
 }
