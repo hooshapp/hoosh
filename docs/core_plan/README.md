@@ -5,6 +5,16 @@
 **Reviewed:** 2026-11-02 (bounded planning expansion; implementation evidence remains recorded per part).\
 **Product answers:** [PM_QUESTIONS.md](<../Context (AGENT)/PM_QUESTIONS.md>); no PM question is answered by an engineering default in these plans.
 
+**Selection follow-up (2026-11-10):** controlled-owner retain/erase hooks and
+same-owner generation/stale-work fences now prepare Auth integration without
+wiring it. New native lifecycle race tests and picker focus/accessibility handling
+exist; Pixel native checks pass 17 plus 22/12/10 regressions, serial A/B cleanup
+and background return. Bounded TalkBack evidence is recorded; confirmation focus
+is still pending. See the [runbook](../qa/android-durable-selection.md) and latest
+Plan 04 notes for physical lock/restoration and remaining acceptance. Local selection
+erasure never means deleting an Auth account or installed rules. User Auth/token
+deferral, Anisha's iOS ownership and original IDs/counts remain unchanged.
+
 **Latest Apps-selection implementation (2026-11-09):** RN08-D03/RN-09f now have a
 debug-native durable owner/global-group transaction and existing AppsEditor consumer
 in the isolated QA host. Native confirmation stages; explicit editor Save persists

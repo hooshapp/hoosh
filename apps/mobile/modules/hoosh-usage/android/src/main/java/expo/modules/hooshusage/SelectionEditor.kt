@@ -9,6 +9,7 @@ interface SelectionEditor {
   fun pick(activity: Activity, owner: String, draft: String, version: Int, promise: Promise)
   fun commit(owner: String, draft: String, version: Int, promise: Promise)
   fun release(owner: String, draft: String, promise: Promise)
+  fun endOwner(owner: String, erase: Boolean, promise: Promise)
   fun cancelPicker()
   fun clearDrafts()
   fun dispose()

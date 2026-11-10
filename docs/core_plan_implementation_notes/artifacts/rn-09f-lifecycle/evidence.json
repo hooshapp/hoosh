@@ -1,0 +1,150 @@
+{
+  "schema_version": 1,
+  "started": "2026-11-09",
+  "completed": "2026-11-10",
+  "owner": "Ishmum",
+  "plan_refs": [
+    "RN08-D03",
+    "RN-09f",
+    "RN-10"
+  ],
+  "branch": "task/react-native/rn-09f-selection-lifecycle",
+  "parent": "751633b",
+  "commit_subject": "feat(android): harden selection lifecycle and picker accessibility",
+  "scope": "Debug-only native local-selection lifecycle and controlled QA consumers; Auth/tokens remain deferred, iOS belongs to Anisha.",
+  "device": {
+    "model": "Pixel 8 Pro",
+    "api": 36,
+    "font_scale": 1.15,
+    "build": "development arm64-v8a"
+  },
+  "toolchain": {
+    "jdk": "17.0.21+9",
+    "gradle": "9.4.1",
+    "build_tools": "37.0",
+    "target_sdk": 36,
+    "min_sdk": 24
+  },
+  "apk_sha256": {
+    "debug_app": "6c7b132fc49fffc4d1f2f4ed85ed8533bcf6f67c207a540722ce0dcad02b8777",
+    "debug_test": "b70fcd0d1d51f74aaaba8d032c03a7811d9b4fb846b4fee793a87dedab34cf85"
+  },
+  "source_sha256": {
+    "apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/SelectionDraftChecks.kt": "11e18c9b9a4d7ab9be3f63d5f595d8acd1e02a7bf8e4b33506a5e127c04531bd",
+    "apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/SelectionLifecycleChecks.kt": "7af8e9be454b5b061c773285a40eed07caeb75c04697b8cbb1a5d9d442c304ab",
+    "apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/UsageProbeInstrumentation.kt": "3578d341d7042ddfc57f8efbcb44d8e81f26a95ab8880c7e50cc0424935d8393",
+    "apps/mobile/dev/native/durable-selection.tsx": "d000ee67c66bfd4f46965d99a237dc77541ceb6faa91f213cbe0d808b690298b",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/AtomicSelectionPersistence.kt": "549f9b200e1290849e5a9a8fd3ac216ab9f8ccdd6c08978ee4e3f201c1eb2a2a",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/NativeSelectionEditor.kt": "9846672faceca7cd74070e7a40035737147970e83e2e41390267f26cef139e27",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/SelectionDrafts.kt": "1acf21c7db7e39e9fd29560aa0ba63a1f511be1859db6ae11e43868552069f64",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/SelectionPreviewDialog.kt": "c86697c7b1f0025e33ceab86236a1dfbfc68e97ff9296db410ce634bc8615e7f",
+    "apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/HooshUsageModule.kt": "f3ad5102f01924630f75e76c2cf5c2fe1316549f48c99a6ab4c6bec4bad49f9f",
+    "apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/SelectionEditor.kt": "197dda08213f1e970a29ff2b391be3bab98acb7b26bf46cf8cef7b0a19135538",
+    "apps/mobile/src/components/ui/use-native-picker-focus-return.test.tsx": "50f3d85869b50adcad497c4c37511a73a34dfe5134c2a355937992ca79da8a2e",
+    "apps/mobile/src/components/ui/use-native-picker-focus-return.ts": "48c7ea32001413f7f6ef5254728524ac930eb8e0bdbf697a3532ce89f2d8a1f7",
+    "apps/mobile/src/features/preferences/native-apps-editor.test.tsx": "7b7c2ec68a31c7895a1b5fe0989322b7dc254dffe7628e3580f96924e7575a68",
+    "apps/mobile/src/features/preferences/native-apps-editor.tsx": "37efae2e53dcaab58ea8dd474089a971fdc85f30c57d7e98651e956d46219e0e",
+    "apps/mobile/src/features/preferences/preference-editors.tsx": "0b3d8ab3a4ccbbfec65638b5f2e8703ce8df768f81763a3b8e2bad25bb6f70ec",
+    "apps/mobile/src/features/protection/selection-lifecycle-qa.test.tsx": "b1b4cb8522229d04d36bae7ffd7699262aebdcd4d9374fe6603be35bc1c86214",
+    "apps/mobile/src/infrastructure/native/selection-editor.ts": "c2aa64206903f43ad47a716e921c577ff9a641eace7ffd8ae5f7867fc21d01e3"
+  },
+  "checks": {
+    "full_root_check": "passed before QA-only safe-area correction",
+    "portable_passed": 382,
+    "component_passed": 590,
+    "component_skipped": 2,
+    "component_suites": 70,
+    "skip_reason": "Two Android window-event assertions are inapplicable in the iOS preset.",
+    "api_passed": 601,
+    "database_deselected": 199,
+    "database_rerun": false,
+    "lint_errors": 0,
+    "existing_lint_warnings": 11,
+    "after_qa_safe_area_correction": {
+      "qa_component_passed": 4,
+      "typecheck": "passed",
+      "lint": "passed with same 11 warnings"
+    },
+    "debug_app_and_test_build": "passed",
+    "release_kotlin_and_manifest_build": "passed",
+    "native_lifecycle_cases": 17,
+    "native_draft_regressions": 22,
+    "native_preview_regressions": 12,
+    "native_discovery_regressions": 10,
+    "web_isolation_files": 38,
+    "original_svg_assets": 71,
+    "ui_gallery": "passed with existing eval warning",
+    "production_android_hermes": "passed"
+  },
+  "release_isolation": {
+    "debug_implementation_classes": 10,
+    "release_implementation_classes": 0,
+    "release_transaction_and_lifecycle_registrations_absent": true,
+    "release_launcher_query_absent": true
+  },
+  "physical_owner_flows": [
+    "owner-A-local-save",
+    "owner-switch-fences-A-and-opens-empty-B",
+    "owner-B-independent-local-save",
+    "return-to-A-retains-A-selection",
+    "end-owner-retains-saved-and-remounts-generation",
+    "local-erasure-A-acknowledged-no-saved-selection",
+    "erasing-A-preserves-B",
+    "local-erasure-B-cleanup",
+    "both-test-owners-empty-after-explicit-cleanup"
+  ],
+  "background_return": {
+    "background_cancels_picker": true,
+    "return_saved_count_zero": true
+  },
+  "speech": {
+    "owner_reported_audibility": true,
+    "owner_reported_checkbox_announcement_and_double_tap": true,
+    "owner_reported_confirmation_closes_picker": true,
+    "privately_observed_native_pane_title_caption": true,
+    "privately_observed_cancel_return_choose_apps_caption": true,
+    "confirmation_return_focus": "pending: owner reported closure; captured caption did not verify Choose apps focus",
+    "speaker_limit": "Remote captions do not establish exact spoken words. Owner report confirms audible checkbox announcement only.",
+    "talkback_after_interruption": "User disabled it; continuation leaves it off."
+  },
+  "physical_lock_return": {
+    "locked_with_picker_open_observed": true,
+    "unlocked_return": "pending; phone remained locked while documentation completed",
+    "no_locked_screen_capture": true,
+    "cleanup": "Force-stopped own QA app to release unsaved test drafts; does not constitute unlock/return acceptance."
+  },
+  "cleanup": {
+    "baseline_settings_verified": true,
+    "talkback_off": true,
+    "speech_caption_preference_restored_false": true,
+    "usage_access_preserved": true,
+    "font_scale_preserved": true,
+    "screen_timeout_preserved": true,
+    "usb_keep_awake_restored": true,
+    "reverse_baseline_restored": true,
+    "task_xml_removed": true,
+    "owned_metro_stopped": true,
+    "app_force_stopped_to_discard_unsaved_test_drafts": true,
+    "app_data_and_apks_preserved": true,
+    "saved_synthetic_A_B_empty_before_lock": true,
+    "physical_unlock_return": "pending; phone remained locked, no locked-screen capture"
+  },
+  "corrections": [
+    "Discarded overlapping early phone automation; reran owner flows serially.",
+    "Accessibility_enabled without an actual TalkBack service was a temporary UIAutomation flag, not TalkBack evidence. Explicit service verification preceded accepted speech observations.",
+    "QA lifecycle header initially overlapped status bar; added safe-area top inset, verified remaining owner controls and reran four QA tests/types/lint.",
+    "Initial fixture used replaceProperty on function-valued RN mock currentState; corrected descriptor fixture and typed hook props before accepted passing checks.",
+    "First resumed TalkBack preference restoration lost settings focus and stopped its ownership guard. Relaunched the verified settings component and restored preference successfully."
+  ],
+  "remaining": [
+    "Production verified account namespace, Auth session generation and root/adapter registration.",
+    "Coordinated account deletion with durable cleanup intent recovery; local selection erasure is not Auth/profile/rule deletion.",
+    "Active quest occurrence and installed-configuration effects of global edits; no rule install or enforcement here.",
+    "Physical lock-to-unlock return with picker open; locked state observed but return was unavailable.",
+    "Confirmation focus return speech, full traversal/keyboard/error announcements and additional accessibility matrix.",
+    "Actual uninstall/disable/resource failure, other profiles/devices and signed release acceptance.",
+    "Anisha-owned iOS and user-deferred token/live-account acceptance."
+  ],
+  "privacy": "No inventory, app names, account identifiers, screenshots, raw speech captions, serials, secrets or locked-screen captures included.",
+  "publication": "Local commit only; no push, CI, merge or deployment in this task."
+}

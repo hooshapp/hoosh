@@ -20,6 +20,7 @@ internal object SelectionDraftChecks {
     var fail = false
     var loseAck = false
     override fun read(owner: String) = rows[owner] ?: SavedSelection(0, emptySet())
+    override fun erase(owner: String) { rows.remove(owner) }
     override fun compareAndSet(owner: String, expectedRevision: Int, apps: Set<String>): SavedSelection {
       val old = read(owner)
       if (old.revision != expectedRevision) throw SelectionFailure("ERR_SELECTION_CONFLICT")

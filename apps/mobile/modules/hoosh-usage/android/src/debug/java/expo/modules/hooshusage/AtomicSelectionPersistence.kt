@@ -59,6 +59,13 @@ class AtomicSelectionPersistence(private val directory: File) : SelectionPersist
     writeLocked(owner, next)
     next
   }
+  override fun erase(owner: String) = synchronized(lock) {
+    val atomic = file(owner)
+    val candidates = listOf(atomic.baseFile, File(atomic.baseFile.path + ".bak"), File(atomic.baseFile.path + ".new"))
+    try { atomic.delete() } catch (_: Exception) { throw SelectionFailure("ERR_SELECTION_STORAGE") }
+    if (candidates.any { it.exists() } || (directory.exists() && (!directory.isDirectory || !directory.canRead())))
+      throw SelectionFailure("ERR_SELECTION_STORAGE")
+  }
   private fun writeLocked(owner: String, selection: SavedSelection) {
     SelectionDrafts.validateApps(selection.apps)
     val atomic = file(owner)

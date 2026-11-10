@@ -36,3 +36,11 @@ registered read-only usage adapter to advertise selection/protection support.
 The isolated QA consumer supplies a synthetic owner; real account/Router binding
 remains deferred. See [contract](../../../../../docs/architecture/native-global-selection.md)
 and [runbook](../../../../../docs/qa/android-durable-selection.md).
+
+
+`SelectionOwnerLifecyclePort.selectionEndOwner(owner, eraseLocalSelection)` is the
+separate local cleanup handoff: retain saved selection at sign-out/owner changes,
+or erase that owner's selection after fencing/draining issued work. It never
+deletes an Auth account or clears installed rules. Real Auth must invalidate old
+UI and supply the consumer generation; current controlled QA A/B tests do not wire
+Auth or enable production capabilities. Failed cleanup must remain paused/retry.

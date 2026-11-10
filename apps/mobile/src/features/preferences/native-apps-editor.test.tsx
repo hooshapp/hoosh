@@ -143,3 +143,14 @@ test.each([
   await fireEvent.press(save()); await waitFor(() => expect(screen.getByRole('button', { name: 'Reload saved choices' })).toBeVisible());
   expect(screen.queryByText('App selection saved on this device. Protection has not changed.')).toBeNull(); expect(save()).toBeDisabled();
 });
+
+test('same-owner session generation remounts before a late Save acknowledgment can render', async () => {
+  const native = port(), pending = deferred(); native.selectionCommit.mockReturnValue(pending.promise);
+  const view = await render(<NativeAppsEditor owner={A} generation={1} port={native} onBack={jest.fn()} />);
+  await waitFor(() => expect(choose()).toBeEnabled()); await fireEvent.press(choose()); await waitFor(() => expect(save()).toBeEnabled());
+  await fireEvent.press(save());
+  await view.rerender(<NativeAppsEditor owner={A} generation={2} port={native} onBack={jest.fn()} />);
+  await waitFor(() => expect(screen.getByText('0 apps selected')).toBeVisible());
+  await act(() => pending.resolve(saved)); expect(screen.queryByText('2 apps selected')).toBeNull();
+  expect(native.selectionRelease).toHaveBeenCalledWith(A, ID);
+});

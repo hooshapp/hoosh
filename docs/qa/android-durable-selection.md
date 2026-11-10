@@ -65,3 +65,60 @@ and retain app data/APKs. Do not delete all app data to test a cold start.
 Auth/root/account binding, local deletion/transfer protocol, active-quest effects,
 iOS, enforcement, signed release and remaining spoken/race/profile/device acceptance
 are separate gates. The QA owner is not a production guest mode.
+
+
+## Lifecycle/accessibility follow-up (2026-11-09)
+
+The Saved apps editor now has explicit **Current test owner A/B**, Switch test
+owner, End test owner, Resume test owner and Erase local test selection controls.
+These exist only in the QA host. Switching/ending first unmounts the old editor and
+fences native requests, then awaits local cleanup. Retention preserves saved data;
+erasure removes only the synthetic owner's local selection. On failure Resume is
+disabled and Retry local cleanup repeats the same intent. No Supabase account is
+deleted. Real Auth must supply owner/session generation before production wiring.
+
+```sh
+adb shell am instrument -w -e probe selectionLifecycleChecks \
+  com.hoosh.disconnect.dev.test/com.hoosh.disconnect.dev.UsageProbeInstrumentation
+```
+
+Expect `selectionLifecycleChecksPassed=17` and result −1. Cases exercise actual
+main/worker controller callbacks with controlled owners/catalog/lock/persistence:
+retention and all-lease expiration, erasure isolation/idempotency/failure/retry,
+AtomicFile sidecars and partial-delete detection, locked/read-race handling,
+unavailable candidate before Save, lock during an issued Save, end-owner before/
+during write, other-owner/invalid-owner cleanup isolation and Activity teardown.
+Latch-controlled races do not require removing personal apps or locking the phone.
+Test cache directories are unique and cleaned in finally. Failure emits only fixed
+marker/case index; no exception details or user inventory. Existing 22/12/10 modes
+remain regression checks; do not mix historical counts into new case totals.
+
+Physical checks should separately cover A/B retain/switch/erase, background/lock
+with picker open, return/reload, and TalkBack pane/title, checkbox state and focus
+return for Use these choices and Cancel. Native selection names must stay private.
+Capture speech-output captions privately and record only static phrases or redacted
+state results. Confirm audibility with the owner; captions/focus cannot prove
+speaker output remotely. Never use uiautomator hierarchy dumps while TalkBack is
+active. Preserve and restore the current Display speech output preference as well
+as accessibility services/touch exploration/font/power/USB settings. Locked or
+foreign-app screenshots are not acceptance evidence.
+
+Current lifecycle evidence: [record](../core_plan_implementation_notes/artifacts/rn-09f-lifecycle/evidence.json)
+and latest Plan 04 entry. Record pending physical cases honestly if the owner cannot
+unlock/observe the device; no prior task's speech confirmation is reused.
+
+Measured 2026-11-09/10 on Pixel 8 Pro/API 36: final 17 lifecycle and 22/12/10
+regression cases pass. Serial A/B save/retain/switch/erase and background-return
+flows pass. Pane/title and Cancel-to-Choose-apps captions observed privately; owner
+reports checkbox announcement/double tap and Use these choices closes the picker.
+Post-confirmation Choose apps focus is unverified; do not mark it passed from the
+unit tests or closure alone. TalkBack was disabled by the owner during interruption
+and stays off; original speech-caption preference is restored. See artifact and
+latest notes for final lock/return/cleanup checkpoint and unchanged Auth/token,
+production, other-profile/device and signed-release gates.
+
+The continuation observed a locked phone with picker open, without a locked-screen
+capture; unlock-return stays pending. Cleanup force-stopped only the QA app,
+restored current-run phone settings/usage/reverse/speech preference, removed task
+XML and stopped the owned Metro. Saved synthetic A/B selections were empty before
+lock; application data/APKs retained. Restart the documented host for further QA.

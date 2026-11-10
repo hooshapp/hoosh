@@ -32,6 +32,18 @@ See [transaction contract](../architecture/native-global-selection.md),
 actual checks and remaining production/account/occurrence/device gates. Earlier
 next-step text is historical; parent counts remain 46/21/25.
 
+**Selection lifecycle/accessibility follow-up (2026-11-10):** debug-native
+end-owner retention/verified local-selection erasure, stale-work fences and
+same-owner generation remount are implemented with controlled owners. Native
+lock/Save/catalog/teardown races and partial-erasure failures are exercised by the
+new deterministic Android runner. The picker has native pane/checkbox semantics
+and explicit close focus handling. Pixel/API 36 passes 17 lifecycle checks plus
+22/12/10 regressions, serial A/B retain/switch/erase and background return. Owner
+confirmed checkbox speech and picker closure; Cancel return/pane captions were
+observed privately. Confirmation focus stays pending. See [runbook/evidence](../qa/android-durable-selection.md)
+and current notes for the physical lock/cleanup checkpoint. No Auth/root/account
+service deletion, production capability, rules or iOS integration is added.
+
 ## 1. Outcome and deliberate scope
 
 The first outcome is a real authenticated round trip: the mobile app obtains a current session through the auth integration, calls FastAPI `GET /v1/me`, and displays the verified account without leaking an earlier account's data. The second outcome is minimal profile integration, with honest loading, failure, offline, and conflict handling. Neither outcome depends on guessing session allowances, rewards, or Android blocking capabilities.

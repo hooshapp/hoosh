@@ -5,10 +5,10 @@ import { LeaveConfirmation, type EditorState } from '@/features/editors/editor-c
 import { AppsEditor } from './preference-editors';
 import { decodeSelectionDraft, type SelectionDraft, type SelectionEditorPort } from '@/infrastructure/native/selection-editor';
 
-type Props = { owner: string; port: SelectionEditorPort | null; onBack: () => void };
+type Props = { owner: string; generation?: number; port: SelectionEditorPort | null; onBack: () => void };
 /** Key the scope synchronously so a replacement owner never renders the previous draft. */
 export function NativeAppsEditor(props: Props) {
-  return <ScopedNativeAppsEditor key={`${props.owner}:${Boolean(props.port)}`} {...props} />;
+  return <ScopedNativeAppsEditor key={`${props.owner}:${props.generation ?? 0}:${Boolean(props.port)}`} {...props} />;
 }
 function ScopedNativeAppsEditor({ owner, port, onBack }: Props) {
   const [draft, setDraft] = useState<SelectionDraft | null>(null);
@@ -60,9 +60,11 @@ function ScopedNativeAppsEditor({ owner, port, onBack }: Props) {
     lock.current = true;
     if (kind === 'pick') setChoosing(true); else setState('saving');
     const previous = active.draft;
-    void Promise.resolve().then(() => kind === 'pick'
-      ? port.selectionPick(owner, previous.draftId, previous.draftVersion)
-      : port.selectionCommit(owner, previous.draftId, previous.draftVersion)).then((value) => {
+    void Promise.resolve().then(() => {
+      if (!active.active) throw new Error('Closed editor');
+      return kind === 'pick' ? port.selectionPick(owner, previous.draftId, previous.draftVersion)
+        : port.selectionCommit(owner, previous.draftId, previous.draftVersion);
+    }).then((value) => {
       const next = decodeSelectionDraft(value);
       if (next.draftId !== previous.draftId || next.draftVersion < previous.draftVersion ||
         next.draftVersion > previous.draftVersion + 1 ||

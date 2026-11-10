@@ -1,4 +1,5 @@
-import { useState, type ReactNode } from 'react';
+import { useRef, useState, type ComponentRef, type ReactNode } from 'react';
+import { useNativePickerFocusReturn } from '@/components/ui/use-native-picker-focus-return';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/field';
@@ -271,6 +272,8 @@ export function AppsEditor({
   ...actions
 }: PreferenceActions & { selection: AppSelection; onBack: () => void; feedback?: ReactNode }) {
   const [query, setQuery] = useState('');
+  const choose = useRef<ComponentRef<typeof Button>>(null);
+  useNativePickerFocusReturn(choose, selection.kind === 'native' && Boolean(selection.busy));
   const selected = selection.kind === 'catalog' ? [...new Set(selection.selected)] : [];
   const options =
     selection.kind === 'catalog'
@@ -294,6 +297,7 @@ export function AppsEditor({
             {selection.summary ?? 'No app selection is available yet.'}
           </Text>
           <Button
+            ref={choose}
             label="Choose apps"
             busy={selection.busy}
             busyLabel="Choosing apps…"

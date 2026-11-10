@@ -116,7 +116,9 @@ internal class SelectionPreviewDialog(
       content.addView(it, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
     }
     dialog = Dialog(activity, android.R.style.Theme_DeviceDefault_Light_NoActionBar).apply {
+      setTitle(if (editingSavedDraft) "Choose distracting apps" else "Choose apps temporarily")
       setContentView(content)
+      if (Build.VERSION.SDK_INT >= 28) content.accessibilityPaneTitle = titleForAccessibility()
       setOwnerActivity(activity)
       setCanceledOnTouchOutside(false)
       setOnCancelListener { onCancel() }
@@ -131,6 +133,7 @@ internal class SelectionPreviewDialog(
     updateStatus()
   }
 
+  private fun titleForAccessibility() = if (editingSavedDraft) "Choose distracting apps" else "Choose apps temporarily"
   fun show() = dialog.show()
   fun hasFocus() = dialog.window?.decorView?.hasWindowFocus() == true
   fun setBusy() {
@@ -157,6 +160,7 @@ internal class SelectionPreviewDialog(
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
       val row = getItem(position)
       val container = (convertView as? LinearLayout) ?: LinearLayout(activity).apply {
+        importantForAccessibility = View.IMPORTANT_FOR_ACCESSIBILITY_NO
         orientation = LinearLayout.HORIZONTAL
         gravity = android.view.Gravity.CENTER_VERTICAL
         setPadding(dp(16), dp(4), dp(16), dp(4))
@@ -174,6 +178,7 @@ internal class SelectionPreviewDialog(
         if (!busy) { if (checked) draft.add(row.key) else draft.remove(row.key); updateStatus() }
       }
       container.setOnClickListener { if (!busy) checkbox.performClick() }
+      container.isFocusable = false
       image.tag = row.key
       image.setImageResource(android.R.drawable.sym_def_app_icon)
       val cached = cache.get(row.key)

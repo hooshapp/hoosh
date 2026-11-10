@@ -14,6 +14,10 @@ export interface SelectionEditorPort {
   selectionCommit(owner: string, draftId: string, draftVersion: number): Promise<unknown>;
   selectionRelease(owner: string, draftId: string): Promise<unknown>;
 }
+/** Trusted caller must invalidate/unmount old UI before invoking; local only, no Auth deletion. */
+export interface SelectionOwnerLifecyclePort {
+  selectionEndOwner(owner: string, eraseLocalSelection: boolean): Promise<unknown>;
+}
 export function decodeSelectionDraft(value: unknown): SelectionDraft {
   if (!value || typeof value !== 'object') throw new Error('Invalid selection response');
   const v = value as Record<string, unknown>;

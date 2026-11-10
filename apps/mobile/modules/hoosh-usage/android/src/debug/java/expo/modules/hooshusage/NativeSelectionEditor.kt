@@ -10,7 +10,13 @@ import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 
 /** Debug producer: persisted owner/global group, ephemeral editor draft, no rules/Auth integration. */
-internal class NativeSelectionEditor(context: Context) : SelectionEditor {
+class NativeSelectionEditor(
+  context: Context,
+  persistence: SelectionPersistence = AtomicSelectionPersistence(File(context.noBackupFilesDir, "selection-editor-debug-v1")),
+  private val available: () -> Set<String> = { LauncherAppCatalog(context).eligibleKeys() },
+  private val unlocked: () -> Boolean? = { LauncherAppCatalog(context).isUnlocked() },
+  private val drafts: SelectionDrafts = SelectionDrafts(persistence),
+) : SelectionEditor {
   private class Request(val promise: Promise, val picker: Boolean = false) {
     val cancelled = AtomicBoolean(false)
     var dialog: SelectionPreviewDialog? = null
@@ -21,7 +27,6 @@ internal class NativeSelectionEditor(context: Context) : SelectionEditor {
   private val main = Handler(Looper.getMainLooper())
   private val worker = Executors.newSingleThreadExecutor()
   private val catalog = LauncherAppCatalog(context)
-  private val drafts = SelectionDrafts(AtomicSelectionPersistence(File(context.noBackupFilesDir, "selection-editor-debug-v1")))
   private var pending: Request? = null
   private var disposed = false
   private fun reject(promise: Promise, code: String) = promise.reject(code, "App selection could not complete.", null)
@@ -39,23 +44,38 @@ internal class NativeSelectionEditor(context: Context) : SelectionEditor {
     try { request.dialog?.dismiss() } catch (_: Exception) { }
     if (error == null) request.promise.resolve(value) else reject(request.promise, error)
   }
-  private fun operation(promise: Promise, action: () -> Any?) {
+  private fun operation(owner: String, promise: Promise, action: (Request) -> Any?) {
     val request = start(promise) ?: return
+    request.owner = owner
     worker.execute {
       if (request.cancelled.get()) return@execute
       try {
-        val value = action()
+        val value = action(request)
         main.post { finish(request, value) }
       } catch (error: Exception) { main.post { finish(request, error = code(error)) } }
     }
   }
-  private fun eligible(): Set<String> = try { catalog.eligibleKeys() }
+  private fun eligible(): Set<String> = try {
+    if (unlocked() != true) throw SelectionFailure("ERR_SELECTION_UNAVAILABLE")
+    available().also { if (unlocked() != true) throw SelectionFailure("ERR_SELECTION_UNAVAILABLE") }
+  }
     catch (_: Exception) { throw SelectionFailure("ERR_SELECTION_UNAVAILABLE") }
-  override fun begin(owner: String, promise: Promise) = operation(promise) { drafts.begin(owner) }
-  override fun commit(owner: String, draft: String, version: Int, promise: Promise) = operation(promise) {
+  override fun begin(owner: String, promise: Promise) = operation(owner, promise) { request ->
+    if (unlocked() != true) throw SelectionFailure("ERR_SELECTION_UNAVAILABLE")
+    val result = drafts.begin(owner)
+    if (request.cancelled.get() || unlocked() != true) {
+      drafts.release(owner, result["draftId"] as String)
+      throw SelectionFailure("ERR_SELECTION_UNAVAILABLE")
+    }
+    result
+  }
+  override fun commit(owner: String, draft: String, version: Int, promise: Promise) = operation(owner, promise) { request ->
     // Empty selection is valid, but even empty Save requires unlocked/current profile.
     val eligible = eligible()
-    drafts.commit(owner, draft, version, eligible)
+    if (request.cancelled.get()) throw SelectionFailure("ERR_SELECTION_DRAFT_EXPIRED")
+    val result = drafts.commit(owner, draft, version, eligible)
+    if (unlocked() != true) throw SelectionFailure("ERR_SELECTION_ACK_UNAVAILABLE")
+    result
   }
   override fun release(owner: String, draft: String, promise: Promise) {
     if (disposed) { reject(promise, "ERR_SELECTION_UNAVAILABLE"); return }
@@ -107,6 +127,16 @@ internal class NativeSelectionEditor(context: Context) : SelectionEditor {
             catch (error: Exception) { finish(request, error = code(error)) }
         }
       } catch (error: Exception) { main.post { finish(request, error = code(error)) } }
+    }
+  }
+  override fun endOwner(owner: String, erase: Boolean, promise: Promise) {
+    if (disposed) { reject(promise, "ERR_SELECTION_UNAVAILABLE"); return }
+    try { SelectionDrafts.validateOwner(owner) } catch (error: Exception) { reject(promise, code(error)); return }
+    pending?.takeIf { it.owner == owner }?.let { finish(it, error = "ERR_SELECTION_DRAFT_EXPIRED") }
+    // FIFO: queued old requests are canceled; an issued write drains before erasure/acknowledgment.
+    worker.execute {
+      try { drafts.endOwner(owner, erase); main.post { promise.resolve() } }
+      catch (error: Exception) { main.post { reject(promise, code(error)) } }
     }
   }
   override fun cancelPicker() { pending?.takeIf { it.picker }?.let { finish(it, error = "ERR_SELECTION_CANCELLED") } }

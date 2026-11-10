@@ -137,3 +137,12 @@ count. State is disabled. No account/Auth/Router or blocking integration is clai
 See [contract](../../../../docs/architecture/native-global-selection.md) and
 [checks/runbook](../../../../docs/qa/android-durable-selection.md). Do not clear app
 data or commit owner inventories to demonstrate persistence.
+
+
+The Saved apps editor's A/B controls are isolated lifecycle diagnostics. Switch/
+End first unmount the old consumer and await native end-owner retention. Resume
+opens a fresh generation; Erase local test selection erases only that synthetic
+owner's local selection after issued writes drain. Failed cleanup keeps Resume
+disabled and Retry repeats the same intent. No hosted account deletion/Auth action.
+The [runbook](../../../../docs/qa/android-durable-selection.md) distinguishes
+actual physical observations from deterministic native/JS tests.

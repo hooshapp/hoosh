@@ -6,6 +6,7 @@ class SelectionFailure(val code: String) : RuntimeException(code)
 data class SavedSelection(val revision: Int, val apps: Set<String>)
 interface SelectionPersistence {
   fun read(owner: String): SavedSelection
+  fun erase(owner: String)
   fun compareAndSet(owner: String, expectedRevision: Int, apps: Set<String>): SavedSelection
 }
 
@@ -50,6 +51,11 @@ class SelectionDrafts(private val persistence: SelectionPersistence) {
   @Synchronized fun release(owner: String, id: String) {
     validateOwner(owner)
     if (drafts[id]?.owner == owner) drafts.remove(id)
+  }
+  @Synchronized fun endOwner(owner: String, erase: Boolean) {
+    validateOwner(owner)
+    drafts.entries.removeAll { it.value.owner == owner }
+    if (erase) persistence.erase(owner)
   }
   @Synchronized fun clear() = drafts.clear() // Activity/module cleanup discards drafts, never saved records.
   companion object {

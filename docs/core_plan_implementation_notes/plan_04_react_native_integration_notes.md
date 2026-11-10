@@ -4,19 +4,21 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN08-D03/RN-09f debug-native durable selection and existing AppsEditor consumer implemented; production owner/Auth/root/capability and native rule integration remain deferred.
+**Current part:** RN08-D03/RN-09f/RN-10 debug-native selection lifecycle, interruption and picker accessibility follow-up implemented; see latest entry for bounded physical evidence and remaining acceptance. Production Auth/root/capability and rules stay deferred.
 
-**Implementation branch:** `task/react-native/rn-09f-durable-selection`; parent `e9e2d90`; no main merge or iOS/Auth change.
+**Implementation branch:** `task/react-native/rn-09f-selection-lifecycle`; parent `751633b`; local commit only, no push/main merge or iOS/Auth change.
 
 **Commit reference:** RN-01 `2f88102`; RN-02 `2d5c0d1`; RN-03 `0741758`; RN-04 `610f570`; RN-05 preparation `0c6e4db`; RN-07 UI `5790302`; RN-08 preparation `71da2d5`; RN-09a `ff75039`. RN-10 is `9b5fbd0`.
 
-**Last updated:** 2026-11-09.
+**Last updated:** 2026-11-10.
 
 **Shared workflow:** [Implementation knowledge base](README.md).
 
 ## Resume here
 
-- **RN08-D03 / RN-09f durable local selection (2026-11-09):** debug native owner/global-group draft/Save transaction and existing AppsEditor consumer in Saved apps editor QA. Native picker confirmation stages; editor Save performs bounded atomic revision CAS and readback. Cancel/Discard/release do not erase saved state; restart reloads it. Final native tests, phone flows, large-text header correction and cleanup are recorded in the final entry and [runbook](../qa/android-durable-selection.md). No default production owner, Router/Auth binding, installed rule or capability/iOS change. Next production owner-generation/account lifecycle and active-occurrence contract before enabling real selection; user tokens/Auth still deferred. Existing IDs/counts unchanged. Parent PM documentation is `e9e2d90`; own hash Pending until next normal update.
+- **Selection lifecycle/accessibility (2026-11-10):** branch `task/react-native/rn-09f-selection-lifecycle`, parent `751633b`. Controlled-owner retain/erase/failure recovery and generation fences, native lock/catalog/issued-write races and picker focus handling implemented. Full checks 382/590 (+2 Android-only-event iOS skips)/601; actual native cases 17 plus 22/12/10 regressions. Serial A/B device flows and bounded owner/caption TalkBack observations pass; post-confirmation focus is explicitly pending. User disabled TalkBack during interruption; leave it off. Read the final entry, [runbook](../qa/android-durable-selection.md) and [evidence](artifacts/rn-09f-lifecycle/evidence.json) for final cleanup/lock checkpoint and remaining production/device gates. No Auth/tokens/iOS or production capability change; full parents and 46/21/25 remain open. Local commit only, own hash Pending.
+
+- **RN08-D03 / RN-09f durable local selection (2026-11-09):** debug native owner/global-group draft/Save transaction and existing AppsEditor consumer in Saved apps editor QA. Native picker confirmation stages; editor Save performs bounded atomic revision CAS and readback. Cancel/Discard/release do not erase saved state; restart reloads it. Final native tests, phone flows, large-text header correction and cleanup are recorded in the final entry and [runbook](../qa/android-durable-selection.md). No default production owner, Router/Auth binding, installed rule or capability/iOS change. Next production owner-generation/account lifecycle and active-occurrence contract before enabling real selection; user tokens/Auth still deferred. Existing IDs/counts unchanged. Parent PM documentation is `e9e2d90`; durable implementation is `751633b` (recorded during lifecycle follow-up).
 
 - **PM reconciliation (2026-11-09):** [ADR](../architecture/pm-decisions-2026-11-09.md) records the supplied Q02–Q22 responses; Q09 explicitly settles global selection for quests, so older global/per-quest follow-ups below are historical. Next durable native owner/group/revision and stage/commit/discard semantics, then existing RN-09f Apps editor wiring. No runtime capability, storage, enforcement, account/Auth/iOS change in this documentation follow-up; full parents/counts stay open. Tokens/Auth user-deferred. [Plan 00 notes](plan_00_shared_contracts_notes.md) contain this commit's complete file/line ledger and verification; previous preview commit is `90cdc44`.
 
@@ -3280,7 +3282,7 @@ bullets above reflect their dates and are superseded by the current resume entry
 ### RN08-D03 / RN-09f — Durable global-selection draft and Save contract
 
 **Commit:** `feat(android): add revisioned local selection drafts and editor save`.
-**Hash:** Pending; resolve by subject/Git and record in the next normal update.
+**Hash:** `751633b` (recorded during lifecycle follow-up).
 **Date:** 2026-11-09. **Owner:** Ishmum. **Branch:** `task/react-native/rn-09f-durable-selection`.
 **Parent:** `e9e2d90`. **Status:** Implemented for debug-native/local transaction
 and controlled-owner existing AppsEditor scope; production/account integration open.
@@ -3437,3 +3439,165 @@ Existing volatile preview evidence and PM ADR remain dated; this entry supersede
 prior next-step descriptions only. Full RN-08/09/Plan 04 and 46/21/25 counts stay
 open/unchanged. Local commit only, no push/CI/merge/deployment. Unrelated workspace
 and original icon-pack untracked files are excluded.
+
+
+### RN08-D03 / RN-09f / RN-10 — Selection lifecycle, interruption and accessibility
+
+**Commit:** `feat(android): harden selection lifecycle and picker accessibility`.
+**Hash:** Pending (record on next normal notes update). **Owner:** Ishmum.
+**Started:** 2026-11-09; resumed/completed documentation 2026-11-10 after usage interruption.
+**Branch:** `task/react-native/rn-09f-selection-lifecycle`. **Parent:** `751633b`.
+**Status:** Independent debug implementation and bounded checks complete. Actual
+post-confirmation TalkBack focus and the wider production/device matrix remain
+open. This does not close full RN08-D03, RN-09f, RN-10 or Plan 04.
+
+#### Scope and decisions
+
+Extend the existing native module, transaction and AppsEditor; add no service,
+dependency, database migration or new parent plan. Anisha retains Auth/onboarding
+authority and iOS. Tokens/Auth remain explicitly user-deferred. Fixed synthetic A/B
+owners exist only in the isolated developer host, never the production Router.
+No account provisioning/deletion, token refresh or Supabase operation occurs here.
+
+`selectionEndOwner(owner, eraseLocalSelection)` is an explicit local lifecycle hook.
+The future caller must invalidate its UI before calling it, await cleanup, and
+supply the real Auth session generation on remount, including a new session with
+the same UUID. Every native request carries its owner. Cleanup cancels only that
+owner's pending work; it removes all of that owner's leases before attempting disk
+erasure. Invalid owners cannot cancel a valid Save. Other owners stay independent.
+
+Already-issued writes drain on the same worker before cleanup acknowledgment;
+queued canceled work is fenced. Retention keeps a write that already reached disk.
+Erasure verifies the owner's base, .bak and .new files are absent. Partial failure
+rejects instead of claiming success, and the consumer stays paused; Retry preserves
+the original erase/switch intent. Old draft handles cannot resurrect erased state.
+Erasure needs no decoding of a corrupt record and never recursively deletes a user
+directory. This is app-local selection cleanup, not full account/rules deletion.
+A future coordinated deletion flow still needs durable intent/restart recovery;
+this small hook is not that coordinator. Storage format remains v1.
+
+Begin checks lock state before/after read and releases any lock-race handle.
+Save checks lock/catalog eligibility before writing. Lock during an issued write
+returns an uncertain acknowledgment and requires explicit reload: the write may
+have persisted. Missing/disabled candidates retain the draft and reject before
+write. Injected lock/catalog races are distinct from physical app uninstall tests.
+
+Picker window/pane names and checkbox rows improve accessibility. Choose apps
+focus return waits for both settled bridge/UI and native window focus, handles
+either event order, and cancels on background, unmount, replacement or missing
+focus. The deadline starts after dismissal; a long-open picker remains eligible.
+Ordinary renders never move focus. No iOS picker integration is added. The QA host
+also now respects the top safe-area inset after a measured status-bar overlap.
+
+#### Actual validation and corrections
+
+- `npm run check`: 382 portable; 590 component passes, two explicit iOS-preset
+  skips for Android-only window focus events, 70 suites; 601 API passes and 199
+  DB tests deselected. TypeScript, Ruff, contracts/generated types/assets pass;
+  ESLint has the same 11 existing warnings and no errors. No database behavior
+  changed and database tests were not rerun. After the final QA-only safe-area
+  correction, all four QA component results, workspace types and lint pass again.
+- Debug app/test APKs, release module Kotlin and release manifest build pass using
+  JDK 17.0.21+9 / Gradle 9.4.1, SDK/build tools 37.0, target 36/min 24, arm64-v8a.
+  Final native source was built and both APKs installed with replacement, without
+  clearing data. Pixel 8 Pro/API 36 instrumentation passes 17 lifecycle cases,
+  original 22 draft, 12 volatile preview and ten discovery regressions. The earlier
+  16-case log is superseded by the final 17-case run, not added to its total.
+- Web export passes 38-file QA isolation and all 71 original SVG checks; Android
+  production Hermes export and UI gallery build pass (gallery's existing eval
+  warning remains). Release bytecode contains none of ten debug implementation
+  classes or five transaction/lifecycle bridge registrations; release manifest
+  has no targeted launcher query. This is compile/export isolation, not signed
+  release behavior or store acceptance.
+- Serial phone flows at font 1.15 pass: A Save one, B initially empty, B Save two,
+  return A retains one, end/resume retains A with a new generation, erase A,
+  B still has two, erase B and return A empty. Both synthetic owners' saved
+  selections are explicitly empty after cleanup. No real Auth identity was used.
+- Phone background with the native picker open cancels it; return shows the
+  unchanged empty saved selection. Physical lock/return and final restoration
+  results are recorded in the following checkpoint and sanitized artifact.
+- TalkBack: verified actual service before accepted observations; native pane/title
+  and Cancel-to-Choose-apps speech captions observed privately. Owner reports
+  audible announcements, checkbox activation with a double tap and an announcement,
+  then double-tap Use these choices closes the picker. That report does not prove
+  exact spoken text or confirmation focus return. The captured confirmation caption
+  did not verify Choose apps focus, so that physical assertion stays pending.
+  Unit tests cover focus timing, but do not replace speech/focus acceptance.
+- Discarded the initial overlapping automation runs and reran serially. A temporary
+  UIAutomation accessibility flag with no TalkBack service had been misread; those
+  observations are not speech evidence. Injected Enter/touch actions after an
+  accessibility focus change did not reliably traverse the native checkbox; only
+  the owner's subsequent actual gesture is accepted for its announcement.
+- Corrected the Jest fixture's function-valued AppState mock and typed hook props
+  before accepted checks. Fixed the QA top inset after a real phone overlap;
+  accepted owner controls and targeted tests were rerun. A resumed settings restore
+  stopped on its ownership guard after losing settings focus; relaunching the
+  verified settings component restored the original speech-output preference.
+- React component review covered hook ownership/cleanup, callback scope fences,
+  native-only events, disabled actions, types and production QA isolation. No
+  broad refactor, package addition or warning suppression was needed.
+
+#### Device handoff and remaining acceptance
+
+User turned TalkBack off during the interruption; continuation leaves it off.
+Display speech output is restored to its original false value. Only this task's
+power/reverse/XML/Metro settings are restored/removed; preserve pre-existing usage
+access/font/timeout, APKs and app data. Raw hierarchy, inventory, captions and crops
+stay under ignored .expo; only aggregate/fixed-state evidence is committed.
+
+Physical return/cleanup checkpoint (2026-11-10): actual lock with picker open
+observed from lock metadata, without viewing/capturing the locked screen. Phone
+remained locked and no unlock-return observation was available; that assertion is
+pending. Force-stopped only the QA app to release its in-memory unsaved draft.
+Verified the complete current-run baseline: TalkBack/services/touch exploration
+off, font 1.15, timeout 600000, USB keep-awake 0, pre-existing usage access allow,
+no reverse mappings, original Display speech output false. Removed both task XML
+files and stopped the verified task-owned Metro 8094 process. No app-data clear;
+APKs and other saved application data retained. Synthetic A/B saved counts were
+both empty before the lock test. Resume the physical lock-return check with the
+runbook's QA host when unlocked; do not infer success from forced termination.
+
+Production Auth namespace/session generation/root binding and capability wiring
+remain deferred. Complete coordinated full account deletion with persistent cleanup
+intent, active-occurrence/installed-rule semantics, confirmation focus speech,
+full traversal/keyboard/error states, real uninstall/resource faults, other
+profiles/devices and signed release acceptance before broader claims. iOS remains
+Anisha's. No install/enforcement, backend inventory upload, cloud sync, hosted
+account deletion, token work, push/CI/merge or deployment is claimed. Original
+46/21/25 counts and all IDs remain unchanged.
+
+Next independent step: finish the pending explicit-confirmation focus observation
+and remaining device/accessibility matrix when the owner is available; define
+active-occurrence/installed configuration contracts before expanding native rules.
+When Auth work resumes, consume this lifecycle hook and real generation, never
+copy the QA owner constants. Follow the [runbook](../qa/android-durable-selection.md)
+and [sanitized evidence](artifacts/rn-09f-lifecycle/evidence.json).
+
+#### Every changed file and logical change
+
+- `apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/SelectionDrafts.kt`: lines 9, 55–59. Add persistence erasure and synchronized owner teardown. Expire every matching lease before optional deletion so failed erasure cannot leave an old writable handle; retain other owners.
+- `apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/AtomicSelectionPersistence.kt`: lines 62–68. Erase only the validated owner hash under the existing process lock. Verify base/.bak/.new absence and directory accessibility; static failure on partial erasure, no recursive deletion or success from a void OS call.
+- `apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/SelectionEditor.kt`: lines 12. Add explicit endOwner(owner, erase, promise) contract without changing ordinary usage/protection capabilities.
+- `apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/HooshUsageModule.kt`: lines 71–73. Register selectionEndOwner only inside the existing compile-time debug guard and dispatch on MAIN. Release registers no selection transaction/lifecycle methods.
+- `apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/NativeSelectionEditor.kt`: lines 13–19, 46–79, 132–141. Inject storage/catalog/lock/draft seams for real controller tests and expose this debug class to instrumentation. Tag begin/Save requests with owner, release lock-race handles, fence canceled work before Save, return uncertain ACK after an issued write locks, validate cleanup before canceling and queue owner cleanup behind issued work.
+- `apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/SelectionPreviewDialog.kt`: lines 119–121, 136, 163, 181. Name Dialog and accessible pane for both chooser modes. Exclude row wrapper while retaining native checkbox semantics; avoid an empty keyboard focus stop. Native identities remain in native UI.
+- `apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/SelectionDraftChecks.kt`: lines 23. Implement erase on the existing test persistence so the original 22-case regression suite exercises the expanded interface.
+- `apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/UsageProbeInstrumentation.kt`: lines 15, 22–32, 57–60. Route selectionLifecycleChecks and report bounded count or fixed failure/case marker; retain existing discovery/preview/draft modes and avoid native exception/inventory output.
+- `apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/SelectionLifecycleChecks.kt`: lines 1–194. Add 17 meaningful real Android/controller cases using synthetic owners, Promise callbacks, worker/main scheduling and latch-controlled races. Cover retention/erasure/retry, actual AtomicFile sidecars/partial deletion, lock/read/write/catalog timing, canceled Save, teardown, wrong-owner isolation and invalid cleanup. Unique cache fixtures cleaned in finally; no Auth or real app mutation.
+- `apps/mobile/src/components/ui/use-native-picker-focus-return.ts`: lines 1–55. Own the explicit chooser-close focus lifecycle. Coordinate busy settlement and Android focus in either order, delay once, start deadline only after close, cancel background/unmount/replacement/timeouts and remove listeners. Ordinary renders do not focus.
+- `apps/mobile/src/components/ui/use-native-picker-focus-return.test.tsx`: lines 1–74. Test long-open chooser, both event orders, missing-focus deadline, background, unmount/listener cleanup, ordinary renders and replacement. Correct mock descriptor fixture; Android event-specific cases explicitly skip the iOS preset (12 pass/two skips across presets).
+- `apps/mobile/src/features/preferences/preference-editors.tsx`: lines 1–2, 275–276, 300. Attach a typed Choose apps ref and call the focus-return hook only for the native busy cycle. Existing catalog editor and surrounding design remain intact.
+- `apps/mobile/src/infrastructure/native/selection-editor.ts`: lines 17–20. Add a separate typed owner-lifecycle port with explicit local-only erasure semantics. Do not reinterpret the existing protection or transaction APIs as account deletion.
+- `apps/mobile/src/features/preferences/native-apps-editor.tsx`: lines 8–12, 60–68. Accept an explicit session generation in the synchronous scope key and recheck captured activity before dispatching deferred pick/Save. A replaced same-owner session cannot adopt old state; no Auth SDK or new session store.
+- `apps/mobile/src/features/preferences/native-apps-editor.test.tsx`: lines 146–156. Hold an old Save across same-owner generation replacement; verify the new editor remains empty and old handle released instead of rendering late acknowledgment.
+- `apps/mobile/dev/native/durable-selection.tsx`: lines 1–55. Extend the isolated real editor host to synthetic A/B scopes, explicit end/retain/local erase, generation remount, pause-before-native cleanup and intent-preserving Retry. Resume requires cleanup acknowledgment. Inject test port and add top safe-area inset/wrapping after phone overlap. Never delete an Auth account.
+- `apps/mobile/src/features/protection/selection-lifecycle-qa.test.tsx`: lines 1–45. Four preset results verify immediate A-state removal, disabled Resume until cleanup, empty B and erase-failure pause/retry preserving the true erasure intent without exposing native exception text.
+- `apps/mobile/dev/native/README.md`: lines 140–148. Document synthetic lifecycle controls, paused cleanup/retry contract and no Auth/production installation claim.
+- `apps/mobile/src/features/preferences/README.md`: lines 45–52. Explain owner/generation remount, pre-dispatch/result fences and the future caller responsibility; distinguish implementation tests from speech/device acceptance.
+- `apps/mobile/src/infrastructure/native/README.md`: lines 39–46. Document lifecycle port trust boundary, issued-write drainage, retention versus verified local erasure and fixed synthetic QA owners confined outside the Router.
+- `docs/architecture/native-global-selection.md`: lines 3, 48, 102–138, 151–152. Advance contract to v2 with lifecycle table row, owner/session handoff, failed-cleanup recovery, lock/uncertain acknowledgment and focus protocol. Preserve future deletion-intent, occurrence/rules and production registration gates; link primary Android pane API.
+- `docs/qa/android-durable-selection.md`: lines 68–124. Add reproducible lifecycle runner and 17-case scope, controlled owner controls, physical/speech capture safeguards, current bounded observations and artifact link. Explicitly leave unobserved confirmation focus and larger matrix pending.
+- `docs/core_plan/04_react_native_integration.md`: lines 35–46. Record this follow-up in existing RN08-D03/RN-09f/RN-10 scope, native/physical evidence distinctions and remaining production gates. Preserve IDs and 46/21/25 counts.
+- `docs/core_plan/README.md`: lines 8–17. Put current lifecycle checkpoint first with measured tests/phone boundaries and links; leave Auth/iOS ownership and parent counts unchanged.
+- `docs/core_plan_implementation_notes/artifacts/rn-09f-lifecycle/evidence.json`: lines 1–150. Publish final APK/source hashes, toolchain/build/check counts, native regression/release isolation and bounded A/B/background/speech/lock evidence, cleanup, corrections and pending gates. Contains only sanitized aggregates/fixed states; no inventory/captures/secrets.
+- `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 7–9, 13, 19–23, 3285, 3444–3603. Update current branch/resume/date and previous durable commit hash, then record this commit's scope, lifecycle decisions, exact checks/corrections, cleanup, remaining work and complete per-file line ledger. Historical entries remain dated.

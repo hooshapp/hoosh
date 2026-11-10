@@ -42,3 +42,11 @@ Android producer is debug-only and is exercised by Saved apps editor in the
 isolated native QA host, not the production Router. No fallback anonymous owner,
 backend mutation, installed rule or new native capability is implied. See the
 [transaction contract](../../../../../docs/architecture/native-global-selection.md).
+
+
+A supplied `generation` remounts same-owner session replacements before old data
+can render. The owner must unmount/invalidate the consumer before invoking native
+end-owner cleanup; lifecycle does not depend on component release succeeding.
+Choose apps focus returns only after explicit picker close and native focus/UI
+readiness; it cancels on background/unmount, never on ordinary status refresh.
+Native checkable state is distinct from heard TalkBack acceptance in the QA record.

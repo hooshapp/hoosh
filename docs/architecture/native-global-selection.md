@@ -1,6 +1,6 @@
 # Native global app-selection transactions
 
-**Plan:** existing RN08-D03 / RN-09f. **Owner:** Ishmum. **Version:** 1, 2026-11-09.
+**Plan:** existing RN08-D03 / RN-09f. **Owner:** Ishmum. **Version:** 2, 2026-11-10.
 **Authority:** [PM ADR](pm-decisions-2026-11-09.md), Q09 / PD-18 settles global scope.
 **Implementation scope:** Android debug producer and existing AppsEditor with an
 explicit synthetic QA owner. Auth/root, iOS and production native capability remain
@@ -45,6 +45,7 @@ The decoder strips extras and validates safe integer/count/group/handle invarian
 | `selectionPick(owner, draftId, draftVersion)` | Open native chooser with current draft. Search retains hidden checks; Cancel/Back/background preserve it. Use these choices stages the set, after eligibility/unlocked/focus validation. No disk save. |
 | `selectionCommit(owner, draftId, draftVersion)` | Editor Save requeries eligibility while unlocked; compare saved revision with draft base. Atomic write only if the set changed, then read back/acknowledge before rebasing the draft. No-op Save keeps saved revision. |
 | `selectionRelease(owner, draftId)` | Idempotently discard that owner's matching draft only, without deleting saved choices. A stale/wrong owner cannot release a newer owner's draft/picker. |
+| `selectionEndOwner(owner, eraseLocalSelection)` | Immediately fence matching pending native work, then close all that owner's leases on the worker. False preserves saved choices; true erases only that owner's local selection and atomic sidecars, with verified acknowledgment after issued writes drain. No Auth/network deletion. |
 
 The picker intersects unavailable previous choices for presentation and warns about
 them. Only explicit picker confirmation removes them from the draft; only editor
@@ -98,6 +99,43 @@ account/cloud synchronization, OS selection-token storage for iOS or installed r
   Hardware Back and header Back require confirmation for unsaved changes. QA footer
   Screens/Reset intentionally bypass the guard and release/remount the draft.
 
+## Lifecycle handoff and interruption behavior
+
+The future Auth caller must first invalidate/unmount the old consumer, then await
+selectionEndOwner. Pass Auth's real session generation to NativeAppsEditor; even
+a same-UUID replacement remounts immediately. The consumer checks its captured
+scope again before dispatching deferred mutations, rejects late callbacks and
+releases late begin handles. The native controller tags every request with its
+owner; end-owner cancels only that owner's pending request, never another owner's.
+
+Queued old work cannot reach a write after fencing. A write already inside its
+atomic transaction may finish; retention preserves it, erasure queues behind it
+and verifies base/.bak/.new removal before acknowledging. Failed or partial erasure
+rejects, with all old leases expired; the caller must remain paused and retry the
+same cleanup intent. Erasure does not require decoding a corrupt saved record.
+The hook does not persist a cross-service deletion intent; a future coordinator
+must recover interrupted cleanup across process restarts. Do not present local
+cleanup as deletion of an Auth account, profile, usage journal,
+installed rules or other devices' data. These still require coordinated integration.
+
+Begin requires unlocked state before and after reading and releases any handle
+created during a lock race. Save checks unlocked/eligibility before committing.
+If locking happens during an issued write, return ERR_SELECTION_ACK_UNAVAILABLE;
+the consumer requires reload, since the write may have persisted. Missing/disabled
+candidates reject before any write and preserve the draft. Activity teardown fences
+pending work and clears leases; background cancels the picker. Deterministic native
+checks inject lock/catalog/writer timing; this is not physical uninstall evidence.
+
+The native window has an [accessible pane](https://developer.android.com/reference/android/view/View#setAccessibilityPaneTitle(java.lang.CharSequence))
+and title and one accessible checkbox per
+row, with decorative icons/row wrappers excluded and no empty keyboard focus stop.
+The shared Choose apps trigger waits for both native focus and re-enabled UI after
+explicit close, handles either event ordering and settles once. Background,
+unmount, replacement and missing-focus timeout cancel the return; ordinary reads
+never move focus. The window may stay open arbitrarily long without expiring the
+return before dismissal. Unit tests do not replace actual TalkBack speech/focus.
+See the runbook/notes for this commit's exact physical acceptance and pending cases.
+
 ## Integration and remaining gates
 
 The isolated QA page uses a clearly labeled synthetic `qa-development` owner;
@@ -110,8 +148,8 @@ The preview factory is compile-time disabled in release; the release module
 registers no selection transaction methods and contains no debug implementation.
 
 Before enabling real account/device selection: wire the session-generation owner,
-review account switch isolation, preserve native nudges/product data at sign-out,
-and implement coordinated account deletion/local erasure and acknowledgment. Define
+wire/review the tested end-owner retention/selection-erasure hook, preserve native
+nudges/product data at sign-out, and implement coordinated full account deletion. Define
 how global edits affect active quest occurrences and installed configuration; a
 saved selection revision is not an installed-rule revision. No quest-specific picker
 or cross-device allowance is introduced. Anisha keeps iOS/Auth ownership.

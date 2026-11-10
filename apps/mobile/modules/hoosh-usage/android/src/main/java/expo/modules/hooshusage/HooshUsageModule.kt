@@ -68,6 +68,9 @@ class HooshUsageModule : Module() {
       AsyncFunction("selectionRelease") { owner: String, draft: String, promise: Promise ->
         editorOrReject(promise)?.release(owner, draft, promise)
       }.runOnQueue(Queues.MAIN)
+      AsyncFunction("selectionEndOwner") { owner: String, erase: Boolean, promise: Promise ->
+        editorOrReject(promise)?.endOwner(owner, erase, promise)
+      }.runOnQueue(Queues.MAIN)
       OnActivityEntersBackground { preview?.cancelPending(); selectionEditor?.cancelPicker() }
       OnActivityDestroys { preview?.clear(); selectionEditor?.clearDrafts() }
       OnDestroy { previewDisposed = true; preview?.dispose(); preview = null; selectionEditor?.dispose(); selectionEditor = null }
