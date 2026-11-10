@@ -16,6 +16,8 @@
 
 ## Resume here
 
+- **Physical acceptance continuation (2026-11-10):** actual picker lock/unlock cancellation and unchanged saved count pass on Pixel/API 36, without process restart. Confirmation focus remains unverified after interruption; TalkBack, speech-caption preference, power/usage/font/reverse and owned process/files restored. No runtime/Auth/iOS change. Read the final entry and [follow-up evidence](artifacts/rn-09f-device-followup/evidence.json); previous implementation is `082b1b9`. Resume confirmation focus only with the unlocked device/owner available.
+
 - **Selection lifecycle/accessibility (2026-11-10):** branch `task/react-native/rn-09f-selection-lifecycle`, parent `751633b`. Controlled-owner retain/erase/failure recovery and generation fences, native lock/catalog/issued-write races and picker focus handling implemented. Full checks 382/590 (+2 Android-only-event iOS skips)/601; actual native cases 17 plus 22/12/10 regressions. Serial A/B device flows and bounded owner/caption TalkBack observations pass; post-confirmation focus is explicitly pending. User disabled TalkBack during interruption; leave it off. Read the final entry, [runbook](../qa/android-durable-selection.md) and [evidence](artifacts/rn-09f-lifecycle/evidence.json) for final cleanup/lock checkpoint and remaining production/device gates. No Auth/tokens/iOS or production capability change; full parents and 46/21/25 remain open. Local commit only, own hash Pending.
 
 - **RN08-D03 / RN-09f durable local selection (2026-11-09):** debug native owner/global-group draft/Save transaction and existing AppsEditor consumer in Saved apps editor QA. Native picker confirmation stages; editor Save performs bounded atomic revision CAS and readback. Cancel/Discard/release do not erase saved state; restart reloads it. Final native tests, phone flows, large-text header correction and cleanup are recorded in the final entry and [runbook](../qa/android-durable-selection.md). No default production owner, Router/Auth binding, installed rule or capability/iOS change. Next production owner-generation/account lifecycle and active-occurrence contract before enabling real selection; user tokens/Auth still deferred. Existing IDs/counts unchanged. Parent PM documentation is `e9e2d90`; durable implementation is `751633b` (recorded during lifecycle follow-up).
@@ -3444,7 +3446,7 @@ and original icon-pack untracked files are excluded.
 ### RN08-D03 / RN-09f / RN-10 — Selection lifecycle, interruption and accessibility
 
 **Commit:** `feat(android): harden selection lifecycle and picker accessibility`.
-**Hash:** Pending (record on next normal notes update). **Owner:** Ishmum.
+**Hash:** `082b1b9` (recorded during physical acceptance continuation). **Owner:** Ishmum.
 **Started:** 2026-11-09; resumed/completed documentation 2026-11-10 after usage interruption.
 **Branch:** `task/react-native/rn-09f-selection-lifecycle`. **Parent:** `751633b`.
 **Status:** Independent debug implementation and bounded checks complete. Actual
@@ -3601,3 +3603,69 @@ and [sanitized evidence](artifacts/rn-09f-lifecycle/evidence.json).
 - `docs/core_plan/README.md`: lines 8–17. Put current lifecycle checkpoint first with measured tests/phone boundaries and links; leave Auth/iOS ownership and parent counts unchanged.
 - `docs/core_plan_implementation_notes/artifacts/rn-09f-lifecycle/evidence.json`: lines 1–150. Publish final APK/source hashes, toolchain/build/check counts, native regression/release isolation and bounded A/B/background/speech/lock evidence, cleanup, corrections and pending gates. Contains only sanitized aggregates/fixed states; no inventory/captures/secrets.
 - `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 7–9, 13, 19–23, 3285, 3444–3603. Update current branch/resume/date and previous durable commit hash, then record this commit's scope, lifecycle decisions, exact checks/corrections, cleanup, remaining work and complete per-file line ledger. Historical entries remain dated.
+
+
+### RN08-D03 / RN-09f / RN-10 — Physical acceptance continuation
+
+**Proposed commit:** `docs(android): record picker lock-return acceptance`.
+**Hash:** Pending; resolve this documentation follow-up by its commit subject.
+**Owner:** Ishmum. **Date:** 2026-11-10. **Parent:** `082b1b9`.
+**Branch:** `task/react-native/rn-09f-selection-lifecycle`.
+**Status:** Partial physical acceptance recorded. Lock-return passed on this Pixel;
+TalkBack confirmation focus is unverified. All temporary device settings restored.
+No runtime source, dependency, Auth/token/backend/iOS or capability change.
+
+#### Actual observations and limits
+
+Saved a fresh per-run baseline privately instead of overwriting prior evidence.
+Opened Saved apps editor under synthetic owner A with saved count zero, then the
+native chooser. Locked the actual phone and observed lock metadata without viewing
+or capturing its locked screen. After unlock, own-window-guarded hierarchy check
+confirmed no picker checkbox list, zero saved selection and explicit “Picker
+canceled. Your draft is unchanged.” notice. No force stop, process restart or
+reload occurred between lock and this accepted return observation. This closes the
+preceding entry's physical lock-return gap for Pixel 8 Pro/API 36 only.
+
+Configured Display speech output while TalkBack was off, saving its original false
+value, then explicitly verified the enabled TalkBack service. The first focus probe
+stopped on its own-window ownership guard in system Settings; no foreign capture.
+USB disconnected before reattempt; after reconnection verified unlocked own app
+and restored only the task port. Keyboard Tab opened the native chooser; waited
+for its named native window instead of treating the transient busy screen as open.
+Native search focus caption was observed. Up-arrow navigation did not reach the
+confirmation action and is not accepted confirmation evidence. Requested an actual
+owner gesture/announcement report; no accepted confirmation result arrived before
+the turn was interrupted. The proposed final keyboard-driven confirmation was not
+executed. No current-run speaker audibility or post-confirmation focus pass claimed.
+Do not reuse the prior owner's checkbox/audio report as a new confirmation result.
+
+On interruption, stopped verification and restored TalkBack/services/touch
+exploration off and Display speech output false. Independently verified the new
+baseline: font 1.15, timeout 600000, USB keep-awake 0, usage access allow and no
+reverse mappings. Removed own XML files, confirmed task Metro 8094 stopped, and
+force-stopped only the QA app to discard its unsaved in-memory test draft. No data
+clear or account deletion; APKs/application data retained. A/B saved selections
+were empty before this run and no Save occurred. A cleanup helper initially found
+Metro already absent after interruption; made cleanup tolerate that absence and
+completed full baseline verification, without stopping unrelated processes.
+
+#### Validation and next step
+
+Actual ADB/own-window checks, per-run baseline comparison, native picker title,
+service verification and private caption observations only. No runtime code changed;
+portable/component/API/database/build/export suites were not rerun. The successful
+checks recorded in `082b1b9` stay historical, not new executions. `git diff --check`
+and changed-document links/line-ledger bounds verified for this record.
+
+Next: run the documented QA host with an available unlocked phone and observe Use
+these choices dismissal, Choose apps focus/caption and owner-reported audio. Keep
+confirmation pending until observed. Complete other profiles/devices, signed
+release and wider accessibility/state acceptance separately. Auth/tokens stay
+user-deferred; iOS belongs to Anisha. Existing IDs/counts and production-unavailable
+state stay unchanged. Local documentation commit only; no push/CI/merge/deployment.
+
+#### Every changed file and logical change
+
+- `docs/core_plan/04_react_native_integration.md`: lines 47–52. Add measured lock-return checkpoint and link this follow-up; preserve unverified confirmation focus, restored settings, ownership and original counts.
+- `docs/core_plan_implementation_notes/artifacts/rn-09f-device-followup/evidence.json`: lines 1–68. Record accepted lock/unlock state, nonaccepted focus attempts, restored baseline, privacy boundaries and remaining gates; no raw device/app identities or captions.
+- `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 19–20, 3449, 3608–3671. Add latest resume point, record preceding implementation hash and document actual observations, interrupted focus limit, complete restoration, checks not rerun and exact per-file ledger. Own hash remains Pending until the next normal update.

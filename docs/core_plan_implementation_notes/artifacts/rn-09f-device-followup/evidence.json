@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-10",
+  "owner": "Ishmum",
+  "parent": "082b1b9",
+  "plan_refs": [
+    "RN08-D03",
+    "RN-09f",
+    "RN-10"
+  ],
+  "scope": "Physical device acceptance continuation only; no production runtime/Auth/tokens/iOS change.",
+  "device": {
+    "model": "Pixel 8 Pro",
+    "api": 36,
+    "font_scale": 1.15
+  },
+  "physical_lock_return": {
+    "picker_open_before_lock": true,
+    "saved_count_before_lock": 0,
+    "lock_observed": true,
+    "locked_screen_captured": false,
+    "unlock_return_verified": true,
+    "picker_closed_on_return": true,
+    "saved_count_after_return": 0,
+    "cancel_notice_verified": true
+  },
+  "talkback_confirmation_focus": "unverified; interrupted before requested owner gesture/accepted confirmation observation",
+  "cleanup": {
+    "baseline_settings_verified": true,
+    "talkback_off": true,
+    "speech_caption_preference_restored_false": true,
+    "usage_access_preserved": true,
+    "font_scale_preserved": true,
+    "screen_timeout_preserved": true,
+    "usb_keep_awake_restored": true,
+    "reverse_baseline_restored": true,
+    "task_xml_removed": true,
+    "owned_metro_stopped": true,
+    "app_force_stopped_to_discard_unsaved_test_drafts": true,
+    "app_data_and_apks_preserved": true,
+    "saved_synthetic_A_B_empty_before_lock": true,
+    "physical_unlock_return": "passed; actual picker cancellation and unchanged saved count verified after unlock"
+  },
+  "runtime_changes": false,
+  "automated_checks": "Not rerun: no runtime source changes. Existing 082b1b9 checks remain historical.",
+  "privacy": "No app identities/names, raw captions, screenshots, device serials or locked-screen captures committed.",
+  "discarded_attempts": [
+    "Setup initially ran baseline helper from nested working directory; no phone changes occurred before baseline was rerun from repository root.",
+    "First focus attempt stopped when foreground belonged to system Settings; no foreign UI capture.",
+    "USB disconnected before reattempt; waited for reconnection and verified own app/unlocked state.",
+    "Up-arrow navigation focused native search rather than confirmation; not accepted as confirmation evidence."
+  ],
+  "status": "Partial physical acceptance recorded; lock-return passed, confirmation focus remains pending.",
+  "talkback_observations": {
+    "actual_service_enabled_verified": true,
+    "own_native_dialog_title_verified": true,
+    "native_search_focus_caption_observed": true,
+    "accepted_post_confirmation_observation": false,
+    "current_run_spoken_audio_report": false,
+    "proposed_final_keyboard_confirmation_executed": false
+  },
+  "remaining": [
+    "Post-confirmation Choose apps TalkBack focus/caption and owner-reported audible result.",
+    "Other device/profile, complete accessibility/failure matrix and signed release acceptance.",
+    "Auth/tokens, production account/adapter wiring, coordinated deletion and iOS remain deferred as previously recorded."
+  ],
+  "publication": "Local documentation commit only; no push/CI/merge/deployment. Parent implementation is 082b1b9."
+}

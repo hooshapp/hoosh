@@ -44,6 +44,13 @@ observed privately. Confirmation focus stays pending. See [runbook/evidence](../
 and current notes for the physical lock/cleanup checkpoint. No Auth/root/account
 service deletion, production capability, rules or iOS integration is added.
 
+**Physical continuation (2026-11-10):** lock/unlock with picker open now passes on
+Pixel/API 36: picker canceled and saved selection unchanged, without a process
+restart between lock and return. Confirmation focus remains unverified after an
+interrupted check; TalkBack/settings/connections restored. Read the
+[follow-up evidence](../core_plan_implementation_notes/artifacts/rn-09f-device-followup/evidence.json)
+and latest notes. No runtime/Auth/iOS change or parent-count completion.
+
 ## 1. Outcome and deliberate scope
 
 The first outcome is a real authenticated round trip: the mobile app obtains a current session through the auth integration, calls FastAPI `GET /v1/me`, and displays the verified account without leaking an earlier account's data. The second outcome is minimal profile integration, with honest loading, failure, offline, and conflict handling. Neither outcome depends on guessing session allowances, rewards, or Android blocking capabilities.
