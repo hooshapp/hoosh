@@ -1,4 +1,11 @@
+import CoreFoundation
 import Foundation
+
+enum ReflectionPrompts {
+    static let timing = "Is this a good time to scroll, or are you avoiding something?"
+    static let three = "What are three things you could do in the next 10 minutes instead?"
+    static let available = [timing, three]
+}
 
 /// Curated complete sentences. Free-text answers select a topic; they are never
 /// inserted into a sentence or clipped into fragments in an OS shield/banner.
@@ -72,7 +79,7 @@ enum PersonalizedNudgeLibrary {
             "Identity":["Take one small action that reflects the person you want to be."]
         ]
     ]
-    static func messages(answers: [String: String]) -> [String] {
+    static func messages(answers: [String: String], selectedPrompts: [String] = []) -> [String] {
         let text = answers.values.joined(separator: " ").lowercased()
         let matches = topics.filter { topic in topic.keywords.contains { keyword in
             text.range(of: "\\b" + NSRegularExpression.escapedPattern(for: keyword) + "[a-z]*\\b", options: .regularExpression) != nil
@@ -82,7 +89,7 @@ enum PersonalizedNudgeLibrary {
             preferenceMessages[field]?[answers[field] ?? ""] ?? []
         }
         var seen=Set<String>()
-        return (base+preferences).filter { seen.insert($0).inserted }
+        return (ReflectionPrompts.available.filter(selectedPrompts.contains) + base + preferences).filter { seen.insert($0).inserted }
     }
     /// Keep a short history across callbacks so a session does not cycle between two messages.
     static func choose(_ messages: [String], recent: [String]) -> String {
@@ -106,15 +113,51 @@ enum PersonalizedNudgeLibrary {
 }
 
 struct ShieldPresentation: Codable {
+    static let sessionExplanation = "Continue when you’re ready, or step away for now."
     var day: String
     var title: String
     var explanation: String
     var action: String?
     var messages: [String]
+    var dailyLimitReached: Bool? = nil
+
+    static func session(day: String, nextMinutes: Int, completedSessions: Int, messages: [String]) -> Self {
+        if nextMinutes == 0 {
+            return Self(day: day, title: "You’ve reached your daily app limit",
+                        explanation: "Your daily allowance renews tomorrow.",
+                        action: nil, messages: messages, dailyLimitReached: true)
+        }
+        return Self(day: day, title: completedSessions > 0 ? "Your session has ended" : "Pause and choose",
+                    explanation: sessionExplanation,
+                    action: "Continue to app", messages: messages, dailyLimitReached: false)
+    }
+
+    func actionLabel(appName: String?) -> String? {
+        // Cached shields from older installs may still contain an extension button.
+        if dailyLimitReached == true { return nil }
+        guard action != nil, dailyLimitReached == false else { return action }
+        guard let name = appName?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !name.isEmpty else { return "Continue to app" }
+        return "Continue to \(name)"
+    }
+
+    func forFirstDay(_ isFirstDay: Bool) -> Self {
+        guard isFirstDay, dailyLimitReached == true else { return self }
+        var guidance = self
+        guidance.explanation = "Open the Stats tab in Hoosh to customize this app’s daily limit and session length."
+        guidance.action = nil
+        guidance.messages = []
+        return guidance
+    }
 }
 enum ShieldPresentationStore {
     static let group = "group.com.AnishaDasgupta.DisconnectApp"
     static var defaults: UserDefaults { UserDefaults(suiteName: group)! }
+    static func synchronize() {
+        // The host and shield extensions can read this suite from different processes.
+        CFPreferencesAppSynchronize(group as CFString)
+    }
+
     static func key(_ tokenData: Data) -> String { "disconnect.shieldPresentation." + tokenData.base64EncodedString() }
     static func day() -> String {
         let p = Calendar.current.dateComponents([.year,.month,.day], from: Date())
@@ -128,11 +171,17 @@ enum ShieldPresentationStore {
               let value = try? JSONDecoder().decode(ShieldPresentation.self, from: data), value.day == day() else { return nil }
         return value
     }
+    static func selectedPrompts() -> [String] {
+        guard let data = defaults.data(forKey: "onboardingResponses"),
+              let object = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return [] }
+        return object["selectedQuestions"] as? [String] ?? []
+    }
+
     static func answers() -> [String: String] {
         guard let data = defaults.data(forKey: "onboardingResponses"),
               let object = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return [:] }
         return object.reduce(into: [:]) { result, item in
-            if let text = item.value as? String { result[item.key] = text }
+            if item.key != "customQuestion", let text = item.value as? String { result[item.key] = text }
         }
     }
 }

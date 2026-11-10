@@ -14,7 +14,7 @@ struct SupabaseAccountCard: View {
 
     var body: some View {
         VStack(alignment:.leading,spacing:12) {
-            Label(isEntry ? "Your Disconnect account" : "Your account & data",systemImage:"person.crop.circle")
+            Label(isEntry ? "Your Hoosh account" : "Your account & data",systemImage:"person.crop.circle")
                 .font(.system(size:17,weight:.heavy)).foregroundStyle(DisconnectTheme.ink)
             if let account {
                 Label(participant == nil ? "Signed in" : "Study profile saved on this phone",systemImage:"checkmark.circle.fill").font(.subheadline)
@@ -77,7 +77,7 @@ struct SupabaseAccountCard: View {
                     if let count=savedProgress.feedbackEntries { Text("Feedback entries saved: \(count)") }
                 }.font(.caption).foregroundStyle(DisconnectTheme.mutedInk)
             }
-            Text("Session events recorded offline wait on this phone until Disconnect is opened and sync succeeds.")
+            Text("Session events recorded offline wait on this phone until Hoosh is opened and sync succeeds.")
                 .font(.caption).foregroundStyle(DisconnectTheme.mutedInk)
         }
         .padding(20).background(RoundedRectangle(cornerRadius:14).fill(Color.white))

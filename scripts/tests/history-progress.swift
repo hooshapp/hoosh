@@ -28,7 +28,14 @@ import Foundation
   let today=HistoryUsageComparison(days:days+[.init(date:now,seconds:9999),.init(date:now,seconds:.nan),.init(date:now.addingTimeInterval(86400),seconds:9999)],period:.week,now:now,calendar:cal)
   precondition(today.afterSeconds==360 && today.currentSeconds==10359)
   let short=HistoryUsageComparison(days:days,period:.week,now:date("2026-11-04T17:00:00Z"),calendar:cal)
-  precondition(short.comparedDays==2)
+  precondition(short.comparedDays==2 && short.beforeSeconds==nil && short.reductionPercent==nil)
+  let early = date("2026-11-10T14:00:00Z")
+  let earlyWindow = HistoryPeriod.week.window(now:early,calendar:cal)
+  let smallBaseline = HistoryUsageComparison(days:[
+   .init(date:earlyWindow.previousStart,seconds:67),
+   .init(date:earlyWindow.currentStart,seconds:2313)
+  ],period:.week,now:early,calendar:cal)
+  precondition(smallBaseline.currentSeconds==2313 && smallBaseline.beforeSeconds==nil && smallBaseline.reductionPercent==nil)
   precondition(HistoryPeriod.month.window(now:date("2026-03-31T16:00:00Z"),calendar:cal).comparisonDays==28)
   let id=UUID();let event=HistoryTurnOff(id:id,date:now,sessionID:"session")
   precondition(HistoryTurnOff.count([event,event,.init(id:UUID(),date:now,sessionID:"session"),.init(id:UUID(),date:w.previousStart,sessionID:nil)],period:.week,now:now,calendar:cal)==1)

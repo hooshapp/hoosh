@@ -3,7 +3,8 @@ import Foundation
  static func main() throws {
   let now=Date(timeIntervalSince1970:1_800_000_000)
   let item=LocalProductivityNudge(provider:"calendar",title:"Biology review",dueAt:now.addingTimeInterval(3600),refreshedAt:now)
-  precondition(item.messages(now:now).first!.contains("Biology review"))
+  let eventTime = item.dueAt!.formatted(date: .omitted, time: .shortened)
+  precondition(item.messages(now:now).first!.contains("At \(eventTime): “Biology review”"))
   precondition(item.messages(now:now.addingTimeInterval(3601)).isEmpty,"Past events must not keep nudging")
   precondition(item.messages(now:now.addingTimeInterval(-1)).isEmpty)
   let stale=LocalProductivityNudge(provider:"reminders",title:"Task",dueAt:now.addingTimeInterval(3600),refreshedAt:now.addingTimeInterval(-5*3600))
@@ -44,6 +45,12 @@ import Foundation
   let many=LocalProductivityNudge.selectReminders((1...20).map { LocalReminderTask(title:"Task \($0)",dueAt:nil) },now:now)!
   precondition(many.messages(now:now).first!.count<=110 && many.messages(now:now).first!.contains("more"))
   precondition(LocalProductivityNudge.selectReminders([],now:now)==nil)
+  let oldSnapshot = ShieldPresentationStore.defaults.object(forKey: LocalProductivityNudgeStore.key)
+  defer { ShieldPresentationStore.defaults.set(oldSnapshot, forKey: LocalProductivityNudgeStore.key) }
+  LocalProductivityNudgeStore.save([item, grouped])
+  precondition(LocalProductivityNudgeStore.messages(now: now) == item.messages(now: now) + grouped.messages(now: now))
+  ShieldPresentationStore.defaults.set(try JSONEncoder().encode(grouped), forKey: LocalProductivityNudgeStore.key)
+  precondition(LocalProductivityNudgeStore.messages(now: now) == grouped.messages(now: now))
   let roundTrip=try JSONDecoder().decode(LocalProductivityNudge.self,from:JSONEncoder().encode(grouped))
   precondition(roundTrip.messages(now:now)==grouped.messages(now:now))
   print("PASS: local calendar/reminder messages, expiry, stale snapshots, future-clock protection, long-title fallback and bounded sentences")

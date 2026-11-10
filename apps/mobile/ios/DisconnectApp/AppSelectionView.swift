@@ -171,7 +171,7 @@ struct AppSelectionView: View {
         }
 
         guard authorizationService.isApproved else {
-            selectionPrompt = "Screen Time access is required before Disconnect can protect apps."
+            selectionPrompt = "Screen Time access is required before Hoosh can protect apps."
             return
         }
 

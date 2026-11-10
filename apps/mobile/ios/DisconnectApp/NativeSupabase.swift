@@ -9,7 +9,7 @@ enum NativeBackendError: LocalizedError {
         case .signedOut, .staleSession: return "Start or resume your study profile to sync this phone."
         case .enrollmentUnavailable: return "Study enrollment is not enabled on the server yet. Please ask the researcher to enable it."
         case .studyDetailsRequired: return "Add your name and email to complete your study registration."
-        case .setupRequired: return "Finish your questionnaire and session setup before syncing this account."
+        case .setupRequired: return "Finish onboarding before syncing this account."
         case .keychain: return "Your account session could not be saved securely. Please retry."
         case .http(let code):
             if code == 400 || code == 401 { return "Sign-in or session verification failed. Check your account details and retry." }
@@ -34,15 +34,34 @@ struct NativeSupabaseConfiguration {
 }
 private enum NativeSessionKeychain {
     static let service = "com.AnishaDasgupta.DisconnectApp.supabase"
+    // This marker lives in the host app container and disappears on Delete App.
+    private static let installationID: UUID = {
+        let key = "disconnect.auth.installationID"
+        let defaults = UserDefaults.standard
+        if let existing = defaults.string(forKey: key).flatMap(UUID.init(uuidString:)) { return existing }
+        let id = UUID()
+        defaults.set(id.uuidString, forKey: key)
+        return id
+    }()
+
     static var query: [String:Any] { [kSecClass as String:kSecClassGenericPassword, kSecAttrService as String:service, kSecAttrAccount as String:"session"] }
     static func load() -> NativeSupabaseSession? {
         var value: CFTypeRef?
         var request = query; request[kSecReturnData as String] = true; request[kSecMatchLimit as String] = kSecMatchLimitOne
         guard SecItemCopyMatching(request as CFDictionary, &value) == errSecSuccess, let data = value as? Data else { return nil }
-        return try? JSONDecoder().decode(NativeSupabaseSession.self, from: data)
+        guard let session = try? JSONDecoder().decode(NativeSupabaseSession.self, from: data),
+              session.canRestore(on: installationID, legacyOwner: ShieldPresentationStore.defaults.string(forKey: AccountWorkspace.ownerKey)) else {
+            clear()
+            return nil
+        }
+        // Upgrade older sessions only when the original local workspace still exists.
+        if session.installationID == nil { try? save(session) }
+        return session
     }
     static func save(_ session: NativeSupabaseSession) throws {
-        let data = try JSONEncoder().encode(session)
+        var stored = session
+        stored.installationID = installationID
+        let data = try JSONEncoder().encode(stored)
         let status = SecItemUpdate(query as CFDictionary, [kSecValueData as String:data] as CFDictionary)
         if status == errSecSuccess { return }
         guard status == errSecItemNotFound else { throw NativeBackendError.keychain }

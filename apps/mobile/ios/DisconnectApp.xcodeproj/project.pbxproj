@@ -131,22 +131,6 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-        EE0000010000000000000001 /* SharedHistory */ = {
-            isa = PBXFileSystemSynchronizedRootGroup;
-            path = SharedHistory;
-            sourceTree = "<group>";
-        };
-
-        DD0000010000000000000001 /* SharedPresentation */ = {
-            isa = PBXFileSystemSynchronizedRootGroup;
-            path = SharedPresentation;
-            sourceTree = "<group>";
-        };
-		CC0000010000000000000001 /* SharedProtection */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = SharedProtection;
-			sourceTree = "<group>";
-		};
 		0C08602F2FBFA948001B9C60 /* DisconnectApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = DisconnectApp;
@@ -192,6 +176,21 @@
 				BB0000030000000000000003 /* Exceptions for "DisconnectDeviceActivityMonitorExtension" folder in "DisconnectDeviceActivityMonitorExtension" target */,
 			);
 			path = DisconnectDeviceActivityMonitorExtension;
+			sourceTree = "<group>";
+		};
+		CC0000010000000000000001 /* SharedProtection */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SharedProtection;
+			sourceTree = "<group>";
+		};
+		DD0000010000000000000001 /* SharedPresentation */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SharedPresentation;
+			sourceTree = "<group>";
+		};
+		EE0000010000000000000001 /* SharedHistory */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SharedHistory;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -256,9 +255,9 @@
 		0C0860242FBFA948001B9C60 = {
 			isa = PBXGroup;
 			children = (
-                EE0000010000000000000001 /* SharedHistory */,
+				EE0000010000000000000001 /* SharedHistory */,
 				CC0000010000000000000001 /* SharedProtection */,
-                DD0000010000000000000001 /* SharedPresentation */,
+				DD0000010000000000000001 /* SharedPresentation */,
 				0C08602F2FBFA948001B9C60 /* DisconnectApp */,
 				AA0000010000000000000001 /* DisconnectShieldConfigurationExtension */,
 				AA0000020000000000000002 /* DisconnectShieldActionExtension */,
@@ -306,10 +305,10 @@
 				BB0000090000000000000009 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-                EE0000010000000000000001 /* SharedHistory */,
-				CC0000010000000000000001 /* SharedProtection */,
-                DD0000010000000000000001 /* SharedPresentation */,
 				0C08602F2FBFA948001B9C60 /* DisconnectApp */,
+				CC0000010000000000000001 /* SharedProtection */,
+				DD0000010000000000000001 /* SharedPresentation */,
+				EE0000010000000000000001 /* SharedHistory */,
 			);
 			name = DisconnectApp;
 			packageProductDependencies = (
@@ -381,8 +380,8 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-                EE0000010000000000000001 /* SharedHistory */,
 				0C85A3FD2FE0DE450097BC0D /* Disconnect */,
+				EE0000010000000000000001 /* SharedHistory */,
 			);
 			name = Disconnect;
 			packageProductDependencies = (
@@ -404,8 +403,8 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-                DD0000010000000000000001 /* SharedPresentation */,
 				AA0000010000000000000001 /* DisconnectShieldConfigurationExtension */,
+				DD0000010000000000000001 /* SharedPresentation */,
 			);
 			name = DisconnectShieldConfigurationExtension;
 			packageProductDependencies = (
@@ -427,9 +426,9 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				CC0000010000000000000001 /* SharedProtection */,
-                DD0000010000000000000001 /* SharedPresentation */,
 				AA0000020000000000000002 /* DisconnectShieldActionExtension */,
+				CC0000010000000000000001 /* SharedProtection */,
+				DD0000010000000000000001 /* SharedPresentation */,
 			);
 			name = DisconnectShieldActionExtension;
 			packageProductDependencies = (
@@ -451,9 +450,9 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				CC0000010000000000000001 /* SharedProtection */,
-                DD0000010000000000000001 /* SharedPresentation */,
 				BB0000010000000000000001 /* DisconnectDeviceActivityMonitorExtension */,
+				CC0000010000000000000001 /* SharedProtection */,
+				DD0000010000000000000001 /* SharedPresentation */,
 			);
 			name = DisconnectDeviceActivityMonitorExtension;
 			packageProductDependencies = (
@@ -798,10 +797,11 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_AI_NUDGE_ENDPOINT = "https://us-central1-disconnectapp-72a72.cloudfunctions.net/generateNudgePack";
-				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Disconnect uses your calendar to make nudges reflect what you planned to do next.";
-				INFOPLIST_KEY_NSCalendarsUsageDescription = "Disconnect uses your calendar to make nudges reflect what you planned to do next.";
-				INFOPLIST_KEY_NSRemindersFullAccessUsageDescription = "Disconnect uses reminders to point nudges back to your next task.";
-				INFOPLIST_KEY_NSRemindersUsageDescription = "Disconnect uses reminders to point nudges back to your next task.";
+				INFOPLIST_KEY_CFBundleDisplayName = Hoosh;
+				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Hoosh uses your calendar to make nudges reflect what you planned to do next.";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "Hoosh uses your calendar to make nudges reflect what you planned to do next.";
+				INFOPLIST_KEY_NSRemindersFullAccessUsageDescription = "Hoosh uses reminders to point nudges back to your next task.";
+				INFOPLIST_KEY_NSRemindersUsageDescription = "Hoosh uses reminders to point nudges back to your next task.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -835,10 +835,11 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_AI_NUDGE_ENDPOINT = "https://us-central1-disconnectapp-72a72.cloudfunctions.net/generateNudgePack";
-				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Disconnect uses your calendar to make nudges reflect what you planned to do next.";
-				INFOPLIST_KEY_NSCalendarsUsageDescription = "Disconnect uses your calendar to make nudges reflect what you planned to do next.";
-				INFOPLIST_KEY_NSRemindersFullAccessUsageDescription = "Disconnect uses reminders to point nudges back to your next task.";
-				INFOPLIST_KEY_NSRemindersUsageDescription = "Disconnect uses reminders to point nudges back to your next task.";
+				INFOPLIST_KEY_CFBundleDisplayName = Hoosh;
+				INFOPLIST_KEY_NSCalendarsFullAccessUsageDescription = "Hoosh uses your calendar to make nudges reflect what you planned to do next.";
+				INFOPLIST_KEY_NSCalendarsUsageDescription = "Hoosh uses your calendar to make nudges reflect what you planned to do next.";
+				INFOPLIST_KEY_NSRemindersFullAccessUsageDescription = "Hoosh uses reminders to point nudges back to your next task.";
+				INFOPLIST_KEY_NSRemindersUsageDescription = "Hoosh uses reminders to point nudges back to your next task.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -941,7 +942,7 @@
 				DEVELOPMENT_TEAM = KBW8M9TJN2;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Disconnect/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Disconnect;
+				INFOPLIST_KEY_CFBundleDisplayName = Hoosh;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 16;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -969,7 +970,7 @@
 				DEVELOPMENT_TEAM = KBW8M9TJN2;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Disconnect/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = Disconnect;
+				INFOPLIST_KEY_CFBundleDisplayName = Hoosh;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 16;
 				LD_RUNPATH_SEARCH_PATHS = (

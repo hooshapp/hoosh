@@ -24,6 +24,16 @@ import Foundation
         let old: [String:Any] = ["accessToken":"synthetic-access","refreshToken":"synthetic-refresh","userID":id,"email":"a@example.com","expiresAt":0]
         let migrated = try JSONDecoder().decode(NativeSupabaseSession.self,from:JSONSerialization.data(withJSONObject:old))
         precondition(migrated.isStudyParticipant == nil && migrated.email == "a@example.com", "Existing saved password accounts remain readable")
-        print("PASS: name/email enrollment validation, anonymous session decoding, no verified-email assumption, secure-session persistence model and old-session compatibility")
+        let installation = UUID()
+        let replacement = UUID()
+        precondition(migrated.canRestore(on: installation, legacyOwner: migrated.userID.uuidString))
+        precondition(!migrated.canRestore(on: installation, legacyOwner: nil), "A legacy credential alone cannot restore after reinstall")
+        precondition(!migrated.canRestore(on: installation, legacyOwner: UUID().uuidString))
+        var bound = saved
+        bound.installationID = installation
+        let persisted = try JSONDecoder().decode(NativeSupabaseSession.self, from: JSONEncoder().encode(bound))
+        precondition(persisted.canRestore(on: installation, legacyOwner: nil))
+        precondition(!persisted.canRestore(on: replacement, legacyOwner: persisted.userID.uuidString), "A replaced install cannot restore even if shared state survives")
+        print("PASS: enrollment validation, session decoding, upgrade migration, and reinstall isolation")
     }
 }

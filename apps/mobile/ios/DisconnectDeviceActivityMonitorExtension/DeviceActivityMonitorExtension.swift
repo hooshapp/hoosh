@@ -58,7 +58,7 @@ final class DeviceActivityMonitorExtension: DeviceActivityMonitor {
         }
         if activity.rawValue.hasPrefix(PerAppProtection.allowanceActivityPrefix) {
             do { try PerAppProtection.handleSessionEvent(event, activity: activity) }
-            catch { PerAppProtection.defaults.set("Could not update your app session. Reopen Disconnect to retry.", forKey: PerAppProtection.errorKey) }
+            catch { PerAppProtection.defaults.set("Could not update your app session. Reopen Hoosh to retry.", forKey: PerAppProtection.errorKey) }
             return
         }
         if PerAppProtection.enabled { return }

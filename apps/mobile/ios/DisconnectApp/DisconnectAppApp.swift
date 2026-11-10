@@ -13,7 +13,6 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
                    didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
     UNUserNotificationCenter.current().delegate = self
     BreakReminderScheduler.registerNotificationActions()
-    ShieldStoreController().refreshShieldStateAfterInstallOrRun()
 
     return true
   }
@@ -30,7 +29,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         try PerAppProtection.endAllowance(for: id)
         NativeResearchQueue.enqueue("nudge_end_session",properties:["local_rule_id":id,"session_id":activity])
       }
-      catch { PerAppProtection.defaults.set("Could not end the session. Please retry in Disconnect.", forKey: PerAppProtection.errorKey) }
+      catch { PerAppProtection.defaults.set("Could not end the session. Please retry in Hoosh.", forKey: PerAppProtection.errorKey) }
     }
     if response.notification.request.content.categoryIdentifier == BreakReminderScheduler.reminderCategoryIdentifier,
        response.actionIdentifier == UNNotificationDefaultActionIdentifier || response.actionIdentifier == BreakReminderScheduler.doneScrollingActionIdentifier {
@@ -38,9 +37,9 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     }
 
     if response.notification.request.content.categoryIdentifier == DayTwoSettingsTipStore.category,
-       [UNNotificationDefaultActionIdentifier,DayTwoSettingsTipStore.openAction].contains(response.actionIdentifier) {
-      ShieldPresentationStore.defaults.set(true,forKey:DayTwoSettingsTipStore.pendingRoute)
-      NativeResearchQueue.enqueue("settings_tip_opened")
+       [UNNotificationDefaultActionIdentifier,DayTwoSettingsTipStore.openAction].contains(response.actionIdentifier),
+       let owner = response.notification.request.content.userInfo["participantID"] as? String {
+      ShieldPresentationStore.defaults.set(owner, forKey: DayTwoSettingsTipStore.pendingRoute)
       DispatchQueue.main.async { NotificationCenter.default.post(name:DayTwoSettingsTipStore.routeNotification,object:nil) }
     }
     completionHandler()

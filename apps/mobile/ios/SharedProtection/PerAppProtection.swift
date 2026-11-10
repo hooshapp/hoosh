@@ -21,13 +21,13 @@ enum PerAppProtection {
     static let registeredKey = "disconnect.dailyRegisteredAt"
     static let callbackKey = "disconnect.dailyLastCallbackAt"
     static let reachedPrefix = "disconnect.appReachedDay."
+    private static let dailyUsageFloorPrefix = "disconnect.dailyUsageFloor."
     static let allowancePrefix = "disconnect.appAllowance."
     static let allowanceActivityPrefix = "disconnectAppAllowance."
     static var defaults: UserDefaults { UserDefaults(suiteName: group)! }
     static var enabled: Bool { defaults.bool(forKey: enabledKey) }
     static let namedStoreMigrationKey = "disconnect.namedSessionStore.v1"
     static let sessionModeKey = "disconnect.intentionalSessions.v1"
-    static let extraUsedDayPrefix = "disconnect.extraUsedDay."
     static let ledgerPrefix = "disconnect.sessionLedger."
     static let nudgeCategory = "disconnect.sessionNudge"
     static let endSessionAction = "disconnect.endSession"
@@ -72,62 +72,87 @@ enum PerAppProtection {
     static func saveLedger(_ value: AppSessionLedger, for id: String) throws {
         defaults.set(try JSONEncoder().encode(value), forKey: ledgerPrefix + id)
     }
-    static func reached(_ rule: DailyAppRule) -> Bool {
-        defaults.string(forKey: reachedPrefix + rule.id) == day || ledger(for: rule.id).usedMinutes >= rule.minutes
+    private static func dailyUsageFloor(for rule: DailyAppRule) -> Int {
+        let observed = defaults.dictionary(forKey: dailyUsageFloorPrefix + rule.id)?[day] as? Int ?? 0
+        let legacy = defaults.string(forKey: reachedPrefix + rule.id) == day ? rule.minutes : 0
+        return max(observed, legacy)
     }
-    static func nextSessionMinutes(_ rule: DailyAppRule) -> Int {
-        AppSessionPolicy.nextMinutes(rule: rule, used: ledger(for: rule.id).usedMinutes, reached: reached(rule))
+    private static func usedMinutes(for rule: DailyAppRule) -> Int {
+        max(dailyUsageFloor(for: rule), ledger(for: rule.id).usedMinutes)
     }
-    static func canExtend(_ rule: DailyAppRule) -> Bool {
-        nextSessionMinutes(rule) == 0 && defaults.string(forKey: extraUsedDayPrefix + rule.id) != day
+    static func preserveLegacyDailyUsage(for rule: DailyAppRule) {
+        guard defaults.string(forKey: reachedPrefix + rule.id) == day else { return }
+        defaults.set([day: dailyUsageFloor(for: rule)], forKey: dailyUsageFloorPrefix + rule.id)
+        defaults.removeObject(forKey: reachedPrefix + rule.id)
     }
-    static func reconcileShields() throws {
+    private static func reached(_ rule: DailyAppRule) -> Bool {
+        usedMinutes(for: rule) >= rule.minutes
+    }
+    private static func nextSessionMinutes(_ rule: DailyAppRule) -> Int {
+        let used = usedMinutes(for: rule)
+        return AppSessionPolicy.nextMinutes(rule: rule, used: used, reached: used >= rule.minutes)
+    }
+    private static func presentation(for rule: DailyAppRule, messages: [String] = []) -> ShieldPresentation {
+        ShieldPresentation.session(
+            day: day, nextMinutes: nextSessionMinutes(rule),
+            completedSessions: ledger(for: rule.id).completedSessions,
+            messages: messages
+        )
+    }
+    static func reconcileShields(refreshingRuleID: String? = nil) throws {
         let selected = try rules(for: selection())
         let today = day, now = Date()
+        let previousDay = defaults.string(forKey: reconciledDayKey)
+        let dayChanged = previousDay.map { $0 != today } ?? false
+        var expiredActivities: [DeviceActivityName] = []
+        defer {
+            if !expiredActivities.isEmpty { DeviceActivityCenter().stopMonitoring(expiredActivities) }
+        }
         for rule in try catalog().rules {
             if let reached = defaults.string(forKey: reachedPrefix + rule.id), reached != today {
                 defaults.removeObject(forKey: reachedPrefix + rule.id)
             }
-            if let current = allowance(for: rule.id), current.day != today || current.expiresAt <= now || current.minutes == nil {
+            if let current = allowance(for: rule.id),
+               AppSessionPolicy.blocks(allowance: current, reached: reached(rule), day: today, now: now) {
                 if let data = defaults.data(forKey:ledgerPrefix + rule.id),
-                   let previous = try? JSONDecoder().decode(AppSessionLedger.self,from:data), previous.activity == current.activity {
+                   var previous = try? JSONDecoder().decode(AppSessionLedger.self,from:data), previous.activity == current.activity {
                     recordUsage(ruleID:rule.id,allowance:current,state:previous,event:"session_expired")
+                    previous.finish(activity: current.activity)
+                    try saveLedger(previous, for: rule.id)
                 }
-                // Old bypasses are not intentional sessions. Never migrate them as access grants.
                 defaults.removeObject(forKey: allowancePrefix + rule.id)
-                DeviceActivityCenter().stopMonitoring([DeviceActivityName(current.activity)])
+                cancelNudges(for: rule.id)
+                expiredActivities.append(DeviceActivityName(current.activity))
             }
         }
-        defaults.set(today, forKey: reconciledDayKey)
         let blocked = enabled ? selected.filter { rule in
             AppSessionPolicy.blocks(allowance: allowance(for: rule.id), reached: reached(rule), day: today, now: now)
         } : []
         let tokens = try Set(blocked.map { try token(for: $0) })
         // The same named store is shared by host and extensions. Save presentation
         // before the shield is visible, so rendering never has to query a monitor.
-        let messages = PersonalizedNudgeLibrary.messages(answers: ShieldPresentationStore.answers())
+        let messages = PersonalizedNudgeLibrary.messages(answers: ShieldPresentationStore.answers(), selectedPrompts: ShieldPresentationStore.selectedPrompts())
         for rule in selected {
-            let next = nextSessionMinutes(rule)
-            let exhausted = next == 0
-            let extra = exhausted && canExtend(rule)
-            let ended = ledger(for: rule.id).completedSessions > 0
-            try ShieldPresentationStore.save(ShieldPresentation(day: today,
-                title: exhausted ? "Today's allowance is used" : (ended ? "Your session has ended" : "Pause and choose"),
-                explanation: exhausted ? (extra ? "One optional 10-minute extension is available today." : "Your daily allowance renews tomorrow.") : "Choose a \(next)-minute session, or step away for now.",
-                action: exhausted ? (extra ? "Add 10 extra minutes" : nil) : "Start a \(next)-minute session",
-                messages: messages), tokenData: rule.tokenData)
+            try ShieldPresentationStore.save(presentation(for: rule, messages: messages), tokenData: rule.tokenData)
         }
         let store = settings
-        store.shield.applications = tokens.isEmpty ? nil : tokens
-        store.shield.applicationCategories = nil
-        store.shield.webDomains = nil
-        store.shield.webDomainCategories = nil
+        let current = store.shield.applications ?? []
+        let refresh = try Set(blocked.filter { dayChanged || $0.id == refreshingRuleID }.map { try token(for: $0) })
+        if !tokens.isSubset(of: current) || !refresh.isEmpty { ShieldPresentationStore.synchronize() }
+        // A Settings edit or a new day can change the copy while the app stays shielded.
+        let remaining = current.subtracting(refresh)
+        if remaining != current { store.shield.applications = remaining.isEmpty ? nil : remaining }
+        if tokens != remaining { store.shield.applications = tokens.isEmpty ? nil : tokens }
+        if store.shield.applicationCategories != nil { store.shield.applicationCategories = nil }
+        if store.shield.webDomains != nil { store.shield.webDomains = nil }
+        if store.shield.webDomainCategories != nil { store.shield.webDomainCategories = nil }
         // Retire this process's unnamed legacy shield after the shared store is set.
         let legacy = ManagedSettingsStore()
-        legacy.shield.applications = nil
-        legacy.shield.applicationCategories = nil
-        legacy.shield.webDomains = nil
-        legacy.shield.webDomainCategories = nil
+        if legacy.shield.applications != nil { legacy.shield.applications = nil }
+        if legacy.shield.applicationCategories != nil { legacy.shield.applicationCategories = nil }
+        if legacy.shield.webDomains != nil { legacy.shield.webDomains = nil }
+        if legacy.shield.webDomainCategories != nil { legacy.shield.webDomainCategories = nil }
+        defaults.set(today, forKey: reconciledDayKey)
         defaults.set(Date(), forKey: "disconnect.lastReconciledAt")
         defaults.set(blocked.count, forKey: "disconnect.desiredShieldCount")
         defaults.set(store.shield.applications?.count ?? 0, forKey: "disconnect.configuredShieldCount")
@@ -135,16 +160,15 @@ enum PerAppProtection {
     static func handleDailyEvent(_ event: DeviceActivityEvent.Name) throws {
         defaults.set(Date(), forKey: "disconnect.lastDailyEventReceivedAt")
         guard enabled,
-              let rule = try rules(for: selection()).first(where: { $0.eventName == event.rawValue }),
-              let installed = DeviceActivityCenter().events(for: activity)[event],
-              installed.applications == [try token(for: rule)], installed.threshold.minute == rule.minutes else { return }
-        NativeResearchQueue.enqueue("daily_allowance_reached", properties:["local_rule_id":rule.id,"daily_minutes":String(rule.minutes)])
-        defaults.set(day, forKey: reachedPrefix + rule.id)
+              let rule = try rules(for: selection()).first(where: { $0.eventName == event.rawValue }) else { return }
+        // The event name already identifies the selected app and rule revision.
+        // Keep daily evidence separate from the session ledger written by minute callbacks.
+        if dailyUsageFloor(for: rule) < rule.minutes {
+            defaults.set([day: rule.minutes], forKey: dailyUsageFloorPrefix + rule.id)
+            NativeResearchQueue.enqueue("daily_allowance_reached", properties:["local_rule_id":rule.id,"daily_minutes":String(rule.minutes)])
+        }
         defaults.set(Date(), forKey: callbackKey)
-        var state = ledger(for: rule.id)
-        state.usedMinutes = max(state.usedMinutes, rule.minutes)
-        try saveLedger(state, for: rule.id)
-        if allowance(for: rule.id)?.isExtra == false { try endAllowance(for: rule.id) }
+        if let current = allowance(for: rule.id) { try endAllowance(for: rule.id, expectedActivity: current.activity) }
         else { try reconcileShields() }
     }
     static func cancelNudges(for id: String) {
@@ -152,37 +176,55 @@ enum PerAppProtection {
         UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: identifiers)
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: identifiers)
     }
-    static func endAllowance(for id: String) throws {
+    static func endAllowance(for id: String, expectedActivity: String? = nil) throws {
         let current = allowance(for: id)
+        if let expectedActivity, current?.activity != expectedActivity { return }
         defaults.removeObject(forKey: allowancePrefix + id)
+        defer {
+            cancelNudges(for: id)
+            if let current { DeviceActivityCenter().stopMonitoring([DeviceActivityName(current.activity)]) }
+        }
         if let current {
             var state = ledger(for: id)
             state.finish(activity: current.activity)
             recordUsage(ruleID:id,allowance:current,state:state,event:"session_ended")
             try saveLedger(state, for: id)
-            DeviceActivityCenter().stopMonitoring([DeviceActivityName(current.activity)])
         }
-        cancelNudges(for: id)
         try reconcileShields()
     }
     static func endAllAllowances() throws {
         for rule in try catalog().rules { try endAllowance(for: rule.id) }
     }
-    static func startSession(for rule: DailyAppRule) throws {
-        guard enabled, allowance(for: rule.id) == nil else {
-            // Repeated taps must not restart or duplicate the same session.
-            try reconcileShields()
-            return
-        }
-        let normalMinutes = nextSessionMinutes(rule)
-        let extra = normalMinutes == 0
-        guard !extra || canExtend(rule) else { throw CocoaError(.featureUnsupported) }
-        try startAllowance(for: rule, minutes: extra ? AppSessionPolicy.extraMinutes : normalMinutes, extra: extra)
+    enum SessionStart {
+        case started, alreadyRunning, blocked
     }
-    private static func startAllowance(for rule: DailyAppRule, minutes: Int, extra: Bool) throws {
+
+    static func startSession(for rule: DailyAppRule) throws -> SessionStart {
+        guard enabled else { return .blocked }
+        if let current = allowance(for: rule.id) {
+            let finished = current.minutes.map { ledger(for: rule.id).progress >= $0 } ?? true
+            if finished || AppSessionPolicy.blocks(allowance: current, reached: reached(rule), day: day, now: Date()) {
+                try endAllowance(for: rule.id, expectedActivity: current.activity)
+            } else {
+                // A repeated tap should restore access for the session already running.
+                try reconcileShields()
+                return .alreadyRunning
+            }
+        }
+        // Screen Time can retain the old shield after an edit. Only the current
+        // saved rule and daily allowance decide whether this tap grants access.
+        let minutes = nextSessionMinutes(rule)
+        guard minutes > 0 else {
+            try reconcileShields()
+            return .blocked
+        }
+        try startAllowance(for: rule, minutes: minutes)
+        return .started
+    }
+    private static func startAllowance(for rule: DailyAppRule, minutes: Int) throws {
         guard minutes > 0, minutes <= 240 else { throw CocoaError(.validationMissingMandatoryProperty) }
         let center = DeviceActivityCenter(), now = Date(), calendar = Calendar.current
-        let end = now.addingTimeInterval(24 * 60 * 60)
+        let window = DailyLimitPolicy.sessionWindow(at: now, calendar: calendar)
         let name = DeviceActivityName(allowanceActivityPrefix + rule.id + "." + UUID().uuidString)
         let app = try token(for: rule)
         guard #available(iOS 17.4, *) else { throw CocoaError(.featureUnsupported) }
@@ -193,41 +235,48 @@ enum PerAppProtection {
             events[DeviceActivityEvent.Name("sessionMinute.\(minute)")] = DeviceActivityEvent(
                 applications: [app], threshold: DateComponents(minute: minute), includesPastActivity: false)
         }
-        let current = DailyAppAllowance(activity: name.rawValue, day: day, expiresAt: end, minutes: minutes, isExtra: extra)
+        let current = DailyAppAllowance(activity: name.rawValue, day: DailyLimitPolicy.day(at: now, calendar: calendar), expiresAt: window.end, minutes: minutes, isExtra: false)
         let previousState = ledger(for: rule.id)
         var state = previousState
-        state.begin(activity: name.rawValue, extra: extra)
+        state.usedMinutes = max(state.usedMinutes, dailyUsageFloor(for: rule))
+        state.begin(activity: name.rawValue, extra: false)
         defaults.set(try JSONEncoder().encode(current), forKey: allowancePrefix + rule.id)
         try saveLedger(state, for: rule.id)
-        // Keep the one-time extension grant independent of progress updates from
-        // the daily monitor so a late callback cannot restore an extension.
-        if extra { defaults.set(day, forKey: extraUsedDayPrefix + rule.id) }
         do {
             try center.startMonitoring(name, during: DeviceActivitySchedule(
-                intervalStart: calendar.dateComponents([.year,.month,.day,.hour,.minute,.second], from: now.addingTimeInterval(-60)),
-                intervalEnd: calendar.dateComponents([.year,.month,.day,.hour,.minute,.second], from: end), repeats: false), events: events)
+                intervalStart: calendar.dateComponents([.year,.month,.day,.hour,.minute,.second], from: window.start),
+                intervalEnd: calendar.dateComponents([.year,.month,.day,.hour,.minute,.second], from: window.end), repeats: false), events: events)
         } catch {
             defaults.removeObject(forKey: allowancePrefix + rule.id)
             try saveLedger(previousState, for: rule.id)
-            if extra { defaults.removeObject(forKey: extraUsedDayPrefix + rule.id) }
             throw error
         }
-        NativeResearchQueue.enqueue("session_started",properties:["local_rule_id":rule.id,"session_id":name.rawValue,"session_day":day,"duration_minutes":String(minutes),"extra":String(extra)])
+        if defaults.string(forKey: NativeResearchQueue.userKey) != nil {
+            DayTwoSettingsTipStore.recordUse(now: now)
+        }
+        NativeResearchQueue.enqueue("session_started",properties:["local_rule_id":rule.id,"session_id":name.rawValue,"session_day":day,"duration_minutes":String(minutes),"extra":"false"])
         try reconcileShields()
     }
     static func handleSessionEvent(_ event: DeviceActivityEvent.Name, activity name: DeviceActivityName) throws {
         guard enabled, event.rawValue.hasPrefix("sessionMinute."),
               let minute = Int(event.rawValue.dropFirst("sessionMinute.".count)),
               let rule = try rules(for: selection()).first(where: { allowance(for: $0.id)?.activity == name.rawValue }),
-              let current = allowance(for: rule.id), current.day == day,
-              let duration = current.minutes, let extra = current.isExtra else { return }
+              let current = allowance(for: rule.id),
+              let duration = current.minutes else { return }
+        guard current.day == day, current.expiresAt > Date(), current.isExtra == false else {
+            try reconcileShields()
+            return
+        }
         var state = ledger(for: rule.id)
-        guard state.record(activity: name.rawValue, minute: minute, duration: duration, extra: extra) else { return }
+        guard state.record(activity: name.rawValue, minute: minute, duration: duration, extra: false) else { return }
         let notify = AppSessionPolicy.nudgeMinutes(duration: duration).contains(minute) && minute > state.lastNotifiedMinute
         if notify { state.lastNotifiedMinute = minute }
         try saveLedger(state, for: rule.id)
         defaults.set(Date(), forKey: "disconnect.lastSessionUsageAt")
-        if minute >= duration { try endAllowance(for: rule.id) }
+        if AppSessionPolicy.finishesSession(progress: minute, duration: duration,
+                                            used: usedMinutes(for: rule), dailyLimit: rule.minutes) {
+            try endAllowance(for: rule.id, expectedActivity: name.rawValue)
+        }
         else if notify {
             recordUsage(ruleID:rule.id,allowance:current,state:state,event:"session_checkpoint")
             postNudge(rule: rule, activity: name.rawValue, minute: minute, duration: duration)
@@ -236,8 +285,9 @@ enum PerAppProtection {
     static func finishAllowance(activity name: DeviceActivityName) throws {
         guard enabled,
               let rule = try catalog().rules.first(where: { allowance(for: $0.id)?.activity == name.rawValue }) else { return }
-        // The 24h safety boundary is not evidence of a completed usage duration.
-        try endAllowance(for: rule.id)
+        // At midnight, preserve yesterday’s recorded usage before removing the old grant.
+        if allowance(for: rule.id)?.day != day { try reconcileShields() }
+        else { try endAllowance(for: rule.id, expectedActivity: name.rawValue) }
     }
     static func recordUsage(ruleID: String, allowance: DailyAppAllowance, state: AppSessionLedger, event: String) {
         NativeResearchQueue.enqueue(event,properties:["local_rule_id":ruleID,"session_id":allowance.activity,
@@ -257,17 +307,18 @@ enum PerAppProtection {
         guard minute > 0, minute < duration else { return }
         let key = "disconnect.recentSessionNudges.v1"
         let recent = defaults.stringArray(forKey:key) ?? []
-        let tip=DayTwoSettingsTipStore.take(session:activity)
-        var source="settings_tip"
+        let owner = defaults.string(forKey: NativeResearchQueue.userKey)
+        let invite = owner != nil && DayTwoSettingsTipStore.take(session: activity)
+        var source = "personalization_invitation"
         content.categoryIdentifier = nudgeCategory
-        if let tip {
-            content.title="Make Disconnect yours"
-            content.body=tip
+        if invite {
+            content.title = "Make Hoosh yours"
+            content.body = DayTwoSettingsTipStore.message
             content.categoryIdentifier=DayTwoSettingsTipStore.category
-            NativeResearchQueue.enqueue("settings_tip_requested",properties:["local_rule_id":rule.id,"session_id":activity])
+            NativeResearchQueue.enqueue("personalization_invitation_requested",properties:["local_rule_id":rule.id,"session_id":activity])
         } else {
             let choice=BalancedNudgeSelection.savedChoice(
-                questionnaire:PersonalizedNudgeLibrary.messages(answers:ShieldPresentationStore.answers()),
+                questionnaire:PersonalizedNudgeLibrary.messages(answers: ShieldPresentationStore.answers(), selectedPrompts: ShieldPresentationStore.selectedPrompts()),
                 context:LocalProductivityNudgeStore.messages(),recent:recent,channel:"notification")
             source=choice.source
             defaults.set(Array((recent+[choice.message]).suffix(32)),forKey:key)
@@ -275,9 +326,10 @@ enum PerAppProtection {
         }
         NativeResearchQueue.enqueue("nudge_requested",properties:["local_rule_id":rule.id,"session_id":activity,"minute":String(minute),"nudge_source":source])
         content.userInfo = ["ruleID": rule.id, "sessionActivity": activity]
+        if invite, let owner { content.userInfo["participantID"] = owner }
         content.sound = .default
         UNUserNotificationCenter.current().add(UNNotificationRequest(
-            identifier: "disconnect.session.\(rule.id).\(minute)", content: content, trigger: nil)) { error in
+            identifier: invite ? DayTwoSettingsTipStore.notificationID : "disconnect.session.\(rule.id).\(minute)", content: content, trigger: nil)) { error in
                 NativeResearchQueue.enqueue(error == nil ? "nudge_request_accepted" : "nudge_request_failed",
                     properties:["local_rule_id":rule.id,"session_id":activity,"minute":String(minute)])
             }

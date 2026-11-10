@@ -11,6 +11,7 @@ final class ShieldActionExtension: ShieldActionDelegate {
     private let logger = Logger(subsystem: "com.AnishaDasgupta.DisconnectApp", category: "ShieldAction")
 
     override func handle(action: ShieldAction, for application: ApplicationToken, completionHandler: @escaping (ShieldActionResponse) -> Void) {
+        ShieldPresentationStore.synchronize()
         if PerAppProtection.enabled {
             handlePerApp(action: action, application: application, completionHandler: completionHandler)
         } else { handle(action: action, completionHandler: completionHandler) }
@@ -26,7 +27,10 @@ final class ShieldActionExtension: ShieldActionDelegate {
 
     private func handlePerApp(action: ShieldAction, application: ApplicationToken, completionHandler: @escaping (ShieldActionResponse) -> Void) {
         do {
-            guard let rule = try PerAppProtection.record(for: application) else { completionHandler(.close); return }
+            guard let rule = try PerAppProtection.record(for: application) else {
+                completionHandler(action == .primaryButtonPressed ? .close : .defer)
+                return
+            }
             switch action {
             case .primaryButtonPressed:
                 NativeResearchQueue.enqueue("shield_quit_chosen",properties:["local_rule_id":rule.id])
@@ -34,20 +38,41 @@ final class ShieldActionExtension: ShieldActionDelegate {
                 SharedInterventionHistory.recordStayedFocused()
                 completionHandler(.close)
             case .secondaryButtonPressed:
-                try PerAppProtection.startSession(for: rule)
-                NativeResearchQueue.enqueue("shield_continue_chosen",properties:["local_rule_id":rule.id])
-                SharedInterventionHistory.recordOpenedAnyway()
-                completionHandler(.defer)
-            @unknown default: completionHandler(.close)
+                switch try PerAppProtection.startSession(for: rule) {
+                case .started:
+                    NativeResearchQueue.enqueue("shield_continue_chosen", properties: ["local_rule_id": rule.id])
+                    SharedInterventionHistory.recordOpenedAnyway()
+                    completionHandler(.none)
+                case .alreadyRunning:
+                    completionHandler(.none)
+                case .blocked:
+                    completionHandler(.defer)
+                }
+            @unknown default: completionHandler(.none)
             }
         } catch {
-            PerAppProtection.defaults.set("Temporary access could not start. Your app remains protected. Please retry in Disconnect.", forKey: PerAppProtection.errorKey)
-            completionHandler(.close)
+            let failure = error as NSError
+            logger.error("Shield action failed: \(failure.domain, privacy: .public) \(failure.code, privacy: .public)")
+            let message = "Could not start a session. Open Hoosh to review your settings."
+            PerAppProtection.defaults.set(message, forKey: PerAppProtection.errorKey)
+            if action == .secondaryButtonPressed,
+               let tokenData = try? PerAppProtection.encode(application) {
+                let snapshot = ShieldPresentationStore.load(tokenData: tokenData)
+                let failure = ShieldPresentation(
+                    day: ShieldPresentationStore.day(), title: "Session couldn’t start",
+                    explanation: message, action: snapshot?.actionLabel(appName: nil), messages: snapshot?.messages ?? []
+                )
+                try? ShieldPresentationStore.save(failure, tokenData: tokenData)
+            }
+            completionHandler(.defer)
         }
     }
 
     private func handle(action: ShieldAction, completionHandler: @escaping (ShieldActionResponse) -> Void) {
-        guard !PerAppProtection.enabled else { completionHandler(.close); return }
+        guard !PerAppProtection.enabled else {
+            completionHandler(action == .primaryButtonPressed ? .close : .defer)
+            return
+        }
         switch action {
         case .primaryButtonPressed:
             logger.notice("Primary shield action pressed; closing app and keeping shields active")
@@ -80,8 +105,8 @@ final class ShieldActionExtension: ShieldActionDelegate {
             completionHandler(.defer)
 
         @unknown default:
-            logger.warning("Unknown shield action; closing app")
-            completionHandler(.close)
+            logger.warning("Unknown shield action")
+            completionHandler(.none)
         }
     }
 

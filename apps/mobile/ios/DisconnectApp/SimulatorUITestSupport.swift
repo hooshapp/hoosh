@@ -10,6 +10,13 @@ enum SimulatorUITestSupport {
         return false
         #endif
     }
+    static func routePersonalization(for owner: String) {
+        #if DEBUG && targetEnvironment(simulator)
+        guard enabled, ProcessInfo.processInfo.environment["DISCONNECT_UI_TEST_OPEN_PERSONALIZATION"] == "1" else { return }
+        ShieldPresentationStore.defaults.set(owner, forKey: DayTwoSettingsTipStore.pendingRoute)
+        #endif
+    }
+
     static func consumeEnrollmentFailure() -> Bool {
         #if DEBUG && targetEnvironment(simulator)
         let key="disconnect.uiTestEnrollmentFailureInjected"

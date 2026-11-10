@@ -43,7 +43,7 @@ struct DashboardMetrics {
 
         let wakingMinutes = 16 * 60
         let percentage = Int((Double(todaySavedMinutes) / Double(wakingMinutes) * 100).rounded())
-        return "That's roughly \(percentage)% of your waking hours protected by Disconnect."
+        return "That's roughly \(percentage)% of your waking hours protected by Hoosh."
     }
 
     var weeklyMomentumText: String {

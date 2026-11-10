@@ -9,34 +9,36 @@ struct HistoryReportView:View {
             Text("\(period.title) · Apple-reported usage")
                 .font(.caption).foregroundStyle(DisconnectTheme.mutedInk)
             Divider()
-            HStack(alignment: .top, spacing: 10) {
-                metric("Before", value: HistoryUsageComparison.duration(summary.beforeSeconds))
-                metric("Now", value: HistoryUsageComparison.duration(summary.afterSeconds))
-            }
-            if summary.beforeSeconds == nil {
-                Text("A comparison needs Apple usage records for matching completed days in both periods.")
-                    .font(.caption).foregroundStyle(DisconnectTheme.mutedInk)
-            }
-            Divider()
-            HStack(alignment: .top, spacing: 10) {
-                metric("Time reclaimed", value: HistoryUsageComparison.duration(summary.freedSeconds))
-                if let percent = summary.reductionPercent {
-                    metric(percent < 0 ? "More screen time" : "Less screen time",
-                           value: "\(Int(abs(percent).rounded()))%")
+            if let previous = summary.beforeSeconds, let current = summary.afterSeconds {
+                HStack(alignment: .top, spacing: 10) {
+                    metric(period.previousTitle, value: HistoryUsageComparison.duration(previous))
+                    metric(period.title, value: HistoryUsageComparison.duration(current))
                 }
-            }
-            if let circles = summary.freedCircles {
-                HStack(spacing: 8) {
-                    ForEach(0..<10, id: \.self) { index in
-                        Circle().fill(index < circles ? DisconnectTheme.green : DisconnectTheme.border)
-                            .frame(width: 16, height: 16)
+                Text("Matching completed days in each period. Today is excluded.")
+                    .font(.caption).foregroundStyle(DisconnectTheme.mutedInk)
+                Divider()
+                if current > previous {
+                    metric("More selected-app time", value: HistoryUsageComparison.duration(current - previous), highlight: false)
+                } else if current < previous, let percent = summary.reductionPercent, let circles = summary.freedCircles {
+                    HStack(alignment: .top, spacing: 10) {
+                        metric("Time reclaimed", value: HistoryUsageComparison.duration(summary.freedSeconds))
+                        metric("Less selected-app time", value: "\(Int(percent.rounded()))%")
                     }
+                    HStack(spacing: 8) {
+                        ForEach(0..<10, id: \.self) { index in
+                            Circle().fill(index < circles ? DisconnectTheme.green : DisconnectTheme.border)
+                                .frame(width: 16, height: 16)
+                        }
+                    }
+                    .accessibilityHidden(true)
+                    Text("\(circles) of 10 filled · 10 percentage points per circle, rounded")
+                        .font(.caption).foregroundStyle(DisconnectTheme.mutedInk)
+                } else {
+                    Text("Selected-app time was the same across these days.")
+                        .font(.caption).foregroundStyle(DisconnectTheme.mutedInk)
                 }
-                .accessibilityHidden(true)
-                Text("\(circles) of 10 filled · 10 percentage points per circle, rounded")
-                    .font(.caption).foregroundStyle(DisconnectTheme.mutedInk)
-            } else if summary.beforeSeconds == 0 {
-                Text("A zero baseline can’t produce a percentage change.")
+            } else {
+                Text("Your trend will appear when Apple Screen Time has records for at least \(HistoryUsageComparison.minimumComparableDays) matching completed days in both periods.")
                     .font(.caption).foregroundStyle(DisconnectTheme.mutedInk)
             }
             Text("Only selected apps are included. Usage stays on this device.")
@@ -47,11 +49,11 @@ struct HistoryReportView:View {
         .background(Color.white)
         .environment(\.colorScheme, .light)
     }
-    private func metric(_ title:String,value:String)->some View {
+    private func metric(_ title:String,value:String,highlight:Bool = true)->some View {
         VStack(alignment:.leading,spacing:5) {
             Text(title).font(.system(size:12,weight:.bold)).foregroundStyle(DisconnectTheme.mutedInk)
             Text(value).font(.system(size:value=="Not available" ? 16 : 24,weight:.heavy))
-                .foregroundStyle(value=="Not available" ? DisconnectTheme.mutedInk : DisconnectTheme.green)
+                .foregroundStyle(value=="Not available" || !highlight ? DisconnectTheme.mutedInk : DisconnectTheme.green)
                 .minimumScaleFactor(0.7).lineLimit(1)
         }.frame(maxWidth:.infinity,alignment:.leading)
     }

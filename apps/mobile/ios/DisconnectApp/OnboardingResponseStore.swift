@@ -72,11 +72,11 @@ struct OnboardingResponses: Codable {
         selectedQuestions = try container.decode([String].self, forKey: .selectedQuestions)
         customQuestion = try container.decode(String.self, forKey: .customQuestion)
         primaryGoal = try container.decode(String.self, forKey: .primaryGoal)
-        focusFeeling = try container.decode(String.self, forKey: .focusFeeling)
+        focusFeeling = try container.decodeIfPresent(String.self, forKey: .focusFeeling) ?? ""
         tinyTask = try container.decode(String.self, forKey: .tinyTask)
-        scrollTemptation = try container.decodeIfPresent(String.self, forKey: .scrollTemptation) ?? "I open it when I want an easy escape."
-        scrollCost = try container.decodeIfPresent(String.self, forKey: .scrollCost) ?? "I lose momentum and feel behind."
-        accountabilityAnchor = try container.decodeIfPresent(String.self, forKey: .accountabilityAnchor) ?? "the version of me who keeps promises"
+        scrollTemptation = try container.decodeIfPresent(String.self, forKey: .scrollTemptation) ?? ""
+        scrollCost = try container.decodeIfPresent(String.self, forKey: .scrollCost) ?? ""
+        accountabilityAnchor = try container.decodeIfPresent(String.self, forKey: .accountabilityAnchor) ?? ""
         let savedMinutes = try container.decodeIfPresent(Int.self, forKey: .bypassMinutes) ?? 5
         bypassMinutes = min(max(savedMinutes, 5), 60)
         aiFrictionStyle = try container.decodeIfPresent(String.self, forKey: .aiFrictionStyle) ?? "Balanced"
@@ -87,16 +87,14 @@ struct OnboardingResponses: Codable {
     static let fallback = OnboardingResponses(
         focusGoal: "Hit the Gym",
         focusGoalIconName: "dumbbell",
-        selectedQuestions: [
-            "Is this a good time to scroll, or are you avoiding something?"
-        ],
+        selectedQuestions: [ReflectionPrompts.timing],
         customQuestion: "",
         primaryGoal: "Stay focused on what matters today.",
-        focusFeeling: "I will feel calmer and more in control.",
+        focusFeeling: "",
         tinyTask: "Take five deep breaths or do 10 pushups.",
-        scrollTemptation: "I open it when I want an easy escape.",
-        scrollCost: "I lose momentum and feel behind.",
-        accountabilityAnchor: "the version of me who keeps promises",
+        scrollTemptation: "",
+        scrollCost: "",
+        accountabilityAnchor: "",
         bypassMinutes: 5,
         aiFrictionStyle: "Balanced",
         aiTone: "Supportive",
@@ -126,7 +124,10 @@ enum OnboardingResponseStore {
             return .fallback
         }
 
-        return responses
+        var activeResponses = responses
+        activeResponses.selectedQuestions = responses.selectedQuestions.filter(ReflectionPrompts.available.contains)
+        activeResponses.customQuestion = ""
+        return activeResponses
     }
 
     static var breakMinuteOptions: [Int] {
@@ -155,7 +156,6 @@ enum OnboardingResponseStore {
     static func markIntentionsSaved() { defaults.set(true,forKey:"disconnect.intentionsSaved") }
 
     static func markOnboardingCompleted() {
-        DayTwoSettingsTipStore.startIfNeeded()
         defaults.set(true, forKey: onboardingCompletedKey)
         StudyConfigurationHistory.capture(reason:"onboarding_completed")
     }

@@ -15,7 +15,7 @@ cases={
  'study-enrollment-gate':[host/'StudyEnrollmentGate.swift'],
  'onboarding-goal-draft':[host/'OnboardingGoalDraft.swift',shared/'ShieldPresentation.swift'],
  'daily-limit-policy':[policy],
- 'session-policy':[policy],
+ 'session-policy':[policy,shared/'ShieldPresentation.swift'],
  'study-enrollment':[host/'StudyParticipant.swift',host/'NativeSessionModels.swift'],
  'nudge-response-decoder':[host/'NudgeResponseDecoder.swift'],
  'nudge-library':[shared/'ShieldPresentation.swift'],

@@ -28,12 +28,13 @@ Existing password-account sign-in is an optional legacy route. A test of that ro
 | AUTH-09 | Enter nonexistent email/password | Rejected; no access to another account | Live Supabase | PASS: native/model/live as listed |
 | AUTH-10 | Restore corrupt local account archive | Restoration fails without destroying current workspace | account-workspace | PASS: native/model/live as listed |
 | AUTH-11 | Auth signup succeeds but first database registration write fails; retry | No onboarding/dashboard until own participant write and readback succeed; retry keeps saved identity | Native UI failure injection + real server retry | PASS: native UI |
+| AUTH-12 | Update an enrolled installation, then delete and reinstall | Update preserves the enrolled participant; deletion and reinstall return to signup | Same simulator, real installation and deletion | PASS: simulator |
 | AUTH-12 | Stored verification belongs to another account or only has old global flag | First-time entry stays locked pending current account's server confirmation | study-enrollment-gate | PASS: policy |
 
 | SETUP-01 | Deny Screen Time permission | Clear requirement; cannot continue with a claim of protection | Source + physical test required | NOT TESTED: real permission |
 | SETUP-02 | Choose only a category/website, or nothing | Requires at least one individual app | Source + physical picker required | NOT TESTED: real picker |
 | SETUP-03 | Complete goal/question/intentions screens | All screens reachable; entered answer saved | Native UI | PASS: native UI |
-| SETUP-04 | Skip Calendar/Reminders | Setup can complete; skip event stored; app remains usable | Native UI + event schema | PASS: native UI |
+| SETUP-04 | Finish intentions on a new account | Goes to Dashboard without a session editor or Calendar/Reminders step | Native UI | PASS: native UI |
 | SETUP-05 | Connect optional services | Real system permission result recorded separately from Connect tap | Live schema/policy; actual permission sheet needs device/simulator fixture | PARTIAL: schema/source; real grant pending |
 
 ## App limits, sessions and shields
@@ -119,3 +120,13 @@ Reference behavior: Figma App-UI `27:153` (stats), `10570:192` (progress), `1057
 - H07: Saved app-name headings render black; native token title fallback uses light environment. Verify the Apple-rendered label on a physical phone.
 
 Automated: `history-progress.swift` tests H02–H05 models; `DashboardHistoryUITests.testThreePageHistoryNavigation` tests H01 and empty-selection navigation using the existing dedicated QA simulator profile. H02 REST/cache integration, H06 real report delivery, and H07 native token rendering still need device verification. No new participant is created by the History UI test.
+
+## New participant and day-two personalization
+
+| Case | Steps | Expected result | Verification |
+|---|---|---|---|
+| PILOT-01 | Enroll on a fresh install using a distinct test name and email. Complete the short questionnaire, select three individual apps, and enter dashboard. | Enrollment is confirmed before onboarding opens. Each app has a separate 30-minute daily allowance and 10-minute sessions. Enrollment, answers, and plans belong to the same participant in Supabase. | Simulator for enrollment and questionnaire; Swift policy test for three rules; iPhone for picker and live plan readback. |
+| PILOT-02 | On the first Eastern calendar day, use one protected app to the end of a session and then to its daily cap. Let each limit expire without tapping anything. Exit and reopen the app at the daily cap. | Session expiry restores the custom shield. At the cap, the final shield shows Settings guidance and offers no extra session. Reopening preserves the restriction. Increasing the allowance above usage permits a new session without resetting usage. | Swift presentation and session-policy tests; iPhone for automatic transitions and reopening. |
+| PILOT-03 | First use after 6 PM Eastern, including one minute before midnight, then reach a protected-app nudge milestone after midnight Eastern. | The invite appears at the first eligible milestone after midnight, regardless of the previous day’s start time. Ignored invites can recur in a later session after the cooldown. | Swift policy tests for Eastern midnight, DST, and retries; iPhone for banner delivery. |
+| PILOT-04 | Tap the invitation, including after a cold launch. Save follow-up answers and optionally connect Apple Calendar and Reminders. | The follow-up form and both connection controls appear. Normal nudges resume after opening the invite. Answers and connection status sync under the correct participant. | Simulator for the notification's stored route and screen; iPhone for tapping a real notification and granting EventKit access. |
+| PILOT-05 | Have an upcoming timed calendar event, an upcoming reminder, and saved questionnaire answers. Use a protected app through multiple milestones. | Questionnaire and productivity nudges alternate when fresh context exists. Calendar events and reminders are both eligible, with time included for timed items. Private event/reminder titles remain on the device. | Swift snapshot and rotation tests; iPhone for real EventKit data and notification display. |

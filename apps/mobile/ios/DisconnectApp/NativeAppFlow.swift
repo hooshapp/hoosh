@@ -21,6 +21,10 @@ extension Notification.Name {
         defer { refreshing = false }
         guard let (id, _) = await NativeSupabase.shared.identity() else {
             NativeResearchQueue.setUser(nil)
+            if PerAppProtection.enabled {
+                try? PerAppProtection.stop()
+                ShieldStoreController().removeAllShields()
+            }
             needsStudyDetails=false
             phase = .signedOut; navigationID = "signedOut"
             ShieldPresentationStore.defaults.set("signedOut",forKey:"disconnect.auth.status")
@@ -67,16 +71,17 @@ extension Notification.Name {
             }
             guard await NativeSupabase.shared.identity()?.0==id else { return }
             StudyAppVisitTracker.shared.becameActive()
+            DayTwoSettingsTipStore.recordUse()
             Task {
                 do { try await DatabaseService.shared.saveEnrollment() }
                 catch { ShieldPresentationStore.defaults.set(error.localizedDescription,forKey:DatabaseService.statusKey) }
             }
             let completed = workspace.completed(for:user)
             navigationID = user + (completed ? ":dashboard" : ":onboarding")
+            if completed { SimulatorUITestSupport.routePersonalization(for: user) }
             phase = completed ? .dashboard : .onboarding
             ShieldPresentationStore.defaults.set(completed ? "dashboard" : "onboarding",forKey:"disconnect.auth.route")
             if completed {
-                DayTwoSettingsTipStore.startIfNeeded()
                 ShieldStoreController().refreshShieldStateAfterInstallOrRun()
                 // Sync is optional to using protection offline. It must not hold up routing.
                 Task {

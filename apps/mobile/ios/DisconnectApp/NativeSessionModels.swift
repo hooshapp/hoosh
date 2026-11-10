@@ -9,6 +9,12 @@ struct NativeSupabaseSession: Codable {
     var isStudyParticipant: Bool? = nil
     var participantName: String? = nil
     var participantEmail: String? = nil
+    var installationID: UUID? = nil
+
+    func canRestore(on installation: UUID, legacyOwner: String?) -> Bool {
+        if let installationID { return installationID == installation }
+        return legacyOwner == userID.uuidString
+    }
 }
 struct NativeWireSession: Decodable {
     struct User: Decodable {

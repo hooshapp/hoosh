@@ -32,7 +32,7 @@ enum BreakReminderScheduler {
             actions: [UNNotificationAction(identifier: PerAppProtection.endSessionAction, title: "End session", options: [.foreground])],
             intentIdentifiers: [], options: [])
         let tipCategory=UNNotificationCategory(identifier:DayTwoSettingsTipStore.category,
-            actions:[UNNotificationAction(identifier:DayTwoSettingsTipStore.openAction,title:"Open Settings",options:[.foreground]),
+            actions:[UNNotificationAction(identifier:DayTwoSettingsTipStore.openAction,title:"Customize Hoosh",options:[.foreground]),
                      UNNotificationAction(identifier:PerAppProtection.endSessionAction,title:"End session",options:[.foreground])],
             intentIdentifiers:[],options:[])
         UNUserNotificationCenter.current().setNotificationCategories([category, sessionCategory, tipCategory])

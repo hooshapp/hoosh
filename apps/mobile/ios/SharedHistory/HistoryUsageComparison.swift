@@ -6,6 +6,7 @@ struct HistoryUsageDay {
     var seconds:TimeInterval
 }
 struct HistoryUsageComparison {
+    static let minimumComparableDays = 3
     var currentSeconds:TimeInterval?
     var beforeSeconds:TimeInterval?
     var afterSeconds:TimeInterval?
@@ -42,8 +43,8 @@ struct HistoryUsageComparison {
             if let b=totals[old],let a=totals[new] { before+=b;after+=a;count+=1 }
         }
         comparedDays=count
-        // Missing days are not zero usage. Require all comparable completed days.
-        if count>0 && count==window.comparisonDays {
+        // A short or incomplete comparison can give a misleading change.
+        if count >= Self.minimumComparableDays && count == window.comparisonDays {
             beforeSeconds = before.rounded()
             afterSeconds = after.rounded()
             let offset = count - 1

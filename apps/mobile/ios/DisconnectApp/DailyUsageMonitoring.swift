@@ -5,37 +5,41 @@ import Foundation
 /// One OS event per selected application. Counts are never derived from a JS/host timer.
 enum DailyUsageMonitoring {
     static let activity = PerAppProtection.activity
-    static let limitKey = "disconnect.dailyUsageLimitMinutes" // previous shared value is a default for new rules only
     static let errorKey = PerAppProtection.errorKey
     static var defaults: UserDefaults { PerAppProtection.defaults }
 
     static func prepareRules(selection: FamilyActivitySelection) throws -> [DailyAppRule] {
         var catalog = try PerAppProtection.catalog()
-        let saved = defaults.integer(forKey: limitKey)
-        catalog.reconcile(tokens: try selection.applicationTokens.map { try PerAppProtection.encode($0) }, defaultMinutes: saved == 0 ? 30 : saved)
-        try PerAppProtection.save(catalog)
-        return try PerAppProtection.rules(for: selection)
+        let tokens = try selection.applicationTokens.map { try PerAppProtection.encode($0) }
+        let ruleCount = catalog.rules.count
+        catalog.reconcile(tokens: tokens)
+        if catalog.rules.count != ruleCount { try PerAppProtection.save(catalog) }
+        return catalog.selected(tokens: tokens)
     }
     static func setMinutes(_ minutes: Int, for id: String) throws {
         var catalog = try PerAppProtection.catalog()
-        let oldMinutes = catalog.rules.first { $0.id == id }?.minutes ?? 0
+        guard let previous = catalog.rules.first(where: { $0.id == id }) else { return }
         catalog.setMinutes(minutes, for: id)
+        guard let updated = catalog.rules.first(where: { $0.id == id }), updated.minutes != previous.minutes else { return }
+        PerAppProtection.preserveLegacyDailyUsage(for: previous)
         try PerAppProtection.save(catalog)
-        StudyConfigurationHistory.capture(reason:"daily_limit_changed")
-        if oldMinutes != minutes { NativeResearchQueue.enqueue("daily_limit_changed",properties:["local_rule_id":id,"previous_minutes":String(oldMinutes),"new_minutes":String(minutes)]) }
-        if let updated = catalog.rules.first(where: { $0.id == id }), updated.minutes > oldMinutes,
-           PerAppProtection.ledger(for: id).usedMinutes < updated.minutes {
-            // Preserve consumed usage; the new native daily event includes earlier activity.
-            defaults.removeObject(forKey: PerAppProtection.reachedPrefix + id)
-        }
+        try PerAppProtection.reconcileShields(refreshingRuleID: id)
+        StudyConfigurationHistory.capture(reason: "daily_limit_changed")
+        NativeResearchQueue.enqueue("daily_limit_changed", properties: [
+            "local_rule_id": id, "previous_minutes": String(previous.minutes), "new_minutes": String(updated.minutes)
+        ])
     }
     static func setSessionMinutes(_ minutes: Int, for id: String) throws {
         var catalog = try PerAppProtection.catalog()
-        let old=catalog.rules.first { $0.id==id }?.sessionMinutes
+        guard let previous = catalog.rules.first(where: { $0.id == id }) else { return }
         catalog.setSessionMinutes(minutes, for: id)
+        guard let updated = catalog.rules.first(where: { $0.id == id }), updated != previous else { return }
         try PerAppProtection.save(catalog)
-        StudyConfigurationHistory.capture(reason:"session_length_changed")
-        if old != minutes { NativeResearchQueue.enqueue("session_length_changed",properties:["local_rule_id":id,"previous_minutes":String(old ?? 0),"new_minutes":String(minutes)]) }
+        try PerAppProtection.reconcileShields(refreshingRuleID: id)
+        StudyConfigurationHistory.capture(reason: "session_length_changed")
+        NativeResearchQueue.enqueue("session_length_changed", properties: [
+            "local_rule_id": id, "previous_minutes": String(previous.sessionMinutes), "new_minutes": String(updated.sessionMinutes)
+        ])
     }
     static func setResearchLabel(_ text: String,for id: String) throws {
         var catalog=try PerAppProtection.catalog()

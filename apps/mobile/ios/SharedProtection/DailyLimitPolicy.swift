@@ -15,10 +15,11 @@ struct DailyRuleCatalog: Codable {
     var version = 1
     var rules: [DailyAppRule] = []
 
-    mutating func reconcile(tokens: [Data], defaultMinutes: Int) {
+    mutating func reconcile(tokens: [Data], defaultMinutes: Int = 30) {
         for token in tokens where !rules.contains(where: { $0.tokenData == token }) {
             rules.append(DailyAppRule(id: UUID().uuidString, tokenData: token,
-                minutes: min(max(defaultMinutes, 5), 240), revision: 1))
+                minutes: min(max(defaultMinutes, 5), 240), revision: 1,
+                configuredSessionMinutes: 10))
         }
     }
     mutating func setMinutes(_ minutes: Int, for id: String) {
@@ -64,6 +65,13 @@ enum DailyLimitPolicy {
         let p = calendar.dateComponents([.year, .month, .day], from: date)
         return "\(p.year ?? 0)-\(p.month ?? 0)-\(p.day ?? 0)"
     }
+    static func sessionWindow(at date: Date, calendar: Calendar = .current) -> DateInterval {
+        let midnight = calendar.dateInterval(of: .day, for: date)!.end
+        // DeviceActivity requires a 15-minute schedule even when a session starts just before midnight.
+        let start = min(date.addingTimeInterval(-60), midnight.addingTimeInterval(-15 * 60))
+        return DateInterval(start: start, end: midnight)
+    }
+
     static func shieldedIDs(selected: Set<String>, reached: [String: String], allowances: [String: DailyAppAllowance], day: String, now: Date) -> Set<String> {
         Set(selected.filter { id in
             guard reached[id] == day else { return false }
@@ -102,7 +110,6 @@ struct AppSessionLedger: Codable {
     }
 }
 enum AppSessionPolicy {
-    static let extraMinutes = 10
     static func nextMinutes(rule: DailyAppRule, used: Int, reached: Bool) -> Int {
         reached ? 0 : min(rule.sessionMinutes, max(0, rule.minutes - used))
     }
@@ -111,7 +118,10 @@ enum AppSessionPolicy {
     }
     static func blocks(allowance: DailyAppAllowance?, reached: Bool, day: String, now: Date) -> Bool {
         guard let allowance, allowance.day == day, allowance.expiresAt > now,
-              allowance.minutes != nil, let extra = allowance.isExtra else { return true }
-        return reached && !extra
+              allowance.minutes != nil, allowance.isExtra == false else { return true }
+        return reached
+    }
+    static func finishesSession(progress: Int, duration: Int, used: Int, dailyLimit: Int) -> Bool {
+        progress >= duration || used >= dailyLimit
     }
 }

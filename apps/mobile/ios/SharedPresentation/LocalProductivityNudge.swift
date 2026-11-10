@@ -69,7 +69,10 @@ struct LocalProductivityNudge: Codable {
         let clean=title.replacingOccurrences(of:"\n",with:" ").trimmingCharacters(in:.whitespacesAndNewlines)
         let named = !clean.isEmpty && clean.count<=48 && !clean.contains("\"")
         if provider == "calendar" {
-            return [named ? "Coming up: “\(clean)”. Would you like time to prepare?" : "Your next calendar event is coming up. Would you like time to prepare?"]
+            guard let dueAt else { return [] }
+            let time = dueAt.formatted(date: .omitted, time: .shortened)
+            let message = "At \(time): “\(clean)”. Would you like time to prepare?"
+            return [named && message.count <= 110 ? message : "Your next calendar event is at \(time). Would you like time to prepare?"]
         }
         if let dueAt {
             if dueAt <= now {
@@ -84,12 +87,18 @@ struct LocalProductivityNudge: Codable {
 }
 enum LocalProductivityNudgeStore {
     static let key="disconnect.localProductivityNudge.v1"
-    static func save(_ value: LocalProductivityNudge?) {
-        ShieldPresentationStore.defaults.set(value.flatMap { try? JSONEncoder().encode($0) },forKey:key)
+    static func save(_ values: [LocalProductivityNudge]) {
+        let defaults = ShieldPresentationStore.defaults
+        if values.isEmpty { defaults.removeObject(forKey: key) }
+        else { defaults.set(try? JSONEncoder().encode(values), forKey: key) }
     }
-    static func messages(now:Date=Date()) -> [String] {
-        guard let data=ShieldPresentationStore.defaults.data(forKey:key),
-              let value=try? JSONDecoder().decode(LocalProductivityNudge.self,from:data) else { return [] }
-        return value.messages(now:now)
+
+    static func messages(now: Date = Date()) -> [String] {
+        guard let data = ShieldPresentationStore.defaults.data(forKey: key) else { return [] }
+        let decoder = JSONDecoder()
+        if let values = try? decoder.decode([LocalProductivityNudge].self, from: data) {
+            return values.flatMap { $0.messages(now: now) }
+        }
+        return (try? decoder.decode(LocalProductivityNudge.self, from: data))?.messages(now: now) ?? []
     }
 }

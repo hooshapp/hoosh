@@ -3,6 +3,17 @@ import Foundation
 @main struct SessionPolicyChecks {
     static func main() throws {
         let day = "2026-11-4"
+        let selected = [Data([1]), Data([2]), Data([3])]
+        var newCatalog = DailyRuleCatalog()
+        newCatalog.reconcile(tokens: selected)
+        precondition(newCatalog.rules.count == 3)
+        precondition(newCatalog.rules.allSatisfy { $0.minutes == 30 && $0.sessionMinutes == 10 })
+        let customRuleID = newCatalog.rules[0].id
+        newCatalog.setMinutes(45, for: customRuleID)
+        newCatalog.setSessionMinutes(20, for: customRuleID)
+        newCatalog.reconcile(tokens: selected)
+        precondition(newCatalog.rules[0].minutes == 45 && newCatalog.rules[0].sessionMinutes == 20)
+        precondition(newCatalog.rules.dropFirst().allSatisfy { $0.minutes == 30 && $0.sessionMinutes == 10 })
         var rule = DailyAppRule(id: "a", tokenData: Data([1]), minutes: 30, revision: 1)
         precondition(rule.sessionMinutes == 15, "Existing rules migrate to a separate 15-minute default")
         rule.configuredSessionMinutes = 30
@@ -47,6 +58,35 @@ import Foundation
         appA.finish(activity: "a-2")
         precondition(appA.usedMinutes == 30 && appA.completedSessions == 2)
         precondition(AppSessionPolicy.nextMinutes(rule: twoSessionRule, used: appA.usedMinutes, reached: false) == 0)
+        let caps = [10, 20, 30]
+        for (rule, cap) in zip(newCatalog.rules, caps) {
+            newCatalog.setMinutes(cap, for: rule.id)
+            newCatalog.setSessionMinutes(5, for: rule.id)
+        }
+        let protectedApps = newCatalog.selected(tokens: selected)
+        var ledgers = Dictionary(uniqueKeysWithValues: protectedApps.map { ($0.id, AppSessionLedger(day: day)) })
+        for session in 1...6 {
+            for app in protectedApps {
+                var ledger = ledgers[app.id]!
+                let activity = "\(app.id)-\(session)"
+                let minutes = AppSessionPolicy.nextMinutes(rule: app, used: ledger.usedMinutes, reached: false)
+                let reachedCap = (session - 1) * 5 >= app.minutes
+                precondition(minutes == (reachedCap ? 0 : 5))
+                if reachedCap { continue }
+                ledger.begin(activity: activity, extra: false)
+                ledger.finish(activity: "\(app.id)-\(session - 1)")
+                precondition(ledger.activity == activity, "A stale session end cannot finish the new session")
+                precondition(ledger.record(activity: activity, minute: 5, duration: 5, extra: false))
+                ledger.finish(activity: activity)
+                let nextMinutes = AppSessionPolicy.nextMinutes(rule: app, used: ledger.usedMinutes, reached: false)
+                let shield = ShieldPresentation.session(day: day, nextMinutes: nextMinutes, completedSessions: ledger.completedSessions,
+                                                        messages: []).forFirstDay(true)
+                precondition(ledger.usedMinutes == session * 5 && ledger.completedSessions == session)
+                precondition((shield.action != nil) == (session * 5 < app.minutes))
+                ledgers[app.id] = ledger
+            }
+        }
+        precondition(ledgers.values.map(\.usedMinutes).sorted() == caps)
         precondition(!AppSessionLedger(day: "2026-11-5").extraUsed)
         let now = Date()
         precondition(AppSessionPolicy.blocks(allowance: nil, reached: false, day: day, now: now), "Initial launch must show reflection shield")
@@ -54,7 +94,8 @@ import Foundation
         precondition(!AppSessionPolicy.blocks(allowance: normal, reached: false, day: day, now: now))
         precondition(AppSessionPolicy.blocks(allowance: normal, reached: true, day: day, now: now), "Daily cap must end normal access")
         let extra = DailyAppAllowance(activity: "extra", day: day, expiresAt: now.addingTimeInterval(3600), minutes: 10, isExtra: true)
-        precondition(!AppSessionPolicy.blocks(allowance: extra, reached: true, day: day, now: now))
+        precondition(AppSessionPolicy.blocks(allowance: extra, reached: true, day: day, now: now))
+        precondition(AppSessionPolicy.blocks(allowance: extra, reached: false, day: day, now: now), "Upgrades revoke old extra sessions")
         precondition(AppSessionPolicy.blocks(allowance: extra, reached: true, day: "2026-11-5", now: now), "Yesterday's session cannot grant access")
         precondition(AppSessionPolicy.blocks(allowance: normal, reached: false, day: day, now: normal.expiresAt))
         let legacy = DailyAppAllowance(activity: "legacy", day: day, expiresAt: now.addingTimeInterval(3600))
@@ -64,6 +105,48 @@ import Foundation
         precondition(catalog.rules[0].minutes == 30 && catalog.rules[0].sessionMinutes == 15)
         catalog.setMinutes(5, for: rule.id)
         precondition(catalog.rules[0].sessionMinutes == 5)
-        print("PASS: session migration, separate controls, quarter nudges, clipped allowance, usage accounting, early exit, duplicate/stale events, extra time, persistence, initial shield and midnight/expiry")
+        var editedCatalog = DailyRuleCatalog(rules: [twoSessionRule])
+        editedCatalog.setSessionMinutes(10, for: rule.id)
+        var editedRule = editedCatalog.rules[0]
+        func shield(used: Int, firstDay: Bool) -> ShieldPresentation {
+            let remaining = AppSessionPolicy.nextMinutes(rule: editedRule, used: used, reached: used >= editedRule.minutes)
+            return ShieldPresentation.session(day: day, nextMinutes: remaining, completedSessions: 1,
+                                              messages: []).forFirstDay(firstDay)
+        }
+        precondition(shield(used: 20, firstDay: true).actionLabel(appName: "LinkedIn") == "Continue to LinkedIn")
+        precondition(shield(used: 20, firstDay: true).actionLabel(appName: nil) == "Continue to app")
+        let capped = shield(used: 30, firstDay: true)
+        precondition(capped.dailyLimitReached == true && capped.action == nil)
+        precondition(capped.explanation.contains("Stats tab in Hoosh"))
+        let laterDayCap = shield(used: 30, firstDay: false)
+        precondition(laterDayCap.title == "You’ve reached your daily app limit")
+        precondition(laterDayCap.actionLabel(appName: "LinkedIn") == nil)
+        precondition(!AppSessionPolicy.finishesSession(progress: 3, duration: 5, used: 9, dailyLimit: 10))
+        precondition(AppSessionPolicy.finishesSession(progress: 4, duration: 5, used: 10, dailyLimit: 10),
+                     "Lowering the cap ends an active session when cumulative use reaches the new cap")
+        precondition(AppSessionPolicy.finishesSession(progress: 5, duration: 5, used: 9, dailyLimit: 10))
+        let priorDailyEvent = editedRule.eventName
+        editedCatalog.setMinutes(45, for: rule.id)
+        editedCatalog.setSessionMinutes(5, for: rule.id)
+        editedRule = editedCatalog.rules[0]
+        precondition(editedRule.eventName != priorDailyEvent, "A delayed event from the previous cap must not match")
+        precondition(AppSessionPolicy.nextMinutes(rule: editedRule, used: 30, reached: false) == 5)
+        precondition(AppSessionPolicy.nextMinutes(rule: editedRule, used: 42, reached: false) == 3,
+                     "Raising the limit keeps prior usage")
+        precondition(shield(used: 30, firstDay: true).actionLabel(appName: "LinkedIn") == "Continue to LinkedIn")
+        precondition(shield(used: 45, firstDay: true).action == nil)
+        var eastern = Calendar(identifier: .gregorian)
+        eastern.timeZone = TimeZone(identifier: "America/New_York")!
+        // November 1 is a 25-hour day. Even a session started one minute before midnight ends there.
+        let lastMinute = eastern.date(from: DateComponents(year: 2026, month: 11, day: 1, hour: 23, minute: 59))!
+        let midnight = eastern.date(from: DateComponents(year: 2026, month: 11, day: 2))!
+        let window = DailyLimitPolicy.sessionWindow(at: lastMinute, calendar: eastern)
+        precondition(window.end == midnight && window.duration >= 15 * 60 && window.contains(lastMinute))
+        let yesterday = DailyLimitPolicy.day(at: lastMinute, calendar: eastern)
+        let today = DailyLimitPolicy.day(at: midnight, calendar: eastern)
+        let overnight = DailyAppAllowance(activity: "late", day: yesterday, expiresAt: window.end, minutes: 10, isExtra: false)
+        precondition(AppSessionPolicy.blocks(allowance: overnight, reached: false, day: today, now: midnight))
+        precondition(AppSessionPolicy.nextMinutes(rule: editedRule, used: AppSessionLedger(day: today).usedMinutes, reached: false) == 5)
+        print("PASS: session accounting, first-day cap guidance, settings edits, and daily allowance preservation")
     }
 }

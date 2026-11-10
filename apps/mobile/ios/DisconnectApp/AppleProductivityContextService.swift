@@ -16,7 +16,7 @@ final class AppleProductivityContextService: ObservableObject {
         recordConnection(provider:"calendar",state:snapshot.calendarAccess)
         recordConnection(provider:"reminders",state:snapshot.remindersAccess)
         if snapshot.calendarAccess != .authorized && snapshot.remindersAccess != .authorized {
-            LocalProductivityNudgeStore.save(nil)
+            LocalProductivityNudgeStore.save([])
         }
     }
 
@@ -48,7 +48,7 @@ final class AppleProductivityContextService: ObservableObject {
             snapshot.calendarAccess = .denied
             ProductivityContextStore.save(snapshot)
             recordConnection(provider:"calendar",state:.denied)
-            LocalProductivityNudgeStore.save(nil)
+            LocalProductivityNudgeStore.save([])
             try? await DatabaseService.shared.saveEnrollment()
         }
     }
@@ -73,7 +73,7 @@ final class AppleProductivityContextService: ObservableObject {
             snapshot.remindersAccess = .denied
             ProductivityContextStore.save(snapshot)
             recordConnection(provider:"reminders",state:.denied)
-            LocalProductivityNudgeStore.save(nil)
+            LocalProductivityNudgeStore.save([])
             try? await DatabaseService.shared.saveEnrollment()
         }
     }
@@ -97,10 +97,13 @@ final class AppleProductivityContextService: ObservableObject {
         snapshot.contextTitle = priorityItem?.title ?? ""
         snapshot.lastUpdated = Date()
         ProductivityContextStore.save(snapshot)
-        if let item=priorityItem {
-            LocalProductivityNudgeStore.save(LocalProductivityNudge(provider:item.kind == .calendar ? "calendar" : "reminders",
-                title:item.title,dueAt:item.date,refreshedAt:Date(),reminderTasks:item.reminderTasks))
-        } else { LocalProductivityNudgeStore.save(nil) }
+        let nudgeItems = [calendarItem, reminderItem].compactMap { $0 }.map { item in
+            LocalProductivityNudge(
+                provider: item.kind == .calendar ? "calendar" : "reminders",
+                title: item.title, dueAt: item.date, refreshedAt: Date(), reminderTasks: item.reminderTasks
+            )
+        }
+        LocalProductivityNudgeStore.save(nudgeItems)
         // Refresh presentation immediately; extensions can then use the local context offline.
         try? PerAppProtection.reconcileShields()
         try? await DatabaseService.shared.saveEnrollment()
