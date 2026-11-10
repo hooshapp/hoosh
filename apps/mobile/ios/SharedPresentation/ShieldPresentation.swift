@@ -1,4 +1,5 @@
 import CoreFoundation
+import CryptoKit
 import Foundation
 
 enum ReflectionPrompts {
@@ -158,6 +159,7 @@ struct ShieldPresentation: Codable {
 enum ShieldPresentationStore {
     static let group = "group.com.AnishaDasgupta.DisconnectApp"
     static let protectionEnabledKey = "disconnect.perAppMonitoringEnabled"
+    static let participantKey = "disconnect.supabaseResearchUser"
     static var defaults: UserDefaults { UserDefaults(suiteName: group)! }
     static func synchronize() {
         // The host and shield extensions can read this suite from different processes.
@@ -170,12 +172,43 @@ enum ShieldPresentationStore {
         return "\(p.year ?? 0)-\(p.month ?? 0)-\(p.day ?? 0)"
     }
     static func save(_ value: ShieldPresentation, tokenData: Data) throws {
-        defaults.set(try JSONEncoder().encode(value), forKey: key(tokenData))
+        let data = try JSONEncoder().encode(value)
+        defaults.set(data, forKey: key(tokenData))
+        if let file = snapshotFile(tokenData: tokenData) {
+            do {
+                try FileManager.default.createDirectory(at: file.deletingLastPathComponent(), withIntermediateDirectories: true)
+                try data.write(to: file, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
+            } catch {
+                // An old file must not mask the replacement in shared preferences.
+                try? FileManager.default.removeItem(at: file)
+            }
+        }
     }
     static func load(tokenData: Data) -> ShieldPresentation? {
-        guard let data = defaults.data(forKey: key(tokenData)), data.count < 16384,
-              let value = try? JSONDecoder().decode(ShieldPresentation.self, from: data), value.day == day() else { return nil }
+        let today = day()
+        if let file = snapshotFile(tokenData: tokenData),
+           let data = try? Data(contentsOf: file),
+           let value = decode(data, for: today) { return value }
+        return defaults.data(forKey: key(tokenData)).flatMap { decode($0, for: today) }
+    }
+    static func decode(_ data: Data, for day: String) -> ShieldPresentation? {
+        guard data.count < 16384,
+              let value = try? JSONDecoder().decode(ShieldPresentation.self, from: data),
+              value.day == day else { return nil }
         return value
+    }
+    private static func snapshotFile(tokenData: Data) -> URL? {
+        #if os(iOS)
+        guard let participant = defaults.string(forKey: participantKey).flatMap(UUID.init(uuidString:)),
+              let root = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: group) else { return nil }
+        // Use the same opaque token as preferences without writing it into a filename.
+        let name = SHA256.hash(data: tokenData).map { String(format: "%02x", $0) }.joined()
+        return root.appendingPathComponent("ShieldSnapshots", isDirectory: true)
+            .appendingPathComponent(participant.uuidString, isDirectory: true)
+            .appendingPathComponent(name + ".json")
+        #else
+        return nil
+        #endif
     }
     static func selectedPrompts() -> [String] {
         guard let data = defaults.data(forKey: "onboardingResponses"),

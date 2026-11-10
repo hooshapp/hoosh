@@ -10,7 +10,7 @@ struct NativeResearchEvent: Codable {
 /// Separate atomic files avoid read-modify-write collisions between host and extensions.
 /// Files contain no Apple tokens, email addresses, calendar titles or credentials.
 enum NativeResearchQueue {
-    static let userKey = "disconnect.supabaseResearchUser"
+    static let userKey = ShieldPresentationStore.participantKey
     static func setUser(_ id: UUID?) {
         ShieldPresentationStore.defaults.set(id?.uuidString, forKey: userKey)
     }
