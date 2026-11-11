@@ -33,6 +33,16 @@ and [continuation evidence](../core_plan_implementation_notes/artifacts/rn-08-li
 for actual Metro/task/re-enable/TalkBack results and restored baseline. Do not
 infer full RN-08, iOS, release or process/reboot acceptance from this debug slice.
 
+**Shared Home/Settings journey (2026-11-11):** the existing product screens now
+share an explicit-owner staged draft and confirmed native weekly-plan state in the
+isolated **App journey** entry. Settings inline days/hours/sessions and saved app
+selection connect to Preview/Apply/Update/Resume/Stop; Home reports native scheduled,
+active, stopped, permission and unknown states. No draft/API save implies activation.
+See the [journey runbook](../qa/android-home-settings-journey.md), latest Plan 04
+notes and [evidence](../core_plan_implementation_notes/artifacts/rn-09-app-journey/evidence.json).
+Auth/tokens, production root/verified owner, iOS and joint/signed acceptance remain
+open. Existing RN08-D02/D04/RN09D-D02 IDs and parent counts stay unchanged.
+
 **Weekly settings activation (2026-11-10):** a debug native persisted weekly
 schedule and shared explicit-owner consumer now connect complete PlanDraft fields
 to Preview/Apply/Update/Resume/Stop with native readback. Read

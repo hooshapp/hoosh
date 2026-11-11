@@ -17,6 +17,16 @@ phone enlarged-text/revocation pass; phone settings and files are restored. See
 Production Auth-bound adapter/iOS/release and the wider accessibility/lifecycle
 matrix remain open. Original IDs/counts unchanged.
 
+**Shared Home/Settings journey (2026-11-11):** the existing product screens now
+share an explicit-owner staged draft and confirmed native weekly-plan state in the
+isolated **App journey** entry. Settings inline days/hours/sessions and saved app
+selection connect to Preview/Apply/Update/Resume/Stop; Home reports native scheduled,
+active, stopped, permission and unknown states. No draft/API save implies activation.
+See the [journey runbook](../qa/android-home-settings-journey.md), latest Plan 04
+notes and [evidence](../core_plan_implementation_notes/artifacts/rn-09-app-journey/evidence.json).
+Auth/tokens, production root/verified owner, iOS and joint/signed acceptance remain
+open. Existing RN08-D02/D04/RN09D-D02 IDs and parent counts stay unchanged.
+
 **Weekly settings activation (2026-11-10):** RN08-D04/RN09D-D02 now include the
 native persisted weekly plan compiler and shared explicit-owner Preview/Apply/
 Update/Resume/Stop consumer in the existing developer host. Read actual

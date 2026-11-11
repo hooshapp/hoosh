@@ -16,8 +16,11 @@ import { SettingsRow } from './settings-row';
 
 export type SettingsScreenProps = {
   model: SettingsModel;
+  bottomClearance?: number;
   /** Server-stored preferences, with no claim of native installation. */
   planDraftOnly?: boolean;
+  /** Explicit native weekly consumer; draft rows stay distinct from installed evidence. */
+  planContent?: ReactNode;
   onEdit?: Partial<Record<SettingsField, () => void>>;
   onOpen?: Partial<Record<SettingsField, () => void>>;
   onEditProfile?: () => void;
@@ -30,7 +33,8 @@ export type SettingsScreenProps = {
 };
 export function SettingsScreen({
   model,
-  planDraftOnly = false,
+  bottomClearance,  planDraftOnly = false,
+  planContent,
   onEdit = {},
   onOpen = {},
   onEditProfile,
@@ -53,6 +57,7 @@ export function SettingsScreen({
   return (
     <Screen
       title="Settings"
+      bottomClearance={bottomClearance}
       header={null}
       testID="settings-scroll"
       contentStyle={styles.screen}
@@ -130,7 +135,7 @@ export function SettingsScreen({
             onPress={onEdit.activities} onView={onOpen.activities}
           />
         </Section>
-        <Section title={planDraftOnly ? "Plan draft — not active" : "My Plan"}>
+        <Section title={planContent ? "My Plan" : planDraftOnly ? "Plan draft — not active" : "My Plan"}>
           <SettingsRow
             label={planDraftOnly ? "Draft days" : "Active Days"}
             value={model.days}
@@ -164,10 +169,11 @@ export function SettingsScreen({
                 testID="settings-info"
               />
               <Text style={styles.contextText}>
-                {planDraftOnly ? 'Saved draft preferences do not activate protection or change an installed plan.' : 'These are your planned times to use distracting apps — not how long nudges run.'}
+                {planContent ? 'Edits stay in your draft until you apply them to this device.' : planDraftOnly ? 'Saved draft preferences do not activate protection or change an installed plan.' : 'These are your planned times to use distracting apps — not how long nudges run.'}
               </Text>
             </View>
           </View>
+          {planContent}
         </Section>
         {model.calendars ? (
           <Section title="Calendar Connections">

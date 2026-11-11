@@ -1,3 +1,4 @@
+import { AppJourneyQa } from './app-journey';
 import { WeeklyScheduleQa } from './weekly-schedule';
 import { InterventionQa } from './interventions';
 import { useState } from 'react';
@@ -69,6 +70,7 @@ import {
 } from '../shared/ui-samples';
 
 const screens = [
+  'App journey',
   'Weekly schedule',
   'Android interventions',
   'Android probe',
@@ -126,13 +128,13 @@ function QaHost() {
   const [notice, setNotice] = useState(
     'Sample data only. No account, API or protection connected.',
   );
-  const realNative = page === 'Weekly schedule' || page === 'Android interventions' || page === 'Android probe' || page === 'Android selection preview' || page === 'Saved apps editor';
+  const realNative = page === 'App journey' || page === 'Weekly schedule' || page === 'Android interventions' || page === 'Android probe' || page === 'Android selection preview' || page === 'Saved apps editor';
   const metrics = useFloatingTabBarMetrics(),
     insets = useSafeAreaInsets();
   const action = () => setNotice('UI intent only. Nothing saved, connected, earned or installed.');
   return (
     <View testID="RN10_NATIVE_QA_ONLY" style={styles.app}>
-      {page === 'Weekly schedule' ? <WeeklyScheduleQa key={reset} /> : page === 'Android interventions' ? <InterventionQa key={reset} /> : page === 'Android probe' ? <UsageProbe key={reset} /> : page === 'Android selection preview' ? <AppSelectionPreview key={reset} /> : page === 'Saved apps editor' ? <DurableSelectionQa key={reset} onBack={() => setPage(null)} /> : page ? (
+      {page === 'App journey' ? <AppJourneyQa key={reset} onExit={() => setPage(null)} /> : page === 'Weekly schedule' ? <WeeklyScheduleQa key={reset} /> : page === 'Android interventions' ? <InterventionQa key={reset} /> : page === 'Android probe' ? <UsageProbe key={reset} /> : page === 'Android selection preview' ? <AppSelectionPreview key={reset} /> : page === 'Saved apps editor' ? <DurableSelectionQa key={reset} onBack={() => setPage(null)} /> : page ? (
         <QaScreen
           key={`${page}:${scenario}:${reset}`}
           page={page}
@@ -157,7 +159,7 @@ function QaHost() {
           ))}
         </Screen>
       )}
-      <View
+      {page !== 'App journey' ? <View
         onLayout={(e) => metrics?.reportHeight(Math.ceil(e.nativeEvent.layout.height))}
         style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 8) }]}>
         <Text style={styles.qaLabel}>
@@ -188,7 +190,7 @@ function QaHost() {
             style={styles.action}
           />
         </View>
-      </View>
+      </View> : null}
     </View>
   );
 }

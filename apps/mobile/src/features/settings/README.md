@@ -54,3 +54,10 @@ continues to require a ready value. The actual root wires only supported apps,
 activities, days, hours and sessions detail routes, with no save handler or native
 success. See `features/preferences/README.md`, `features/plans/README.md` and the
 Plan 04 coverage record for remaining integration gates and source adaptations.
+
+The explicit-owner weekly journey adds optional `planContent` below the existing
+My Plan rows and reuses their inline editors. Local Use actions stage fields;
+whole-plan Apply changes the native installation. Draft labels stay explicit and
+account/API saves are not implied. Optional `bottomClearance` supports in-layout
+navigation. See the
+[journey runbook](../../../../../docs/qa/android-home-settings-journey.md).

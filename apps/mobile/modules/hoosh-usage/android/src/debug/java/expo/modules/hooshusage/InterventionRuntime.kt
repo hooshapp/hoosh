@@ -53,12 +53,11 @@ class InterventionRuntime private constructor(val context: Context) {
       }
     }
   }
-  private fun summary(owner: String): Map<String, Any?> {
-    val value = engine.read(owner)
+  private fun summary(owner: String): Map<String, Any?> = summary(engine.read(owner), System.currentTimeMillis(), authorized())
+  private fun summary(value: InterventionRecord?, now: Long, allowed: Boolean): Map<String, Any?> {
     val connected = service
-    val windows = value?.let { WeeklySchedules.windows(it.plan, System.currentTimeMillis()) }.orEmpty()
-    val allowed = authorized() && connected != null
-    return mapOf("state" to when { failure != null -> "failed"; !allowed -> "needs_permission"; value == null || windows.none { it.endsAt > System.currentTimeMillis() } -> "inactive"; else -> "armed" },
+    val windows = value?.let { WeeklySchedules.windows(it.plan, now) }.orEmpty()
+    return mapOf("state" to when { failure != null -> "failed"; !allowed -> "needs_permission"; value == null || windows.none { it.endsAt > now } -> "inactive"; else -> "armed" },
       "installedRevision" to value?.plan?.revision, "selectionRevision" to value?.plan?.selectionRevision,
       "selectedAppCount" to (value?.plan?.apps?.size ?: 0), "reasonCount" to windows.size,
       "pendingEventCount" to (value?.events?.size ?: 0), "overlayVisible" to (connected?.visible == true),
@@ -141,9 +140,9 @@ class InterventionRuntime private constructor(val context: Context) {
     "timezone_id" to value.schedule.timezone, "session_count" to policy.sessionsPerDay, "session_minutes" to policy.sessionSeconds / 60)
   private fun previewWindows(windows: List<InterventionWindow>) = windows.map { mapOf("reasonId" to it.reasonId, "startsAt" to it.startsAt, "endsAt" to it.endsAt) }
   private fun scheduleSummary(owner: String): Map<String, Any?> {
-    val value = engine.read(owner); val weekly = value?.plan?.weekly
-    val windows = value?.let { WeeklySchedules.windows(it.plan, System.currentTimeMillis()) }.orEmpty()
-    return mapOf("native" to summary(owner), "spec" to weekly?.let { scheduleWire(it, value.plan.policy) },
+    val value = engine.read(owner); val weekly = value?.plan?.weekly; val now = System.currentTimeMillis(); val allowed = authorized()
+    val windows = value?.let { WeeklySchedules.windows(it.plan, now) }.orEmpty()
+    return mapOf("observedAt" to now, "native" to summary(value, now, allowed), "spec" to weekly?.let { scheduleWire(it, value.plan.policy) },
       "enabled" to (weekly?.enabled == true), "windows" to previewWindows(windows), "otherInstallation" to (value != null && weekly == null && value.plan.windows.isNotEmpty()))
   }
   fun scheduleRead(owner: String, promise: Promise) = call(promise) { scheduleSummary(owner) }

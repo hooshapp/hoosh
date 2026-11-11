@@ -9,12 +9,12 @@ const saved: PlanDraft = { weekdays: [0], hours: { start_local: '09:00', end_loc
 const native = (revision: number | null = null, enabled = false) => ({ state: enabled ? 'armed' : 'inactive', installedRevision: revision, selectionRevision: revision === null ? null : 1,
   selectedAppCount: revision === null ? 0 : 1, reasonCount: enabled ? 1 : 0, pendingEventCount: 0, overlayVisible: false, disclosureAccepted: true, serviceConnected: true });
 function setup() {
-  let value = { native: native(), spec: null as PlanDraft | null, enabled: false, otherInstallation: false, windows: [] as { reasonId: string; startsAt: number; endsAt: number }[] };
+  let value = { observedAt: 1794214900000, native: native(), spec: null as PlanDraft | null, enabled: false, otherInstallation: false, windows: [] as { reasonId: string; startsAt: number; endsAt: number }[] };
   const port = { scheduleRead: jest.fn(async () => value), schedulePreview: jest.fn().mockResolvedValue({ windows: [{ reasonId: 'weekly_2026-11-09', startsAt: 1794214800000, endsAt: 1794243600000 }] }),
     interventionOpen: jest.fn().mockResolvedValue(token), interventionRelease: jest.fn().mockResolvedValue(null),
     selectionBegin: jest.fn().mockResolvedValue({ draftId: token, groupId: 'global', baseRevision: 1, draftVersion: 0, selectedAppCount: 1, savedAppCount: 1, dirty: false }), selectionRelease: jest.fn().mockResolvedValue(null),
     selectionPick: jest.fn(), selectionCommit: jest.fn(),
-    scheduleApply: jest.fn(async (_o, _t, _e, r, _s, spec) => { value = { native: native(r, true), spec, enabled: true, otherInstallation: false, windows: [{ reasonId: 'weekly_2026-11-09', startsAt: 1794214800000, endsAt: 1794243600000 }] }; return value; }),
+    scheduleApply: jest.fn(async (_o, _t, _e, r, _s, spec) => { value = { observedAt: 1794214900000, native: native(r, true), spec, enabled: true, otherInstallation: false, windows: [{ reasonId: 'weekly_2026-11-09', startsAt: 1794214800000, endsAt: 1794243600000 }] }; return value; }),
     interventionCancel: jest.fn(async (_o, _t, e) => { value = { ...value, native: native(e + 1), enabled: false, windows: [] }; return null; }),
   } satisfies WeeklySchedulePort & SelectionEditorPort;
   return port;

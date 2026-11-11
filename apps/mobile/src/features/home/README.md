@@ -151,3 +151,10 @@ Android read-only status/permission on actual Home (grant, deny, external revoke
 foreground, cold start, large text); see the Android runbook. Joint authenticated
 settings/profile phone journeys, native enforcement, real Auth/root, signing and
 assistive speech remain open gates.
+
+The explicit-owner weekly journey supplies `WeeklyPlanCard` through the existing
+protection slot, at the top via optional `protectionPlacement`; defaults remain
+unchanged. Native confirmed observation, rather than account/draft metrics,
+determines scheduled/active/stopped state. `bottomClearance` can be zero when the
+caller provides in-layout navigation. See the
+[journey runbook](../../../../../docs/qa/android-home-settings-journey.md).

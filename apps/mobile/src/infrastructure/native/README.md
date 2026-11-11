@@ -90,3 +90,11 @@ unchanged. One actor/AtomicFile v2 stores the applied weekly definition, enabled
 flag, app snapshot and existing allowance/events; v1 records remain readable.
 Read native weekdays/hours/zone/session settings after restart; never infer Apply
 from a server draft write. See [weekly runbook](../../../../../docs/qa/android-weekly-schedule.md).
+
+The debug weekly `scheduleRead` response now includes required native `observedAt`,
+with windows and counts from the same record/time/authorization observation. Shared
+decoding rejects old/missing fields; rebuild the debug APK. This extends response
+metadata only: no native method, permission, production capability or Auth binding
+is added. The shared Home/Settings controller polls for presentation freshness;
+native restrictions remain independent of JavaScript. See the
+[journey runbook](../../../../../docs/qa/android-home-settings-journey.md).

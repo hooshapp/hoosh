@@ -17,6 +17,7 @@ import { parseTime } from '@/features/editors/draft-utils';
 import { TimeRangeControl, minutesTime } from './time-range-control';
 import { validDraftHours } from './plan-draft-model';
 export type PlanActions = {
+  saveLabel?: string;
   dirty: boolean;
   state?: EditorState;
   onSave?: () => void;
@@ -25,13 +26,14 @@ export type PlanActions = {
 function Actions({
   label,
   valid = true,
+  saveLabel,
   ...props
 }: PlanActions & { label: string; valid?: boolean }) {
   return (
     <EditorActions
       {...props}
       state={props.state ?? 'ready'}
-      saveLabel={label}
+      saveLabel={saveLabel ?? label}
       valid={valid}
       checkAsset={assets.save}
     />

@@ -52,3 +52,15 @@ DST gaps clamp/skip, overlaps have one earliest-start/latest-end interval. See
 and [runbook](../../../../../docs/qa/android-weekly-schedule.md). Native record v2
 reads/migrates v1; do not downgrade old binaries over retained v2 state. Policy
 zone changes still require explicit local test reset, preserving the previous gate.
+
+## Shared Home and Settings journey
+
+`weekly-plan-journey.tsx` reuses product screens and inline editors;
+`use-weekly-plan.ts` owns one explicit-owner draft/read/intent lifecycle across
+navigation. `weekly-plan-status.ts` derives display only from coherent native
+`observedAt`/windows/state; `weekly-plan-card.tsx` presents it without invented
+account or usage outcomes. Field staging, Preview and native Apply remain distinct.
+Dirty navigation, foreground/owner disposal and uncertain writes retain explicit
+guards. The dev host alone supplies a synthetic owner through **App journey**.
+Production Auth/root and iOS are deferred. See the
+[journey runbook](../../../../../docs/qa/android-home-settings-journey.md).

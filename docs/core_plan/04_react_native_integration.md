@@ -9,6 +9,16 @@
 
 **Implementation record:** Follow the [knowledge-base workflow](../core_plan_implementation_notes/README.md) and maintain [Plan 04 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md). Each commit needs its own file/line change record, reasoning, checks and handoff. Preparation alone does not complete a part; RN-01's actual evidence is recorded below and in its notes.
 
+**Shared Home/Settings journey (2026-11-11):** the existing product screens now
+share an explicit-owner staged draft and confirmed native weekly-plan state in the
+isolated **App journey** entry. Settings inline days/hours/sessions and saved app
+selection connect to Preview/Apply/Update/Resume/Stop; Home reports native scheduled,
+active, stopped, permission and unknown states. No draft/API save implies activation.
+See the [journey runbook](../qa/android-home-settings-journey.md), latest Plan 04
+notes and [evidence](../core_plan_implementation_notes/artifacts/rn-09-app-journey/evidence.json).
+Auth/tokens, production root/verified owner, iOS and joint/signed acceptance remain
+open. Existing RN08-D02/D04/RN09D-D02 IDs and parent counts stay unchanged.
+
 **PM reconciliation (2026-11-09):** [ADR v1](../architecture/pm-decisions-2026-11-09.md)
 and [register v2](<../Context (AGENT)/OPEN_DECISIONS.yaml>) supersede older proposed
 policy/unanswered wording below. Q09 explicitly settles **global quest app selection**;
@@ -506,9 +516,9 @@ full RN-08/Plan 04 remain open. Earlier no-recurrence checkpoints are historical
 | Ref | Native scope (original deferrals; current checkpoints above/below apply) | Owner / required evidence |
 |---|---|---|
 | RN08-D01 | Audit and implement real Swift/Kotlin adapters and register the shared native port with truthful per-device capabilities | Anisha iOS; Ishmum Android. Source/entitlement/signing audit and Android feasibility are not established by UI or mock-service tests. |
-| RN08-D02 | Wire actual AppState + route focus/native changes into the required visibility input, refresh after real actions, and supply the authoritative device-native desired revision | Coordinated main/native host integration. The hook accepts these inputs but does not register lifecycle listeners or infer revision from a backend/profile save. |
+| RN08-D02 | Wire actual AppState + route focus/native changes into the required visibility input, refresh after real actions, and supply the authoritative device-native desired revision | Shared Home/Settings development journey now observes actual AppState/visibility, native boundaries and confirmed revisions; production verified-owner/root binding remains coordinated. No backend/profile save implies installation. |
 | RN08-D03 | Supply actual permission/recovery/selection/setup handlers and complete async busy/error flows | Native owners' supported platform flows. Presentation callbacks/preview notices do not prompt or grant permission, and a read refresh cannot reinitialize an absent adapter. |
-| RN08-D04 | Confirm real installation/revision reconciliation and approved overlapping restriction behavior | Real native coordinator and approved policy. Old installed state stays distinct from a new desired plan; UI/API success is not installation evidence. |
+| RN08-D04 | Confirm real installation/revision reconciliation and approved overlapping restriction behavior | Debug native coordinator/weekly compiler and shared Home/Settings explicit Apply/Update/Resume/Stop readback are implemented. Production binding and broader acceptance remain open; UI/API success is not installation evidence. |
 | RN08-D05 | Decide and implement account/sign-out ownership, event attribution and any restriction transfer/cleanup | PM/native migration protocol. This module does not clear, reassign or drain native rules/events on Auth changes or unmount. |
 | RN08-D06 | Execute signed-device revocation/install-failure/foreground/offline/host-termination and accessibility checks | Platform owners' reproducible device evidence. Browser typography/layout and JS compilation do not establish OS protection or Android/iOS parity. |
 
@@ -693,7 +703,7 @@ account, app inventory or usage is supplied by actual routes.
 |---|---|---|
 | RN-09e | Quest personalize `10487:126` / custom `10577:427`, reusable draft fields, times/repeat/weekdays, validation, dirty exit, action states and routes | UI implemented; live quest persistence/recurrence/native policies remain deferred |
 | RN-09f | Age `10601:5908`, activities `10601:6057`, apps `10601:5968`, inline gender `10601:6146`; search/selection/custom drafts, cancellation and save states | UI and debug-native local Apps draft/Save producer implemented; production/account selection, demographics and native rule installation remain deferred |
-| RN-09g | Inline days `10601:6315`, hours `10601:6513`, sessions `10601:6690`; shared controlled editors reusable by AUTH-12, explicit limits and unavailable saves | UI implemented; approved shared schema, real saves/install and device checks remain deferred |
+| RN-09g | Inline days `10601:6315`, hours `10601:6513`, sessions `10601:6690`; shared controlled editors reusable by AUTH-12, explicit limits and unavailable saves | UI/shared schema and debug explicit-owner weekly Apply are implemented; production Auth/API/native binding and joint device acceptance remain deferred |
 | RN-09h | Progress `10570:192`, reduction/time reclaimed `10570:193`, period changes, honest evidence/eligibility states and navigation | UI implemented; live measurements and signed-device acceptance remain deferred |
 
 Each part gets its own local commit and detailed file/line notes. Source assets

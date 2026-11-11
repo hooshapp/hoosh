@@ -4,19 +4,21 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN-08/RN-09 weekly schedule activation implemented and verified with explicit development owner; native calendar/template plus Preview/Apply/Update/Resume/Stop. Phone baseline restored. Production/Auth/iOS and remaining gates stay open; read latest entry/runbook.
+**Current part:** RN-08/RN-09 shared Home/Settings weekly-plan journey. Existing product screens/editors now share explicit-owner native Apply/readback/status. Emulator full flow and both targets’ native checks pass; new phone combined UI remains pending after lock. Baselines restored. Auth/tokens, production root and iOS remain deferred; read final entry/runbook.
 
-**Implementation branch:** `task/react-native/rn-08-android-interventions`; weekly activation parent `0f30ae9`; local commit only, no push/main merge or iOS/Auth change.
+**Implementation branch:** `task/react-native/rn-08-android-interventions`; Home/Settings journey parent `62d0396`; local commit only, no push/main merge or iOS/Auth change.
 
 **Commit reference:** RN-01 `2f88102`; RN-02 `2d5c0d1`; RN-03 `0741758`; RN-04 `610f570`; RN-05 preparation `0c6e4db`; RN-07 UI `5790302`; RN-08 preparation `71da2d5`; RN-09a `ff75039`. RN-10 is `9b5fbd0`.
 
-**Last updated:** 2026-11-10.
+**Last updated:** 2026-11-11.
 
 **Shared workflow:** [Implementation knowledge base](README.md).
 
 ## Resume here
 
-- **Weekly plan activation (2026-11-10):** native persisted weekly template/calendar and explicit-owner shared PlanDraft consumer implemented under RN08-D04/RN09D-D02. Preview never installs; Apply/Update/Resume/Stop confirm revision/spec/selection with readback. Both targets pass 139 native checks and actual main flow; phone actual end boundary and both stopped-template relaunch pass. Final root 424/616(+2 skips)/601, JVM 68, exports/release checks pass. Record v2 reads/migrates v1; timezone migration still rejects without explicit test reset. Phone original files/settings restored, test service/TalkBack off, captures removed, owned Metro stopped/emulator shut down. Read [weekly runbook](../qa/android-weekly-schedule.md) / [evidence](artifacts/rn-08-weekly-schedule/evidence.json) and final entry. Production/Auth/iOS, quest/reward producers and signed/wider acceptance stay open. Parent `0f30ae9`; own hash Pending until next normal update; local commit only.
+- **Shared Home/Settings journey (2026-11-11):** existing product views/inline editors now share explicit-owner draft/native installation state in the new App journey development entry. Native observedAt drives scheduled/active presentation and boundary refresh; staged input/Preview never installs, explicit Apply/Stop confirms native revisions. Root 434/634(+2 skips)/601, JVM 68, emulator and phone 139 native checks pass; actual emulator chooser→inline editors→Preview→Apply→Home boundary→native pause→Stop passes. New phone combined UI remains pending after lock; its native checks passed. Both baselines restored, captures removed, owned Metro/AVD stopped. Read the final entry and [journey runbook](../qa/android-home-settings-journey.md). Production Auth/root/tokens, iOS, signed/joint and other feature producers remain open. Parent `62d0396`; own hash Pending until next normal notes update; local commit only.
+
+- **Weekly plan activation (2026-11-10):** native persisted weekly template/calendar and explicit-owner shared PlanDraft consumer implemented under RN08-D04/RN09D-D02. Preview never installs; Apply/Update/Resume/Stop confirm revision/spec/selection with readback. Both targets pass 139 native checks and actual main flow; phone actual end boundary and both stopped-template relaunch pass. Final root 424/616(+2 skips)/601, JVM 68, exports/release checks pass. Record v2 reads/migrates v1; timezone migration still rejects without explicit test reset. Phone original files/settings restored, test service/TalkBack off, captures removed, owned Metro stopped/emulator shut down. Read [weekly runbook](../qa/android-weekly-schedule.md) / [evidence](artifacts/rn-08-weekly-schedule/evidence.json) and final entry. Production/Auth/iOS, quest/reward producers and signed/wider acceptance stay open. Parent `0f30ae9`; commit `62d0396`; local commit only.
 
 - **RN-08 lifecycle/read continuation (2026-11-10):** both targets pass final 112 native checks, actual host-task removal/relaunch, retained permission revoke/re-enable and Metro-stopped native expiry/bypass. Pixel owner TalkBack speech/swipe/Open anyway/Return home confirmed, with final native quit correlation. Fixed actual feedback-interruption loss of expiry. Explicit-owner snapshot reader feeds existing shared status in QA; production registration/recurring writes/Auth/iOS unchanged. Full root 398/606(+2 skips)/601, final scoped checks/export/release separation pass. Phone exact files/settings restored; test service/TalkBack off, captures removed, owned Metro stopped/emulator shut down. Read latest entry and [evidence](artifacts/rn-08-lifecycle-reader/evidence.json). Parent `696eec1`; commit `0f30ae9`; local commit only.
 
@@ -4189,7 +4191,7 @@ remaining deferred work implemented. No push/CI/merge/deployment.
 ### RN-08 / RN08-D04 and RN-09 plan settings — Weekly schedule installation
 
 **Commit:** `feat(android): apply weekly plan settings with native recurrence`.
-**Hash:** Pending until next normal update. **Owner:** Ishmum. **Date:** 2026-11-10.
+**Hash:** `62d0396` (recorded during Home/Settings integration). **Owner:** Ishmum. **Date:** 2026-11-10.
 **Parent:** `0f30ae9`. **Branch:** `task/react-native/rn-08-android-interventions`.
 **Status:** Requested schedule translation, explicit Apply/Update/Resume/Stop,
 confirmed installation/failures and end-to-end development-owner verification
@@ -4407,3 +4409,208 @@ Own hash Pending until next normal update. No push/CI/merge/deployment.
 - `docs/core_plan_implementation_notes/artifacts/rn-08-weekly-schedule/evidence.json`: lines 1–218. Fingerprint final sources/builds and separate interactive versus final APKs; record 278 actual native results, final root/scoped checks, target UI flows, rejected attempts, restored baseline and remaining gates without private data.
 - `docs/qa/android-weekly-schedule.md`: lines 1–139. Document implementation semantics, primary sources, exact native build/test/host flow, UI Apply/Update/Resume/Stop/boundary/relaunch checks, privacy/baseline restoration and unverified platform/production gates.
 - `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 7–9, 19–23, 3985, 4189–4409. Record prior commit/current resume plus every weekly implementation change, decision, measured correction, actual check/flow, fingerprint boundary, restoration and deferred gate; exact per-file ledger. Own hash Pending until next normal update.
+
+
+### RN-08/RN-09 — Shared Home and Settings weekly-plan journey
+
+**Commit:** Pending. **Owner:** Ishmum. **Date:** 2026-11-11.
+**Parent:** `62d0396`. **Branch:** `task/react-native/rn-08-android-interventions`.
+**Status:** Implemented with bounded emulator/native acceptance; new phone combined UI pending. User authorized moving the tested weekly flow into shared
+Home/Settings presentation and verifying one product journey via explicit
+local-development entry. Auth/tokens, production signed-in root/route binding and
+Anisha's iOS remain deferred. Preserve existing part IDs; no push/merge/deploy.
+
+#### Intended design and dependencies
+
+Reuse HomeScreen, SettingsScreen and the existing days/hours/sessions inline editors,
+native app editor, fields/actions/theme and weekly client. One explicit owner-scoped
+controller holds the staged draft, confirmed installation and pending intent across
+Home/Settings navigation. Draft staging, server persistence and native Apply stay
+separate; no invented account/profile or default production identity. Native reads
+must carry one native observation time so Home can distinguish an active window
+from a future schedule without inferring from a draft/API save or JS wall clock.
+Visible/foreground reads refresh at native boundaries; JS controls presentation
+freshness, never restriction execution. Unknown/stale/revoked/ambiguous states
+cannot leave an active claim visible. Keep unsaved inline edits on background read
+and require an explicit choice before discarding them on navigation. Record all
+changes, failures, real checks/restoration and final file/line ledger below.
+
+
+#### Implementation progress and corrections
+
+- Added one owner-scoped weekly controller and shared journey that renders the
+  existing HomeScreen/SettingsScreen, DaysEditor/HoursEditor/SessionsEditor,
+  NativeAppsEditor, Field/Button/Choice/dialog/focus helpers. No production route,
+  Auth provider, real identity, backend write or iOS native source is changed.
+- Settings gains an optional native plan-content slot while its draft row labels
+  remain explicit. Editor Use actions stage only local fields; Preview never
+  installs. Whole-plan Apply/Update/Resume/Stop reuse native CAS/client readback.
+  Extracted the existing draft section validation/merge for reuse without creating
+  a fake HTTP revision/account; API patch behavior stays covered by prior tests.
+- Home receives the actual schedule card at the top in this explicit host, while
+  default Home protection placement and Router behavior stay unchanged. Distinguish
+  ready/scheduled, currently active, stopped, permission/failure/unavailable and
+  unconfirmed change. Separate un-applied drafts and changed global app selection
+  from the applied native snapshot; no reward/usage outcomes are fabricated.
+- Native scheduleRead now includes one observedAt clock value and computes its
+  window/status counts from the same record/time/authorization read. Shared decoder
+  requires safe observation time and coherent window counts. Old debug APKs lacking
+  this field must be rebuilt; do not guess Date.now or claim current activation.
+- Visible/foreground reads refresh at native start/end boundaries and at most 15s
+  otherwise. Quiet non-boundary polls preserve the last confirmed display while
+  reading; read failure, foreground/route loss and boundary checks mask it. No JS
+  restriction execution/timer is introduced. Read epochs and queued refreshes
+  handle foreground return during a pending native read. Scope disposal fences
+  old callbacks/writes and releases acquired selection/operation handles.
+- Navigation retains staged drafts across Home/Settings. Unfinished inline edits
+  require Keep/Discard; Close requires confirmation before losing un-applied local
+  input and never cancels installed native rules. Confirmation focus returns to
+  the current editor/Close trigger using existing helper. Native app editor owns
+  Back during selection. Ordinary screen scroll owners are reused, no nested
+  Settings ScrollView or invented Router/auth context.
+- Development-only App journey entry discovers real Android methods, binds only
+  local synthetic owner A and labels the preview. Its QA footer is hidden so the
+  product navigation/Close guard owns exit; production export rejects its marker.
+- Fixed early React ref-write/effect lint errors by keeping ref updates in events/
+  layout effects and async native fetch scheduling, without suppressions. Scoped
+  existing draft/client tests passed 43 and existing settings/editor tests 66;
+  new status tests pass 10 and new journey component results pass 18.
+- Native build initially failed because the old temporary JDK lacked jvm.cfg.
+  Restored the same official Temurin 17.0.21+9 archive in a new task-owned temp
+  directory after checksum verification. Initial Python Adoptium request received
+  403; standard curl client succeeded, no permission/security guard bypass. SDK
+  check initially looked for platform 36, but the project compiles with installed
+  platform 37 and targets device 36; no SDK/project upgrade was needed. Final
+  debug/test and release Kotlin/manifest builds pass. No repository toolchain
+  version was changed. Physical USB device is currently absent; user connection
+  requested while independent actual emulator acceptance proceeds.
+
+
+- Full workspace now passes 434 portable / 634 component (+2 existing skips) /
+  601 API across 76 component suites, with types/lint/assets/Ruff/contracts. Native
+  JVM 68 and actual emulator 139 pass; release Kotlin/manifest builds pass.
+  New required observation field/count consistency also preserves earlier shared
+  weekly client/setup coverage with updated explicit native-response fixtures.
+- The status controller avoids repeated loading announcements for quiet polls,
+  but masks on real boundary/foreground/error and preserves a fresh key for each
+  visibility cycle. Fixed a lint-detected synchronous effect update by scheduling
+  the external native fetch asynchronously; no lint/ref/hook suppression.
+
+
+#### Current interactive verification
+
+- Owned AOSP API-36 ARM64 emulator: actual shared Settings native chooser saved
+  only the owned target. All days, explicit UTC hours and two one-minute sessions
+  were staged through the original inline editors. Preview left the native
+  installation absent. Apply persisted weekly revision 1 and Home showed scheduled.
+  Without manual Refresh/Apply, Home changed to active at the native start; the
+  selected owned target displayed the native pause. Stop persisted revision 2
+  disabled, Home showed stopped and the target opened without a pause.
+- Emulator cleanup used a separately labeled finite diagnostic only to reach
+  native Disable test access; it is not an additional weekly acceptance result.
+  Explicit owner erasure, exact baseline-file restoration, disabled service, removed
+  captures/reverse/cache and owned AVD shutdown are verified. No personal data.
+- New phone session backed up its current known owner files and settings before
+  replacing the owned debug/test APKs. Native checks pass 77 intervention +17
+  lifecycle +22 draft +12 preview +11 synthetic discovery. Actual launcher probe
+  refuses the service-bearing manifest (unsafe_manifest); that is the expected
+  fail-closed result, not inventory acceptance. First harness assertion expected
+  selectionPreviewChecksPassed, but runner returns previewChecksPassed; corrected
+  parsing without changing/repeating the passing runner. Phone combined UI remained locked after setup; unlock was requested and no
+  locked window was captured. Native access was never enabled in this new phone
+  run. Exact original known files, service/touch/font/power/timeout/usage settings
+  and reverse mapping were restored and verified; captures/cache removed. Owned
+  Metro stopped and emulator shutdown verified. No app data clear or uninstall.
+- Initial OCR assertions missed checkmark-prefixed Use buttons; changed only
+  private test-helper matching. An hours helper used the start column when trying
+  to fill End; reviewed own-screen layout, selected each actual field and then
+  verified final native spec before accepting Apply. Failed attempts are not UI
+  feature passes. Original temporary JDK repair is recorded above.
+- Final production web export passes isolation on 38 JavaScript/HTML files and
+  all 71 original SVG assets, including the new development-entry marker guard.
+  Final safe-inset adjustment passed scoped types/lint and all 18 journey
+  component results after the full workspace check; no native edits after build.
+
+#### Validation commands and remaining boundaries
+
+- `npm run check` passed the full root matrix (434 portable, 634 components plus
+  two existing skips in 76 suites, 601 API/199 database deselected), including
+  types, ESLint, assets, Ruff and OpenAPI/type generation checks. Eleven existing
+  warnings remain; no new suppression or dependency was added.
+- `npm run typecheck` / `npm run lint` and the mobile component command
+  `npm run test:components --workspace @disconnect/mobile -- --runTestsByPath src/features/plans/weekly-plan-journey.test.tsx`
+  passed after the final safe-inset adjustment (18 results).
+- `npm run mobile:export` passed final isolation on 38 app JavaScript/HTML files
+  and all 71 original local SVGs; App journey marker is forbidden in production.
+- With the restored JDK17 and existing SDK,
+  `npm run mobile:check-intervention-engine` passed 68 JVM cases.
+  `apps/mobile/android/gradlew -p apps/mobile/android :app:assembleDebug :app:assembleDebugAndroidTest :hoosh-usage:compileReleaseKotlin :app:processReleaseMainManifest -PreactNativeArchitectures=arm64-v8a --console=plain`
+  passed. Same native debug/test APKs were installed on both actual targets.
+- Scoped `am instrument -w -e probe` runs of interventionChecks,
+  selectionLifecycleChecks, selectionDraftChecks, selectionPreviewChecks and
+  selection passed 77/17/22/12/11 respectively per target. The selection discovery
+  collection itself rejects the service-bearing manifest as designed; no inventory
+  coverage is claimed from these synthetic checks.
+- No new physical TalkBack, signed/store, other Android API/device/profile, actual
+  process-death/reboot or week-long/DST live acceptance is inferred. Production
+  verified owner/root binding, user-deferred Auth/tokens, Anisha-owned iOS,
+  quest/reward/usage producers and history-preserving policy-zone migration remain
+  separate work. No production capability, API schema/storage, credentials,
+  account administration, iOS source or dependency changes. No push/merge/deploy.
+
+#### Handoff
+
+The shared consumer is ready for a caller to provide a verified owner, supported
+native port, optional saved PlanDraft and real visibility. Reuse it without the
+development entry's synthetic identity. Keep server draft persistence distinct
+from explicit native activation. Run coordinated production Auth/root/account
+acceptance only when that deferred work is resumed. Existing part IDs/counts and
+parent open status are preserved; the next independent feature work remains
+actual quest/usage/history producers rather than fake sample outcomes.
+
+
+**Final acceptance limit:** The new combined physical-phone Home/Settings journey
+and new spoken TalkBack matrix were not run. The phone locked before that flow;
+its 139 native checks passed independently. Emulator full product journey passed.
+Current phone baseline is restored; keep the pending unlock question from being
+interpreted as completed execution. To resume phone UI acceptance, take a fresh
+baseline, start the existing isolated host and follow the linked runbook. Earlier
+phone flows remain dated in their own entries.
+
+**Commit message / Git reference:**
+`feat(mobile): connect weekly plans to shared Home and Settings`.
+Own hash stays Pending until the next normal notes update; resolve by this message
+and parent `62d0396`. Local commit only, no publication.
+
+#### Per-file implementation ledger
+
+Line ranges belong to this commit; the self-hash remains Pending as required.
+
+- `apps/mobile/dev/native/App.tsx`: lines 1, 73, 131, 137, 162, 193. Register App journey in the existing host menu and render its real shared consumer. Hide the outer QA footer while open so only the product Close/discard guard can exit.
+- `apps/mobile/dev/native/README.md`: lines 190–205. Document the new actual shared-screen entry, explicit activation/cleanup and 25-page host count; link the reproducible journey runbook.
+- `apps/mobile/dev/native/app-journey.tsx`: lines 1–18. Discover the real Android methods, bind only an explicitly labeled synthetic development owner and compose the shared journey under safe insets. Keep Auth/production routes and other unavailable outcomes out of this entry.
+- `apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/InterventionRuntime.kt`: lines 56–57, 59–60, 143–145. Refactor native summaries to use one captured record/time/authorization and return observedAt with weekly reads. Keep method/permission count and native policy unchanged; avoid inconsistent counts at a boundary.
+- `apps/mobile/src/features/home/README.md`: lines 154–160. Explain the optional native-status placement/clearance and evidence boundary; link the combined journey runbook.
+- `apps/mobile/src/features/home/home-screen.tsx`: lines 16, 19, 32, 34, 48, 53, 90. Add optional top/bottom protection placement and caller-owned bottom clearance. The explicit journey displays real native schedule state first without changing default Home callers.
+- `apps/mobile/src/features/plans/README.md`: lines 55–66. Describe the shared controller, pure status/card and screen composition responsibilities, draft/install separation and deferred verified-owner integration.
+- `apps/mobile/src/features/plans/plan-draft-model.ts`: lines 69–74, 103. Extract existing validated per-section draft merge as planDraftSection so local staging can reuse it without a fabricated SettingsView/account/revision. Preserve planDraftPatch HTTP revision/patch behavior.
+- `apps/mobile/src/features/plans/plan-editors.tsx`: lines 20, 29, 36. Allow an optional saveLabel override in existing editor actions. New local Use actions clearly stage a draft while prior server-save labels retain their defaults.
+- `apps/mobile/src/features/plans/use-weekly-plan.ts`: lines 1–112. Add a single explicit-owner controller for staged draft, native installation/selection observation and pending writes across Home/Settings. Implement read epochs, native-boundary/quiet polling, foreground refresh coalescing, raw input preservation, scoped disposal/lease cleanup and explicit ambiguous-write recovery without replay.
+- `apps/mobile/src/features/plans/weekly-plan-card.tsx`: lines 1–28. Present the pure device-status projection in existing theme/buttons with announcements, unapplied draft/app-choice notices and only applicable refresh/access/setup actions. Keep account metrics and native installation distinct.
+- `apps/mobile/src/features/plans/weekly-plan-journey.test.tsx`: lines 1–114. Add nine meaningful scenarios in both platform presets (18 results): missing native module, full stage/preview/apply/stop, dirty navigation, uncertain committed write recovery, permission/foreground raw edit preservation, native time boundary, owner disposal, queued foreground read and guarded Close. Assert no implicit/replayed writes or fabricated Auth outcomes.
+- `apps/mobile/src/features/plans/weekly-plan-journey.tsx`: lines 1–111. Compose actual Home/Settings screens, original inline days/hours/sessions editors and NativeAppsEditor with one controller. Stage per-field edits separately from Preview/Apply/Update/Resume/Stop; guard dirty navigation/Close/Back and focus return, and respect safe bottom insets without nested scrolling.
+- `apps/mobile/src/features/plans/weekly-plan-status.test.ts`: lines 1–49. Add ten portable cases for native-time boundary semantics, stale/error/unavailable masking, pending intent, revocation/failure, stopped/absent/other distinctions, bounded timers and unsafe timestamp rejection.
+- `apps/mobile/src/features/plans/weekly-plan-status.ts`: lines 1–30. Derive scheduled/active/stopped/permission/unknown and other statuses only from confirmed native observation time/windows/state. Compute a bounded UI refresh delay at native boundaries; do not use JavaScript wall time to activate rules.
+- `apps/mobile/src/features/plans/weekly-schedule-setup.test.tsx`: lines 12, 17. Update standalone weekly setup native-response fixtures with observedAt; retain its previous activation/disposal/uncertainty tests under the stricter response contract.
+- `apps/mobile/src/features/plans/weekly-schedule.test.ts`: lines 9. Update existing native fixtures with explicit coherent observation time so strict decoding retains previous client/CAS/readback regression coverage.
+- `apps/mobile/src/features/plans/weekly-schedule.ts`: lines 12, 49, 54–55. Require/validate observedAt and coherent weekly native window counts in ScheduleInstallation decoding. Reject old or inconsistent APK responses explicitly rather than estimating native state from Date.now.
+- `apps/mobile/src/features/settings/README.md`: lines 57–63. Document the native plan-content slot, local field staging versus whole-plan Apply and caller navigation clearance.
+- `apps/mobile/src/features/settings/settings-screen.tsx`: lines 19, 22–23, 36–37, 60, 138, 172, 176. Add an optional planContent slot in existing My Plan and caller bottom clearance. Retain explicit draft row labels and explain that editing requires whole-plan Apply; existing callers keep default behavior.
+- `apps/mobile/src/infrastructure/native/README.md`: lines 93–100. Document coherent required observedAt response metadata, debug APK rebuild requirement and UI-only polling; no capability/permission/Auth expansion.
+- `docs/Context (AGENT)/AGENT_START_HERE.md`: lines 36–45. Add a dated current handoff to shared Home/Settings integration, its runbook/evidence and preserved production/Auth/iOS gates; leave historical checkpoints dated.
+- `docs/core_plan/04_react_native_integration.md`: lines 12–21, 519, 521, 706. Record the new shared-screen checkpoint and update existing RN08-D02/D04 and RN-09g status wording to reflect explicit debug activation. Preserve stable IDs, top-level counts and all production/joint acceptance gates.
+- `docs/core_plan/README.md`: lines 20–29. Add the dated shared journey checkpoint and evidence/runbook links so future agents find current work without interpreting historical no-compiler notes as current.
+- `docs/core_plan_implementation_notes/artifacts/rn-09-app-journey/evidence.json`: lines 1–161. Record exact source/APK hashes, actual automated/native and emulator interactive results, honest phone lock limit, rejected attempts and target-specific restoration. Exclude credentials, identities/inventory, serials, raw captures and private helper paths.
+- `docs/qa/android-home-settings-journey.md`: lines 1–85. Document actual product-screen flow, strict native observation, editor staging/explicit writes, navigation/lifecycle/uncertainty behavior, reproducible setup/checks, privacy/restoration and remaining gates.
+- `scripts/check-ui-preview-isolation.mjs`: lines 36. Forbid the new App journey development marker in exported production app assets so the synthetic-owner host cannot silently ship.
+- `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 7, 9, 13, 19–21, 4194, 4412–4616. Update current part/parent/date/resume and record this commit’s design, implementation, measured corrections, exact commands/results, phone lock limit, restoration, handoff and every changed file/line. Preserve prior commit history and Pending self-hash convention.

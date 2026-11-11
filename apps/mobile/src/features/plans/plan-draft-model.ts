@@ -66,9 +66,12 @@ export function planDraftPatch(
   draft: PlanDraftInput,
   settings: SettingsView | null,
 ): SettingsPatch {
-  const expected_revision = settings?.revision ?? 0;
-  if (draft === null) return { expected_revision, plan_draft: null };
-  const plan = { ...(settings?.plan_draft ?? emptyPlanDraft()) };
+  return { expected_revision: settings?.revision ?? 0, plan_draft: planDraftSection(field, draft, settings?.plan_draft ?? null) };
+}
+/** The same section validation/merge for local staging; no invented HTTP revision or account. */
+export function planDraftSection(field: PlanField, draft: PlanDraftInput, base: PlanDraft | null): PlanDraft | null {
+  if (draft === null) return null;
+  const plan = { ...(base ?? emptyPlanDraft()) };
   if (field === 'days') {
     if (
       draft.weekdays.length > 7 ||
@@ -97,7 +100,7 @@ export function planDraftPatch(
     plan.session_count = count;
     plan.session_minutes = minutes;
   }
-  return { expected_revision, plan_draft: plan };
+  return plan;
 }
 export function planSummary(field: PlanField, plan: PlanDraft | null): string {
   if (!plan) return 'No saved draft';

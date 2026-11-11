@@ -187,5 +187,19 @@ Use Android interventions to review access or erase the local test coordinator
 when finished. This page can install local weekly interventions; it is not a
 sample or account/API save. No Auth/iOS/production root changes. Detailed setup,
 actual acceptance, DST choices and cleanup are in the
-[weekly runbook](../../../../docs/qa/android-weekly-schedule.md). The host now has
-24 pages (19 source samples and five real native diagnostics).
+[weekly runbook](../../../../docs/qa/android-weekly-schedule.md). This standalone flow brought the host to
+24 pages (19 source samples and five real native diagnostics); App journey below
+adds the sixth diagnostic.
+
+### Shared product journey
+
+Open **App journey** to use the actual shared Home/Settings screens and existing
+inline editors with the real Android weekly-plan port and explicitly labeled
+synthetic owner. Choose/save the owned test target, stage days/hours/sessions,
+Preview, Apply, inspect Home, and Stop before cleanup. Home's other unavailable
+outcomes stay unavailable. The preview owns its Home/Settings/Close navigation;
+its Close confirmation cannot be bypassed by the QA footer. No production
+Auth/root routing is connected. The host now has **25 pages: 19 source samples
+and six real native diagnostics**. Read the
+[journey runbook](../../../../docs/qa/android-home-settings-journey.md) for native
+build requirements, actual evidence and exact restoration boundaries.

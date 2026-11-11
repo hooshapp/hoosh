@@ -9,7 +9,7 @@ export interface WeeklySchedulePort extends Pick<InterventionCoordinatorPort, 'i
   schedulePreview(spec: PlanDraft): Promise<unknown>;
   scheduleApply(owner: string, token: string, expected: number, revision: number, selectionRevision: number, spec: PlanDraft): Promise<unknown>;
 }
-export type ScheduleInstallation = Readonly<{ native: InterventionStatus; spec: PlanDraft | null; enabled: boolean;
+export type ScheduleInstallation = Readonly<{ observedAt: number; native: InterventionStatus; spec: PlanDraft | null; enabled: boolean;
   otherInstallation: boolean; windows: readonly InterventionWindow[] }>;
 export class ScheduleError extends Error {
   constructor(public readonly code: 'invalid' | 'unconfirmed' | 'closed' | 'busy') {
@@ -46,13 +46,13 @@ export function decodeScheduleWindows(value: unknown): readonly InterventionWind
   return windows;
 }
 export function decodeScheduleInstallation(value: unknown): ScheduleInstallation {
-  if (!object(value) || typeof value.enabled !== 'boolean' || typeof value.otherInstallation !== 'boolean') return invalid();
+  if (!object(value) || !Number.isSafeInteger(value.observedAt) || (value.observedAt as number) < 0 || (value.observedAt as number) > 8640000000000000 || typeof value.enabled !== 'boolean' || typeof value.otherInstallation !== 'boolean') return invalid();
   const native = decodeInterventionStatus(value.native), spec = value.spec === null ? null : completeSchedule(value.spec);
   // Finite diagnostic windows are not weekly preview windows; never present them as an installed weekly plan.
   const windows = value.otherInstallation ? [] : decodeScheduleWindows(value.windows);
   if ((value.enabled && (!spec || native.installedRevision === null)) || (spec && value.otherInstallation) ||
-    (!value.enabled && !value.otherInstallation && windows.length > 0) || (spec && native.installedRevision === null)) return invalid();
-  return { native, spec, enabled: value.enabled, otherInstallation: value.otherInstallation, windows };
+    (!value.enabled && !value.otherInstallation && windows.length > 0) || (spec && native.installedRevision === null) || (!value.otherInstallation && native.reasonCount !== windows.length)) return invalid();
+  return { observedAt: value.observedAt as number, native, spec, enabled: value.enabled, otherInstallation: value.otherInstallation, windows };
 }
 
 /** No Auth/default owner, retry, implicit install, or JS recurrence timer. Call dispose on scope loss. */

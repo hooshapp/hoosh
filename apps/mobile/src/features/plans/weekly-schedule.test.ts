@@ -6,7 +6,7 @@ const token = '00000000-0000-4000-8000-000000000099';
 const spec: PlanDraft = { weekdays: [0, 2], hours: { start_local: '22:00', end_local: '02:00', next_day: true }, timezone_id: 'America/New_York', session_count: 2, session_minutes: 10 };
 const window = { reasonId: 'weekly_2026-11-09', startsAt: 1000, endsAt: 9000 };
 const state = (revision: number | null = null, enabled = false, saved: PlanDraft | null = null) => ({
-  native: { state: enabled ? 'armed' : 'inactive', installedRevision: revision, selectionRevision: revision === null ? null : 1, selectedAppCount: revision === null ? 0 : 1, reasonCount: enabled ? 1 : 0, pendingEventCount: 0, overlayVisible: false, disclosureAccepted: true, serviceConnected: true },
+  observedAt: 2000, native: { state: enabled ? 'armed' : 'inactive', installedRevision: revision, selectionRevision: revision === null ? null : 1, selectedAppCount: revision === null ? 0 : 1, reasonCount: enabled ? 1 : 0, pendingEventCount: 0, overlayVisible: false, disclosureAccepted: true, serviceConnected: true },
   spec: saved, enabled, windows: enabled ? [window] : [], otherInstallation: false,
 });
 function fixture() {

@@ -13,8 +13,10 @@ import { HomeRecommendation } from './home-recommendation';
 
 export type HomeScreenProps = {
   model: HomeModel;
+  bottomClearance?: number;
   /** Inject only the actual RN-08/native-owner presentation; never derive from Home metrics. */
   protection?: ReactNode;
+  protectionPlacement?: 'top' | 'bottom';
   /** Accepted preference summaries supplied by the account-scoped settings consumer. */
   preferences?: ReactNode;
   onFeed?: () => void;
@@ -27,7 +29,9 @@ export type HomeScreenProps = {
 /** Source Home composition. A future producer owns policy, freshness and account scoping. */
 export function HomeScreen({
   model: input,
+  bottomClearance,
   protection,
+  protectionPlacement = 'bottom',
   preferences,
   onFeed,
   onOpenHistory,
@@ -41,11 +45,12 @@ export function HomeScreen({
   const { fontScale } = useWindowDimensions();
   const stacked = (contentWidth !== undefined && contentWidth < 300) || fontScale > 1.3;
   return (
-    <Screen title="Home" header={null} contentStyle={styles.content} testID="home-scroll">
+    <Screen title="Home" bottomClearance={bottomClearance} header={null} contentStyle={styles.content} testID="home-scroll">
       <View
         testID="home-content"
         style={styles.body}
         onLayout={({ nativeEvent }) => setContentWidth(Math.ceil(nativeEvent.layout.width))}>
+        {protectionPlacement === 'top' ? protection : null}
         <HomeOverview
           dino={model.dino}
           credits={model.credits}
@@ -82,7 +87,7 @@ export function HomeScreen({
           </Text>
         ) : null}
         {preferences}
-        {protection}
+        {protectionPlacement === 'bottom' ? protection : null}
       </View>
     </Screen>
   );
