@@ -14,6 +14,7 @@ class ErrorCode(StrEnum):
     FORBIDDEN = "FORBIDDEN"
     PROFILE_CONFLICT = "PROFILE_CONFLICT"
     SETTINGS_CONFLICT = "SETTINGS_CONFLICT"
+    QUEST_CONFLICT = "QUEST_CONFLICT"
     REQUEST_TOO_LARGE = "REQUEST_TOO_LARGE"
     VALIDATION_ERROR = "VALIDATION_ERROR"
     AUTH_UNAVAILABLE = "AUTH_UNAVAILABLE"
@@ -36,6 +37,7 @@ class ValidationField(WireModel):
         "activities",
         "activities.selected_activity_ids",
         "activities.custom_text",
+        "definition",
         "plan_draft",
         "plan_draft.weekdays",
         "plan_draft.hours",
@@ -111,7 +113,7 @@ class ValidationErrorBody(CommonErrorBody):
 
 
 class ConflictErrorBody(CommonErrorBody):
-    code: Literal[ErrorCode.PROFILE_CONFLICT, ErrorCode.SETTINGS_CONFLICT]
+    code: Literal[ErrorCode.PROFILE_CONFLICT, ErrorCode.SETTINGS_CONFLICT, ErrorCode.QUEST_CONFLICT]
     retryable: Literal[False]
     details: ConflictDetails
 

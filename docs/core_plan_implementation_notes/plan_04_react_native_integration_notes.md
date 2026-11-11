@@ -4,9 +4,9 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN-08/RN-09 Android/shared Home/Settings work published to its task branch. Foundation run `43073076110` passed all three jobs/steps at `69d8351`; this publication-notes commit is checked at its own pushed head before reporting. Auth/tokens, production root, iOS and wider acceptance remain deferred; read latest entry/evidence.
+**Current part:** RN09B-D01 saved quest management. Slice a contract/storage/API verified; shared consumer and local mobile HTTP acceptance b/c follow in this task. Auth/tokens, production root, iOS and activation/reward policy remain deferred; read latest entry.
 
-**Implementation branch:** `task/react-native/rn-08-android-interventions`; published task branch; latest acceptance `69d8351`; no main merge/deployment or iOS/Auth change.
+**Implementation branch:** `task/react-native/rn-09b-quest-management`; parent published `4c632b4`; no new push/main merge/deployment or iOS/Auth change.
 
 **Commit reference:** RN-01 `2f88102`; RN-02 `2d5c0d1`; RN-03 `0741758`; RN-04 `610f570`; RN-05 preparation `0c6e4db`; RN-07 UI `5790302`; RN-08 preparation `71da2d5`; RN-09a `ff75039`. RN-10 is `9b5fbd0`.
 
@@ -15,6 +15,8 @@
 **Shared workflow:** [Implementation knowledge base](README.md).
 
 ## Resume here
+
+- **RN09B-D01 saved definitions (2026-11-11):** new task branch from `4c632b4`; slice a implements own strict paginated quest-definition CRUD with revision CAS, content-free deletion tombstones, additive migration 0003, RLS/ACL/trigger verification, generated contract and local security/concurrency/upgrade tests. 628 API /216 actual PostgreSQL pass; existing 434 portable/634 component (+2 skips), types/lint/assets pass, final API lint/contracts pass. No hosted migration or real mobile Auth/native activation/reward call. Continue b/c shared consumers and local TCP mobile acceptance in this same task. See [contract](../architecture/quest-definition-management.md) and latest entry. Own slice-a hash Pending until next normal update; do not claim full RN-09b/Plan 04 completion.
 
 - **Android/shared journey publication (2026-11-11):** normal non-forced push created `origin/task/react-native/rn-08-android-interventions`, confirmed at exact head `69d8351ca00bd3bf517ec9b460bf4ed4d261d4f1`. [Foundation run 43073076110](https://github.com/hooshapp/hoosh/actions/runs/43073076110) completed successfully: mobile, API and database, including every reported step and disposable database cleanup. Read [publication evidence](artifacts/rn-08-github-publication/evidence.json) and final entry. The publication documentation receives its own push/run, verified before the final response; own hash stays Pending until next normal update. Main, Auth/tokens/iOS, signed/store and other feature gates unchanged; unrelated untracked workspace/icon packs excluded.
 
@@ -4723,7 +4725,7 @@ Line ranges refer to this acceptance commit; own hash remains Pending.
 
 ### RN-08/RN-09 — Publish Android integration and verify GitHub Foundation
 
-**Commit:** Pending. **Owner:** Ishmum. **Date:** 2026-11-11.
+**Commit:** `4c632b4`. **Owner:** Ishmum. **Date:** 2026-11-11.
 **Parent:** `69d8351` (physical shared Home/Settings acceptance).
 **Branch:** `task/react-native/rn-08-android-interventions`.
 **Status:** Implementation/acceptance publication verified; documentation follow-up receives its own exact-head verification after push. User explicitly requested push and GitHub verification. No main merge, PR creation or deployment requested.
@@ -4789,3 +4791,97 @@ Ranges refer to this publication-documentation commit.
 
 - `docs/core_plan_implementation_notes/artifacts/rn-08-github-publication/evidence.json`: lines 1–304. Record verified public push-run metadata for exact SHA/branch, all three successful jobs and step summaries, coverage and remaining gates. Distinguish the verified implementation head from this separately checked documentation follow-up; contain no credentials/raw logs/device data.
 - `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 7, 9, 19–21, 4625, 4710, 4722–4791. Update current published checkpoint/resume, record acceptance hash 69d8351 during the next normal update and document this separate publication commit. Cover authorized non-forced branch push/head verification, connector/API boundaries, actual GitHub results, exact-head follow-up verification, all changed files and remaining gates.
+
+
+### RN09B-D01 — Persistent quest definitions and shared management
+
+**Commit:** Pending. **Owner:** Ishmum. **Date:** 2026-11-11.
+**Branch:** `task/react-native/rn-09b-quest-management`. **Parent:** `4c632b4`.
+**Status:** In progress; user authorized the saved quest-management slice discussed
+after Android/shared integration publication. Continue existing RN-09b/e and
+RN09B-D01 IDs; no new parent plan.
+
+Implement strict non-enforcing quest-definition CRUD, account-isolated database
+persistence/API and a shared consumer of existing Quests/editor UI. Saves are not
+occurrence activation/completion, rewards, AI suggestions or restrictions. Use the
+existing verified backend identity/session machinery; real mobile Auth/root/tokens
+and Anisha-owned iOS remain deferred. Begin with a bounded contract/storage/API
+commit, then shared query/editor/list integration and real disposable-database
+acceptance. Keep implementation decisions, changes, validation and exact per-file
+line ranges here as each commit lands. Do not publish without a new user request.
+
+#### RN09B-D01a implementation progress
+
+- Added non-enforcing QuestDefinition schemas, client-UUID own resource PUT/read/list/
+  delete operations, server commit-before-response and safe QUEST_CONFLICT. Reused
+  existing verified identity, transaction-local owner, JSON bound and error envelope.
+- Added normalized owner/quest composite-key table and a forward 0003 migration.
+  Definition deletion wipes content; owner/id/revision/time tombstone prevents old
+  creates/edits from resurrecting IDs. RLS/ACL/time trigger and pinned PG17 checks
+  extend existing migration verification; no managed Auth or native mutation.
+- Calendar/occurrence, reward and AI behavior remain unimplemented explicitly.
+  Recorded strict stored preferences and none-as-undated definition semantics in
+  the linked architecture contract; these are engineering choices, not PM answers.
+- First API regression run found two existing schema/model allowlists that needed
+  the new additive resource; updated those expectations while preserving the
+  original 0002 history test. First local isolated DB run passed 214 actual tests.
+  Constraint fingerprints were obtained only from the guarded loopback PG17
+  fixture and then pinned; no hosted credentials/URI were read or exposed.
+- Current API matrix passes 628, with 214 database deselected before two additional
+  upgrade/cascade cases. Actual generated OpenAPI/TS refreshed from the backend
+  authority. Final root/database checks and exact line ledger follow before commit.
+
+#### RN09B-D01a final checks and handoff
+
+- Root checks passed existing mobile types/lint/assets, 434 portable and 634
+  component results (+2 existing skips); API lint then found a missing import in
+  a newly added local cascade test. Fixed the explicit database helper import.
+  Final `npm run api:lint`, `npm run api:test` (628), `npm run api:check-contracts`
+  and `npm run api:db:test` (216 real PostgreSQL) all pass. No success is inferred
+  from the initial failing run. Eleven existing mobile lint warnings remain.
+- Two added real tests verify upgrade from 0002 preserves profiles/settings and
+  local synthetic-owner cascade clears live definitions/tombstones. The latter
+  is the isolated auth.users fixture only; hosted Auth/C-account deletion remains
+  deferred and no managed user/credential was touched.
+- Added migration/model to owned metadata and guarded autogenerate/verification
+  without weakening old checks. Four exact PostgreSQL17 constraint fingerprints
+  pinned; three RLS policies, clocks and ambient grants checked. Runtime still
+  has SELECT/INSERT/UPDATE only; no mobile Data API table privileges.
+- No source visual design rewrite; reusing existing Quests/editor components next.
+  Hosted development schema is still 0002 until an explicitly recorded forward
+  upgrade; no hosted query/mutation or fresh managed token required by this commit.
+  Keep no-native-install/reward semantics, stable IDs and all parent gates.
+
+**Slice-a commit message / Git reference:**
+`feat(quests): persist revisioned account-owned quest definitions`.
+Own hash Pending until the next normal update; parent `4c632b4`. Local commit only.
+
+#### RN09B-D01a per-file ledger
+
+Ranges belong to this slice-a commit; generated files are one derived contract change.
+
+- `docs/architecture/quest-definition-management.md`: lines 1–78. Define the approved bounded non-enforcing management slice: wire/schema, ownership, revision/idempotency, content deletion, pagination, undated definitions, storage ceilings and future activation gates; cite primary RLS/upsert references.
+- `docs/core_plan/04_react_native_integration.md`: lines 766–779. Expand existing RN09B-D01 into a/b/c commit boundaries and record actual local backend acceptance without renumbering parts or completing Auth/native/reward parents.
+- `packages/contracts/fixtures/quests-v1.json`: lines 1–35. Provide synthetic canonical definition/view examples shared by backend and mobile tests. Explicit zone/repeat/day fields and timestamps are contract fixtures only.
+- `packages/contracts/openapi/foundation.openapi.json`: lines 1–3083. Regenerate authoritative OpenAPI for four own quest operations, strict saved definition/page/mutation shapes and QUEST_CONFLICT; preserve no-store/correlation/error headers.
+- `packages/contracts/src/http.generated.ts`: lines 1–1408. Regenerate typed quest paths/operations/schemas and additive error discriminator from executable backend schema; no hand-maintained duplicate wire authority.
+- `packages/contracts/src/index.ts`: lines 45–54. Export generated quest wire aliases through the existing type-only public package.
+- `services/api/alembic/env.py`: lines 5, 12–14. Register/filter user_quests in the same owned metadata/autogenerate history, preserving external managed Auth exclusion.
+- `services/api/alembic/versions/20261111_0003_user_quests.py`: lines 1–178. Add frozen forward-only own definition/tombstone table, composite PK/cascade FK/checks, forced RLS, least-privilege policies, server clock and ambient ACL removal; guarded test-only downgrade.
+- `services/api/app/api/v1/quests.py`: lines 1–91. Expose verified-owner bounded list/read, complete revisioned PUT and idempotent content deletion. Commit before success; missing/deleted/foreign rows remain indistinguishable and never install restrictions.
+- `services/api/app/application.py`: lines 12, 40, 49. Mount quest router and allow its PUT/DELETE CORS verbs while retaining existing identity/database/lifecycle authority.
+- `services/api/app/core/errors.py`: lines 27, 149–153. Add safe quest-conflict copy and permit whitelisted nested quest definition validation without echoing private input.
+- `services/api/app/core/json_body.py`: lines 1, 33–40. Extend existing streamed 16KiB duplicate-key/UTF8/strict-JSON guard to quest PUT/DELETE; retain existing settings/profile PATCH behavior and safe replay.
+- `services/api/app/core/request_context.py`: lines 55–63, 79–85. Classify quest collection/resource diagnostics with a literal route template so quest UUIDs/query/body are never logged.
+- `services/api/app/db/migrations.py`: lines 16, 145–150, 165–167, 185, 187, 370–415. Advance reviewed head to 0003; include quest ownership/RLS/ACL/policy/clock validation and four pinned actual PG17 constraint hashes while preserving old security verification.
+- `services/api/app/models/__init__.py`: lines 4, 7. Register the owned UserQuest model in the shared product metadata registry.
+- `services/api/app/models/quest.py`: lines 1–73. Define normalized owner/quest UUID key, nullable bounded JSON definition for content-free tombstones, revisions and server-owned timestamps/checks.
+- `services/api/app/repositories/quests.py`: lines 1–100. Implement explicit-owner keyset reads and atomic create/update/delete CAS, own conflict details and deleted-owner FK mapping. Tombstones fence stale recreation and wipe private definition content.
+- `services/api/app/schemas/errors.py`: lines 17, 40, 116. Extend the closed error union with QUEST_CONFLICT and the safe definition validation field.
+- `services/api/app/schemas/quests.py`: lines 1–108. Validate strict bounded canonical text, named zones, explicit coherent local hours/repeat/days, revisions and own view/page/deletion responses. No occurrence or reward state.
+- `services/api/tests/api/test_quests.py`: lines 1–131. Add 27 cases for strict field/calendar rejection and canonicalization, auth-before-database, bounded strict JSON/private input exclusion and dependency failure versus absence.
+- `services/api/tests/api/test_schema.py`: lines 42–49. Update additive public-route allowlist while preserving environment-free deterministic export and old route assertions.
+- `services/api/tests/db/test_quests.py`: lines 1–252. Add 17 actual PostgreSQL cases covering CRUD/CAS, missing/foreign isolation, pagination/deletion tombstones, two-connection races, raw RLS/check rejection, security drift, upgrade preservation and isolated-owner cascade.
+- `services/api/tests/test_profile_metadata.py`: lines 13–17. Acknowledge the additive owned quest model without changing the profile/external Auth shape contract.
+- `services/api/tests/test_settings_contract.py`: lines 14, 137–141, 157. Acknowledge additive metadata and pin the original 0002 parent assertion to that revision so a later head does not rewrite history.
+- `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 7, 9, 19–20, 4728, 4794–4887. Record current branch/scope, prior publication hash, slice design/engineering choices, failures/corrections, exact actual checks, every file/line and b/c handoff. Keep self-hash Pending until next normal update.

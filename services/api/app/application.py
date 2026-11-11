@@ -9,6 +9,7 @@ from starlette.types import Lifespan
 from app.api.health import router as health_router
 from app.api.v1.me import router as identity_router
 from app.api.v1.profiles import router as profile_router
+from app.api.v1.quests import router as quests_router
 from app.api.v1.settings import router as settings_router
 from app.core.auth import UnavailableTokenVerifier
 from app.core.errors import install_error_handlers
@@ -36,7 +37,7 @@ def create_app(*, cors_origins: Sequence[str] = (), lifespan: Lifespan | None = 
         CORSMiddleware,
         allow_origins=list(cors_origins),
         allow_credentials=False,
-        allow_methods=["GET", "PATCH", "OPTIONS"],
+        allow_methods=["GET", "PATCH", "PUT", "DELETE", "OPTIONS"],
         allow_headers=["Authorization", "Content-Type"],
         expose_headers=["X-Request-ID"],
     )
@@ -45,5 +46,6 @@ def create_app(*, cors_origins: Sequence[str] = (), lifespan: Lifespan | None = 
     application.include_router(identity_router)
     application.include_router(profile_router)
     application.include_router(settings_router)
+    application.include_router(quests_router)
     install_openapi(application)
     return application

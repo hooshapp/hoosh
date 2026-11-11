@@ -2,14 +2,16 @@
 
 from alembic import context
 from app.db.base import Base
-from app.models import Profile, UserSettings  # noqa: F401 - register owned metadata
+from app.models import Profile, UserQuest, UserSettings  # noqa: F401 - register owned metadata
 
 
 def include_name(name, type_, parent_names):
     if type_ == "schema":
         return name in (None, "public")
     if type_ == "table":
-        return name in ("profiles", "user_settings") and parent_names.get("schema_name") in (
+        return name in ("profiles", "user_settings", "user_quests") and parent_names.get(
+            "schema_name"
+        ) in (
             None,
             "public",
         )

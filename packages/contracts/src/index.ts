@@ -42,3 +42,13 @@ export type SettingsPatch = components['schemas']['SettingsPatch'];
 export type SettingsSavedResponse = components['schemas']['SettingsSavedResponse'];
 export type ApiErrorEnvelope = components['schemas']['ErrorEnvelope'];
 export type ApiErrorCode = ApiErrorEnvelope['error']['code'];
+
+/** Saved definitions only; persistence never activates native quest restrictions. */
+export type QuestDefinition = components['schemas']['QuestDefinition'];
+export type QuestPut = components['schemas']['QuestPut'];
+export type QuestDelete = components['schemas']['QuestDelete'];
+export type QuestView = components['schemas']['QuestView'];
+export type QuestResponse = components['schemas']['QuestResponse'];
+export type QuestSavedResponse = components['schemas']['QuestSavedResponse'];
+export type QuestPage = components['schemas']['QuestPage'];
+export type QuestDeletedResponse = components['schemas']['QuestDeletedResponse'];

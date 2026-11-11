@@ -1,4 +1,4 @@
-"""Bound the two product PATCH bodies before JSON/dependency acquisition."""
+"""Bound product JSON mutation bodies before JSON/dependency acquisition."""
 
 import json
 
@@ -30,11 +30,14 @@ class JsonPatchBodyMiddleware:
         self.app = app
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
-        if (
-            scope["type"] != "http"
-            or scope["method"] != "PATCH"
-            or scope["path"].rstrip("/") not in {"/v1/profile", "/v1/settings"}
-        ):
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+        path, method = scope["path"].rstrip("/"), scope["method"]
+        bounded = (method == "PATCH" and path in {"/v1/profile", "/v1/settings"}) or (
+            method in {"PUT", "DELETE"} and path.startswith("/v1/quests/")
+        )
+        if not bounded:
             await self.app(scope, receive, send)
             return
         buffer = bytearray()

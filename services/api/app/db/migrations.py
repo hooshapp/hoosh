@@ -13,7 +13,7 @@ from alembic import command
 from app.models.profile import STRIP_CHARACTERS
 
 API_ROOT = Path(__file__).resolve().parents[2]
-HEAD = "20261102_0002"
+HEAD = "20261111_0003"
 LOCK_ID = 7529304120701
 
 
@@ -142,7 +142,12 @@ def verify(connection: Connection) -> dict:
     ).all()
     if set(privileges) != {("SELECT", False), ("INSERT", False), ("UPDATE", False)}:
         raise MigrationSafetyError("Runtime product privileges differ from SELECT/INSERT/UPDATE")
-    for table in ("public.profiles", "public.user_settings", "public.alembic_version"):
+    for table in (
+        "public.profiles",
+        "public.user_settings",
+        "public.user_quests",
+        "public.alembic_version",
+    ):
         if (
             connection.scalar(
                 text(
@@ -157,7 +162,9 @@ def verify(connection: Connection) -> dict:
             text(
                 "SELECT count(*) FROM pg_class c, LATERAL aclexplode(c.relacl) a "
                 "WHERE c.oid=to_regclass(:table) AND a.grantee<>c.relowner "
-                "AND NOT (:table IN ('public.profiles','public.user_settings') AND a.grantee="
+                "AND NOT (:table IN ('public.profiles','public.user_settings',"
+                "'public.user_quests') "
+                "AND a.grantee="
                 "(SELECT oid FROM pg_roles WHERE rolname='disconnect_api'))"
             ),
             {"table": table},
@@ -175,8 +182,9 @@ def verify(connection: Connection) -> dict:
             raise MigrationSafetyError("Unexpected column-level grants remain")
     _verify_policies_and_clock(connection, "profiles", "profiles")
     _verify_settings(connection)
+    _verify_quests(connection)
     for role_name in ("anon", "authenticated", "service_role"):
-        for table in ("public.profiles", "public.user_settings"):
+        for table in ("public.profiles", "public.user_settings", "public.user_quests"):
             for privilege in (
                 "SELECT",
                 "INSERT",
@@ -359,3 +367,49 @@ def run(connection: Connection, action: str = "upgrade") -> dict:
     else:
         raise MigrationSafetyError("Unsupported migration operation")
     return observed | verify(connection)
+
+
+QUEST_CONSTRAINT_FINGERPRINTS = {
+    "ck_user_quests_definition_valid": (
+        "e2294dda6e88ea063fb7cdfdcea257c5" + "904747d8846c181c0f8770e6ed69d2af"
+    ),
+    "ck_user_quests_revision_positive": (
+        "734367bcd98f308d31796dc121a196c4" + "4de1e0adfb565fc8f724bc6f078ca6ea"
+    ),
+    "fk_user_quests_user_id_users": (
+        "7dffc1fe5c72443147ef9227e966626c" + "dc6e5997f36e90bcc553577512766d2a"
+    ),
+    "pk_user_quests": ("84ef9ace2d2f4cbbfbf0ef634239bcc5" + "feec40d6528d67d7341a13ec3921404d"),
+}
+
+
+def _verify_quests(connection: Connection) -> None:
+    row = connection.execute(
+        text(
+            "SELECT pg_get_userbyid(relowner),relrowsecurity,relforcerowsecurity "
+            "FROM pg_class WHERE oid=to_regclass('public.user_quests')"
+        )
+    ).one_or_none()
+    if row != ("postgres", True, True):
+        raise MigrationSafetyError("Quest ownership/RLS differs from the reviewed schema")
+    constraints = connection.execute(
+        text(
+            "SELECT conname,pg_get_constraintdef(oid),convalidated FROM pg_constraint "
+            "WHERE conrelid='public.user_quests'::regclass"
+        )
+    ).all()
+    observed = {
+        name: sha256(value.encode()).hexdigest() for name, value, valid in constraints if valid
+    }
+    if observed != QUEST_CONSTRAINT_FINGERPRINTS or len(constraints) != len(observed):
+        raise MigrationSafetyError("Quest constraints differ from reviewed schema")
+    privileges = connection.execute(
+        text(
+            "SELECT a.privilege_type,a.is_grantable FROM pg_class c, "
+            "LATERAL aclexplode(c.relacl) a WHERE c.oid='public.user_quests'::regclass "
+            "AND a.grantee=(SELECT oid FROM pg_roles WHERE rolname='disconnect_api')"
+        )
+    ).all()
+    if set(privileges) != {("SELECT", False), ("INSERT", False), ("UPDATE", False)}:
+        raise MigrationSafetyError("Quest privileges differ from reviewed commands")
+    _verify_policies_and_clock(connection, "user_quests", "quests")

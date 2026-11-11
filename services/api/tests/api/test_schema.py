@@ -39,7 +39,14 @@ def test_export_is_deterministic_and_never_constructs_runtime_or_clients(monkeyp
     first = module.schema_text()
     assert first == module.schema_text() == SCHEMA_PATH.read_text()
     assert ("app.main" in sys.modules) == was_main_imported
-    assert set(json.loads(first)["paths"]) == {"/healthz", "/v1/me", "/v1/profile", "/v1/settings"}
+    assert set(json.loads(first)["paths"]) == {
+        "/healthz",
+        "/v1/me",
+        "/v1/profile",
+        "/v1/settings",
+        "/v1/quests",
+        "/v1/quests/{quest_id}",
+    }
 
 
 def test_export_drift_check_fails_without_mutating_artifacts(monkeypatch, tmp_path):

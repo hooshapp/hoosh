@@ -11,7 +11,7 @@ from pydantic import ValidationError
 
 from app.application import create_app
 from app.db.base import Base
-from app.db.migrations import HEAD, config, offline_sql
+from app.db.migrations import config, offline_sql
 from app.models import Profile, UserSettings
 from app.models.settings import SETTINGS_CHECKS
 from app.schemas.settings import (
@@ -134,7 +134,11 @@ def test_nullable_get_and_nonnullable_save_response_with_required_sections_and_u
 
 
 def test_owned_metadata_and_new_migration_preserve_the_original_profile_history():
-    assert set(Base.metadata.tables) == {"public.profiles", "public.user_settings"}
+    assert set(Base.metadata.tables) == {
+        "public.profiles",
+        "public.user_settings",
+        "public.user_quests",
+    }
     assert set(UserSettings.__table__.c.keys()) == {
         "user_id",
         "activities",
@@ -150,7 +154,7 @@ def test_owned_metadata_and_new_migration_preserve_the_original_profile_history(
     from alembic.script import ScriptDirectory
 
     history = ScriptDirectory.from_config(config())
-    assert history.get_revision(HEAD).down_revision == "20261102_0001"
+    assert history.get_revision("20261102_0002").down_revision == "20261102_0001"
     path = ROOT / "services/api/alembic/versions/20261102_0002_user_settings.py"
     spec = importlib.util.spec_from_file_location("frozen_settings_migration", path)
     module = importlib.util.module_from_spec(spec)

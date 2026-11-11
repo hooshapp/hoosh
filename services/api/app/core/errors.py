@@ -24,6 +24,7 @@ ERRORS = {
     ErrorCode.FORBIDDEN: (403, "This operation is not available to this account."),
     ErrorCode.PROFILE_CONFLICT: (409, "Your profile changed. Review the latest version."),
     ErrorCode.SETTINGS_CONFLICT: (409, "Your settings changed. Review the latest version."),
+    ErrorCode.QUEST_CONFLICT: (409, "Your quest changed. Review the latest version."),
     ErrorCode.REQUEST_TOO_LARGE: (413, "The request body is too large."),
     ErrorCode.VALIDATION_ERROR: (422, "Check the highlighted fields."),
     ErrorCode.AUTH_UNAVAILABLE: (503, "Identity verification is temporarily unavailable."),
@@ -145,7 +146,11 @@ def install_error_handlers(application: FastAPI) -> None:
             ApiError(
                 ErrorCode.VALIDATION_ERROR,
                 details=safe_validation_details(
-                    error.errors(), settings=request.url.path.rstrip("/") == "/v1/settings"
+                    error.errors(),
+                    settings=(
+                        request.url.path.rstrip("/") == "/v1/settings"
+                        or request.url.path.startswith("/v1/quests")
+                    ),
                 ),
             ),
         )

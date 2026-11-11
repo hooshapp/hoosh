@@ -763,6 +763,20 @@ by its unique commit subject in the notes.
 
 RN-09b source: read-only Figma `27:155`, session `26dd22ea-c87c-4b6c-a571-5e74d6eff5e8`. Quests presentation is independent; no editor/persistence/native action is connected. Deferred: **RN09B-D01** approved quest/editor/recurrence API and persistence; **RN09B-D02** actual Auth/account-scoped data/actions and recovery; **RN09B-D03** approved completion/reward/native restriction evidence; **RN09B-D04** signed-device/accessibility acceptance. Source examples remain isolated. See the implementation notes for exact commit/checks and copied icon-pack provenance.
 
+#### RN09B-D01 — Saved quest management continuation (2026-11-11)
+
+Ishmum authorized persistent quest management following the shared Android journey.
+Keep existing RN-09b/e and RN09B-D01–D04. The
+[definition contract](../architecture/quest-definition-management.md) bounds a/b/c
+commit slices: own strict definition CRUD/storage/migration, existing list/editor
+consumer, then real local mobile HTTP/database acceptance. Saves never activate
+native quests or award credits. Non-repeating definitions have no assumed date;
+occurrence lifecycle/activation and real Auth/root/current-account acceptance stay
+separate. Slice a is implemented and accepted locally (628 API /216 PostgreSQL); b/c are
+next in this task. Hosted migration and real-account/native activation remain
+separate. Record completed slices in the latest Plan 04 notes; no parent
+completion/count changes or new API-13/plan number.
+
 #### RN-09 execution expansion — preferences and non-enforcing drafts (2026-11-02)
 
 **Status: RN-09i/j consumers and k saved-preference composition implemented; l local automated checks implemented; k native status and l live acceptance pending.** Preserve RN-09a–h and their original UI
