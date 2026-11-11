@@ -25,7 +25,7 @@ internal object SelectionDiscoveryProbeChecks {
       limit: Int = 64,
     ) = SelectionDiscoveryProbe(
       context, query = { rows }, label = { "Synthetic private label" },
-      icon = { ColorDrawable(0) }, unlocked = unlocked, resourceLimit = limit,
+      icon = { ColorDrawable(0) }, unlocked = unlocked, resourceLimit = limit, manifest = { ProbeManifestSafety(false, false, false) },
     ).read()
     fun hidden(result: Map<String, Any?>, state: String) {
       check(result["state"] == state)
@@ -52,7 +52,7 @@ internal object SelectionDiscoveryProbeChecks {
     val failures = SelectionDiscoveryProbe(
       context, query = { listOf(alpha, beta) },
       label = { if (it === alpha) " " else throw IllegalStateException("synthetic private error") },
-      icon = { throw IllegalStateException("synthetic private icon") }, unlocked = { true },
+      icon = { throw IllegalStateException("synthetic private icon") }, unlocked = { true }, manifest = { ProbeManifestSafety(false, false, false) },
     ).read()
     check(failures["state"] == "ready" && failures["labelResolutionFailureCount"] == 2)
     check(failures["blankLabelCount"] == 1 && failures["iconResolutionFailureCount"] == 2)
@@ -63,7 +63,7 @@ internal object SelectionDiscoveryProbeChecks {
     var reads = 0
     hidden(probe(listOf(alpha), unlocked = { ++reads == 1 }), "locked")
     val denied = SelectionDiscoveryProbe(
-      context, query = { throw SecurityException("synthetic package identity") }, unlocked = { true },
+      context, query = { throw SecurityException("synthetic package identity") }, unlocked = { true }, manifest = { ProbeManifestSafety(false, false, false) },
     ).read()
     hidden(denied, "unavailable")
     check(denied["failureCode"] == "query_denied" && !denied.toString().contains("synthetic"))
@@ -81,6 +81,10 @@ internal object SelectionDiscoveryProbeChecks {
     val refused = SelectionDiscoveryProbe(nonDebug, query = { error("must not query") }).read()
     hidden(refused, "error")
     check(refused["failureCode"] == "not_debuggable")
-    return 10
+    val unsafe = SelectionDiscoveryProbe(context, query = { error("must not query unsafe manifest") },
+      manifest = { ProbeManifestSafety(false, false, true) }).read()
+    hidden(unsafe, "error")
+    check(unsafe["failureCode"] == "unsafe_manifest" && unsafe["accessibilityServiceDeclared"] == true)
+    return 11
   }
 }

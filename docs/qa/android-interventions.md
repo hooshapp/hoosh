@@ -62,6 +62,10 @@ synthetic owners, removes its directory in finally and emits only a fixed
 failure/case marker. JVM execution of the 40 pure cases is separate evidence;
 it does not execute the Android persistence cases. Run original selection
 lifecycle/draft/preview/discovery modes as native regressions after installation.
+Current synthetic discovery has 11 cases. The actual narrow discovery diagnostic
+intentionally returns `unsafe_manifest` (result 0, all inventory counts absent)
+because this debug APK declares the intervention service. This expected refusal
+is separate from the synthetic checks and is not a catalog-coverage pass.
 
 The same 40 pure tests can run without a phone after the native build populates
 the local Kotlin cache:
@@ -122,14 +126,39 @@ writes only ignored .expo output; this command is separate from Node-only CI.
 Do not use UIAutomation hierarchy dumps while an accessibility service is being
 tested: they can suppress the service and invalidate observations. Use known owned
 window guards and private captures/OCR, plus owner-observed speech for audibility.
+Before and after any private capture, require an unlocked device, exact focused
+owned UID, visible/on-screen owned window, unchanged focus token and no visible
+launcher application/overview. A focused-package report alone is insufficient:
+Android may retain it during Overview. Distinguish system taskbar/navigation by
+window type and crop system bars; discard ambiguous bytes before saving/OCR.
 Keep inventory/captions/screenshots/serials and credentials out of Git. No locked
 or foreign-app screenshot is acceptance evidence.
 
 ## Recorded checkpoint
 
-See [sanitized evidence](../core_plan_implementation_notes/artifacts/rn-08-interventions/evidence.json)
-and the latest [Plan 04 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md).
-The controller/JVM, component, build/export and release-isolation checks are
-separate from actual device execution. New phone acceptance is pending while no
-authorized ADB device is available. Prior selection/lock/TalkBack observations are
-historical and do not establish this new service works on the phone.
+See the historical [implementation evidence](../core_plan_implementation_notes/artifacts/rn-08-interventions/evidence.json),
+new [device acceptance evidence](../core_plan_implementation_notes/artifacts/rn-08-intervention-acceptance/evidence.json)
+and latest [Plan 04 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md).
+Both the physical Pixel 8 Pro/API 36 and isolated AOSP API 36 ARM64 emulator ran
+46 intervention + 17 lifecycle + 22 draft + 12 preview + 11 synthetic discovery
+checks (108 each). Actual manifest refusal is expected as described above.
+
+Both targets passed actual native installation/pause, running-session reuse,
+foreground expiry, permitted versus extra sessions, precise cancellation and stop.
+The emulator also passed screen-off removal/unlock return, Back/Return home and
+native pause/bypass/expiry with Hermes explicitly paused and resumed. The phone
+passed enlarged-text (1.6) pause/disable, actual revocation and needs-permission
+status with retained installation. Native disclosure-to-Settings handoff was
+fixed and observed on both. Only the owned test APK target was configured.
+
+Phone baseline files, accessibility/touch settings, font/power/timeout/usage and
+reverse mappings were verified restored; local test owner erased, captures removed,
+owned Metro stopped and isolated emulator shut down. The APKs and unrelated app
+data remain. No TalkBack change was made in this acceptance run.
+
+This is bounded debug acceptance. Production Auth-bound adapter integration,
+iOS, new-service TalkBack, actual Metro-stopped/task-removal/process/reboot,
+re-enable/failure UI matrix, other devices/profiles, performance and signed/store
+acceptance remain open. The earlier root check is historical; the follow-up rebuilt
+native debug/test APKs and reran actual Android suites, without rerunning the
+unchanged shared/component/API/export suites. Full RN-08 stays open.

@@ -462,8 +462,13 @@ per-app timers/day counters, lifetime fences, retention/verified erasure and exp
 access disclosure/overlay are implemented. Ishmum authorized the remaining session/
 midnight/bypass/active-selection defaults in [decision record](../architecture/android-intervention-defaults.md)
 and PM questions. They are not PM-supplied answers. See [runbook](../qa/android-interventions.md)
-and latest notes/evidence. Forty pure JVM cases and builds/shared checks pass;
-46-case Android runner and actual overlay/device acceptance are pending connection.
+and latest notes/evidence. The 46-case Android runner and 62 selection regressions
+now pass on both Pixel/API 36 and an isolated API 36 emulator. Actual native
+pause/expiry/session-reuse/extra-session/cancellation/stop checks pass on both;
+emulator lock/Back and JavaScript-paused expiry, plus phone enlarged-text/service
+revocation, are recorded in [acceptance evidence](../core_plan_implementation_notes/artifacts/rn-08-intervention-acceptance/evidence.json).
+The phone baseline is restored. TalkBack for this new service, Metro-stopped,
+process/reboot, wider-device and signed acceptance remain open.
 Production Home remains read-only/unavailable for enforcement until verified
 account/adapter integration. iOS, real Auth/tokens, recurrence/template generation,
 usage thresholds/advance warning and signed/store acceptance are not completed by

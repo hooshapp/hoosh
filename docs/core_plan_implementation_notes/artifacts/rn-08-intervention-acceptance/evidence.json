@@ -1,0 +1,226 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-10",
+  "owner": "Ishmum",
+  "branch": "task/react-native/rn-08-android-interventions",
+  "parent": "4f986e8",
+  "plan_refs": [
+    "RN-08",
+    "RN08-D01",
+    "RN08-D02",
+    "RN08-D03",
+    "RN08-D04",
+    "RN08-D05",
+    "RN08-D06"
+  ],
+  "scope": "Bounded debug-native coordinator acceptance with synthetic owner and only the owned test APK target; no production adapter, real Auth or iOS integration.",
+  "toolchain": {
+    "jdk": "17.0.21+9",
+    "kotlin_compiler": "2.2.0",
+    "gradle": "9.4.1",
+    "build_tools": "37.0",
+    "target_sdk": 36,
+    "min_sdk": 24,
+    "abi": "arm64-v8a",
+    "emulator": "37.2.13 native darwin-aarch64",
+    "system_image": "AOSP default Android 36 arm64-v8a revision 2"
+  },
+  "apk_sha256": {
+    "debug_app": "832952d4eb214d4cf5b973743f730de77f06680140c95353ace48a38df7276eb",
+    "debug_test": "c09fd0ae31a1d7ca02f25fef7cdb5a01136c2bd07c9bc47a54bfc65d701e544d"
+  },
+  "source_sha256": {
+    "apps/mobile/android/app/src/androidTest/AndroidManifest.xml": "ebe3a4a9e9acc3cbaae3ffd0fd60ab05d2ef03eacfe8e864271ebec712aba8a3",
+    "apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/InterventionChecks.kt": "8dcbe1602cb448da4ad9de782ffa13597c6040c83f3d2992e241cbc60575bd93",
+    "apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/InterventionEngineChecks.kt": "95f94052e0fc0e92579f0a159b025a311f1e34c61c6370f765ac312d2d593f3e",
+    "apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/InterventionFixtureActivity.kt": "11fa7b770b19f84d7a6ab1b1ab4058d631c78d2d1a5c5751fe50652170ee510c",
+    "apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/UsageProbeInstrumentation.kt": "f6b053ef895b1c11b415792b24e1659285769b811680a3c208e6a16434384f64",
+    "apps/mobile/dev/native/App.tsx": "fea41e5901930f8e6fa8299ef960b04ed9cf2a1509ebe50d7db6cd6949a9092a",
+    "apps/mobile/dev/native/interventions.tsx": "46d48ce158ec5dbdc20a4e858f1bdb3a3d738f4f257e7a8859c8aa3677b5b68a",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/AndroidManifest.xml": "1d082674cfaab276bd460117561a07a54002a3c235b92a4e6a6b2d414fb5dc8f",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/AtomicInterventionPersistence.kt": "c73fbe2e993072f68939e029a81f6794bc6a3b84b09c36772cb454ed21cc9642",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/InterventionAccessibilityService.kt": "dce8893b8a31550f37cf4e6138ed16e95b4726b5b9658a793140e064df925fee",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/InterventionEngine.kt": "9fbc258d1b471ad92c3199ac29f1b2c42e10f9cfd437855b08b633462dd04309",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/InterventionLeases.kt": "80b2be24fe62a2f7819ab78d5f2e766e684f19f6723097e09da18a1a9d145824",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/InterventionModel.kt": "a46a1d7111cb4ea829e17a446eba17820f75225f192a3a5a3c1dee250856f9c9",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/InterventionRuntime.kt": "ac799f3dc5e6fc7706e5ef591827b6d5590497d6d399be4ec714a35a2a89ad58",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/NativeInterventionBridge.kt": "218c7c1398c58a90736b7f0cc947e914f134a3d7272cb964d9eea527397a0afa",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/SelectionPreviewFactory.kt": "b0c5efd3aee5011ad36411413b1ed76fbbd251444dc3c9ff26f69283584a22c5",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/res/values/strings.xml": "a36b17be088cca79c3a17cf0c5de318126a4a40bef798cc4a11cce2b17345c44",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/res/xml/hoosh_intervention_accessibility.xml": "ac6ddecff35cb4203ffc4b18bf2dbbd482c6b8971e128ec6565d82ee779d9aeb",
+    "apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/HooshUsageModule.kt": "d0eecf49956dffa43fe616b7ca0bff651bd9ec71db319dff82030bc5748e0b42",
+    "apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/InterventionCoordinator.kt": "4c65c8189ff7b89250f06134faad1dcfb54aaaf9c8cc27559c7e9ddd7d6c2060",
+    "apps/mobile/modules/hoosh-usage/android/src/release/java/expo/modules/hooshusage/SelectionPreviewFactory.kt": "e38e226641a9a1a5a97e3354d8c10ddc01bac369a263f62a42b0130a009be57d",
+    "apps/mobile/src/features/protection/intervention-qa.test.tsx": "700b61e732d50bcdced95b16f85773a1e17e428c47ef704bb1a3ef934d44a24a",
+    "apps/mobile/src/infrastructure/native/intervention-coordinator.ts": "4735a8ecb3f76af049ed1c1489cfa69e0e03e5dc74643cc7e33685d745793d3c",
+    "packages/contracts/src/protection.ts": "05e52bad6a4d4dabf123a82e744ad854b0f6d3b1def31c5fdf7a181114bcaee3",
+    "scripts/check-android-intervention-engine.py": "bf9b85ee0f2a253820891a698a0578f43e7612180d5db55f1bc51a34c6bf3ef3",
+    "scripts/check-ui-preview-isolation.mjs": "90f32e2fc6017f01c8fcddceea189180ecb09073799858e365c3e69c5bf0bc0e",
+    "package.json": "861db2b791533fa041de5a6bf401aa96a6696412a606f78ef5f8b34fee6a41ec",
+    "apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/SelectionDiscoveryProbe.kt": "6b55b57d1a66dae6502958bffba5220978ef1f5585a2179734ff12d3781f93a8",
+    "apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/SelectionDiscoveryProbeChecks.kt": "49e17d021e06f62f0d68fce41d0d4a1d78cb5978b45e227e78672a5ab787f56a"
+  },
+  "build": "Debug app and test APK rebuilt successfully after the lifecycle handoff and synthetic-manifest fixture changes; both installed on both targets.",
+  "device_results": [
+    {
+      "target": "Isolated AOSP default API 36 ARM64 emulator",
+      "final_android_checks": {
+        "interventionChecks": 46,
+        "selectionLifecycleChecks": 17,
+        "selectionDraftChecks": 22,
+        "selectionPreviewChecks": 12,
+        "selection": 11
+      },
+      "actual_live_observations": [
+        {
+          "step": "permission-alone-no-installation"
+        },
+        {
+          "step": "native-installation-confirmed",
+          "revision": 1,
+          "reasons": 2
+        },
+        {
+          "step": "actual-native-pause"
+        },
+        {
+          "step": "reentry-reuses-first-session"
+        },
+        {
+          "step": "native-first-session-expiry"
+        },
+        {
+          "step": "last-permitted-session-no-exhaustion"
+        },
+        {
+          "step": "first-extra-session-remains-allowed",
+          "single_start_event_per_action": true
+        },
+        {
+          "step": "cancel-one-preserves-other-reason-and-count",
+          "revision": 2
+        },
+        {
+          "step": "stopped-test-does-not-intervene",
+          "revision": 3
+        }
+      ],
+      "additional_observations": {
+        "screenOffRemovesPause": true,
+        "unlockTargetReturnsPause": true,
+        "backReturnsHomeAndRecords": true,
+        "returnHomeRecords": true
+      },
+      "cleanup": {
+        "controlledRecordAndSelectionRemoved": true,
+        "testServiceDisabled": true,
+        "reverseRemoved": true,
+        "capturesRemoved": true,
+        "ownedMetroStopped": true,
+        "ownedEmulatorShutdownRequested": true
+      },
+      "javascript_independence": {
+        "hermesPaused": true,
+        "nativePause": true,
+        "nativeBypass": true,
+        "nativeExpiry": true
+      }
+    },
+    {
+      "target": "Physical Pixel 8 Pro API 36",
+      "final_android_checks": {
+        "interventionChecks": 46,
+        "selectionLifecycleChecks": 17,
+        "selectionDraftChecks": 22,
+        "selectionPreviewChecks": 12,
+        "selection": 11
+      },
+      "actual_live_observations": [
+        {
+          "step": "permission-alone-no-installation"
+        },
+        {
+          "step": "native-installation-confirmed",
+          "revision": 1,
+          "reasons": 2
+        },
+        {
+          "step": "actual-native-pause"
+        },
+        {
+          "step": "reentry-reuses-first-session"
+        },
+        {
+          "step": "native-first-session-expiry"
+        },
+        {
+          "step": "last-permitted-session-no-exhaustion"
+        },
+        {
+          "step": "first-extra-session-remains-allowed",
+          "single_start_event_per_action": true
+        },
+        {
+          "step": "cancel-one-preserves-other-reason-and-count",
+          "revision": 2
+        },
+        {
+          "step": "stopped-test-does-not-intervene",
+          "revision": 3
+        }
+      ],
+      "additional_observations": {
+        "fontScale": 1.6,
+        "pauseVisible": true,
+        "disableActionReachable": true,
+        "serviceDisabled": true,
+        "revokedStatusNeedsPermission": true,
+        "installationPreserved": true,
+        "fontRestored": true
+      },
+      "cleanup": {
+        "knownFilesRestored": true,
+        "serviceSettingsRestored": true,
+        "touchExplorationRestored": true,
+        "fontPowerTimeoutRestored": true,
+        "usageAccessUnchanged": true,
+        "reverseRestored": true,
+        "capturesRemoved": true,
+        "appForceStoppedForSafeFileRestore": true,
+        "appDataAndApksPreserved": true
+      }
+    }
+  ],
+  "discovery_diagnostic": {
+    "synthetic_cases_each_target": 11,
+    "actual_manifest_result": "Expected unsafe_manifest refusal because the debug APK now declares an accessibility service. Inventory counts remain null; instrumentation result 0 is expected refusal, not ready-catalog acceptance.",
+    "safety_guard_preserved": true
+  },
+  "measured_fixes": [
+    "Post-disclosure Settings handoff now checks resumed Activity lifecycle rather than transient focus held by the dismissing dialog; actual handoff observed on both targets.",
+    "Synthetic discovery cases use explicit safe manifest fixtures plus a new unsafe-service negative case; actual manifest refusal remains unchanged."
+  ],
+  "test_corrections": [
+    "Phone overview was visible despite an owned foreground report; temporary captures were discarded. Accepted captures require exact focused owned UID, owned visible/on-screen window, no visible launcher application, and unchanged focus token before/after capture. System navigation/taskbar is distinguished by window type and cropped.",
+    "The owned fixture Return control was outside the top privacy crop; acceptance recognizes the fixture title and owned visible window. A partially observed run was reset before the accepted flow.",
+    "Stopped-phone target observation initially rejected foreign/transient focus; accepted only after a fresh owned launch passed the stronger guard.",
+    "Changing font recreated the QA Activity/menu; the original font was restored, the known diagnostic reopened and actual needs_permission status then confirmed.",
+    "Hermes pause initially failed because the local debugger connection lacked its required Origin; retried with the expected localhost Origin, observed Debugger.paused and explicit resume. No server authorization bypass."
+  ],
+  "earlier_checks": {
+    "implementation_commit": "4f986e8",
+    "reference": "../rn-08-interventions/evidence.json",
+    "root_check_repeated_this_followup": false,
+    "reason": "Only native debug/test fixes and documentation changed after the previously passed root 382 portable / 602 component / 601 API checks. No shared TypeScript/runtime/dependency change."
+  },
+  "not_established": [
+    "Actual production Home/ProtectionService registration and authoritative owner/desired-revision binding; Auth/tokens remain explicitly deferred.",
+    "Anisha-owned iOS and coordinated deletion across accounts/backend/native stores.",
+    "Weekly recurrence/template compilation, usage thresholds, advance warning and reward/streak consumers; configured finite windows are explicit fixtures.",
+    "Process death, reboot, task removal and actual stopped-Metro acceptance were not executed; debugger-paused JavaScript is the accepted independent-timer condition. Force-stop/revocation is not a protection guarantee.",
+    "New service TalkBack speech/focus, other phones/profiles/versions, sustained performance, signed distribution and store review remain unaccepted. Earlier picker speech is not reused as evidence.",
+    "Permission re-enable with retained installation and failure injection in an actual overlay were not executed. Storage/fencing/failure logic is covered by the native runner, not a complete manual failure matrix."
+  ],
+  "privacy": "No personal app inventory, credentials, account identities, serials, screenshots, raw captions/hierarchy/window dumps or local private helper paths. Captures discarded/removed; no UIAutomation while the live service was active.",
+  "publication": "Local commit only; no push, CI, main merge, deployment or remote/account/credential action."
+}

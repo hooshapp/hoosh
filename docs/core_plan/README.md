@@ -10,8 +10,12 @@ per-app elapsed sessions/midnight counters, overlap, owner/bridge lifetime fence
 local journal/erasure and disclosed accessibility overlay are implemented. Read
 [runbook](../qa/android-interventions.md), latest Plan 04 notes and
 [Ishmum-approved defaults](../architecture/android-intervention-defaults.md).
-Build/JVM/shared checks are distinct from pending actual service/device acceptance;
-production Auth-bound adapter/iOS/release remain open. Original IDs/counts unchanged.
+Both Pixel/API 36 and the isolated emulator pass 108 native checks and the bounded
+real pause/session/cancellation flow. Emulator JavaScript-paused expiry/lock and
+phone enlarged-text/revocation pass; phone settings and files are restored. See
+[acceptance evidence](../core_plan_implementation_notes/artifacts/rn-08-intervention-acceptance/evidence.json).
+Production Auth-bound adapter/iOS/release and the wider accessibility/lifecycle
+matrix remain open. Original IDs/counts unchanged.
 
 **Selection follow-up (2026-11-10):** controlled-owner retain/erase hooks and
 same-owner generation/stale-work fences now prepare Auth integration without

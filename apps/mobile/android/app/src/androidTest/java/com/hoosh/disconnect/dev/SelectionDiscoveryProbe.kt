@@ -11,6 +11,8 @@ import expo.modules.hooshusage.UsageReader
 import expo.modules.hooshusage.LauncherAppCatalog
 
 /** Test APK only. No catalog/identifier, drawable, exception text or usage event is returned. */
+internal data class ProbeManifestSafety(val broad: Boolean, val overlay: Boolean, val accessibility: Boolean)
+
 internal class SelectionDiscoveryProbe(
   private val context: Context,
   private val query: () -> List<ResolveInfo> = { launcherActivities(context) },
@@ -18,6 +20,7 @@ internal class SelectionDiscoveryProbe(
   private val icon: (ResolveInfo) -> Drawable? = { it.loadIcon(context.packageManager) },
   private val unlocked: () -> Boolean? = { isUnlocked(context) },
   private val resourceLimit: Int = 64,
+  private val manifest: () -> ProbeManifestSafety = { readManifest(context) },
 ) {
   init { require(resourceLimit in 1..64) }
 
@@ -50,16 +53,10 @@ internal class SelectionDiscoveryProbe(
       if (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE == 0) {
         return finish("error", "not_debuggable")
       }
-      @Suppress("DEPRECATION")
-      val own = context.packageManager.getPackageInfo(
-        context.packageName, PackageManager.GET_PERMISSIONS or PackageManager.GET_SERVICES,
-      )
-      val permissions = own.requestedPermissions.orEmpty().toSet()
-      val broad = "android.permission.QUERY_ALL_PACKAGES" in permissions
-      val overlay = "android.permission.SYSTEM_ALERT_WINDOW" in permissions
-      val accessibility = own.services.orEmpty().any {
-        it.permission == "android.permission.BIND_ACCESSIBILITY_SERVICE"
-      }
+      val safety = manifest()
+      val broad = safety.broad
+      val overlay = safety.overlay
+      val accessibility = safety.accessibility
       result["queryAllPackagesDeclared"] = broad
       result["overlayDeclared"] = overlay
       result["accessibilityServiceDeclared"] = accessibility
@@ -130,6 +127,14 @@ internal class SelectionDiscoveryProbe(
       "blankLabelCount", "iconResolutionSuccessCount", "iconResolutionFailureCount",
     )
 
+    @Suppress("DEPRECATION")
+    private fun readManifest(context: Context): ProbeManifestSafety {
+      val own = context.packageManager.getPackageInfo(context.packageName, PackageManager.GET_PERMISSIONS or PackageManager.GET_SERVICES)
+      val permissions = own.requestedPermissions.orEmpty().toSet()
+      return ProbeManifestSafety("android.permission.QUERY_ALL_PACKAGES" in permissions,
+        "android.permission.SYSTEM_ALERT_WINDOW" in permissions,
+        own.services.orEmpty().any { it.permission == "android.permission.BIND_ACCESSIBILITY_SERVICE" })
+    }
     private fun launcherActivities(context: Context): List<ResolveInfo> = LauncherAppCatalog(context).query()
     private fun isUnlocked(context: Context): Boolean? = LauncherAppCatalog(context).isUnlocked()
   }

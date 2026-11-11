@@ -8,6 +8,8 @@ import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
 import android.provider.Settings
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import expo.modules.kotlin.Promise
 import java.io.File
 import java.text.SimpleDateFormat
@@ -78,7 +80,9 @@ class InterventionRuntime private constructor(val context: Context) {
             if (!preferences.edit().putBoolean("accepted-v1", true).commit()) throw InterventionFailure("ERR_INTERVENTION_STORAGE")
             main.post {
               try {
-                if (!leases.isOpen(bridge) || activity.isFinishing || activity.isDestroyed || !activity.hasWindowFocus()) throw InterventionFailure("ERR_INTERVENTION_UNAVAILABLE")
+                // A dismissing Dialog still owns window focus; use Activity lifecycle for the consented settings handoff.
+                val resumed = (activity as? LifecycleOwner)?.lifecycle?.currentState?.isAtLeast(Lifecycle.State.RESUMED) ?: activity.hasWindowFocus()
+                if (!leases.isOpen(bridge) || activity.isFinishing || activity.isDestroyed || !resumed) throw InterventionFailure("ERR_INTERVENTION_UNAVAILABLE")
                 activity.startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)); promise.resolve(true)
               } catch (e: Exception) { reject(promise, e) }
             }
