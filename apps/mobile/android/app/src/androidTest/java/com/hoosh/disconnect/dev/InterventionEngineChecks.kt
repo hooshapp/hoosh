@@ -134,6 +134,39 @@ internal object InterventionEngineChecks {
       failure("ERR_INTERVENTION_BUSY") { leases.open(bridge, B) }; leases.close(bridge)
       val replacement = leases.bridge(); leases.open(replacement, B)
     }
+    case {
+      val snapshot = InterventionProtectionSnapshot.read(null, true, true, false, 1000)
+      val status = snapshot["status"] as Map<*, *>
+      check(status["state"] == "inactive" && status["installedRevision"] == null)
+      check((status["installedReasonIds"] as List<*>).isEmpty())
+    }
+    case {
+      val (disk, _) = fixture()
+      for ((now, state) in listOf(999L to "inactive", 1000L to "active", 900000L to "inactive")) {
+        val snapshot = InterventionProtectionSnapshot.read(disk.value, true, true, false, now)
+        val status = snapshot["status"] as Map<*, *>
+        check(status["state"] == state && status["installedRevision"] == 1)
+        check(status["installedReasonIds"] == listOf("one"))
+        check(!snapshot.toString().contains(APP))
+      }
+    }
+    case {
+      val (disk, _) = fixture()
+      for ((consent, auth) in listOf(false to "not_requested", true to "denied")) {
+        val snapshot = InterventionProtectionSnapshot.read(disk.value, false, consent, false, 1000)
+        val status = snapshot["status"] as Map<*, *>
+        check(snapshot["authorization"] == auth && status["authorization"] == auth)
+        check(status["state"] == "needs_permission" && status["installedRevision"] == 1)
+      }
+    }
+    case {
+      val (disk, _) = fixture()
+      val snapshot = InterventionProtectionSnapshot.read(disk.value, true, true, true, 1000)
+      check((snapshot["status"] as Map<*, *>)["state"] == "failed")
+      val caps = snapshot["capabilities"] as Map<*, *>
+      check(caps["mode"] == "overlay" && caps["supportsUsageThreshold"] == false)
+      check(caps["selectionUI"] == "unavailable" && caps["supportsAdvanceWarning"] == false)
+    }
     return count
   }
 }

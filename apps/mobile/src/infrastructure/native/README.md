@@ -60,3 +60,21 @@ by the original account. Erasure drains through the native actor, verifies remov
 and blocks reopen on failure until retry succeeds. Real full deletion still must
 coordinate selection/Auth/backend/other-device stores. Native events are not rewards.
 See `docs/qa/android-interventions.md` and the approved provisional policy record.
+
+
+### Explicit-owner intervention status reader
+
+`intervention-protection-reader.ts` prepares the existing shared read types for the
+debug finite-window coordinator. It requires an explicit verified owner and native
+read method; no default identity, Auth import, permission request or rule write.
+One native actor snapshot supplies coherent fields. Strict decoding rejects active
+without authorization/revision/reasons, invalid/duplicate reason IDs and incorrect
+capabilities; unknown inventory extras are dropped. Dispose on owner/scope loss to
+reject pending/future reads; disposal does not erase installed native policy.
+
+The native QA host composes this reader with the existing protection mapper/card
+and explicit desired revision intent. Production registration still uses the
+read-only usage adapter. Do not fill ProtectionService.applyRules with a success
+stub: recurring LocalRuleSpec and compiled windows plus session policy differ.
+Actual production owner binding, recurrence compilation and write/event adapters
+remain future integration. See the [Android runbook](../../../../../docs/qa/android-interventions.md).

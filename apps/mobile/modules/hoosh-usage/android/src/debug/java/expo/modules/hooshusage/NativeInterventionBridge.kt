@@ -10,6 +10,7 @@ class NativeInterventionBridge(private val runtime: InterventionRuntime) : Inter
   override fun release(owner: String, token: String, promise: Promise) { runtime.leases.release(owner, token); promise.resolve() }
   override fun cancelReview() = runtime.cancelReview(bridge)
   override fun close() { runtime.leases.close(bridge); runtime.cancelReview(bridge) }
+  override fun protectionRead(owner: String, promise: Promise) = runtime.protectionRead(owner, promise)
   override fun status(owner: String, promise: Promise) = runtime.status(owner, promise)
   override fun reviewAccess(activity: Activity, promise: Promise) = runtime.reviewAccess(bridge, activity, promise)
   override fun install(owner: String, token: String, expected: Int, revision: Int, selectionRevision: Int, windows: List<Map<String, Any>>, policy: Map<String, Any>, promise: Promise) = runtime.install(owner, token, expected, revision, selectionRevision, windows, policy, promise)

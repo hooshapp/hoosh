@@ -55,11 +55,11 @@ adb shell am instrument -w -e probe interventionChecks \
   com.hoosh.disconnect.dev.test/com.hoosh.disconnect.dev.UsageProbeInstrumentation
 ```
 
-The runner contains 46 planned cases: 40 pure controller/lifetime cases plus six
-actual Android AtomicFile cases. Expect `interventionChecksPassed=46` and result
+The runner contains 50 planned cases: 44 pure controller/lifetime cases plus six
+actual Android AtomicFile cases. Expect `interventionChecksPassed=50` and result
 −1 **only after executing on the device**. It uses unique cache fixtures and
 synthetic owners, removes its directory in finally and emits only a fixed
-failure/case marker. JVM execution of the 40 pure cases is separate evidence;
+failure/case marker. JVM execution of the 44 pure cases is separate evidence;
 it does not execute the Android persistence cases. Run original selection
 lifecycle/draft/preview/discovery modes as native regressions after installation.
 Current synthetic discovery has 11 cases. The actual narrow discovery diagnostic
@@ -67,14 +67,14 @@ intentionally returns `unsafe_manifest` (result 0, all inventory counts absent)
 because this debug APK declares the intervention service. This expected refusal
 is separate from the synthetic checks and is not a catalog-coverage pass.
 
-The same 40 pure tests can run without a phone after the native build populates
+The same 44 pure tests can run without a phone after the native build populates
 the local Kotlin cache:
 
 ```sh
 JAVA_HOME=/path/to/jdk17 npm run mobile:check-intervention-engine
 ```
 
-The committed runner compiles the actual controller/lifetime sources and the same
+The committed runner compiles the actual controller/lifetime/snapshot sources and the same
 `InterventionEngineChecks.kt` used by instrumentation. It downloads nothing and
 writes only ignored .expo output; this command is separate from Node-only CI.
 
@@ -96,7 +96,7 @@ writes only ignored .expo output; this command is separate from Node-only CI.
    reads and agrees, then enables only **Disconnect intervention test** in system
    Accessibility settings. Do not auto-grant access with ADB or bypass restricted
    settings. Return and refresh; permission alone must not create an installation.
-5. Install two-minute test. QA values: two overlapping reasons, 120/90-second
+5. Install ten-minute test. QA values: two overlapping reasons, 600/450-second
    windows, 15-second per-app sessions, two sessions/day, UTC. These are labeled
    test fixtures, not production policy defaults. Confirm native revision/counts.
 6. Launch the owned target:
@@ -162,3 +162,82 @@ re-enable/failure UI matrix, other devices/profiles, performance and signed/stor
 acceptance remain open. The earlier root check is historical; the follow-up rebuilt
 native debug/test APKs and reran actual Android suites, without rerunning the
 unchanged shared/component/API/export suites. Full RN-08 stays open.
+
+
+## Lifecycle recovery and shared-reader continuation
+
+The continuation after `696eec1` adds an explicit-owner, read-only snapshot adapter.
+`interventionProtectionRead` returns one native actor read in the existing shared
+capability/authorization/status shape. Its decoder rejects contradictions and
+strips extras; disposal rejects pending/new reads without clearing native rules.
+Future/expired windows are inactive. The QA host reuses the existing status card,
+but a positive matched revision requires explicit install/cancel intent in that
+host session. Reopening with only a stored native revision remains unknown. The
+normal app's adapter registration and Auth/root are unchanged. `LocalRuleSpec`
+recurrence writes still require a policy compiler; the finite-window API is not
+silently substituted for that interface.
+
+The host now provides **Remove this test host task**, implemented with Android's
+[finishAndRemoveTask](https://developer.android.com/reference/android/app/Activity#finishAndRemoveTask()),
+and **Interrupt accessibility feedback**. Both are debug-only; task removal is not
+a force-stop, process-death or reboot guarantee. The footer accurately labels this
+page as a local test installation. Windows are now labeled ten-minute / 7.5-minute
+fixtures so manual checks can finish; sessions remain 15 seconds/two-per-day UTC.
+Earlier two-minute acceptance above remains historical.
+
+For actual task acceptance, install a fixture, remove the host task, verify the
+host Activity is absent without capturing Home/Overview, launch only the owned
+target and require native pause. Relaunch the host, read the same plan/revision,
+then verify the shared card does not invent the lost desired UI intent. Revoke
+using the native Disable action, require needs_permission and retained plan, then
+review the same disclosure/re-enable in Settings. Wait for service binding and a
+fresh target foreground event before accepting a resumed pause. A settings switch
+alone is not a binding/overlay barrier.
+
+For actual Metro independence, install a fresh fixture, launch the owned target,
+start a session, stop only the task's Metro and verify its localhost port closes.
+Require native expiry and another native bypass while that server remains absent.
+Restart the same owned Metro only if needed for later setup/cleanup. JavaScript
+paused and Metro stopped are different test conditions; neither is a reboot test.
+
+### Feedback interruption regression
+
+Android's [onInterrupt](https://developer.android.com/reference/android/accessibilityservice/AccessibilityService#onInterrupt())
+interrupts accessibility feedback. This service emits no speech/haptics; clearing
+its tracked foreground app there lost expiry after a feedback interrupt. The
+callback now leaves tracking/policy intact; actual service/permission/window/lock
+cleanup remains independent. No screen/window-content retrieval was added.
+
+To reproduce the native boundary with TalkBack enabled, launch the owned target,
+activate Open anyway, then request `interventionInterruptFeedback` through the
+attached developer host's native bridge while leaving the target foreground. In
+its attached JS console, the debug-only call is:
+
+```js
+globalThis.expo.modules.HooshUsage.interventionInterruptFeedback()
+```
+
+Require the native pause after the existing session deadline. Merely bringing the
+host forward to tap its feedback test button and relaunching the target does not
+reproduce a foreground-tracking loss; record the actual condition. This diagnostic
+operation interrupts feedback of enabled services, so use it only in the agreed
+local acceptance session and restore the original settings. It does not revoke a
+service or cancel an installed rule. All 12 debug method registrations and the
+snapshot implementation are absent from release classes.
+
+Final target-specific results, exact APK/source fingerprints, owner-observed speech,
+rejected attempts, cleanup and remaining gates are in the latest Plan 04 entry and
+[continuation evidence](../core_plan_implementation_notes/artifacts/rn-08-lifecycle-reader/evidence.json).
+
+
+Current continuation acceptance: both Android targets pass 50 intervention + 17
+lifecycle + 22 draft + 12 preview + 11 synthetic discovery checks (112 each).
+Both pass host-task removal/relaunch, retained permission revoke/re-enable and
+Metro-stopped native expiry/bypass. Pixel owner confirms TalkBack speech/traversal
+and Open anyway/Return home; the final Return home matches a native quit event.
+The feedback-interruption regression is reproduced before/fixed after on Pixel.
+The phone baseline and exact known test files are restored, test service/TalkBack
+off, captures removed, owned Metro stopped and isolated emulator shut down.
+Production/Auth/iOS/recurrence/write integration, signed/store review, process
+death/reboot, other device/profile/performance and exhaustive accessibility/failure
+matrices remain outside this bounded acceptance. Full RN-08 stays open.

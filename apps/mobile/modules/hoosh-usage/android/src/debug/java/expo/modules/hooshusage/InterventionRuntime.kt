@@ -64,6 +64,9 @@ class InterventionRuntime private constructor(val context: Context) {
       "disclosureAccepted" to consented(), "serviceConnected" to (connected != null))
   }
   fun open(bridge: String, owner: String, promise: Promise) = call(promise) { engine.read(owner); leases.open(bridge, owner) }
+  fun protectionRead(owner: String, promise: Promise) = call(promise) {
+    InterventionProtectionSnapshot.read(engine.read(owner), authorized(), consented(), failure != null, System.currentTimeMillis())
+  }
   fun status(owner: String, promise: Promise) = call(promise) { summary(owner) }
   fun cancelReview(bridge: String) { main.post { if (reviewOwner == bridge) review?.cancel() } }
   fun reviewAccess(bridge: String, activity: Activity, promise: Promise) {

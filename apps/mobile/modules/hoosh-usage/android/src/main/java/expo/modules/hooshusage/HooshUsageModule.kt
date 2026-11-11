@@ -44,6 +44,17 @@ class HooshUsageModule : Module() {
       }
       AsyncFunction("interventionOpen") { owner: String, p: Promise -> interventions(p)?.open(owner, p) }.runOnQueue(Queues.MAIN)
       AsyncFunction("interventionRelease") { owner: String, token: String, p: Promise -> interventions(p)?.release(owner, token, p) }.runOnQueue(Queues.MAIN)
+      AsyncFunction("interventionProtectionRead") { owner: String, p: Promise -> interventions(p)?.protectionRead(owner, p) }.runOnQueue(Queues.MAIN)
+      AsyncFunction("interventionInterruptFeedback") {
+        requireNotNull(appContext.reactContext).getSystemService(android.view.accessibility.AccessibilityManager::class.java).interrupt()
+        true
+      }.runOnQueue(Queues.MAIN)
+      // Explicit test-host action: remove this Activity's task, never force-stop the application/service.
+      AsyncFunction("interventionRemoveHostTask") { p: Promise ->
+        val activity = appContext.currentActivity
+        if (activity == null || activity.isFinishing || activity.isDestroyed || !activity.hasWindowFocus()) p.reject("ERR_INTERVENTION_UNAVAILABLE", "No foreground test host.", null)
+        else { p.resolve(true); activity.finishAndRemoveTask() }
+      }.runOnQueue(Queues.MAIN)
       AsyncFunction("interventionStatus") { owner: String, p: Promise -> interventions(p)?.status(owner, p) }.runOnQueue(Queues.MAIN)
       AsyncFunction("interventionReviewAccess") { p: Promise ->
         val activity = appContext.currentActivity

@@ -4,9 +4,9 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN-08 Android debug-native coordinator and bounded Pixel/emulator acceptance pass; native Settings handoff fixed and phone baseline restored. Production integration and wider acceptance remain open. Read the latest entry/runbook; Auth/tokens and iOS stay deferred.
+**Current part:** RN-08 independent lifecycle/recovery/TalkBack and explicit-owner shared read preparation complete; feedback-interruption expiry bug fixed and phone baseline restored. Production/Auth/iOS and wider acceptance remain open. Read the latest entry/runbook.
 
-**Implementation branch:** `task/react-native/rn-08-android-interventions`; acceptance parent `4f986e8`; local commit only, no push/main merge or iOS/Auth change.
+**Implementation branch:** `task/react-native/rn-08-android-interventions`; lifecycle/read continuation parent `696eec1`; local commit only, no push/main merge or iOS/Auth change.
 
 **Commit reference:** RN-01 `2f88102`; RN-02 `2d5c0d1`; RN-03 `0741758`; RN-04 `610f570`; RN-05 preparation `0c6e4db`; RN-07 UI `5790302`; RN-08 preparation `71da2d5`; RN-09a `ff75039`. RN-10 is `9b5fbd0`.
 
@@ -16,7 +16,9 @@
 
 ## Resume here
 
-- **RN-08 device acceptance (2026-11-10):** 108 actual native checks pass per target (Pixel/API 36 and isolated emulator); bounded native pause/timer/reentry/extra-session/cancel/stop flows pass. Emulator JavaScript-paused expiry/lock/Back and phone enlarged-text/revocation pass. Fixed actual native Settings handoff. Explicit owner erasure and original phone baseline restoration verified; captures removed, owned Metro stopped/emulator shut down. Read final entry and [acceptance evidence](artifacts/rn-08-intervention-acceptance/evidence.json). Production adapter/Auth/iOS, new-service TalkBack and wider/signed lifecycle acceptance remain open. Parent `4f986e8`; own hash Pending until next normal update.
+- **RN-08 lifecycle/read continuation (2026-11-10):** both targets pass final 112 native checks, actual host-task removal/relaunch, retained permission revoke/re-enable and Metro-stopped native expiry/bypass. Pixel owner TalkBack speech/swipe/Open anyway/Return home confirmed, with final native quit correlation. Fixed actual feedback-interruption loss of expiry. Explicit-owner snapshot reader feeds existing shared status in QA; production registration/recurring writes/Auth/iOS unchanged. Full root 398/606(+2 skips)/601, final scoped checks/export/release separation pass. Phone exact files/settings restored; test service/TalkBack off, captures removed, owned Metro stopped/emulator shut down. Read latest entry and [evidence](artifacts/rn-08-lifecycle-reader/evidence.json). Parent `696eec1`; own hash Pending until next normal update; local commit only.
+
+- **RN-08 device acceptance (2026-11-10):** 108 actual native checks pass per target (Pixel/API 36 and isolated emulator); bounded native pause/timer/reentry/extra-session/cancel/stop flows pass. Emulator JavaScript-paused expiry/lock/Back and phone enlarged-text/revocation pass. Fixed actual native Settings handoff. Explicit owner erasure and original phone baseline restoration verified; captures removed, owned Metro stopped/emulator shut down. Read final entry and [acceptance evidence](artifacts/rn-08-intervention-acceptance/evidence.json). Production adapter/Auth/iOS, new-service TalkBack and wider/signed lifecycle acceptance remain open. Parent `4f986e8`; acceptance commit `696eec1` (recorded during the next continuation).
 
 - **RN-08 native coordinator implementation checkpoint (2026-11-10):** branch `task/react-native/rn-08-android-interventions`, parent `56e7ba4`. Ishmum authorized provisional defaults recorded in PM questions/decision record. Debug-native revisioned finite-window installation, per-app elapsed/day accounting, overlap, lifetime fences, native disclosure/overlay and owner-local journal/erasure implemented. JVM 40 passes, full/shared/build/export checks recorded in final entry. At that implementation checkpoint the new Android runner/service acceptance was pending after ADB disconnected; subsequent execution is recorded above. Production Auth-bound adapter, iOS, recurrence/reward producers and signed/store acceptance stay open. Read [runbook](../qa/android-interventions.md) and [evidence](artifacts/rn-08-interventions/evidence.json); IDs/counts unchanged. Implementation hash `4f986e8`; subsequent acceptance is recorded above.
 
@@ -3861,7 +3863,7 @@ no push, CI, main merge, deployment or remote/credential/account changes.
 ### RN-08 — Native device acceptance follow-up
 
 **Commit:** `fix(android): verify intervention setup and device lifecycle`.
-**Hash:** Pending until next normal update. **Owner:** Ishmum. **Date:** 2026-11-10.
+**Hash:** `696eec1` (recorded during lifecycle continuation). **Owner:** Ishmum. **Date:** 2026-11-10.
 **Parent:** `4f986e8`. **Branch:** `task/react-native/rn-08-android-interventions`.
 **Status:** Bounded debug acceptance complete on physical Pixel/API 36 and an
 isolated API 36 emulator; actual fixes and evidence below. The initial connection
@@ -3973,3 +3975,210 @@ stay unchanged; do not mark full RN-08 complete.
 - `docs/qa/android-interventions.md`: lines 65–68, 129–133, 139–164. Document 11-case synthetic versus expected actual-manifest refusal, stronger before/after capture guards, exact accepted target-specific results, cleanup and checks not run.
 - `docs/core_plan_implementation_notes/artifacts/rn-08-intervention-acceptance/evidence.json`: lines 1–226. Record source/APK fingerprints, actual per-target native/live checks, measured fixes, rejected attempts, verified cleanup and remaining gates. Keep private data/captures out of Git and preserve historical parent evidence.
 - `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 7–9, 19–21, 3681, 3861–3975. Update current status/resume point, record parent implementation hash and document every follow-up change, decision, actual check/correction, restoration and remaining acceptance boundary. Own hash stays Pending until the next normal update.
+
+
+### RN-08 / RN08-D02, D06 — Lifecycle recovery and shared read-adapter continuation
+
+**Commit:** `feat(android): verify lifecycle recovery and prepare shared status reader`.
+**Hash:** Pending until next normal update. **Owner:** Ishmum. **Date:** 2026-11-10.
+**Parent:** `696eec1`. **Branch:** `task/react-native/rn-08-android-interventions`.
+**Status:** Requested independent lifecycle/recovery/accessibility work and
+shared integration preparation complete within the recorded debug scope. Auth,
+tokens and Anisha's iOS remain deferred. No push/merge/deployment authorized.
+
+#### Intended scope and boundary
+
+- Actual Metro-stopped native flow, task removal/relaunch and permission revoke/
+  re-enable retention on the existing debug installation; record observed behavior
+  rather than inferring process-death/reboot guarantees from a task swipe.
+- New pause-screen accessibility traversal/action/focus checks. Spoken feedback
+  needs owner observation; do not substitute prior picker speech or UIAutomation
+  for the new service. Preserve/restore the fresh phone baseline and TalkBack.
+- Prepare an explicit-owner read adapter to existing shared protection status
+  types/presentation. Current ProtectionService.applyRules describes recurring
+  LocalRuleSpec; the native engine accepts finite compiled windows plus an explicit
+  session policy. Do not invent a translation or claim that production writes or
+  Auth binding are complete. Read-only integration can proceed independently.
+- Every measured fix, file/line change, actual check and remaining gate will be
+  recorded below before the local commit. Do not reuse the previous run's private
+  baseline files as this run's initial state.
+
+
+#### Implementation and verification progress
+
+- Added an atomic explicit-owner native protection-read snapshot and a strict,
+  disposable TypeScript reader using existing shared protection status types.
+  Existing production registration remains unchanged. The read adapter returns no
+  app inventory, requests no permission and never translates recurring rule specs.
+  The QA host now feeds it into the existing shared status mapper/card; desired
+  revision comes only from this host's install/cancel intent, never a native read.
+  Initial/foreground/operation reads mask stale shared results and coalesce actions.
+- Added a debug-only explicit finishAndRemoveTask action to exercise actual host
+  task removal without force-stopping the service. Added native heading semantics
+  to the pause title without forcibly stealing accessibility focus.
+- Corrected misleading QA footer wording for the intervention page. Extended only
+  labeled debug fixture windows to ten minutes / 7.5 minutes for manual recovery
+  and TalkBack checks; per-app sessions remain 15 seconds, two/day UTC. These are
+  test values, not product defaults or saved account plans.
+- Four new pure native snapshot cases verify absent/future/current/expired status,
+  permission loss with retained revision, failure and no inventory. JVM now passes
+  44; Android runner adds six AtomicFile cases and passed 50 on both targets, plus
+  17 lifecycle/22 draft/12 preview/11 discovery = 112 each. Expected actual debug
+  manifest refusal remains separate from the 11 synthetic discovery self-checks.
+- Portable read-adapter tests pass 16; focused activity/intervention component
+  rerun passes 48 across presets. Initial root run stopped at a new JSX apostrophe
+  lint error (corrected); next run had one unchanged activity dirty-background test
+  time out. The isolated focused rerun passed; no timeout increase, suppression or
+  unrelated runtime/test edit. Full final root check is in progress.
+- Emulator first recovery attempt accepted task removal, continued native pause,
+  retained plan on relaunch with unknown desired intent, and revocation retaining
+  the plan. Its immediate post-re-enable pause assertion failed while windows still
+  had time remaining; it is not called a pass. A fresh explicit installation then
+  paused correctly. Repeating with a settled service/new foreground transition;
+  investigate if reproducible instead of attributing the failure to expiration.
+- Phone initial setup auto-locked and later hit a missing USB reverse mapping;
+  restored this task's mapping. The owner had enabled the exact test service/read
+  disclosure by the time setup was inspected. Explicit service/consent/native
+  reads confirm enabled/inactive, then a controlled native bridge installation
+  confirms shared read fields. No credential/Auth/remote operation.
+- Enabled the installed TalkBack service for the user-authorized check, preserving
+  the existing test service and the fresh baseline. Actual native pause is visible;
+  owner asked to traverse and activate Open anyway. No UIAutomation dump with
+  either service active. Phone speech/gesture/focus acceptance remains pending
+  until owner response. Restoration and final evidence/ledger remain in progress.
+
+#### Measured feedback-interruption defect
+
+The owner's initial Return home report did not match a native quit event, so it was
+not accepted as a correlated action pass. Fresh TalkBack double-tap plus 15-second
+expiry did pass; that did not explain away the missing action. We then exercised
+the actual AccessibilityManager.interrupt feedback signal through a debug-only
+QA hook. With the original callback, the callback occurred, the service remained
+enabled, but native expiry no longer paused the still-foreground owned target.
+The diagnostic APK hash/bounded before result are retained privately for evidence.
+
+`onInterrupt` had incorrectly cleared foreground tracking and hidden the pause.
+Android documents it as a feedback interruption callback, not authorization loss:
+[AccessibilityService.onInterrupt](https://developer.android.com/reference/android/accessibilityservice/AccessibilityService#onInterrupt()).
+This service emits no speech/haptics, so the callback now leaves native tracking
+and policy intact. Window changes, screen-off, actual permission loss and service
+destruction retain their independent cleanup paths. This is a measured callback
+regression/fix, not a claim that every earlier missing observation has one cause.
+
+Added a named debug-only feedback-interruption hook/control for reproducibility;
+no release registration, production Auth, window-content retrieval, gesture access
+or broad package permission. Temporary diagnostic logging used fixed host/fixture/
+TalkBack/system/other categories only; it has been removed from final source.
+The final APK is being rebuilt and retested; previous root suite passes are
+398 portable/606 component (+2 existing skips)/601 API. Final component/export/
+Android acceptance after this fix and complete restoration remain in progress.
+
+
+- Final feedback regression on Pixel with TalkBack enabled now passes: after a
+  recorded native Open anyway, request the actual system feedback interruption,
+  keep the owned target foreground and require the native pause after the original
+  deadline. The test service remains enabled. Temporary diagnostic logs are absent
+  from final source. This proves the measured callback fix; earlier uncorrelated
+  Return home report remains pending until its final native event is observed.
+- Final APK emulator task removal/relaunch and permission revocation/re-enable
+  retention now pass, using a settled service/new foreground event. Earlier
+  immediate re-enable assertion remains recorded as rejected/uncertain, not
+  silently rewritten as expired windows or a proven callback cause.
+- Final release Kotlin/manifest builds pass; all 12 debug bridge registrations and
+  the new native snapshot implementation are absent from release classes. Targeted
+  component 16/type/lint and web export (38 isolated files/71 SVG assets) pass.
+  No new lint warnings (the existing 11 remain). Final source/UI availability
+  fallback is being rechecked after a small absent-reader correction.
+
+
+#### Final accepted lifecycle and accessibility results
+
+- Final APK: both emulator and Pixel passed actual host-task removal (Activity
+  absent), native pause afterward, retained exact plan on host relaunch, unknown
+  desired revision instead of inferred agreement, actual native Disable access,
+  retained plan/revision, reviewed Settings re-enable, settled binding and a fresh
+  target launch with resumed native pause. No task swipe is labeled process death.
+- Both targets passed native expiry and another Open anyway with Metro stopped
+  and its localhost port closed. Pixel's first attempt lost owned foreground and
+  was rejected; the accepted repeat used continuous exact owned-visible-window
+  guards (11 reads) through the original native deadline. No foreign/locked
+  capture is accepted or committed. Earlier capture-race attempts were rejected
+  and retried only after a new explicit owned launch, retaining all guards.
+- Owner confirms clear TalkBack labels/swipe traversal/Open anyway, then confirms
+  Return home on the fixed build. Final native quit event is present and correlates
+  with the latter action; initial uncorrelated report remains a rejected attempt.
+  TalkBack-enabled foreground timer expiry and actual feedback-interruption
+  regression pass on the final APK. No speech-caption preference changed; TalkBack
+  restored off afterward. This is bounded traversal/action evidence, not exhaustive
+  focus on every transition or all devices/assistive configurations.
+- Prepared explicit-owner read adapter and existing shared status card in QA;
+  production recurring-rule write adapter/registration/Auth remains deferred.
+  This is the promised independent integration preparation, not a claim that
+  LocalRuleSpec recurrence and finite native windows are interchangeable.
+- Full root check passes 398 portable / 606 component (+2 existing skips) / 601 API,
+  72 component suites, types/lint/assets/Ruff/contracts. Native callback/final QA
+  edits additionally pass final native debug/test/release builds, JVM 44, targeted
+  16 component results, final types/lint and web export 38/71. Existing 11 lint
+  warnings remain; the unchanged activity timeout passed focused 48 then the
+  full root rerun without test/runtime changes. No fresh database acceptance run.
+- Reviewed React components using the previously loaded React best-practices
+  checklist: one read/action path, duplicate lock, stable effect dependencies,
+  subscription cleanup, disposed reader/late-result fence, explicit desired
+  intent, no production identity/exports, accessible busy/error states and reused
+  shared card. No new UI framework/dependency or speculative policy compiler.
+- Cleanup and final actual Android suite fingerprints are being recorded below;
+  original Auth/token/iOS deferrals and local-only publication remain in force.
+
+
+#### Final restoration, checks and next boundary
+
+Final actual native suite reruns on the final APK pass **112 per target** (224 total):
+50 intervention, 17 lifecycle, 22 draft, 12 preview and 11 discovery self-checks.
+Actual manifest refusal is expected separately, not ready inventory acceptance.
+Final source/APK fingerprints and target observations are in the
+[continuation evidence](artifacts/rn-08-lifecycle-reader/evidence.json).
+
+Explicit native owner erasure verified file absence, then disabled the exact phone
+test service using its native action and verified erasure again. After the final
+Android checks, force-stopped only the owned host to restore exact known file/
+sidecar baseline. Verified original accessibility services/global/touch settings,
+font/power/timeout, unchanged usage access and reverse mappings. Removed task
+cache backups, captures and XML; no speech-caption preference changed. TalkBack
+and test service are off as originally. APKs and unrelated app data remain.
+Stopped the exact task-owned Metro and shut down only the isolated owned emulator;
+phone baseline was verified once more afterward. No remote/account action.
+
+Final diff whitespace, new relative links, evidence hashes/privacy fields and
+per-file line bounds verified. Own hash stays Pending until next normal update.
+Unrelated workspace and original icon-pack folders remain untouched/unstaged.
+
+The requested next independent slice is done. Full RN-08 remains open for real
+Auth/owner/root/desired-policy integration, recurring-rule write/event adapters,
+Anisha's iOS, coordinated deletion, feature producers, true process/reboot and
+signed/store/other-device/performance/exhaustive failure/accessibility acceptance.
+Do not reopen finished root suites without a new failure/change or label the
+remaining deferred work implemented. No push/CI/merge/deployment.
+
+#### Every changed file and logical change
+
+- `apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/InterventionEngineChecks.kt`: lines 137–169. Add four pure native shared-read projection cases: absent/current/future/expired, permission loss with retained revision, failure and inventory exclusion. Shared runner now 44 pure and 50 with Android persistence.
+- `apps/mobile/dev/native/App.tsx`: lines 165. Correct the intervention diagnostic footer to acknowledge local test installation and cleanup; retain existing other diagnostic/sample wording.
+- `apps/mobile/dev/native/README.md`: lines 167–177. Document ten-minute fixtures, shared read card and debug task/feedback controls; link actual recovery/TalkBack runbook and unchanged production/Auth/iOS boundaries.
+- `apps/mobile/dev/native/interventions.tsx`: lines 2, 5–7, 12, 24–26, 30, 32, 35, 38–43, 45, 47, 50, 52–53, 62, 67, 72, 74, 78–79, 84–88. Reuse existing shared status card with explicit desired install/cancel intent and disposable owner reader. Unify initial/foreground/action refresh, mask uncertain reads, fence unmounts and guard duplicates. Add optional debug task-removal/feedback controls, honest absent-reader fallback and labeled longer fixtures; no production registration.
+- `apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/InterventionAccessibilityService.kt`: lines 96, 98, 134–137. Mark pause title as an accessibility heading. Preserve tracking/policy on feedback-only onInterrupt so expiry survives actual feedback interruption; retain separate permission/window/lock/destruction cleanup. Temporary logging removed.
+- `apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/InterventionRuntime.kt`: lines 67–69. Produce an explicit-owner shared read on the existing native actor, using real consent/service authorization, stored record and clock. Do not add writes or return installed-app identities.
+- `apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/NativeInterventionBridge.kt`: lines 13. Delegate explicit-owner shared snapshot reads through the existing bridge; leave durable installation and lifetime cleanup semantics intact.
+- `apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/HooshUsageModule.kt`: lines 47–57. Register shared read and explicit host-task/feedback diagnostics only inside the existing debug factory guard. Remove only current host task; feedback hook calls actual system interrupt, not permission revocation. All 12 registrations absent from release.
+- `apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/InterventionCoordinator.kt`: lines 12. Extend the internal coordinator interface with explicit-owner shared snapshot read; no public ProtectionService rule-write contract change.
+- `apps/mobile/src/features/protection/intervention-qa.test.tsx`: lines 15, 19–20, 39, 56–87. Update labeled fixture controls and add shared-status integration/unmount tests. Require explicit desired intent, native revision match and revoked-permission downgrade; no cancellation on read disposal.
+- `apps/mobile/src/infrastructure/native/README.md`: lines 63–80. Explain explicit-owner read/decode/dispose boundary, no implicit recurring-rule translation, and unchanged production registration; link Android runbook.
+- `docs/Context (AGENT)/AGENT_START_HERE.md`: lines 28–35. Expose current lifecycle/read preparation, measured feedback fix and continuation evidence; preserve deferred production/iOS/release boundaries.
+- `docs/core_plan/04_react_native_integration.md`: lines 478–490. Add RN08-D02/D06 continuation under existing IDs with strict native evidence, shared read preparation, measured bug and final evidence reference; keep full parent open.
+- `docs/core_plan/README.md`: lines 20–27. Add latest independent lifecycle/read checkpoint, current 44/50 native runner scope and evidence without renumbering plans or accepting production/Auth/iOS.
+- `docs/qa/android-interventions.md`: lines 58–59, 62, 70, 77, 99, 165–243. Update current runner/fixture commands; document reproducible task/Metro/re-enable/feedback conditions, SDK references, owner TalkBack/native correlation, restoration and remaining limits. Preserve older acceptance as historical.
+- `scripts/check-android-intervention-engine.py`: lines 87. Compile the new actual pure Kotlin snapshot source with the shared native cases in the optional no-download JVM runner.
+- `apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/InterventionProtectionSnapshot.kt`: lines 1–18. Project one native actor record/authorization/failure/clock snapshot into existing shared read fields; only currently running windows yield active. Never return installed-app identities.
+- `apps/mobile/src/infrastructure/native/intervention-protection-reader.ts`: lines 1–61. Add strict shared read decoder and explicit-owner disposable reader. Reject contradictory/unsafe responses, detach reason arrays, strip extras and sanitize failures; disposal fences pending/future reads without clearing native policy.
+- `apps/mobile/src/infrastructure/native/intervention-protection-reader.test.ts`: lines 1–58. Add 16 portable cases covering matching/mismatched/unknown desired revision, revocation/absence, limits/contradictions, privacy copying, invalid owner/port, disposal and sanitized failures.
+- `docs/core_plan_implementation_notes/artifacts/rn-08-lifecycle-reader/evidence.json`: lines 1–206. Record final source/APK fingerprints, root/scoped/native counts, exact per-target lifecycle/TalkBack/feedback results, rejected attempts, restoration and deferred boundaries without private data.
+- `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 7–9, 19–23, 3866, 3980–4184. Record previous hash/current resume and every implementation choice, measured failure/fix, actual verification, owner observations, baseline restoration, remaining gate and per-file ledger. Own hash Pending until next normal update.

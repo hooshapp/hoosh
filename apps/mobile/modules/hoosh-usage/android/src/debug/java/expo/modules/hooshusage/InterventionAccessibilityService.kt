@@ -93,9 +93,9 @@ class InterventionAccessibilityService : AccessibilityService() {
       } else fitsSystemWindows = true
       if (Build.VERSION.SDK_INT >= 28) accessibilityPaneTitle = "Disconnect intervention test"
     }
-    fun text(value: String, size: Float) { body.addView(TextView(this).apply { text = value; textSize = size; setTextColor(0xff222222.toInt()); setPadding(0, 16, 0, 24) }) }
+    fun text(value: String, size: Float, heading: Boolean = false) { body.addView(TextView(this).apply { text = value; textSize = size; if (Build.VERSION.SDK_INT >= 28) isAccessibilityHeading = heading; setTextColor(0xff222222.toInt()); setPadding(0, 16, 0, 24) }) }
     text("Disconnect · intervention test", 20f)
-    text("Take a moment", 32f)
+    text("Take a moment", 32f, heading = true)
     text("You chose a pause for this app. ${reasons.size} test reason(s) apply. You can return home or open the app anyway. No rewards or streak changes are calculated.", 18f)
     val actions = mutableListOf<Button>()
     fun action(label: String, run: () -> Unit) = Button(this).also { button ->
@@ -131,7 +131,10 @@ class InterventionAccessibilityService : AccessibilityService() {
       }
     } catch (_: Exception) { runtime.failure = "ERR_INTERVENTION_OVERLAY"; hide() }
   }
-  override fun onInterrupt() { generation++; foreground = null; hide() }
+  override fun onInterrupt() {
+    // This callback interrupts spoken/haptic feedback, not authorization or the foreground app.
+    // We emit neither. Clearing tracking here loses expiry after another service interrupts feedback.
+  }
   override fun onDestroy() {
     main.removeCallbacks(pulse); generation++; hide()
     if (::runtime.isInitialized && runtime.service === this) runtime.service = null

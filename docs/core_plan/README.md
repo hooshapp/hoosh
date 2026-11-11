@@ -17,6 +17,14 @@ phone enlarged-text/revocation pass; phone settings and files are restored. See
 Production Auth-bound adapter/iOS/release and the wider accessibility/lifecycle
 matrix remain open. Original IDs/counts unchanged.
 
+**RN-08 lifecycle/read continuation (2026-11-10):** explicit-owner native snapshot
+reader now feeds existing shared status presentation in QA, with no production
+registration/Auth/write binding. Added actual host-task and feedback-interruption
+controls; corrected a measured feedback-interruption expiry bug. Current native
+runner is 44 JVM / 50 Android cases; exact final device/recovery/TalkBack evidence
+and remaining gates live in [continuation record](../core_plan_implementation_notes/artifacts/rn-08-lifecycle-reader/evidence.json)
+and latest Plan 04 notes. Original IDs/counts stay unchanged.
+
 **Selection follow-up (2026-11-10):** controlled-owner retain/erase hooks and
 same-owner generation/stale-work fences now prepare Auth integration without
 wiring it. New native lifecycle race tests and picker focus/accessibility handling

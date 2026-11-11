@@ -162,7 +162,7 @@ function QaHost() {
           {realNative ? (page === 'Android interventions' ? 'FINITE NATIVE INTERVENTION TEST' : page === 'Android probe' ? 'REAL ANDROID CAPABILITY PROBE' : page === 'Saved apps editor' ? 'LOCAL SAVED SELECTION QA' : 'TEMPORARY ANDROID SELECTION PREVIEW') : `UI QA SAMPLE · ${page ?? 'Screens'} · ${scenario}`}
         </Text>
         <Text accessibilityLiveRegion="polite" style={styles.notice}>
-          {realNative ? 'Device-native preview. No account/API save or installed protection.' : notice}
+          {realNative ? (page === 'Android interventions' ? 'Local test installation only. No account or API changes. Erase the test and disable access afterward.' : 'Device-native preview. No account/API save or installed protection.') : notice}
         </Text>
         <View style={styles.actions}>
           <Button

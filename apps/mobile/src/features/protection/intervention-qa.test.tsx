@@ -12,12 +12,12 @@ function port(): jest.Mocked<InterventionCoordinatorPort & Pick<SelectionEditorP
 test('absent bridge disables actions and never claims an installation', async () => {
   await render(<InterventionQa port={null} />);
   expect(screen.getByText('Native state unavailable')).toBeVisible();
-  expect(screen.getByRole('button', { name: 'Install two-minute test' })).toBeDisabled();
+  expect(screen.getByRole('button', { name: 'Install ten-minute test' })).toBeDisabled();
 });
 test('install uses native saved selection revision, explicit test policy and releases lease', async () => {
   const n = port(); await render(<InterventionQa port={n} />);
-  await waitFor(() => expect(screen.getByRole('button', { name: 'Install two-minute test' })).toBeEnabled());
-  await fireEvent.press(screen.getByRole('button', { name: 'Install two-minute test' }));
+  await waitFor(() => expect(screen.getByRole('button', { name: 'Install ten-minute test' })).toBeEnabled());
+  await fireEvent.press(screen.getByRole('button', { name: 'Install ten-minute test' }));
   await waitFor(() => expect(n.selectionRelease).toHaveBeenCalledTimes(1));
   expect(n.interventionInstall).toHaveBeenCalledWith(expect.any(String), expect.any(String), 3, 4, 1, expect.arrayContaining([expect.objectContaining({ reasonId: 'test-quest' })]), { timezoneId: 'UTC', sessionsPerDay: 2, sessionSeconds: 15 });
 });
@@ -36,7 +36,7 @@ test('leaving while opening selection lease releases it without issuing a later 
   const n = port(); let finish!: (v: unknown) => void;
   n.selectionBegin.mockReturnValue(new Promise((yes) => { finish = yes; }));
   const view = await render(<InterventionQa port={n} />); await waitFor(() => expect(screen.getByText(/Native: armed/)).toBeVisible());
-  await fireEvent.press(screen.getByRole('button', { name: 'Install two-minute test' })); await view.unmount();
+  await fireEvent.press(screen.getByRole('button', { name: 'Install ten-minute test' })); await view.unmount();
   await act(() => finish({ draftId: '00000000-0000-4000-8000-000000000099', groupId: 'global', baseRevision: 1, draftVersion: 0, selectedAppCount: 1, savedAppCount: 1, dirty: false }));
   expect(n.interventionInstall).not.toHaveBeenCalled(); expect(n.selectionRelease).toHaveBeenCalledTimes(1);
 });
@@ -53,5 +53,36 @@ test('revoked access disables installation even before the native binding discon
   const n = port(); n.interventionStatus.mockResolvedValue({ ...state, state: 'needs_permission' });
   await render(<InterventionQa port={n} />);
   await waitFor(() => expect(screen.getByText(/Native: needs_permission/)).toBeVisible());
-  expect(screen.getByRole('button', { name: 'Install two-minute test' })).toBeDisabled();
+  expect(screen.getByRole('button', { name: 'Install ten-minute test' })).toBeDisabled();
+});
+
+test('shared presentation requires explicit desired intent and confirmed matching native snapshot', async () => {
+  const n = { ...port(), interventionProtectionRead: jest.fn() };
+  const snapshot = { capabilities: { platform: 'android', mode: 'overlay', selectionUI: 'unavailable',
+    supportsUsageThreshold: false, supportsScheduledRestriction: true, supportsTemporaryAllowance: true,
+    supportsAdvanceWarning: false, supportsUsageSummary: false }, authorization: 'authorized',
+    status: { authorization: 'authorized', state: 'active', installedRevision: 3, installedReasonIds: ['test-schedule'] } };
+  n.interventionProtectionRead.mockImplementation(async () => snapshot);
+  await render(<InterventionQa port={n} />);
+  await waitFor(() => expect(screen.getByText('Protection status unknown')).toBeVisible());
+  expect(screen.queryByText('App interventions active')).toBeNull();
+  n.interventionInstall.mockImplementation(async () => { snapshot.status.installedRevision = 4; n.interventionStatus.mockResolvedValue({ ...state, installedRevision: 4 }); });
+  await fireEvent.press(screen.getByRole('button', { name: 'Install ten-minute test' }));
+  await waitFor(() => expect(screen.getByText('App interventions active')).toBeVisible());
+  expect(n.interventionProtectionRead).toHaveBeenCalledWith('qa-development:00000000-0000-4000-8000-000000000001');
+  snapshot.authorization = 'denied'; snapshot.status.authorization = 'denied'; snapshot.status.state = 'needs_permission';
+  n.interventionStatus.mockResolvedValue({ ...state, installedRevision: 4, state: 'needs_permission' });
+  await fireEvent.press(screen.getByRole('button', { name: 'Refresh native installation' }));
+  await waitFor(() => expect(screen.getByText('Permission needed')).toBeVisible());
+  expect(screen.queryByText('App interventions active')).toBeNull();
+});
+
+test('unmount during shared snapshot read fences the result without canceling native policy', async () => {
+  let finish!: (value: unknown) => void;
+  const n = { ...port(), interventionProtectionRead: jest.fn(() => new Promise((yes) => { finish = yes; })) };
+  const view = await render(<InterventionQa port={n} />);
+  await waitFor(() => expect(n.interventionProtectionRead).toHaveBeenCalledTimes(1));
+  await view.unmount(); await act(() => finish({ private: 'late response' }));
+  expect(n.interventionEndOwner).not.toHaveBeenCalled();
+  expect(n.interventionCancel).not.toHaveBeenCalled();
 });

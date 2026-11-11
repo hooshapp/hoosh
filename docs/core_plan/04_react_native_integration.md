@@ -475,6 +475,19 @@ usage thresholds/advance warning and signed/store acceptance are not completed b
 this debug producer. Full RN-08 and original counts remain open.
 
 
+**Lifecycle/read-adapter continuation (2026-11-10):** the debug coordinator now
+provides an explicit-owner atomic snapshot to shared status types/presentation,
+with strict decoding and disposed-reader fences. QA desired revision is explicit
+install/cancel intent; future/expired windows and relaunch are not fabricated as
+active/matched. Production registration/Auth/root and recurring LocalRuleSpec
+writes remain unchanged. Added debug task-removal/feedback controls and semantic
+heading. Actual feedback interruption reproduced a lost-expiry bug; preserving
+tracking in the feedback-only callback fixes the measured regression. The current
+native runners contain 44 JVM / 50 Android cases. Read [continuation evidence](../core_plan_implementation_notes/artifacts/rn-08-lifecycle-reader/evidence.json)
+and latest notes for exact final device/lifecycle/TalkBack results and restoration.
+Full RN-08, iOS and signed/wider-device/production acceptance remain open.
+
+
 **Independent preparation checkpoint (2026-10-29):** [Protection presentation](../../apps/mobile/src/features/protection/README.md) now supplies an evidence-based mapper, accessible status/action card, bounded read-only consumer and isolated state preview. No native adapter or live route is registered. [RN-08 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md#rn-08-preparation--evidence-based-protection-presentation) record exact source/tests/browser/native compilation evidence. This completes the independent presentation slice, not native/device integration. Existing Auth/profile gates remain separate.
 
 | Ref | Native scope (original deferrals; current checkpoints above/below apply) | Owner / required evidence |

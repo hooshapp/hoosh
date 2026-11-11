@@ -164,3 +164,14 @@ Follow `docs/qa/android-interventions.md` for the 46-case native runner and actu
 phone acceptance. Builds/JVM cases do not establish service/device or store approval.
 Do not use UIAutomation dumps with a live service under test; restore the owner's
 original accessibility/disclosure/power/connection state after testing.
+
+
+The RN-08 lifecycle continuation adds actual task removal and feedback-interruption
+controls, plus the existing shared protection card fed by a strict explicit-owner
+native snapshot reader. Diagnostic windows are now explicitly ten minutes / 7.5
+minutes; sessions remain 15 seconds, two/day UTC. Relaunch cannot infer the desired
+revision from a stored native read. This diagnostic page can install a local test;
+its footer now says so. Main app/Auth/root, production recurring-rule writes and
+iOS remain unchanged. Follow the [intervention runbook](../../../../docs/qa/android-interventions.md)
+for Metro-stopped, task-removal, permission re-enable and TalkBack acceptance,
+including exact baseline restoration and the no-UIAutomation-while-active rule.

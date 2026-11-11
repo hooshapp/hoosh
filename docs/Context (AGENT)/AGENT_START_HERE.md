@@ -25,6 +25,14 @@ enlarged-text/revocation. Phone baseline restored. Production Auth/root, iOS, ne
 service TalkBack, wider lifecycle/device and signed/store acceptance remain open.
 Read current Plan 04 notes and [acceptance evidence](../core_plan_implementation_notes/artifacts/rn-08-intervention-acceptance/evidence.json).
 
+**RN-08 lifecycle/read continuation (2026-11-10):** shared status reader prepared
+with explicit owner/disposal and strict native evidence; production Auth/root and
+recurring-rule write binding unchanged. A measured feedback interruption lost
+expiry; callback fixed without adding content retrieval. See final Plan 04 notes
+and [continuation evidence](../core_plan_implementation_notes/artifacts/rn-08-lifecycle-reader/evidence.json)
+for actual Metro/task/re-enable/TalkBack results and restored baseline. Do not
+infer full RN-08, iOS, release or process/reboot acceptance from this debug slice.
+
 **Checkout status (2026-11-02):** A shared Expo/React Native shell, accepted type-only Auth/native interfaces with synthetic HTTP fixtures (Plan 00 committed as `0b50900`), and a FastAPI health foundation now exist. See [repository README](../../README.md) for actual setup/check commands. Mobile Auth, product persistence, and native protection are not connected. Legacy iOS source is now present in `apps/mobile/ios/` from commit `fe8f262`; its audit, signing/build validation and reuse remain prerequisites for RN/iOS integration. Source availability alone is not integration acceptance. The shell opens Home as a development preview: RN-09a composes source cards with unavailable inputs and no sample outcomes; Quests, History and Settings now also have source-aligned presentation with unavailable inputs and isolated source examples. It does not claim active protection.
 
 **Engineering ownership:** Ishmum owns main/shared React Native UI, Android, backend/product database and shared testing. Anisha owns all Supabase Auth/project setup (SB-01–03), mobile Auth/onboarding and iOS. Ishmum owns only the Supabase product database work (SB-04/05), not Auth administration. Build against the shared contracts independently, then wire real outputs when ready; mark integration-dependent parts complete only after joint validation. Read [the accepted decisions](../architecture/identity-foundation.md) and [core execution order](../core_plan/README.md) before foundation work.

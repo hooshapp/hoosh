@@ -1,0 +1,206 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-10",
+  "owner": "Ishmum",
+  "branch": "task/react-native/rn-08-android-interventions",
+  "parent": "696eec1",
+  "plan_refs": [
+    "RN-08",
+    "RN08-D02",
+    "RN08-D06"
+  ],
+  "scope": "Independent debug-native lifecycle/accessibility acceptance and explicit-owner shared read-adapter preparation; production registration, real Auth/tokens and iOS unchanged.",
+  "apk_sha256": {
+    "debug_app": "e2f76f20a420bf122564bcd3ae4643dd55a7f1aa1f45001acba2b77ad033e4e3",
+    "debug_test": "b3270b975c41df8df70b5b97076e7b1712a07302cecce5e79cb0fe20ab7b841a"
+  },
+  "source_sha256": {
+    "apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/InterventionEngineChecks.kt": "380fac119d84726d3dc99baab1dc4c28a9e9f4a3f286fc9da1c09f356b2a8cf7",
+    "apps/mobile/dev/native/App.tsx": "1b5b881a9838bb1fa6daf3b8e38cdcdab19608b810ee541e7893c8ccc9eb9e5c",
+    "apps/mobile/dev/native/interventions.tsx": "a320d6550bc545784a4f7be88987b4a96263a8feea0cceef5507bc2b05433bed",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/InterventionAccessibilityService.kt": "3ad3ee16137a4538e5ded057d84f93d9643a4aa0b055b3b5d14cb952f5905922",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/InterventionRuntime.kt": "17bfa44ab62d8c115201c2f2878a54caaf0753bb190062b0ca97ec0b3bd61b48",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/NativeInterventionBridge.kt": "48f3676f41ccee2c3dc59bb04f7f4007915a8347f0abb702112a667c96ef2423",
+    "apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/HooshUsageModule.kt": "3736a83cc00367b5d0e2d851a13fb031261bc79a4c39c1947e6ec8ae9b7a46d7",
+    "apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/InterventionCoordinator.kt": "e49f8ac03503e916b3afee01bb5b68a8987b54ffd031a6e7fd505858f44907af",
+    "apps/mobile/src/features/protection/intervention-qa.test.tsx": "c97ba6b9100a3827486be2ea81ff044bd62264989b37b6119192117f12429d32",
+    "scripts/check-android-intervention-engine.py": "18bbaf444dae6c15e089a138cf260faffba683a0eccf4f97b12abeecfa3e0f00",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/InterventionProtectionSnapshot.kt": "0a5447caf384349feee5a35ca46b235fb20ed0a6253a147448e48d0cc5cb0ff2",
+    "apps/mobile/src/infrastructure/native/intervention-protection-reader.ts": "7da210297a25116d41408de584d190879ba0784547d47bf7284db1df2698cccb",
+    "apps/mobile/src/infrastructure/native/intervention-protection-reader.test.ts": "a4ffe565fb1506130c72574c30510378db5b470ee1b224bf0073565f510af869"
+  },
+  "checks": {
+    "root_portable": 398,
+    "root_component": 606,
+    "root_component_skipped": 2,
+    "root_component_suites": 72,
+    "root_api": 601,
+    "root_database_deselected": 199,
+    "root_types_lint_assets_ruff_contracts": "passed",
+    "existing_lint_warnings": 11,
+    "focused_activity_and_intervention_components": 48,
+    "final_targeted_components": 16,
+    "final_types_lint": "passed",
+    "final_native_jvm": 44,
+    "final_android_each_target": 112,
+    "final_debug_app_test_build": "passed",
+    "final_release_kotlin_manifest": "passed",
+    "final_web_export_isolated_files": 38,
+    "final_web_export_original_svgs": 71,
+    "release_debug_registrations_absent": 12,
+    "release_snapshot_implementation_absent": true,
+    "verification_boundary": "Full root passed before the later feedback callback fix/final QA availability wording. Those final scoped edits additionally passed actual native builds/device suites, JVM, component/type/lint and export checks. Unchanged backend/API root results are not new DB acceptance."
+  },
+  "adapter": {
+    "explicit_owner_required": true,
+    "single_native_actor_read": true,
+    "no_inventory_returned": true,
+    "disposed_reads_rejected": true,
+    "existing_shared_types_mapper_card": true,
+    "qa_desired_revision": "Only explicit install/cancel intent; never inferred from native or backend draft read. Relaunch remains unknown.",
+    "production_registration_changed": false,
+    "recurring_write_translation_added": false
+  },
+  "fixtures": {
+    "window_seconds": [
+      600,
+      450
+    ],
+    "session_seconds": 15,
+    "sessions_per_day": 2,
+    "timezone": "UTC",
+    "authority": "Explicit labeled QA fixtures, not product defaults."
+  },
+  "device_results": [
+    {
+      "target": "Isolated AOSP API 36 ARM64 emulator",
+      "final_native_checks": {
+        "interventionChecks": 50,
+        "selectionLifecycleChecks": 17,
+        "selectionDraftChecks": 22,
+        "selectionPreviewChecks": 12,
+        "selection": 11
+      },
+      "lifecycle": [
+        {
+          "step": "explicit-host-task-removed",
+          "installedRevision": 7
+        },
+        {
+          "step": "native-pause-after-host-task-removal"
+        },
+        {
+          "step": "host-relaunch-retains-plan-and-masks-unknown-desired-revision"
+        },
+        {
+          "step": "native-revocation-retains-installed-plan",
+          "installedRevision": 8
+        },
+        {
+          "step": "reenable-retains-revision-and-resumes-native-pause",
+          "installedRevision": 8
+        },
+        {
+          "step": "metro-stopped-native-expiry-and-bypass",
+          "metroPortClosed": true
+        }
+      ],
+      "cleanup": {
+        "controlledRecordAndSelectionRemoved": true,
+        "testServiceDisabled": true,
+        "reverseRemoved": true,
+        "capturesRemoved": true,
+        "ownedMetroStopped": true,
+        "ownedEmulatorShutdownRequested": true
+      }
+    },
+    {
+      "target": "Pixel 8 Pro API 36",
+      "final_native_checks": {
+        "interventionChecks": 50,
+        "selectionLifecycleChecks": 17,
+        "selectionDraftChecks": 22,
+        "selectionPreviewChecks": 12,
+        "selection": 11
+      },
+      "lifecycle": [
+        {
+          "step": "explicit-host-task-removed",
+          "installedRevision": 6
+        },
+        {
+          "step": "native-pause-after-host-task-removal"
+        },
+        {
+          "step": "host-relaunch-retains-plan-and-masks-unknown-desired-revision"
+        },
+        {
+          "step": "native-revocation-retains-installed-plan",
+          "installedRevision": 7
+        },
+        {
+          "step": "reenable-retains-revision-and-resumes-native-pause",
+          "installedRevision": 7
+        },
+        {
+          "step": "metro-stopped-native-expiry-and-bypass",
+          "metroPortClosed": true,
+          "continuousOwnedForegroundChecks": 11
+        }
+      ],
+      "cleanup": {
+        "knownFilesRestored": true,
+        "serviceSettingsRestored": true,
+        "touchExplorationRestored": true,
+        "fontPowerTimeoutRestored": true,
+        "usageAccessUnchanged": true,
+        "reverseRestored": true,
+        "capturesRemoved": true,
+        "appForceStoppedForSafeFileRestore": true,
+        "appDataAndApksPreserved": true
+      },
+      "talkback": {
+        "testServiceExplicitlyEnabled": true,
+        "talkbackExplicitlyEnabled": true,
+        "nativePauseVisible": true,
+        "ownerConfirmedClearLabels": true,
+        "ownerConfirmedSwipeTraversal": true,
+        "ownerConfirmedOpenAnywayRevealsTarget": true,
+        "ownerReportedReturnHomeFocus": true,
+        "ownerReportedReturnHomeActivation": true,
+        "nativeQuitEventConfirmed": true,
+        "returnHomeAcceptance": "Owner action and native quit event correlated on fixed build",
+        "finalOwnerConfirmedReturnHome": true
+      },
+      "feedback_regression_before": {
+        "feedbackInterruptObserved": true,
+        "nativePauseAfterExpiry": false,
+        "testServiceStillEnabled": true,
+        "diagnosticApkSha256": "41f398f864db120ad0bf786dd58777657ae7c7ef9d4fdbaba96f84564938d9a0"
+      },
+      "feedback_regression_after": {
+        "systemFeedbackInterruptRequested": true,
+        "nativePauseAfterExpiry": true,
+        "testServiceStillEnabled": true
+      }
+    }
+  ],
+  "rejected_attempts": [
+    "New JSX apostrophe lint error corrected before accepted checks; no warning suppression.",
+    "Initial root rerun timed out one unchanged activity dirty-background test; focused 48 and full root 606 passed without unrelated test/runtime/timeout changes.",
+    "First immediate emulator re-enable pause assertion failed with nonexpired windows; no expiry attribution or pass inferred. Settled binding plus fresh foreground rerun passed.",
+    "Phone relaunch/capture races and first Metro-stopped attempt left owned visible foreground; guards rejected captures. Accepted Metro repeat had 11 continuous exact owned foreground checks.",
+    "Initial owner Return home report had no native quit event; final post-fix owner action correlates with recorded quit event. No initial pass inferred.",
+    "The actual feedback interruption reproduced foreground tracking loss on a diagnostic pre-fix APK. Final callback preserves tracking; same native expiry regression passes with TalkBack. Temporary fixed-category diagnostic logging removed.",
+    "Phone setup initially locked/missing reverse and cleanup initially found disconnected debugger; owner unlocked, task reverse restored and explicit fresh owned developer launch recovered. No guards bypassed."
+  ],
+  "remaining": [
+    "Production owner/Auth/root/desired-policy binding and full recurring-rule write/event adapters.",
+    "Anisha-owned iOS and coordinated account/backend/native deletion; real tokens remain deferred.",
+    "Recurring plan/quest compilation, usage-threshold/advance-warning and reward/streak feature producers.",
+    "True OS process death/reboot/force-stop guarantees, signed distribution/store review, other devices/profiles/versions and sustained performance.",
+    "Exhaustive accessibility/focus/error/failure matrix; bounded owner traversal and action evidence is not every transition."
+  ],
+  "privacy": "Only the owned test APK target was configured. No inventory, credentials, serials, screenshots, speech text, hierarchy/window dumps or private helper paths. No UIAutomation while services active; rejected captures discarded, accepted private captures removed. No speech-caption preference changed.",
+  "publication": "Local commit only; no push, CI, merge, deployment or remote/account/credential action."
+}

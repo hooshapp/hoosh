@@ -84,6 +84,7 @@ def main() -> None:
                     "InterventionModel.kt",
                     "InterventionEngine.kt",
                     "InterventionLeases.kt",
+                    "InterventionProtectionSnapshot.kt",
                 ]
             ),
             str(tests),
