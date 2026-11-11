@@ -15,6 +15,7 @@ const invalid = (): never => {
 };
 const integer = (n: unknown, min: number, max: number): n is number =>
   Number.isSafeInteger(n) && (n as number) >= min && (n as number) <= max;
+const uuid = (value: unknown): value is string => typeof value === 'string' && value.length === 36 && safeRequestId(value) === value;
 const whitespace =
   /^[\u0009-\u000d\u001c-\u0020\u0085\u00a0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u2028\u2029\u202f\u205f\u3000]+|[\u0009-\u000d\u001c-\u0020\u0085\u00a0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u2028\u2029\u202f\u205f\u3000]+$/gu;
 function text(value: unknown, max: number, canonical: boolean): string {
@@ -32,7 +33,7 @@ export function questDefinition(value: unknown, canonical = true): QuestDefiniti
   )
     return invalid();
   const time = (v: unknown): v is string =>
-    typeof v === 'string' && /^(?:[01][0-9]|2[0-3]):[0-5][0-9]$/.test(v);
+    typeof v === 'string' && v.length === 5 && /^(?:[01][0-9]|2[0-3]):[0-5][0-9]$/.test(v);
   if (
     !time(value.start_local) ||
     !time(value.end_local) ||
@@ -64,8 +65,8 @@ export function questDefinition(value: unknown, canonical = true): QuestDefiniti
 function row(value: unknown, context: ResponseContext): QuestView {
   if (
     !isRecord(value) ||
-    !safeRequestId(value.user_id) ||
-    !safeRequestId(value.quest_id) ||
+    !uuid(value.user_id) ||
+    !uuid(value.quest_id) ||
     value.quest_id !== safeRequestId(value.quest_id) ||
     value.user_id !== context.account?.user_id ||
     !integer(value.revision, 1, 2147483647) ||
@@ -110,7 +111,7 @@ export function decodeQuestPage(
     !context.account ||
     !Array.isArray(value.quests) ||
     value.quests.length > 50 ||
-    !(value.next_cursor === null || safeRequestId(value.next_cursor))
+    !(value.next_cursor === null || uuid(value.next_cursor))
   )
     return invalid();
   const quests = value.quests.map((q) => row(q, context));
@@ -123,7 +124,7 @@ export function decodeQuestPage(
   return { quests, next_cursor: value.next_cursor as string | null };
 }
 function path(id: string) {
-  if (safeRequestId(id) !== id) throw new ApiError('validation');
+  if (!uuid(id)) throw new ApiError('validation');
   return `/v1/quests/${id}`;
 }
 export function readQuest(id: string, { api, signal }: AccountOperation) {

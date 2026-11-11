@@ -4,7 +4,7 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN09B-D01 saved quest management. Slice a contract/storage/API verified; shared consumer and local mobile HTTP acceptance b/c follow in this task. Auth/tokens, production root, iOS and activation/reward policy remain deferred; read latest entry.
+**Current part:** RN09B-D01 a–c saved quest management implemented and independently accepted: strict own CRUD, conditional shared list/editor, real local mobile HTTP/restart and hosted schema 0003. a `10d8e16`, b `7d85e50`, c resolves by final entry/commit subject. Auth/root/tokens, native occurrence/rewards, Anisha’s iOS and signed/device acceptance remain deferred.
 
 **Implementation branch:** `task/react-native/rn-09b-quest-management`; parent published `4c632b4`; no new push/main merge/deployment or iOS/Auth change.
 
@@ -15,6 +15,8 @@
 **Shared workflow:** [Implementation knowledge base](README.md).
 
 ## Resume here
+
+- **RN09B-D01 completion of independent slice (2026-11-11):** backend `10d8e16` and shared consumer `7d85e50` implement strict saved definition CRUD with owner RLS/CAS, content-free deletion receipts/tombstones, real accepted list/editing, pagination and uncertain/offline/conflict/account-scope handling. Full root 457 portable/652 component (+2 skips)/628 API; 217 real PostgreSQL checks and six portable-client TCP/restart cases pass, final selected driver passes at committed a/b. Hosted development 0003 applied/security/no-drift verified; profiles/settings preserved, quest table empty. Disposable API processes/container/network stopped; volume retained. Read [runbook](../qa/quest-management.md), [evidence](artifacts/rn-09b-quest-management/evidence.json) and final entry. No managed-token/Auth/root/native activation/reward/iOS/device or GitHub/push claim. Stable IDs/open parents unchanged; c own hash Pending until next normal update.
 
 - **RN09B-D01 saved definitions (2026-11-11):** new task branch from `4c632b4`; slice a implements own strict paginated quest-definition CRUD with revision CAS, content-free deletion tombstones, additive migration 0003, RLS/ACL/trigger verification, generated contract and local security/concurrency/upgrade tests. 628 API /216 actual PostgreSQL pass; existing 434 portable/634 component (+2 skips), types/lint/assets pass, final API lint/contracts pass. No hosted migration or real mobile Auth/native activation/reward call. Continue b/c shared consumers and local TCP mobile acceptance in this same task. See [contract](../architecture/quest-definition-management.md) and latest entry. Own slice-a hash Pending until next normal update; do not claim full RN-09b/Plan 04 completion.
 
@@ -4889,7 +4891,7 @@ Ranges belong to this slice-a commit; generated files are one derived contract c
 
 ### RN09B-D01b — Shared saved quest list and editor consumer
 
-**Commit:** Pending. **Owner:** Ishmum. **Date:** 2026-11-11.
+**Commit:** `7d85e50`. **Owner:** Ishmum. **Date:** 2026-11-11.
 **Parent:** `10d8e16`. **Branch:** `task/react-native/rn-09b-quest-management`.
 **Status:** Implementation/testing in progress. Reuse existing product components,
 not new sample pages or an Auth bypass. No push.
@@ -5008,3 +5010,102 @@ Ranges belong to this shared-consumer commit; generated files are a derived cont
 - `services/api/app/schemas/quests.py`: lines 96, 110. Publish bounded revision metadata for nullable reads/deletion receipts; no definition retention or foreign-account disclosure.
 - `services/api/tests/db/test_quests.py`: lines 60, 66–67, 69. Assert zero revision for foreign absence and retained revision for own content-free deletion/read, alongside existing RLS/CAS checks.
 - `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 4798, 4888–5010. Record slice-a hash 10d8e16 during the next normal update and detail consumer changes, receipt rationale, failed checks/corrections, actual root/scoped/export/hosted results, every file/line and c handoff. Keep current self-hash Pending.
+
+
+### RN09B-D01c — Real HTTP/database restart acceptance and handoff
+
+**Commit:** Pending. **Owner:** Ishmum. **Date:** 2026-11-11.
+**Parent:** `7d85e50`. **Branch:** `task/react-native/rn-09b-quest-management`.
+**Status:** Independent saved-management acceptance/handoff complete; runtime a/b already committed. Final c self-hash Pending until next normal update.
+
+- Added an explicit loopback-only portable quest-client acceptance suite with
+  ephemeral locally signed JWT fixture ports and the normal server verifier.
+  Five write-phase cases and one fresh-client/API-process-restart case exercise
+  actual network/PostgreSQL, not mocked JSON or hosted tokens. Its environment
+  validates marker/origin/phase/three identities, and inherited provider settings
+  are excluded. Tokens/public JWKS remain in ephemeral process input/environment;
+  raw child output is withheld and temporary JSON reports removed in finally.
+- The pytest driver owns/stops both API processes and asserts different PIDs.
+  Cases cover persisted own CRUD, same-ID isolated owners, stale CAS conflict,
+  a truly committed lost response with exactly one PUT, foreign delete isolation,
+  wiped tombstones/stale recreation, scope/cache replacement and restart reads.
+- Add acceptance marker to the existing production-export guard. No test
+  credential/fixture producer is reachable from a production route.
+- Full isolated database suite passed 217 with six mobile HTTP cases inside its
+  driver. Final selected HTTP driver is rerun at committed a/b sources before
+  freezing hashes/evidence. Exact commands and cleanup follow below.
+
+#### RN09B-D01c final validation and cleanup
+
+- Whole working-tree `npm run check` passed 457 portable /652 component (+2
+  existing skips in 78 suites) /628 API and types/lint/assets/Ruff/contracts.
+  After final availability feedback, scoped types/lint and 54 quest component
+  results pass; 18 new management results rerun once more after final assertions.
+  Twenty-three portable quest boundary cases passed; no dependency/lock change.
+- `npm run api:db:test`: 217 actual PostgreSQL cases passed, including this
+  driver. Final `uv run --project services/api pytest services/api/tests/db/test_mobile_quests_acceptance.py -o addopts= -m database -q`
+  reran the driver at committed a/b: one pytest case passed, containing five
+  actual mobile write-phase and one cold restart case. This is independent of
+  the earlier component fixture results; it is not managed Auth SDK acceptance.
+- `npm run mobile:export`: final 38 isolated app JS/HTML files and 71 original
+  SVGs pass. `npm run mobile:ui:build` passes (installed Expo UUID vendor warning
+  recorded above). Final backend schema target: 25 tests pass; generated HTTP
+  schema/types match after the additive service description/receipt metadata.
+- Hosted forward migration 0002→0003 and standard no-drift/security check passed;
+  sanitized separate hosted result/empty quest table/preserved existing content
+  is in c evidence. No Auth admin/user/provider/key/password or managed-user
+  product mutation. Future migration operators must pull the new history first;
+  do not stamp/downgrade the shared project to an older revision.
+- Each HTTP process stopped by its fixture finally; transient JSON reports
+  removed. `npm run api:db:down` stopped/removed only task-owned labeled container/
+  network and retained its labeled volume. No new phone/emulator/settings action,
+  arbitrary data clear, untracked icon/workspace staging or push/main merge.
+- Source/evidence hashes, JSON invariants, local doc links and each changed file/
+  exact line range are verified before this final acceptance commit.
+
+#### Remaining work and next consumer
+
+This completes RN09B-D01's agreed saved-definition management scope. Real
+Auth/root/managed-account acceptance is RN09B-D02 and remains user-deferred.
+Occurrence activation/release/completion, recurrence edit effects, credit/Dino/
+streak/AI/usage policy are RN09B-D03 or their existing feature refs. Signed-device/
+TalkBack/focus/iOS acceptance stays RN09B-D04 with platform owners. A saved quest
+is explicitly not active; neither a save nor delete calls native restrictions.
+No full RN-09b/RN-09/Plan 04 completion is implied by these independent slices.
+
+**Slice-c commit message / Git reference:**
+`test(quests): verify mobile HTTP persistence and record schema handoff`.
+Own hash Pending until next normal notes update; parent `7d85e50`. Local only.
+
+- Final boundary review added exact-length UUID/HH:MM checks in the quest decoder
+  and path guard: JavaScript regex $ can match before a trailing newline. Explicit
+  lengths reject that noncanonical input before fetching or accepting a stored
+  time. Portable regressions cover the edge; no shared Auth parser/schema change.
+  This small consumer correction travels with acceptance and final hashes.
+
+- Final full check caught one overlong human-readable API description line.
+  Split adjacent literals without changing exported text or runtime behavior;
+  reran the required root check after correction. No failing lint run is counted
+  as acceptance. Final portable boundary count is 23, total portable count 457;
+  the earlier 456/22 numbers above belong to their earlier commit/run context.
+
+#### RN09B-D01c per-file ledger
+
+Ranges belong to this final acceptance/handoff commit.
+
+- `apps/mobile/dev/profile/acceptance/quests-http.acceptance.ts`: lines 1–178. Add five actual TCP saved-quest write cases plus one fresh-client/API-restart case using normal portable client/scopes/verifier and ephemeral signed local fixture credentials. Guard marker/origin/identities, never replay a lost write and clear scopes on finish.
+- `apps/mobile/dev/profile/acceptance/quests-vitest.config.mts`: lines 1–10. Define an explicit Node-only single-file integration configuration invoked only by guarded pytest; keep ordinary unit/component runs independent of credentials/process fixtures.
+- `apps/mobile/src/features/quests/quests-api.test.ts`: lines 57, 119. Add trailing-newline time regression and assert path rejection before transport; final portable quest boundary count is 23.
+- `apps/mobile/src/features/quests/quests-api.ts`: lines 18, 36, 68–69, 114, 127. Require exact canonical UUID/time lengths at the new boundary/path guard so JavaScript end-anchor trailing-newline behavior cannot admit noncanonical IDs or stored HH:MM values.
+- `docs/Context (AGENT)/AGENT_START_HERE.md`: lines 17–28. Publish the current saved-quest management/schema handoff, actual local evidence and preserved Auth/root/native/reward/device gates for future agents.
+- `docs/core_plan/01_supabase_foundation.md`: lines 16–22. Point Supabase collaborators at the applied 0003 product-schema extension without claiming new SB/Auth administration or joint acceptance.
+- `docs/core_plan/04_react_native_integration.md`: lines 12–23, 712, 788, 790–791. Mark independent saved-definition a/b/c scope accepted under existing IDs, distinguish current backend/UI/HTTP evidence from activation/Auth/signed gates and preserve parent/count history.
+- `docs/core_plan/README.md`: lines 8–19. Expose the current quest feature and hosted schema checkpoint, contract/runbook/evidence and explicitly remaining parent gates.
+- `docs/core_plan_implementation_notes/artifacts/rn-09b-quest-management/evidence.json`: lines 1–156. Freeze final source fingerprints, actual root/scoped/database/TCP/restart and hosted schema results, precise fingerprint boundary/corrections, cleanup and deferrals. Exclude tokens, URI/passwords, raw rows/logs/device data.
+- `docs/core_plan_implementation_notes/plan_01_supabase_foundation_notes.md`: lines 10–12. Add cross-plan resume pointer to the actual 0003 empty quest-table/preserved profiles/settings/security handoff; keep SB ownership and historical observations separate.
+- `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 6–7, 11–13. Update schema-context date/current note and resume pointer to Plan 04 quest extension; preserve all original API-10/Auth/token/deletion acceptance gates.
+- `docs/qa/quest-management.md`: lines 1–89. Document the actual CRUD workflow, independent commands, optional private QA entry, verified counts/recovery/cleanup and explicit non-enforcing/Auth/device scope.
+- `scripts/check-ui-preview-isolation.mjs`: lines 33. Reject the new real-HTTP acceptance fixture marker in production exports, preserving the existing source/test isolation guard.
+- `services/api/app/application.py`: lines 28–31. Line-wrap the human API description added in b after final lint found it exceeded 100 columns. Exported text/route/schema semantics remain unchanged.
+- `services/api/tests/db/test_mobile_quests_acceptance.py`: lines 1–79. Own the explicit test-environment mobile subprocess and two actual API processes, ephemeral credential passing, sanitized failure reporting and temporary report cleanup; assert restart uses different PIDs.
+- `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 7, 19–20, 4894, 5013–5111. Record b hash 7d85e50 during the next normal update, current a–c completion, actual HTTP/hosted/root checks, boundary/format corrections, all changed files and precise remaining Auth/native/device work. Keep c self-hash Pending until next normal update.

@@ -5,6 +5,18 @@
 **Reviewed:** 2026-11-02 (bounded planning expansion; implementation evidence remains recorded per part).\
 **Product answers:** [PM_QUESTIONS.md](<../Context (AGENT)/PM_QUESTIONS.md>); no PM question is answered by an engineering default in these plans.
 
+**Saved quest management (2026-11-11; RN09B-D01):** own strict definition
+CRUD/storage and conditional shared Quests/editor consumers are implemented and
+accepted locally. Development schema is now `20261111_0003`, with profiles/settings
+preserved and new quest table empty; Auth administration unchanged. Actual local
+mobile HTTP/process-restart and isolation checks pass without managed user tokens.
+See [quest runbook](../qa/quest-management.md),
+[contract](../architecture/quest-definition-management.md),
+[evidence](../core_plan_implementation_notes/artifacts/rn-09b-quest-management/evidence.json)
+and latest Plan 04 notes. Definitions are saved/not active; Auth/root, occurrence
+activation/completion/rewards, iOS and signed-device acceptance stay deferred.
+Existing IDs/counts and open parents unchanged; no new push.
+
 **Android RN-08 coordinator (2026-11-10):** debug-native finite-window installation,
 per-app elapsed sessions/midnight counters, overlap, owner/bridge lifetime fences,
 local journal/erasure and disclosed accessibility overlay are implemented. Read

@@ -9,6 +9,18 @@
 
 **Implementation record:** Follow the [knowledge-base workflow](../core_plan_implementation_notes/README.md) and maintain [Plan 04 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md). Each commit needs its own file/line change record, reasoning, checks and handoff. Preparation alone does not complete a part; RN-01's actual evidence is recorded below and in its notes.
 
+**Saved quest management (2026-11-11; RN09B-D01):** own strict definition
+CRUD/storage and conditional shared Quests/editor consumers are implemented and
+accepted locally. Development schema is now `20261111_0003`, with profiles/settings
+preserved and new quest table empty; Auth administration unchanged. Actual local
+mobile HTTP/process-restart and isolation checks pass without managed user tokens.
+See [quest runbook](../qa/quest-management.md),
+[contract](../architecture/quest-definition-management.md),
+[evidence](../core_plan_implementation_notes/artifacts/rn-09b-quest-management/evidence.json)
+and latest Plan 04 notes. Definitions are saved/not active; Auth/root, occurrence
+activation/completion/rewards, iOS and signed-device acceptance stay deferred.
+Existing IDs/counts and open parents unchanged; no new push.
+
 **Physical Home/Settings continuation (2026-11-11):** Pixel 8 Pro / Android 16 /
 API 36 now passes shared selection/editors/Preview/Apply, Home's automatic native
 start transition, actual pause, Stop/Resume, one-minute allowance, Update with
@@ -697,7 +709,7 @@ subparts, not a redefinition of earlier work or its dependencies.
 | Subpart | Scope / commit boundary | Actual status |
 |---|---|---|
 | RN-09a | Home composition, source assets, local display model, explicit feature states, isolated Figma specimen and tests | Implemented under `feat(mobile): compose Home with explicit feature availability`; self-hash recorded in the next normal notes update. The real Home route receives unavailable inputs; no live producer/action is connected. |
-| RN-09b | Quests presentation; suggestions distinct from accepted/saved occurrences; editors only against the agreed schema | Presentation implemented; real quest actions/editor/schema/persistence remain deferred under RN09B-D01–D04. |
+| RN-09b | Quests presentation; suggestions distinct from accepted/saved occurrences; editors only against the agreed schema | Presentation and saved-definition CRUD/schema/consumer implemented under RN09B-D01 a–c; real Auth/root, occurrence activation/completion/rewards and signed-device acceptance remain under D02–D04. |
 | RN-09c | History presentation with honest unavailable states and isolated source examples | Summary plus RN-09h details/navigation UI implemented; real metrics/account integration/device acceptance remain deferred under RN09C-D01/D02/D04; PD-12 forecast remains excluded. |
 | RN-09d | Settings composition reusing RN-07 profile and genuine availability for plan/app/activity editors | Presentation implemented; RN09D-D01–D04 and RN07-D01–D07/native-selection/shared-schema gates remain before live persistence/actions. |
 
@@ -773,9 +785,10 @@ consumer, then real local mobile HTTP/database acceptance. Saves never activate
 native quests or award credits. Non-repeating definitions have no assumed date;
 occurrence lifecycle/activation and real Auth/root/current-account acceptance stay
 separate. Slices a/b are implemented: strict own storage/API plus shared conditional
-list/editor/route consumers. Local root passes 456 portable /652 component
+list/editor/route consumers. Final local checks pass 457 portable /652 component
 (+2 skips) /628 API; hosted development migration 0003 security/preservation
-checks passed. c records isolated real HTTP/restart acceptance separately.
+checks passed. c accepts isolated real HTTP/restart journeys (five write cases + one cold read),
+with full local PostgreSQL matrix 217 passed and final selected driver rerun.
 Real-account/Auth/root/native activation remain separate. Record completed slices in the latest Plan 04 notes; no parent
 completion/count changes or new API-13/plan number.
 

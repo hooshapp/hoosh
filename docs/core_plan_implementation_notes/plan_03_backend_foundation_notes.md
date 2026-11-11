@@ -3,10 +3,13 @@
 **Plan:** [03_backend_foundation.md](../core_plan/03_backend_foundation.md)
 **Owner:** Ishmum. Anisha owns Supabase Auth setup and mobile sessions/onboarding.
 **Current branch:** `task/backend/plan-03-hosted-acceptance`; **parent:** `cadc91d`. Previous API-12 branch `task/backend/api-12-settings-http`, parent `21477df`. Original API-01–05 branch `task/backend/api-01-05`, starting commit `2703a23`; later planning/implementation branches are recorded per entry.
-**Last updated:** 2026-11-07.
-**Current part:** API-10 hosted CI verification passed for published code 7fe2c55: Foundation api/database/mobile jobs accepted. Hosted settings revision 0002 and prior independent backend work remain accepted. Full Plan 03 remains open for user-deferred current managed-token checks and joint Auth/root/native/device/C acceptance. Totals 46/21/25; feature branch pushed, no main merge/deployment.
+**Last updated:** 2026-11-11 (Plan 04 schema handoff only).
+**Current part:** API-10 hosted CI verification passed for published code 7fe2c55: Foundation api/database/mobile jobs accepted. Prior profile/settings acceptance remains valid; development head is now 0003 for the separate Plan 04 quest extension below. Full Plan 03 remains open for user-deferred current managed-token checks and joint Auth/root/native/device/C acceptance. Totals 46/21/25; feature branch pushed, no main merge/deployment.
 
 ## Resume here
+
+- **Quest product-schema handoff (2026-11-11, Plan 04 RN09B-D01):** pinned development now runs forward head `20261111_0003`; the new owner-isolated quest definition/tombstone table is empty, existing profiles/settings matched before/after, exact security and no-drift checks pass. Source/runtime, 628 API/217 actual local PostgreSQL and six mobile TCP/restart cases are recorded in [Plan 04 notes](plan_04_react_native_integration_notes.md), [contract](../architecture/quest-definition-management.md) and [evidence](artifacts/rn-09b-quest-management/evidence.json). No Anisha-owned Auth/user/provider/credential operation or new managed-token acceptance; prior 0002 checkpoints below are historical. SB/API parent gates/counts remain unchanged.
+
 
 - **Hosted GitHub CI verified (2026-11-07):** pushed `task/backend/plan-03-hosted-acceptance`; actual Foundation api/database/mobile jobs passed for code `7fe2c55`, run 42412686249. See final entry and artifact for exact job/step evidence; documentation gets a separate subsequent run. This closes the independent workflow row. `main` is three commits ahead of this branch's shared history; no merge/main push/deployment. Current-token/Auth/root/native/device and C-deletion gates remain deferred/joint. Earlier “GitHub unverified/no push” entries describe historical runs.
 

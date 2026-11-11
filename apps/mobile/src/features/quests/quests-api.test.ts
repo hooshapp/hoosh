@@ -54,6 +54,7 @@ describe('quest wire and request boundary', () => {
     { ...fixture.definition, weekdays: [0, 0] },
     { ...fixture.definition, repeat: 'daily' },
     { ...fixture.definition, start_local: '24:00' },
+    { ...fixture.definition, start_local: '09:00\n' },
     { ...fixture.definition, next_day: true },
     { ...fixture.definition, native_apps: [] },
   ])('rejects noncanonical/invalid stored definition %j', (value) => {
@@ -115,6 +116,7 @@ describe('quest wire and request boundary', () => {
   it('rejects path injection before fetching; reads never send write bodies', async () => {
     const f = setup();
     expect(() => readQuest('../settings', operation(f.api))).toThrow();
+    expect(() => readQuest(id + '\n', operation(f.api))).toThrow();
     expect(f.fetcher).not.toHaveBeenCalled();
     f.fetcher.mockResolvedValueOnce(json({ quest: null, revision: 0 }));
     await readQuest(id, operation(f.api));

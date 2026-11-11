@@ -13,6 +13,13 @@ remain open. No Supabase/project/Auth configuration or hosted action is authoriz
 by this documentation update. Anisha keeps SB-01–03/SB-06 ownership; user still
 defers tokens/Auth integration. Existing SB-04/05 evidence/status is unchanged.
 
+**Product schema handoff (2026-11-11):** Plan 04 RN09B-D01 applied/verified
+forward head `20261111_0003` for saved quest definitions. Existing profiles/settings
+are preserved; quest table empty. This is Ishmum's product database work, not
+SB-01–03/Auth administration or SB-06 acceptance. See the
+[quest evidence](../core_plan_implementation_notes/artifacts/rn-09b-quest-management/evidence.json)
+and latest Plan 04/Plan 01 notes; earlier 0002 checkpoints are historical.
+
 ## 1. Outcome and scope
 
 Ishmum and Anisha can use one explicitly identified **development** Supabase project for real authentication. The mobile app receives only public client configuration; FastAPI knows the exact trusted issuer, audience, signing algorithm, and public-key discovery endpoint. Later database work has separate runtime and migration credentials, one migration authority, and an isolated test database.
