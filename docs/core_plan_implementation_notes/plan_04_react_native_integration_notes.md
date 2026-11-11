@@ -4,7 +4,7 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN-08/RN-09 shared Home/Settings weekly-plan journey. Existing product screens/editors now share explicit-owner native Apply/readback/status. Emulator full flow and both targets’ native checks pass; new phone combined UI remains pending after lock. Baselines restored. Auth/tokens, production root and iOS remain deferred; read final entry/runbook.
+**Current part:** RN-08/RN-09 shared Home/Settings phone acceptance complete for this debug slice. Implementation `2602f37`; actual Apply/Home/native pause/Stop/Resume/Update/remount verified and fresh baseline restored. Auth/tokens, production root, iOS and wider acceptance remain deferred; read latest entry/runbook.
 
 **Implementation branch:** `task/react-native/rn-08-android-interventions`; Home/Settings journey parent `62d0396`; local commit only, no push/main merge or iOS/Auth change.
 
@@ -15,6 +15,8 @@
 **Shared workflow:** [Implementation knowledge base](README.md).
 
 ## Resume here
+
+- **Physical Home/Settings acceptance (2026-11-11):** continued after owner unlock with a fresh Pixel 8 Pro/API-36 baseline and verified identical `2602f37` APK/source. Actual selection → inline fields → Preview/no installation → Apply revision 1 → automatic scheduled-to-active Home transition → native pause → Stop 2 → Resume 3/one-minute allowance → Update 4/retained daily count → Stop 5/remount passed. Exact original files/settings/usage/reverse restored, test service disabled, private captures/cache removed, owned Metro stopped; no emulator started. No source/build/regression-suite changes or new TalkBack pass. Read [phone evidence](artifacts/rn-09-app-journey-phone/evidence.json) and final entry. Production Auth/root/tokens, iOS, signed/wider and other feature gates remain open. Parent `2602f37`; own acceptance-commit hash Pending until next normal update; local only.
 
 - **Shared Home/Settings journey (2026-11-11):** existing product views/inline editors now share explicit-owner draft/native installation state in the new App journey development entry. Native observedAt drives scheduled/active presentation and boundary refresh; staged input/Preview never installs, explicit Apply/Stop confirms native revisions. Root 434/634(+2 skips)/601, JVM 68, emulator and phone 139 native checks pass; actual emulator chooser→inline editors→Preview→Apply→Home boundary→native pause→Stop passes. New phone combined UI remains pending after lock; its native checks passed. Both baselines restored, captures removed, owned Metro/AVD stopped. Read the final entry and [journey runbook](../qa/android-home-settings-journey.md). Production Auth/root/tokens, iOS, signed/joint and other feature producers remain open. Parent `62d0396`; own hash Pending until next normal notes update; local commit only.
 
@@ -4413,7 +4415,7 @@ Own hash Pending until next normal update. No push/CI/merge/deployment.
 
 ### RN-08/RN-09 — Shared Home and Settings weekly-plan journey
 
-**Commit:** Pending. **Owner:** Ishmum. **Date:** 2026-11-11.
+**Commit:** `2602f37`. **Owner:** Ishmum. **Date:** 2026-11-11.
 **Parent:** `62d0396`. **Branch:** `task/react-native/rn-08-android-interventions`.
 **Status:** Implemented with bounded emulator/native acceptance; new phone combined UI pending. User authorized moving the tested weekly flow into shared
 Home/Settings presentation and verifying one product journey via explicit
@@ -4579,8 +4581,8 @@ phone flows remain dated in their own entries.
 
 **Commit message / Git reference:**
 `feat(mobile): connect weekly plans to shared Home and Settings`.
-Own hash stays Pending until the next normal notes update; resolve by this message
-and parent `62d0396`. Local commit only, no publication.
+Implementation hash `2602f37` recorded during this next normal continuation;
+parent `62d0396`. Local commit only, no publication.
 
 #### Per-file implementation ledger
 
@@ -4614,3 +4616,104 @@ Line ranges belong to this commit; the self-hash remains Pending as required.
 - `docs/qa/android-home-settings-journey.md`: lines 1–85. Document actual product-screen flow, strict native observation, editor staging/explicit writes, navigation/lifecycle/uncertainty behavior, reproducible setup/checks, privacy/restoration and remaining gates.
 - `scripts/check-ui-preview-isolation.mjs`: lines 36. Forbid the new App journey development marker in exported production app assets so the synthetic-owner host cannot silently ship.
 - `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 7, 9, 13, 19–21, 4194, 4412–4616. Update current part/parent/date/resume and record this commit’s design, implementation, measured corrections, exact commands/results, phone lock limit, restoration, handoff and every changed file/line. Preserve prior commit history and Pending self-hash convention.
+
+
+### RN-08/RN-09 — Physical Home and Settings journey continuation
+
+**Commit:** Pending. **Owner:** Ishmum. **Date:** 2026-11-11.
+**Parent:** `2602f37` (`feat(mobile): connect weekly plans to shared Home and Settings`).
+**Branch:** `task/react-native/rn-08-android-interventions`.
+**Status:** Bounded physical acceptance complete after owner unlock; fresh baseline restored.
+
+The previous run restored the phone before ending; this continuation takes a fresh
+settings/known-file baseline and uses the same committed APK/source. Do not reuse
+the previous baseline or describe previous 139 native checks as newly rerun.
+Restart only the isolated development host. Verify actual shared Settings selection,
+inline fields/Preview/Apply, Home native status, owned-target pause and explicit
+Stop; preserve account/Auth/token/iOS deferrals. Record new actual observations,
+failed attempts, restoration and per-file line ranges before committing. No push.
+
+#### Fresh phone setup and observations
+
+- Verified Pixel 8 Pro / Android 16 / API 36, unlocked and the installed owned
+  app APK SHA-256 equal to the committed local build used by `2602f37`. No native
+  rebuild/reinstall or regression-suite rerun is needed for documentation-only
+  acceptance continuation; keep earlier 139-check results attributed to that run.
+- Saved a new private baseline for service/touch/font/power/timeout/usage/reverse
+  and exact known synthetic-owner selection/coordinator/disclosure files. Changed
+  only temporary screen-on timeout/USB stay-awake and one own Metro reverse.
+- Actual shared Settings → Distracting Apps native picker saved only the owned
+  test target and returned one saved selection. Filtered the chooser privately;
+  no inventory/identities are published. This does not install a schedule.
+- Owner read the existing disclosure, explicitly enabled only the test service and
+  reported returning. The first observation still found a foreign Settings window;
+  guard rejected it without capture. Explicit owned-host launch then settled into
+  shared Settings. No hierarchy/UIAutomation after accessibility became active.
+
+- Staged all weekdays, UTC hours and two one-minute sessions through actual
+  shared inline editors. Existing phone text scale wrapped the raw start-time
+  label; the private OCR helper initially expected one line and missed it. Matched
+  actual wrapped fields/checkmark-prefixed buttons and verified both final times
+  before accepting the flow; no product-code change or ignored failed check.
+- Preview left the native coordinator file absent. Explicit Apply stored revision
+  1, exact requested hours, selected owned target and count 2 / 60-second policy.
+  Home initially showed scheduled; without manual Refresh or Apply it changed to
+  active at the native start. Launching the selected test target displayed the
+  actual native pause. Continue Stop/Resume/Update and cleanup below.
+
+- Stop confirmed revision 2 disabled, Home stopped and selected target without a
+  pause. Resume confirmed revision 3 enabled and Home active; the actual target
+  paused again. Open anyway granted one configured 60-second native session;
+  native session duration and per-app daily count 1 were verified, not inferred
+  from button closure. Update/final Stop and restoration remain in progress.
+
+- Update staged session count 3 and explicitly applied revision 4 while retaining
+  native daily count 1. Home stayed confirmed active. Final Stop stored revision
+  5 disabled, Home showed stopped and the selected target opened without pause.
+  Closed and reopened App journey; its new controller read the retained stopped
+  native template and still displayed stopped, without assuming React state.
+- The complete new physical flow is now accepted on this debug build. A separate
+  finite diagnostic is used only to expose native Disable test access during
+  cleanup after the stopped weekly template is erased; it is not counted as
+  additional weekly-plan feature acceptance.
+
+
+#### Final restoration and validation
+
+- Explicitly erased only the synthetic coordinator. After the stopped weekly test,
+  used a separate finite cleanup fixture to reach native Disable test access,
+  verified service off, returned to owned host and erased that fixture too.
+- Force-stopped only the owned development app for safe known-file restoration.
+  Restored/verified each baseline known file or original absence, original service/
+  touch/font/power/timeout values, unchanged usage access and exact reverse mapping.
+  Removed task-created captures/XML/cache and stopped only the verified task Metro
+  process. No emulator started, arbitrary package uninstall or app-data clear.
+- `git diff --check`, changed local Markdown links, implementation/source/APK
+  hashes, per-file ledger coverage/line bounds and all target cleanup flags checked
+  before commit. No code changed, so previous successful automated/native matrix
+  remains referenced explicitly rather than repeated or claimed as new.
+
+#### Remaining work and handoff
+
+The pending combined phone flow from `2602f37` is now closed for this Android debug
+build. New spoken TalkBack/focus, production verified-owner/root/Auth/token
+integration, Anisha-owned iOS, signed/store/wider lifecycle acceptance and other
+feature/measurement producers remain separate. No full RN-08/RN-09/Plan 04 parent
+completion or changed counts. Phone is restored with test access off; later testing
+must capture a fresh baseline. Keep the historical locked attempt in prior evidence
+and consume the new phone record for this continuation. No push/merge/deploy.
+
+**Commit message / Git reference:**
+`docs(mobile): record shared journey phone acceptance`.
+Own hash Pending until next normal notes update; parent `2602f37`.
+
+#### Continuation per-file ledger
+
+Line ranges refer to this acceptance commit; own hash remains Pending.
+
+- `docs/Context (AGENT)/AGENT_START_HERE.md`: lines 36–44. Add the dated successful physical continuation and link its separate evidence. Preserve broader/Auth/iOS gates so future agents do not treat the older locked-phone record as current.
+- `docs/core_plan/04_react_native_integration.md`: lines 12–20. Record real shared Settings/Home/native phone acceptance under existing RN08-D02/D04/RN09D-D02, with restoration and remaining joint/signed/TalkBack gates.
+- `docs/core_plan/README.md`: lines 20–28. Publish the bounded actual phone journey/restoration checkpoint without changing part IDs, counts or parent completion.
+- `docs/core_plan_implementation_notes/artifacts/rn-09-app-journey-phone/evidence.json`: lines 1–117. Record verified build/source/previous-evidence fingerprints, 10 actual feature/setup observations plus one cleanup observation, device version, rejected observations and exact restoration. Reference earlier automated/native runs honestly; exclude inventory/identities, credentials, serials, raw captures and private helper paths.
+- `docs/qa/android-home-settings-journey.md`: lines 81–90. Replace the current pending-phone instruction with the actual successful Pixel/API-36 continuation and link its separate evidence. Retain the old locked attempt as historical and keep production/TalkBack/wider gates explicit.
+- `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 7, 19–20, 4418, 4584–4585, 4619–4719. Update current part/resume, record implementation hash 2602f37 during the next normal update and add this separate acceptance commit entry. Document fresh baseline, owner disclosure, actual Preview/Apply/Home/native pause/Stop/Resume/Update/remount, failed helper observations, cleanup, validation/handoff and all changed file/line ranges.

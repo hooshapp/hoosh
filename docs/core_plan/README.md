@@ -17,6 +17,15 @@ phone enlarged-text/revocation pass; phone settings and files are restored. See
 Production Auth-bound adapter/iOS/release and the wider accessibility/lifecycle
 matrix remain open. Original IDs/counts unchanged.
 
+**Physical Home/Settings continuation (2026-11-11):** Pixel 8 Pro / Android 16 /
+API 36 now passes shared selection/editors/Preview/Apply, Home's automatic native
+start transition, actual pause, Stop/Resume, one-minute allowance, Update with
+retained daily count and stopped-state journey remount. Fresh phone baseline,
+known files/settings/reverse and service-off state are restored; owned Metro
+stopped. See [phone evidence](../core_plan_implementation_notes/artifacts/rn-09-app-journey-phone/evidence.json)
+and latest Plan 04 notes. New combined TalkBack, production Auth/root, iOS and
+signed/wider acceptance remain separate; no parent/ID/count completion implied.
+
 **Shared Home/Settings journey (2026-11-11):** the existing product screens now
 share an explicit-owner staged draft and confirmed native weekly-plan state in the
 isolated **App journey** entry. Settings inline days/hours/sessions and saved app

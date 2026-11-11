@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-11",
+  "owner": "Ishmum",
+  "branch": "task/react-native/rn-08-android-interventions",
+  "implementation_commit": "2602f37",
+  "parent": "2602f37",
+  "refs": [
+    "RN-08",
+    "RN08-D02",
+    "RN08-D04",
+    "RN-09",
+    "RN09D-D02"
+  ],
+  "scope": "Continuation of actual shared Home/Settings Android phone journey after the owner answered the unlock question. Production Auth/root/tokens and iOS remain deferred.",
+  "prior_evidence_sha256": "c684aaa8c6f8292c301f19eef3c7eef03aa2a2c93b345b1fb3938410e9bdfc91",
+  "device": {
+    "model": "Pixel 8 Pro",
+    "api": "36",
+    "android": "16"
+  },
+  "apk_sha256": {
+    "app": "ddcfda4d07dad286cf88c2b62003b36f9088fbf2cb5a786ffe037b25389af44a",
+    "test": "877fb79f12ed0be7f4a8adaac7e9fa204f69afa0879c8b6ce24f06a61ba74b62"
+  },
+  "source_sha256": {
+    "apps/mobile/dev/native/App.tsx": "7437b459b979f91b7f10fb9d192c9b01110db3c9abaf7fd0638e764d04798168",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/InterventionRuntime.kt": "20e047962c983f708d50dec0af31ac94251558e6f2b7c9b13db904b0b21a1c59",
+    "apps/mobile/src/features/home/home-screen.tsx": "b5081d34fd42fbf91505e45ceee3df8dd9721b103af07b95055edc3d6de200a5",
+    "apps/mobile/src/features/plans/plan-draft-model.ts": "9ef9f7f65157cbb692c6b61f3c0d4995812bc27783a4c56a69c524d9603a3d26",
+    "apps/mobile/src/features/plans/plan-editors.tsx": "56ed4be3939638001a868db64b99cc7c4b76afa5b2337641bc0cc8838d68b7e7",
+    "apps/mobile/src/features/plans/weekly-schedule-setup.test.tsx": "0c8f15f96bd6761192712be7482860fdd5497eabc6564cd567bc87d054e2ec9e",
+    "apps/mobile/src/features/plans/weekly-schedule.test.ts": "d412c9285cdee18e1fe924072994206de7bf6342b0977f02caf108e1a5de667d",
+    "apps/mobile/src/features/plans/weekly-schedule.ts": "0d2f6fc95330251288079951cacda14f48accb3b769378cd86b9826f7f2e4b34",
+    "apps/mobile/src/features/settings/settings-screen.tsx": "61614cb47af3ef5fd25eab11778d247f1e984b70df2484ddeb1f3414dbb56d05",
+    "scripts/check-ui-preview-isolation.mjs": "9d5fb853c80bf19899a19dd59eab8cb7a1c9bd819188c512fc935e03458ef70b",
+    "apps/mobile/dev/native/app-journey.tsx": "289a3a580ab3710f91b5421a9585ece1c97b0f1f96c36e959b951192e7edcf4a",
+    "apps/mobile/src/features/plans/use-weekly-plan.ts": "52010ab4c8fd37985deb61af1252628728bccec9278e1944a1009cb377e9e66a",
+    "apps/mobile/src/features/plans/weekly-plan-card.tsx": "490ba60db740ca389ca5ebaef564299286302da171580f2d4d9ae76b32eb5341",
+    "apps/mobile/src/features/plans/weekly-plan-journey.test.tsx": "2f1af9e616cad5c0877134bcbfe63b9a4ac98a4fe1b5a1cbcc7d804bc7631d05",
+    "apps/mobile/src/features/plans/weekly-plan-journey.tsx": "4c6ec73520afee8778bc68e9d3d7e771c877685917dcd9dd3899dd0a0792cdfb",
+    "apps/mobile/src/features/plans/weekly-plan-status.test.ts": "ccb4cd5cd9bae23a2a3675041e8e96d9eb2ec5fde8a53b08cb2b33d02239b9d5",
+    "apps/mobile/src/features/plans/weekly-plan-status.ts": "c4f1744929b52feb187b7cb1c5f155e6421ee3bcc8d56a25377b9fd66a98e3cd"
+  },
+  "fingerprint_boundary": "Installed owned application bytes matched the prior APK SHA-256. The shared/development/native sources match implementation commit 2602f37. Only documentation/evidence changed in this continuation; no build or automated regression suite was rerun or claimed as new.",
+  "prior_automated_checks_reference": "../rn-09-app-journey/evidence.json records 434 portable, 634 component plus 2 skips, 601 API, JVM 68 and 139 native cases per target. Those are earlier executions, not new results in this continuation.",
+  "interactive_results": [
+    {
+      "step": "settings-native-picker-saves-only-owned-target"
+    },
+    {
+      "step": "owner-reviewed-disclosure-and-enabled-exact-test-service"
+    },
+    {
+      "step": "inline-fields-and-preview-do-not-install"
+    },
+    {
+      "step": "apply-revision-one-home-confirmed",
+      "revision": 1,
+      "session_count": 2,
+      "session_seconds": 60
+    },
+    {
+      "step": "home-native-start-boundary-without-manual-refresh"
+    },
+    {
+      "step": "selected-target-native-pause"
+    },
+    {
+      "step": "stop-revision-two-home-stopped-target-unrestricted",
+      "revision": 2
+    },
+    {
+      "step": "resume-revision-three-native-pause-and-one-minute-allowance",
+      "revision": 3
+    },
+    {
+      "step": "update-revision-four-retains-daily-count",
+      "revision": 4,
+      "session_count": 3,
+      "daily_count": 1
+    },
+    {
+      "step": "final-stop-revision-five-retained-after-journey-remount",
+      "revision": 5
+    },
+    {
+      "step": "cleanup-disabled-test-service-via-native-control"
+    }
+  ],
+  "rejected_attempts": [
+    "After owner return from Accessibility Settings, a foreign/transient window was rejected before capture. Explicit owned-host launch then settled.",
+    "At the existing phone font scale, an input label wrapped across lines and the OCR helper missed it. Corrected private helper matching and selected the actual known field; final native spec verified before accepting.",
+    "OCR rendered a button checkmark as v; restricted private helper matching to the exact expected label or that prefix. No product-source change or false pass."
+  ],
+  "cleanup": {
+    "knownFilesRestored": true,
+    "serviceSettingsRestored": true,
+    "touchExplorationRestored": true,
+    "fontPowerTimeoutRestored": true,
+    "usageAccessUnchanged": true,
+    "reverseRestored": true,
+    "capturesRemoved": true,
+    "appForceStoppedForSafeFileRestore": true,
+    "appDataAndApksPreserved": true,
+    "ownedMetroStopped": true,
+    "noEmulatorStartedInContinuation": true
+  },
+  "remaining": [
+    "New spoken TalkBack/focus acceptance for the combined journey was not run; TalkBack/touch preferences retained.",
+    "Production verified-owner/root routing and user-deferred Auth/tokens/account acceptance.",
+    "Anisha-owned iOS and coordinated account/deletion/native ownership integration.",
+    "Quest/reward/usage/history producers, history-preserving policy timezone migration, signed/store and broader device/OS process-death/reboot/long-run acceptance."
+  ],
+  "privacy": "Only owned test target configured, chooser filtered privately, no inventory/identities, serials, credentials, screenshots, raw window/hierarchy or private helper paths published. No UIAutomation after accessibility enabled. Fresh baseline used after prior run restored the phone.",
+  "publication": "Local acceptance/documentation commit only; no push/CI/merge/deployment or remote/account/credential action."
+}

@@ -78,8 +78,13 @@ restore only baseline known synthetic selection/coordinator/disclosure files, an
 remove task-owned captures/cache/reverse/Metro processes. Do not clear app data,
 uninstall arbitrary packages or reset accounts. Stop only the owned emulator.
 
-Physical-phone execution of this new combined journey remains pending unless
-explicitly recorded in the evidence. Earlier phone/native/TalkBack passes belong
-to their earlier parts; they are not new combined-flow results. Production verified
-owner/root routing, Auth/tokens, iOS, signed/store compliance, broader device/lifecycle
-acceptance, quest/reward/usage producers and policy-zone migration remain separate.
+The 2026-11-11 physical continuation on Pixel 8 Pro / Android 16 / API 36 passed
+selection, inline fields/Preview/Apply, automatic Home start transition, actual
+pause, Stop/Resume, a one-minute allowance, Update retaining daily count and the
+stopped state after journey remount. See the separate
+[phone record](../core_plan_implementation_notes/artifacts/rn-09-app-journey-phone/evidence.json).
+The prior evidence's locked-phone limit is historical; it is not silently rewritten.
+Fresh baseline was restored and test service/owned Metro stopped. No new spoken
+TalkBack matrix was run. Production verified owner/root routing, Auth/tokens, iOS,
+signed/store compliance, broader device/lifecycle acceptance, quest/reward/usage
+producers and policy-zone migration remain separate.
