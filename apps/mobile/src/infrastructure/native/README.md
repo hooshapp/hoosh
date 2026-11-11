@@ -78,3 +78,15 @@ read-only usage adapter. Do not fill ProtectionService.applyRules with a success
 stub: recurring LocalRuleSpec and compiled windows plus session policy differ.
 Actual production owner binding, recurrence compilation and write/event adapters
 remain future integration. See the [Android runbook](../../../../../docs/qa/android-interventions.md).
+
+
+### Weekly settings installation
+
+Debug `schedulePreview`, `scheduleRead`, `scheduleApply` extend the same coordinator
+with native weekly plan compilation and confirmed persistence. The shared consumer
+uses PlanDraft directly; it does not implement quest lifecycle or generically map
+all ProtectionService.LocalRuleSpec variants. Normal app registration remains
+unchanged. One actor/AtomicFile v2 stores the applied weekly definition, enabled
+flag, app snapshot and existing allowance/events; v1 records remain readable.
+Read native weekdays/hours/zone/session settings after restart; never infer Apply
+from a server draft write. See [weekly runbook](../../../../../docs/qa/android-weekly-schedule.md).

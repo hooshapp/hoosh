@@ -24,34 +24,39 @@ class InterventionEngine(private val disk: InterventionPersistence) {
     InterventionValidation.require(value.allowances.size <= 512 && value.sessions.size <= 512 && value.daily.size <= 512, "ERR_INTERVENTION_LIMIT")
     disk.write(value); return value
   }
-  fun install(owner: String, expected: Int, revision: Int, selection: SavedSelection, windows: List<InterventionWindow>, policy: SessionPolicy, now: Long): InterventionRecord {
+  fun install(owner: String, expected: Int, revision: Int, selection: SavedSelection, windows: List<InterventionWindow>, policy: SessionPolicy, now: Long, weekly: WeeklyInstallation? = null): InterventionRecord {
     InterventionValidation.owner(owner); InterventionValidation.windows(windows); InterventionValidation.policy(policy)
     InterventionValidation.require(revision > 0 && revision > expected && selection.revision > 0 && selection.apps.isNotEmpty())
     SelectionDrafts.validateApps(selection.apps)
     val old = read(owner)
     InterventionValidation.require((old?.plan?.revision ?: 0) == expected, "ERR_INTERVENTION_CONFLICT")
     InterventionValidation.require(old == null || old.plan.policy.timezoneId == policy.timezoneId, "ERR_INTERVENTION_TIMEZONE_MIGRATION")
+    if (weekly != null) {
+      WeeklySchedules.validate(weekly.schedule)
+      InterventionValidation.require(weekly.enabled && weekly.apps == selection.apps && weekly.schedule.timezone == policy.timezoneId)
+    }
+    val previousWindows = old?.let { WeeklySchedules.windows(it.plan, now) }.orEmpty()
     val snapshots = windows.map { w ->
-      val previous = old?.plan?.windows?.find { it.reasonId == w.reasonId && it.startsAt == w.startsAt && now >= it.startsAt && now < it.endsAt }
+      val previous = previousWindows.find { it.reasonId == w.reasonId && it.startsAt == w.startsAt && now >= it.startsAt && now < it.endsAt }
       w.copy(apps = previous?.apps ?: selection.apps.toSet())
     }
     val allApps = selection.apps + snapshots.flatMap { it.apps }; SelectionDrafts.validateApps(allApps)
-    val plan = InterventionPlan(owner, revision, selection.revision, allApps, snapshots, policy)
-    val kept = old?.allowances.orEmpty().filter { a -> snapshots.any { w -> w.reasonId == a.reasonId && a.app in w.apps && old!!.plan.windows.any { it.reasonId == w.reasonId && it.startsAt == w.startsAt && it.endsAt == w.endsAt } } }.map { it.copy(revision = revision) }
+    val plan = InterventionPlan(owner, revision, selection.revision, allApps, snapshots, policy, weekly)
+    val kept = old?.allowances.orEmpty().filter { a -> snapshots.any { w -> w.reasonId == a.reasonId && a.app in w.apps && previousWindows.any { it.reasonId == w.reasonId && it.startsAt == w.startsAt && it.endsAt == w.endsAt } } }.map { it.copy(revision = revision) }
     val events = old?.events.orEmpty() + event("rule_activated", null, revision, now)
     return persist(InterventionRecord(plan, allowances = kept, events = events, sessions = old?.sessions.orEmpty(), daily = old?.daily.orEmpty()))
   }
   fun cancel(owner: String, expected: Int, reason: String?, now: Long): InterventionRecord {
     val old = record(owner)
     InterventionValidation.require(old.plan.revision == expected && expected < Int.MAX_VALUE, "ERR_INTERVENTION_CONFLICT")
-    InterventionValidation.require(reason == null || old.plan.windows.any { it.reasonId == reason })
+    InterventionValidation.require(reason == null || (old.plan.weekly == null && old.plan.windows.any { it.reasonId == reason }))
     // Preserve unrelated reasons and their existing per-app deadlines across cancellation.
-    val plan = old.plan.copy(revision = expected + 1, windows = old.plan.windows.filter { reason != null && it.reasonId != reason })
+    val plan = old.plan.copy(revision = expected + 1, windows = old.plan.windows.filter { reason != null && it.reasonId != reason }, weekly = old.plan.weekly?.copy(enabled = false))
     return persist(old.copy(plan = plan, allowances = old.allowances.filter { a -> plan.windows.any { it.reasonId == a.reasonId } }.map { it.copy(revision = plan.revision) }, events = old.events + event("rule_deactivated", reason, plan.revision, now)))
   }
   fun needed(value: InterventionRecord, app: String, wall: Long, elapsed: Long, boot: Int): List<InterventionWindow> {
     if (app !in value.plan.apps) return emptyList()
-    return value.plan.windows.filter { w -> app in w.apps && wall >= w.startsAt && wall < w.endsAt && value.allowances.none { a ->
+    return WeeklySchedules.windows(value.plan, wall).filter { w -> app in w.apps && wall >= w.startsAt && wall < w.endsAt && value.allowances.none { a ->
       a.app == app && a.reasonId == w.reasonId && a.revision == value.plan.revision && a.boot == boot && wall < a.wallEnd && elapsed < a.elapsedEnd &&
         // A wall-clock rollback cannot extend a running allowance.
         value.sessions.any { session -> session.app == app && live(session, wall, elapsed, boot) }

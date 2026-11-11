@@ -17,6 +17,13 @@ phone enlarged-text/revocation pass; phone settings and files are restored. See
 Production Auth-bound adapter/iOS/release and the wider accessibility/lifecycle
 matrix remain open. Original IDs/counts unchanged.
 
+**Weekly settings activation (2026-11-10):** RN08-D04/RN09D-D02 now include the
+native persisted weekly plan compiler and shared explicit-owner Preview/Apply/
+Update/Resume/Stop consumer in the existing developer host. Read actual
+[runbook](../qa/android-weekly-schedule.md)/[evidence](../core_plan_implementation_notes/artifacts/rn-08-weekly-schedule/evidence.json)
+and latest Plan 04 notes; no automatic activation from a backend draft or production
+Auth/root/iOS change. Original IDs/counts and open parents remain unchanged.
+
 **RN-08 lifecycle/read continuation (2026-11-10):** explicit-owner native snapshot
 reader now feeds existing shared status presentation in QA, with no production
 registration/Auth/write binding. Added actual host-task and feedback-interruption

@@ -488,6 +488,19 @@ and latest notes for exact final device/lifecycle/TalkBack results and restorati
 Full RN-08, iOS and signed/wider-device/production acceptance remain open.
 
 
+**Weekly activation continuation (2026-11-10; RN08-D04 / RN09D-D02):** the existing
+PlanDraft now has an explicit-owner shared Preview/Apply/Update/Resume/Stop consumer
+and a debug native weekly compiler/persisted template. Native recurrence resolves
+on demand without finite-preview expiry or JS renewal; weekdays/overnight/DST use
+recorded engineering choices. Confirmed native revision/spec/selection readback,
+stale/uncertain/disposed writes, retained stopped settings/history and v1→v2 storage
+migration are implemented. Production Auth/root, iOS, quest lifecycle, generic
+LocalRuleSpec write/event adapters and history-preserving timezone migration stay
+deferred. See [weekly runbook](../qa/android-weekly-schedule.md), latest notes and
+[weekly evidence](../core_plan_implementation_notes/artifacts/rn-08-weekly-schedule/evidence.json)
+for exact final code/device checks and restoration. Original IDs/counts unchanged;
+full RN-08/Plan 04 remain open. Earlier no-recurrence checkpoints are historical.
+
 **Independent preparation checkpoint (2026-10-29):** [Protection presentation](../../apps/mobile/src/features/protection/README.md) now supplies an evidence-based mapper, accessible status/action card, bounded read-only consumer and isolated state preview. No native adapter or live route is registered. [RN-08 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md#rn-08-preparation--evidence-based-protection-presentation) record exact source/tests/browser/native compilation evidence. This completes the independent presentation slice, not native/device integration. Existing Auth/profile gates remain separate.
 
 | Ref | Native scope (original deferrals; current checkpoints above/below apply) | Owner / required evidence |

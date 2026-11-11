@@ -1,13 +1,13 @@
 package expo.modules.hooshusage
 
-/** Compiled finite windows, not a product recurrence/session-budget policy. All identities remain native. */
+/** Finite windows plus an optional explicitly applied weekly plan; quest/reward policies are separate. All identities remain native. */
 data class InterventionWindow(val reasonId: String, val startsAt: Long, val endsAt: Long, val apps: Set<String> = emptySet())
 data class AppAllowance(val app: String, val reasonId: String, val revision: Int, val wallEnd: Long, val elapsedEnd: Long, val boot: Int)
 data class SessionPolicy(val timezoneId: String, val sessionsPerDay: Int, val sessionSeconds: Int)
 data class AppSession(val app: String, val wallEnd: Long, val elapsedEnd: Long, val boot: Int, val seconds: Int)
 data class DailySessions(val app: String, val day: String, val count: Int)
 data class InterventionEvent(val id: String, val at: Long, val kind: String, val reasonId: String?, val revision: Int, val sessionIndex: Int? = null, val exhausted: Boolean? = null)
-data class InterventionPlan(val owner: String, val revision: Int, val selectionRevision: Int, val apps: Set<String>, val windows: List<InterventionWindow>, val policy: SessionPolicy)
+data class InterventionPlan(val owner: String, val revision: Int, val selectionRevision: Int, val apps: Set<String>, val windows: List<InterventionWindow>, val policy: SessionPolicy, val weekly: WeeklyInstallation? = null)
 data class InterventionRecord(val plan: InterventionPlan, val allowances: List<AppAllowance> = emptyList(), val events: List<InterventionEvent> = emptyList(), val sessions: List<AppSession> = emptyList(), val daily: List<DailySessions> = emptyList())
 class InterventionFailure(val code: String) : RuntimeException(code)
 interface InterventionPersistence {

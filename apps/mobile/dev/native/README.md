@@ -175,3 +175,17 @@ its footer now says so. Main app/Auth/root, production recurring-rule writes and
 iOS remain unchanged. Follow the [intervention runbook](../../../../docs/qa/android-interventions.md)
 for Metro-stopped, task-removal, permission re-enable and TalkBack acceptance,
 including exact baseline restoration and the no-UIAutomation-while-active rule.
+
+
+### Weekly schedule development flow
+
+Open **Weekly schedule** for the real explicitly scoped local owner-A consumer.
+Choose scheduled apps, fill a complete PlanDraft, Preview, then explicitly Apply.
+Update changes an enabled schedule; Resume activates a stopped schedule; Stop
+retains its settings/allowance history. Preview and field edits never install.
+Use Android interventions to review access or erase the local test coordinator
+when finished. This page can install local weekly interventions; it is not a
+sample or account/API save. No Auth/iOS/production root changes. Detailed setup,
+actual acceptance, DST choices and cleanup are in the
+[weekly runbook](../../../../docs/qa/android-weekly-schedule.md). The host now has
+24 pages (19 source samples and five real native diagnostics).

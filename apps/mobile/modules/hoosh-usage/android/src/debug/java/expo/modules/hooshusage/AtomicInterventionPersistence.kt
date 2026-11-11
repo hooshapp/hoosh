@@ -21,17 +21,28 @@ class AtomicInterventionPersistence(private val path: File) : InterventionPersis
     try {
       val bytes = file.openRead().use { it.readNBytesCompat(262145) }
       check(bytes.size <= 262144)
-      val root = JSONObject(bytes.toString(Charsets.UTF_8)); check(root.strictInt("version") == 1)
+      val root = JSONObject(bytes.toString(Charsets.UTF_8)); val version = root.strictInt("version"); check(version in 1..2)
       val p = root.getJSONObject("plan")
       val apps = p.getJSONArray("apps"); check(apps.length() <= 512)
       val keys = (0 until apps.length()).map { apps.strictString(it) }; check(keys.size == keys.toSet().size)
       SelectionDrafts.validateApps(keys.toSet())
       val windows = numbers(p.getJSONArray("windows")).map { InterventionWindow(it.strictString("id"), it.strictLong("start"), it.strictLong("end"), it.getJSONArray("apps").let { a -> (0 until a.length()).map { i -> a.strictString(i) }.toSet() }) }
       InterventionValidation.windows(windows)
-      val plan = InterventionPlan(p.strictString("owner"), p.strictInt("revision"), p.strictInt("selectionRevision"), keys.toSet(), windows, p.getJSONObject("policy").let { SessionPolicy(it.strictString("timezone"), it.strictInt("count"), it.strictInt("seconds")) })
-      InterventionValidation.policy(plan.policy); check(windows.all { it.apps.isNotEmpty() && plan.apps.containsAll(it.apps) }); InterventionValidation.owner(plan.owner); check(plan.revision > 0 && plan.selectionRevision > 0 && plan.apps.isNotEmpty())
+      check(version == 1 || p.has("weekly"))
+      val weekly = if (version == 1 || p.isNull("weekly")) null else p.getJSONObject("weekly").let { w ->
+        val days = w.getJSONArray("weekdays"); check(days.length() in 1..7)
+        val weekdays = (0 until days.length()).map { i -> val n = days.get(i); check(n is Int && n in 0..6); n }
+        val selected = w.getJSONArray("apps"); check(selected.length() in 1..512)
+        val selectedKeys = (0 until selected.length()).map { selected.strictString(it) }; check(selectedKeys.distinct().size == selectedKeys.size)
+        SelectionDrafts.validateApps(selectedKeys.toSet()); check(keys.containsAll(selectedKeys))
+        val schedule = WeeklySchedule(weekdays, w.strictString("start"), w.strictString("end"), w.strictBoolean("nextDay"), w.strictString("timezone"))
+        WeeklySchedules.validate(schedule)
+        WeeklyInstallation(schedule, selectedKeys.toSet(), w.strictBoolean("enabled"))
+      }
+      val plan = InterventionPlan(p.strictString("owner"), p.strictInt("revision"), p.strictInt("selectionRevision"), keys.toSet(), windows, p.getJSONObject("policy").let { SessionPolicy(it.strictString("timezone"), it.strictInt("count"), it.strictInt("seconds")) }, weekly)
+      InterventionValidation.policy(plan.policy); check(weekly == null || weekly.schedule.timezone == plan.policy.timezoneId); check(windows.all { it.apps.isNotEmpty() && plan.apps.containsAll(it.apps) }); InterventionValidation.owner(plan.owner); check(plan.revision > 0 && plan.selectionRevision > 0 && plan.apps.isNotEmpty())
       val allowances = numbers(root.getJSONArray("allowances")).map { AppAllowance(it.strictString("app"), it.strictString("reason"), it.strictInt("revision"), it.strictLong("wall"), it.strictLong("elapsed"), it.strictInt("boot")) }
-      check(allowances.size <= 512 && allowances.all { a -> a.app in plan.apps && a.revision == plan.revision && windows.any { it.reasonId == a.reasonId } && a.wallEnd >= 0 && a.elapsedEnd >= 0 } && allowances.map { it.app to it.reasonId }.toSet().size == allowances.size)
+      check(allowances.size <= 512 && allowances.all { a -> a.app in plan.apps && a.revision == plan.revision && (if (weekly == null) windows else WeeklySchedules.windows(plan, maxOf(0, a.wallEnd - 1))).any { it.reasonId == a.reasonId && a.app in it.apps } && a.wallEnd >= 0 && a.elapsedEnd >= 0 } && allowances.map { it.app to it.reasonId }.toSet().size == allowances.size)
       val events = numbers(root.getJSONArray("events")).map { InterventionEvent(it.strictString("id"), it.strictLong("at"), it.strictString("kind"), if (it.isNull("reason")) null else it.strictString("reason"), it.strictInt("revision"), if (it.isNull("index")) null else it.strictInt("index"), if (it.isNull("exhausted")) null else it.strictBoolean("exhausted")) }
       check(events.size <= 256 && events.map { it.id }.toSet().size == events.size)
       check(events.all { it.id.matches(Regex("[0-9a-f-]{36}")) && it.at >= 0 && it.revision > 0 && it.kind in setOf("rule_activated", "rule_deactivated", "shield_presented", "override_selected", "quit_selected") })
@@ -51,7 +62,9 @@ class AtomicInterventionPersistence(private val path: File) : InterventionPersis
     val windows = JSONArray(p.windows.map { JSONObject().put("id", it.reasonId).put("start", it.startsAt).put("end", it.endsAt).put("apps", JSONArray(it.apps.sorted())) })
     val allowances = JSONArray(value.allowances.map { JSONObject().put("app", it.app).put("reason", it.reasonId).put("revision", it.revision).put("wall", it.wallEnd).put("elapsed", it.elapsedEnd).put("boot", it.boot) })
     val events = JSONArray(value.events.map { JSONObject().put("id", it.id).put("at", it.at).put("kind", it.kind).put("reason", it.reasonId ?: JSONObject.NULL).put("revision", it.revision).put("index", it.sessionIndex ?: JSONObject.NULL).put("exhausted", it.exhausted ?: JSONObject.NULL) })
-    val root = JSONObject().put("version", 1).put("plan", JSONObject().put("owner", p.owner).put("revision", p.revision).put("selectionRevision", p.selectionRevision).put("apps", JSONArray(p.apps.sorted())).put("windows", windows).put("policy", JSONObject().put("timezone", p.policy.timezoneId).put("count", p.policy.sessionsPerDay).put("seconds", p.policy.sessionSeconds))).put("allowances", allowances).put("events", events)
+    val weekly = p.weekly?.let { w -> JSONObject().put("weekdays", JSONArray(w.schedule.weekdays)).put("start", w.schedule.start).put("end", w.schedule.end)
+      .put("nextDay", w.schedule.nextDay).put("timezone", w.schedule.timezone).put("apps", JSONArray(w.apps.sorted())).put("enabled", w.enabled) } ?: JSONObject.NULL
+    val root = JSONObject().put("version", 2).put("plan", JSONObject().put("owner", p.owner).put("revision", p.revision).put("selectionRevision", p.selectionRevision).put("apps", JSONArray(p.apps.sorted())).put("windows", windows).put("weekly", weekly).put("policy", JSONObject().put("timezone", p.policy.timezoneId).put("count", p.policy.sessionsPerDay).put("seconds", p.policy.sessionSeconds))).put("allowances", allowances).put("events", events)
       .put("sessions", JSONArray(value.sessions.map { JSONObject().put("app", it.app).put("wall", it.wallEnd).put("elapsed", it.elapsedEnd).put("boot", it.boot).put("seconds", it.seconds) }))
       .put("daily", JSONArray(value.daily.map { JSONObject().put("app", it.app).put("day", it.day).put("count", it.count) }))
     val bytes = root.toString().toByteArray(Charsets.UTF_8)

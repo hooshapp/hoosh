@@ -27,3 +27,28 @@ Future controllers own validation, revisions, conflict/uncertain-write recovery,
 account/generation scope and approved plan save/install reconciliation. Actual
 native policy, source permissions, full-day/recurrence semantics and signed-device
 acceptance remain deferred under RN09D-D02/D04 and earlier policy/native IDs.
+
+
+## Explicit weekly activation consumer
+
+`weekly-schedule.ts` / `weekly-schedule-setup.tsx` now translate the existing
+PlanDraft values through Android's native calendar compiler. A verified caller
+must supply an explicit owner, native port and optionally its saved PlanDraft;
+there is no Auth/default identity or automatic activation. Initial native read can
+restore installed settings; Refresh preserves edits, and Use installed settings
+is an explicit replacement. Incomplete storage drafts stay editable/unapplied.
+
+Preview performs no write. Apply/Update/Resume uses current native selection and
+installation revisions, native CAS plus independent exact readback. Stop confirms
+recurrence is disabled while retaining settings and allowance history. Errors
+require explicit refresh/review; no blind replay or optimistic installed state.
+Reader/write lifetimes fence unmounts and owner loss. Only the isolated native
+host currently composes this consumer; main account/root integration stays deferred.
+
+The native weekly definition repeats indefinitely without JS renewal. Weekday is
+the start day; overnight ends next date; zones are explicit and travel-stable.
+DST gaps clamp/skip, overlaps have one earliest-start/latest-end interval. See
+[decisions](../../../../../docs/architecture/android-intervention-defaults.md)
+and [runbook](../../../../../docs/qa/android-weekly-schedule.md). Native record v2
+reads/migrates v1; do not downgrade old binaries over retained v2 state. Policy
+zone changes still require explicit local test reset, preserving the previous gate.

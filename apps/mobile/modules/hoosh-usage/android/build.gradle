@@ -7,6 +7,9 @@ group = 'expo.modules.hooshusage'
 version = '0.0.0'
 
 android {
+    compileOptions { coreLibraryDesugaringEnabled true }
   namespace 'expo.modules.hooshusage'
   defaultConfig { versionCode 1; versionName '0.0.0' }
 }
+
+dependencies { coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5' }

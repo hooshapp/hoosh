@@ -106,6 +106,12 @@ Pretty much full app, atleast everything seen visually in the figma design.
   - Decision: Reset daily in the saved plan IANA time zone; do not change it silently during travel. A crossing-midnight session keeps its original expiry and starting-day charge; new sessions after expiry use the new day. Native elapsed-time/boot checks bound exemptions; no backwards day reset.
   - Authority/details: [Android intervention defaults](../architecture/android-intervention-defaults.md). Supersedes only the corresponding unresolved implementation choice; preserve the original PM response and label. Auth/tokens/iOS deferrals remain unchanged.
 
+- Recorded: 2026-11-10 (weekly activation continuation)
+  - Source: Ishmum authorized implementing the complete schedule-to-native flow.
+  - Type: Provisional engineering decision; **not a new PM answer**.
+  - Decision: Persist the weekly plan natively. Use selected start weekdays and explicit overnight ranges; DST gaps clamp to first valid time, collapsed occurrences skip, repeated-hour windows use earlier start/later end. Stop retains history; policy-zone change still requires explicit reset in this development implementation.
+  - Details: [Weekly activation choices](../architecture/android-intervention-defaults.md#weekly-plan-activation-continuation--2026-11-10). Equal-time/full-day and empty-day activation are not inferred; incomplete drafts remain unapplied. Quest lifecycle is separate.
+
 ### Q05 — Behavior outside active days and hours
 
 **Question:** What happens outside active days/hours? Are apps unrestricted, are only nudges disabled, or do some restrictions remain?

@@ -1,0 +1,218 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-10",
+  "owner": "Ishmum",
+  "branch": "task/react-native/rn-08-android-interventions",
+  "parent": "0f30ae9",
+  "refs": [
+    "RN-08",
+    "RN08-D04",
+    "RN-09",
+    "RN09D-D02"
+  ],
+  "scope": "Explicit-owner weekly PlanDraft activation in existing native development host; real production Auth/root/settings-route and iOS integration remain deferred.",
+  "authority": "Ishmum authorized implementing the complete schedule-to-native flow; DST/overnight choices are recorded engineering decisions, not new PM answers.",
+  "final_apk_sha256": {
+    "app": "987888af9d2c90c6a2b36d2ed24a5b413a55696dbd4c49066a90c3f4ea53627b",
+    "test": "877fb79f12ed0be7f4a8adaac7e9fa204f69afa0879c8b6ce24f06a61ba74b62"
+  },
+  "interactive_apk_sha256": {
+    "app": "7aebd747e38e639f7912747bab3bc2ad0612b3c2738933c85ac358b3f32a7d41",
+    "test": "33b0dfcaf6e10f0c63c4de4548acd063f1ec4c805bf17792635dbc8fefcd0b6b"
+  },
+  "fingerprint_boundary": "Interactive UI observations used the preceding app build. Subsequent native edits were a model documentation comment and a test-runner failed-case diagnostic. Final debug app/test builds were reinstalled on both targets and actual native suites rerun. Final JavaScript client/Resume wording/status note changes passed the final full workspace check and production export. These builds are recorded separately, not conflated.",
+  "source_sha256": {
+    "apps/mobile/android/app/build.gradle": "14530bbb2122557d4c48190c9cd5fa1c9dc9c47911b027247e360680277c4db1",
+    "apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/InterventionChecks.kt": "cdc17a2ca0636bbf9a6a414b61d3ca0d1e7419cac06dc219ec380ba8951470e5",
+    "apps/mobile/dev/native/App.tsx": "99f4dd9710477a380ee6e9e2a4006d296f00354b069dd76ab6af385617960764",
+    "apps/mobile/modules/hoosh-usage/android/build.gradle": "eb3384890dcedf46ffe2c6210554cdd48625ce5853899ac54a0dc31ef980ba73",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/AtomicInterventionPersistence.kt": "cc8278a3164128ffee3811d1f39602dbdea8f059c39a9b6f482003cb665f59ce",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/InterventionEngine.kt": "97e42bee93c868e478453d9dc3c641f7f97f3ccf0bd81948a5465293b8ddc687",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/InterventionModel.kt": "bee636bd0d384662cac123849337d734f9e53a3bcf10ac140e6df26fc97299d1",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/InterventionProtectionSnapshot.kt": "f70055567951f84fc0b2e5f1cd414416d26c2795dab52e64706c16991f774438",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/InterventionRuntime.kt": "458254973e7149872f0fd9be4ce8540d55a196e72e44ab9c16eb4738f5f854be",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/NativeInterventionBridge.kt": "21f9c432beaf33b58fe0c2e2a3b1feff29697e1e9d47a26d9b76d2efc64e31c4",
+    "apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/HooshUsageModule.kt": "bc3833ca4ffc2ad4a5dde8b5048ea9b7d93e39aedd4d2ecc800eadcbf371314e",
+    "apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/InterventionCoordinator.kt": "ebded3f156005e63c9b294df2f5e82952d8ef9b20830d259de07d9273e13dc18",
+    "apps/mobile/src/infrastructure/native/intervention-protection-reader.ts": "d96d7af0360ebb478e80ef00950145d0176ad8f85539a9cc28a137cf831d06e8",
+    "scripts/check-android-intervention-engine.py": "c578b7719ff5210d15f2614df391905b54adc5c741f0ecc351ee699b260e1a2b",
+    "scripts/check-ui-preview-isolation.mjs": "38ccb5dc7dbeb1f17d58d5d236365f6f7e261530b76de777a274280e78cfab22",
+    "apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/WeeklyScheduleChecks.kt": "399684d357809472b1833f162d31389df1d690d534d7b6607bdc809063f6ca06",
+    "apps/mobile/dev/native/weekly-schedule.tsx": "3fc87c531527a17643aeb23b7edab5de56244889f12fbd22dd7c688bd4ae9089",
+    "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/WeeklySchedule.kt": "50464d9cc076af15f33daeb69c5f42d02b538305a864d5b951eaedb36556ae87",
+    "apps/mobile/src/features/plans/weekly-schedule-setup.test.tsx": "379dd961cac8dcc35cb79aad45fa1eecb7a744b6d41912a486aaab4498609f36",
+    "apps/mobile/src/features/plans/weekly-schedule-setup.tsx": "10c1bb7892e4059c59967ca6831311674001f5322fb3b7b759c8c0ec3113555c",
+    "apps/mobile/src/features/plans/weekly-schedule.test.ts": "ba02a0df217f17fb2910f59db3b5f88005898cd2e4a7e9a96d524b2764f9e18f",
+    "apps/mobile/src/features/plans/weekly-schedule.ts": "05e44dcda5c454ada2eacd9b995d2ccc8fa3b23857235dd35a2c55ee132b0ccf"
+  },
+  "checks": {
+    "final_root_portable": 424,
+    "final_root_component": 616,
+    "final_root_component_skipped": 2,
+    "final_root_component_suites": 74,
+    "final_root_api": 601,
+    "database_deselected": 199,
+    "final_types_lint_assets_ruff_contracts": "passed",
+    "existing_lint_warnings": 11,
+    "pure_jvm": 68,
+    "weekly_calendar_engine_cases": 24,
+    "android_atomic_file_cases": 9,
+    "intervention_android_each": 77,
+    "all_native_each_target": 139,
+    "portable_weekly_client_cases": 26,
+    "final_targeted_component_results": 26,
+    "final_web_export_isolated_files": 38,
+    "original_svg_assets": 71,
+    "debug_app_test_build": "passed",
+    "release_kotlin_manifest_build": "passed",
+    "test_runner_final_diagnostics_build": "passed",
+    "optional_jvm_script_ruff": "passed",
+    "release_debug_method_registrations_absent": 15,
+    "release_weekly_implementation_absent": true
+  },
+  "implementation": {
+    "schema": "Existing PlanDraft; complete explicit activation values required; incomplete storage drafts remain unchanged.",
+    "calendar": "Monday=0 start day; overnight next date; half-open windows; saved IANA zone; gap first-valid/clamped collapse skipped; overlap earlier-start/later-end.",
+    "recurrence": "Persisted native weekly template resolves on demand independently of preview horizon and JavaScript.",
+    "preview": "Yesterday through seven future start dates, ended windows omitted; no native installation write.",
+    "apply": "Native owner/permission/unlock/selection/install-revision validation plus atomic persistence and independent exact spec/revision/selection readback.",
+    "stop": "Disables recurrence and clears grants/windows, retains settings and allowance/session history; Resume explicit/new revision.",
+    "migration": "Native record v2 reads v1 and upgrades on accepted write; old binaries cannot read v2.",
+    "zone_change": "Policy timezone migration remains explicitly rejected until a local test reset; Stop does not silently reset daily counters.",
+    "other_installation": "Weekly apply refuses an unrelated finite test; stop verifies reviewed weekly installation.",
+    "desugaring": "Pinned Google desugar_jdk_libs 2.1.5 in app/local module, minSdk unchanged at 24; actual runtime tested on API 36 only.",
+    "production_registration_changed": false,
+    "auth_or_ios_changed": false
+  },
+  "device_results": [
+    {
+      "target": "Isolated AOSP API 36 ARM64 emulator",
+      "final_native_checks": {
+        "interventionChecks": 77,
+        "selectionLifecycleChecks": 17,
+        "selectionDraftChecks": 22,
+        "selectionPreviewChecks": 12,
+        "selection": 11
+      },
+      "interactive_ui_results": [
+        {
+          "step": "complete-settings-native-preview-without-install"
+        },
+        {
+          "step": "explicit-apply-confirmed",
+          "revision": 1
+        },
+        {
+          "step": "scheduled-native-pause-on-selected-target"
+        },
+        {
+          "step": "configured-one-minute-allowance-recorded"
+        },
+        {
+          "step": "explicit-update-retains-session-and-daily-count",
+          "revision": 2
+        },
+        {
+          "step": "stop-confirmed-and-target-unrestricted",
+          "revision": 3
+        },
+        {
+          "step": "scheduled-app-editor-opens-saved-selection-and-back-preserves-plan"
+        },
+        {
+          "step": "native-relaunch-restores-stopped-template-without-reapply",
+          "revision": 3
+        }
+      ],
+      "cleanup": {
+        "controlledRecordAndSelectionRemoved": true,
+        "testServiceDisabled": true,
+        "reverseRemoved": true,
+        "capturesRemoved": true,
+        "ownedMetroStopped": true,
+        "ownedEmulatorShutdownRequested": true
+      }
+    },
+    {
+      "target": "Physical Pixel 8 Pro API 36",
+      "final_native_checks": {
+        "interventionChecks": 77,
+        "selectionLifecycleChecks": 17,
+        "selectionDraftChecks": 22,
+        "selectionPreviewChecks": 12,
+        "selection": 11
+      },
+      "interactive_ui_results": [
+        {
+          "step": "complete-settings-native-preview-without-install"
+        },
+        {
+          "step": "explicit-apply-confirmed",
+          "revision": 1
+        },
+        {
+          "step": "scheduled-native-pause-on-selected-target"
+        },
+        {
+          "step": "configured-one-minute-allowance-recorded"
+        },
+        {
+          "step": "explicit-update-retains-session-and-daily-count",
+          "revision": 2
+        },
+        {
+          "step": "stop-confirmed-and-target-unrestricted",
+          "revision": 3
+        },
+        {
+          "step": "resume-confirms-new-revision-with-retained-settings",
+          "revision": 4
+        },
+        {
+          "step": "actual-window-end-removes-native-pause",
+          "nativeWallBoundaryReached": true
+        },
+        {
+          "step": "final-weekly-stop-confirmed",
+          "revision": 5
+        },
+        {
+          "step": "scheduled-app-editor-opens-saved-selection-and-back-preserves-plan"
+        },
+        {
+          "step": "native-relaunch-restores-stopped-template-without-reapply",
+          "revision": 5
+        }
+      ],
+      "cleanup": {
+        "knownFilesRestored": true,
+        "serviceSettingsRestored": true,
+        "touchExplorationRestored": true,
+        "fontPowerTimeoutRestored": true,
+        "usageAccessUnchanged": true,
+        "reverseRestored": true,
+        "capturesRemoved": true,
+        "appForceStoppedForSafeFileRestore": true,
+        "appDataAndApksPreserved": true
+      }
+    }
+  ],
+  "rejected_attempts": [
+    "Initial lint error from synchronous unavailable-state set in an effect corrected using derived initial availability; no suppression.",
+    "Emulator initial Apply tap produced no installation; native read/explicit Refresh confirmed no write before reviewed retry.",
+    "Phone first bypass tap produced no allowance/event; accepted only after a subsequent explicit native action confirmed session/counter.",
+    "Foreign/transient foreground and QA development page resets rejected by capture guards; retried only after explicit owned launch and reopening correct page.",
+    "Preview status was offscreen after scrolling; corrected the assertion to inspect actual message position.",
+    "Original privacy crop hid footer controls; adjusted bottom crop to 160px beyond known 144px navigation/taskbar while preserving before/after owned-window/UID/launcher guards."
+  ],
+  "remaining": [
+    "Production verified account/root/Settings-route binding and real Auth/tokens remain user-deferred.",
+    "Anisha-owned iOS, coordinated account/backend/native deletion and generic LocalRuleSpec/event-adapter integration.",
+    "Quest recurrence/completion/lifecycle, usage thresholds/advance warnings and reward/streak producers.",
+    "History-preserving policy timezone migration; local test reset is explicit development-only recovery.",
+    "API24/25 actual runtime, other devices/profiles/versions, new TalkBack matrix, long-run performance, true OS process death/reboot/force-stop and signed distribution/store review.",
+    "Week-long or actual future DST live observation is not inferred from injected-clock compiler cases."
+  ],
+  "privacy": "Only owned test target configured; no app inventory, credentials, serials, screenshots, speech text, raw hierarchy/window data or private helper paths. No UIAutomation while accessibility active. TalkBack/speech preferences unchanged; original files/settings and reverse restored; captures removed.",
+  "publication": "Local commit only; no push/CI/merge/deployment or remote/account/credential action."
+}

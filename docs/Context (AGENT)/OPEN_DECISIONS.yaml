@@ -1,6 +1,6 @@
 # Product decisions: explicit PM choices and remaining engineering/product gates.
 # Original recommendations below are historical, not the current policy.
-version: 3
+version: 4
 updated_at: "2026-11-10"
 recorded_by: "Ishmum engineering reconciliation"
 source: "PM_QUESTIONS.md#original-pm-responses"
@@ -249,4 +249,16 @@ implementation_defaults_2026_11_10:
     - "Beyond-budget bypass uses configured duration; first extra session emits exhaustion/streak-break signal."
     - "Bypass scoped to one app and currently active reasons; new reason reuses remaining session time."
     - "Active occurrence app snapshot preserved; future installations use latest global selection."
-  exclusions: [real_auth_binding, ios, reward_computation, recurrence_compilation, store_approval]
+  exclusions: [real_auth_binding, ios, reward_computation, quest_recurrence_and_completion, store_approval]
+
+weekly_activation_2026_11_10:
+  authority: "Ishmum authorized implementing schedule translation, explicit Apply/Update/Stop and development-owner verification. Engineering choices, not new PM answers."
+  record: "../architecture/android-intervention-defaults.md#weekly-plan-activation-continuation--2026-11-10"
+  refs: [PD-02, PD-04, PD-18, PD-24]
+  decisions:
+    - "Complete nonempty weekdays/HH:mm/IANA-zone/session settings required for activation; incomplete drafts remain unapplied."
+    - "Selected weekday owns start date; overnight ends next calendar date; intervals are half-open."
+    - "DST gaps clamp to first valid instant and collapsed dates/windows skip; overlap uses earlier start/later end once."
+    - "Weekly definition persists natively with on-demand occurrence compilation; preview horizon does not expire recurrence."
+    - "Explicit Apply/Update confirms revision/spec/selection; Stop retains settings and allowance history but disables recurrence."
+  retained_gates: [policy_timezone_migration, production_auth_binding, ios, quest_lifecycle, reward_computation, signed_store_acceptance]

@@ -241,3 +241,15 @@ off, captures removed, owned Metro stopped and isolated emulator shut down.
 Production/Auth/iOS/recurrence/write integration, signed/store review, process
 death/reboot, other device/profile/performance and exhaustive accessibility/failure
 matrices remain outside this bounded acceptance. Full RN-08 stays open.
+
+
+## Weekly activation follow-on
+
+The next continuation adds native weekly definition persistence and explicit
+PlanDraft Preview/Apply/Update/Resume/Stop. Current pure runner is 68 and actual
+Android intervention runner is 77; with native selection regressions, 139 checks
+per target. Earlier finite/lifecycle evidence above remains historical. Read the
+[weekly runbook](android-weekly-schedule.md) for current compiler/record-v2 migration,
+UI/device flow, DST choices, restoration and still-deferred integration. Main
+production registration/Auth/root/iOS are unchanged; do not infer completion of
+all LocalRuleSpec variants, quest lifecycle, rewards or signed acceptance.

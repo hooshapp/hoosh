@@ -33,7 +33,7 @@ export function decodeInterventionProtectionRead(value: unknown): Extract<Protec
       (value.authorization !== 'authorized' && s.state !== 'needs_permission' && s.state !== 'failed') ||
       (value.authorization === 'authorized' && s.state === 'needs_permission')) return invalid();
   const capabilities: ProtectionCapabilities = { platform: 'android', mode: 'overlay', selectionUI: 'unavailable', ...features,
-    notes: ['Debug native finite-window interventions. Read-only adapter; no recurring-rule or account binding.'] };
+    notes: ['Debug native interventions. Read-only status adapter; account binding and generic rule writes remain separate.'] };
   const status = { authorization: value.authorization as AuthorizationState, state: s.state,
     installedRevision: s.installedRevision, installedReasonIds: [...s.installedReasonIds] } as NativeProtectionStatus;
   return { phase: 'ready', capabilities, authorization: status.authorization, status };

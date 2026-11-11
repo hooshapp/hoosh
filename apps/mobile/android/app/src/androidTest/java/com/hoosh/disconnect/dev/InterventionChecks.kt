@@ -15,7 +15,8 @@ internal object InterventionChecks {
   }
   fun run(context: Context): Int {
     val pure = try { InterventionEngineChecks.run() } catch (e: Exception) { lastCase = InterventionEngineChecks.lastCase; throw e }
-    var count = pure; lastCase = pure
+    val weekly = try { WeeklyScheduleChecks.run() } catch (e: Exception) { lastCase = pure + WeeklyScheduleChecks.lastCase; throw e }
+    var count = pure + weekly; lastCase = count
     fun case(action: () -> Unit) { lastCase = count + 1; action(); count++ }
     val directory = File(context.cacheDir, "intervention-checks-${System.nanoTime()}"); check(!directory.exists())
     try {
@@ -47,6 +48,30 @@ internal object InterventionChecks {
         InterventionEngine(store).install(A, 0, 1, SavedSelection(1, setOf(APP)), listOf(InterventionWindow("one", 1000, 900000)), SessionPolicy("UTC", 2, 10), 1000)
         File(path.path + ".bak").writeText(path.readText()); File(path.path + ".new").writeText("interrupted"); store.erase()
         check(listOf(path, File(path.path + ".bak"), File(path.path + ".new")).none { it.exists() })
+      }
+      case {
+        val path = File(directory, "weekly.json"); val store = AtomicInterventionPersistence(path); val e = InterventionEngine(store)
+        val s = WeeklySchedule(listOf(0), "09:00", "17:00", false, "UTC")
+        val first = java.time.Instant.parse("2026-11-09T10:00:00Z").toEpochMilli()
+        e.install(A, 0, 1, SavedSelection(1, setOf(APP)), WeeklySchedules.compile(s, first), SessionPolicy("UTC", 2, 60), first, WeeklyInstallation(s, setOf(APP)))
+        val later = java.time.Instant.parse("2026-12-28T10:00:00Z").toEpochMilli()
+        val result = e.allow(A, 1, APP, later, 1000, 1)
+        check(InterventionEngine(AtomicInterventionPersistence(path)).read(A) == result)
+        val stopped = e.cancel(A, 1, null, later + 1000)
+        check(AtomicInterventionPersistence(path).read() == stopped && stopped.plan.weekly?.enabled == false)
+      }
+      case {
+        val path = File(directory, "weekly.json"); val original = path.readText()
+        val json = org.json.JSONObject(original); val p = json.getJSONObject("plan")
+        p.getJSONObject("weekly").put("timezone", "Invalid/Zone"); path.writeText(json.toString())
+        failure("ERR_INTERVENTION_STORAGE") { AtomicInterventionPersistence(path).read() }; path.writeText(original)
+      }
+      case {
+        val path = File(directory, "legacy.json"); val store = AtomicInterventionPersistence(path); val e = InterventionEngine(store)
+        e.install(A, 0, 1, SavedSelection(1, setOf(APP)), listOf(InterventionWindow("one", 1000, 900000)), SessionPolicy("UTC", 2, 10), 1000)
+        val json = org.json.JSONObject(path.readText()).put("version", 1); json.getJSONObject("plan").remove("weekly"); path.writeText(json.toString())
+        check(store.read()?.plan?.weekly == null); e.cancel(A, 1, null, 2000)
+        check(org.json.JSONObject(path.readText()).getInt("version") == 2)
       }
     } finally { check(directory.deleteRecursively()) }
     return count

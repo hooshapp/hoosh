@@ -56,10 +56,11 @@ class InterventionRuntime private constructor(val context: Context) {
   private fun summary(owner: String): Map<String, Any?> {
     val value = engine.read(owner)
     val connected = service
+    val windows = value?.let { WeeklySchedules.windows(it.plan, System.currentTimeMillis()) }.orEmpty()
     val allowed = authorized() && connected != null
-    return mapOf("state" to when { failure != null -> "failed"; !allowed -> "needs_permission"; value == null || value.plan.windows.none { it.endsAt > System.currentTimeMillis() } -> "inactive"; else -> "armed" },
+    return mapOf("state" to when { failure != null -> "failed"; !allowed -> "needs_permission"; value == null || windows.none { it.endsAt > System.currentTimeMillis() } -> "inactive"; else -> "armed" },
       "installedRevision" to value?.plan?.revision, "selectionRevision" to value?.plan?.selectionRevision,
-      "selectedAppCount" to (value?.plan?.apps?.size ?: 0), "reasonCount" to (value?.plan?.windows?.size ?: 0),
+      "selectedAppCount" to (value?.plan?.apps?.size ?: 0), "reasonCount" to windows.size,
       "pendingEventCount" to (value?.events?.size ?: 0), "overlayVisible" to (connected?.visible == true),
       "disclosureAccepted" to consented(), "serviceConnected" to (connected != null))
   }
@@ -116,6 +117,53 @@ class InterventionRuntime private constructor(val context: Context) {
     InterventionValidation.require(perDay in 1..1000 && seconds in 1..86400)
     val sessionPolicy = SessionPolicy(policy["timezoneId"] as? String ?: throw InterventionFailure("ERR_INTERVENTION_INVALID"), perDay.toInt(), seconds.toInt())
     engine.install(owner, expected, revision, selection, parsed, sessionPolicy, System.currentTimeMillis()); summary(owner)
+  }
+  private fun scheduleSpec(spec: Map<String, Any>): Pair<WeeklySchedule, SessionPolicy> {
+    InterventionValidation.require(spec.keys == setOf("weekdays", "hours", "timezone_id", "session_count", "session_minutes"))
+    val hours = spec["hours"] as? Map<*, *> ?: throw InterventionFailure("ERR_SCHEDULE_INCOMPLETE")
+    InterventionValidation.require(hours.keys == setOf("start_local", "end_local", "next_day"))
+    fun int(value: Any?): Int {
+      val number = value as? Number ?: throw InterventionFailure("ERR_SCHEDULE_INCOMPLETE")
+      val d = number.toDouble(); InterventionValidation.require(d.isFinite() && d in 0.0..1000.0 * 1440 && d == d.toInt().toDouble())
+      return d.toInt()
+    }
+    val days = spec["weekdays"] as? List<*> ?: throw InterventionFailure("ERR_SCHEDULE_INCOMPLETE")
+    val schedule = WeeklySchedule(days.map { int(it) }.sorted(), hours["start_local"] as? String ?: throw InterventionFailure("ERR_SCHEDULE_INCOMPLETE"),
+      hours["end_local"] as? String ?: throw InterventionFailure("ERR_SCHEDULE_INCOMPLETE"), hours["next_day"] as? Boolean ?: throw InterventionFailure("ERR_SCHEDULE_INCOMPLETE"),
+      spec["timezone_id"] as? String ?: throw InterventionFailure("ERR_SCHEDULE_INCOMPLETE"))
+    WeeklySchedules.validate(schedule)
+    val minutes = int(spec["session_minutes"]); InterventionValidation.require(minutes in 1..1440)
+    val policy = SessionPolicy(schedule.timezone, int(spec["session_count"]), minutes * 60); InterventionValidation.policy(policy)
+    return schedule to policy
+  }
+  private fun scheduleWire(value: WeeklyInstallation, policy: SessionPolicy): Map<String, Any> = mapOf(
+    "weekdays" to value.schedule.weekdays, "hours" to mapOf("start_local" to value.schedule.start, "end_local" to value.schedule.end, "next_day" to value.schedule.nextDay),
+    "timezone_id" to value.schedule.timezone, "session_count" to policy.sessionsPerDay, "session_minutes" to policy.sessionSeconds / 60)
+  private fun previewWindows(windows: List<InterventionWindow>) = windows.map { mapOf("reasonId" to it.reasonId, "startsAt" to it.startsAt, "endsAt" to it.endsAt) }
+  private fun scheduleSummary(owner: String): Map<String, Any?> {
+    val value = engine.read(owner); val weekly = value?.plan?.weekly
+    val windows = value?.let { WeeklySchedules.windows(it.plan, System.currentTimeMillis()) }.orEmpty()
+    return mapOf("native" to summary(owner), "spec" to weekly?.let { scheduleWire(it, value.plan.policy) },
+      "enabled" to (weekly?.enabled == true), "windows" to previewWindows(windows), "otherInstallation" to (value != null && weekly == null && value.plan.windows.isNotEmpty()))
+  }
+  fun scheduleRead(owner: String, promise: Promise) = call(promise) { scheduleSummary(owner) }
+  fun schedulePreview(spec: Map<String, Any>, promise: Promise) = call(promise) {
+    val (schedule, _) = scheduleSpec(spec)
+    mapOf("windows" to previewWindows(WeeklySchedules.compile(schedule, System.currentTimeMillis())))
+  }
+  fun scheduleApply(owner: String, token: String, expected: Int, revision: Int, selectionRevision: Int, spec: Map<String, Any>, promise: Promise) = call(promise, true) {
+    leases.check(owner, token)
+    InterventionValidation.require(authorized() && unlocked(), "ERR_INTERVENTION_PERMISSION")
+    val (schedule, policy) = scheduleSpec(spec)
+    val old = engine.read(owner)
+    InterventionValidation.require(old == null || old.plan.weekly != null || old.plan.windows.isEmpty(), "ERR_SCHEDULE_OTHER_INSTALLATION")
+    val selection = AtomicSelectionPersistence(File(context.noBackupFilesDir, "selection-editor-debug-v1")).read(owner)
+    InterventionValidation.require(selection.revision == selectionRevision && selection.apps.isNotEmpty(), "ERR_INTERVENTION_SELECTION_CHANGED")
+    val available = LauncherAppCatalog(context).eligibleKeys()
+    InterventionValidation.require(unlocked() && available.containsAll(selection.apps), "ERR_INTERVENTION_SELECTION_CHANGED")
+    val now = System.currentTimeMillis()
+    engine.install(owner, expected, revision, selection, WeeklySchedules.compile(schedule, now), policy, now, WeeklyInstallation(schedule, selection.apps))
+    scheduleSummary(owner)
   }
   fun cancel(owner: String, token: String, expected: Int, reason: String?, promise: Promise) = call(promise, true) { leases.check(owner, token); engine.cancel(owner, expected, reason, System.currentTimeMillis()); summary(owner) }
   fun drain(owner: String, token: String, limit: Int, promise: Promise) = call(promise) {

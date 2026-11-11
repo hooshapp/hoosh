@@ -4,9 +4,9 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN-08 independent lifecycle/recovery/TalkBack and explicit-owner shared read preparation complete; feedback-interruption expiry bug fixed and phone baseline restored. Production/Auth/iOS and wider acceptance remain open. Read the latest entry/runbook.
+**Current part:** RN-08/RN-09 weekly schedule activation implemented and verified with explicit development owner; native calendar/template plus Preview/Apply/Update/Resume/Stop. Phone baseline restored. Production/Auth/iOS and remaining gates stay open; read latest entry/runbook.
 
-**Implementation branch:** `task/react-native/rn-08-android-interventions`; lifecycle/read continuation parent `696eec1`; local commit only, no push/main merge or iOS/Auth change.
+**Implementation branch:** `task/react-native/rn-08-android-interventions`; weekly activation parent `0f30ae9`; local commit only, no push/main merge or iOS/Auth change.
 
 **Commit reference:** RN-01 `2f88102`; RN-02 `2d5c0d1`; RN-03 `0741758`; RN-04 `610f570`; RN-05 preparation `0c6e4db`; RN-07 UI `5790302`; RN-08 preparation `71da2d5`; RN-09a `ff75039`. RN-10 is `9b5fbd0`.
 
@@ -16,7 +16,9 @@
 
 ## Resume here
 
-- **RN-08 lifecycle/read continuation (2026-11-10):** both targets pass final 112 native checks, actual host-task removal/relaunch, retained permission revoke/re-enable and Metro-stopped native expiry/bypass. Pixel owner TalkBack speech/swipe/Open anyway/Return home confirmed, with final native quit correlation. Fixed actual feedback-interruption loss of expiry. Explicit-owner snapshot reader feeds existing shared status in QA; production registration/recurring writes/Auth/iOS unchanged. Full root 398/606(+2 skips)/601, final scoped checks/export/release separation pass. Phone exact files/settings restored; test service/TalkBack off, captures removed, owned Metro stopped/emulator shut down. Read latest entry and [evidence](artifacts/rn-08-lifecycle-reader/evidence.json). Parent `696eec1`; own hash Pending until next normal update; local commit only.
+- **Weekly plan activation (2026-11-10):** native persisted weekly template/calendar and explicit-owner shared PlanDraft consumer implemented under RN08-D04/RN09D-D02. Preview never installs; Apply/Update/Resume/Stop confirm revision/spec/selection with readback. Both targets pass 139 native checks and actual main flow; phone actual end boundary and both stopped-template relaunch pass. Final root 424/616(+2 skips)/601, JVM 68, exports/release checks pass. Record v2 reads/migrates v1; timezone migration still rejects without explicit test reset. Phone original files/settings restored, test service/TalkBack off, captures removed, owned Metro stopped/emulator shut down. Read [weekly runbook](../qa/android-weekly-schedule.md) / [evidence](artifacts/rn-08-weekly-schedule/evidence.json) and final entry. Production/Auth/iOS, quest/reward producers and signed/wider acceptance stay open. Parent `0f30ae9`; own hash Pending until next normal update; local commit only.
+
+- **RN-08 lifecycle/read continuation (2026-11-10):** both targets pass final 112 native checks, actual host-task removal/relaunch, retained permission revoke/re-enable and Metro-stopped native expiry/bypass. Pixel owner TalkBack speech/swipe/Open anyway/Return home confirmed, with final native quit correlation. Fixed actual feedback-interruption loss of expiry. Explicit-owner snapshot reader feeds existing shared status in QA; production registration/recurring writes/Auth/iOS unchanged. Full root 398/606(+2 skips)/601, final scoped checks/export/release separation pass. Phone exact files/settings restored; test service/TalkBack off, captures removed, owned Metro stopped/emulator shut down. Read latest entry and [evidence](artifacts/rn-08-lifecycle-reader/evidence.json). Parent `696eec1`; commit `0f30ae9`; local commit only.
 
 - **RN-08 device acceptance (2026-11-10):** 108 actual native checks pass per target (Pixel/API 36 and isolated emulator); bounded native pause/timer/reentry/extra-session/cancel/stop flows pass. Emulator JavaScript-paused expiry/lock/Back and phone enlarged-text/revocation pass. Fixed actual native Settings handoff. Explicit owner erasure and original phone baseline restoration verified; captures removed, owned Metro stopped/emulator shut down. Read final entry and [acceptance evidence](artifacts/rn-08-intervention-acceptance/evidence.json). Production adapter/Auth/iOS, new-service TalkBack and wider/signed lifecycle acceptance remain open. Parent `4f986e8`; acceptance commit `696eec1` (recorded during the next continuation).
 
@@ -3980,7 +3982,7 @@ stay unchanged; do not mark full RN-08 complete.
 ### RN-08 / RN08-D02, D06 — Lifecycle recovery and shared read-adapter continuation
 
 **Commit:** `feat(android): verify lifecycle recovery and prepare shared status reader`.
-**Hash:** Pending until next normal update. **Owner:** Ishmum. **Date:** 2026-11-10.
+**Hash:** `0f30ae9` (recorded during schedule continuation). **Owner:** Ishmum. **Date:** 2026-11-10.
 **Parent:** `696eec1`. **Branch:** `task/react-native/rn-08-android-interventions`.
 **Status:** Requested independent lifecycle/recovery/accessibility work and
 shared integration preparation complete within the recorded debug scope. Auth,
@@ -4182,3 +4184,226 @@ remaining deferred work implemented. No push/CI/merge/deployment.
 - `apps/mobile/src/infrastructure/native/intervention-protection-reader.test.ts`: lines 1–58. Add 16 portable cases covering matching/mismatched/unknown desired revision, revocation/absence, limits/contradictions, privacy copying, invalid owner/port, disposal and sanitized failures.
 - `docs/core_plan_implementation_notes/artifacts/rn-08-lifecycle-reader/evidence.json`: lines 1–206. Record final source/APK fingerprints, root/scoped/native counts, exact per-target lifecycle/TalkBack/feedback results, rejected attempts, restoration and deferred boundaries without private data.
 - `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 7–9, 19–23, 3866, 3980–4184. Record previous hash/current resume and every implementation choice, measured failure/fix, actual verification, owner observations, baseline restoration, remaining gate and per-file ledger. Own hash Pending until next normal update.
+
+
+### RN-08 / RN08-D04 and RN-09 plan settings — Weekly schedule installation
+
+**Commit:** `feat(android): apply weekly plan settings with native recurrence`.
+**Hash:** Pending until next normal update. **Owner:** Ishmum. **Date:** 2026-11-10.
+**Parent:** `0f30ae9`. **Branch:** `task/react-native/rn-08-android-interventions`.
+**Status:** Requested schedule translation, explicit Apply/Update/Resume/Stop,
+confirmed installation/failures and end-to-end development-owner verification
+implemented and accepted within the documented debug scope. Auth/tokens, production account/root wiring and Anisha's iOS remain
+explicitly deferred. Preserve part IDs; no push/merge/deployment.
+
+#### Design before implementation
+
+Reuse the existing PlanDraft schema/editors and the existing Android module/actor/
+AtomicFile. A valid complete weekly schedule persists natively and resolves local
+calendar occurrences on demand, without a finite-horizon renewal job or JS timer.
+One selected weekday names the start day; overnight ends on the following calendar
+day. Saved IANA zone remains explicit. Resolve nonexistent DST boundary times to
+the transition's first valid time; use the earlier offset for a repeated start and
+later offset for a repeated end, giving one continuous occurrence. If both gap
+boundaries collapse, skip that occurrence. Record these implementation choices,
+not new PM answers. Apply only after explicit input validation/revision checks;
+retain existing allowance history/session rules. Changing the allowance time zone
+still requires an explicit local test reset rather than a silent counter reset.
+
+The native compiler will have JVM and actual Android cases. API 24/25 require
+Java-time API desugaring, configured with Google's pinned desugar library; do not
+silently raise minSdk or add a JavaScript timezone implementation. Existing shared
+status remains based on native evidence. Integration uses a real explicitly scoped
+development owner and local saved selection; no fake production identity or Auth.
+
+
+#### Implementation progress and early checks
+
+- Pure Android weekly compiler uses explicit Monday=0 start days, overnight local
+  dates, fixed saved IANA zone and deterministic DST boundary handling. Template
+  persists and resolves on demand; it does not expire with the preview horizon or
+  require a JS wakeup/alarm refresh job. Future periods use the applied saved app
+  snapshot; explicit re-apply preserves an already active occurrence's app snapshot.
+- Extended the existing native record to version 2 with optional weekly definition,
+  selected app snapshot and enabled/stopped flag. Version 1 finite records remain
+  readable and migrate on the next accepted write. Old binaries do not read v2;
+  do not downgrade over retained records. Stop retains settings/counters/sessions,
+  clears allowances/windows and disables recurrence. Native timezone migration
+  still rejects rather than resetting daily history silently.
+- Native Preview/Read/Apply methods stay behind the existing debug factory guard.
+  Apply validates complete PlanDraft fields, actual permission/unlock, current
+  saved selection revision/eligibility and installation revision; it rejects an
+  unrelated finite test instead of replacing it. Existing actor/AtomicFile persist
+  template, counters and events together. Shared native status resolves current
+  effective windows, so future scheduling is not an active claim.
+- Found during implementation that an allowance after the initial preview week
+  must be validated against dynamic weekly windows on cold read. Fixed parser
+  accordingly and added an actual AtomicFile beyond-week roundtrip/stopped test.
+  Three additional persistence cases cover recurring roundtrip, invalid zone and
+  legacy v1 migration. Pure JVM 68 passes (44 earlier + 24 weekly cases); Android
+  runner now 77 (68 pure + nine AtomicFile). Builds including desugaring pass.
+- Shared client takes the existing PlanDraft schema, canonicalizes only complete
+  activation fields, uses native calendar preview and never guesses a timezone.
+  Explicit Apply reads latest saved selection, leases both lifetimes, CAS-writes,
+  independently reads back exact revision/spec/selection and releases handles.
+  Stop checks reviewed weekly ownership/revision before cancellation and confirms
+  stopped readback. Duplicate writes, uncertain responses and scope disposal are
+  fenced; no Auth/default owner or implicit install. 25 portable cases pass.
+- Reused existing Field/Button/Choice and native Apps editor in an explicit-owner
+  WeeklyScheduleSetup consumer. A caller can provide its actual saved PlanDraft;
+  the development host supplies only synthetic local owner A, no API/Auth. Draft
+  edits/Preview do not install; incomplete inputs remain editable. Cold read seeds
+  installed settings once; refresh never overwrites dirty input. Added ten passing
+  component results across presets for Apply/Update/Stop, preview, unavailable,
+  uncertainty, restart restore and unmount fences.
+- Corrected an initial effect-based unavailable-state lint error by deriving that
+  initial state from module availability and remounting on availability/owner loss.
+  No warning suppression or unrelated test edit. Full workspace check in progress;
+  phone/emulator actual native checks and live flows are being executed next.
+
+
+#### Accepted checks and live-flow progress
+
+Full workspace check passes **423 portable / 616 component (+2 existing skips) /
+601 API**, 74 component suites, types/lint/assets/Ruff/contracts. No new lint
+warnings (existing 11 remain). Both actual Android targets ran **139 native cases**:
+77 intervention/controller/calendar/persistence + 17 lifecycle + 22 draft + 12
+preview + 11 discovery synthetic checks. Actual discovery still safely refuses
+the service-declaring manifest with absent inventory; no ready-catalog claim.
+Web export/isolation passes 38 files and 71 original SVGs. The final Resume label
+was additionally checked with targeted component/type/lint results.
+
+Phone UI passed native Preview without an installation, explicit Apply revision 1,
+actual selected-target pause, configured one-minute bypass recorded natively,
+Update revision 2 retaining daily/session history and Stop revision 3 with target
+unrestricted. Emulator independently passed the same flow after reopening its
+QA page. Initial emulator tap did not install; explicit read/Refresh confirmed no
+write before a reviewed retry. Initial phone bypass tap also had no native action;
+accepted only after a subsequent explicit action produced native counter/event.
+Neither first attempt is counted as a success. QA host return/foreground ambiguity
+and development page reset attempts were rejected and retried after an explicit
+owned launch; no foreign/locked captures accepted. Message assertions require
+scrolling to their actual position rather than assuming visibility after Preview.
+
+Private captures crop system bars/taskbar (bottom 160px, known taskbar 144px), with
+owned UID/visible-window/no-visible-launcher and before/after unchanged-focus guards.
+No UIAutomation hierarchy is used once the test service is enabled. Owner's prior
+explicit disclosure/access authorization covers this same local test service;
+Settings enabled only that named service. TalkBack stays off in this continuation.
+Actual end-boundary, native restart-read, final cleanup and sanitized evidence are
+in progress below; no signed/API24-runtime/store/Auth/iOS acceptance inferred.
+
+
+#### Final flow verification progress
+
+- Both targets now pass explicit Apply revision 1, actual weekly-selected-app
+  pause, a natively recorded one-minute allowance, Update revision 2 retaining
+  count/session history and Stop revision 3 with the target unrestricted.
+- Phone additionally passes explicit Resume revision 4, actual configured end
+  boundary removing the pause while target remains foreground, and final Stop
+  revision 5. No Stop action caused that end-boundary removal. Upcoming recurrence
+  beyond a week/DST dates is covered by injected-clock native cases; we do not
+  claim waiting for an actual future DST transition or week-long live observation.
+- Native selected-app editor opens the same saved owner selection; Back leaves
+  the installed template/history unchanged. Task removal/relaunch restores the
+  stopped template/revision without automatic re-Apply; final target checks below.
+- Tightened a client cleanup edge: native lease-release errors after a committed
+  write are sanitized/unconfirmed, never exposed/retried. Added a passing case;
+  final portable schedule suite now 26. Full root 423/616/601 remains the earlier
+  whole-workspace run; final scoped checks validate this last cleanup/Resume-label
+  change. No unrelated backend/database or Auth runtime changed.
+
+
+#### Final accepted verification and restoration
+
+Final **full workspace** run passes **424 portable / 616 component (+2 existing
+skips) / 601 API**, 74 component suites, all types/lint/assets/Ruff/contracts; 199
+DB tests remain deselected, not a new hosted/database acceptance run. Final JVM
+passes 68 (44 existing plus 24 weekly cases). Final actual APKs were reinstalled
+and rerun on both targets: 77 intervention/calendar/AtomicFile + 17 lifecycle +
+22 draft + 12 preview + 11 discovery = **139 per target**, 278 total. Final native
+runner diagnostics report the correct weekly failed-case offset. Expected actual
+manifest refusal remains separate from synthetic discovery passes.
+
+Final debug/test, release Kotlin/manifest and Java-time desugaring builds pass;
+all 15 debug method registrations and the weekly compiler implementation are
+absent from release classes. Google library 2.1.5 is pinned in the app/local module,
+without raising minSdk or changing npm dependencies. Final targeted reader/client
+42 portable, weekly/intervention 26 component, final types/lint and export (38
+isolated files, 71 SVGs) pass; existing 11 warnings remain. Root now includes the
+last cleanup-sanitization/strict-token/Resume-label changes, superseding earlier
+423-portable root checkpoint. Optional Python JVM runner Ruff passes.
+
+Interactive UI observations used the preceding native build; later native edits
+were one model documentation comment and a test-runner failure diagnostic. The
+final rebuilt app/test APKs are fingerprinted separately and actual native suites
+were repeated after installation. Do not silently label different archive hashes
+identical. Final JavaScript is independently checked in the final root/export.
+The [evidence](artifacts/rn-08-weekly-schedule/evidence.json) records both build hashes.
+
+Both targets accepted the same saved selection editor/Back without installed
+changes and stopped-template restoration after host task removal/relaunch,
+without automatic re-Apply (emulator revision 3; phone revision 5). Phone accepted
+actual Resume/end-boundary/final Stop. Exact target observations, rejected taps/
+foreground/page-reset attempts and verification boundaries are in the artifact.
+
+Explicitly erased only the synthetic coordinator, then used a separate fresh
+finite cleanup fixture to reach the named native Disable action, and verified
+erasure again. After final actual native suites, force-stopped only the owned
+host before restoring exact backed-up known base/sidecar files (originally absent).
+Verified original accessibility/service/touch, font/power/timeout, unchanged usage
+access and reverse mappings. TalkBack/speech-caption preferences unchanged. Removed
+task captures/XML/cache backups, preserved APKs/unrelated app data. Stopped exact
+task-owned Metro and shut down only its isolated emulator; phone baseline verified
+again afterward. No remote/account/credential/deployment action.
+
+Reviewed component lifetimes/action serialization, explicit owner/dispose fences,
+independent confirmation, privacy/error sanitization, editable incomplete input,
+read refresh versus dirty values, accessible Field/Choice/Button reuse and export
+separation. No speculative sync service or recurrence renewal job. Exact file-line
+ledger, new relative links, source/APK fingerprints and whitespace verified before
+local commit. Unrelated workspace/icon-pack folders remain untouched/unstaged.
+
+The requested development-owner weekly flow is complete. Full RN-08/Plan 04 stay
+open for real Auth/root/Settings binding, Anisha's iOS, generic rule/event adapters,
+quest lifecycle/rewards, timezone history migration, other/API24 runtime/assistive/
+long-run/process-reboot and signed/store acceptance. Original IDs/counts preserved.
+Own hash Pending until next normal update. No push/CI/merge/deployment.
+
+#### Every changed file and logical change
+
+- `apps/mobile/android/app/build.gradle`: lines 85, 159. Enable core-library desugaring and pin Google desugar_jdk_libs 2.1.5 so native java.time is supported below API 26 without raising minSdk.
+- `apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/InterventionChecks.kt`: lines 18–19, 52–75. Include 24 weekly pure cases with correct failure offsets and add actual AtomicFile recurring beyond-week roundtrip/Stop, malformed timezone and v1-to-v2 migration cases. Runner now 77.
+- `apps/mobile/dev/native/App.tsx`: lines 1, 72, 129, 135, 164, 167. Add Weekly schedule to the existing menu/render/footer and classify it as a real local installation diagnostic, preserving sample and other native pages.
+- `apps/mobile/dev/native/README.md`: lines 178–191. Document the explicit owner-A weekly setup flow, current 24-page/five-diagnostic count, real local installation semantics and runbook/cleanup boundaries.
+- `apps/mobile/modules/hoosh-usage/android/build.gradle`: lines 10, 14–15. Enable/pin native java.time desugaring consistently with app/test compilation; preserve namespace, minSdk and existing build plugin.
+- `apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/AtomicInterventionPersistence.kt`: lines 24, 31–43, 45, 65–67. Add native record-v2 weekly template/apps/enabled encoding and strict bounded decoding; retain v1 reads/upgrades and atomic readback. Validate later-occurrence grants against dynamic weekly windows rather than only initial preview.
+- `apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/InterventionEngine.kt`: lines 27, 34–38, 40, 44–45, 52, 54, 59. Accept an optional weekly installation; preserve active app snapshots from effective windows and compatible grants/history on explicit Update. Resolve needed windows natively; Stop disables the weekly template while retaining settings/history.
+- `apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/InterventionModel.kt`: lines 3, 10. Extend the immutable plan with optional WeeklyInstallation while retaining existing finite callers/defaults; correct model scope comment.
+- `apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/InterventionProtectionSnapshot.kt`: lines 7, 15. Project current effective weekly windows for active-state/reason evidence, retaining permission and revision requirements; future scheduling is not falsely active.
+- `apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/InterventionRuntime.kt`: lines 59, 61, 63, 121–167. Add complete PlanDraft parsing, native Preview/Read/Apply, permission/unlock/selection eligibility/CAS checks, exact spec summaries and weekly-aware coordinator state. Reject unrelated finite installation and preserve prior timezone gate.
+- `apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/NativeInterventionBridge.kt`: lines 17–19. Delegate the three weekly operations through the existing per-module bridge and native actor without creating another lifetime or Auth authority.
+- `apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/HooshUsageModule.kt`: lines 65–67. Register scheduleRead/Preview/Apply only inside the debug factory guard on MAIN. All 15 diagnostic registrations remain absent from release.
+- `apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/InterventionCoordinator.kt`: lines 16–18. Add the three internal weekly gateway signatures while leaving the public ProtectionService/LocalRuleSpec contract and production registration unchanged.
+- `apps/mobile/src/features/plans/README.md`: lines 30–54. Document existing PlanDraft activation consumer, explicit native confirmation/lifetimes, local recurrence, migration/runbook and future verified account integration; distinguish older editor-only scope.
+- `apps/mobile/src/infrastructure/native/README.md`: lines 81–92. Document weekly gateway, shared PlanDraft trust boundary, v2 persistence and unchanged Auth/production/quest/generic-rule integration.
+- `apps/mobile/src/infrastructure/native/intervention-protection-reader.ts`: lines 36. Update the read-adapter capability note for the now-present weekly producer without changing validation or claiming account/generic rule-write integration.
+- `docs/Context (AGENT)/AGENT_START_HERE.md`: lines 36–44. Expose current weekly consumer/compiler, decision/runbook/evidence entry points and retained Auth/iOS/production/quest/timezone gates for future agents.
+- `docs/Context (AGENT)/OPEN_DECISIONS.yaml`: lines 3, 252–264. Advance register revision and add separate authorized weekly activation engineering choices; retain original PM responses and explicit remaining gates.
+- `docs/Context (AGENT)/PM_QUESTIONS.md`: lines 109–114. Append dated weekly DST/overnight/Stop choices under Q04 with authority and rationale link; label them engineering decisions rather than PM answers.
+- `docs/architecture/android-intervention-defaults.md`: lines 20–23, 25, 44–83. Update earlier finite-only scope and record weekly activation choices, bounds, DST rationale, revision/Stop/timezone/migration behavior and primary platform references without expanding PM authority.
+- `docs/core_plan/04_react_native_integration.md`: lines 491–503. Record weekly installation under existing RN08-D04/RN09D-D02, link actual evidence and keep unchanged IDs/counts and open parent/deferred integration gates.
+- `docs/core_plan/README.md`: lines 20–26. Add current weekly activation checkpoint and links without inventing a new plan or marking real Auth/root/iOS done.
+- `docs/qa/android-interventions.md`: lines 244–255. Link the weekly follow-on, current 68/77/139 case counts and retained integration boundaries; preserve previous acceptance as historical.
+- `scripts/check-android-intervention-engine.py`: lines 56, 85, 92. Compile the new actual pure weekly compiler and shared weekly test source in the optional no-download JVM runner; report combined 68 cases.
+- `scripts/check-ui-preview-isolation.mjs`: lines 35. Forbid the new developer-host weekly marker in production exports, preserving existing isolation checks.
+- `apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/WeeklyScheduleChecks.kt`: lines 1–54. Add 24 shared JVM/Android calendar/engine cases for weekdays, overnight, end boundaries, DST gaps/folds/half-hour/skipped date, explicit zone, long recurrence, active app snapshots, sessions/Stop, CAS and timezone rejection.
+- `apps/mobile/dev/native/weekly-schedule.tsx`: lines 1–13. Discover only the required real Android native methods and compose shared setup with the isolated synthetic owner. Absent/web/iOS module remains unavailable; no production/Auth imports.
+- `apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage/WeeklySchedule.kt`: lines 1–54. Implement pure native validated weekly definitions and bounded on-demand occurrence compilation in the saved zone. Resolve overnight/DST deterministically, preserve current app snapshots and avoid horizon-expiry/JS renewal.
+- `apps/mobile/src/features/plans/weekly-schedule-setup.test.tsx`: lines 1–77. Add ten preset component results exercising unavailable/incomplete state, explicit Preview/Apply/Update/Stop, dirty Stop, uncertainty/review, cold native read and disposed selection/write cleanup.
+- `apps/mobile/src/features/plans/weekly-schedule-setup.tsx`: lines 1–100. Compose existing accessible controls/native app editor into editable explicit-owner setup. Preserve raw drafts, preview without write, confirm Apply/Update/Resume/Stop, refresh without overwriting edits and restore installed fields on remount; fence unmount/owner loss.
+- `apps/mobile/src/features/plans/weekly-schedule.test.ts`: lines 1–98. Add 26 portable cases covering incomplete activation, no-write Preview, exact Apply/Stop confirmation, lost responses, readback mismatch, duplicate/disposed writes, cleanup/privacy, unsafe responses and unrelated installations.
+- `apps/mobile/src/features/plans/weekly-schedule.ts`: lines 1–116. Validate complete activation inputs, canonicalize/copy safe fields and decode native spec/windows/status. Add explicit-owner Preview/read/Apply/Stop client with selection leases, CAS/readback, duplicate/scope/cleanup fences, sanitized uncertainty and no retries.
+- `docs/core_plan_implementation_notes/artifacts/rn-08-weekly-schedule/evidence.json`: lines 1–218. Fingerprint final sources/builds and separate interactive versus final APKs; record 278 actual native results, final root/scoped checks, target UI flows, rejected attempts, restored baseline and remaining gates without private data.
+- `docs/qa/android-weekly-schedule.md`: lines 1–139. Document implementation semantics, primary sources, exact native build/test/host flow, UI Apply/Update/Resume/Stop/boundary/relaunch checks, privacy/baseline restoration and unverified platform/production gates.
+- `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 7–9, 19–23, 3985, 4189–4409. Record prior commit/current resume plus every weekly implementation change, decision, measured correction, actual check/flow, fingerprint boundary, restoration and deferred gate; exact per-file ledger. Own hash Pending until next normal update.

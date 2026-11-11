@@ -1,3 +1,4 @@
+import { WeeklyScheduleQa } from './weekly-schedule';
 import { InterventionQa } from './interventions';
 import { useState } from 'react';
 import { UsageProbe } from './usage-probe';
@@ -68,6 +69,7 @@ import {
 } from '../shared/ui-samples';
 
 const screens = [
+  'Weekly schedule',
   'Android interventions',
   'Android probe',
   'Android selection preview',
@@ -124,13 +126,13 @@ function QaHost() {
   const [notice, setNotice] = useState(
     'Sample data only. No account, API or protection connected.',
   );
-  const realNative = page === 'Android interventions' || page === 'Android probe' || page === 'Android selection preview' || page === 'Saved apps editor';
+  const realNative = page === 'Weekly schedule' || page === 'Android interventions' || page === 'Android probe' || page === 'Android selection preview' || page === 'Saved apps editor';
   const metrics = useFloatingTabBarMetrics(),
     insets = useSafeAreaInsets();
   const action = () => setNotice('UI intent only. Nothing saved, connected, earned or installed.');
   return (
     <View testID="RN10_NATIVE_QA_ONLY" style={styles.app}>
-      {page === 'Android interventions' ? <InterventionQa key={reset} /> : page === 'Android probe' ? <UsageProbe key={reset} /> : page === 'Android selection preview' ? <AppSelectionPreview key={reset} /> : page === 'Saved apps editor' ? <DurableSelectionQa key={reset} onBack={() => setPage(null)} /> : page ? (
+      {page === 'Weekly schedule' ? <WeeklyScheduleQa key={reset} /> : page === 'Android interventions' ? <InterventionQa key={reset} /> : page === 'Android probe' ? <UsageProbe key={reset} /> : page === 'Android selection preview' ? <AppSelectionPreview key={reset} /> : page === 'Saved apps editor' ? <DurableSelectionQa key={reset} onBack={() => setPage(null)} /> : page ? (
         <QaScreen
           key={`${page}:${scenario}:${reset}`}
           page={page}
@@ -159,10 +161,10 @@ function QaHost() {
         onLayout={(e) => metrics?.reportHeight(Math.ceil(e.nativeEvent.layout.height))}
         style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 8) }]}>
         <Text style={styles.qaLabel}>
-          {realNative ? (page === 'Android interventions' ? 'FINITE NATIVE INTERVENTION TEST' : page === 'Android probe' ? 'REAL ANDROID CAPABILITY PROBE' : page === 'Saved apps editor' ? 'LOCAL SAVED SELECTION QA' : 'TEMPORARY ANDROID SELECTION PREVIEW') : `UI QA SAMPLE · ${page ?? 'Screens'} · ${scenario}`}
+          {realNative ? (page === 'Weekly schedule' ? 'WEEKLY LOCAL INSTALLATION' : page === 'Android interventions' ? 'FINITE NATIVE INTERVENTION TEST' : page === 'Android probe' ? 'REAL ANDROID CAPABILITY PROBE' : page === 'Saved apps editor' ? 'LOCAL SAVED SELECTION QA' : 'TEMPORARY ANDROID SELECTION PREVIEW') : `UI QA SAMPLE · ${page ?? 'Screens'} · ${scenario}`}
         </Text>
         <Text accessibilityLiveRegion="polite" style={styles.notice}>
-          {realNative ? (page === 'Android interventions' ? 'Local test installation only. No account or API changes. Erase the test and disable access afterward.' : 'Device-native preview. No account/API save or installed protection.') : notice}
+          {realNative ? ((page === 'Android interventions' || page === 'Weekly schedule') ? 'Local test installation only. No account or API changes. Erase the test and disable access afterward.' : 'Device-native preview. No account/API save or installed protection.') : notice}
         </Text>
         <View style={styles.actions}>
           <Button

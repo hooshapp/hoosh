@@ -4,7 +4,7 @@ package expo.modules.hooshusage
 object InterventionProtectionSnapshot {
   fun read(record: InterventionRecord?, authorized: Boolean, consented: Boolean, failed: Boolean, now: Long): Map<String, Any?> {
     val authorization = when { authorized -> "authorized"; consented -> "denied"; else -> "not_requested" }
-    val active = record?.plan?.windows?.any { now >= it.startsAt && now < it.endsAt } == true
+    val active = record?.plan?.let { WeeklySchedules.windows(it, now) }?.any { now >= it.startsAt && now < it.endsAt } == true
     val state = when { failed -> "failed"; !authorized -> "needs_permission"; active -> "active"; else -> "inactive" }
     return mapOf(
       "capabilities" to mapOf("platform" to "android", "selectionUI" to "unavailable", "mode" to "overlay",
@@ -12,7 +12,7 @@ object InterventionProtectionSnapshot {
         "supportsTemporaryAllowance" to true, "supportsAdvanceWarning" to false, "supportsUsageSummary" to false),
       "authorization" to authorization,
       "status" to mapOf("authorization" to authorization, "state" to state,
-        "installedRevision" to record?.plan?.revision, "installedReasonIds" to record?.plan?.windows.orEmpty().map { it.reasonId }),
+        "installedRevision" to record?.plan?.revision, "installedReasonIds" to record?.plan?.let { WeeklySchedules.windows(it, now) }.orEmpty().map { it.reasonId }),
     )
   }
 }
