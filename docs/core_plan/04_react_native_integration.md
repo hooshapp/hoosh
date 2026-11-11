@@ -772,9 +772,11 @@ commit slices: own strict definition CRUD/storage/migration, existing list/edito
 consumer, then real local mobile HTTP/database acceptance. Saves never activate
 native quests or award credits. Non-repeating definitions have no assumed date;
 occurrence lifecycle/activation and real Auth/root/current-account acceptance stay
-separate. Slice a is implemented and accepted locally (628 API /216 PostgreSQL); b/c are
-next in this task. Hosted migration and real-account/native activation remain
-separate. Record completed slices in the latest Plan 04 notes; no parent
+separate. Slices a/b are implemented: strict own storage/API plus shared conditional
+list/editor/route consumers. Local root passes 456 portable /652 component
+(+2 skips) /628 API; hosted development migration 0003 security/preservation
+checks passed. c records isolated real HTTP/restart acceptance separately.
+Real-account/Auth/root/native activation remain separate. Record completed slices in the latest Plan 04 notes; no parent
 completion/count changes or new API-13/plan number.
 
 #### RN-09 execution expansion — preferences and non-enforcing drafts (2026-11-02)

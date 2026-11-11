@@ -1,4 +1,4 @@
-import { parseTime } from '@/features/editors/draft-utils';
+import { parseTime } from '../editors/draft-utils';
 /** Raw local form, deliberately not an API, recurrence, timezone or restriction contract. */
 export type QuestDraft = Readonly<{
   title: string;

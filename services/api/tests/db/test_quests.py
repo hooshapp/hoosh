@@ -57,13 +57,16 @@ def test_real_crud_revision_conflict_tombstone_and_isolation(profile_client, pro
     first = put(client, signer, a, id, 0).json()["quest"]
     assert first["revision"] == 1 and first["definition"] == DEFINITION
     assert get(client, signer, b, id) is None
+    assert client.get("/v1/quests/" + str(id), headers=headers(signer, b)).json()["revision"] == 0
     assert delete(client, signer, b, id, 1).status_code == 200
     assert get(client, signer, a, id) == first
     assert put(client, signer, a, id, 0).status_code == 409
     assert put(client, signer, a, id, 1, DEFINITION | {"title": "Updated"}).status_code == 200
     assert delete(client, signer, a, id, 1).status_code == 409
-    assert delete(client, signer, a, id, 2).status_code == 200
+    receipt = delete(client, signer, a, id, 2)
+    assert receipt.json()["revision"] == 3
     assert get(client, signer, a, id) is None
+    assert client.get("/v1/quests/" + str(id), headers=headers(signer, a)).json()["revision"] == 3
     assert delete(client, signer, a, id, 2).status_code == 200
     # The old create request cannot recreate a deleted record or reset its revision.
     assert put(client, signer, a, id, 0).status_code == 409

@@ -80,7 +80,7 @@ def save_own_quest(session: UserSession, quest_id: UUID, body: QuestPut) -> User
     return row
 
 
-def delete_own_quest(session: UserSession, quest_id: UUID, expected: int) -> None:
+def delete_own_quest(session: UserSession, quest_id: UUID, expected: int) -> int:
     owner = require_user_context(session)
     removed = session.scalar(
         update(UserQuest)
@@ -92,9 +92,11 @@ def delete_own_quest(session: UserSession, quest_id: UUID, expected: int) -> Non
             UserQuest.revision < MAX_REVISION,
         )
         .values(definition=None, revision=UserQuest.revision + 1)
-        .returning(UserQuest.quest_id)
+        .returning(UserQuest.revision)
     )
     if removed is None:
         row = own_row(session, quest_id)
         if row is not None and row.definition is not None:
             _conflict(row)
+        return row.revision if row else 0
+    return removed

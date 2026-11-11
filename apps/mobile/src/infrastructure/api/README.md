@@ -142,3 +142,9 @@ They require no Supabase account, JWT, backend deployment or generic mock server
 `__tests__/support.ts` and all fixture imports stay out of release entries/graphs.
 No environment switch, test identity or success stub is wired into the actual app.
 The Plan 04 notes record exact results and remaining live/backend/device gates.
+
+Quest management adds strict own resource/page/definition decoders and revisioned
+PUT/DELETE via the existing scoped request path. QUEST_CONFLICT and definition
+validation join the closed safe error whitelist; no response copy/IDs are logged.
+Lost writes remain unconfirmed and never retry automatically. See the
+[quest contract](../../../../../docs/architecture/quest-definition-management.md).

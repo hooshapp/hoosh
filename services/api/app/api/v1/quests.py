@@ -47,7 +47,8 @@ def list_quests(
 def get_quest(quest_id: UUID, session: UserSessionDependency) -> QuestResponse:
     row = own_row(session, quest_id)
     return QuestResponse(
-        quest=view(row) if row is not None and row.definition is not None else None
+        quest=view(row) if row is not None and row.definition is not None else None,
+        revision=row.revision if row is not None else 0,
     )
 
 
@@ -87,5 +88,5 @@ def delete_quest(
     identity: Annotated[VerifiedIdentity, Depends(verified_identity)],
 ) -> QuestDeletedResponse:
     with database(request).transaction(identity) as session:
-        delete_own_quest(session, quest_id, body.expected_revision)
-    return QuestDeletedResponse(quest_id=quest_id)
+        revision = delete_own_quest(session, quest_id, body.expected_revision)
+    return QuestDeletedResponse(quest_id=quest_id, revision=revision)

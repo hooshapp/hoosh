@@ -4,7 +4,7 @@
 psycopg 3, a two-connection QueuePool by default, zero overflow, pre-ping and
 rollback on return. There is no second driver pool, global Session, startup
 connection probe, automatic migration or `metadata.create_all`. `Base.metadata`
-registers the owned profile and settings tables and supplies stable constraint
+registers the owned profile, settings and saved quest definition tables and supplies stable constraint
 names for the single Alembic history. SQLAlchemy 2.0.55 is the tested maintained 2.0 line; Alembic 1.20.1 is
 development/migration tooling only; API-07 now owns the configuration/history.
 
@@ -169,3 +169,10 @@ to 403; unrelated integrity failures remain errors and roll back. Settings GET
 snapshots UTC DTOs inside the live unit, and writes commit before returning.
 Real two-connection races, deleted-owner FK wait, deferred-commit failure and a
 fresh HTTP process read after restart are tested on the guarded local database.
+
+RN09B-D01 adds `user_quests` at forward head `20261111_0003`. Composite owner/quest
+IDs, revision-checked writes, wiped-content tombstones and forced owner RLS keep
+management isolated. Runtime retains only SELECT/INSERT/UPDATE; HTTP DELETE is a
+content-wiping update, not a physical table DELETE. Managed-owner cascade cleans
+live/tombstoned records. Exact constraint/ACL/policy/clock verification is required
+for the new table too; old migrations and shared default grants remain intact.

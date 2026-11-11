@@ -32,6 +32,7 @@ const codeStatus = {
   FORBIDDEN: 403,
   PROFILE_CONFLICT: 409,
   SETTINGS_CONFLICT: 409,
+  QUEST_CONFLICT: 409,
   REQUEST_TOO_LARGE: 413,
   VALIDATION_ERROR: 422,
   AUTH_UNAVAILABLE: 503,
@@ -46,6 +47,7 @@ const fields = [
   'activities',
   'activities.selected_activity_ids',
   'activities.custom_text',
+  'definition',
   'plan_draft',
   'plan_draft.weekdays',
   'plan_draft.hours',
@@ -100,7 +102,9 @@ export class ApiError extends Error {
     super(
       kind === 'conflict' && metadata.code === 'SETTINGS_CONFLICT'
         ? 'Your settings changed. Review the latest version before saving.'
-        : messages[kind],
+        : kind === 'conflict' && metadata.code === 'QUEST_CONFLICT'
+          ? 'Your quest changed. Review the latest version before saving.'
+          : messages[kind],
     );
     this.name = 'ApiError';
     this.status = metadata.status;
@@ -135,10 +139,15 @@ export function retryAfterMs(value: string | null, now: number): number | undefi
   return Number.isFinite(delay) && delay <= 60_000 ? Math.max(0, delay) : undefined;
 }
 function safeDetails(code: ApiErrorCode | undefined, value: unknown): SafeErrorDetails | undefined {
-  if (code !== 'PROFILE_CONFLICT' && code !== 'SETTINGS_CONFLICT' && code !== 'VALIDATION_ERROR')
+  if (
+    code !== 'PROFILE_CONFLICT' &&
+    code !== 'SETTINGS_CONFLICT' &&
+    code !== 'QUEST_CONFLICT' &&
+    code !== 'VALIDATION_ERROR'
+  )
     return undefined;
   if (!isRecord(value)) throw new Error();
-  if (code === 'PROFILE_CONFLICT' || code === 'SETTINGS_CONFLICT') {
+  if (code === 'PROFILE_CONFLICT' || code === 'SETTINGS_CONFLICT' || code === 'QUEST_CONFLICT') {
     if (!Number.isSafeInteger(value.current_revision) || (value.current_revision as number) < 0)
       throw new Error();
     return { current_revision: value.current_revision as number };

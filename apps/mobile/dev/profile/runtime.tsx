@@ -40,7 +40,7 @@ export async function connect(token: string, generation: number) {
   };
   let dropNextSave = false;
   const fetcher: ApiFetch = async (url, init) => {
-    const drop = init?.method === 'PATCH' && dropNextSave;
+    const drop = ['PATCH', 'PUT', 'DELETE'].includes(init?.method ?? 'GET') && dropNextSave;
     if (drop) dropNextSave = false;
     const result = await fetch(url, init);
     // Deliver the real write, intentionally lose its response. Never retries a write.

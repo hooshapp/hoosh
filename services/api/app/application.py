@@ -25,7 +25,7 @@ def create_app(*, cors_origins: Sequence[str] = (), lifespan: Lifespan | None = 
         version="0.0.0",
         lifespan=lifespan,
         responses={500: {"model": ErrorEnvelope, "description": "Safe unexpected failure"}},
-        description="Verified identity and isolated, revision-safe profiles and settings.",
+        description="Verified identity and isolated, revision-safe profiles, settings and saved quests.",
     )
     application.state.token_verifier = UnavailableTokenVerifier()
     application.state.database = None

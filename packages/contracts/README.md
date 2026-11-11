@@ -74,3 +74,10 @@ TypeScript as well as server validation. Null clears, omission preserves, and
 objects replace their section. The server atomically preserves omitted data during
 CAS; conflicts and uncertain results require a fresh read and deliberate review.
 This API stores drafts and never installs native rules or completes onboarding.
+
+RN09B-D01 adds generated QuestDefinition/View/Page/Response/Put/Delete aliases and
+QUEST_CONFLICT. These store editable definitions, not occurrences/activation or
+completion/rewards. Resource reads/deletion receipts retain the own revision even
+when content is null, so clients can fence stale writes/cache updates. See the
+[quest management contract](../../docs/architecture/quest-definition-management.md)
+and synthetic [quest fixture](fixtures/quests-v1.json).

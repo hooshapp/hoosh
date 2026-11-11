@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,10 @@ import type { QuestsModel } from './quests-model';
 
 export type QuestsScreenProps = {
   model: QuestsModel;
+  showSavedEmpty?: boolean;
+  footer?: ReactNode;
+  onOpenSaved?: (id: string) => void;
+  savedHeading?: string;
   onAccept?: (id: string) => void;
   onPersonalize?: (id: string) => void;
   onCreate?: () => void;
@@ -20,6 +24,10 @@ export type QuestsScreenProps = {
 /** Suggestions never become saved occurrences through presentation state. */
 export function QuestsScreen({
   model,
+  footer,
+  showSavedEmpty = false,
+  onOpenSaved,
+  savedHeading = 'Saved quests',
   onAccept,
   onPersonalize,
   onCreate,
@@ -45,10 +53,62 @@ export function QuestsScreen({
               : 'Make time for the things you choose.'}
           </Text>
         </View>
-      }>
+      }
+    >
       <View
         testID="quests-content"
-        onLayout={({ nativeEvent }) => setWidth(Math.ceil(nativeEvent.layout.width))}>
+        onLayout={({ nativeEvent }) => setWidth(Math.ceil(nativeEvent.layout.width))}
+      >
+        {model.saved.state === 'ready' ? (
+          model.saved.items.length ? (
+            <View style={styles.saved}>
+              <Text accessibilityRole="header" style={styles.savedHeading}>
+                {savedHeading}
+              </Text>
+              {model.saved.items.map((item) => (
+                <View key={item.id}>
+                  <EmptyCard
+                    title={item.title}
+                    description={`${item.scheduleLabel} · ${item.statusLabel}`}
+                  />
+                  {onOpenSaved ? (
+                    <Button
+                      label={`Edit ${item.title}`}
+                      variant="secondary"
+                      disabled={busy}
+                      onPress={() => onOpenSaved(item.id)}
+                    />
+                  ) : null}
+                </View>
+              ))}
+            </View>
+          ) : showSavedEmpty ? (
+            <EmptyCard
+              title="No saved quests yet"
+              description="Create a custom quest to keep its details here."
+            />
+          ) : null
+        ) : (
+          <View style={styles.saved}>
+            <SavedStatus
+              state={
+                model.saved.state === 'loading'
+                  ? 'loading'
+                  : model.saved.state === 'error'
+                    ? 'error'
+                    : 'unavailable'
+              }
+              onRetry={model.saved.state === 'error' ? onRetry : undefined}
+              message={
+                model.saved.state === 'loading'
+                  ? 'Loading saved quests…'
+                  : model.saved.state === 'error'
+                    ? 'Saved quests couldn’t be loaded.'
+                    : 'Saved quests aren’t available yet.'
+              }
+            />
+          </View>
+        )}
         <Text style={styles.summary}>{model.interestSummary ?? 'Suggested quests'}</Text>
         <View style={styles.cards}>
           {model.suggestions.state === 'ready' ? (
@@ -91,45 +151,27 @@ export function QuestsScreen({
           style={styles.create}
           labelStyle={styles.createLabel}
         />
-        {model.saved.state === 'ready' ? (
-          model.saved.items.length ? (
-            <View style={styles.saved}>
-              <Text accessibilityRole="header" style={styles.savedHeading}>
-                Saved quests
-              </Text>
-              {model.saved.items.map((item) => (
-                <EmptyCard
-                  key={item.id}
-                  title={item.title}
-                  description={`${item.scheduleLabel} · ${item.statusLabel}`}
-                />
-              ))}
-            </View>
-          ) : null
-        ) : (
-          <View style={styles.saved}>
-            <InlineStatus
-              state={
-                model.saved.state === 'loading'
-                  ? 'loading'
-                  : model.saved.state === 'error'
-                    ? 'error'
-                    : 'unavailable'
-              }
-              message={
-                model.saved.state === 'loading'
-                  ? 'Loading saved quests…'
-                  : model.saved.state === 'error'
-                    ? 'Saved quests couldn’t be loaded.'
-                    : 'Saved quests aren’t available yet.'
-              }
-            />
-          </View>
-        )}
+        {footer}
       </View>
     </Screen>
   );
 }
+function SavedStatus({
+  state,
+  message,
+  onRetry,
+}: {
+  state: 'loading' | 'error' | 'unavailable';
+  message: string;
+  onRetry?: () => void;
+}) {
+  return state === 'loading' ? (
+    <InlineStatus state="loading" message={message} />
+  ) : (
+    <InlineStatus state={state} message={message} onRetry={onRetry} />
+  );
+}
+
 function SuggestionStatus({
   state,
   onRetry,

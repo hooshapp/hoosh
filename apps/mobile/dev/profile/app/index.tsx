@@ -20,6 +20,7 @@ export default function Index() {
         {runtime ? (
           <>
             <Button label="Open live Settings" onPress={() => router.push('./profile')} />
+            <Button label="Open live Quests" onPress={() => router.push('./quests')} />
             <Button label="Open live Home" onPress={() => router.push('./home')} />
             <Button
               label="Lose next save response"

@@ -1,4 +1,29 @@
-# Quests presentation — RN-09b
+# Quests — RN-09b presentation and saved management
+
+
+## Current RN09B-D01 management consumer
+
+`ConnectedQuestsScreen` reads actual owner-scoped saved definitions in bounded
+cursor pages, places Accepted cards before suggestions and opens existing editors.
+`ManagedQuestEditor`/`useQuestEditor` reuse the original fields/actions/navigation
+and keep raw drafts, explicit revisioned save/delete, comparison after conflict or
+uncertain response, offline state and generation disposal. Nothing saves while
+unknown or automatically replays. New entries use one stable Expo UUID per editor.
+`quests-api.ts` strictly validates own IDs, timestamps, definitions and revision
+receipts; `quests-query.ts` cancels competing reads and protects newer cache state.
+
+Main routes connect only when the existing AccountDataProvider supplies a real
+scope; absent Auth/root remains the honest unavailable preview. The existing
+private profile-development host adds Open live Quests for later approved token
+acceptance; this is not an Auth SDK implementation. No token needed for the
+isolated automated HTTP/PostgreSQL suite. Saving definitions never installs native
+quests, creates occurrences, awards credits or generates recommendations. Deleted
+IDs have content-free revision tombstones; create a new entry to replace one.
+
+See the [contract](../../../../../docs/architecture/quest-definition-management.md)
+and current Plan 04 implementation notes. The presentation history below describes
+its original independent boundary; the conditional consumers supersede its old
+no-persistence statements only within the explicit existing account scope.
 
 QuestsScreen/QuestCard implement the source `27:155` list and custom-quest action
 using the shared Screen/Button, original artwork and warm recipes. A copied original

@@ -4795,7 +4795,7 @@ Ranges refer to this publication-documentation commit.
 
 ### RN09B-D01 — Persistent quest definitions and shared management
 
-**Commit:** Pending. **Owner:** Ishmum. **Date:** 2026-11-11.
+**Commit:** `10d8e16`. **Owner:** Ishmum. **Date:** 2026-11-11.
 **Branch:** `task/react-native/rn-09b-quest-management`. **Parent:** `4c632b4`.
 **Status:** In progress; user authorized the saved quest-management slice discussed
 after Android/shared integration publication. Continue existing RN-09b/e and
@@ -4885,3 +4885,126 @@ Ranges belong to this slice-a commit; generated files are one derived contract c
 - `services/api/tests/test_profile_metadata.py`: lines 13–17. Acknowledge the additive owned quest model without changing the profile/external Auth shape contract.
 - `services/api/tests/test_settings_contract.py`: lines 14, 137–141, 157. Acknowledge additive metadata and pin the original 0002 parent assertion to that revision so a later head does not rewrite history.
 - `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 7, 9, 19–20, 4728, 4794–4887. Record current branch/scope, prior publication hash, slice design/engineering choices, failures/corrections, exact actual checks, every file/line and b/c handoff. Keep self-hash Pending until next normal update.
+
+
+### RN09B-D01b — Shared saved quest list and editor consumer
+
+**Commit:** Pending. **Owner:** Ishmum. **Date:** 2026-11-11.
+**Parent:** `10d8e16`. **Branch:** `task/react-native/rn-09b-quest-management`.
+**Status:** Implementation/testing in progress. Reuse existing product components,
+not new sample pages or an Auth bypass. No push.
+
+- Added portable strict own quest/page decoders and explicit PUT/DELETE transport
+  with exact canonical definition/revision/ID readback. Added closed safe
+  QUEST_CONFLICT/definition error decoding; no raw server copy is exposed.
+- Added shared account-scoped quest queries/mutations and original-editor consumer
+  with raw drafts, explicit save/delete confirmation, offline/error/conflict/
+  ambiguous response handling, latest-version comparison and deliberate retry.
+  Account generation disposal fences pending callbacks; no automatic writes.
+- New resource read/deletion receipts include own revision even with null content.
+  This additive metadata lets cache reconciliation fence older responses and
+  distinguish a fresh ID from a wiped tombstone; no foreign existence exposure.
+  Updated backend responses/generated contract in this consumer commit for that
+  edge rather than adding an unrelated lifecycle service.
+- Existing Quests list now supports real accepted/saved cards at the top, edit
+  actions, honest empty/error states and cursor paging. AI suggestions remain
+  unavailable; every saved card says not active. Conditional route consumers use
+  an existing account scope only; no provider/Auth/root wiring or real token added.
+- Reuse existing editor timezone field slot, save actions, dirty navigation guard
+  and confirmation/focus helpers; content deletion is explicitly named separately
+  from an unimplemented occurrence cancellation. Stable new IDs use the installed
+  Expo package's existing UUID export; no runtime dependency/library added.
+- Focused first component run passed 52 results across both platform presets.
+  Portable test initially found an old quest-draft alias unsuitable for Node;
+  changed only that pure import to relative. Corrected one test expecting a
+  Promise rejection for a deliberately synchronous invalid-path guard. No failed
+  run counted as a pass. Initial InlineStatus union and duplicate import warnings
+  corrected; subsequent types/lint retain only 11 baseline warnings.
+- Formatted new consumer/model/test files with an ephemeral pinned formatter; no
+  package/lock/dependency changed. Final root checks and complete file ledger follow.
+
+#### RN09B-D01b actual validation and boundaries
+
+- Final `npm run check`: 456 portable tests, 652 component results (+2 existing
+  skips, 78 suites), 628 API; types/lint/assets/Ruff/contracts passed. Existing
+  11 ESLint warnings only. Focused quest tests: 22 portable and 54 component
+  results including existing presentation/editor regressions. New management
+  scenarios also cover pagination/empty state, background read preserving a dirty
+  draft and uncertain-delete Back confirmation. No native method is called.
+- `npm run mobile:export` passes isolation across 38 app JS/HTML files and all
+  71 original SVGs. `npm run mobile:ui:build` passes, with the installed Expo UUID
+  module's direct-eval vendor warning; no dependency/version/lock change.
+- Slice-c acceptance candidate was executed from this working tree: 217 database
+  tests passed, including six actual portable-client TCP/FastAPI/PG cases across
+  process restart. Its harness/record receives the next commit; do not mistake
+  component mocks or earlier tests for real managed-account/device acceptance.
+- After local 0002→0003 upgrade/security tests passed, applied the additive quest
+  migration to the exact pinned development project through existing guarded
+  administrator/verified-TLS configuration. In one advisory-locked transaction,
+  checked prior head 0002, compared server-only profile/settings count/content
+  digests before/after, applied/verified 0003 and confirmed zero new quest rows.
+  Existing product rows matched. No raw rows/URI/password/token or Auth DDL/user
+  operation; runtime still has no Data API or physical delete privileges. Final
+  sanitized hosted/HTTP evidence is recorded with c. Hosted user-token CRUD stays
+  deferred; schema readiness alone does not claim it.
+- New private profile QA entry reuses the existing credential adapter (later
+  operator-token use only), shared list/editor and intentional lost-response
+  helper for PUT/DELETE. Production routes require an existing verified account
+  scope and remain unavailable without Auth/root; no SDK/root guard/provider
+  modification, hardcoded account/token, offline mutation queue or fixture fallback.
+
+**Slice-b commit message / Git reference:**
+`feat(mobile): connect saved quest management to scoped API`.
+Own hash Pending until next normal update; parent `10d8e16`; local commit only.
+
+- Final availability review corrected unavailable list controls that previously
+  displayed Working with no active request. Busy now follows actual reads only;
+  existing account-recovery port and offline/unavailable feedback explain why
+  saving is disabled, preserve drafts and never instantiate an SDK/session.
+  Targeted post-change types/lint and all 54 quest component results pass.
+  Normalized absent-storage loading versus unavailable title.
+- Standard hosted `scripts/migrate-db.py check --target development --project`
+  for the already pinned project reports no autogenerate drift and verifies
+  0003 ownership/RLS/ACL/clock/checks. This is a separate schema readiness result,
+  not managed-user CRUD/Auth acceptance. Final export after availability copy is
+  recorded below.
+
+#### RN09B-D01b per-file ledger
+
+Ranges belong to this shared-consumer commit; generated files are a derived contract update.
+
+- `apps/mobile/dev/profile/app/index.tsx`: lines 23. Expose Open live Quests in the existing private profile QA host after its explicit operator connection; no token or account fallback.
+- `apps/mobile/dev/profile/app/quest.tsx`: lines 1–24. Compose shared managed create/edit by validated ID with one stable installed Expo UUID and existing QA runtime; no production Auth provider.
+- `apps/mobile/dev/profile/app/quests.tsx`: lines 1–16. Compose actual connected list/navigation in the existing isolated host, otherwise unavailable presentation.
+- `apps/mobile/dev/profile/runtime.tsx`: lines 43. Extend intentional next-write response loss to PUT/DELETE as well as PATCH; deliver the actual write once and never replay.
+- `apps/mobile/src/app/(tabs)/quests.tsx`: lines 3–4, 8–16. Use real shared quest list only inside an existing account scope, keyed by generation. Retain honest unavailable source preview without Auth.
+- `apps/mobile/src/app/quest/[id].tsx`: lines 1–4, 8–18, 22–23. Validate URL UUID and mount owner/generation/ID-keyed shared editor only with an existing private scope; invalid/unavailable remains honest.
+- `apps/mobile/src/app/quest/new.tsx`: lines 1–3, 10–13, 15–22. Allocate one stable Expo UUID per scoped new editor and preserve the existing unavailable local preview/dirty guard when no account exists.
+- `apps/mobile/src/features/quests/README.md`: lines 1–26. Describe current connected management, dirty/uncertain write and decoder responsibilities, private QA path and explicit activation/Auth gates; retain historical presentation context.
+- `apps/mobile/src/features/quests/connected-quests-screen.tsx`: lines 1–75. Project actual own pages into Accepted/saved-not-active cards, support previous/more cursors and hide private summaries on error/offline/unavailable access. Busy reflects actual reads only.
+- `apps/mobile/src/features/quests/managed-quest-editor.tsx`: lines 1–147. Reuse original editor with timezone, explicit saved/error/review feedback, full latest-value comparison, confirmed deletion and guarded navigation. A successful deletion exits through the same route guard; pending/uncertain writes do not bypass Back confirmation.
+- `apps/mobile/src/features/quests/managed-quests.test.tsx`: lines 1–291. Add nine scenarios per platform (18): real controlled create/edit intents, lost saves/deletes without retry, conflict/background draft preservation, dirty Back, offline/owner replacement, actual list/empty/paging projections. Use isolated fixture ports only.
+- `apps/mobile/src/features/quests/quest-access-feedback.tsx`: lines 1–29. Explain offline/unavailable access and consume existing explicit account-recovery action without adding SDK/session ownership or indicating a nonexistent busy operation.
+- `apps/mobile/src/features/quests/quest-definition-draft.ts`: lines 1–44. Map existing raw form to strict stored definitions and canonical rows back to form, retaining explicit zone and non-enforcing/no-date semantics; never calculate occurrences.
+- `apps/mobile/src/features/quests/quest-draft.ts`: lines 1. Make the pure time-parser import relative so the existing raw form model is portable to Node/HTTP acceptance; behavior unchanged.
+- `apps/mobile/src/features/quests/quest-editor.tsx`: lines 27–28, 34–36, 45–46, 52–54, 66, 82, 84–85, 97–98, 122–124, 253, 265, 268, 276–280, 282, 290. Add optional timezone/feedback content, separate navigation uncertainty from raw dirty state and expose explicit saved-definition deletion confirmation. Preserve original cancellation/default presentation callers.
+- `apps/mobile/src/features/quests/quests-api.test.ts`: lines 1–123. Add 22 portable cases for own identity/version/time/canonical response validation, page progress, raw Unicode canonicalization, exact PUT/DELETE readback, no mutation replay and path injection prevention.
+- `apps/mobile/src/features/quests/quests-api.ts`: lines 1–174. Strictly decode own definition/resource/page/revision receipts and validate URL IDs before sending. Reuse normal scoped transport with exact canonical save confirmation and safe null/tombstone distinctions.
+- `apps/mobile/src/features/quests/quests-query.ts`: lines 1–53. Scope list/resource queries to account generation, cancel competing reads around writes, preserve newer cache revisions and invalidate lists only after confirmation; no optimistic promotion or write retry.
+- `apps/mobile/src/features/quests/quests-screen.tsx`: lines 1, 14–17, 27–30, 56–57, 60–111, 154, 159–174. Place supplied accepted/saved records before suggestions, add optional edit/empty/footer controls and saved-list retry while preserving source assets and truthful independent availability states.
+- `apps/mobile/src/features/quests/use-quest-editor.ts`: lines 1–200. Own one raw draft/base revision, explicit save/delete, uncertainty/conflict comparison/review and scoped cleanup. Preserve dirty input across fresh reads, gate offline/unknown writes and prevent deleted-ID recreation; no native/reward effects.
+- `apps/mobile/src/infrastructure/api/README.md`: lines 145–150. Document safe quest errors, strict boundary and explicit uncertain-write handling in the existing transport.
+- `apps/mobile/src/infrastructure/api/errors.ts`: lines 35, 50, 105–107, 142–147, 150. Add closed QUEST_CONFLICT/definition detail parsing and fixed quest copy; never expose arbitrary server errors.
+- `docs/architecture/quest-definition-management.md`: lines 29–31, 37. Clarify nullable read/delete revision receipts as own absence/tombstone observations that fence delayed cache writes without revealing foreign resources.
+- `docs/core_plan/04_react_native_integration.md`: lines 775–779. Record implemented a/b consumers and real local/hosted schema checks under existing IDs, with c evidence following and Auth/native activation still separate.
+- `packages/contracts/README.md`: lines 77–83. Document generated saved-definition aliases and revision receipts without approving occurrence/reward semantics.
+- `packages/contracts/openapi/foundation.openapi.json`: lines 1–3097. Regenerate additive nullable-read/deletion revision metadata and updated service description from backend authority.
+- `packages/contracts/src/http.generated.ts`: lines 1–1412. Regenerate typed resource/deletion receipt revision fields; do not hand-maintain wire duplicates.
+- `services/api/README.md`: lines 365–374. Document own quest routes, saved-only behavior, applied development migration and actual acceptance boundaries.
+- `services/api/app/api/v1/quests.py`: lines 50–51, 91–92. Return the observed own revision on live/missing/tombstoned reads and committed deletion receipts, retaining existing owner-only transaction boundaries.
+- `services/api/app/application.py`: lines 28. Include saved quest management in executable API description; routes/identity behavior unchanged.
+- `services/api/app/db/README.md`: lines 7, 172–178. Document new reviewed head/table, content-free deletion and existing least-privilege/cascade verification.
+- `services/api/app/repositories/quests.py`: lines 83, 95, 101–102. Return atomic deletion revision or actual own missing/tombstone observation so the shared client can reconcile without stale state.
+- `services/api/app/schemas/quests.py`: lines 96, 110. Publish bounded revision metadata for nullable reads/deletion receipts; no definition retention or foreign-account disclosure.
+- `services/api/tests/db/test_quests.py`: lines 60, 66–67, 69. Assert zero revision for foreign absence and retained revision for own content-free deletion/read, alongside existing RLS/CAS checks.
+- `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 4798, 4888–5010. Record slice-a hash 10d8e16 during the next normal update and detail consumer changes, receipt rationale, failed checks/corrections, actual root/scoped/export/hosted results, every file/line and c handoff. Keep current self-hash Pending.

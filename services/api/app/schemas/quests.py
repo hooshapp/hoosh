@@ -93,6 +93,7 @@ class QuestView(WireModel):
 
 class QuestResponse(WireModel):
     quest: QuestView | None
+    revision: StrictInt = Field(ge=0, le=MAX_REVISION)
 
 
 class QuestSavedResponse(WireModel):
@@ -106,3 +107,4 @@ class QuestPage(WireModel):
 
 class QuestDeletedResponse(WireModel):
     quest_id: UUID
+    revision: StrictInt = Field(ge=0, le=MAX_REVISION)

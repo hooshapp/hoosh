@@ -324,6 +324,8 @@ export interface components {
              * Format: uuid
              */
             quest_id: string;
+            /** Revision */
+            revision: number;
         };
         /** QuestPage */
         QuestPage: {
@@ -341,6 +343,8 @@ export interface components {
         /** QuestResponse */
         QuestResponse: {
             quest: components["schemas"]["QuestView"] | null;
+            /** Revision */
+            revision: number;
         };
         /** QuestSavedResponse */
         QuestSavedResponse: {

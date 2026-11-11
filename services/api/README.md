@@ -362,3 +362,13 @@ Foundation checks pass for code `7fe2c55` (api/database/mobile). See
 runbook for exact scope. The former hosted-workflow verification item is closed;
 current-account/Auth/root/native/device/deletion acceptance remains open. No main
 merge or deployment occurred.
+
+## RN09B-D01 saved quests
+
+Own bounded `GET /v1/quests`, nullable own `GET /v1/quests/{quest_id}`, complete
+revisioned `PUT` and content-wiping `DELETE` now persist quest definitions only.
+They use the existing verified identity/unit of work and no native/reward side
+effect. Forward migration 0003 adds forced RLS and least-privilege metadata; it is
+applied to the pinned development project with previous profiles/settings preserved.
+Read the [contract](../../docs/architecture/quest-definition-management.md) and
+Plan 04 notes for exact local/hosted and deferred account acceptance boundaries.

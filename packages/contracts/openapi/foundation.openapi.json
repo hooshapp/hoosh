@@ -548,10 +548,17 @@
             "format": "uuid",
             "title": "Quest Id",
             "type": "string"
+          },
+          "revision": {
+            "maximum": 2147483647.0,
+            "minimum": 0.0,
+            "title": "Revision",
+            "type": "integer"
           }
         },
         "required": [
-          "quest_id"
+          "quest_id",
+          "revision"
         ],
         "title": "QuestDeletedResponse",
         "type": "object"
@@ -619,10 +626,17 @@
                 "type": "null"
               }
             ]
+          },
+          "revision": {
+            "maximum": 2147483647.0,
+            "minimum": 0.0,
+            "title": "Revision",
+            "type": "integer"
           }
         },
         "required": [
-          "quest"
+          "quest",
+          "revision"
         ],
         "title": "QuestResponse",
         "type": "object"
@@ -1000,7 +1014,7 @@
     }
   },
   "info": {
-    "description": "Verified identity and isolated, revision-safe profiles and settings.",
+    "description": "Verified identity and isolated, revision-safe profiles, settings and saved quests.",
     "title": "Disconnect API",
     "version": "0.0.0"
   },

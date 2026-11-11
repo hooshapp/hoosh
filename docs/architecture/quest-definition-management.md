@@ -26,14 +26,15 @@ an unrelated native installation.
 - GET `/v1/quests?limit=50&cursor=UUID`: own non-deleted definitions sorted by UUID,
   at most 100 per page, exclusive cursor and nullable next_cursor. No unbounded read.
   A cursor need not still exist, so deleting the last row does not break pagination.
-- GET `/v1/quests/{quest_id}`: `{quest: row|null}`. Missing/deleted/another owner's
-  row are indistinguishable. Reads never insert or treat database failure as empty.
+- GET `/v1/quests/{quest_id}`: `{quest: row|null, revision}`. Missing/deleted/another owner's
+  row content is unavailable. Revision is zero when absent/foreign, or the own
+  tombstone revision after deletion; no other owner's existence is exposed. Reads never insert or treat database failure as empty.
 - PUT `/v1/quests/{quest_id}`: `{expected_revision, definition}`. The client allocates
   one fresh UUID per new editor, retained while a save is uncertain. Revision zero
   creates only an absent own ID; a positive revision replaces the full definition
   only on an exact own live version. Success returns the committed canonical row.
   There is no automatic write retry; a lost response requires explicit GET/review.
-- DELETE same path: `{expected_revision}` positive; returns `{quest_id}`. An atomic
+- DELETE same path: `{expected_revision}` positive; returns `{quest_id, revision}`. An atomic
   matching update wipes definition content and advances revision. Missing/deleted
   own IDs succeed without touching another owner. Conflicting live revision is 409.
 - `QUEST_CONFLICT` includes only own current_revision (zero if missing). Refetch and

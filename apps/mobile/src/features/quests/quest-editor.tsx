@@ -24,11 +24,16 @@ export type QuestEditorProps = {
   mode: 'create' | 'personalize' | 'edit';
   draft: QuestDraft;
   dirty: boolean;
+  navigationDirty?: boolean;
+  externalIssue?: string | null;
   onChange: (draft: QuestDraft) => void;
   onBack: () => void;
   onDiscard: () => void;
   onSave?: (draft: QuestDraft) => void;
   onCancelQuest?: () => void;
+  onDeleteQuest?: () => void;
+  scheduleContent?: ReactNode;
+  feedback?: ReactNode;
   state?: EditorState;
   interestLabel?: string;
   restrictionNotice?: string;
@@ -37,11 +42,16 @@ export function QuestEditor({
   mode,
   draft,
   dirty,
+  navigationDirty,
+  externalIssue,
   onChange,
   onBack,
   onDiscard,
   onSave,
   onCancelQuest,
+  onDeleteQuest,
+  scheduleContent,
+  feedback,
   state = 'ready',
   interestLabel,
   restrictionNotice,
@@ -53,7 +63,7 @@ export function QuestEditor({
   const cancelTrigger = useRef<ComponentRef<typeof Button>>(null);
   const restoreCancelFocus = useDialogFocusReturn(cancelTrigger);
   const busy = state === 'saving',
-    issue = questDraftIssue(draft);
+    issue = questDraftIssue(draft) ?? externalIssue;
   const change = (patch: Partial<QuestDraft>) => {
     if (!busy) onChange({ ...draft, ...patch });
   };
@@ -69,9 +79,10 @@ export function QuestEditor({
       subtitle={
         mode === 'personalize' ? 'Your suggestion, your way. Change any detail.' : undefined
       }
-      dirty={dirty}
+      dirty={navigationDirty ?? dirty}
       busy={busy}
-      onBack={onBack}>
+      onBack={onBack}
+    >
       <Card
         header={
           <View style={styles.cardHeading}>
@@ -83,7 +94,8 @@ export function QuestEditor({
             ) : null}
             <Text style={styles.header}>Make it your own</Text>
           </View>
-        }>
+        }
+      >
         <DecoratedField
           label="Quest name"
           value={draft.title}
@@ -107,7 +119,9 @@ export function QuestEditor({
             <Text style={styles.header}>Make time for it</Text>
             {mode === 'personalize' ? <Text style={styles.hint}>Suggested for you</Text> : null}
           </View>
-        }>
+        }
+      >
+        {scheduleContent}
         <View style={editorStyles.row}>
           <TimeControl
             label="Start time"
@@ -236,6 +250,7 @@ export function QuestEditor({
           {issue}
         </Text>
       ) : null}
+      {feedback}
       <EditorActions
         state={state}
         dirty={dirty}
@@ -247,10 +262,10 @@ export function QuestEditor({
         }}
         saveLabel="Save quest"
       />
-      {mode === 'edit' && onCancelQuest ? (
+      {mode === 'edit' && (onCancelQuest || onDeleteQuest) ? (
         <Button
           ref={cancelTrigger}
-          label="Cancel quest"
+          label={onDeleteQuest ? 'Delete saved quest' : 'Cancel quest'}
           variant="secondary"
           disabled={busy}
           onPress={() => setCancel(true)}
@@ -258,9 +273,13 @@ export function QuestEditor({
       ) : null}
       {cancel ? (
         <ConfirmationDialog
-          title="Cancel this quest?"
+          title={
+            onDeleteQuest
+              ? 'Delete this saved quest and discard any unsaved edits?'
+              : 'Cancel this quest?'
+          }
           keepLabel="Keep quest"
-          discardLabel="Confirm cancellation"
+          discardLabel={onDeleteQuest ? 'Delete quest' : 'Confirm cancellation'}
           discardDisabled={busy}
           onKeep={() => {
             restoreCancelFocus();
@@ -268,7 +287,7 @@ export function QuestEditor({
           }}
           onDiscard={() => {
             setCancel(false);
-            onCancelQuest?.();
+            (onDeleteQuest ?? onCancelQuest)?.();
           }}
         />
       ) : null}
