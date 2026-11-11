@@ -567,10 +567,12 @@
         "additionalProperties": false,
         "properties": {
           "completed_count": {
+            "minimum": 0.0,
             "title": "Completed Count",
             "type": "integer"
           },
           "credits": {
+            "minimum": 0.0,
             "title": "Credits",
             "type": "integer"
           },
@@ -580,6 +582,7 @@
           },
           "observed_at": {
             "format": "date-time",
+            "pattern": "Z$",
             "title": "Observed At",
             "type": "string"
           },
@@ -587,6 +590,7 @@
             "items": {
               "$ref": "#/components/schemas/QuestOccurrenceView"
             },
+            "maxItems": 3968,
             "title": "Occurrences",
             "type": "array"
           },
@@ -608,6 +612,7 @@
             "items": {
               "$ref": "#/components/schemas/QuestScheduleVersionView"
             },
+            "maxItems": 128,
             "title": "Versions",
             "type": "array"
           }
@@ -639,6 +644,7 @@
           },
           "ends_at": {
             "format": "date-time",
+            "pattern": "Z$",
             "title": "Ends At",
             "type": "string"
           },
@@ -653,6 +659,7 @@
           },
           "starts_at": {
             "format": "date-time",
+            "pattern": "Z$",
             "title": "Starts At",
             "type": "string"
           },
@@ -883,6 +890,7 @@
           },
           "effective_from": {
             "format": "date-time",
+            "pattern": "Z$",
             "title": "Effective From",
             "type": "string"
           },
@@ -896,6 +904,7 @@
                 "type": "null"
               }
             ],
+            "pattern": "Z$",
             "title": "Effective Until"
           },
           "enabled": {

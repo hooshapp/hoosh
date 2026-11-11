@@ -3,7 +3,7 @@ package expo.modules.hooshusage
 import android.app.Activity
 import expo.modules.kotlin.Promise
 
-/** Explicit owner/draft transaction port; current implementation is debug-only. */
+/** Explicit owner/draft transaction port; native implementation is account-scoped and device-local. */
 interface SelectionEditor {
   fun begin(owner: String, promise: Promise)
   fun pick(activity: Activity, owner: String, draft: String, version: Int, promise: Promise)

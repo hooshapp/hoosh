@@ -4,6 +4,16 @@
 **Read in order:** `PRD.md` → `TSD.md` → current Figma design → existing source repository.  
 **Design:** https://www.figma.com/design/ukmD2ZidJ9UR2XxUkvdPoJ/App-UI?node-id=0-1
 
+**Current RN09B-D02–D04 continuation (2026-11-11):** Ishmum authorized SDK/root,
+quest occurrence/credit/native integration and user-facing defaults, superseding
+older Auth/token deferral for this scope. D02 `0bbf714`/`f447e68`, D03a `999512a`;
+D03b native product integration has 102 physical instrumentation checks,88 JVM,
+522 portable,670 component,643 API,233 DB. Development is verified at0004 with
+existing product digests preserved and no Auth administration. Connected controls
+and D04 managed-account/TalkBack/signed platform acceptance continue. Anisha’s iOS
+integration is not ready. Read latest Plan04 notes; older debug/deferred/head0003
+checkpoints below are historical. No full parent completion/push/merge claimed.
+
 **Product decisions updated (2026-11-09):** Read the [PM reconciliation ADR](../architecture/pm-decisions-2026-11-09.md),
 [answer log](PM_QUESTIONS.md) and [decision register](OPEN_DECISIONS.yaml) before
 using old proposed product defaults. Required accounts, per-app session allowances,

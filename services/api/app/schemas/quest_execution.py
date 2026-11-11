@@ -1,6 +1,6 @@
 """Explicit scheduling and self-reported outcomes, separate from definition saves."""
 
-from datetime import date
+from datetime import UTC, date, datetime
 from typing import Literal
 from uuid import UUID
 
@@ -33,32 +33,47 @@ class QuestScheduleVersionView(WireModel):
     quest_revision: int
     first_date: date
     definition: QuestDefinition
-    effective_from: AwareDatetime
-    effective_until: AwareDatetime | None
+    effective_from: AwareDatetime = Field(json_schema_extra={"pattern": "Z$"})
+    effective_until: AwareDatetime | None = Field(json_schema_extra={"pattern": "Z$"})
     enabled: bool
+
+    @field_validator("effective_from", "effective_until")
+    @classmethod
+    def utc(cls, value: datetime | None):
+        return value.astimezone(UTC) if value is not None else None
 
 
 class QuestOccurrenceView(WireModel):
     schedule_revision: int
     local_date: date
-    starts_at: AwareDatetime
-    ends_at: AwareDatetime
+    starts_at: AwareDatetime = Field(json_schema_extra={"pattern": "Z$"})
+    ends_at: AwareDatetime = Field(json_schema_extra={"pattern": "Z$"})
     title: str
     state: Literal["upcoming", "active", "ended", "missed", "completed", "cancelled"]
     can_confirm: bool
     credits: int
 
+    @field_validator("starts_at", "ends_at")
+    @classmethod
+    def utc(cls, value: datetime):
+        return value.astimezone(UTC)
+
 
 class QuestExecutionView(WireModel):
     user_id: UUID
     quest_id: UUID
-    observed_at: AwareDatetime
+    observed_at: AwareDatetime = Field(json_schema_extra={"pattern": "Z$"})
     revision: int
     enabled: bool
-    versions: list[QuestScheduleVersionView]
-    occurrences: list[QuestOccurrenceView]
-    credits: int
-    completed_count: int
+    versions: list[QuestScheduleVersionView] = Field(max_length=128)
+    occurrences: list[QuestOccurrenceView] = Field(max_length=128 * 31)
+    credits: int = Field(ge=0)
+    completed_count: int = Field(ge=0)
+
+    @field_validator("observed_at")
+    @classmethod
+    def utc(cls, value: datetime):
+        return value.astimezone(UTC)
 
 
 class QuestOutcomePut(WireModel):

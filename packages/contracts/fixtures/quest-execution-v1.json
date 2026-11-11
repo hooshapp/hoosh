@@ -1,0 +1,41 @@
+{
+  "user_id": "00000000-0000-4000-8000-000000000001",
+  "quest_id": "00000000-0000-4000-8000-000000000002",
+  "observed_at": "2026-11-12T09:00:00Z",
+  "revision": 1,
+  "enabled": true,
+  "credits": 0,
+  "completed_count": 0,
+  "versions": [
+    {
+      "revision": 1,
+      "quest_revision": 1,
+      "first_date": "2026-11-12",
+      "enabled": true,
+      "effective_from": "2026-11-11T12:00:00.000001Z",
+      "effective_until": null,
+      "definition": {
+        "title": "Read",
+        "activity": "Read a book",
+        "start_local": "10:00",
+        "end_local": "11:00",
+        "next_day": false,
+        "repeat": "daily",
+        "weekdays": [],
+        "timezone_id": "UTC"
+      }
+    }
+  ],
+  "occurrences": [
+    {
+      "schedule_revision": 1,
+      "local_date": "2026-11-12",
+      "title": "Read",
+      "starts_at": "2026-11-12T10:00:00Z",
+      "ends_at": "2026-11-12T11:00:00Z",
+      "state": "upcoming",
+      "can_confirm": false,
+      "credits": 0
+    }
+  ]
+}

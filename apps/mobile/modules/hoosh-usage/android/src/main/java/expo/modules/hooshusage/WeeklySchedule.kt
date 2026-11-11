@@ -12,6 +12,9 @@ data class WeeklyInstallation(val schedule: WeeklySchedule, val apps: Set<String
 
 /** Pure native compiler. Resolves on demand indefinitely; returned preview is bounded, not an expiry horizon. */
 object WeeklySchedules {
+  fun fixed(plan: InterventionPlan): List<InterventionWindow> = plan.windows.filter {
+    !(plan.weekly != null && it.reasonId.matches(Regex("weekly_[0-9]{4}-[0-9]{2}-[0-9]{2}"))) && !QuestSchedules.isReasonId(it.reasonId)
+  }
   fun validate(s: WeeklySchedule) {
     InterventionValidation.require(s.weekdays.isNotEmpty() && s.weekdays.size <= 7 && s.weekdays.distinct().size == s.weekdays.size && s.weekdays.all { it in 0..6 })
     val format = Regex("([01][0-9]|2[0-3]):[0-5][0-9]")
@@ -43,12 +46,12 @@ object WeeklySchedules {
     }
   }
   fun windows(plan: InterventionPlan, now: Long): List<InterventionWindow> {
-    val weekly = plan.weekly ?: return plan.windows
-    if (!weekly.enabled) return emptyList()
-    return compile(weekly.schedule, now, weekly.apps).map { current ->
+    val weekly = plan.weekly
+    val windows = if (weekly?.enabled == true) compile(weekly.schedule, now, weekly.apps).map { current ->
       // Preserve only the active occurrence's app snapshot on explicit re-apply. Future occurrences use latest saved selection.
       plan.windows.find { it.reasonId == current.reasonId && it.startsAt == current.startsAt && now >= it.startsAt && now < it.endsAt }
         ?.let { current.copy(apps = it.apps) } ?: current
-    }
+    } else emptyList()
+    return (fixed(plan) + windows + QuestSchedules.windows(plan, now)).sortedBy { it.startsAt }
   }
 }

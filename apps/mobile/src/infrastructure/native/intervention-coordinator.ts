@@ -17,6 +17,7 @@ export type InterventionStatus = Readonly<{
   installedRevision: number | null; selectionRevision: number | null;
   selectedAppCount: number; reasonCount: number; pendingEventCount: number;
   overlayVisible: boolean; disclosureAccepted: boolean; serviceConnected: boolean;
+  discardedEventCount?: number;
 }>;
 export function decodeInterventionStatus(value: unknown): InterventionStatus {
   if (!value || typeof value !== 'object') throw new Error('Invalid intervention status');
@@ -24,7 +25,8 @@ export function decodeInterventionStatus(value: unknown): InterventionStatus {
   const integer = (n: unknown, max = 2147483647) => Number.isSafeInteger(n) && (n as number) >= 0 && (n as number) <= max;
   if (!['needs_permission', 'inactive', 'armed', 'failed'].includes(v.state as string) ||
     ![v.installedRevision, v.selectionRevision].every((n) => n === null || (integer(n) && (n as number) > 0)) ||
-    !integer(v.selectedAppCount, 512) || !integer(v.reasonCount, 32) || !integer(v.pendingEventCount, 256) ||
+    (v.schemaVersion === 3 && !integer(v.discardedEventCount)) ||
+    !integer(v.selectedAppCount, 512) || !integer(v.reasonCount, v.schemaVersion === 3 ? 512 : 32) || !integer(v.pendingEventCount, 256) ||
     !['overlayVisible', 'disclosureAccepted', 'serviceConnected'].every((k) => typeof v[k] === 'boolean') ||
     ((v.installedRevision === null) !== (v.selectionRevision === null)) ||
     (v.state === 'armed' && (!v.disclosureAccepted || !v.serviceConnected || v.installedRevision === null || v.reasonCount === 0 || v.selectedAppCount === 0)))
@@ -32,6 +34,7 @@ export function decodeInterventionStatus(value: unknown): InterventionStatus {
   return { state: v.state as InterventionStatus['state'], installedRevision: v.installedRevision as number | null,
     selectionRevision: v.selectionRevision as number | null, selectedAppCount: v.selectedAppCount as number,
     reasonCount: v.reasonCount as number, pendingEventCount: v.pendingEventCount as number,
+    ...(v.schemaVersion === 3 ? { discardedEventCount: v.discardedEventCount as number } : {}),
     overlayVisible: v.overlayVisible as boolean, disclosureAccepted: v.disclosureAccepted as boolean, serviceConnected: v.serviceConnected as boolean };
 }
 /** Drain/ack is explicit and at-least-once; reading never acknowledges events. */

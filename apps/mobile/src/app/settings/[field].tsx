@@ -20,9 +20,16 @@ import { useOptionalAccountData } from '@/infrastructure/query/account-data-prov
 import { ActivityPreferencesScreen } from '@/features/settings/activity-preferences-screen';
 import { PlanDraftScreen } from '@/features/settings/plan-draft-screen';
 import { isPlanField } from '@/features/plans/plan-draft-model';
+import { NativeAppsEditor } from '@/features/preferences/native-apps-editor';
+import { useNativeOwner } from '@/features/protection/native-owner-boundary';
 export default function PreferenceDetail() {
   const { field } = useLocalSearchParams<{ field: string }>();
   const account = useOptionalAccountData();
+  const native = useNativeOwner();
+  if (field === 'apps' && native)
+    return <NativeAppsEditor owner={native.owner} generation={native.generation} port={native.port} onBack={() => {
+      if (router.canGoBack()) router.back(); else router.replace('/(tabs)/settings');
+    }} />;
   if (isPlanField(field) && account?.scope)
     return (
       <PlanDraftScreen

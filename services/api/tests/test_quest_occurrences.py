@@ -1,11 +1,13 @@
+import json
 from datetime import UTC, date, datetime
+from pathlib import Path
 from zoneinfo import ZoneInfo
 
 import pytest
 from pydantic import ValidationError
 
 from app.domain.quest_occurrences import boundary, occurrence
-from app.schemas.quest_execution import QuestSchedulePut
+from app.schemas.quest_execution import QuestExecutionView, QuestSchedulePut
 from app.schemas.quests import QuestDefinition
 
 
@@ -88,3 +90,18 @@ def test_schedule_dates_are_explicit_canonical_and_bounded(value):
         QuestSchedulePut.model_validate(
             {"expected_revision": 0, "quest_revision": 1, "enabled": True, "first_date": value}
         )
+
+
+def test_shared_execution_fixture_and_all_output_clocks_are_canonical_utc():
+    path = (
+        Path(__file__).resolve().parents[3] / "packages/contracts/fixtures/quest-execution-v1.json"
+    )
+    fixture = json.loads(path.read_text())
+    assert QuestExecutionView.model_validate(fixture).model_dump(mode="json") == fixture
+    fixture["versions"][0]["effective_from"] = "2026-11-11T13:00:00.000001+01:00"
+    fixture["observed_at"] = "2026-11-12T10:00:00+01:00"
+    fixture["occurrences"][0]["starts_at"] = "2026-11-12T11:00:00+01:00"
+    result = QuestExecutionView.model_validate(fixture).model_dump(mode="json")
+    assert result["versions"][0]["effective_from"] == "2026-11-11T12:00:00.000001Z"
+    assert result["observed_at"] == "2026-11-12T09:00:00Z"
+    assert result["occurrences"][0]["starts_at"] == "2026-11-12T10:00:00Z"

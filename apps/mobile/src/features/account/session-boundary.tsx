@@ -8,6 +8,7 @@ import { QueryLifecycleBoundary } from '@/infrastructure/query/query-lifecycle-b
 import { createAppRuntime, type AppRuntime } from '@/infrastructure/auth/runtime';
 
 import { AppRuntimeContext } from './app-runtime-context';
+import { NativeOwnerBoundary } from '@/features/protection/native-owner-boundary';
 
 /** Root gate owns no tokens. Replacing the account remounts every private route/form. */
 export function AppSessionBoundary({ children, runtime: supplied }: { children: ReactNode; runtime?: AppRuntime }) {
@@ -27,7 +28,7 @@ export function AppSessionBoundary({ children, runtime: supplied }: { children: 
     <AppRuntimeContext.Provider value={runtime}>
       <QueryLifecycleBoundary>
         {snapshot.status === 'signed_in' ? (
-          <AccountDataProvider controller={runtime.controller}>{children}</AccountDataProvider>
+          <AccountDataProvider controller={runtime.controller}><NativeOwnerBoundary>{children}</NativeOwnerBoundary></AccountDataProvider>
         ) : (
           <SessionAccess runtime={runtime} status={snapshot.status} />
         )}
@@ -39,6 +40,8 @@ function SessionAccess({ runtime, status }: { runtime: AppRuntime; status: strin
   const [email, setEmail] = useState(''), [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false), [failed, setFailed] = useState(false);
   const canLogin = status === 'signed_out';
+  const current = runtime.auth.getSnapshot();
+  const retryableBootstrap = current.status === 'unavailable' && current.reason === 'bootstrap';
   return (
     <Screen title="Account access">
       <View style={{ gap: 16 }}>
@@ -52,11 +55,16 @@ function SessionAccess({ runtime, status }: { runtime: AppRuntime; status: strin
           }} />
           {failed ? <Text accessibilityRole="alert">Could not sign in. Check your details and connection.</Text> : null}
         </> : status === 'unavailable' ? <>
-          <Text>Check this build’s account configuration and secure storage, then try again. Your private information is hidden.</Text>
+          <Text>{retryableBootstrap ? 'Account access could not be restored. Check your connection and try again. Your private information is hidden.' : 'Check this build’s account configuration and secure storage, then try again. Your private information is hidden.'}</Text>
+          {retryableBootstrap ? <Button label="Retry account access" busy={busy} onPress={() => {
+            setBusy(true); void runtime.auth.retryBootstrap().finally(() => setBusy(false));
+          }} /> : null}
+          {runtime.sdk ? <>
           <Button label="Clear this device’s session" busy={busy} onPress={() => {
             setBusy(true); setFailed(false);
             void runtime.auth.signOut().catch(() => setFailed(true)).finally(() => setBusy(false));
           }} />
+          </> : null}
           {failed ? <Text accessibilityRole="alert">Session could not be cleared. Account access remains locked.</Text> : null}
         </> : null}
       </View>

@@ -1,5 +1,29 @@
 # Native protection adapters
 
+## Current RN09B-D03b checkpoint — 2026-11-11
+
+The Android selection/editor, weekly and recurring quest engine now live in main
+source and are exposed through explicit product ports. The generic legacy
+usage-only ProtectionService below remains separate. Historical debug-only
+statements below describe earlier checkpoints. SDK identity is verified by
+`/v1/me` before native ownership binds; reads/sign-in never claim another account.
+An explicit device claim stops previous local rules and preserves private history;
+sign-out invalidates handles without erasing installed restrictions.
+
+Quest versions, native-only app snapshots, revision/request receipts, daily
+allowance history and cancellations persist atomically in v3. Runtime reads v1/v2;
+old finite IDs remain valid. Recurrence is native, independent of JS/network.
+Journal retention is bounded at 256 with an explicit discarded-event counter;
+missing diagnostics are never reward/streak evidence. Temporary preview/fault
+controls remain debug-gated. The service uses only app-window metadata and a
+narrow launcher query; no contents, text, gestures or broad inventory access.
+
+Checks: 88 pure JVM cases, 102 physical Pixel/API36 native checks, debug/test APK
+builds and release Kotlin compilation. Known native phone files remained identical
+before/after instrumentation. This is not connected account/UI, TalkBack, signed
+release/store or iOS acceptance. Shared lifecycle controls continue in D03c.
+
+
 Consume `ProtectionIntegration` availability, then implement the shared `ProtectionService` port from `@disconnect/contracts` here.
 RN-08b implements the Android read/usage-access adapter; RN-08c registers it through the Android-specific module. No production enforcement adapter is registered; the debug coordinator below is isolated. Only `connected` exposes a service; connection alone does not prove permission or installation.
 

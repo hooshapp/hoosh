@@ -21,6 +21,10 @@ class InterventionLeases {
     InterventionValidation.require(leases[token]?.let { it.owner == owner && it.bridge in bridges } == true, "ERR_INTERVENTION_LEASE_EXPIRED")
   }
   @Synchronized fun release(owner: String, token: String) { if (leases[token]?.owner == owner) leases.remove(token) }
+  @Synchronized fun retainForClaim(owner: String, token: String) {
+    check(owner, token)
+    leases.entries.removeAll { it.key != token }
+  }
   @Synchronized fun end(owner: String, erase: Boolean) {
     InterventionValidation.owner(owner)
     InterventionValidation.require(erase || owner !in erasing, "ERR_INTERVENTION_CLEANUP_PENDING")

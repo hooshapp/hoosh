@@ -1,0 +1,4 @@
+<resources>
+  <string name="hoosh_intervention_access_description">App-window monitoring and visible pauses for apps you select during your schedules. Does not read screen contents, typed text, messages or passwords. App identities stay on this device. You can open anyway or disable this service at any time. Not a disability accessibility tool.</string>
+  <string name="hoosh_intervention_service_label">Disconnect protection</string>
+</resources>

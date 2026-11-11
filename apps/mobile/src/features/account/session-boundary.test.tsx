@@ -77,3 +77,12 @@ it('cleans up the SDK lifecycle listener and private controller on unmount', asy
   await waitFor(() => expect(runtime.controller.getSnapshot().scope).toBeNull());
   expect(sdk.stopAutoRefresh).toHaveBeenCalled();
 });
+it('keeps bootstrap outages locked and offers deliberate recovery rather than a false signed-out state', async () => {
+  const { runtime, sdk } = setup(A);
+  sdk.getSession.mockRejectedValueOnce(new Error('fixture provider outage'));
+  await render(<AppSessionBoundary runtime={runtime}><Private /></AppSessionBoundary>);
+  await screen.findByText('Account access unavailable');
+  expect(screen.queryByText(/Private account/)).toBeNull();
+  await fireEvent.press(screen.getByRole('button', { name: 'Retry account access' }));
+  await screen.findByText(`Private account ${A}`);
+});

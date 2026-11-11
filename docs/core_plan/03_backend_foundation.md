@@ -16,6 +16,13 @@ contracts/producers; explicit PM direction is not a new endpoint or migration.
 Provider/age/native deletion gates and user-deferred Auth/token acceptance remain.
 No new backend implementation or previously pending acceptance is claimed.
 
+**Quest execution handoff (2026-11-11; Plan 04 RN09B-D03a/b):** schedule/version
+and immutable outcome APIs are implemented, development head0004 applied and exact
+schema/security checked. Existing profile/settings/quest definitions preserved.
+643 deterministic API and 233 isolated PostgreSQL checks pass; shared/native
+consumers remain Plan04 work. This does not close previously pending Plan03 joint
+managed-account/settings, deletion or platform acceptance.
+
 ## 1. Goal and boundaries
 
 The original API-01–10 foundation delivers a small FastAPI service that trusts only access tokens from the configured Supabase development project, identifies the user from verified claims, and later persists only that user's minimal profile. Keep authentication, database access, and native protection as separate concerns.

@@ -53,11 +53,11 @@ def main() -> None:
     entry.write_text(
         "package com.hoosh.disconnect.dev\n"
         'fun main() { println("interventionEngineJvmCases=" + '
-        "(InterventionEngineChecks.run() + WeeklyScheduleChecks.run())) }\n"
+        "(InterventionEngineChecks.run() + WeeklyScheduleChecks.run() + QuestScheduleChecks.run())) }\n"
     )
     source = (
         ROOT
-        / "apps/mobile/modules/hoosh-usage/android/src/debug/java/expo/modules/hooshusage"
+        / "apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage"
     )
     tests = (
         ROOT
@@ -83,6 +83,7 @@ def main() -> None:
                     "SelectionDrafts.kt",
                     "InterventionModel.kt",
                     "WeeklySchedule.kt",
+                    "QuestSchedules.kt",
                     "InterventionEngine.kt",
                     "InterventionLeases.kt",
                     "InterventionProtectionSnapshot.kt",
@@ -90,6 +91,7 @@ def main() -> None:
             ),
             str(tests),
             str(tests.with_name("WeeklyScheduleChecks.kt")),
+            str(tests.with_name("QuestScheduleChecks.kt")),
             str(entry),
         ],
         check=True,

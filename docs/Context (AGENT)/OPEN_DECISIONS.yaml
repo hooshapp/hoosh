@@ -277,3 +277,11 @@ quest_integration_defaults_2026_11_11:
     - "PM native quit award amounts and allowance-based streak meaning stay unchanged; no inferred usage or healthy streak from missing telemetry."
   acceptance: "Actual managed-account, native installation, physical accessibility and signed platform checks must each be recorded; automated presets do not establish them."
   retained_ownership: "Anisha owns broader provider setup/onboarding/iOS; this authorized shared integration consumes stable contracts."
+
+quest_device_defaults_2026_11_11:
+  authority: "Ishmum authorized D02-D04 user-facing defaults; not additional PM answers."
+  decisions:
+    - "Explicit account claim stops prior device rules, archives private history, and restores returning accounts stopped. Login/read/signout never claim or erase native rules."
+    - "Bounded 256-event diagnostics with a gap count; overflow never disables protection/Open anyway or implies a reward/streak."
+    - "SDK bootstrap is fail-closed/retryable; same-subject session replacement fences callbacks, routine refresh retains current scope."
+  acceptance: "Native physical checks are separate from managed-account UI, TalkBack, signed release and Anisha's unavailable iOS integration."

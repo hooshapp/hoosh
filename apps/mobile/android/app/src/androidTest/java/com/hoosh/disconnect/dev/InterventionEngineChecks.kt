@@ -95,7 +95,9 @@ internal object InterventionEngineChecks {
     case {
       val (d, e) = fixture(); repeat(255) { e.action(A, 1, "shield_presented", 2000) }
       check(d.value!!.events.size == 256); val old = d.value
-      failure("ERR_INTERVENTION_JOURNAL_FULL") { e.allow(A, 1, APP, 2000, 1000, 1) }; check(d.value == old)
+      val allowed = e.allow(A, 1, APP, 2000, 1000, 1)
+      check(allowed.events.size == 256 && allowed.discardedEventCount == 1 && allowed.sessions.isNotEmpty())
+      check(old!!.discardedEventCount == 0 && e.needed(allowed, APP, 2001, 1001, 1).isEmpty())
     }
     case { val (_, e) = fixture(); e.erase(A); check(e.read(A) == null); e.erase(A); check(e.read(B) == null) }
     case { failure("ERR_INTERVENTION_INVALID") { InterventionValidation.windows(listOf(InterventionWindow("one", 2, 1))) }; failure("ERR_INTERVENTION_INVALID") { InterventionValidation.policy(SessionPolicy("Missing/Zone", 1, 1)) } }

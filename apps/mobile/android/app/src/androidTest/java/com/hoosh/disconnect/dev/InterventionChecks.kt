@@ -16,7 +16,8 @@ internal object InterventionChecks {
   fun run(context: Context): Int {
     val pure = try { InterventionEngineChecks.run() } catch (e: Exception) { lastCase = InterventionEngineChecks.lastCase; throw e }
     val weekly = try { WeeklyScheduleChecks.run() } catch (e: Exception) { lastCase = pure + WeeklyScheduleChecks.lastCase; throw e }
-    var count = pure + weekly; lastCase = count
+    val quests = try { QuestScheduleChecks.run() } catch (e: Exception) { lastCase = pure + weekly + QuestScheduleChecks.lastCase; throw e }
+    var count = pure + weekly + quests; lastCase = count
     fun case(action: () -> Unit) { lastCase = count + 1; action(); count++ }
     val directory = File(context.cacheDir, "intervention-checks-${System.nanoTime()}"); check(!directory.exists())
     try {
@@ -71,7 +72,62 @@ internal object InterventionChecks {
         e.install(A, 0, 1, SavedSelection(1, setOf(APP)), listOf(InterventionWindow("one", 1000, 900000)), SessionPolicy("UTC", 2, 10), 1000)
         val json = org.json.JSONObject(path.readText()).put("version", 1); json.getJSONObject("plan").remove("weekly"); path.writeText(json.toString())
         check(store.read()?.plan?.weekly == null); e.cancel(A, 1, null, 2000)
-        check(org.json.JSONObject(path.readText()).getInt("version") == 2)
+        check(org.json.JSONObject(path.readText()).getInt("version") == 3)
+      }
+      case {
+        val path = File(directory, "quests.json"); val store = AtomicInterventionPersistence(path); val e = InterventionEngine(store)
+        val id = "00000000-0000-4000-8000-000000000051"
+        val request = "00000000-0000-4000-8000-000000000052"
+        val now = java.time.Instant.parse("2026-11-09T08:00:00Z").toEpochMilli()
+        val q = QuestInstallation(id, 1, "2026-11-09", "daily", WeeklySchedule(listOf(0), "09:00", "10:00", false, "UTC"), now, null, setOf(APP))
+        e.applyQuest(A, 0, SavedSelection(1, setOf(APP)), id, 1, request, true, listOf(q), emptySet(), SessionPolicy("UTC", 2, 60), now)
+        val later = java.time.Instant.parse("2027-01-01T09:30:00Z").toEpochMilli()
+        val record = e.allow(A, 1, APP, later, 1000, 1)
+        check(InterventionEngine(AtomicInterventionPersistence(path)).read(A) == record)
+        check(record.plan.questReceipts[id]?.requestId == request && record.discardedEventCount == 0)
+      }
+      case {
+        val path = File(directory, "quests.json"); val original = path.readText()
+        val json = org.json.JSONObject(original)
+        val receipts = json.getJSONObject("plan").getJSONObject("questReceipts")
+        receipts.getJSONObject(receipts.keys().next()).put("enabled", false)
+        path.writeText(json.toString())
+        failure("ERR_INTERVENTION_STORAGE") { AtomicInterventionPersistence(path).read() }
+        path.writeText(original)
+      }
+      case {
+        val store = OwnerInterventionPersistence(File(directory, "accounts")); val e = InterventionEngine(store)
+        val now = java.time.Instant.parse("2026-11-09T09:30:00Z").toEpochMilli()
+        val other = "account-b:00000000-0000-4000-8000-000000000061"
+        e.install(A, 0, 1, SavedSelection(1, setOf(APP)), listOf(InterventionWindow("account_a", now - 1000, now + 600000)), SessionPolicy("UTC", 2, 60), now)
+        val original = e.allow(A, 1, APP, now, 1000, 1)
+        failure("ERR_INTERVENTION_OTHER_ACCOUNT") { store.claim(other, false, now + 1) }
+        check(e.read(A) == original)
+        store.claim(other, true, now + 2)
+        check(e.read(other) == null)
+        e.install(other, 0, 1, SavedSelection(1, setOf(APP)), listOf(InterventionWindow("account_b", now, now + 600000)), SessionPolicy("UTC", 2, 60), now)
+        check(e.read(other)!!.daily.isEmpty())
+        store.claim(A, true, now + 3)
+        val restored = e.read(A)!!
+        check(restored.daily == original.daily && restored.sessions == original.sessions)
+        check(restored.allowances.isEmpty() && WeeklySchedules.windows(restored.plan, now).isEmpty())
+      }
+      case {
+        val store = OwnerInterventionPersistence(File(directory, "accounts")); val e = InterventionEngine(store)
+        val other = "account-b:00000000-0000-4000-8000-000000000061"
+        val before = e.read(A)
+        store.eraseOwner(other)
+        check(e.read(A) == before)
+        store.claim(other, true, 2000)
+        check(e.read(other) == null)
+      }
+      case {
+        val path = File(directory, "quests.json"); val original = path.readText()
+        val json = org.json.JSONObject(original)
+        json.getJSONObject("plan").getJSONArray("quests").getJSONObject(0).put("timezone", "Not/A_Zone")
+        path.writeText(json.toString())
+        failure("ERR_INTERVENTION_STORAGE") { AtomicInterventionPersistence(path).read() }
+        path.writeText(original)
       }
     } finally { check(directory.deleteRecursively()) }
     return count

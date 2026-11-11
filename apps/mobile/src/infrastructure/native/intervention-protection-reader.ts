@@ -25,7 +25,7 @@ export function decodeInterventionProtectionRead(value: unknown): Extract<Protec
       !['authorized', 'denied', 'not_requested'].includes(value.authorization as string) ||
       s.authorization !== value.authorization || !['active', 'inactive', 'needs_permission', 'failed'].includes(s.state as string) ||
       !(s.installedRevision === null || (Number.isSafeInteger(s.installedRevision) && (s.installedRevision as number) > 0 && (s.installedRevision as number) <= 2147483647)) ||
-      !Array.isArray(s.installedReasonIds) || s.installedReasonIds.length > 32 ||
+      !Array.isArray(s.installedReasonIds) || s.installedReasonIds.length > (value.schemaVersion === 3 ? 512 : 32) ||
       !s.installedReasonIds.every((id: unknown) => typeof id === 'string' && /^[a-z0-9_-]{1,64}$/.test(id)) ||
       new Set(s.installedReasonIds).size !== s.installedReasonIds.length ||
       (s.installedRevision === null && s.installedReasonIds.length !== 0) ||
@@ -33,7 +33,7 @@ export function decodeInterventionProtectionRead(value: unknown): Extract<Protec
       (value.authorization !== 'authorized' && s.state !== 'needs_permission' && s.state !== 'failed') ||
       (value.authorization === 'authorized' && s.state === 'needs_permission')) return invalid();
   const capabilities: ProtectionCapabilities = { platform: 'android', mode: 'overlay', selectionUI: 'unavailable', ...features,
-    notes: ['Debug native interventions. Read-only status adapter; account binding and generic rule writes remain separate.'] };
+    notes: [value.schemaVersion === 3 ? 'Android native app interventions. Installed account-bound rules are read locally; server saves do not install protection.' : 'Debug native interventions. Read-only status adapter; account binding and generic rule writes remain separate.'] };
   const status = { authorization: value.authorization as AuthorizationState, state: s.state,
     installedRevision: s.installedRevision, installedReasonIds: [...s.installedReasonIds] } as NativeProtectionStatus;
   return { phase: 'ready', capabilities, authorization: status.authorization, status };

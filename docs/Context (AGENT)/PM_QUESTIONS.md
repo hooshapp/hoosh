@@ -611,3 +611,32 @@ A failed/uncertain server write requires explicit read/review, with no automatic
 mutation queue. Credits are +50 per self-reported completed occurrence, unique by
 owner/quest/schedule/date. Existing PM native quit rewards and allowance-based
 streak are not redefined. See [lifecycle contract](../architecture/quest-occurrence-lifecycle.md).
+
+
+### Native event coverage default — 2026-11-11
+
+Under the same full-integration authorization: a full local diagnostic journal must
+not disable protection, block Open anyway or turn a friendly intervention into a
+hard lock. Retain a bounded recent journal and persist a monotonic dropped-event
+counter when it overflows. Native-event rewards/allowance streak consumers must
+treat a coverage gap as unknown evidence, never assume a successful quit/streak.
+Explicit self-reported quest completion remains its separate server-checked ledger.
+No native quit award is inferred from this journal change.
+
+
+#### Device account ownership and diagnostics — 2026-11-11 implementation defaults
+
+Ishmum-authorized D02–D04 choices, not new PM answers. Login/refresh/read/sign-out
+never silently replace installed rules. “Use this account on this device” requires
+explicit confirmation that the previous account’s local rules stop. Its private
+allowance/session history is archived locally; returning to that account restores
+stopped rules, never automatically resumes. No cloud account is deleted. Sign-out
+masks private UI and retires handles while leaving installed device rules running;
+the user must explicitly Stop first to remove those rules.
+
+Diagnostic retention is bounded at 256 events with a monotonic gap count. Reaching
+the bound must not disable protection or trap a user by disabling Open anyway.
+No missing-event gap is converted into earned credits, saved time or a healthy
+streak. SDK bootstrap failures remain locked with explicit retry; an actual
+same-user replacement session fences old callbacks, while routine token refresh
+does not discard current forms. These choices remain revisable by PM.

@@ -1642,3 +1642,10 @@ PG17. Race fixtures now use a deliberate two-connection pool instead of blocking
 single-connection fixture at a barrier. No production lock/atomicity check weakened.
 Detailed every-file/line ledger and commands are in the matching Plan 04 entry;
 [contract](../architecture/quest-occurrence-lifecycle.md) defines consumer meaning.
+
+
+### Quest execution consumer handoff — RN09B-D03b
+
+Date2026-11-11. Owner Ishmum. Commit pending `feat(android): persist account-owned recurring quest protection`.
+
+Development head0004 is applied and verified. API normalization emits UTC canonical timestamps consumed by strict mobile decoders; shared fixture roundtrip tested. 643 deterministic API and 233 isolated PG checks pass. Plan03 lines22–28 cross-reference Plan04; joint managed-account/settings and deletion acceptance remain separate. All backend changed files/lines and reasons are recorded in Plan04 D03b to avoid duplicate ledger drift.

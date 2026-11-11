@@ -20,6 +20,12 @@ SB-01–03/Auth administration or SB-06 acceptance. See the
 [quest evidence](../core_plan_implementation_notes/artifacts/rn-09b-quest-management/evidence.json)
 and latest Plan 04/Plan 01 notes; earlier 0002 checkpoints are historical.
 
+**Current product execution handoff (2026-11-11; RN09B-D03b):** development is
+now verified at `20261111_0004`. The guarded forward upgrade preserved
+profile/settings/quest-definition count/content digests; both new execution tables
+were empty. Exact head/no-drift/RLS/ACL/constraint checks pass. Earlier 0003 is a
+historical checkpoint. No Auth administration, credential reset or account deletion.
+
 ## 1. Outcome and scope
 
 Ishmum and Anisha can use one explicitly identified **development** Supabase project for real authentication. The mobile app receives only public client configuration; FastAPI knows the exact trusted issuer, audience, signing algorithm, and public-key discovery endpoint. Later database work has separate runtime and migration credentials, one migration authority, and an isolated test database.

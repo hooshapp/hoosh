@@ -7,6 +7,7 @@ object InterventionProtectionSnapshot {
     val active = record?.plan?.let { WeeklySchedules.windows(it, now) }?.any { now >= it.startsAt && now < it.endsAt } == true
     val state = when { failed -> "failed"; !authorized -> "needs_permission"; active -> "active"; else -> "inactive" }
     return mapOf(
+      "schemaVersion" to 3,
       "capabilities" to mapOf("platform" to "android", "selectionUI" to "unavailable", "mode" to "overlay",
         "supportsUsageThreshold" to false, "supportsScheduledRestriction" to true,
         "supportsTemporaryAllowance" to true, "supportsAdvanceWarning" to false, "supportsUsageSummary" to false),

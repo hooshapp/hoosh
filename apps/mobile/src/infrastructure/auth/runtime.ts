@@ -33,7 +33,9 @@ export function createAppRuntime() {
   let sdk: ReturnType<typeof makeClient>;
   try { sdk = makeClient(); } catch { sdk = null; }
   auth = createAuthSession(sdk?.auth ?? null);
+  const host = config ? new URL(config.url).hostname : '';
+  const nativeNamespace = /^([a-z0-9_-]{1,64})\.supabase\.co$/.exec(host)?.[1] ?? null;
   const api = createApiClient({ baseUrl: process.env.EXPO_PUBLIC_API_BASE_URL, auth });
-  return { auth, sdk, api, controller: createAccountDataController(auth, api) };
+  return { auth, sdk, api, nativeNamespace, controller: createAccountDataController(auth, api) };
 }
 export type AppRuntime = ReturnType<typeof createAppRuntime>;

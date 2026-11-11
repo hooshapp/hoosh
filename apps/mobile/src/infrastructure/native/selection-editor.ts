@@ -18,6 +18,15 @@ export interface SelectionEditorPort {
 export interface SelectionOwnerLifecyclePort {
   selectionEndOwner(owner: string, eraseLocalSelection: boolean): Promise<unknown>;
 }
+export type SavedSelectionSummary = Readonly<{ owner: string; revision: number; selectedAppCount: number }>;
+export function decodeSavedSelection(value: unknown, owner: string): SavedSelectionSummary {
+  if (!value || typeof value !== 'object') throw new Error('Invalid saved selection');
+  const v = value as Record<string, unknown>;
+  if (v.owner !== owner || !Number.isSafeInteger(v.revision) || (v.revision as number) < 0 || (v.revision as number) > 2147483647 ||
+      !Number.isSafeInteger(v.selectedAppCount) || (v.selectedAppCount as number) < 0 || (v.selectedAppCount as number) > 512 ||
+      (v.revision === 0 && v.selectedAppCount !== 0)) throw new Error('Invalid saved selection');
+  return { owner, revision: v.revision as number, selectedAppCount: v.selectedAppCount as number };
+}
 export function decodeSelectionDraft(value: unknown): SelectionDraft {
   if (!value || typeof value !== 'object') throw new Error('Invalid selection response');
   const v = value as Record<string, unknown>;

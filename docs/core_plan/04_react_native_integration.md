@@ -785,6 +785,19 @@ by its unique commit subject in the notes.
 
 RN-09b source: read-only Figma `27:155`, session `26dd22ea-c87c-4b6c-a571-5e74d6eff5e8`. Quests presentation is independent; no editor/persistence/native action is connected. Deferred: **RN09B-D01** approved quest/editor/recurrence API and persistence; **RN09B-D02** actual Auth/account-scoped data/actions and recovery; **RN09B-D03** approved completion/reward/native restriction evidence; **RN09B-D04** signed-device/accessibility acceptance. Source examples remain isolated. See the implementation notes for exact commit/checks and copied icon-pack provenance.
 
+#### RN09B-D03b current checkpoint — 2026-11-11
+
+Development schema0004 is applied and verified without changing Auth or existing
+product rows. Android product sources now include native recurring quest versions,
+atomic owner archives/claim, request receipts and reason-scoped Stop/cancellation;
+strict shared decoders and verified SDK/API native binding are prepared. Checks:
+522 portable /670 component /643 API /233 DB /88 JVM /102 phone native. Known
+native phone files were unchanged after instrumentation. These are infrastructure
+checks, not the real account UI journey. D03c connects schedule/completion/Stop
+controls; D04 managed-account, physical accessibility and signed platform acceptance
+remain open. Anisha confirmed iOS integration/build is not ready. No parent or part
+IDs changed; do not infer full D03/D04 completion from native build promotion.
+
 #### RN09B-D02–D04 continuation (2026-11-11)
 
 Ishmum authorized full D02/D03/D04 and provisional best-user defaults, recorded in

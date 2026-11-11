@@ -21,7 +21,8 @@ import java.util.concurrent.Executors
 /** Process-wide native actor survives React bridge disposal; disk work never runs in window callbacks. */
 class InterventionRuntime private constructor(val context: Context) {
   val leases = InterventionLeases()
-  val engine = InterventionEngine(AtomicInterventionPersistence(File(context.noBackupFilesDir, "intervention-debug-v1/state.json")))
+  private val persistence = OwnerInterventionPersistence(context.noBackupFilesDir)
+  val engine = InterventionEngine(persistence)
   private val worker = Executors.newSingleThreadExecutor()
   private val main = Handler(Looper.getMainLooper())
   @Volatile var service: InterventionAccessibilityService? = null
@@ -57,13 +58,24 @@ class InterventionRuntime private constructor(val context: Context) {
   private fun summary(value: InterventionRecord?, now: Long, allowed: Boolean): Map<String, Any?> {
     val connected = service
     val windows = value?.let { WeeklySchedules.windows(it.plan, now) }.orEmpty()
-    return mapOf("state" to when { failure != null -> "failed"; !allowed -> "needs_permission"; value == null || windows.none { it.endsAt > now } -> "inactive"; else -> "armed" },
+    return mapOf("schemaVersion" to 3, "state" to when { failure != null -> "failed"; !allowed -> "needs_permission"; value == null || windows.none { it.endsAt > now } -> "inactive"; else -> "armed" },
       "installedRevision" to value?.plan?.revision, "selectionRevision" to value?.plan?.selectionRevision,
       "selectedAppCount" to (value?.plan?.apps?.size ?: 0), "reasonCount" to windows.size,
-      "pendingEventCount" to (value?.events?.size ?: 0), "overlayVisible" to (connected?.visible == true),
+      "pendingEventCount" to (value?.events?.size ?: 0), "discardedEventCount" to (value?.discardedEventCount ?: 0), "overlayVisible" to (connected?.visible == true),
       "disclosureAccepted" to consented(), "serviceConnected" to (connected != null))
   }
-  fun open(bridge: String, owner: String, promise: Promise) = call(promise) { engine.read(owner); leases.open(bridge, owner) }
+  // A handle reveals no installation data. All reads/writes still enforce stored ownership;
+  // a different account can only take over through the explicitly confirmed claim command.
+  fun open(bridge: String, owner: String, promise: Promise) = call(promise) { leases.open(bridge, owner) }
+  fun claimOwner(owner: String, token: String, stopPrevious: Boolean, promise: Promise) {
+    try { leases.retainForClaim(owner, token) } catch (e: Exception) { reject(promise, e); return }
+    call(promise, true) {
+      leases.check(owner, token)
+      InterventionValidation.require(unlocked(), "ERR_INTERVENTION_PERMISSION")
+      persistence.claim(owner, stopPrevious, System.currentTimeMillis())
+      summary(owner)
+    }
+  }
   fun protectionRead(owner: String, promise: Promise) = call(promise) {
     InterventionProtectionSnapshot.read(engine.read(owner), authorized(), consented(), failure != null, System.currentTimeMillis())
   }
@@ -74,8 +86,8 @@ class InterventionRuntime private constructor(val context: Context) {
       promise.reject("ERR_INTERVENTION_UNAVAILABLE", "No foreground setup is available.", null); return
     }
     reviewOwner = bridge
-    review = AlertDialog.Builder(activity).setTitle("Android intervention test access")
-      .setMessage("This development-only test uses Android Accessibility access to receive app-window changes and show a visible pause over the apps you select. It does not read screen contents, typed text, messages or passwords. App identities and events stay on this device; this test sends nothing to a server. You can leave the pause, open the app anyway, stop the test, or disable the service in Android Settings. This is not a disability accessibility tool. Enable only Disconnect intervention test on the next screen. No installed test rule is a production plan.")
+    review = AlertDialog.Builder(activity).setTitle("Android app protection access")
+      .setMessage("Disconnect uses Android Accessibility access to receive app-window changes and show a visible pause over apps you select during your schedules. It does not read screen contents, typed text, messages or passwords. App identities stay on this device; your saved quest details and explicit completion choices belong to your account. You can always return home, open the app anyway, stop a schedule, or disable this service in Android Settings. Disconnect is not a disability accessibility tool. Enable only Disconnect protection on the next screen.")
       .setNegativeButton("Not now") { _, _ -> promise.resolve(false) }
       .setPositiveButton("I agree — review Settings") { _, _ ->
         execute {
@@ -141,9 +153,10 @@ class InterventionRuntime private constructor(val context: Context) {
   private fun previewWindows(windows: List<InterventionWindow>) = windows.map { mapOf("reasonId" to it.reasonId, "startsAt" to it.startsAt, "endsAt" to it.endsAt) }
   private fun scheduleSummary(owner: String): Map<String, Any?> {
     val value = engine.read(owner); val weekly = value?.plan?.weekly; val now = System.currentTimeMillis(); val allowed = authorized()
-    val windows = value?.let { WeeklySchedules.windows(it.plan, now) }.orEmpty()
+    val allWindows = value?.let { WeeklySchedules.windows(it.plan, now) }.orEmpty()
+    val windows = allWindows.filter { it.reasonId.startsWith("weekly_") }
     return mapOf("observedAt" to now, "native" to summary(value, now, allowed), "spec" to weekly?.let { scheduleWire(it, value.plan.policy) },
-      "enabled" to (weekly?.enabled == true), "windows" to previewWindows(windows), "otherInstallation" to (value != null && weekly == null && value.plan.windows.isNotEmpty()))
+      "enabled" to (weekly?.enabled == true), "windows" to previewWindows(windows), "otherReasonCount" to (allWindows.size - windows.size), "otherInstallation" to (value != null && weekly == null && allWindows.isNotEmpty()))
   }
   fun scheduleRead(owner: String, promise: Promise) = call(promise) { scheduleSummary(owner) }
   fun schedulePreview(spec: Map<String, Any>, promise: Promise) = call(promise) {
@@ -155,7 +168,7 @@ class InterventionRuntime private constructor(val context: Context) {
     InterventionValidation.require(authorized() && unlocked(), "ERR_INTERVENTION_PERMISSION")
     val (schedule, policy) = scheduleSpec(spec)
     val old = engine.read(owner)
-    InterventionValidation.require(old == null || old.plan.weekly != null || old.plan.windows.isEmpty(), "ERR_SCHEDULE_OTHER_INSTALLATION")
+    InterventionValidation.require(old == null || old.plan.weekly != null || old.plan.windows.all { it.reasonId.startsWith("q_") }, "ERR_SCHEDULE_OTHER_INSTALLATION")
     val selection = AtomicSelectionPersistence(File(context.noBackupFilesDir, "selection-editor-debug-v1")).read(owner)
     InterventionValidation.require(selection.revision == selectionRevision && selection.apps.isNotEmpty(), "ERR_INTERVENTION_SELECTION_CHANGED")
     val available = LauncherAppCatalog(context).eligibleKeys()
@@ -163,6 +176,85 @@ class InterventionRuntime private constructor(val context: Context) {
     val now = System.currentTimeMillis()
     engine.install(owner, expected, revision, selection, WeeklySchedules.compile(schedule, now), policy, now, WeeklyInstallation(schedule, selection.apps))
     scheduleSummary(owner)
+  }
+  private fun questWire(q: QuestInstallation): Map<String, Any?> = mapOf(
+    "revision" to q.revision, "firstDate" to q.firstDate, "repeat" to q.repeat,
+    "weekdays" to if (q.repeat == "weekly") q.schedule.weekdays else emptyList<Int>(),
+    "start" to q.schedule.start, "end" to q.schedule.end, "nextDay" to q.schedule.nextDay,
+    "timezone" to q.schedule.timezone, "effectiveFrom" to q.effectiveFrom, "effectiveUntil" to q.effectiveUntil)
+  private fun questSummary(owner: String, questId: String): Map<String, Any?> {
+    QuestSchedules.id(questId)
+    val record = engine.read(owner); val now = System.currentTimeMillis()
+    val receipt = record?.plan?.questReceipts?.get(questId)
+    val windows = record?.let { QuestSchedules.windows(it.plan, now) }.orEmpty()
+      .filter { it.reasonId.startsWith("q_${questId.replace("-", "")}_") }
+    return mapOf("owner" to owner, "questId" to questId, "observedAt" to now,
+      "remoteRevision" to (receipt?.revision ?: 0), "requestId" to receipt?.requestId,
+      "enabled" to (receipt?.enabled == true), "native" to summary(record, now, authorized()),
+      "policy" to record?.plan?.policy?.let { mapOf("timezoneId" to it.timezoneId, "sessionsPerDay" to it.sessionsPerDay, "sessionSeconds" to it.sessionSeconds) },
+      "versions" to record?.plan?.quests.orEmpty().filter { it.questId == questId }.map { questWire(it) },
+      "cancelled" to record?.plan?.cancelledQuestReasons.orEmpty().filter { it.startsWith("q_${questId.replace("-", "")}_") }.sorted(),
+      "windows" to previewWindows(windows))
+  }
+  fun questRead(owner: String, questId: String, promise: Promise) = call(promise) { questSummary(owner, questId) }
+  fun selectionRead(owner: String, promise: Promise) = call(promise) {
+    InterventionValidation.require(unlocked(), "ERR_SELECTION_UNAVAILABLE")
+    val value = AtomicSelectionPersistence(File(context.noBackupFilesDir, "selection-editor-debug-v1")).read(owner)
+    mapOf("owner" to owner, "revision" to value.revision, "selectedAppCount" to value.apps.size)
+  }
+  fun questApply(owner: String, token: String, expected: Int, spec: Map<String, Any?>, promise: Promise) = call(promise, true) {
+    leases.check(owner, token)
+    InterventionValidation.require(unlocked(), "ERR_INTERVENTION_PERMISSION")
+    InterventionValidation.require(spec.keys == setOf("questId", "remoteRevision", "requestId", "enabled", "selectionRevision", "versions", "cancelled", "policy"))
+    fun whole(value: Any?, max: Long = Int.MAX_VALUE.toLong()): Long {
+      val d = (value as? Number)?.toDouble() ?: throw InterventionFailure("ERR_INTERVENTION_INVALID")
+      InterventionValidation.require(d.isFinite() && d >= 0 && d <= max && d == d.toLong().toDouble())
+      return d.toLong()
+    }
+    fun string(value: Any?) = value as? String ?: throw InterventionFailure("ERR_INTERVENTION_INVALID")
+    val questId = string(spec["questId"]); val requestId = string(spec["requestId"])
+    QuestSchedules.id(questId); QuestSchedules.id(requestId)
+    val remote = whole(spec["remoteRevision"]).toInt()
+    val enabled = spec["enabled"] as? Boolean ?: throw InterventionFailure("ERR_INTERVENTION_INVALID")
+    val previous = engine.read(owner)
+    if (!enabled && previous == null) return@call questSummary(owner, questId)
+    if (enabled) InterventionValidation.require(authorized() && remote > 0, "ERR_INTERVENTION_PERMISSION")
+    val selection = if (enabled) AtomicSelectionPersistence(File(context.noBackupFilesDir, "selection-editor-debug-v1")).read(owner)
+      else SavedSelection(previous!!.plan.selectionRevision, previous.plan.apps)
+    if (enabled) {
+      InterventionValidation.require(selection.revision == whole(spec["selectionRevision"]).toInt() && selection.apps.isNotEmpty(), "ERR_INTERVENTION_SELECTION_CHANGED")
+      InterventionValidation.require(LauncherAppCatalog(context).eligibleKeys().containsAll(selection.apps) && unlocked(), "ERR_INTERVENTION_SELECTION_CHANGED")
+    }
+    val raw = spec["versions"] as? List<*> ?: throw InterventionFailure("ERR_INTERVENTION_INVALID")
+    InterventionValidation.require(raw.size <= 128 && (enabled || raw.isEmpty()))
+    val versions = raw.map { item ->
+      val q = item as? Map<*, *> ?: throw InterventionFailure("ERR_INTERVENTION_INVALID")
+      InterventionValidation.require(q.keys == setOf("revision", "firstDate", "repeat", "weekdays", "start", "end", "nextDay", "timezone", "effectiveFrom", "effectiveUntil"))
+      val first = string(q["firstDate"])
+      val day = try { java.time.LocalDate.parse(first) } catch (_: Exception) { throw InterventionFailure("ERR_QUEST_DATE") }
+      val repeat = string(q["repeat"])
+      val days = q["weekdays"] as? List<*> ?: throw InterventionFailure("ERR_INTERVENTION_INVALID")
+      InterventionValidation.require(days.size <= 7 && (repeat == "weekly" || days.isEmpty()))
+      val weekdays = if (repeat == "weekly") days.map { whole(it, 6).toInt() }.sorted() else listOf(day.dayOfWeek.value - 1)
+      QuestInstallation(questId, whole(q["revision"]).toInt(), first, repeat,
+        WeeklySchedule(weekdays, string(q["start"]), string(q["end"]), q["nextDay"] as? Boolean ?: throw InterventionFailure("ERR_INTERVENTION_INVALID"), string(q["timezone"])),
+        whole(q["effectiveFrom"], 8640000000000000L), q["effectiveUntil"]?.let { whole(it, 8640000000000000L) }, selection.apps)
+    }
+    val cancelled = spec["cancelled"] as? List<*> ?: throw InterventionFailure("ERR_INTERVENTION_INVALID")
+    InterventionValidation.require(cancelled.size <= 256)
+    val policy = if (!enabled) previous!!.plan.policy else {
+      val p = spec["policy"] as? Map<*, *> ?: throw InterventionFailure("ERR_INTERVENTION_INVALID")
+      InterventionValidation.require(p.keys == setOf("timezoneId", "sessionsPerDay", "sessionSeconds"))
+      SessionPolicy(string(p["timezoneId"]), whole(p["sessionsPerDay"], 1000).toInt(), whole(p["sessionSeconds"], 86400).toInt())
+    }
+    engine.applyQuest(owner, expected, selection, questId, remote, requestId, enabled, versions, cancelled.map { string(it) }.toSet(), policy, System.currentTimeMillis())
+    questSummary(owner, questId)
+  }
+  fun questCancel(owner: String, token: String, expected: Int, questId: String, reason: String, promise: Promise) = call(promise, true) {
+    leases.check(owner, token)
+    InterventionValidation.require(unlocked(), "ERR_INTERVENTION_PERMISSION")
+    engine.cancelQuestOccurrence(owner, expected, questId, reason, System.currentTimeMillis())
+    questSummary(owner, questId)
   }
   fun cancel(owner: String, token: String, expected: Int, reason: String?, promise: Promise) = call(promise, true) { leases.check(owner, token); engine.cancel(owner, expected, reason, System.currentTimeMillis()); summary(owner) }
   fun drain(owner: String, token: String, limit: Int, promise: Promise) = call(promise) {
@@ -172,16 +264,19 @@ class InterventionRuntime private constructor(val context: Context) {
     engine.read(owner)?.events.orEmpty().take(limit).map { mapOf("eventId" to it.id, "occurredAt" to format.format(Date(it.at)), "kind" to it.kind, "reasonId" to it.reasonId, "configRevision" to it.revision, "evidence" to if (it.kind == "shield_presented") "native_callback" else "native_action", "metadata" to mapOf("sessionIndex" to it.sessionIndex, "allowanceExhausted" to it.exhausted)) }
   }
   fun acknowledge(owner: String, token: String, ids: List<String>, promise: Promise) = call(promise) { leases.check(owner, token); engine.acknowledge(owner, ids); failure = null; notifyService(); null }
-  fun endOwner(owner: String, erase: Boolean, promise: Promise) = call(promise, true) {
+  fun endOwner(owner: String, erase: Boolean, promise: Promise) {
     // Retain native reasons/event ownership at sign-out; full account deletion must coordinate all stores.
-    leases.end(owner, erase) // Fence old handles even when storage/erasure subsequently fails.
+    // Fence synchronously at bridge entry, before queued worker mutations can check their handles.
+    try { leases.end(owner, erase) } catch (e: Exception) { reject(promise, e); return }
+    call(promise, true) {
     try {
-      if (erase) { engine.erase(owner); leases.erased(owner) } else engine.read(owner)
+      if (erase) { persistence.eraseOwner(owner); leases.erased(owner) } else engine.read(owner)
     } catch (e: InterventionFailure) {
       if (e.code == "ERR_INTERVENTION_OWNER") leases.erased(owner) // Never poison a different owner's future scope.
       throw e
     }
     null
+    }
   }
   companion object {
     @Volatile private var singleton: InterventionRuntime? = null

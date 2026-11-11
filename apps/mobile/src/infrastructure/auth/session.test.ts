@@ -53,6 +53,21 @@ describe('SDK session projection', () => {
     emit(session(B));
     expect(auth.getSnapshot()).toMatchObject({ user: { user_id: B }, sessionGeneration: generation + 1 });
   });
+  it('distinguishes same-subject session replacement from ordinary token rotation', async () => {
+    const jwt = (session_id: string, signature: string) => `e30.${btoa(JSON.stringify({ session_id }))}.${signature}`;
+    const { auth, emit } = setup(session(A, jwt(A, 'first'))); await auth.start();
+    const generation = auth.getSnapshot().sessionGeneration;
+    emit(session(A, jwt(A, 'rotated')), 'TOKEN_REFRESHED');
+    expect(auth.getSnapshot().sessionGeneration).toBe(generation);
+    emit(session(A, jwt(B, 'new-session')));
+    expect(auth.getSnapshot().sessionGeneration).toBe(generation + 1);
+  });
+  it('suppresses a changed session token even if the SDK callback has not arrived yet', async () => {
+    const jwt = (session_id: string) => `e30.${btoa(JSON.stringify({ session_id }))}.fixture`;
+    const { auth, sdk } = setup(session(A, jwt(A))); await auth.start();
+    sdk.getSession.mockResolvedValueOnce({ data: { session: session(A, jwt(B)) }, error: null });
+    await expect(auth.getAccessToken()).rejects.toMatchObject({ reason: 'not_ready' });
+  });
   it('suppresses tokens acquired across an account switch', async () => {
     const { auth, sdk, emit } = setup(); await auth.start();
     let release!: (value: Awaited<ReturnType<typeof sdk.getSession>>) => void;
@@ -110,6 +125,18 @@ describe('SDK session projection', () => {
     const { auth, sdk } = setup(); await auth.start(); auth.dispose(); auth.dispose(); await auth.start();
     expect(sdk.onAuthStateChange).toHaveBeenCalledTimes(2);
     expect(auth.getSnapshot().status).toBe('signed_in');
+  });
+  it('does not treat INITIAL_SESSION null plus a bootstrap error as successful sign-out', async () => {
+    const { auth, sdk } = setup();
+    sdk.onAuthStateChange.mockImplementationOnce((fn) => {
+      fn('INITIAL_SESSION', null);
+      return { data: { subscription: { unsubscribe: () => {} } } };
+    });
+    sdk.getSession.mockRejectedValueOnce(new Error('temporary provider outage'));
+    await auth.start();
+    expect(auth.getSnapshot()).toMatchObject({ status: 'unavailable', reason: 'bootstrap' });
+    await auth.retryBootstrap();
+    expect(auth.getSnapshot()).toMatchObject({ status: 'signed_in', user: { user_id: A } });
   });
   it.each(['getItem', 'setItem', 'removeItem'] as const)('locks on %s storage failure without leaking details', async (method) => {
     const failed = vi.fn();

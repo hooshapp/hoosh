@@ -20,7 +20,7 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 
-/** Only window package metadata; never requests nodes, contents, gestures or text. Debug service only. */
+/** Only window package metadata; never requests nodes, contents, gestures or text. Native schedule evaluation in every build. */
 class InterventionAccessibilityService : AccessibilityService() {
   private lateinit var runtime: InterventionRuntime
   private val main = Handler(Looper.getMainLooper())
@@ -91,12 +91,12 @@ class InterventionAccessibilityService : AccessibilityService() {
         val safe = insets.getInsets(android.view.WindowInsets.Type.systemBars() or android.view.WindowInsets.Type.displayCutout())
         view.setPadding(pad + safe.left, pad + safe.top, pad + safe.right, pad + safe.bottom); insets
       } else fitsSystemWindows = true
-      if (Build.VERSION.SDK_INT >= 28) accessibilityPaneTitle = "Disconnect intervention test"
+      if (Build.VERSION.SDK_INT >= 28) accessibilityPaneTitle = "Disconnect pause"
     }
     fun text(value: String, size: Float, heading: Boolean = false) { body.addView(TextView(this).apply { text = value; textSize = size; if (Build.VERSION.SDK_INT >= 28) isAccessibilityHeading = heading; setTextColor(0xff222222.toInt()); setPadding(0, 16, 0, 24) }) }
-    text("Disconnect · intervention test", 20f)
+    text("Disconnect", 20f)
     text("Take a moment", 32f, heading = true)
-    text("You chose a pause for this app. ${reasons.size} test reason(s) apply. You can return home or open the app anyway. No rewards or streak changes are calculated.", 18f)
+    text("You chose a pause for this app. ${reasons.size} schedule reason(s) apply. You can return home or open the app anyway. Finishing an activity is your choice; this pause does not confirm quest completion.", 18f)
     val actions = mutableListOf<Button>()
     fun action(label: String, run: () -> Unit) = Button(this).also { button ->
       button.text = label; button.setOnClickListener { actions.forEach { it.isEnabled = false }; run() }; body.addView(button); actions.add(button)
@@ -109,12 +109,12 @@ class InterventionAccessibilityService : AccessibilityService() {
           else runtime.engine.action(record.plan.owner, record.plan.revision, "quit_selected", System.currentTimeMillis())
           runtime.epoch.incrementAndGet()
           main.post { if (token == generation) { hide(); if (!allow) { foreground = null; generation++; performGlobalAction(GLOBAL_ACTION_HOME) } } }
-        } catch (_: Exception) { runtime.failure = "ERR_INTERVENTION_ACTION"; main.post { if (token == generation) { hide(); foreground = null; generation++; if (allow) { android.widget.Toast.makeText(this, "Test access disabled: your choice could not be saved.", android.widget.Toast.LENGTH_LONG).show(); disableSelf() } else performGlobalAction(GLOBAL_ACTION_HOME) } } }
+        } catch (_: Exception) { runtime.failure = "ERR_INTERVENTION_ACTION"; main.post { if (token == generation) { hide(); foreground = null; generation++; if (allow) { android.widget.Toast.makeText(this, "App protection disabled: your choice could not be saved.", android.widget.Toast.LENGTH_LONG).show(); disableSelf() } else performGlobalAction(GLOBAL_ACTION_HOME) } } }
       }
     }
     val safe = action("Return home") { perform(false) }
-    action("Open anyway · test allowance") { perform(true) }
-    action("Disable test access") { hide(); foreground = null; generation++; disableSelf() }
+    action("Open anyway") { perform(true) }
+    action("Disable app protection") { hide(); foreground = null; generation++; disableSelf() }
     val content = object : ScrollView(this) {
       override fun dispatchKeyEvent(event: KeyEvent): Boolean {
         if (event.keyCode == KeyEvent.KEYCODE_BACK && event.action == KeyEvent.ACTION_UP) { perform(false); return true }
@@ -122,7 +122,7 @@ class InterventionAccessibilityService : AccessibilityService() {
       }
     }.apply { addView(body); isFocusableInTouchMode = true }
     val params = WindowManager.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT,
-      WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY, WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN, PixelFormat.OPAQUE).apply { gravity = Gravity.TOP; title = "Disconnect intervention test" }
+      WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY, WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN, PixelFormat.OPAQUE).apply { gravity = Gravity.TOP; title = "Disconnect pause" }
     try {
       getSystemService(WindowManager::class.java).addView(content, params); overlay = content; overlayKey = key; safe.requestFocus()
       runtime.execute {

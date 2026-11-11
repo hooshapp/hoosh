@@ -162,3 +162,10 @@ Pending hash by unique commit subject until the next normal notes update.
 **Actual validation:** `npm run api:lint`: passed; `npm run api:test`: 307 passed, 8 explicitly deselected for the separate group; `npm run api:db:test`: 8 real PostgreSQL tests passed. Empty-volume up and labeled reset/up/test passed; a wrong APP_ENV made the selected required DB group fail, not skip. Frozen uv sync and generated-contract drift checks passed; Compose configuration and CI YAML parsed. Hosted administrator/runtime verify-full logins, non-rotating recheck, denied persistent DDL/Auth/admin escalation, wrong runtime password, and administrator DDL followed by rollback all passed; no probe table remained. Task containers were stopped with the named test volume retained. Evidence: artifacts/sb-04 and artifacts/sb-05; hosted GitHub workflow run is unverified.
 
 **Remaining / next:** Ishmum can start API-06 database engine/request sessions and isolated connection/context fixtures, then API-07 Alembic/profile/RLS and API-08–10 endpoints/evidence. SB-04 and SB-05 are accepted; real Supabase user-token/A/B identity and Anisha Auth/session/root/onboarding/iOS plus joint M1/M2/RN acceptance remain pending. The local test stack is stopped; api:db:up starts it again. No push/main merge was requested or performed.
+
+
+### Product execution head0004 handoff — RN09B-D03b
+
+Date2026-11-11. Owner Ishmum. Commit pending `feat(android): persist account-owned recurring quest protection`.
+
+Ishmum applied development 0003→0004 under the existing guarded migration/advisory-lock protocol. Existing profile/settings/quest-definition count/content digests matched; new execution tables empty. Verified TLS and exact head/no-drift/RLS/ACL/constraints passed. No Auth/user/provider/credential changes. Detailed every-file implementation/evidence is in Plan04 RN09B-D03b; Plan01 lines17–29 now distinguish current0004 from historical0003.

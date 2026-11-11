@@ -50,8 +50,10 @@ export function decodeScheduleInstallation(value: unknown): ScheduleInstallation
   const native = decodeInterventionStatus(value.native), spec = value.spec === null ? null : completeSchedule(value.spec);
   // Finite diagnostic windows are not weekly preview windows; never present them as an installed weekly plan.
   const windows = value.otherInstallation ? [] : decodeScheduleWindows(value.windows);
+  const otherCount = value.otherReasonCount ?? 0;
+  if (!Number.isSafeInteger(otherCount) || (otherCount as number) < 0 || (otherCount as number) > 512) return invalid();
   if ((value.enabled && (!spec || native.installedRevision === null)) || (spec && value.otherInstallation) ||
-    (!value.enabled && !value.otherInstallation && windows.length > 0) || (spec && native.installedRevision === null) || (!value.otherInstallation && native.reasonCount !== windows.length)) return invalid();
+    (!value.enabled && !value.otherInstallation && windows.length > 0) || (spec && native.installedRevision === null) || (!value.otherInstallation && native.reasonCount !== windows.length + (otherCount as number))) return invalid();
   return { observedAt: value.observedAt as number, native, spec, enabled: value.enabled, otherInstallation: value.otherInstallation, windows };
 }
 

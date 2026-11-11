@@ -7,8 +7,9 @@ data class SessionPolicy(val timezoneId: String, val sessionsPerDay: Int, val se
 data class AppSession(val app: String, val wallEnd: Long, val elapsedEnd: Long, val boot: Int, val seconds: Int)
 data class DailySessions(val app: String, val day: String, val count: Int)
 data class InterventionEvent(val id: String, val at: Long, val kind: String, val reasonId: String?, val revision: Int, val sessionIndex: Int? = null, val exhausted: Boolean? = null)
-data class InterventionPlan(val owner: String, val revision: Int, val selectionRevision: Int, val apps: Set<String>, val windows: List<InterventionWindow>, val policy: SessionPolicy, val weekly: WeeklyInstallation? = null)
-data class InterventionRecord(val plan: InterventionPlan, val allowances: List<AppAllowance> = emptyList(), val events: List<InterventionEvent> = emptyList(), val sessions: List<AppSession> = emptyList(), val daily: List<DailySessions> = emptyList())
+data class QuestReceipt(val revision: Int, val requestId: String, val enabled: Boolean)
+data class InterventionPlan(val owner: String, val revision: Int, val selectionRevision: Int, val apps: Set<String>, val windows: List<InterventionWindow>, val policy: SessionPolicy, val weekly: WeeklyInstallation? = null, val quests: List<QuestInstallation> = emptyList(), val questReceipts: Map<String, QuestReceipt> = emptyMap(), val cancelledQuestReasons: Set<String> = emptySet())
+data class InterventionRecord(val plan: InterventionPlan, val allowances: List<AppAllowance> = emptyList(), val events: List<InterventionEvent> = emptyList(), val sessions: List<AppSession> = emptyList(), val daily: List<DailySessions> = emptyList(), val discardedEventCount: Int = 0)
 class InterventionFailure(val code: String) : RuntimeException(code)
 interface InterventionPersistence {
   fun read(): InterventionRecord?
@@ -24,8 +25,8 @@ object InterventionValidation {
     require(value.timezoneId in java.util.TimeZone.getAvailableIDs().toSet())
     require(value.sessionsPerDay in 1..1000 && value.sessionSeconds in 1..86400)
   }
-  fun windows(values: List<InterventionWindow>) {
-    require(values.size <= 32 && values.map { it.reasonId }.toSet().size == values.size)
+  fun windows(values: List<InterventionWindow>, limit: Int = 32) {
+    require(values.size <= limit && values.map { it.reasonId }.toSet().size == values.size)
     values.forEach {
       require(it.reasonId.matches(Regex("[a-z0-9_-]{1,64}")))
       require(it.startsAt >= 0 && it.endsAt > it.startsAt && it.endsAt <= 8640000000000000L)

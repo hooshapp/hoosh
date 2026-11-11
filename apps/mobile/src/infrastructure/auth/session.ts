@@ -16,6 +16,7 @@ export function createAuthSession(sdk: Sdk | null) {
     : { status: 'unavailable', reason: 'configuration', retryable: false, sessionGeneration: 0 };
   const listeners = new Set<() => void>();
   let epoch = 0, refresh: Promise<void> | null = null, started = false;
+  let sessionId: string | null = null;
   let unsubscribe: (() => void) | undefined;
   function publish(value: AuthSnapshot) {
     snapshot = Object.freeze(value);
@@ -23,7 +24,10 @@ export function createAuthSession(sdk: Sdk | null) {
   }
   function accept(session: Session | null) {
     if (snapshot.status === 'signing_out' || (snapshot.status === 'unavailable' && snapshot.reason === 'storage')) return;
-    const same = snapshot.status === 'signed_in' && snapshot.user.user_id === session?.user.id;
+    const nextId = sdkSessionId(session);
+    const same = snapshot.status === 'signed_in' && snapshot.user.user_id === session?.user.id &&
+      (sessionId === null || nextId === null || sessionId === nextId);
+    sessionId = nextId;
     const generation = snapshot.sessionGeneration + (same ? 0 : 1);
     publish(session ? {
       status: 'signed_in', sessionGeneration: generation, credentialStatus: 'ready',
@@ -44,6 +48,7 @@ export function createAuthSession(sdk: Sdk | null) {
       const { data, error } = await sdk.getSession();
       if (error) throw new AuthUnavailableError('refresh');
       if (snapshot.status !== 'signed_in' || snapshot.sessionGeneration !== owner.sessionGeneration || data.session?.user.id !== owner.user.user_id) throw new AuthUnavailableError('not_ready');
+      if (sessionId !== null && sdkSessionId(data.session) !== sessionId) throw new AuthUnavailableError('not_ready');
       if (!data.session.access_token) throw new AuthUnavailableError('refresh');
       return data.session.access_token;
     },
@@ -87,6 +92,29 @@ export function createAuthSession(sdk: Sdk | null) {
       }
     },
   };
+  async function bootstrap() {
+    if (started || !sdk) return;
+    started = true;
+    const current = epoch;
+    let received = false;
+    const registration = sdk.onAuthStateChange((_event: AuthChangeEvent, session) => {
+      // INITIAL_SESSION null may accompany a retryable bootstrap/refresh error.
+      // Only the checked getSession result below can establish initial signed-out state.
+      if (_event === 'INITIAL_SESSION') return;
+      received = true;
+      // No awaited SDK calls in its callback: that callback may hold its lock.
+      accept(session);
+    });
+    unsubscribe = () => registration.data.subscription.unsubscribe();
+    try {
+      const { data, error } = await sdk.getSession();
+      if (current !== epoch || received) return;
+      if (error) throw error;
+      accept(data.session);
+    } catch {
+      if (current === epoch && !received) publish({ status: 'unavailable', reason: 'bootstrap', retryable: true, sessionGeneration: snapshot.sessionGeneration + 1 });
+    }
+  }
   return {
     ...port,
     storageFailed,
@@ -97,27 +125,23 @@ export function createAuthSession(sdk: Sdk | null) {
       if (epoch !== current || error || !data.session) throw new AuthUnavailableError('not_ready');
       accept(data.session);
     },
-    async start() {
-      if (started || !sdk) return;
-      started = true;
-      const current = epoch;
-      let received = false;
-      const registration = sdk.onAuthStateChange((_event: AuthChangeEvent, session) => {
-        received = true;
-        // No awaited SDK calls in its callback: that callback may hold its lock.
-        accept(session);
-      });
-      unsubscribe = () => registration.data.subscription.unsubscribe();
-      try {
-        const { data, error } = await sdk.getSession();
-        if (current !== epoch || received) return;
-        if (error) throw error;
-        accept(data.session);
-      } catch {
-        if (current === epoch && !received) publish({ status: 'unavailable', reason: 'bootstrap', retryable: true, sessionGeneration: snapshot.sessionGeneration + 1 });
-      }
-    },
+    start: bootstrap,
     dispose() { unsubscribe?.(); unsubscribe = undefined; started = false; epoch++; },
+    async retryBootstrap() {
+      if (!sdk || snapshot.status !== 'unavailable' || snapshot.reason !== 'bootstrap') return;
+      unsubscribe?.(); unsubscribe = undefined; started = false; epoch++;
+      publish({ status: 'bootstrapping', sessionGeneration: snapshot.sessionGeneration + 1 });
+      await bootstrap();
+    },
   };
+}
+/** Correlation only, not JWT verification: SDK owns the token; FastAPI verifies it.
+ * The stable Supabase session_id distinguishes same-subject replacement from rotation. */
+function sdkSessionId(session: Session | null): string | null {
+  if (!session) return null;
+  try {
+    const value = JSON.parse(atob(session.access_token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))).session_id;
+    return typeof value === 'string' && /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/.test(value) ? value : null;
+  } catch { return null; }
 }
 export type AppAuthSession = ReturnType<typeof createAuthSession>;

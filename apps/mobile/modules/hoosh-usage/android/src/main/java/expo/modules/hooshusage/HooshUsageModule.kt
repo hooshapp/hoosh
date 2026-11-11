@@ -23,7 +23,7 @@ class HooshUsageModule : Module() {
   private fun editorOrReject(promise: Promise): SelectionEditor? {
     val context = appContext.reactContext
     if (!previewDisposed && context != null) {
-      val value = selectionEditor ?: SelectionPreviewFactory.createEditor(context)?.also { selectionEditor = it }
+      val value = selectionEditor ?: NativeSelectionEditor(context.applicationContext)?.also { selectionEditor = it }
       if (value != null) return value
     }
     promise.reject("ERR_SELECTION_UNAVAILABLE", "App selection is unavailable.", null)
@@ -36,15 +36,16 @@ class HooshUsageModule : Module() {
     AsyncFunction("getCapabilities") { reader().capabilities() }
     AsyncFunction("getStatus") { reader().status() }
     AsyncFunction("openUsageAccess") { reader().openUsageAccess() }.runOnQueue(Queues.MAIN)
-    if (SelectionPreviewFactory.enabled) {
+    run {
       fun interventions(p: Promise): InterventionCoordinator? {
-        val value = if (previewDisposed) null else intervention ?: appContext.reactContext?.let { SelectionPreviewFactory.createIntervention(it) }?.also { intervention = it }
+        val value = if (previewDisposed) null else intervention ?: appContext.reactContext?.let { NativeInterventionBridge(InterventionRuntime.get(it)) }?.also { intervention = it }
         if (value == null) p.reject("ERR_INTERVENTION_UNAVAILABLE", "Android interventions are unavailable.", null)
         return value
       }
       AsyncFunction("interventionOpen") { owner: String, p: Promise -> interventions(p)?.open(owner, p) }.runOnQueue(Queues.MAIN)
       AsyncFunction("interventionRelease") { owner: String, token: String, p: Promise -> interventions(p)?.release(owner, token, p) }.runOnQueue(Queues.MAIN)
       AsyncFunction("interventionProtectionRead") { owner: String, p: Promise -> interventions(p)?.protectionRead(owner, p) }.runOnQueue(Queues.MAIN)
+      if (SelectionPreviewFactory.enabled) {
       AsyncFunction("interventionInterruptFeedback") {
         requireNotNull(appContext.reactContext).getSystemService(android.view.accessibility.AccessibilityManager::class.java).interrupt()
         true
@@ -55,21 +56,30 @@ class HooshUsageModule : Module() {
         if (activity == null || activity.isFinishing || activity.isDestroyed || !activity.hasWindowFocus()) p.reject("ERR_INTERVENTION_UNAVAILABLE", "No foreground test host.", null)
         else { p.resolve(true); activity.finishAndRemoveTask() }
       }.runOnQueue(Queues.MAIN)
+      }
       AsyncFunction("interventionStatus") { owner: String, p: Promise -> interventions(p)?.status(owner, p) }.runOnQueue(Queues.MAIN)
       AsyncFunction("interventionReviewAccess") { p: Promise ->
         val activity = appContext.currentActivity
         if (activity == null) p.reject("ERR_INTERVENTION_UNAVAILABLE", "No foreground setup.", null)
         else interventions(p)?.reviewAccess(activity, p)
       }.runOnQueue(Queues.MAIN)
+      if (SelectionPreviewFactory.enabled) {
       AsyncFunction("interventionInstall") { owner: String, token: String, expected: Int, revision: Int, selection: Int, windows: List<Map<String, Any>>, policy: Map<String, Any>, p: Promise -> interventions(p)?.install(owner, token, expected, revision, selection, windows, policy, p) }.runOnQueue(Queues.MAIN)
+      }
       AsyncFunction("scheduleRead") { owner: String, p: Promise -> interventions(p)?.scheduleRead(owner, p) }.runOnQueue(Queues.MAIN)
       AsyncFunction("schedulePreview") { spec: Map<String, Any>, p: Promise -> interventions(p)?.schedulePreview(spec, p) }.runOnQueue(Queues.MAIN)
       AsyncFunction("scheduleApply") { owner: String, token: String, expected: Int, revision: Int, selection: Int, spec: Map<String, Any>, p: Promise -> interventions(p)?.scheduleApply(owner, token, expected, revision, selection, spec, p) }.runOnQueue(Queues.MAIN)
+      AsyncFunction("questRead") { owner: String, questId: String, p: Promise -> interventions(p)?.questRead(owner, questId, p) }.runOnQueue(Queues.MAIN)
+      AsyncFunction("questApply") { owner: String, token: String, expected: Int, spec: Map<String, Any?>, p: Promise -> interventions(p)?.questApply(owner, token, expected, spec, p) }.runOnQueue(Queues.MAIN)
+      AsyncFunction("questCancel") { owner: String, token: String, expected: Int, questId: String, reason: String, p: Promise -> interventions(p)?.questCancel(owner, token, expected, questId, reason, p) }.runOnQueue(Queues.MAIN)
+      AsyncFunction("interventionClaimOwner") { owner: String, token: String, stopPrevious: Boolean, p: Promise -> interventions(p)?.claimOwner(owner, token, stopPrevious, p) }.runOnQueue(Queues.MAIN)
+      AsyncFunction("selectionRead") { owner: String, p: Promise -> interventions(p)?.selectionRead(owner, p) }.runOnQueue(Queues.MAIN)
       AsyncFunction("interventionCancel") { owner: String, token: String, expected: Int, reason: String?, p: Promise -> interventions(p)?.cancel(owner, token, expected, reason, p) }.runOnQueue(Queues.MAIN)
       AsyncFunction("interventionDrain") { owner: String, token: String, limit: Int, p: Promise -> interventions(p)?.drain(owner, token, limit, p) }.runOnQueue(Queues.MAIN)
       AsyncFunction("interventionAcknowledge") { owner: String, token: String, ids: List<String>, p: Promise -> interventions(p)?.acknowledge(owner, token, ids, p) }.runOnQueue(Queues.MAIN)
       AsyncFunction("interventionEndOwner") { owner: String, erase: Boolean, p: Promise -> interventions(p)?.endOwner(owner, erase, p) }.runOnQueue(Queues.MAIN)
 
+      if (SelectionPreviewFactory.enabled) {
       // Private QA API; the production ProtectionService still rejects selection.
       AsyncFunction("previewPickApps") { owner: String, promise: Promise ->
         val current = previewOrReject(promise)
@@ -85,6 +95,7 @@ class HooshUsageModule : Module() {
       AsyncFunction("previewRelease") { owner: String, promise: Promise ->
         previewOrReject(promise)?.let { it.release(owner); promise.resolve() }
       }.runOnQueue(Queues.MAIN)
+      }
       AsyncFunction("selectionBegin") { owner: String, promise: Promise ->
         editorOrReject(promise)?.begin(owner, promise)
       }.runOnQueue(Queues.MAIN)
