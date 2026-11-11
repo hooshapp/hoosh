@@ -4,9 +4,9 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN-08/RN-09 shared Home/Settings phone acceptance complete for this debug slice. Implementation `2602f37`; actual Apply/Home/native pause/Stop/Resume/Update/remount verified and fresh baseline restored. Auth/tokens, production root, iOS and wider acceptance remain deferred; read latest entry/runbook.
+**Current part:** RN-08/RN-09 Android/shared Home/Settings work published to its task branch. Foundation run `43073076110` passed all three jobs/steps at `69d8351`; this publication-notes commit is checked at its own pushed head before reporting. Auth/tokens, production root, iOS and wider acceptance remain deferred; read latest entry/evidence.
 
-**Implementation branch:** `task/react-native/rn-08-android-interventions`; Home/Settings journey parent `62d0396`; local commit only, no push/main merge or iOS/Auth change.
+**Implementation branch:** `task/react-native/rn-08-android-interventions`; published task branch; latest acceptance `69d8351`; no main merge/deployment or iOS/Auth change.
 
 **Commit reference:** RN-01 `2f88102`; RN-02 `2d5c0d1`; RN-03 `0741758`; RN-04 `610f570`; RN-05 preparation `0c6e4db`; RN-07 UI `5790302`; RN-08 preparation `71da2d5`; RN-09a `ff75039`. RN-10 is `9b5fbd0`.
 
@@ -16,7 +16,9 @@
 
 ## Resume here
 
-- **Physical Home/Settings acceptance (2026-11-11):** continued after owner unlock with a fresh Pixel 8 Pro/API-36 baseline and verified identical `2602f37` APK/source. Actual selection → inline fields → Preview/no installation → Apply revision 1 → automatic scheduled-to-active Home transition → native pause → Stop 2 → Resume 3/one-minute allowance → Update 4/retained daily count → Stop 5/remount passed. Exact original files/settings/usage/reverse restored, test service disabled, private captures/cache removed, owned Metro stopped; no emulator started. No source/build/regression-suite changes or new TalkBack pass. Read [phone evidence](artifacts/rn-09-app-journey-phone/evidence.json) and final entry. Production Auth/root/tokens, iOS, signed/wider and other feature gates remain open. Parent `2602f37`; own acceptance-commit hash Pending until next normal update; local only.
+- **Android/shared journey publication (2026-11-11):** normal non-forced push created `origin/task/react-native/rn-08-android-interventions`, confirmed at exact head `69d8351ca00bd3bf517ec9b460bf4ed4d261d4f1`. [Foundation run 43073076110](https://github.com/hooshapp/hoosh/actions/runs/43073076110) completed successfully: mobile, API and database, including every reported step and disposable database cleanup. Read [publication evidence](artifacts/rn-08-github-publication/evidence.json) and final entry. The publication documentation receives its own push/run, verified before the final response; own hash stays Pending until next normal update. Main, Auth/tokens/iOS, signed/store and other feature gates unchanged; unrelated untracked workspace/icon packs excluded.
+
+- **Physical Home/Settings acceptance (2026-11-11):** continued after owner unlock with a fresh Pixel 8 Pro/API-36 baseline and verified identical `2602f37` APK/source. Actual selection → inline fields → Preview/no installation → Apply revision 1 → automatic scheduled-to-active Home transition → native pause → Stop 2 → Resume 3/one-minute allowance → Update 4/retained daily count → Stop 5/remount passed. Exact original files/settings/usage/reverse restored, test service disabled, private captures/cache removed, owned Metro stopped; no emulator started. No source/build/regression-suite changes or new TalkBack pass. Read [phone evidence](artifacts/rn-09-app-journey-phone/evidence.json) and final entry. Production Auth/root/tokens, iOS, signed/wider and other feature gates remain open. Parent `2602f37`; acceptance commit `69d8351`; publication verified below during the next normal update.
 
 - **Shared Home/Settings journey (2026-11-11):** existing product views/inline editors now share explicit-owner draft/native installation state in the new App journey development entry. Native observedAt drives scheduled/active presentation and boundary refresh; staged input/Preview never installs, explicit Apply/Stop confirms native revisions. Root 434/634(+2 skips)/601, JVM 68, emulator and phone 139 native checks pass; actual emulator chooser→inline editors→Preview→Apply→Home boundary→native pause→Stop passes. New phone combined UI remains pending after lock; its native checks passed. Both baselines restored, captures removed, owned Metro/AVD stopped. Read the final entry and [journey runbook](../qa/android-home-settings-journey.md). Production Auth/root/tokens, iOS, signed/joint and other feature producers remain open. Parent `62d0396`; own hash Pending until next normal notes update; local commit only.
 
@@ -4620,7 +4622,7 @@ Line ranges belong to this commit; the self-hash remains Pending as required.
 
 ### RN-08/RN-09 — Physical Home and Settings journey continuation
 
-**Commit:** Pending. **Owner:** Ishmum. **Date:** 2026-11-11.
+**Commit:** `69d8351`. **Owner:** Ishmum. **Date:** 2026-11-11.
 **Parent:** `2602f37` (`feat(mobile): connect weekly plans to shared Home and Settings`).
 **Branch:** `task/react-native/rn-08-android-interventions`.
 **Status:** Bounded physical acceptance complete after owner unlock; fresh baseline restored.
@@ -4705,7 +4707,7 @@ and consume the new phone record for this continuation. No push/merge/deploy.
 
 **Commit message / Git reference:**
 `docs(mobile): record shared journey phone acceptance`.
-Own hash Pending until next normal notes update; parent `2602f37`.
+Acceptance hash `69d8351` recorded during this next normal publication update; parent `2602f37`.
 
 #### Continuation per-file ledger
 
@@ -4717,3 +4719,73 @@ Line ranges refer to this acceptance commit; own hash remains Pending.
 - `docs/core_plan_implementation_notes/artifacts/rn-09-app-journey-phone/evidence.json`: lines 1–117. Record verified build/source/previous-evidence fingerprints, 10 actual feature/setup observations plus one cleanup observation, device version, rejected observations and exact restoration. Reference earlier automated/native runs honestly; exclude inventory/identities, credentials, serials, raw captures and private helper paths.
 - `docs/qa/android-home-settings-journey.md`: lines 81–90. Replace the current pending-phone instruction with the actual successful Pixel/API-36 continuation and link its separate evidence. Retain the old locked attempt as historical and keep production/TalkBack/wider gates explicit.
 - `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 7, 19–20, 4418, 4584–4585, 4619–4719. Update current part/resume, record implementation hash 2602f37 during the next normal update and add this separate acceptance commit entry. Document fresh baseline, owner disclosure, actual Preview/Apply/Home/native pause/Stop/Resume/Update/remount, failed helper observations, cleanup, validation/handoff and all changed file/line ranges.
+
+
+### RN-08/RN-09 — Publish Android integration and verify GitHub Foundation
+
+**Commit:** Pending. **Owner:** Ishmum. **Date:** 2026-11-11.
+**Parent:** `69d8351` (physical shared Home/Settings acceptance).
+**Branch:** `task/react-native/rn-08-android-interventions`.
+**Status:** Implementation/acceptance publication verified; documentation follow-up receives its own exact-head verification after push. User explicitly requested push and GitHub verification. No main merge, PR creation or deployment requested.
+
+#### Publication and verification progress
+
+- Confirmed current branch/history and no tracked changes before starting.
+  Excluded the user's unrelated untracked workspace file and two icon-pack folders.
+  The remote task branch did not exist, so a normal non-forced
+  `git push --set-upstream origin task/react-native/rn-08-android-interventions`
+  created it. `git ls-remote --heads` confirms exact remote head
+  `69d8351ca00bd3bf517ec9b460bf4ed4d261d4f1`. Main is untouched.
+- Located push-triggered Foundation checks run `43073076110` for that exact SHA
+  and branch. The GitHub connector's combined-status response contains no Actions
+  checks and its commit-workflow wrapper filters PR events; empty results are not
+  a green check. Used the public repository Actions API to locate the push run,
+  then the GitHub connector's run jobs/steps to inspect its actual execution.
+  No local credential, secret env, account/token or device change is needed.
+- Initial observation: API checks passed through tests/contracts, while mobile
+  and database jobs were still running. Await actual job/run conclusions before
+  recording success. This documentation follow-up will be pushed and its own
+  exact-head run verified before reporting final completion; do not claim it
+  was checked merely because its parent passed.
+
+
+#### Verified result and scope
+
+- [Foundation checks run 43073076110](https://github.com/hooshapp/hoosh/actions/runs/43073076110)
+  is completed/success for exact head `69d8351ca00bd3bf517ec9b460bf4ed4d261d4f1`,
+  event push, attempt 1 and the intended task branch. Verified all three jobs and
+  every reported setup/check/cache/cleanup step completed successfully.
+- Mobile: dependency install, types, lint, original asset integrity, portable and
+  iOS/Android component tests, shared UI specimen build and production export.
+- API: generator/API dependencies, Ruff, pytest and reproducible OpenAPI/generated
+  types. Database: mobile dependencies, pinned disposable PostgreSQL, required
+  migrations/RLS/mobile HTTP settings acceptance and fixture removal.
+- Sanitized publication evidence records the exact SHA/run/job IDs and complete
+  step summaries. No private logs, credentials, device data, inventory or secrets.
+  No local suite rerun is substituted for GitHub verification. Foundation does
+  not build native APKs or establish new phone/signed/store acceptance.
+- This publication-notes commit is pushed to the same task branch and its own
+  exact SHA/run/jobs/steps are checked after push before reporting success. Its
+  self-hash/run cannot be embedded prospectively; keep the standard Pending hash
+  until the next normal notes update, and verify actual branch-head equality.
+- Changed-link/file-ledger/line-bound/evidence invariants and `git diff --check`
+  pass before commit. User-untracked workspace/icon packs remain excluded.
+
+#### Handoff and remaining gates
+
+The teammate can pull the task branch to obtain the Android/shared app work and
+its implementation/device/GitHub records. No PR or main merge was created.
+Auth/tokens, production verified owner/root integration, Anisha-owned iOS, broader
+native/signing/store/device/TalkBack acceptance and quest/measurement producers
+remain as recorded; green Foundation does not complete the parent plans.
+
+**Commit message / Git reference:**
+`docs(mobile): record Android branch GitHub verification`.
+Own hash Pending until next normal notes update; parent `69d8351`.
+
+#### Publication per-file ledger
+
+Ranges refer to this publication-documentation commit.
+
+- `docs/core_plan_implementation_notes/artifacts/rn-08-github-publication/evidence.json`: lines 1–304. Record verified public push-run metadata for exact SHA/branch, all three successful jobs and step summaries, coverage and remaining gates. Distinguish the verified implementation head from this separately checked documentation follow-up; contain no credentials/raw logs/device data.
+- `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 7, 9, 19–21, 4625, 4710, 4722–4791. Update current published checkpoint/resume, record acceptance hash 69d8351 during the next normal update and document this separate publication commit. Cover authorized non-forced branch push/head verification, connector/API boundaries, actual GitHub results, exact-head follow-up verification, all changed files and remaining gates.
