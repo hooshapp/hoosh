@@ -1,13 +1,13 @@
 # Native protection adapters
 
 Consume `ProtectionIntegration` availability, then implement the shared `ProtectionService` port from `@disconnect/contracts` here.
-RN-08b implements the Android read/usage-access adapter; RN-08c registers it through the Android-specific module. No enforcement adapter is implemented. Only `connected` exposes a service; connection alone does not prove permission or installation.
+RN-08b implements the Android read/usage-access adapter; RN-08c registers it through the Android-specific module. No production enforcement adapter is registered; the debug coordinator below is isolated. Only `connected` exposes a service; connection alone does not prove permission or installation.
 
 - Anisha (iOS): audit and retain the released Swift app's targets, App Groups, entitlements, stores, and event journal before adding a bridge.
 - Ishmum (Android): establish supported capabilities and real-device behavior, then implement the same port with truthful capability flags.
 - UI owners: read actual native status before displaying active protection; a saved server plan does not prove installation.
 
-Do not put enforcement timers in React Native or depend on API/AI calls to enforce native rules. Native callbacks and expiry must operate independently of the JS process. Final session, override, and quest policies remain pending in `docs/Context (AGENT)/PM_QUESTIONS.md`.
+Do not put enforcement timers in React Native or depend on API/AI calls to enforce native rules. Native callbacks and expiry must operate independently of the JS process. Read the PM answers and the 2026-11-10 Ishmum-authorized defaults in `docs/architecture/android-intervention-defaults.md`; feature/production acceptance remains separate.
 
 RN-08 now supplies the [read-only status consumer and presentation contract](../../features/protection/README.md). RN-08c registers the Android read-only adapter with stable identity and actual foreground/route visibility; desired native revision is null because no policy is installed. It calls no enforcement writes. Native owners still supply actual installed policy/revision and the remaining RN08-D01–D06 evidence before full live acceptance.
 
@@ -44,3 +44,19 @@ or erase that owner's selection after fencing/draining issued work. It never
 deletes an Auth account or clears installed rules. Real Auth must invalidate old
 UI and supply the consumer generation; current controlled QA A/B tests do not wire
 Auth or enable production capabilities. Failed cleanup must remain paused/retry.
+
+### Explicit Android intervention coordinator
+
+`intervention-coordinator.ts` is the typed debug coordinator contract/strict status
+and event-ID decoder, separate from the unchanged read-only production registration.
+It consumes an explicit synthetic owner, native lifetime handle, compiled finite
+windows, saved selection revision and session policy. App identities stay native.
+No Auth SDK/default production owner or implicit `ProtectionService.applyRules`
+activation is added. Config revision is native evidence, not a saved backend draft.
+
+Opening a handle validates the owner; bridge teardown/owner cleanup expires old
+handles before later writes. Sign-out retention leaves native reasons/events owned
+by the original account. Erasure drains through the native actor, verifies removal
+and blocks reopen on failure until retry succeeds. Real full deletion still must
+coordinate selection/Auth/backend/other-device stores. Native events are not rewards.
+See `docs/qa/android-interventions.md` and the approved provisional policy record.

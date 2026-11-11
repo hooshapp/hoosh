@@ -14,6 +14,14 @@ and Anisha's Auth/onboarding/iOS ownership remain. No new runtime functionality 
 claimed. Documentation changes and next independent selection work are recorded
 in [Plan 00 notes](../core_plan_implementation_notes/plan_00_shared_contracts_notes.md).
 
+**RN-08 defaults/implementation (2026-11-10):** Ishmum explicitly authorized
+sensible implementation defaults for session reentry/concurrency, saved-zone
+midnight handling, beyond-allowance bypass and active-occurrence selection.
+Read the [decision record](../architecture/android-intervention-defaults.md) and
+new PM question entries; these are not PM-supplied answers. Debug-native coordinator
+implementation/build/controller checks are distinct from pending actual service,
+production Auth/root, iOS and signed/store acceptance. Read current Plan 04 notes.
+
 **Checkout status (2026-11-02):** A shared Expo/React Native shell, accepted type-only Auth/native interfaces with synthetic HTTP fixtures (Plan 00 committed as `0b50900`), and a FastAPI health foundation now exist. See [repository README](../../README.md) for actual setup/check commands. Mobile Auth, product persistence, and native protection are not connected. Legacy iOS source is now present in `apps/mobile/ios/` from commit `fe8f262`; its audit, signing/build validation and reuse remain prerequisites for RN/iOS integration. Source availability alone is not integration acceptance. The shell opens Home as a development preview: RN-09a composes source cards with unavailable inputs and no sample outcomes; Quests, History and Settings now also have source-aligned presentation with unavailable inputs and isolated source examples. It does not claim active protection.
 
 **Engineering ownership:** Ishmum owns main/shared React Native UI, Android, backend/product database and shared testing. Anisha owns all Supabase Auth/project setup (SB-01–03), mobile Auth/onboarding and iOS. Ishmum owns only the Supabase product database work (SB-04/05), not Auth administration. Build against the shared contracts independently, then wire real outputs when ready; mark integration-dependent parts complete only after joint validation. Read [the accepted decisions](../architecture/identity-foundation.md) and [core execution order](../core_plan/README.md) before foundation work.

@@ -5,6 +5,14 @@
 **Reviewed:** 2026-11-02 (bounded planning expansion; implementation evidence remains recorded per part).\
 **Product answers:** [PM_QUESTIONS.md](<../Context (AGENT)/PM_QUESTIONS.md>); no PM question is answered by an engineering default in these plans.
 
+**Android RN-08 coordinator (2026-11-10):** debug-native finite-window installation,
+per-app elapsed sessions/midnight counters, overlap, owner/bridge lifetime fences,
+local journal/erasure and disclosed accessibility overlay are implemented. Read
+[runbook](../qa/android-interventions.md), latest Plan 04 notes and
+[Ishmum-approved defaults](../architecture/android-intervention-defaults.md).
+Build/JVM/shared checks are distinct from pending actual service/device acceptance;
+production Auth-bound adapter/iOS/release remain open. Original IDs/counts unchanged.
+
 **Selection follow-up (2026-11-10):** controlled-owner retain/erase hooks and
 same-owner generation/stale-work fences now prepare Auth integration without
 wiring it. New native lifecycle race tests and picker focus/accessibility handling

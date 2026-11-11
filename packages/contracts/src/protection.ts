@@ -1,4 +1,4 @@
-/** Draft native policy port; no session, override, quest, or reward policy is approved. */
+/** Native policy port. Implemented capabilities and PM/Ishmum decisions remain separate; see docs/architecture/android-intervention-defaults.md. */
 export type AuthorizationState =
   | 'not_requested'
   | 'authorized'

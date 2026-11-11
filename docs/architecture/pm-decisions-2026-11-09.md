@@ -61,6 +61,14 @@ are hypothetical; do not publish them as customer traction or a measured outcome
   PM wants both experiences; formula/model/measurement and explicit release scope
   remain gates. Preserve generic/offline behavior and no LLM in enforcement.
 
+## Subsequent implementation authority
+
+On 2026-11-10 Ishmum explicitly authorized sensible defaults for the outstanding
+RN-08 session/day/bypass/active-selection choices. The
+[dated default record](android-intervention-defaults.md) and appended PM question
+entries are the implementation authority; they are not new PM answers or evidence
+of PM/Anisha review. Debug-native producer/check status is in Plan 04 notes.
+
 ## Next independent implementation under RN08-D03 / RN-09f
 
 Global selection is no longer a product-scope blocker. Next define the native

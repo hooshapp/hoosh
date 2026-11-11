@@ -3,7 +3,7 @@
 This separate developer project renders the actual shared components with explicitly
 labeled local examples. Ishmum owns the Android run; Anisha can reuse it for shared
 iOS presentation checks. It does not import Expo Router, Auth, API clients or native
-protection adapters. Ordinary app exports must never include this directory or
+production protection adapters. Ordinary app exports must never include this directory or
 `dev/shared/ui-samples.ts`.
 
 ## Open on the phone
@@ -27,12 +27,12 @@ If LAN access is unavailable, `adb reverse tcp:8090 tcp:8090` allows opening
 `exp://127.0.0.1:8090` in Expo Go on the connected Android phone.
 Do not record device serials, account tokens, email addresses or personal screens.
 
-Use **Screens** to choose among 22 pages (19 source examples plus three native diagnostics), **State** to cycle Ready, Loading, Error,
+Use **Screens** to choose among 23 pages (19 source examples plus four native diagnostics), **State** to cycle Ready, Loading, Error,
 Unavailable, Busy and Long text, and **Reset** to restore the local draft. State
 changes also reset drafts. Not every component has a distinct presentation for
 all six states; editor Loading uses unavailable and a missing monthly series
-stays unavailable. Saving/accept/feed/retry callbacks only produce an explicit
-UI-intent notice. No sample becomes a saved plan, earned reward, installed app or
+stays unavailable. For ordinary UI examples, saving/accept/feed/retry callbacks only produce an explicit
+UI-intent notice. Native diagnostics have the explicit real local effects documented below. No UI sample becomes a saved plan, earned reward, installed app or
 measured usage. The footer is QA chrome, not the actual navigation bar. Its Screens
 and Reset controls intentionally bypass draft retention for test setup.
 
@@ -146,3 +146,21 @@ owner's local selection after issued writes drain. Failed cleanup keeps Resume
 disabled and Retry repeats the same intent. No hosted account deletion/Auth action.
 The [runbook](../../../../docs/qa/android-durable-selection.md) distinguishes
 actual physical observations from deterministic native/JS tests.
+
+### Android interventions
+
+The **Android interventions** page is an isolated, clearly labeled native test for
+owner A. Save the separate test APK's **Disconnect test target** in Saved apps
+editor first, then review the native access disclosure and explicitly enable only
+Disconnect intervention test in Android Accessibility settings. Two-minute test
+installs use 15-second per-app sessions, two/day and UTC; these are fixture values.
+Stop/cancel, explicit native refresh, drain/ack and owner-local erasure controls
+never delete an Auth account or clear the saved global selection. Native lifetime
+handles are released on completion/unmount; installed native policy survives JS
+bridge teardown until explicit stop/erase/expiry. Production exports exclude this
+page and release has neither service implementation nor bridge registrations.
+
+Follow `docs/qa/android-interventions.md` for the 46-case native runner and actual
+phone acceptance. Builds/JVM cases do not establish service/device or store approval.
+Do not use UIAutomation dumps with a live service under test; restore the owner's
+original accessibility/disclosure/power/connection state after testing.

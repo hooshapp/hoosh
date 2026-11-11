@@ -10,4 +10,5 @@ internal object SelectionPreviewFactory {
       NativeSelectionPreview(context.applicationContext)
     else null
   fun createEditor(context: Context): SelectionEditor? = if (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0) NativeSelectionEditor(context.applicationContext) else null
+  fun createIntervention(context: Context): InterventionCoordinator? = if (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE != 0) NativeInterventionBridge(InterventionRuntime.get(context)) else null
 }

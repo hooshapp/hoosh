@@ -455,9 +455,24 @@ If a part grows beyond one reviewable behavior change, split it into suffixed pa
 
 ### RN-08 — Capability-aware native protection presentation
 
+**Android coordinator checkpoint (2026-11-10):** RN08-D01–D05 now also have a
+separate debug-native finite-window installation/session/owner-event producer and
+existing developer-host consumer. Native revision CAS/atomic readback, overlap,
+per-app timers/day counters, lifetime fences, retention/verified erasure and explicit
+access disclosure/overlay are implemented. Ishmum authorized the remaining session/
+midnight/bypass/active-selection defaults in [decision record](../architecture/android-intervention-defaults.md)
+and PM questions. They are not PM-supplied answers. See [runbook](../qa/android-interventions.md)
+and latest notes/evidence. Forty pure JVM cases and builds/shared checks pass;
+46-case Android runner and actual overlay/device acceptance are pending connection.
+Production Home remains read-only/unavailable for enforcement until verified
+account/adapter integration. iOS, real Auth/tokens, recurrence/template generation,
+usage thresholds/advance warning and signed/store acceptance are not completed by
+this debug producer. Full RN-08 and original counts remain open.
+
+
 **Independent preparation checkpoint (2026-10-29):** [Protection presentation](../../apps/mobile/src/features/protection/README.md) now supplies an evidence-based mapper, accessible status/action card, bounded read-only consumer and isolated state preview. No native adapter or live route is registered. [RN-08 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md#rn-08-preparation--evidence-based-protection-presentation) record exact source/tests/browser/native compilation evidence. This completes the independent presentation slice, not native/device integration. Existing Auth/profile gates remain separate.
 
-| Ref | Native work intentionally deferred | Owner / required evidence |
+| Ref | Native scope (original deferrals; current checkpoints above/below apply) | Owner / required evidence |
 |---|---|---|
 | RN08-D01 | Audit and implement real Swift/Kotlin adapters and register the shared native port with truthful per-device capabilities | Anisha iOS; Ishmum Android. Source/entitlement/signing audit and Android feasibility are not established by UI or mock-service tests. |
 | RN08-D02 | Wire actual AppState + route focus/native changes into the required visibility input, refresh after real actions, and supply the authoritative device-native desired revision | Coordinated main/native host integration. The hook accepts these inputs but does not register lifecycle listeners or infer revision from a backend/profile save. |
@@ -524,11 +539,11 @@ actual build or authorize user-visible enforcement behavior.
 **Original deferral mapping:** RN08-D01 is addressed for Android by a/b; iOS stays
 with Anisha. D02 maps to c/d; the installed desired revision still needs actual
 policy installation. D03 maps to b/c for observed permission/recovery flows only;
-app selection/setup/install actions remain gated where unsupported. D04 (rule
-installation/overlap), D05 (native account ownership/transfer) and the corresponding
-D06 signed-device enforcement tests remain open. This extension adds no session
-engine, persistent background monitor, native outbox, Android hard-block promise
-or automatic cleanup at sign-out. Reverting the shared UI never clears rules.
+app selection/setup/install actions remain gated where unsupported. D04/D05 now have the bounded debug coordinator documented above; production rule
+installation/account integration/transfer and D06 actual/signed-device enforcement
+tests remain open. The original a–d read/permission slice added no session engine or event journal;
+the subsequent debug coordinator above supplies its bounded native scope. Neither
+adds a production hard-block promise or automatic account cleanup at sign-out. Reverting the shared UI never clears rules.
 
 #### RN08-D03 / RN-09f — App visibility and selection investigation (2026-11-07)
 

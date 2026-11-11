@@ -1,6 +1,8 @@
 # Disconnect — PM Questions and Answer Log
 
 **Created:** 2026-10-28  
+**Implementation defaults (2026-11-10):** Ishmum authorized the defaults appended under Q03/Q04/Q06–Q09/Q14; see [decision record](../architecture/android-intervention-defaults.md). They are implementation authority, not PM-supplied answers.
+
 **Purpose:** Preserve the 22 questions sent to the PM and append answers, clarifications, and resulting decisions as they arrive.  
 **Current status (reconciled 2026-11-09):** Responses received for Q02–Q22: **4 Answered, 17 Partial, 1 Unanswered (Q01)**. Answers are product intent, not implementation or platform proof. Original responses are preserved verbatim below; respondent identity and response dates were not supplied. See [accepted decisions and remaining gates](../architecture/pm-decisions-2026-11-09.md).
 
@@ -39,7 +41,7 @@ These questions affect enforcement, data structures, platform scope, or migratio
 
 **Answers and follow-ups:**
 
-_No answer recorded._
+Pretty much full app, atleast everything seen visually in the figma design.
 
 ### Q02 — Session allowance scope
 
@@ -75,6 +77,12 @@ _No answer recorded._
   - Supersedes: earlier unapproved recommendations only where explicitly stated; no earlier PM answer existed.
   - Documents updated: [ADR](../architecture/pm-decisions-2026-11-09.md), [decision register](OPEN_DECISIONS.yaml), PRD/TSD and affected core-plan gates. No runtime behavior changed.
 
+- Recorded: 2026-11-10
+  - Source: Ishmum explicitly authorized sensible engineering defaults while PM clarification is pending.
+  - Type: Provisional implementation decision — Reentry/concurrency; **not a PM answer**.
+  - Decision: Reuse a running same-app timer without another charge; concurrent selected apps keep independent elapsed timers that continue in the background.
+  - Authority/details: [Android intervention defaults](../architecture/android-intervention-defaults.md). Supersedes only the corresponding unresolved implementation choice; preserve the original PM response and label. Auth/tokens/iOS deferrals remain unchanged.
+
 ### Q04 — Allowance resets and time zones
 
 **Question:** When do allowances reset? What happens at midnight, during travel, or when a session crosses the reset boundary?
@@ -91,6 +99,12 @@ _No answer recorded._
   - Remaining questions / acceptance gates: Choose the reset time zone and travel/DST/clock-change behavior. Define a session spanning midnight; PM explicitly requested clarification. Streak reset timing also conflicts across Q04/Q08/Q14.
   - Supersedes: earlier unapproved recommendations only where explicitly stated; no earlier PM answer existed.
   - Documents updated: [ADR](../architecture/pm-decisions-2026-11-09.md), [decision register](OPEN_DECISIONS.yaml), PRD/TSD and affected core-plan gates. No runtime behavior changed.
+
+- Recorded: 2026-11-10
+  - Source: Ishmum explicitly authorized sensible engineering defaults while PM clarification is pending.
+  - Type: Provisional implementation decision — Reset/day boundary; **not a PM answer**.
+  - Decision: Reset daily in the saved plan IANA time zone; do not change it silently during travel. A crossing-midnight session keeps its original expiry and starting-day charge; new sessions after expiry use the new day. Native elapsed-time/boot checks bound exemptions; no backwards day reset.
+  - Authority/details: [Android intervention defaults](../architecture/android-intervention-defaults.md). Supersedes only the corresponding unresolved implementation choice; preserve the original PM response and label. Auth/tokens/iOS deferrals remain unchanged.
 
 ### Q05 — Behavior outside active days and hours
 
@@ -126,6 +140,12 @@ _No answer recorded._
   - Supersedes: earlier unapproved recommendations only where explicitly stated; no earlier PM answer existed.
   - Documents updated: [ADR](../architecture/pm-decisions-2026-11-09.md), [decision register](OPEN_DECISIONS.yaml), PRD/TSD and affected core-plan gates. No runtime behavior changed.
 
+- Recorded: 2026-11-10
+  - Source: Ishmum explicitly authorized sensible engineering defaults while PM clarification is pending.
+  - Type: Provisional implementation decision — Reopening exception; **not a PM answer**.
+  - Decision: Do not show another pause while the same app has a valid allowance covering all currently active reasons. A new overlapping reason may prompt, reusing remaining session time.
+  - Authority/details: [Android intervention defaults](../architecture/android-intervention-defaults.md). Supersedes only the corresponding unresolved implementation choice; preserve the original PM response and label. Auth/tokens/iOS deferrals remain unchanged.
+
 ### Q07 — Open anyway
 
 **Question:** What exactly does “Open anyway” do? Does it start a session, extend one, or grant extra time? How often can users do it, and when does access expire?
@@ -142,6 +162,12 @@ _No answer recorded._
   - Remaining questions / acceptance gates: Q08 permits continued bypass after allowance exhaustion. Define the duration/accounting of that bypass; do not invent an extension cap, fixed extra ten minutes or a reward.
   - Supersedes: earlier unapproved recommendations only where explicitly stated; no earlier PM answer existed.
   - Documents updated: [ADR](../architecture/pm-decisions-2026-11-09.md), [decision register](OPEN_DECISIONS.yaml), PRD/TSD and affected core-plan gates. No runtime behavior changed.
+
+- Recorded: 2026-11-10
+  - Source: Ishmum explicitly authorized sensible engineering defaults while PM clarification is pending.
+  - Type: Provisional implementation decision — After exhaustion; **not a PM answer**.
+  - Decision: Always allow explicit Open anyway for the configured duration; record a session beyond the per-app daily limit as an exhausted-allowance signal, rather than imposing a hard lock.
+  - Authority/details: [Android intervention defaults](../architecture/android-intervention-defaults.md). Supersedes only the corresponding unresolved implementation choice; preserve the original PM response and label. Auth/tokens/iOS deferrals remain unchanged.
 
 ### Q08 — Overlapping restrictions and user overrides
 
@@ -160,6 +186,12 @@ _No answer recorded._
   - Supersedes: earlier unapproved recommendations only where explicitly stated; no earlier PM answer existed.
   - Documents updated: [ADR](../architecture/pm-decisions-2026-11-09.md), [decision register](OPEN_DECISIONS.yaml), PRD/TSD and affected core-plan gates. No runtime behavior changed.
 
+- Recorded: 2026-11-10
+  - Source: Ishmum explicitly authorized sensible engineering defaults while PM clarification is pending.
+  - Type: Provisional implementation decision — Bypass scope/streak trigger; **not a PM answer**.
+  - Decision: Grant only this app and currently active reasons, preserving all installed reasons. The first extra session beyond the configured count emits the streak-break signal; the final allowed session alone does not. Reward/streak computation remains a separate consumer.
+  - Authority/details: [Android intervention defaults](../architecture/android-intervention-defaults.md). Supersedes only the corresponding unresolved implementation choice; preserve the original PM response and label. Auth/tokens/iOS deferrals remain unchanged.
+
 ### Q09 — App selection for quests
 
 **Question:** Which apps does each quest restrict? The global selection, a selection per quest, or a default that users can customize?
@@ -176,6 +208,12 @@ _No answer recorded._
   - Remaining questions / acceptance gates: Define durable native ownership/revision, account cleanup and stage/commit/discard before wiring production saves. Clarify whether editing global selection changes an already-running occurrence; the global scope decision itself is resolved.
   - Supersedes: earlier unapproved recommendations only where explicitly stated; no earlier PM answer existed.
   - Documents updated: [ADR](../architecture/pm-decisions-2026-11-09.md), [decision register](OPEN_DECISIONS.yaml), PRD/TSD and affected core-plan gates. No runtime behavior changed.
+
+- Recorded: 2026-11-10
+  - Source: Ishmum explicitly authorized sensible engineering defaults while PM clarification is pending.
+  - Type: Provisional implementation decision — Active occurrence selection; **not a PM answer**.
+  - Decision: Freeze selected apps for an already-active occurrence; future occurrences take the latest explicitly installed global selection. Explicit occurrence edits/cancellation remain separate.
+  - Authority/details: [Android intervention defaults](../architecture/android-intervention-defaults.md). Supersedes only the corresponding unresolved implementation choice; preserve the original PM response and label. Auth/tokens/iOS deferrals remain unchanged.
 
 ### Q10 — Quest completion and release conditions
 
@@ -265,6 +303,12 @@ These can remain pending while unrelated work proceeds. Do not present illustrat
   - Remaining questions / acceptance gates: Resolve last-session consumption versus bypass-after-exhaustion reset, per-app aggregation and the qualifying day/increment/reset time-zone rules. Missing telemetry is not proof of non-use.
   - Supersedes: earlier unapproved recommendations only where explicitly stated; no earlier PM answer existed.
   - Documents updated: [ADR](../architecture/pm-decisions-2026-11-09.md), [decision register](OPEN_DECISIONS.yaml), PRD/TSD and affected core-plan gates. No runtime behavior changed.
+
+- Recorded: 2026-11-10
+  - Source: Ishmum explicitly authorized sensible engineering defaults while PM clarification is pending.
+  - Type: Provisional implementation decision — Exhaustion default; **not a PM answer**.
+  - Decision: Use the first session beyond the daily per-app count as the exhausted-allowance/streak-break signal. Do not break merely for starting or finishing the final permitted session. Full day qualification/award computation is still separate.
+  - Authority/details: [Android intervention defaults](../architecture/android-intervention-defaults.md). Supersedes only the corresponding unresolved implementation choice; preserve the original PM response and label. Auth/tokens/iOS deferrals remain unchanged.
 
 ### Q15 — History metrics and measurement coverage
 

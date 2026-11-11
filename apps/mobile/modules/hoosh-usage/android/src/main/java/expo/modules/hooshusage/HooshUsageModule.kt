@@ -6,6 +6,7 @@ import expo.modules.kotlin.functions.Queues
 import expo.modules.kotlin.Promise
 
 class HooshUsageModule : Module() {
+  private var intervention: InterventionCoordinator? = null
   private var preview: SelectionPreview? = null
   private var selectionEditor: SelectionEditor? = null
   @Volatile private var previewDisposed = false
@@ -36,6 +37,25 @@ class HooshUsageModule : Module() {
     AsyncFunction("getStatus") { reader().status() }
     AsyncFunction("openUsageAccess") { reader().openUsageAccess() }.runOnQueue(Queues.MAIN)
     if (SelectionPreviewFactory.enabled) {
+      fun interventions(p: Promise): InterventionCoordinator? {
+        val value = if (previewDisposed) null else intervention ?: appContext.reactContext?.let { SelectionPreviewFactory.createIntervention(it) }?.also { intervention = it }
+        if (value == null) p.reject("ERR_INTERVENTION_UNAVAILABLE", "Android interventions are unavailable.", null)
+        return value
+      }
+      AsyncFunction("interventionOpen") { owner: String, p: Promise -> interventions(p)?.open(owner, p) }.runOnQueue(Queues.MAIN)
+      AsyncFunction("interventionRelease") { owner: String, token: String, p: Promise -> interventions(p)?.release(owner, token, p) }.runOnQueue(Queues.MAIN)
+      AsyncFunction("interventionStatus") { owner: String, p: Promise -> interventions(p)?.status(owner, p) }.runOnQueue(Queues.MAIN)
+      AsyncFunction("interventionReviewAccess") { p: Promise ->
+        val activity = appContext.currentActivity
+        if (activity == null) p.reject("ERR_INTERVENTION_UNAVAILABLE", "No foreground setup.", null)
+        else interventions(p)?.reviewAccess(activity, p)
+      }.runOnQueue(Queues.MAIN)
+      AsyncFunction("interventionInstall") { owner: String, token: String, expected: Int, revision: Int, selection: Int, windows: List<Map<String, Any>>, policy: Map<String, Any>, p: Promise -> interventions(p)?.install(owner, token, expected, revision, selection, windows, policy, p) }.runOnQueue(Queues.MAIN)
+      AsyncFunction("interventionCancel") { owner: String, token: String, expected: Int, reason: String?, p: Promise -> interventions(p)?.cancel(owner, token, expected, reason, p) }.runOnQueue(Queues.MAIN)
+      AsyncFunction("interventionDrain") { owner: String, token: String, limit: Int, p: Promise -> interventions(p)?.drain(owner, token, limit, p) }.runOnQueue(Queues.MAIN)
+      AsyncFunction("interventionAcknowledge") { owner: String, token: String, ids: List<String>, p: Promise -> interventions(p)?.acknowledge(owner, token, ids, p) }.runOnQueue(Queues.MAIN)
+      AsyncFunction("interventionEndOwner") { owner: String, erase: Boolean, p: Promise -> interventions(p)?.endOwner(owner, erase, p) }.runOnQueue(Queues.MAIN)
+
       // Private QA API; the production ProtectionService still rejects selection.
       AsyncFunction("previewPickApps") { owner: String, promise: Promise ->
         val current = previewOrReject(promise)
@@ -71,9 +91,9 @@ class HooshUsageModule : Module() {
       AsyncFunction("selectionEndOwner") { owner: String, erase: Boolean, promise: Promise ->
         editorOrReject(promise)?.endOwner(owner, erase, promise)
       }.runOnQueue(Queues.MAIN)
-      OnActivityEntersBackground { preview?.cancelPending(); selectionEditor?.cancelPicker() }
-      OnActivityDestroys { preview?.clear(); selectionEditor?.clearDrafts() }
-      OnDestroy { previewDisposed = true; preview?.dispose(); preview = null; selectionEditor?.dispose(); selectionEditor = null }
+      OnActivityEntersBackground { intervention?.cancelReview(); preview?.cancelPending(); selectionEditor?.cancelPicker() }
+      OnActivityDestroys { intervention?.cancelReview(); preview?.clear(); selectionEditor?.clearDrafts() }
+      OnDestroy { previewDisposed = true; intervention?.close(); intervention = null; preview?.dispose(); preview = null; selectionEditor?.dispose(); selectionEditor = null }
     }
   }
 }
