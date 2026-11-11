@@ -1086,6 +1086,7 @@ struct IntentionSetupView: View {
 private struct PerAppDailyLimitCard: View {
     @State private var rules: [DailyAppRule] = []
     @State private var activeSessionIDs: Set<String> = []
+    @State private var expandedRuleIDs: Set<String> = []
     @State private var loadError = ""
     @State private var hasUnsupportedSelection = false
     @State private var notificationStatus = ""
@@ -1094,128 +1095,49 @@ private struct PerAppDailyLimitCard: View {
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Label("Your app sessions", systemImage: "hourglass")
-                .font(.system(size: 17, weight: .heavy))
-                .foregroundStyle(DisconnectTheme.ink)
-            Text("Set each app’s daily allowance and session length. A reflection shield appears before you start; it returns when the session ends.")
-                .font(.system(size: 12, weight: .medium))
-                .foregroundStyle(DisconnectTheme.mutedInk)
-                .fixedSize(horizontal: false, vertical: true)
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Your app sessions")
+                .font(DashboardFont.semibold(20))
+                .foregroundStyle(DashboardPalette.primaryText)
+
             if rules.isEmpty {
                 Text("No individual apps selected. Use Edit Protected Apps in Settings and choose individual apps inside the categories.")
-                    .font(.system(size: 13, weight: .semibold))
-                    .foregroundStyle(DisconnectTheme.ink)
+                    .font(DashboardFont.medium(13))
+                    .foregroundStyle(DashboardPalette.primaryText)
+                    .padding(16)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(RoundedRectangle(cornerRadius: 16).fill(DashboardPalette.cardSurface))
+                    .overlay(RoundedRectangle(cornerRadius: 16).stroke(DashboardPalette.border, lineWidth: 1))
             }
-            ForEach(rules) { rule in
-                VStack(alignment: .leading, spacing: 10) {
-                    if let token = try? PerAppProtection.token(for: rule) {
-                        ProtectedAppIdentityLabel(token:token,name:rule.researchLabel)
-                            .font(.system(size:15,weight:.bold))
-                    }
-                    ResearchAppLabelField(ruleID:rule.id,initialValue:rule.researchLabel ?? "")
-                    Text("Daily allowance: \(rule.minutes) minutes")
-                        .font(.system(size: 13, weight: .bold))
-                        .foregroundStyle(DisconnectTheme.ink)
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 8) {
-                            ForEach([5, 10, 15, 30, 60], id: \.self) { minutes in
-                                Button { update(rule, minutes: minutes) } label: {
-                                    Text("\(minutes) min")
-                                        .font(.system(size: 13, weight: .heavy))
-                                        .foregroundStyle(rule.minutes == minutes ? Color.white : DisconnectTheme.ink)
-                                        .padding(.horizontal, 12)
-                                        .frame(minHeight: 44)
-                                        .background(RoundedRectangle(cornerRadius: 8).fill(rule.minutes == minutes ? DisconnectTheme.green : DisconnectTheme.softBackground))
-                                }
-                                .buttonStyle(.plain)
-                                .accessibilityLabel("Set daily limit to \(minutes) minutes")
-                                .accessibilityAddTraits(rule.minutes == minutes ? .isSelected : [])
-                            }
-                        }
-                    }
-                    DisclosureGroup("Custom daily allowance") {
-                    Stepper("Daily minutes: \(rule.minutes)", value: Binding(
-                        get: { rule.minutes }, set: { update(rule, minutes: $0) }
-                    ), in: 5...240, step: 5)
-                        .font(.system(size: 12, weight: .medium))
-                        .foregroundStyle(DisconnectTheme.ink)
-                    }
-                    Text("Session length: \(rule.sessionMinutes) minutes")
-                        .font(.system(size: 13, weight: .bold))
-                        .foregroundStyle(DisconnectTheme.ink)
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 8) {
-                            ForEach([5, 10, 15, 30].filter { $0 <= rule.minutes }, id: \.self) { minutes in
-                                Button { updateSession(rule, minutes: minutes) } label: {
-                                    Text("\(minutes) min")
-                                        .font(.system(size: 13, weight: .heavy))
-                                        .foregroundStyle(rule.sessionMinutes == minutes ? Color.white : DisconnectTheme.ink)
-                                        .padding(.horizontal, 12).frame(minHeight: 44)
-                                        .background(RoundedRectangle(cornerRadius: 8).fill(rule.sessionMinutes == minutes ? DisconnectTheme.green : DisconnectTheme.softBackground))
-                                }
-                                .buttonStyle(.plain)
-                                .accessibilityLabel("Set session length to \(minutes) minutes")
-                                .accessibilityAddTraits(rule.sessionMinutes == minutes ? .isSelected : [])
-                            }
-                        }
-                    }
-                    DisclosureGroup("Custom session length") {
-                    Stepper("Session minutes: \(rule.sessionMinutes)", value: Binding(
-                        get: { rule.sessionMinutes }, set: { updateSession(rule, minutes: $0) }
-                    ), in: 5...rule.minutes, step: 5)
-                        .font(.system(size: 12, weight: .medium))
-                        .foregroundStyle(DisconnectTheme.ink)
-                    }
-                    Text("Personalized check-ins around \(AppSessionPolicy.nudgeMinutes(duration: rule.sessionMinutes).map(String.init).joined(separator: ", ")) active minutes; shield at \(rule.sessionMinutes) minutes.")
-                        .font(.caption).foregroundStyle(DisconnectTheme.mutedInk)
-                    if activeSessionIDs.contains(rule.id) {
-                        ActiveSessionControls {
-                            do { try PerAppProtection.endAllowance(for: rule.id); load() }
-                            catch { loadError = "Could not end this session. Please retry." }
-                        }
-                    }
 
+            ForEach(rules) { rule in
+                if let token = try? PerAppProtection.token(for: rule) {
+                    AppSessionRuleCard(
+                        rule: rule,
+                        token: token,
+                        isExpanded: expandedRuleIDs.contains(rule.id),
+                        isSessionActive: activeSessionIDs.contains(rule.id),
+                        loadError: loadError,
+                        monitoringError: monitoringError,
+                        registeredCount: registeredCount,
+                        notificationStatus: notificationStatus,
+                        hasUnsupportedSelection: hasUnsupportedSelection,
+                        toggleExpanded: { toggleExpanded(rule.id) },
+                        updateDailyAllowance: { update(rule, minutes: $0) },
+                        updateSessionLength: { updateSession(rule, minutes: $0) },
+                        endSession: { endSession(rule) },
+                        retryMonitoring: retryMonitoring,
+                        requestNotificationAuthorization: requestNotificationAuthorization
+                    )
                 }
-                .padding(12)
-                .background(RoundedRectangle(cornerRadius: 10).fill(DisconnectTheme.softBackground))
-                .accessibilityElement(children: .contain)
             }
+
             if hasUnsupportedSelection {
                 Text("Category and website selections do not get individual app limits. Select the apps themselves in Apple's picker.")
-                    .font(.caption).foregroundStyle(DisconnectTheme.mutedInk)
-            }
-            if !loadError.isEmpty || !monitoringError.isEmpty {
-                Text(loadError.isEmpty ? monitoringError : loadError)
-                    .font(.caption).foregroundStyle(.red)
-                Button("Retry app monitoring") { ShieldStoreController().refreshShieldStateAfterInstallOrRun(); load() }
-            } else if OnboardingResponseStore.hasCompletedOnboarding && registeredCount > 0 {
-                Text("OS monitoring registered for \(registeredCount) app(s).")
-                    .font(.caption).foregroundStyle(DisconnectTheme.mutedInk)
-            } else {
-                Text("Choose your limits, then finish setup to start monitoring.")
-                    .font(.caption).foregroundStyle(DisconnectTheme.mutedInk)
-            }
-            Button("Enable personalized nudge notifications") {
-                Task {
-                    await BreakReminderScheduler.requestAuthorization()
-                    let settings = await UNUserNotificationCenter.current().notificationSettings()
-                    notificationStatus = settings.authorizationStatus == .authorized || settings.authorizationStatus == .provisional
-                        ? "Notifications are enabled. iOS controls banner delivery and Focus settings."
-                        : "Notifications are off. Enable them for Hoosh in iPhone Settings. Shields still work."
-                }
-            }.frame(minHeight: 44)
-            if !notificationStatus.isEmpty { Text(notificationStatus).font(.caption).foregroundStyle(DisconnectTheme.mutedInk) }
-            DisclosureGroup("How sessions and nudges work") {
-            Text("Nudges appear at quarter-session usage milestones. Locking your phone does not run an app timer. Only active use during Hoosh sessions counts toward your daily allowance. Daily allowances renew at midnight. Protection is active every day; scheduled hours are not configured in this build.")
-                .font(.system(size: 11, weight: .medium))
-                .foregroundStyle(DisconnectTheme.mutedInk)
-                .fixedSize(horizontal: false, vertical: true)
+                    .font(DashboardFont.regular(11))
+                    .foregroundStyle(DashboardPalette.secondaryText)
             }
         }
-        .padding(14)
-        .background(RoundedRectangle(cornerRadius: 14).fill(Color.white))
-        .overlay(RoundedRectangle(cornerRadius: 14).stroke(DisconnectTheme.border, lineWidth: 1))
         .onAppear(perform: load)
         .onChange(of: scenePhase) { phase in if phase == .active { load() } }
         .onReceive(NotificationCenter.default.publisher(for: .disconnectSelectionChanged)) { _ in load() }
@@ -1226,6 +1148,7 @@ private struct PerAppDailyLimitCard: View {
             rules = try DailyUsageMonitoring.prepareRules(selection: selection)
             activeSessionIDs = Set(rules.filter { PerAppProtection.allowance(for: $0.id) != nil }.map(\.id))
             hasUnsupportedSelection = !selection.categoryTokens.isEmpty || !selection.webDomainTokens.isEmpty
+            expandedRuleIDs.formIntersection(Set(rules.map(\.id)))
             loadError = ""
         } catch {
             loadError = "Could not load your daily app limits. Your existing settings have been kept. Please retry."
@@ -1247,6 +1170,280 @@ private struct PerAppDailyLimitCard: View {
             loadError = "Could not save the daily limit. Please retry."
         }
     }
+
+    private func toggleExpanded(_ ruleID: String) {
+        withAnimation(.easeInOut(duration: 0.2)) {
+            if expandedRuleIDs.contains(ruleID) {
+                expandedRuleIDs.remove(ruleID)
+            } else {
+                expandedRuleIDs.insert(ruleID)
+            }
+        }
+    }
+
+    private func endSession(_ rule: DailyAppRule) {
+        do {
+            try PerAppProtection.endAllowance(for: rule.id)
+            load()
+        } catch {
+            loadError = "Could not end this session. Please retry."
+        }
+    }
+
+    private func retryMonitoring() {
+        ShieldStoreController().refreshShieldStateAfterInstallOrRun()
+        load()
+    }
+
+    private func requestNotificationAuthorization() {
+        Task {
+            await BreakReminderScheduler.requestAuthorization()
+            let settings = await UNUserNotificationCenter.current().notificationSettings()
+            notificationStatus = settings.authorizationStatus == .authorized || settings.authorizationStatus == .provisional
+                ? "Notifications are enabled. iOS controls banner delivery and Focus settings."
+                : "Notifications are off. Enable them for Hoosh in iPhone Settings. Shields still work."
+        }
+    }
+}
+
+private struct AppSessionRuleCard: View {
+    let rule: DailyAppRule
+    let token: ApplicationToken
+    let isExpanded: Bool
+    let isSessionActive: Bool
+    let loadError: String
+    let monitoringError: String
+    let registeredCount: Int
+    let notificationStatus: String
+    let hasUnsupportedSelection: Bool
+    let toggleExpanded: () -> Void
+    let updateDailyAllowance: (Int) -> Void
+    let updateSessionLength: (Int) -> Void
+    let endSession: () -> Void
+    let retryMonitoring: () -> Void
+    let requestNotificationAuthorization: () -> Void
+
+    private let presetMinutes = [5, 10, 15, 30]
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Button(action: toggleExpanded) {
+                HStack(spacing: 12) {
+                    Label(token)
+                        .labelStyle(.iconOnly)
+                        .frame(width: 30, height: 30)
+
+                    VStack(alignment: .leading, spacing: 3) {
+                        if let name = rule.researchLabel,
+                           !name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                            Text(name)
+                                .font(DashboardFont.semibold(15))
+                        } else {
+                            Label(token)
+                                .labelStyle(.titleOnly)
+                                .font(DashboardFont.semibold(15))
+                        }
+
+                        Text("\(rule.minutes) min daily · \(rule.sessionMinutes) min sessions")
+                            .font(DashboardFont.regular(12))
+                            .foregroundStyle(DashboardPalette.secondaryText)
+                    }
+
+                    Spacer(minLength: 8)
+
+                    Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                        .font(.system(size: 13, weight: .semibold))
+                        .foregroundStyle(DashboardPalette.primaryText)
+                }
+                .foregroundStyle(DashboardPalette.primaryText)
+                .padding(.horizontal, 16)
+                .frame(minHeight: 60)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("App session settings")
+            .accessibilityValue(isExpanded ? "Expanded" : "Collapsed")
+
+            if isExpanded {
+                Rectangle()
+                    .fill(DashboardPalette.border)
+                    .frame(height: 1)
+                    .padding(.horizontal, 16)
+
+                VStack(alignment: .leading, spacing: 14) {
+                    settingTitle("Daily allowance", value: "\(rule.minutes) minutes")
+                    presetControl(selectedMinutes: rule.minutes, options: presetMinutes, action: updateDailyAllowance)
+
+                    DisclosureGroup {
+                        Stepper(
+                            "Daily minutes: \(rule.minutes)",
+                            value: Binding(get: { rule.minutes }, set: updateDailyAllowance),
+                            in: 5...240,
+                            step: 5
+                        )
+                        .font(DashboardFont.regular(12))
+                        .foregroundStyle(DashboardPalette.primaryText)
+                        .padding(.top, 8)
+                    } label: {
+                        Text("Custom daily allowance")
+                            .font(DashboardFont.medium(12))
+                            .foregroundStyle(DashboardPalette.linkGreen)
+                    }
+
+                    dashboardDivider
+
+                    settingTitle("Session length", value: "\(rule.sessionMinutes) minutes")
+                    presetControl(
+                        selectedMinutes: rule.sessionMinutes,
+                        options: presetMinutes.filter { $0 <= rule.minutes },
+                        action: updateSessionLength
+                    )
+
+                    DisclosureGroup {
+                        Stepper(
+                            "Session minutes: \(rule.sessionMinutes)",
+                            value: Binding(get: { rule.sessionMinutes }, set: updateSessionLength),
+                            in: 5...rule.minutes,
+                            step: 5
+                        )
+                        .font(DashboardFont.regular(12))
+                        .foregroundStyle(DashboardPalette.primaryText)
+                        .padding(.top, 8)
+                    } label: {
+                        Text("Custom session length")
+                            .font(DashboardFont.medium(12))
+                            .foregroundStyle(DashboardPalette.linkGreen)
+                    }
+
+                    Text("Check-ins around \(AppSessionPolicy.nudgeMinutes(duration: rule.sessionMinutes).map(String.init).joined(separator: ", ")) active minutes. Your shield appears at \(rule.sessionMinutes) minutes.")
+                        .font(DashboardFont.regular(10))
+                        .foregroundStyle(DashboardPalette.secondaryText)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    if isSessionActive {
+                        ActiveSessionControls(endSession: endSession)
+                    }
+
+                    dashboardDivider
+
+                    DisclosureGroup {
+                        VStack(alignment: .leading, spacing: 10) {
+                            ResearchAppLabelField(ruleID: rule.id, initialValue: rule.researchLabel ?? "")
+
+                            if !loadError.isEmpty || !monitoringError.isEmpty {
+                                Text(loadError.isEmpty ? monitoringError : loadError)
+                                    .font(DashboardFont.regular(11))
+                                    .foregroundStyle(.red)
+                                Button("Retry app monitoring", action: retryMonitoring)
+                                    .font(DashboardFont.medium(12))
+                                    .frame(minHeight: 44)
+                            } else if OnboardingResponseStore.hasCompletedOnboarding && registeredCount > 0 {
+                                Text("OS monitoring registered for \(registeredCount) app(s).")
+                                    .font(DashboardFont.regular(11))
+                                    .foregroundStyle(DashboardPalette.secondaryText)
+                            } else {
+                                Text("Choose your limits, then finish setup to start monitoring.")
+                                    .font(DashboardFont.regular(11))
+                                    .foregroundStyle(DashboardPalette.secondaryText)
+                            }
+
+                            if hasUnsupportedSelection {
+                                Text("Category and website selections do not get individual app limits. Select the apps themselves in Apple's picker.")
+                                    .font(DashboardFont.regular(11))
+                                    .foregroundStyle(DashboardPalette.secondaryText)
+                            }
+
+                            Button("Enable personalized nudge notifications", action: requestNotificationAuthorization)
+                                .font(DashboardFont.medium(12))
+                                .frame(minHeight: 44)
+
+                            if !notificationStatus.isEmpty {
+                                Text(notificationStatus)
+                                    .font(DashboardFont.regular(11))
+                                    .foregroundStyle(DashboardPalette.secondaryText)
+                            }
+                        }
+                        .padding(.top, 10)
+                    } label: {
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text("App setup & permissions")
+                                .font(DashboardFont.medium(13))
+                                .foregroundStyle(DashboardPalette.primaryText)
+                            Text("Study name, monitoring and nudge notifications")
+                                .font(DashboardFont.regular(10))
+                                .foregroundStyle(DashboardPalette.secondaryText)
+                        }
+                    }
+
+                    dashboardDivider
+
+                    DisclosureGroup {
+                        Text("Nudges appear at quarter-session usage milestones. Locking your phone does not run an app timer. Only active use during Hoosh sessions counts toward your daily allowance. Daily allowances renew at midnight. Protection is active every day; scheduled hours are not configured in this build.")
+                            .font(DashboardFont.regular(11))
+                            .foregroundStyle(DashboardPalette.secondaryText)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .padding(.top, 8)
+                    } label: {
+                        Text("How sessions and nudges work")
+                            .font(DashboardFont.medium(12))
+                            .foregroundStyle(DashboardPalette.linkGreen)
+                    }
+                }
+                .padding(.horizontal, 16)
+                .padding(.top, 14)
+                .padding(.bottom, 16)
+            }
+        }
+        .background(RoundedRectangle(cornerRadius: 16).fill(DashboardPalette.cardSurface))
+        .overlay(RoundedRectangle(cornerRadius: 16).stroke(DashboardPalette.border, lineWidth: 1))
+        .tint(DashboardPalette.linkGreen)
+        .environment(\.colorScheme, .light)
+        .accessibilityElement(children: .contain)
+    }
+
+    private func settingTitle(_ title: String, value: String) -> some View {
+        HStack {
+            Text(title)
+                .font(DashboardFont.medium(13))
+                .foregroundStyle(DashboardPalette.primaryText)
+            Spacer()
+            Text(value)
+                .font(DashboardFont.medium(12))
+                .foregroundStyle(DashboardPalette.linkGreen)
+        }
+    }
+
+    private func presetControl(
+        selectedMinutes: Int,
+        options: [Int],
+        action: @escaping (Int) -> Void
+    ) -> some View {
+        HStack(spacing: 0) {
+            ForEach(options, id: \.self) { minutes in
+                Button { action(minutes) } label: {
+                    Text("\(minutes) min")
+                        .font(DashboardFont.medium(10))
+                        .foregroundStyle(DashboardPalette.primaryText)
+                        .frame(maxWidth: .infinity, minHeight: 36)
+                        .background(
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(selectedMinutes == minutes ? DashboardPalette.green : Color.clear)
+                        )
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Set to \(minutes) minutes")
+                .accessibilityAddTraits(selectedMinutes == minutes ? .isSelected : [])
+            }
+        }
+        .padding(2)
+        .background(RoundedRectangle(cornerRadius: 10).fill(DashboardPalette.presetTrack))
+    }
+
+    private var dashboardDivider: some View {
+        Rectangle()
+            .fill(DashboardPalette.border)
+            .frame(height: 1)
+    }
 }
 
 private struct ActiveSessionControls: View {
@@ -1257,6 +1454,7 @@ private struct ActiveSessionControls: View {
         VStack(alignment: .leading, spacing: 4) {
             HStack {
                 Button("End this session", action: endSession)
+                    .font(DashboardFont.medium(12))
                     .frame(minHeight: 44)
 
                 Spacer(minLength: 0)
@@ -1277,8 +1475,8 @@ private struct ActiveSessionControls: View {
 
             if showsDetails {
                 Text("End this session brings back the shield now. Leaving the app pauses usage, and reopening resumes it. Changes to session length apply to the next session.")
-                    .font(.caption)
-                    .foregroundStyle(DisconnectTheme.mutedInk)
+                    .font(DashboardFont.regular(11))
+                    .foregroundStyle(DashboardPalette.secondaryText)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
@@ -1864,6 +2062,55 @@ private struct EmptyProtectedSelectionRow: View {
     }
 }
 
+enum DashboardPalette {
+    static let cream = Color(red: 1.0, green: 241 / 255, blue: 221 / 255)
+    static let cardSurface = Color(red: 1.0, green: 250 / 255, blue: 241 / 255)
+    static let green = Color(red: 44 / 255, green: 198 / 255, blue: 83 / 255)
+    static let linkGreen = Color(red: 22 / 255, green: 136 / 255, blue: 67 / 255)
+    static let primaryText = Color(red: 64 / 255, green: 41 / 255, blue: 0)
+    static let secondaryText = Color(red: 130 / 255, green: 115 / 255, blue: 92 / 255)
+    static let border = Color(red: 235 / 255, green: 216 / 255, blue: 181 / 255)
+    static let presetTrack = Color(red: 241 / 255, green: 233 / 255, blue: 219 / 255)
+    static let logoBackground = Color(red: 42 / 255, green: 42 / 255, blue: 42 / 255)
+    static let activeNavigation = Color(red: 17 / 255, green: 24 / 255, blue: 39 / 255)
+    static let inactiveNavigation = Color(red: 76 / 255, green: 92 / 255, blue: 122 / 255)
+    static let navigationDivider = Color(red: 229 / 255, green: 231 / 255, blue: 235 / 255)
+}
+
+private struct DashboardHeaderBar: View {
+    let title: String
+
+    var body: some View {
+        ZStack {
+            Text(title)
+                .font(DashboardFont.semibold(12))
+                .tracking(1.5)
+                .foregroundStyle(DashboardPalette.primaryText)
+
+            HStack {
+                Image("DashboardDinosaur")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 44, height: 44)
+                    .background(DashboardPalette.logoBackground)
+                    .clipShape(RoundedRectangle(cornerRadius: 11))
+                    .accessibilityLabel("Hoosh dinosaur")
+
+                Spacer()
+            }
+            .padding(.horizontal, 20)
+        }
+        .frame(height: 72)
+        .frame(maxWidth: .infinity)
+        .background(DashboardPalette.cream)
+        .overlay(alignment: .bottom) {
+            Rectangle()
+                .fill(DashboardPalette.border)
+                .frame(height: 1)
+        }
+    }
+}
+
 struct DashboardView: View {
     @State private var selectedTab: DashboardSection = .stats
     @State private var showsPersonalization = false
@@ -1871,7 +2118,17 @@ struct DashboardView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            DisconnectHeaderBar(title: selectedTab.title, showsLogo: selectedTab == .stats)
+            if selectedTab == .stats {
+                DashboardHeaderBar(title: selectedTab.title)
+            } else if selectedTab == .history {
+                HistoryDashboardHeaderBar()
+            } else if selectedTab == .feedback {
+                FeedbackDashboardHeaderBar()
+            } else if selectedTab == .settings {
+                SettingsDashboardHeaderBar()
+            } else {
+                DisconnectHeaderBar(title: selectedTab.title)
+            }
 
             Group {
                 switch selectedTab {
@@ -1903,15 +2160,17 @@ struct DashboardView: View {
                     selectedTab = .settings
                 }
             }
-            .padding(.horizontal, 30)
-            .padding(.top, 12)
-            .padding(.bottom, 14)
-            .background(Color.white)
+            .padding(.horizontal, 20)
+            .padding(.top, 8)
+            .padding(.bottom, 8)
+            .background {
+                Color.white.ignoresSafeArea(edges: .bottom)
+            }
             .overlay(alignment: .top) {
-                Rectangle().fill(DisconnectTheme.border).frame(height: 1)
+                Rectangle().fill(DashboardPalette.navigationDivider).frame(height: 1)
             }
         }
-        .background(Color.white)
+        .background(DashboardPalette.cream.ignoresSafeArea())
         .toolbar(.hidden, for: .navigationBar)
         .onAppear { openRequestedPersonalization() }
         .onReceive(NotificationCenter.default.publisher(for: DayTwoSettingsTipStore.routeNotification)) { _ in
@@ -1972,6 +2231,35 @@ private enum DashboardSection {
     }
 }
 
+private enum FeedbackScreenPalette {
+    static let background = Color(red: 1.0, green: 241 / 255, blue: 221 / 255)
+    static let cardSurface = Color(red: 1.0, green: 250 / 255, blue: 241 / 255)
+    static let primaryText = Color(red: 64 / 255, green: 41 / 255, blue: 0)
+    static let secondaryText = Color(red: 130 / 255, green: 115 / 255, blue: 92 / 255)
+    static let border = Color(red: 235 / 255, green: 216 / 255, blue: 181 / 255)
+    static let green = Color(red: 44 / 255, green: 198 / 255, blue: 83 / 255)
+    static let selectedAccent = Color(red: 22 / 255, green: 136 / 255, blue: 67 / 255)
+    static let selectedSurface = Color(red: 227 / 255, green: 244 / 255, blue: 220 / 255)
+    static let toggleTrack = Color(red: 241 / 255, green: 233 / 255, blue: 219 / 255)
+}
+
+private struct FeedbackDashboardHeaderBar: View {
+    var body: some View {
+        Text("FEEDBACK")
+            .font(DashboardFont.semibold(12))
+            .tracking(1.6)
+            .foregroundStyle(FeedbackScreenPalette.primaryText)
+            .frame(height: 72)
+            .frame(maxWidth: .infinity)
+            .background(FeedbackScreenPalette.background)
+            .overlay(alignment: .bottom) {
+                Rectangle()
+                    .fill(FeedbackScreenPalette.border)
+                    .frame(height: 1)
+            }
+    }
+}
+
 private struct DashboardFeedbackView: View {
     @State private var responses = OnboardingResponseStore.load()
     @State private var selection = AppSelectionStore.load()
@@ -1981,22 +2269,23 @@ private struct DashboardFeedbackView: View {
             VStack(alignment: .leading, spacing: 18) {
                 VStack(alignment: .leading, spacing: 10) {
                     Text("Tell us what actually worked.")
-                        .font(.system(size: 22, weight: .heavy))
-                        .foregroundStyle(DisconnectTheme.ink)
+                        .font(DashboardFont.semibold(22))
+                        .foregroundStyle(FeedbackScreenPalette.primaryText)
 
                     Text("Rate nudges, send feedback, or opt into a quick interview. This is where we learn what makes Hoosh stronger.")
-                        .font(.system(size: 14, weight: .medium))
-                        .foregroundStyle(DisconnectTheme.mutedInk)
+                        .font(DashboardFont.regular(13))
+                        .foregroundStyle(FeedbackScreenPalette.secondaryText)
                         .lineSpacing(4)
                         .fixedSize(horizontal: false, vertical: true)
                 }
 
                 FeedbackLabCard(responses: responses, selection: selection)
             }
-            .padding(.horizontal, 24)
-            .padding(.top, 24)
-            .padding(.bottom, 24)
+            .padding(.horizontal, 20)
+            .padding(.top, 18)
+            .padding(.bottom, 32)
         }
+        .background(FeedbackScreenPalette.background)
         .scrollDismissesKeyboard(.interactively)
         .onAppear {
             responses = OnboardingResponseStore.load()
@@ -2011,175 +2300,93 @@ private struct DashboardStatsView: View {
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 22) {
+            VStack(spacing: 20) {
                 PerAppDailyLimitCard()
-                ScreenTimeUsageCard()
-                WeeklyProgressCard(data: metrics.weeklySavedTime)
+                WeeklyProgressCard(metrics: metrics)
                 InsightsSection(metrics: metrics)
                 MomentumCard(metrics: metrics)
             }
-            .padding(.horizontal, 24)
-            .padding(.top, 18)
-            .padding(.bottom, 24)
+            .padding(.horizontal, 20)
+            .padding(.top, 16)
+            .padding(.bottom, 32)
         }
+        .background(DashboardPalette.cream)
         .onAppear {
             metrics = DashboardMetrics.load()
         }
     }
 }
 
-private struct ScreenTimeUsageCard: View {
-    @State private var context: DeviceActivityReport.Context = .totalActivity
-    @State private var filter = ScreenTimeUsageCard.makeFilter()
-    @State private var hasProtectedSelection = ScreenTimeUsageCard.hasProtectedSelection()
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack(alignment: .top, spacing: 12) {
-                Image(systemName: "hourglass")
-                    .font(.system(size: 18, weight: .semibold))
-                    .foregroundStyle(DisconnectTheme.blue)
-                    .frame(width: 38, height: 38)
-                    .background(RoundedRectangle(cornerRadius: 9).fill(DisconnectTheme.blue.opacity(0.1)))
-
-                VStack(alignment: .leading, spacing: 5) {
-                    Text("Actual Screen Time")
-                        .font(.system(size: 16, weight: .heavy))
-                        .foregroundStyle(DisconnectTheme.ink)
-
-                    Text("Today on protected apps")
-                        .font(.system(size: 12, weight: .medium))
-                        .foregroundStyle(DisconnectTheme.mutedInk)
-                }
-
-                Spacer(minLength: 0)
-            }
-
-            if hasProtectedSelection {
-                VStack(alignment: .leading, spacing: 10) {
-                    Text("Waiting for Screen Time data")
-                        .font(.system(size: 18, weight: .heavy))
-                        .foregroundStyle(DisconnectTheme.ink)
-
-                    Text("This fills in after iOS returns activity for your protected apps. Until then, your saved-time stats below still come from real shield choices.")
-                        .font(.system(size: 12, weight: .medium))
-                        .foregroundStyle(DisconnectTheme.mutedInk)
-                        .fixedSize(horizontal: false, vertical: true)
-
-                    DeviceActivityReport(context, filter: filter)
-                        .frame(maxWidth: .infinity, minHeight: 70, alignment: .leading)
-                        .background(Color.white)
-                        .allowsHitTesting(false)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-            } else {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("No protected apps selected")
-                        .font(.system(size: 18, weight: .heavy))
-                        .foregroundStyle(DisconnectTheme.ink)
-
-                    Text("Choose apps in Settings to show real Screen Time here.")
-                        .font(.system(size: 12, weight: .medium))
-                        .foregroundStyle(DisconnectTheme.mutedInk)
-                }
-                .frame(maxWidth: .infinity, minHeight: 86, alignment: .leading)
-            }
-
-            Text("Screen Time is reported by Apple's DeviceActivity extension.")
-                .font(.system(size: 11, weight: .medium))
-                .foregroundStyle(DisconnectTheme.mutedInk)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-        .padding(20)
-        .background(RoundedRectangle(cornerRadius: 8).fill(Color.white))
-        .overlay(RoundedRectangle(cornerRadius: 8).stroke(DisconnectTheme.border, lineWidth: 1))
-        .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
-        .onAppear {
-            filter = Self.makeFilter()
-            hasProtectedSelection = Self.hasProtectedSelection()
-        }
-    }
-
-    private static func makeFilter() -> DeviceActivityFilter {
-        let calendar = Calendar.current
-        let start = calendar.startOfDay(for: Date())
-        let end = Date()
-        let selection = AppSelectionStore.load()
-
-        return DeviceActivityFilter(
-            segment: .daily(during: DateInterval(start: start, end: end)),
-            users: .all,
-            devices: .init([.iPhone, .iPad]),
-            applications: selection.applicationTokens,
-            categories: selection.categoryTokens,
-            webDomains: selection.webDomainTokens
-        )
-    }
-
-    private static func hasProtectedSelection() -> Bool {
-        let selection = AppSelectionStore.load()
-        return !selection.applicationTokens.isEmpty
-            || !selection.categoryTokens.isEmpty
-            || !selection.webDomainTokens.isEmpty
-    }
-}
-
-extension DeviceActivityReport.Context {
-    static let totalActivity = Self("Total Activity")
-}
-
 private struct WeeklyProgressCard: View {
-    let data: [DailySavedTime]
+    let metrics: DashboardMetrics
+
+    private var data: [DailySavedTime] {
+        metrics.weeklySavedTime
+    }
 
     private var maxMinutes: Int {
         max(data.map(\.minutes).max() ?? 0, 1)
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Weekly Progress")
-                        .font(.system(size: 16, weight: .heavy))
-                    Text("Saved time per day (minutes)")
-                        .font(.system(size: 12, weight: .medium))
-                        .foregroundStyle(DisconnectTheme.mutedInk)
-                }
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .firstTextBaseline) {
+                Text("Weekly progress")
+                    .font(DashboardFont.semibold(16))
 
                 Spacer()
 
-                Text("Last 7 Days")
-                    .font(.system(size: 12, weight: .medium))
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
-                    .overlay(RoundedRectangle(cornerRadius: 6).stroke(DisconnectTheme.border, lineWidth: 1))
+                Text("Last 7 days")
+                    .font(DashboardFont.regular(10))
+                    .foregroundStyle(DashboardPalette.secondaryText)
             }
-            .foregroundStyle(DisconnectTheme.ink)
+            .foregroundStyle(DashboardPalette.primaryText)
 
-            HStack(alignment: .bottom, spacing: 13) {
+            Text(DashboardMetrics.durationText(minutes: metrics.currentWeekSavedMinutes))
+                .font(DashboardFont.semibold(28))
+                .foregroundStyle(DashboardPalette.primaryText)
+
+            Text("protected this week")
+                .font(DashboardFont.regular(11))
+                .foregroundStyle(DashboardPalette.secondaryText)
+                .padding(.top, -8)
+
+            Text("Saved time per day (minutes)")
+                .font(DashboardFont.regular(10))
+                .foregroundStyle(DashboardPalette.secondaryText)
+
+            HStack(alignment: .bottom, spacing: 8) {
                 ForEach(data) { item in
                     VStack(spacing: 8) {
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(DisconnectTheme.green)
+                            .fill(DashboardPalette.green)
+                            .frame(width: 22)
                             .frame(height: barHeight(for: item.minutes))
                         Text(item.label)
-                            .font(.system(size: 11, weight: .medium))
-                            .foregroundStyle(DisconnectTheme.ink)
+                            .font(DashboardFont.regular(9))
+                            .foregroundStyle(DashboardPalette.secondaryText)
                     }
+                    .frame(maxWidth: .infinity)
                 }
             }
             .frame(maxWidth: .infinity)
-            .frame(height: 200, alignment: .bottom)
+            .frame(height: 66, alignment: .bottom)
+            .overlay(alignment: .bottom) {
+                Rectangle()
+                    .fill(DashboardPalette.border)
+                    .frame(height: 1)
+                    .padding(.bottom, 22)
+                    .allowsHitTesting(false)
+            }
         }
-        .padding(24)
-        .background(RoundedRectangle(cornerRadius: 8).fill(Color.white))
-        .overlay(RoundedRectangle(cornerRadius: 8).stroke(DisconnectTheme.border, lineWidth: 1))
-        .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+        .padding(16)
+        .background(RoundedRectangle(cornerRadius: 16).fill(DashboardPalette.cardSurface))
+        .overlay(RoundedRectangle(cornerRadius: 16).stroke(DashboardPalette.border, lineWidth: 1))
     }
 
     private func barHeight(for minutes: Int) -> CGFloat {
-        guard minutes > 0 else { return 16 }
-        return max(16, CGFloat(minutes) / CGFloat(maxMinutes) * 190)
+        guard minutes > 0 else { return 4 }
+        return max(4, CGFloat(minutes) / CGFloat(maxMinutes) * 40)
     }
 }
 
@@ -2187,23 +2394,52 @@ private struct InsightsSection: View {
     let metrics: DashboardMetrics
 
     var body: some View {
-        VStack(spacing: 14) {
-            HStack {
-                Text("INSIGHTS")
-                    .font(.system(size: 13, weight: .heavy))
-                    .tracking(1)
-                    .foregroundStyle(DisconnectTheme.mutedInk)
-                Spacer()
-                NavigationLink(destination: InsightsDetailView()) {
-                    Text("View All ↗")
-                        .font(.system(size: 12, weight: .heavy))
-                        .foregroundStyle(DisconnectTheme.green)
-                }
-            }
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Insights")
+                .font(DashboardFont.semibold(18))
+                .foregroundStyle(DashboardPalette.primaryText)
 
-            InsightRow(iconName: "target", title: "Focus Rate", subtitle: "Closed instead of opening", value: "\(metrics.intentionalOpeningRate)%")
-            InsightRow(iconName: "iphone", title: "Top Avoided", subtitle: metrics.topAvoidedAppName, value: "\(metrics.topAvoidedCount)x")
-            InsightRow(iconName: "medal", title: "Interventions", subtitle: "Real shield decisions", value: "\(metrics.totalInterventions)")
+            VStack(spacing: 0) {
+                DashboardInsightRow(title: "Focus rate", value: "\(metrics.intentionalOpeningRate)%")
+                DashboardInsightRow(title: "Top avoided", value: "\(metrics.topAvoidedCount)x")
+                DashboardInsightRow(title: "Saved today", value: metrics.todaySavedText)
+                DashboardInsightRow(
+                    title: "This week",
+                    value: DashboardMetrics.durationText(minutes: metrics.currentWeekSavedMinutes)
+                )
+                DashboardInsightRow(title: "Interventions", value: "\(metrics.totalInterventions)", showsDivider: false)
+            }
+            .padding(.horizontal, 14)
+            .background(RoundedRectangle(cornerRadius: 16).fill(DashboardPalette.cardSurface))
+            .overlay(RoundedRectangle(cornerRadius: 16).stroke(DashboardPalette.border, lineWidth: 1))
+        }
+    }
+}
+
+private struct DashboardInsightRow: View {
+    let title: String
+    let value: String
+    var showsDivider = true
+
+    var body: some View {
+        HStack {
+            Text(title)
+                .font(DashboardFont.regular(12))
+                .foregroundStyle(DashboardPalette.secondaryText)
+
+            Spacer()
+
+            Text(value)
+                .font(DashboardFont.semibold(13))
+                .foregroundStyle(DashboardPalette.primaryText)
+        }
+        .frame(minHeight: 34)
+        .overlay(alignment: .bottom) {
+            if showsDivider {
+                Rectangle()
+                    .fill(DashboardPalette.border)
+                    .frame(height: 1)
+            }
         }
     }
 }
@@ -2249,27 +2485,29 @@ private struct MomentumCard: View {
 
     var body: some View {
         HStack(spacing: 16) {
-            Image(systemName: "arrow.up.right")
-                .font(.system(size: 26, weight: .heavy))
-                .foregroundStyle(DisconnectTheme.ink)
-                .frame(width: 50, height: 50)
-                .background(Circle().fill(DisconnectTheme.green))
-
             VStack(alignment: .leading, spacing: 4) {
                 Text("Keep the momentum!")
-                    .font(.system(size: 14, weight: .heavy))
-                    .foregroundStyle(DisconnectTheme.ink)
-                Text(metrics.weeklyMomentumText)
-                    .font(.system(size: 12, weight: .medium))
-                    .foregroundStyle(DisconnectTheme.mutedInk)
+                    .font(DashboardFont.semibold(15))
+                    .foregroundStyle(DashboardPalette.cardSurface)
+                Text("You’ve protected \(DashboardMetrics.durationText(minutes: metrics.currentWeekSavedMinutes)) this week.")
+                    .font(DashboardFont.regular(11))
+                    .foregroundStyle(DashboardPalette.cardSurface.opacity(0.8))
                     .fixedSize(horizontal: false, vertical: true)
             }
 
             Spacer(minLength: 0)
+
+            Image(systemName: "arrow.up.right")
+                .font(.system(size: 20, weight: .semibold))
+                .foregroundStyle(DashboardPalette.primaryText)
+                .frame(width: 42, height: 42)
+                .background(Circle().fill(DashboardPalette.green))
+                .accessibilityHidden(true)
         }
-        .padding(18)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 13)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(RoundedRectangle(cornerRadius: 9).fill(DisconnectTheme.green.opacity(0.09)))
+        .background(RoundedRectangle(cornerRadius: 16).fill(DashboardPalette.primaryText))
     }
 }
 
@@ -2285,12 +2523,42 @@ private struct DashboardTab: View {
                 Image(systemName: iconName)
                     .font(.system(size: 21, weight: .semibold))
                 Text(label)
-                    .font(.system(size: 10, weight: isActive ? .heavy : .medium))
+                    .font(isActive ? DashboardFont.semibold(10) : DashboardFont.medium(10))
             }
-            .foregroundStyle(isActive ? DisconnectTheme.ink : DisconnectTheme.mutedInk)
+            .foregroundStyle(isActive ? DashboardPalette.activeNavigation : DashboardPalette.inactiveNavigation)
             .frame(width: 62, height: 48)
         }
         .buttonStyle(.plain)
+    }
+}
+
+private enum SettingsScreenPalette {
+    static let background = Color(red: 1.0, green: 241 / 255, blue: 221 / 255)
+    static let cardSurface = Color(red: 1.0, green: 250 / 255, blue: 241 / 255)
+    static let primaryText = Color(red: 64 / 255, green: 41 / 255, blue: 0)
+    static let secondaryText = Color(red: 130 / 255, green: 115 / 255, blue: 92 / 255)
+    static let border = Color(red: 235 / 255, green: 216 / 255, blue: 181 / 255)
+    static let green = Color(red: 44 / 255, green: 198 / 255, blue: 83 / 255)
+    static let greenIcon = Color(red: 22 / 255, green: 136 / 255, blue: 67 / 255)
+    static let selectedSurface = Color(red: 227 / 255, green: 244 / 255, blue: 220 / 255)
+    static let destructive = Color(red: 196 / 255, green: 61 / 255, blue: 50 / 255)
+    static let destructiveSurface = Color(red: 252 / 255, green: 237 / 255, blue: 231 / 255)
+}
+
+private struct SettingsDashboardHeaderBar: View {
+    var body: some View {
+        Text("SETTINGS")
+            .font(DashboardFont.semibold(12))
+            .tracking(1.6)
+            .foregroundStyle(SettingsScreenPalette.primaryText)
+            .frame(height: 72)
+            .frame(maxWidth: .infinity)
+            .background(SettingsScreenPalette.background)
+            .overlay(alignment: .bottom) {
+                Rectangle()
+                    .fill(SettingsScreenPalette.border)
+                    .frame(height: 1)
+            }
     }
 }
 
@@ -2303,13 +2571,96 @@ private struct CompactSettingsSection<Content:View>: View {
             content.padding(.top,8)
         } label: {
             VStack(alignment:.leading,spacing:3) {
-                Text(title).font(.system(size:14,weight:.bold)).foregroundStyle(DisconnectTheme.ink)
-                Text(value).font(.system(size:12)).foregroundStyle(DisconnectTheme.mutedInk)
+                Text(title).font(DashboardFont.semibold(14)).foregroundStyle(SettingsScreenPalette.primaryText)
+                Text(value).font(DashboardFont.regular(11)).foregroundStyle(SettingsScreenPalette.secondaryText)
             }.frame(minHeight:44,alignment:.leading)
         }
-        .padding(12)
-        .background(RoundedRectangle(cornerRadius:12).fill(Color.white))
-        .overlay(RoundedRectangle(cornerRadius:12).stroke(DisconnectTheme.border,lineWidth:1))
+        .tint(SettingsScreenPalette.primaryText)
+        .padding(14)
+        .background(RoundedRectangle(cornerRadius:14).fill(SettingsScreenPalette.cardSurface))
+        .overlay(RoundedRectangle(cornerRadius:14).stroke(SettingsScreenPalette.border,lineWidth:1))
+    }
+}
+
+private struct SettingsPreferenceGroup: View {
+    let iconName: String
+    let title: String
+    let subtitle: String
+    let options: [(String, String)]
+    @Binding var selectedValue: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .top, spacing: 10) {
+                Image(systemName: iconName)
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundStyle(SettingsScreenPalette.greenIcon)
+                    .frame(width: 34, height: 34)
+                    .background(RoundedRectangle(cornerRadius: 8).fill(SettingsScreenPalette.selectedSurface))
+
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(title)
+                        .font(DashboardFont.semibold(13))
+                        .foregroundStyle(SettingsScreenPalette.primaryText)
+                    Text(subtitle)
+                        .font(DashboardFont.regular(11))
+                        .foregroundStyle(SettingsScreenPalette.secondaryText)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+
+            VStack(spacing: 8) {
+                ForEach(options, id: \.0) { value, detail in
+                    Button {
+                        selectedValue = value
+                    } label: {
+                        HStack(spacing: 10) {
+                            Image(systemName: selectedValue == value ? "checkmark.circle.fill" : "circle")
+                                .font(.system(size: 17, weight: .semibold))
+                                .foregroundStyle(selectedValue == value ? SettingsScreenPalette.green : SettingsScreenPalette.secondaryText)
+
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(value)
+                                    .font(DashboardFont.semibold(13))
+                                    .foregroundStyle(SettingsScreenPalette.primaryText)
+                                Text(detail)
+                                    .font(DashboardFont.regular(10))
+                                    .foregroundStyle(SettingsScreenPalette.secondaryText)
+                            }
+
+                            Spacer(minLength: 0)
+                        }
+                        .padding(.horizontal, 12)
+                        .frame(minHeight: 48)
+                        .background(
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(selectedValue == value ? SettingsScreenPalette.selectedSurface : SettingsScreenPalette.cardSurface)
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 10)
+                                .stroke(selectedValue == value ? SettingsScreenPalette.green : SettingsScreenPalette.border, lineWidth: 1)
+                        )
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("preference." + title + "." + value)
+                    .accessibilityAddTraits(selectedValue == value ? .isSelected : [])
+                }
+            }
+        }
+        .padding(10)
+        .background(RoundedRectangle(cornerRadius: 12).fill(SettingsScreenPalette.background))
+        .overlay(RoundedRectangle(cornerRadius: 12).stroke(SettingsScreenPalette.border, lineWidth: 1))
+    }
+}
+
+private struct SettingsPrimaryActionStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(DashboardFont.semibold(15))
+            .foregroundStyle(SettingsScreenPalette.primaryText)
+            .frame(maxWidth: .infinity, minHeight: 52)
+            .background(RoundedRectangle(cornerRadius: 12).fill(SettingsScreenPalette.green))
+            .opacity(configuration.isPressed ? 0.85 : 1)
     }
 }
 
@@ -2322,10 +2673,10 @@ private struct DashboardSettingsView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 16) {
                 Text("Protection")
-                    .font(.system(size: 22, weight: .heavy))
-                    .foregroundStyle(DisconnectTheme.ink)
+                    .font(DashboardFont.semibold(22))
+                    .foregroundStyle(SettingsScreenPalette.primaryText)
 
                 SettingsInfoRow(
                     iconName: authorizationService.isApproved ? "checkmark.shield" : "exclamationmark.shield",
@@ -2340,19 +2691,51 @@ private struct DashboardSettingsView: View {
                 )
 
                 CompactSettingsSection(title:"AI friction style",value:responses.aiFrictionStyle) {
-                    AIFrictionStyleCard(selectedStyle: frictionStyleBinding)
+                    SettingsPreferenceGroup(
+                        iconName: "sparkles",
+                        title: "AI friction style",
+                        subtitle: "Hoosh adapts the prompt using your goal, feeling, and replacement task.",
+                        options: [
+                            ("Balanced", "Short, practical nudges"),
+                            ("Reflective", "Questions tied to your feelings"),
+                            ("Direct", "Firm prompts tied to your goal")
+                        ],
+                        selectedValue: frictionStyleBinding
+                    )
                 }
                 CompactSettingsSection(title:"AI tone",value:responses.aiTone) {
-                    AIToneCard(selectedTone: aiToneBinding)
+                    SettingsPreferenceGroup(
+                        iconName: "slider.horizontal.3",
+                        title: "AI tone",
+                        subtitle: "Choose how strongly Hoosh should talk to you during a break.",
+                        options: [
+                            ("Supportive", "Warm and encouraging"),
+                            ("Direct", "Clear and no-nonsense"),
+                            ("Playful", "Light, witty friction"),
+                            ("Intense", "High-pressure accountability")
+                        ],
+                        selectedValue: aiToneBinding
+                    )
                 }
                 CompactSettingsSection(title:"Persuasion style",value:responses.persuasionStyle) {
-                    PersuasionStyleCard(selectedStyle: persuasionStyleBinding)
+                    SettingsPreferenceGroup(
+                        iconName: "person.text.rectangle",
+                        title: "Persuasion style",
+                        subtitle: "Pick the kind of argument that actually gets you off the app.",
+                        options: [
+                            ("Future Self", "Remind me who I want to become"),
+                            ("Goal Cost", "Show what this scroll is costing"),
+                            ("Tiny Action", "Push me into the next small task"),
+                            ("Identity", "Speak to the person I said I am")
+                        ],
+                        selectedValue: persuasionStyleBinding
+                    )
                 }
                 CompactSettingsSection(title: "Personalization answers", value: "Edit your answers") {
-                    PersonalizationAnswersForm(followUpOnly: false)
+                    PersonalizationAnswersForm(followUpOnly: false, usesSettingsStyle: true)
                 }
 
-                AppleProductivityContextCard(service: productivityService)
+                AppleProductivityContextCard(service: productivityService, usesSettingsStyle: true)
 
                 Button {
                     DatabaseService.shared.logEvent("edit_protected_apps_tapped")
@@ -2363,7 +2746,7 @@ private struct DashboardSettingsView: View {
                     Label("Edit Protected Apps", systemImage: "slider.horizontal.3")
                         .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(PrimaryButtonStyle())
+                .buttonStyle(SettingsPrimaryActionStyle())
 
                 Button {
                     DatabaseService.shared.logEvent("protection_turned_off")
@@ -2374,20 +2757,21 @@ private struct DashboardSettingsView: View {
                     DatabaseService.shared.syncUserProfile(responses: responses, selection: selection)
                 } label: {
                     Label("Turn Off Protection", systemImage: "shield.slash")
-                        .font(.system(size: 15, weight: .bold))
-                        .foregroundStyle(.red)
+                        .font(DashboardFont.semibold(15))
+                        .foregroundStyle(SettingsScreenPalette.destructive)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 16)
-                        .background(RoundedRectangle(cornerRadius: 12).fill(Color.red.opacity(0.08)))
+                        .background(RoundedRectangle(cornerRadius: 12).fill(SettingsScreenPalette.destructiveSurface))
                 }
                 .buttonStyle(.plain)
 
 
             }
-            .padding(.horizontal, 16)
-            .padding(.top, 12)
-            .padding(.bottom, 16)
+            .padding(.horizontal, 20)
+            .padding(.top, 16)
+            .padding(.bottom, 32)
         }
+        .background(SettingsScreenPalette.background)
         .environment(\.colorScheme,.light)
         .familyActivityPicker(isPresented: $isPickerPresented, selection: $selection)
         .onAppear {
@@ -2484,6 +2868,7 @@ private struct DashboardSettingsView: View {
 
 private struct PersonalizationAnswersForm: View {
     let followUpOnly: Bool
+    var usesSettingsStyle = false
     @State private var responses = OnboardingResponseStore.load()
     @State private var saved = false
 
@@ -2491,38 +2876,51 @@ private struct PersonalizationAnswersForm: View {
         VStack(alignment: .leading, spacing: 14) {
             if followUpOnly {
                 Text("Tell Hoosh what would make your nudges more helpful. You can edit your answers later in Settings.")
-                    .font(.subheadline)
-                    .foregroundStyle(DisconnectTheme.mutedInk)
+                    .font(usesSettingsStyle ? DashboardFont.regular(12) : .subheadline)
+                    .foregroundStyle(usesSettingsStyle ? SettingsScreenPalette.secondaryText : DisconnectTheme.mutedInk)
             } else {
                 CompactPromptEditor(title: "What would you rather return to when Hoosh interrupts a scroll?",
-                                    placeholder: "Your focus", text: $responses.focusGoal)
+                                    placeholder: "Your focus", text: $responses.focusGoal, usesSettingsStyle: usesSettingsStyle)
                 ForEach([ReflectionPrompts.timing, ReflectionPrompts.three], id: \.self) { prompt in
                     Toggle(prompt, isOn: promptSelection(prompt))
+                        .font(usesSettingsStyle ? DashboardFont.regular(12) : .body)
+                        .tint(usesSettingsStyle ? SettingsScreenPalette.green : DisconnectTheme.green)
                 }
                 CompactPromptEditor(title: "What is the primary goal you're working towards right now?",
-                                    placeholder: "Your goal", text: $responses.primaryGoal)
+                                    placeholder: "Your goal", text: $responses.primaryGoal, usesSettingsStyle: usesSettingsStyle)
                 CompactPromptEditor(title: "What is a small task you can do in 5 minutes instead of scrolling?",
-                                    placeholder: "A small task", text: $responses.tinyTask)
+                                    placeholder: "A small task", text: $responses.tinyTask, usesSettingsStyle: usesSettingsStyle)
             }
             CompactPromptEditor(title: "How will you feel if you stay focused and avoid doomscrolling today?",
-                                placeholder: "How you hope to feel", text: $responses.focusFeeling)
+                                placeholder: "How you hope to feel", text: $responses.focusFeeling, usesSettingsStyle: usesSettingsStyle)
             CompactPromptEditor(title: "What feeling or situation usually makes you open the app?",
-                                placeholder: "What tends to pull you in", text: $responses.scrollTemptation)
+                                placeholder: "What tends to pull you in", text: $responses.scrollTemptation, usesSettingsStyle: usesSettingsStyle)
             CompactPromptEditor(title: "What does scrolling usually cost you afterward?",
-                                placeholder: "What you give up", text: $responses.scrollCost)
+                                placeholder: "What you give up", text: $responses.scrollCost, usesSettingsStyle: usesSettingsStyle)
             CompactPromptEditor(title: "Who or what should Hoosh remind you you are doing this for?",
-                                placeholder: "Who or what matters to you", text: $responses.accountabilityAnchor)
-            Button {
-                save()
-            } label: {
-                Text("Save answers").frame(maxWidth: .infinity)
+                                placeholder: "Who or what matters to you", text: $responses.accountabilityAnchor, usesSettingsStyle: usesSettingsStyle)
+            if usesSettingsStyle {
+                Button {
+                    save()
+                } label: {
+                    Text("Save answers").frame(maxWidth: .infinity)
+                }
+                .buttonStyle(SettingsPrimaryActionStyle())
+            } else {
+                Button {
+                    save()
+                } label: {
+                    Text("Save answers").frame(maxWidth: .infinity)
+                }
+                .buttonStyle(PrimaryButtonStyle())
             }
-            .buttonStyle(PrimaryButtonStyle())
             if saved {
-                Text("Answers saved.").font(.caption)
+                Text("Answers saved.")
+                    .font(usesSettingsStyle ? DashboardFont.regular(11) : .caption)
+                    .foregroundStyle(usesSettingsStyle ? SettingsScreenPalette.greenIcon : DisconnectTheme.ink)
             }
         }
-        .foregroundStyle(DisconnectTheme.ink)
+        .foregroundStyle(usesSettingsStyle ? SettingsScreenPalette.primaryText : DisconnectTheme.ink)
         .onAppear {
             responses = OnboardingResponseStore.load()
             saved = false
@@ -2561,24 +2959,28 @@ private struct PersonalizationAnswersForm: View {
 
 private struct AppleProductivityContextCard: View {
     @ObservedObject var service: AppleProductivityContextService
+    var usesSettingsStyle = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack(alignment: .top, spacing: 12) {
                 Image(systemName: "calendar.badge.clock")
                     .font(.system(size: 18, weight: .semibold))
-                    .foregroundStyle(DisconnectTheme.green)
+                    .foregroundStyle(usesSettingsStyle ? SettingsScreenPalette.greenIcon : DisconnectTheme.green)
                     .frame(width: 38, height: 38)
-                    .background(RoundedRectangle(cornerRadius: 9).fill(DisconnectTheme.green.opacity(0.1)))
+                    .background(
+                        RoundedRectangle(cornerRadius: 9)
+                            .fill(usesSettingsStyle ? SettingsScreenPalette.selectedSurface : DisconnectTheme.green.opacity(0.1))
+                    )
 
                 VStack(alignment: .leading, spacing: 5) {
                     Text("Productivity context")
-                        .font(.system(size: 14, weight: .heavy))
-                        .foregroundStyle(DisconnectTheme.ink)
+                        .font(usesSettingsStyle ? DashboardFont.semibold(14) : .system(size: 14, weight: .heavy))
+                        .foregroundStyle(usesSettingsStyle ? SettingsScreenPalette.primaryText : DisconnectTheme.ink)
 
                     Text("Use Apple Calendar and Reminders to make nudges point back to the next real task.")
-                        .font(.system(size: 12, weight: .medium))
-                        .foregroundStyle(DisconnectTheme.mutedInk)
+                        .font(usesSettingsStyle ? DashboardFont.regular(11) : .system(size: 12, weight: .medium))
+                        .foregroundStyle(usesSettingsStyle ? SettingsScreenPalette.secondaryText : DisconnectTheme.mutedInk)
                         .lineSpacing(3)
                 }
             }
@@ -2589,7 +2991,8 @@ private struct AppleProductivityContextCard: View {
                     title: "Apple Calendar",
                     status: statusText(service.snapshot.calendarAccess),
                     actionTitle: actionTitle(service.snapshot.calendarAccess),
-                    isBusy: service.isRefreshing
+                    isBusy: service.isRefreshing,
+                    usesSettingsStyle: usesSettingsStyle
                 ) {
                     Task {
                         await service.requestCalendarAccess()
@@ -2601,7 +3004,8 @@ private struct AppleProductivityContextCard: View {
                     title: "Apple Reminders",
                     status: statusText(service.snapshot.remindersAccess),
                     actionTitle: actionTitle(service.snapshot.remindersAccess),
-                    isBusy: service.isRefreshing
+                    isBusy: service.isRefreshing,
+                    usesSettingsStyle: usesSettingsStyle
                 ) {
                     Task {
                         await service.requestReminderAccess()
@@ -2609,15 +3013,15 @@ private struct AppleProductivityContextCard: View {
                 }
 
                 Text("Connect Apple Reminders for tasks you want to act on. Saved lists and other items without due dates can also appear in nudges.")
-                    .font(.footnote)
-                    .foregroundStyle(DisconnectTheme.mutedInk)
+                    .font(usesSettingsStyle ? DashboardFont.regular(11) : .footnote)
+                    .foregroundStyle(usesSettingsStyle ? SettingsScreenPalette.secondaryText : DisconnectTheme.mutedInk)
                     .fixedSize(horizontal: false, vertical: true)
             }
 
             VStack(alignment: .leading, spacing: 8) {
                 Text("Next nudge context")
-                    .font(.system(size: 12, weight: .heavy))
-                    .foregroundStyle(DisconnectTheme.ink)
+                    .font(usesSettingsStyle ? DashboardFont.semibold(12) : .system(size: 12, weight: .heavy))
+                    .foregroundStyle(usesSettingsStyle ? SettingsScreenPalette.primaryText : DisconnectTheme.ink)
 
                 VStack(alignment: .leading, spacing: 4) {
                     if service.snapshot.actionLine.isEmpty {
@@ -2629,14 +3033,18 @@ private struct AppleProductivityContextCard: View {
                         Text("Action: \(service.snapshot.actionLine)")
                     }
                 }
-                .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(service.snapshot.hasUsefulContext ? DisconnectTheme.ink : DisconnectTheme.mutedInk)
+                .font(usesSettingsStyle ? DashboardFont.medium(12) : .system(size: 13, weight: .semibold))
+                .foregroundStyle(
+                    service.snapshot.hasUsefulContext
+                        ? (usesSettingsStyle ? SettingsScreenPalette.primaryText : DisconnectTheme.ink)
+                        : (usesSettingsStyle ? SettingsScreenPalette.secondaryText : DisconnectTheme.mutedInk)
+                )
                 .lineLimit(2)
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(14)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(RoundedRectangle(cornerRadius: 10).fill(DisconnectTheme.softBackground))
-                .overlay(RoundedRectangle(cornerRadius: 10).stroke(DisconnectTheme.border, lineWidth: 1))
+                .background(RoundedRectangle(cornerRadius: 10).fill(usesSettingsStyle ? SettingsScreenPalette.background : DisconnectTheme.softBackground))
+                .overlay(RoundedRectangle(cornerRadius: 10).stroke(usesSettingsStyle ? SettingsScreenPalette.border : DisconnectTheme.border, lineWidth: 1))
             }
 
             Button {
@@ -2647,33 +3055,36 @@ private struct AppleProductivityContextCard: View {
                 HStack(spacing: 10) {
                     if service.isRefreshing {
                         ProgressView()
-                            .tint(DisconnectTheme.ink)
+                            .tint(usesSettingsStyle ? SettingsScreenPalette.primaryText : DisconnectTheme.ink)
                     } else {
                         Image(systemName: "arrow.clockwise")
                     }
                     Text(service.isRefreshing ? "Refreshing..." : "Refresh Context")
                 }
-                .font(.system(size: 14, weight: .bold))
-                .foregroundStyle(DisconnectTheme.ink)
+                .font(usesSettingsStyle ? DashboardFont.semibold(13) : .system(size: 14, weight: .bold))
+                .foregroundStyle(usesSettingsStyle ? SettingsScreenPalette.primaryText : DisconnectTheme.ink)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 14)
-                .background(RoundedRectangle(cornerRadius: 10).fill(DisconnectTheme.softBackground))
-                .overlay(RoundedRectangle(cornerRadius: 10).stroke(DisconnectTheme.border, lineWidth: 1))
+                .background(RoundedRectangle(cornerRadius: 10).fill(usesSettingsStyle ? SettingsScreenPalette.cardSurface : DisconnectTheme.softBackground))
+                .overlay(RoundedRectangle(cornerRadius: 10).stroke(usesSettingsStyle ? SettingsScreenPalette.border : DisconnectTheme.border, lineWidth: 1))
             }
             .buttonStyle(.plain)
             .disabled(service.isRefreshing)
 
             if let errorMessage = service.errorMessage {
                 Text(errorMessage)
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(usesSettingsStyle ? DashboardFont.medium(11) : .system(size: 12, weight: .semibold))
                     .foregroundStyle(.red)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
-        .padding(20)
-        .background(RoundedRectangle(cornerRadius: 14).fill(Color.white))
-        .overlay(RoundedRectangle(cornerRadius: 14).stroke(DisconnectTheme.border, lineWidth: 1))
-        .shadow(color: .black.opacity(0.08), radius: 4, x: 0, y: 2)
+        .padding(usesSettingsStyle ? 16 : 20)
+        .background(RoundedRectangle(cornerRadius: usesSettingsStyle ? 16 : 14).fill(usesSettingsStyle ? SettingsScreenPalette.cardSurface : Color.white))
+        .overlay(
+            RoundedRectangle(cornerRadius: usesSettingsStyle ? 16 : 14)
+                .stroke(usesSettingsStyle ? SettingsScreenPalette.border : DisconnectTheme.border, lineWidth: 1)
+        )
+        .shadow(color: usesSettingsStyle ? .clear : .black.opacity(0.08), radius: 4, x: 0, y: 2)
     }
 
     private func statusText(_ state: ProductivityContextSnapshot.AccessState) -> String {
@@ -2704,42 +3115,58 @@ private struct ProductivityAccessRow: View {
     let status: String
     let actionTitle: String
     let isBusy: Bool
+    var usesSettingsStyle = false
     let action: () -> Void
 
     var body: some View {
         HStack(spacing: 12) {
             Image(systemName: iconName)
                 .font(.system(size: 16, weight: .semibold))
-                .foregroundStyle(DisconnectTheme.green)
+                .foregroundStyle(usesSettingsStyle ? SettingsScreenPalette.greenIcon : DisconnectTheme.green)
                 .frame(width: 34, height: 34)
-                .background(Circle().fill(DisconnectTheme.green.opacity(0.1)))
+                .background(
+                    RoundedRectangle(cornerRadius: 8)
+                        .fill(usesSettingsStyle ? SettingsScreenPalette.selectedSurface : DisconnectTheme.green.opacity(0.1))
+                )
 
             VStack(alignment: .leading, spacing: 3) {
                 Text(title)
-                    .font(.system(size: 13, weight: .heavy))
-                    .foregroundStyle(DisconnectTheme.ink)
+                    .font(usesSettingsStyle ? DashboardFont.semibold(12) : .system(size: 13, weight: .heavy))
+                    .foregroundStyle(usesSettingsStyle ? SettingsScreenPalette.primaryText : DisconnectTheme.ink)
                 Text(status)
-                    .font(.system(size: 12, weight: .medium))
-                    .foregroundStyle(DisconnectTheme.mutedInk)
+                    .font(usesSettingsStyle ? DashboardFont.regular(10) : .system(size: 12, weight: .medium))
+                    .foregroundStyle(usesSettingsStyle ? SettingsScreenPalette.secondaryText : DisconnectTheme.mutedInk)
             }
 
             Spacer()
 
             Button(action: action) {
                 Text(actionTitle)
-                    .font(.system(size: 12, weight: .bold))
-                    .foregroundStyle(actionTitle == "Connected" ? DisconnectTheme.green : DisconnectTheme.ink)
+                    .font(usesSettingsStyle ? DashboardFont.medium(11) : .system(size: 12, weight: .bold))
+                    .foregroundStyle(
+                        usesSettingsStyle
+                            ? SettingsScreenPalette.primaryText
+                            : (actionTitle == "Connected" ? DisconnectTheme.green : DisconnectTheme.ink)
+                    )
                     .padding(.horizontal, 12)
                     .frame(height: 34)
-                    .background(RoundedRectangle(cornerRadius: 8).fill(Color.white))
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(actionTitle == "Connected" ? DisconnectTheme.green : DisconnectTheme.border, lineWidth: 1))
+                    .background(RoundedRectangle(cornerRadius: 8).fill(usesSettingsStyle ? SettingsScreenPalette.cardSurface : Color.white))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(
+                                usesSettingsStyle
+                                    ? SettingsScreenPalette.border
+                                    : (actionTitle == "Connected" ? DisconnectTheme.green : DisconnectTheme.border),
+                                lineWidth: 1
+                            )
+                    )
             }
             .buttonStyle(.plain)
             .disabled(actionTitle == "Connected" || isBusy)
         }
         .padding(12)
-        .background(RoundedRectangle(cornerRadius: 10).fill(DisconnectTheme.softBackground))
-        .overlay(RoundedRectangle(cornerRadius: 10).stroke(DisconnectTheme.border, lineWidth: 1))
+        .background(RoundedRectangle(cornerRadius: 10).fill(usesSettingsStyle ? SettingsScreenPalette.background : DisconnectTheme.softBackground))
+        .overlay(RoundedRectangle(cornerRadius: 10).stroke(usesSettingsStyle ? SettingsScreenPalette.border : DisconnectTheme.border, lineWidth: 1))
     }
 }
 
@@ -2764,28 +3191,28 @@ private struct FeedbackLabCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
             HStack(alignment: .top, spacing: 12) {
-                Image(systemName: "quote.bubble")
+                Image(systemName: "ellipsis.message")
                     .font(.system(size: 18, weight: .semibold))
-                    .foregroundStyle(DisconnectTheme.blue)
+                    .foregroundStyle(FeedbackScreenPalette.selectedAccent)
                     .frame(width: 38, height: 38)
-                    .background(RoundedRectangle(cornerRadius: 9).fill(DisconnectTheme.blue.opacity(0.1)))
+                    .background(RoundedRectangle(cornerRadius: 9).fill(FeedbackScreenPalette.selectedSurface))
 
                 VStack(alignment: .leading, spacing: 5) {
                     Text("Feedback lab")
-                        .font(.system(size: 14, weight: .heavy))
-                        .foregroundStyle(DisconnectTheme.ink)
+                        .font(DashboardFont.semibold(15))
+                        .foregroundStyle(FeedbackScreenPalette.primaryText)
 
                     Text("Optional. Help us sharpen the nudges and find people for follow-up interviews.")
-                        .font(.system(size: 12, weight: .medium))
-                        .foregroundStyle(DisconnectTheme.mutedInk)
+                        .font(DashboardFont.regular(12))
+                        .foregroundStyle(FeedbackScreenPalette.secondaryText)
                         .lineSpacing(3)
                 }
             }
 
             VStack(alignment: .leading, spacing: 12) {
                 Text("How useful was your last nudge?")
-                    .font(.system(size: 12, weight: .heavy))
-                    .foregroundStyle(DisconnectTheme.ink)
+                    .font(DashboardFont.medium(12))
+                    .foregroundStyle(FeedbackScreenPalette.primaryText)
 
                 HStack(spacing: 8) {
                     ForEach(1...5, id: \.self) { value in
@@ -2794,21 +3221,23 @@ private struct FeedbackLabCard: View {
                         } label: {
                             Image(systemName: value <= rating ? "star.fill" : "star")
                                 .font(.system(size: 16, weight: .bold))
-                                .foregroundStyle(value <= rating ? DisconnectTheme.green : DisconnectTheme.subtleInk)
+                                .foregroundStyle(value <= rating ? FeedbackScreenPalette.selectedAccent : FeedbackScreenPalette.secondaryText)
                                 .frame(maxWidth: .infinity)
                                 .frame(height: 42)
-                                .background(RoundedRectangle(cornerRadius: 8).fill(value <= rating ? DisconnectTheme.green.opacity(0.1) : Color.white))
-                                .overlay(RoundedRectangle(cornerRadius: 8).stroke(value <= rating ? DisconnectTheme.green : DisconnectTheme.border, lineWidth: 1))
+                                .background(RoundedRectangle(cornerRadius: 8).fill(value <= rating ? FeedbackScreenPalette.selectedSurface : FeedbackScreenPalette.cardSurface))
+                                .overlay(RoundedRectangle(cornerRadius: 8).stroke(value <= rating ? FeedbackScreenPalette.green : FeedbackScreenPalette.border, lineWidth: 1))
                         }
                         .buttonStyle(.plain)
+                        .accessibilityLabel("\(value) stars")
+                        .accessibilityAddTraits(value <= rating ? .isSelected : [])
                     }
                 }
 
                 Group {
-                    PlaceholderTextEditor(text: $whatWorked, placeholder: "What worked?")
-                        .frame(height: 92)
-                    PlaceholderTextEditor(text: $whatCouldBeBetter, placeholder: "What could be better?")
-                        .frame(height: 92)
+                    FeedbackTextEditor(text: $whatWorked, placeholder: "What worked?")
+                        .frame(minHeight: 84, idealHeight: 84)
+                    FeedbackTextEditor(text: $whatCouldBeBetter, placeholder: "What could be better?")
+                        .frame(minHeight: 84, idealHeight: 84)
                 }
                 .disabled(feedbackStatus.isSubmitting)
 
@@ -2823,19 +3252,19 @@ private struct FeedbackLabCard: View {
                 } label: {
                     statusLabel(title: "Send Feedback", systemImage: "paperplane.fill", status: feedbackStatus)
                 }
-                .buttonStyle(PrimaryButtonStyle())
+                .buttonStyle(FeedbackSubmitButtonStyle())
                 .disabled(!canSubmitFeedback || feedbackStatus.isSubmitting)
                 .opacity(canSubmitFeedback ? 1 : 0.55)
             }
 
-            Divider()
+            Divider().overlay(FeedbackScreenPalette.border)
 
             Toggle(isOn: $researchConsent.animation(.easeInOut(duration: 0.2))) {
                 Text("I am open to a quick follow-up interview")
-                    .font(.system(size: 13, weight: .bold))
-                    .foregroundStyle(DisconnectTheme.ink)
+                    .font(DashboardFont.medium(13))
+                    .foregroundStyle(FeedbackScreenPalette.primaryText)
             }
-            .tint(DisconnectTheme.green)
+            .toggleStyle(FeedbackConsentToggleStyle())
 
             if researchConsent {
                 VStack(alignment: .leading, spacing: 12) {
@@ -2845,8 +3274,8 @@ private struct FeedbackLabCard: View {
 
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Which best describes you?")
-                            .font(.system(size: 12, weight: .heavy))
-                            .foregroundStyle(DisconnectTheme.ink)
+                            .font(DashboardFont.medium(12))
+                            .foregroundStyle(FeedbackScreenPalette.primaryText)
 
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 8) {
@@ -2855,12 +3284,12 @@ private struct FeedbackLabCard: View {
                                         userType = type
                                     } label: {
                                         Text(type)
-                                            .font(.system(size: 12, weight: .bold))
-                                            .foregroundStyle(userType == type ? Color.white : DisconnectTheme.ink)
+                                            .font(DashboardFont.medium(12))
+                                            .foregroundStyle(FeedbackScreenPalette.primaryText)
                                             .padding(.horizontal, 14)
                                             .frame(height: 36)
-                                            .background(RoundedRectangle(cornerRadius: 8).fill(userType == type ? DisconnectTheme.green : Color.white))
-                                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(userType == type ? DisconnectTheme.green : DisconnectTheme.border, lineWidth: 1))
+                                            .background(RoundedRectangle(cornerRadius: 8).fill(userType == type ? FeedbackScreenPalette.selectedSurface : FeedbackScreenPalette.cardSurface))
+                                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(userType == type ? FeedbackScreenPalette.green : FeedbackScreenPalette.border, lineWidth: 1))
                                     }
                                     .buttonStyle(.plain)
                                 }
@@ -2868,18 +3297,18 @@ private struct FeedbackLabCard: View {
                         }
                     }
 
-                    PlaceholderTextEditor(
+                    FeedbackTextEditor(
                         text: $researchNotes,
                         placeholder: "Anything we should ask you about? Optional."
                     )
-                    .frame(height: 74)
+                    .frame(minHeight: 74, idealHeight: 74)
 
                     Button {
                         submitResearchOptIn()
                     } label: {
                         statusLabel(title: "Join Interview List", systemImage: "person.crop.circle.badge.checkmark", status: researchStatus)
                     }
-                    .buttonStyle(PrimaryButtonStyle())
+                    .buttonStyle(FeedbackSubmitButtonStyle())
                     .disabled(!canSubmitResearch || researchStatus.isSubmitting)
                     .opacity(canSubmitResearch ? 1 : 0.55)
                 }
@@ -2888,15 +3317,14 @@ private struct FeedbackLabCard: View {
 
             if let message = statusMessage {
                 Text(message)
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(DashboardFont.medium(12))
                     .foregroundStyle(statusMessageColor)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
-        .padding(20)
-        .background(RoundedRectangle(cornerRadius: 14).fill(Color.white))
-        .overlay(RoundedRectangle(cornerRadius: 14).stroke(DisconnectTheme.border, lineWidth: 1))
-        .shadow(color: .black.opacity(0.08), radius: 4, x: 0, y: 2)
+        .padding(16)
+        .background(RoundedRectangle(cornerRadius: 16).fill(FeedbackScreenPalette.cardSurface))
+        .overlay(RoundedRectangle(cornerRadius: 16).stroke(FeedbackScreenPalette.border, lineWidth: 1))
     }
 
     private var feedbackMessage: String {
@@ -2934,19 +3362,21 @@ private struct FeedbackLabCard: View {
     private var statusMessageColor: Color {
         if case .failure = feedbackStatus { return .red }
         if case .failure = researchStatus { return .red }
-        return DisconnectTheme.green
+        return FeedbackScreenPalette.selectedAccent
     }
 
     private func statusLabel(title: String, systemImage: String, status: FeedbackSubmissionState) -> some View {
         HStack(spacing: 10) {
             if status.isSubmitting {
                 ProgressView()
-                    .tint(DisconnectTheme.ink)
+                    .tint(FeedbackScreenPalette.primaryText)
             } else {
                 Image(systemName: systemImage)
             }
             Text(status.isSubmitting ? "Sending..." : title)
         }
+        .font(DashboardFont.semibold(15))
+        .foregroundStyle(FeedbackScreenPalette.primaryText)
         .frame(maxWidth: .infinity)
     }
 
@@ -3011,6 +3441,81 @@ private enum FeedbackSubmissionState {
     }
 }
 
+private struct FeedbackSubmitButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .frame(maxWidth: .infinity, minHeight: 52)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(FeedbackScreenPalette.green)
+            )
+            .opacity(configuration.isPressed ? 0.85 : 1)
+    }
+}
+
+private struct FeedbackConsentToggleStyle: ToggleStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        Button {
+            configuration.isOn.toggle()
+        } label: {
+            HStack(spacing: 12) {
+                configuration.label
+
+                Spacer(minLength: 12)
+
+                ZStack {
+                    Capsule()
+                        .fill(configuration.isOn ? FeedbackScreenPalette.green : FeedbackScreenPalette.toggleTrack)
+                        .overlay(
+                            Capsule()
+                                .stroke(FeedbackScreenPalette.border, lineWidth: configuration.isOn ? 0 : 1)
+                        )
+
+                    Circle()
+                        .fill(FeedbackScreenPalette.cardSurface)
+                        .frame(width: 24, height: 24)
+                        .offset(x: configuration.isOn ? 14 : -14)
+                }
+                .frame(width: 58, height: 30)
+                .animation(.easeInOut(duration: 0.2), value: configuration.isOn)
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityRepresentation {
+            Toggle("I am open to a quick follow-up interview", isOn: configuration.$isOn)
+        }
+    }
+}
+
+private struct FeedbackTextEditor: View {
+    @Binding var text: String
+    let placeholder: String
+
+    var body: some View {
+        ZStack(alignment: .topLeading) {
+            TextEditor(text: $text)
+                .accessibilityLabel(placeholder)
+                .font(DashboardFont.regular(14))
+                .foregroundStyle(FeedbackScreenPalette.primaryText)
+                .scrollContentBackground(.hidden)
+                .padding(8)
+
+            if text.isEmpty {
+                Text(placeholder)
+                    .font(DashboardFont.regular(14))
+                    .foregroundStyle(FeedbackScreenPalette.secondaryText)
+                    .lineSpacing(4)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 16)
+                    .allowsHitTesting(false)
+            }
+        }
+        .background(RoundedRectangle(cornerRadius: 10).fill(FeedbackScreenPalette.background))
+        .overlay(RoundedRectangle(cornerRadius: 10).stroke(FeedbackScreenPalette.border, lineWidth: 1))
+    }
+}
+
 private struct FeedbackTextField: View {
     let title: String
     let placeholder: String
@@ -3019,17 +3524,17 @@ private struct FeedbackTextField: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
-                .font(.system(size: 12, weight: .heavy))
-                .foregroundStyle(DisconnectTheme.ink)
+                .font(DashboardFont.medium(12))
+                .foregroundStyle(FeedbackScreenPalette.primaryText)
 
             TextField(placeholder, text: $text)
-                .font(.system(size: 15, weight: .medium))
-                .foregroundStyle(DisconnectTheme.ink)
+                .font(DashboardFont.regular(14))
+                .foregroundStyle(FeedbackScreenPalette.primaryText)
                 .textInputAutocapitalization(.words)
                 .padding(.horizontal, 12)
                 .frame(height: 48)
-                .background(RoundedRectangle(cornerRadius: 8).fill(Color.white))
-                .overlay(RoundedRectangle(cornerRadius: 8).stroke(DisconnectTheme.border, lineWidth: 1))
+                .background(RoundedRectangle(cornerRadius: 10).fill(FeedbackScreenPalette.background))
+                .overlay(RoundedRectangle(cornerRadius: 10).stroke(FeedbackScreenPalette.border, lineWidth: 1))
         }
     }
 }
@@ -3038,16 +3543,49 @@ private struct CompactPromptEditor: View {
     let title: String
     let placeholder: String
     @Binding var text: String
+    var usesSettingsStyle = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(title)
-                .font(.system(size: 12, weight: .heavy))
-                .foregroundStyle(DisconnectTheme.ink)
+                .font(usesSettingsStyle ? DashboardFont.medium(12) : .system(size: 12, weight: .heavy))
+                .foregroundStyle(usesSettingsStyle ? SettingsScreenPalette.primaryText : DisconnectTheme.ink)
 
-            PlaceholderTextEditor(text: $text, placeholder: placeholder)
-                .frame(height: 72)
+            if usesSettingsStyle {
+                SettingsPromptTextEditor(text: $text, placeholder: placeholder)
+                    .frame(minHeight: 72, idealHeight: 72)
+            } else {
+                PlaceholderTextEditor(text: $text, placeholder: placeholder)
+                    .frame(height: 72)
+            }
         }
+    }
+}
+
+private struct SettingsPromptTextEditor: View {
+    @Binding var text: String
+    let placeholder: String
+
+    var body: some View {
+        ZStack(alignment: .topLeading) {
+            TextEditor(text: $text)
+                .accessibilityLabel(placeholder)
+                .font(DashboardFont.regular(13))
+                .foregroundStyle(SettingsScreenPalette.primaryText)
+                .scrollContentBackground(.hidden)
+                .padding(8)
+
+            if text.isEmpty {
+                Text(placeholder)
+                    .font(DashboardFont.regular(13))
+                    .foregroundStyle(SettingsScreenPalette.secondaryText)
+                    .padding(.horizontal, 14)
+                    .padding(.vertical, 16)
+                    .allowsHitTesting(false)
+            }
+        }
+        .background(RoundedRectangle(cornerRadius: 10).fill(SettingsScreenPalette.background))
+        .overlay(RoundedRectangle(cornerRadius: 10).stroke(SettingsScreenPalette.border, lineWidth: 1))
     }
 }
 
@@ -3060,25 +3598,24 @@ private struct SettingsInfoRow: View {
         HStack(spacing: 10) {
             Image(systemName: iconName)
                 .font(.system(size: 18, weight: .semibold))
-                .foregroundStyle(DisconnectTheme.green)
+                .foregroundStyle(SettingsScreenPalette.greenIcon)
                 .frame(width: 32, height: 32)
-                .background(Circle().fill(DisconnectTheme.green.opacity(0.1)))
+                .background(RoundedRectangle(cornerRadius: 8).fill(SettingsScreenPalette.selectedSurface))
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(title)
-                    .font(.system(size: 15, weight: .heavy))
-                    .foregroundStyle(DisconnectTheme.ink)
+                    .font(DashboardFont.semibold(13))
+                    .foregroundStyle(SettingsScreenPalette.primaryText)
                 Text(detail)
-                    .font(.system(size: 13, weight: .medium))
-                    .foregroundStyle(DisconnectTheme.mutedInk)
+                    .font(DashboardFont.regular(10))
+                    .foregroundStyle(SettingsScreenPalette.secondaryText)
             }
 
             Spacer()
         }
         .padding(12)
-        .background(RoundedRectangle(cornerRadius: 10).fill(Color.white))
-        .overlay(RoundedRectangle(cornerRadius: 10).stroke(DisconnectTheme.border, lineWidth: 1))
-        .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+        .background(RoundedRectangle(cornerRadius: 14).fill(SettingsScreenPalette.cardSurface))
+        .overlay(RoundedRectangle(cornerRadius: 14).stroke(SettingsScreenPalette.border, lineWidth: 1))
     }
 }
 

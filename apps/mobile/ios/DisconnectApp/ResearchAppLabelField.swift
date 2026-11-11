@@ -13,11 +13,12 @@ struct ResearchAppLabelField: View {
         VStack(alignment:.leading,spacing:4) {
             TextField("App name for the study (e.g. Instagram)",text:$label)
                 .modifier(DisconnectInputStyle())
+                .font(DashboardFont.regular(13))
                 .focused($focused).submitLabel(.done)
                 .onSubmit(save).onChange(of:focused) { active in if !active { save() } }.onDisappear(perform:save)
             Text("Use the app name shown above so the researcher can identify it. Apple’s private app token stays on your phone.")
-                .font(.caption).foregroundStyle(DisconnectTheme.mutedInk)
-            if !error.isEmpty { Text(error).font(.caption).foregroundStyle(.red) }
+                .font(DashboardFont.regular(10)).foregroundStyle(DashboardPalette.secondaryText)
+            if !error.isEmpty { Text(error).font(DashboardFont.regular(10)).foregroundStyle(.red) }
         }
     }
     private func save() {
