@@ -4,6 +4,16 @@
 **Read in order:** `PRD.md` → `TSD.md` → current Figma design → existing source repository.  
 **Design:** https://www.figma.com/design/ukmD2ZidJ9UR2XxUkvdPoJ/App-UI?node-id=0-1
 
+**Latest shared lifecycle controls (RN09B-D03c, 2026-11-11):** Schedule/Apply,
+device-first Stop, occurrence cancellation, confirmed self-reported completion and
+true installed Home status are implemented.536portable/698component(+2skips)/643API/
+233PG/90JVM/104phone-native pass; protected native files/settings unchanged. Read
+[lifecycle acceptance](../qa/quest-lifecycle.md) and latest notes. Anisha retains
+Auth/signin/onboarding/iOS; existing D02 is a review/integration handoff. Real-account
+SDK/app journeys, new combined accessibility/focus and signed/iOS acceptance remain
+pending. Development head0004 stays verified; no Auth admin/new hosted DDL in D03c.
+No full parent completion or push/merge/deployment is claimed.
+
 **Current RN09B-D02–D04 continuation (2026-11-11):** Ishmum authorized SDK/root,
 quest occurrence/credit/native integration and user-facing defaults, superseding
 older Auth/token deferral for this scope. D02 `0bbf714`/`f447e68`, D03a `999512a`;

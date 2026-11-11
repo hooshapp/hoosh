@@ -1649,3 +1649,16 @@ Detailed every-file/line ledger and commands are in the matching Plan 04 entry;
 Date2026-11-11. Owner Ishmum. Commit pending `feat(android): persist account-owned recurring quest protection`.
 
 Development head0004 is applied and verified. API normalization emits UTC canonical timestamps consumed by strict mobile decoders; shared fixture roundtrip tested. 643 deterministic API and 233 isolated PG checks pass. Plan03 lines22–28 cross-reference Plan04; joint managed-account/settings and deletion acceptance remain separate. All backend changed files/lines and reasons are recorded in Plan04 D03b to avoid duplicate ledger drift.
+
+
+### RN09B-D03c actual mobile execution HTTP extension
+
+Date2026-11-11. Owner Ishmum. Commit pending
+`feat(quests): connect account and device lifecycle controls`. Parent `b5e314f`.
+`apps/mobile/dev/profile/acceptance/quests-http.acceptance.ts` extends the existing
+normal-verifier/TCP/PG driver to eight write and two restart scenarios, including
+scheduling, owner isolation, committed-response loss, early completion rejection and
+immutable cancellation. `services/api/tests/db/test_mobile_quests_acceptance.py`
+updates exact nested counts.233realPG/643deterministicAPI pass. No server runtime
+or SQL migration change here; managed SDK accounts/deletion remain separate.
+Exact per-file lines and all consumer files are in Plan04 D03c's every-file ledger.

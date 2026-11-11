@@ -8,6 +8,7 @@ import {
   saveQuest,
   deleteQuest,
 } from '../../../src/features/quests/quests-api';
+import { readQuestExecution, scheduleQuest, recordQuestOutcome } from '../../../src/features/quests/quest-execution-api';
 
 type Identity = { user_id: string; token: string };
 const fixture = JSON.parse(process.env.HOOSH_QUESTS_ACCEPTANCE ?? '{}') as {
@@ -33,7 +34,8 @@ if (
 )
   throw new Error('Explicit isolated quest HTTP fixture required');
 const ID = '00000000-0000-4000-8000-000000000010',
-  TEMP = '00000000-0000-4000-8000-000000000011';
+  TEMP = '00000000-0000-4000-8000-000000000011',
+  LIFE = '00000000-0000-4000-8000-000000000012';
 const definition: QuestDefinition = {
   title: 'A saved quest',
   activity: 'Read',
@@ -94,6 +96,12 @@ function client(identity: Identity) {
     write: (id: string, revision: number, value = definition) =>
       scope().write((op) => saveQuest(id, { expected_revision: revision, definition: value }, op)),
     delete: (id: string, revision: number) => scope().write((op) => deleteQuest(id, revision, op)),
+    execution: () => scope().read((op) => readQuestExecution(LIFE, op)),
+    schedule: (revision: number) => scope().write((op) => scheduleQuest(LIFE, {
+      expected_revision: revision, quest_revision: 1, enabled: true,
+      first_date: new Date(Date.now() + 86400000).toISOString().slice(0, 10),
+    }, op)),
+    outcome: (day: string, state: 'completed' | 'cancelled') => scope().write((op) => recordQuestOutcome(LIFE, 2, day, state, op)),
     lose: () => {
       lose = true;
     },
@@ -165,14 +173,48 @@ if (fixture.phase === 'write') {
     expect((await a.read()).quest?.definition.title).toBe('Final persisted 🦖');
     expect((await c.page()).quests).toEqual([]);
   });
-} else
+  test('schedule wire crosses actual API/PostgreSQL independently of definition Save and other owners', async () => {
+    await a.write(LIFE, 0, { ...definition, repeat: 'daily', weekdays: [] });
+    expect((await a.execution()).revision).toBe(0);
+    expect((await a.schedule(0)).revision).toBe(1);
+    expect((await b.execution()).versions).toEqual([]);
+    await expect(b.schedule(0)).rejects.toMatchObject({ code: 'QUEST_CONFLICT', details: { current_revision: 0 } });
+    expect((await a.execution()).enabled).toBe(true);
+  });
+  test('lost committed schedule response is not retried and explicit execution GET recovers version', async () => {
+    a.lose();
+    const count = a.trace.filter((m) => m === 'PUT').length;
+    await expect(a.schedule(1)).rejects.toMatchObject({ kind: 'network', requestMayHaveCommitted: true });
+    expect(a.trace.filter((m) => m === 'PUT')).toHaveLength(count + 1);
+    expect((await a.execution()).revision).toBe(2);
+  });
+  test('future completion is rejected; explicit cancellation is immutable and idempotent over HTTP', async () => {
+    const execution = await a.execution();
+    const next = execution.occurrences.find((v) => v.schedule_revision === 2)!;
+    expect(next.state).toBe('upcoming');
+    await expect(a.outcome(next.local_date, 'completed')).rejects.toMatchObject({ kind: 'validation' });
+    expect((await a.outcome(next.local_date, 'cancelled')).credits).toBe(0);
+    expect((await a.outcome(next.local_date, 'cancelled')).state).toBe('cancelled');
+    await expect(a.outcome(next.local_date, 'completed')).rejects.toMatchObject({ kind: 'conflict' });
+    expect((await a.execution()).credits).toBe(0);
+  });
+} else {
   test('cold mobile clients read identical quests and tombstones after actual API restart', async () => {
     const own = await a.read();
     expect(own.revision).toBe(3);
     expect(own.quest?.definition.title).toBe('Final persisted 🦖');
     expect(await a.read(TEMP)).toEqual({ quest: null, revision: 2 });
-    expect((await a.page()).quests).toHaveLength(1);
+    expect((await a.page()).quests).toHaveLength(2);
     expect((await b.read()).quest?.definition.title).toBe('B independent');
     expect((await c.page()).quests).toEqual([]);
     expect(a.trace.every((m) => m === 'GET')).toBe(true);
   });
+  test('execution snapshots and cancelled outcomes survive actual API restart without replay', async () => {
+    const execution = await a.execution();
+    expect(execution.revision).toBe(2); expect(execution.enabled).toBe(true);
+    expect(execution.occurrences.some((v) => v.state === 'cancelled')).toBe(true);
+    expect(execution.credits).toBe(0);
+    expect((await b.execution()).versions).toEqual([]);
+    expect(a.trace.every((m) => m === 'GET')).toBe(true);
+  });
+}

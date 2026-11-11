@@ -37,7 +37,7 @@ export function ConnectedQuestsScreen({
               items: data.quests.map((q) => ({
                 id: q.quest_id,
                 title: q.definition.title,
-                statusLabel: 'Saved · not active',
+                statusLabel: 'Saved · open to review schedule and device status',
                 scheduleLabel: `${formatTime(q.definition.start_local)}–${formatTime(q.definition.end_local)}${q.definition.next_day ? ' (next day)' : ''} · ${q.definition.repeat === 'weekly' ? q.definition.weekdays.map((d) => weekdays[d].slice(0, 3)).join(', ') : q.definition.repeat === 'daily' ? 'Daily' : 'Does not repeat'} · ${q.definition.timezone_id}`,
               })),
             }

@@ -1,0 +1,69 @@
+{
+  "scope": "RN09B-D03c shared lifecycle implementation and independent D04 checks; joint/platform acceptance remains pending",
+  "date": "2026-11-11",
+  "owner": "Ishmum",
+  "parent": "b5e314f",
+  "source_sha256": {
+    "apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/QuestScheduleChecks.kt": "fb9986974f007fc531d0dc301a1ec940d29b4ac93b69083273221a8522baad42",
+    "apps/mobile/dev/profile/acceptance/quests-http.acceptance.ts": "691e6923388d2cc74b7ef14c5db0c91bb0f4b6422f8ed770b82094fa214a40f5",
+    "apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/InterventionEngine.kt": "413defe4445d014b537f9bca30a03bb06e71e7cc630964940884c62e44c2c0bd",
+    "apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/QuestSchedules.kt": "73fa64d64bb26f28e6c1d6a913ea78c7ec202a92fb54c6eb0ac4430f3feccb7c",
+    "apps/mobile/src/features/protection/device-protection.tsx": "bcdfc36bf48c38305f6512c499ae048ed0f35ed77f8e34c31afa06ca54440121",
+    "apps/mobile/src/features/protection/installed-device-protection.test.tsx": "5cd66b55873c780929acba8b422c4755032a87c8cb818f3816f226e0a8b2625d",
+    "apps/mobile/src/features/protection/installed-device-protection.tsx": "f27f5e86a16ce99028d994d9b81e8bc36dd5c013a489eec0aaa18c1d380f7535",
+    "apps/mobile/src/features/quests/README.md": "9204e1c6e60679cb06b78fa75a16b55ae33f4f4b5ee6d7f1bc7e5bf5fb1ced13",
+    "apps/mobile/src/features/quests/connected-quests-screen.tsx": "4b77dbc1949698f92be139480879ddd47757838f797ff1021baf9cf71613bcdc",
+    "apps/mobile/src/features/quests/managed-quest-editor.tsx": "4d7f4d60431003a237e4b575210f484933c71c501a64bf84f7e1ef30e87f9b8d",
+    "apps/mobile/src/features/quests/managed-quest-lifecycle.test.tsx": "259ee00d7b01ea96bd9cea3b92589629768c4fecf1a02c336f10a89f9ea9770e",
+    "apps/mobile/src/features/quests/managed-quests.test.tsx": "8159c4c5a66a6e3b21103011ec267c6bc9264681bb846d043ce8ebb2776249df",
+    "apps/mobile/src/features/quests/quest-execution-panel.test.tsx": "a70b1384cac5b299f15024d64bc2e52d98eec03b6215cc0bc71cb55991090313",
+    "apps/mobile/src/features/quests/quest-execution-panel.tsx": "73932b5a4a32400a1da66c5d3b5b7032acd93278f910e604fa34d24b33c57019",
+    "apps/mobile/src/features/quests/quest-lifecycle.test.ts": "36f2ba7418323ecbe72ec3b5ed8fc0adb2a2646886948e51d381d65de3ad4b58",
+    "apps/mobile/src/features/quests/quest-lifecycle.ts": "8d0f44c164cc06175c2ee35a4cd536c37c2296f6e3316b3b3164890e5fff8f2d",
+    "apps/mobile/src/features/quests/use-quest-lifecycle.ts": "f846993c7333d98560823e1190af869166651e176772c9102a747b0a77f5aaab",
+    "services/api/tests/db/test_mobile_quests_acceptance.py": "3ba34e91299d76680c6bc991406a5f4c84722accf750e8ba15bf9e1e5f7290b3"
+  },
+  "checks": {
+    "portable": 536,
+    "component": 698,
+    "component_skipped": 2,
+    "api": 643,
+    "postgresql": 233,
+    "nested_mobile_http_write": 8,
+    "nested_mobile_http_restart": 2,
+    "pure_jvm": 90,
+    "physical_android_native": 104,
+    "debug_and_instrumentation_apks": "passed",
+    "release_library_kotlin": "passed",
+    "web_isolation_files": 38,
+    "svg_assets": 71,
+    "lint": "0errors,11existingwarnings",
+    "typecheck": "passed"
+  },
+  "device_boundary": {
+    "model": "Pixel8Pro",
+    "android": 16,
+    "api": 36,
+    "apk_install": "update, no app data clear",
+    "known_native_files": "unchanged",
+    "settings": "unchanged",
+    "credential_or_password_screen_inspection": "none",
+    "screenshots": "none",
+    "real_account_sdk_journey": "pending with Anisha"
+  },
+  "cleanup": {
+    "task_api_and_metro": "stopped",
+    "task_reverse_ports": "removed, original empty mapping restored",
+    "isolated_postgres": "stopped, labeled volume retained",
+    "auth_admin_and_user_deletion": "none"
+  },
+  "remaining": [
+    "Anisha review/integration of existing D02 session producer",
+    "real managed-account SDK restoration/refresh/signout/replacement and account isolation",
+    "actual connected app scheduling/native pause/offline/Stop/completion journey",
+    "new combined physical TalkBack/large-text/focus acceptance",
+    "signed Android app/store acceptance",
+    "Anisha iOS bridge/build unavailable; actual signed iOS acceptance pending"
+  ],
+  "documentation": "Plan04 D03c entry and docs/qa/quest-lifecycle.md"
+}

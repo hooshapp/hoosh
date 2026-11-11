@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import { Text, View } from 'react-native';
 import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/field';
@@ -8,19 +8,46 @@ import { useRouteDraftGuard } from '@/features/editors/use-route-draft-guard';
 import { useQuestEditor } from './use-quest-editor';
 import { QuestAccessFeedback } from './quest-access-feedback';
 import { QuestEditor } from './quest-editor';
+import { useNativeOwner } from '@/features/protection/native-owner-boundary';
+import { useQuestLifecycle } from './use-quest-lifecycle';
+import { QuestExecutionPanel } from './quest-execution-panel';
+import { useIsFocused } from 'expo-router';
+import { useAppRuntime } from '@/features/account/app-runtime-context';
+
+type Props = { questId: string; creating?: boolean; onBack: () => void };
+export function ManagedQuestEditor(props: Props) {
+  const owner = useNativeOwner();
+  const runtime = useAppRuntime();
+  return owner || runtime ? (
+    <LifecycleQuestEditor
+      key={owner ? `${owner.owner}:${owner.generation}` : 'unbound'}
+      {...props}
+    />
+  ) : (
+    <QuestDefinitionEditor {...props} />
+  );
+}
+function LifecycleQuestEditor(props: Props) {
+  const visible = useIsFocused();
+  const lifecycle = useQuestLifecycle(props.questId, true, visible);
+  return <QuestDefinitionEditor {...props} lifecycle={lifecycle} />;
+}
 /** Caller must key by owner generation and quest ID; this never creates Auth context. */
-export function ManagedQuestEditor({
+function QuestDefinitionEditor({
   questId,
   creating = false,
   onBack,
-}: {
-  questId: string;
-  creating?: boolean;
-  onBack: () => void;
-}) {
+  lifecycle,
+}: Props & { lifecycle?: ReturnType<typeof useQuestLifecycle> }) {
   const exit = useRef(onBack);
   const editor = useQuestEditor(questId, creating, () => exit.current());
-  const guard = useRouteDraftGuard(editor.form?.navigationDirty ?? false);
+  const [scheduleDirty, setScheduleDirty] = useState(false);
+  const navigationDirty =
+    (editor.form?.navigationDirty ?? false) ||
+    scheduleDirty ||
+    !!lifecycle?.state.pendingWrite ||
+    !!lifecycle?.state.reviewRequired;
+  const guard = useRouteDraftGuard(navigationDirty);
   useLayoutEffect(() => {
     exit.current = () => guard.exit(onBack);
   }, [guard, onBack]);
@@ -29,9 +56,7 @@ export function ManagedQuestEditor({
     <View style={{ gap: 12 }}>
       <QuestAccessFeedback online={editor.online} />
       {editor.saved ? (
-        <Text accessibilityLiveRegion="polite">
-          Quest saved. App interventions have not changed.
-        </Text>
+        <Text accessibilityLiveRegion="polite">Quest details saved.</Text>
       ) : null}
       {editor.needsReview ? (
         <Text accessibilityRole="alert">
@@ -69,7 +94,9 @@ export function ManagedQuestEditor({
               ? `${editor.review.quest.definition.title} · ${editor.review.quest.definition.activity} · ${editor.review.quest.definition.start_local}–${editor.review.quest.definition.end_local}${editor.review.quest.definition.next_day ? ' (next day)' : ''} · ${editor.review.quest.definition.repeat} · ${editor.review.quest.definition.weekdays.join(', ')} · ${editor.review.quest.definition.timezone_id}`
               : 'No saved quest'}
           </Text>
-          <Text>Compare it with your edits. Keeping edits does not save them.</Text>
+          <Text>
+            Compare it with your edits. Keeping edits does not save them.
+          </Text>
           <Button
             label="Keep my quest edits"
             disabled={!editor.enabled || !editor.allowKeep}
@@ -82,6 +109,14 @@ export function ManagedQuestEditor({
           />
         </>
       ) : null}
+      {editor.form?.base.quest && lifecycle ? (
+        <QuestExecutionPanel
+          quest={editor.form.base.quest}
+          definitionDirty={editor.form.dirty || editor.form.state !== 'ready'}
+          lifecycle={lifecycle}
+          onDraftDirtyChange={setScheduleDirty}
+        />
+      ) : null}
     </View>
   );
   return (
@@ -93,11 +128,25 @@ export function ManagedQuestEditor({
           draft={editor.form.draft.quest}
           dirty={editor.form.dirty}
           externalIssue={editor.form.issue}
-          navigationDirty={editor.form.navigationDirty}
-          state={editor.form.state}
-          onChange={(quest) => editor.form?.onChange({ ...editor.form.draft, quest })}
+          navigationDirty={navigationDirty}
+          state={lifecycle?.state.pendingWrite ? 'saving' : editor.form.state}
+          onChange={(quest) =>
+            editor.form?.onChange({ ...editor.form.draft, quest })
+          }
           onSave={editor.form.onSave}
-          onDeleteQuest={editor.form.onDelete}
+          onDeleteQuest={
+            editor.form.onDelete && (!lifecycle || lifecycle.owner)
+              ? () => {
+                  if (!lifecycle) {
+                    editor.form?.onDelete?.();
+                    return;
+                  }
+                  void lifecycle.controller.prepareDelete().then((stopped) => {
+                    if (stopped) editor.form?.onDelete?.();
+                  });
+                }
+              : undefined
+          }
           onDiscard={editor.form.onDiscard}
           onBack={back}
           restrictionNotice="Saving keeps these details for later. It does not start app interventions or award credits."
@@ -106,10 +155,14 @@ export function ManagedQuestEditor({
               label="Quest time zone"
               hint="For example America/New_York. These are saved time preferences."
               value={editor.form.draft.timezone}
-              editable={editor.form.state !== 'saving'}
+              editable={
+                editor.form.state !== 'saving' && !lifecycle?.state.pendingWrite
+              }
               autoCapitalize="none"
               autoCorrect={false}
-              onChangeText={(timezone) => editor.form?.onChange({ ...editor.form.draft, timezone })}
+              onChangeText={(timezone) =>
+                editor.form?.onChange({ ...editor.form.draft, timezone })
+              }
             />
           }
           feedback={feedback}
@@ -139,7 +192,9 @@ export function ManagedQuestEditor({
               }}
             />
           ) : null}
-          <Text style={editorStyles.body}>App interventions have not changed.</Text>
+          <Text style={editorStyles.body}>
+            App interventions have not changed.
+          </Text>
         </EditorPage>
       )}
     </View>

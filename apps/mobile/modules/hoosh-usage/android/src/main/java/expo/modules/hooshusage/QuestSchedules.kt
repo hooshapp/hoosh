@@ -27,6 +27,18 @@ object QuestSchedules {
   fun reason(questId: String, revision: Int, day: LocalDate): String =
     "q_${questId.replace("-", "")}_v${revision}_d${day.toString().replace("-", "")}"
 
+  /** Keep future cancellations even outside the read horizon, discard only expired/removed occurrences. */
+  fun pendingCancellation(quests: List<QuestInstallation>, reason: String, now: Long): Boolean {
+    if (!isReasonId(reason)) return false
+    val raw = reason.takeLast(8)
+    val day = try { LocalDate.parse("${raw.take(4)}-${raw.substring(4, 6)}-${raw.takeLast(2)}") } catch (_: Exception) { return false }
+    return quests.any { q ->
+      if (reason(q.questId, q.revision, day) != reason) false
+      else compile(q, day.atStartOfDay(ZoneId.of(q.schedule.timezone)).toInstant().toEpochMilli())
+        .any { it.reasonId == reason && it.endsAt > now }
+    }
+  }
+
   fun compile(value: QuestInstallation, now: Long): List<InterventionWindow> {
     validate(value)
     val first = LocalDate.parse(value.firstDate)

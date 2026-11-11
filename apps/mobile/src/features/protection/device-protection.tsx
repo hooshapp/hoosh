@@ -9,6 +9,8 @@ import { deviceProtectionIntegration } from '@/infrastructure/native/protection-
 import { ProtectionStatus } from './protection-status';
 import { useProtectionStatus } from './use-protection-status';
 import { useUsagePermissionAction } from './use-usage-permission-action';
+import { useNativeOwner } from './native-owner-boundary';
+import { InstalledDeviceProtection } from './installed-device-protection';
 
 const subscribe = (notify: () => void) => {
   const subscription = AppState.addEventListener('change', notify);
@@ -26,6 +28,8 @@ export function UnavailableDeviceProtection() {
 }
 /** Existing Router host provides focus; private Auth/cache state is not native ownership evidence. */
 export function DeviceProtection() {
+  const owner = useNativeOwner();
+  if (owner) return <InstalledDeviceProtection key={`${owner.owner}:${owner.generation}`} owner={owner} />;
   return deviceProtectionIntegration.availability === 'connected' ? (
     <FocusedProtection integration={deviceProtectionIntegration} />
   ) : (

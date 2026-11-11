@@ -1,5 +1,23 @@
 # Quests — RN-09b presentation and saved management
 
+## Current lifecycle implementation — RN09B-D03c, 2026-11-11
+
+Definitions, execution API and native Android product ports now connect through
+account-scoped shared detail/editor controls. Save is distinct from explicit dated
+Schedule/Apply. Native receipt and API version are displayed separately; Stop is
+local-first, cancellation is occurrence-specific and post-end completion confirms
++50 once server-side. Unknown responses require explicit Check, never automatic
+write replay. Existing original assets/components are reused. The list says to open
+and review real schedule/device status rather than blanket “not active.”
+
+The normal runtime gates actions by account generation and verified native owner;
+no iOS success stub exists. Anisha owns Auth/signin/onboarding/iOS and reviews D02's
+session handoff. Managed-account/TalkBack/signed/iOS acceptance remains pending.
+See [lifecycle runbook](../../../../../docs/qa/quest-lifecycle.md). The source-only
+statements below describe historical presentation checkpoints, not current absence
+of saved definitions or lifecycle controls.
+
+
 
 ## Current RN09B-D01 management consumer
 

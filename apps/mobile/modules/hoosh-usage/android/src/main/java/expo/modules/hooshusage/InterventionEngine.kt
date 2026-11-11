@@ -84,8 +84,9 @@ class InterventionEngine(private val disk: InterventionPersistence) {
     // Keep current/active intent receipts; bounded inactive metadata must never become a lifetime quest quota.
     previousReceipts.keys.filter { it !in protectedIds }.sorted().takeLast(256 - receipts.size)
       .forEach { receipts[it] = previousReceipts.getValue(it) }
-    val skipped = if (versions.isEmpty()) old?.plan?.cancelledQuestReasons.orEmpty().filterNot { it.startsWith(prefix) }.toSet()
-      else old?.plan?.cancelledQuestReasons.orEmpty() + cancelled
+    val retained = old?.plan?.cancelledQuestReasons.orEmpty().filter { QuestSchedules.pendingCancellation(quests, it, now) }.toSet()
+    val skipped = if (versions.isEmpty()) retained.filterNot { it.startsWith(prefix) }.toSet()
+      else retained + cancelled.filter { QuestSchedules.pendingCancellation(quests, it, now) }
     InterventionValidation.require(skipped.size <= 256, "ERR_QUEST_LIMIT")
     var plan = InterventionPlan(owner, expected + 1, selection.revision, old?.plan?.apps.orEmpty() + selection.apps,
       preserved, policy, (if (enabled) old?.plan?.weekly?.copy(apps = selection.apps) else old?.plan?.weekly), quests, receipts, skipped)
@@ -105,13 +106,9 @@ class InterventionEngine(private val disk: InterventionPersistence) {
     val prefix = "q_${questId.replace("-", "")}_"
     InterventionValidation.require(reason.startsWith(prefix) && reason.matches(Regex("q_[0-9a-f]{32}_v[1-9][0-9]{0,9}_d[0-9]{8}")))
     if (reason in old.plan.cancelledQuestReasons) return old
-    val raw = reason.takeLast(8)
-    val day = try { java.time.LocalDate.parse("${raw.take(4)}-${raw.substring(4,6)}-${raw.takeLast(2)}") } catch (_: Exception) { throw InterventionFailure("ERR_QUEST_DATE") }
-    val valid = old.plan.quests.filter { it.questId == questId }.any { q ->
-      QuestSchedules.compile(q, day.atStartOfDay(java.time.ZoneId.of(q.schedule.timezone)).toInstant().toEpochMilli()).any { it.reasonId == reason && it.endsAt > now }
-    }
+    val valid = QuestSchedules.pendingCancellation(old.plan.quests.filter { it.questId == questId }, reason, now)
     InterventionValidation.require(valid, "ERR_QUEST_OCCURRENCE")
-    val skipped = old.plan.cancelledQuestReasons + reason
+    val skipped = old.plan.cancelledQuestReasons.filter { QuestSchedules.pendingCancellation(old.plan.quests, it, now) }.toSet() + reason
     InterventionValidation.require(skipped.size <= 256, "ERR_QUEST_LIMIT")
     val plan = old.plan.copy(revision = expected + 1, cancelledQuestReasons = skipped, windows = old.plan.windows.filter { it.reasonId != reason })
     return persist(old.copy(plan = plan, allowances = old.allowances.filter { it.reasonId != reason }.map { it.copy(revision = plan.revision) }, events = old.events + event("rule_deactivated", reason, plan.revision, now)))

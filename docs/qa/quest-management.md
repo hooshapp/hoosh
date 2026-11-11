@@ -3,6 +3,11 @@
 Date: 2026-11-11. Owner: Ishmum. Contract:
 [quest definitions](../architecture/quest-definition-management.md).
 
+**Current continuation:** RN09B-D03c now wires the lifecycle controls. The list
+says **Saved · open to review schedule and device status**. See
+[quest lifecycle acceptance](quest-lifecycle.md) for actual scope/evidence and D04
+gates; the no-lifecycle/no-root statements below are historical D01 evidence.
+
 ## What is implemented
 
 Create, list, reload, edit and delete saved quest definitions with a strict API,

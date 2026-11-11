@@ -4,7 +4,7 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN09B-D02–D04 active. D02 SDK/root producer `0bbf714` and retained Android backup exclusions `f447e68` implemented; actual managed-account/device acceptance pending. D03a `999512a` backend and D03b native infrastructure accepted at the bounds below; connected shared controls D03c and full D04 remain in progress. Development is verified at0004. New user request lifts earlier quest Auth/token deferral; Anisha confirmed iOS integration is not ready.
+**Current part:** RN09B-D02–D04 active. D02 SDK/root producer `0bbf714` and retained Android backup exclusions `f447e68` implemented; actual managed-account/device acceptance pending. D03a `999512a`, D03b `b5e314f` native infrastructure and D03c shared controls are implemented at the independent evidence bounds below; full joint D02/D03/D04 acceptance remains pending. Development is verified at0004. Ishmum reiterated Anisha owns Auth/signin/onboarding; existing D02 awaits her review/integration and real-account acceptance. Anisha confirmed iOS integration is not ready.
 
 **Implementation branch:** `task/react-native/rn-09b-lifecycle-integration`; base published `b9bf936`. Local commits only; no main merge/deployment or iOS acceptance.
 
@@ -5313,7 +5313,7 @@ parent f447e68; own hash Pending until next normal notes update.
 ### RN09B-D03b — Persist account-owned recurring quest protection
 
 Date2026-11-11. Owner Ishmum. Parent `999512a`. Branch
-`task/react-native/rn-09b-lifecycle-integration`. Commit pending:
+`task/react-native/rn-09b-lifecycle-integration`. Commit `b5e314f`:
 `feat(android): persist account-owned recurring quest protection`.
 
 **Implemented:** main-source native product actor/selection/service and explicit
@@ -5432,12 +5432,155 @@ quest/owner changes. Main and debug copies are a move, never two live actors.
 - `services/api/app/schemas/quest_execution.py`: lines 1–89. Normalize all execution timestamps to UTC at response schema boundary, publish Z-suffix and bounded response constraints and nonnegative aggregate fields; no SQL schema change.
 - `services/api/tests/test_quest_occurrences.py`: lines 1–107. Add shared execution-fixture response validation and offset-to-UTC normalization regression; existing pure occurrence/DST tests stay intact.
 
-### RN09B-D03c — Connected lifecycle controls (in progress)
+### RN09B-D03c — Connect account and device lifecycle controls
 
-Controller/UI work remains outside the D03b commit until its own complete file
-ledger and checks are recorded. Current working code connects explicit schedule,
-Apply, Stop-local-first, reason-specific cancellation, self-report completion and
-confirmed owner takeover. Thirteen focused lifecycle cases pass, including
-uncertain writes/account replacement/offline Stop. Actual UI/device acceptance
-is pending. A request for manual test-account login is pending; no secrets asked
-in chat. Do not treat these initial focused checks as final whole-workspace evidence.
+Date2026-11-11. Owner Ishmum. Parent `b5e314f`. Branch
+`task/react-native/rn-09b-lifecycle-integration`. Commit pending:
+`feat(quests): connect account and device lifecycle controls`.
+
+**Implemented:** existing quest detail/editor connects explicit first-date
+Schedule/Update/Apply, device-first Stop, single dated cancellation, explicit
+post-end self-report completion and exact once-only +50 account receipt. Strict
+native/client boundaries are consumed without app identifiers or auto-write replay.
+Raw date/definition/pending/uncertain guards share existing navigation protection.
+Each confirmation returns focus to its own real trigger. Background reads are not
+unfinished writes. Product deletion first confirms local Stop; unbound product
+runtimes cannot silently delete a potentially installed quest. Home now reads
+actual installed scheduled/active state; list no longer labels every quest inactive.
+
+**Decisions/ownership:** settings provide complete count/minutes or installation
+uses the current native policy; reset zone stays stable and is visibly shown.
+Missing prerequisites link to existing editors. Expired cancellation metadata is
+pruned, retaining far-future cancellations. PM log/register updated as engineering
+defaults, not new answers. Ishmum explicitly reiterated Auth/signin/onboarding is
+Anisha's work. The already-added D02 session foundation is a handoff for her review;
+real-account sign-in/SDK/native app acceptance is pending. No further Auth flow,
+credential/token request in chat or Auth administration was implemented here.
+Anisha confirmed iOS bridge/build is not ready. Existing parent/part IDs unchanged.
+
+**Measured fixes:** native cancellation retention initially accumulated a lifetime
+256 limit; it now discards only expired/removed occurrences and retains future
+ones beyond preview. Integration tests initially supplied an invalid null activities
+fixture; corrected to the real empty settings contract. Actual editor/hooks/actor
+now prove server-then-device scheduling, no activation on read, dirty-definition
+blocking and native-Stop-before-delete. Each action owns its own modal trigger,
+rather than sharing a misleading last-control focus reference. Home maps its real
+installed revision and explicitly distinguishes scheduled from active. Date snapshots
+render against server observation, not an impure render-time clock. The final dirty
+header/zone-lock correction was rechecked with types and24focused editor results.
+
+**Actual checks:** final `npm run check` passes536 portable,698 component (+2skips,
+88suites),643 deterministic API;0lint errors/11existing warnings; types/Ruff/assets/
+generated-contract checks pass. `npm run api:db:test` passes233 PG17 tests including
+existing mobile HTTP driver now8write+2restart scenarios using actual TCP/FastAPI/
+normal ephemeral JWT verification/owner RLS. No Supabase SDK/managed login claim.
+`npm run mobile:check-intervention-engine` passes90 JVM cases. Debug+test APK and
+release library Kotlin compile pass; APK updates use install-r without clearing
+app data. Physical Pixel8Pro/Android16/API36 instrumentation passes104native cases.
+Known native phone file contents and original settings compare unchanged after all
+checks. No permissions/TalkBack/font/animation settings changed; no screenshots or
+password/credential fields inspected. Actual shared UI journey remains unrun.
+Production export/isolation passes38JS/HTML files and71originalSVGs.
+
+**Cleanup/evidence:** task-owned API/Metro are stopped; task reverse8000/8081 mappings
+removed, restoring original empty list. Dedicated test DB container/network stopped
+using existing guarded `api:db:down`, labeled volume retained. Private baseline
+excludes SDK credentials. Hosted execution head0004 from D03b remains unchanged;
+no migration/Auth-provider/user/deletion/reset action in D03c. Source fingerprints
+and evidence limits are in the linked artifact; original assets/workspace files
+are excluded from staging. Local commit only, no push/main merge/deployment.
+
+**Remaining/next:** coordinated Anisha review of D02 and actual managed-account
+restore/refresh/signout/replacement/isolation; actual product quest/native pause,
+offline Stop/cancellation/completion journey; new combined physical TalkBack/font/
+focus/IME acceptance; signed Android app/store acceptance; Anisha's unavailable
+signed iOS bridge/upgrade acceptance. Native instrumentation and iOS-preset component
+results do not establish these. D02/D03 have independent implementation evidence,
+not full joint acceptance; D04 and Plan04 remain open. Dino/spending/streak/native
+quit award/usage and generated suggestions keep their own existing feature refs.
+
+#### RN09B-D03c every-file ledger
+
+Line references below are in this commit. Formatting of new controls uses a
+one-off pinned formatter with existing single quotes; no dependency/config change.
+
+- `apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/QuestScheduleChecks.kt`: lines 153–170. Add regressions for pruning a full set of expired cancellation records and retaining a cancelled far-future date through Apply; cancellation limits must not become a lifetime user quota.
+- `apps/mobile/dev/profile/acceptance/quests-http.acceptance.ts`: lines 11, 37–38, 99–104, 176–201, 207, 212–220. Extend existing guarded portable HTTP driver to independent explicit scheduling, normal-verifier owner isolation, a truly committed lost response, future-completion rejection, idempotent/immutable cancellation and persistent execution after actual API restart; original definition CRUD tests remain.
+- `apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/InterventionEngine.kt`: lines 87–89, 109, 111. Prune cancelled reasons against actual installed version/date bounds on Apply/cancel; retain future independent cancellations and keep single-occurrence idempotency. Stop still removes only its quest prefix.
+- `apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/QuestSchedules.kt`: lines 30–41. Add pendingCancellation: validate reason/date/version, compile in the saved zone at that date and keep only occurrences whose end is still future. Do not discard a future cancellation simply because preview does not show it.
+- `apps/mobile/src/features/protection/device-protection.tsx`: lines 12–13, 31–32. Use the actual installed-state component only with a verified native owner, keyed by account generation. Retain the old usage-only/unsupported view for unbound hosts without inventing iOS support.
+- `apps/mobile/src/features/protection/installed-device-protection.test.tsx`: lines 1–42. Build explicit synthetic account/API/native fixtures and scope cleanup; no managed credentials or actual platform acceptance is implied.
+- `apps/mobile/src/features/protection/installed-device-protection.test.tsx`: lines 43–51. Verify uses installed active native evidence rather than the legacy usage-only inactive message; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/protection/installed-device-protection.test.tsx`: lines 52–60. Verify distinguishes future installed reasons from an active intervention; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/protection/installed-device-protection.test.tsx`: lines 61–77. Verify masks status on background and suppresses a late read until foreground rechecks; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/protection/installed-device-protection.tsx`: lines 1–87. Scope read-only native status by verified owner and route focus; memoize/dispose the reader, key tickets and time-bound late results. Root focusManager masks background reads and foreground polling never writes.
+- `apps/mobile/src/features/protection/installed-device-protection.tsx`: lines 88–134. Show scheduled separately from active/intervention/permission/unknown state using actual native installed evidence. This is not proof the latest account version is installed; provide explicit read/access controls with sanitized failure.
+- `apps/mobile/src/features/quests/README.md`: lines 3–20. Add the current implemented quest lifecycle/ownership/acceptance checkpoint above historical presentation-only documentation; preserve original asset provenance and scope history.
+- `apps/mobile/src/features/quests/connected-quests-screen.tsx`: lines 40. Replace blanket Saved/not-active with an invitation to review real account/device status in detail; a saved definition alone proves neither activation nor stopping.
+- `apps/mobile/src/features/quests/managed-quest-editor.tsx`: lines 1–35. Use real lifecycle controls in configured product runtimes and verified owner scopes; keep isolated legacy definition-only QA behavior. Key replacement owner generations and reuse Router focus.
+- `apps/mobile/src/features/quests/managed-quest-editor.tsx`: lines 36–54. Combine raw definition/date and actual pending/uncertain writes in the existing route guard and dirty header; background reads do not become unsaved-write warnings.
+- `apps/mobile/src/features/quests/managed-quest-editor.tsx`: lines 55–121. Use precise Quest details saved text and retain conflict/latest-definition recovery; add execution panel for saved quests with definition-dirty gating.
+- `apps/mobile/src/features/quests/managed-quest-editor.tsx`: lines 122–202. Lock form/zone during execution writes and confirm native Stop before delete callback. Hide delete when the product runtime lacks a verified native binding, preserving other accounts/rules on failures.
+- `apps/mobile/src/features/quests/managed-quest-lifecycle.test.tsx`: lines 1–190. Build explicit synthetic account/API/native fixtures and scope cleanup; no managed credentials or actual platform acceptance is implied.
+- `apps/mobile/src/features/quests/managed-quest-lifecycle.test.tsx`: lines 191–210. Verify connects real editor/hooks/controller to strict server and device receipts without activation on read; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/quests/managed-quest-lifecycle.test.tsx`: lines 211–219. Verify confirms native Stop before deleting the saved definition and exiting; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/quests/managed-quest-lifecycle.test.tsx`: lines 220–234. Verify does not schedule the saved snapshot while the definition contains unsaved edits; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/quests/managed-quests.test.tsx`: lines 1–119. Build explicit synthetic account/API/native fixtures and scope cleanup; no managed credentials or actual platform acceptance is implied.
+- `apps/mobile/src/features/quests/managed-quests.test.tsx`: lines 120–130. Verify reads a saved quest, edits only on Save and never claims activation; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/quests/managed-quests.test.tsx`: lines 131–145. Verify new editor saves complete fields with a stable fresh ID; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/quests/managed-quests.test.tsx`: lines 146–160. Verify committed lost save is not retried and requires explicit read/review; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/quests/managed-quests.test.tsx`: lines 161–180. Verify conflict retains raw draft, review preserves deliberate edits and save uses latest revision; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/quests/managed-quests.test.tsx`: lines 181–201. Verify delete requires confirmation and committed lost response is recovered by read only; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/quests/managed-quests.test.tsx`: lines 202–210. Verify offline retains draft and blocks writes; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/quests/managed-quests.test.tsx`: lines 211–226. Verify owner replacement fences an accepted pending response and private draft; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/quests/managed-quests.test.tsx`: lines 227–244. Verify connected list shows actual saved data and removes it when offline; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/quests/managed-quests.test.tsx`: lines 245–291. Verify empty saved collection is distinct from unavailable and paging uses exclusive cursors; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/quests/quest-execution-panel.test.tsx`: lines 1–95. Build explicit synthetic account/API/native fixtures and scope cleanup; no managed credentials or actual platform acceptance is implied.
+- `apps/mobile/src/features/quests/quest-execution-panel.test.tsx`: lines 96–115. Verify requires explicit canonical date and passes saved session policy without changing details; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/quests/quest-execution-panel.test.tsx`: lines 116–135. Verify parameterized prerequisite cases; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/quests/quest-execution-panel.test.tsx`: lines 136–146. Verify requires confirmation for Stop, preserving the safe keep-reviewing action; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/quests/quest-execution-panel.test.tsx`: lines 147–157. Verify only offers completion after eligibility and explicitly confirms self-reported credit; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/quests/quest-execution-panel.test.tsx`: lines 158–168. Verify does not show a completion control while an occurrence is upcoming; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/quests/quest-execution-panel.tsx`: lines 1–58. Reuse existing settings query and original controls. Track raw first date for route guard; prefer installed allowance/reset policy, otherwise require saved sessions and display the chosen zone.
+- `apps/mobile/src/features/quests/quest-execution-panel.tsx`: lines 59–160. Present saved schedule/version snapshots, independent account/device status, explicit Check and confirmed owner claim/access/Apps/Sessions actions. Missing/mismatched state never becomes a success label.
+- `apps/mobile/src/features/quests/quest-execution-panel.tsx`: lines 161–223. Require canonical date/current saved definition/native permission/selection/policy before Schedule; expose explicit Apply and local-first Stop, per-quest confirmed credits and self-report explanation.
+- `apps/mobile/src/features/quests/quest-execution-panel.tsx`: lines 224–271. Render dated occurrence state and exact UTC bounds from server evidence; eligibility gates completion, while cancellation targets one version/date and preserves repeats.
+- `apps/mobile/src/features/quests/quest-execution-panel.tsx`: lines 272–316. Each Stop/claim/outcome confirmation owns its trigger/focus-return hook; safe dismissal restores that control and a destructive/reward action requires explicit confirmation.
+- `apps/mobile/src/features/quests/quest-lifecycle.test.ts`: lines 1–227. Build explicit synthetic account/API/native fixtures and scope cleanup; no managed credentials or actual platform acceptance is implied.
+- `apps/mobile/src/features/quests/quest-lifecycle.test.ts`: lines 228–234. Verify only reads on mount/refresh; neither a server schedule nor refresh installs protection; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/quests/quest-lifecycle.test.ts`: lines 235–253. Verify does not treat a presentation refresh as an unfinished write for navigation; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/quests/quest-lifecycle.test.ts`: lines 254–260. Verify checks prerequisites, commits desired schedule first, then confirms exact native receipt; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/quests/quest-lifecycle.test.ts`: lines 261–271. Verify does not create a server schedule when there are no saved distracting apps; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/quests/quest-lifecycle.test.ts`: lines 272–285. Verify keeps desired and installed state distinct after a lost native response; never replays; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/quests/quest-lifecycle.test.ts`: lines 286–295. Verify does not install anything after an uncertain server write, even if it committed; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/quests/quest-lifecycle.test.ts`: lines 296–306. Verify stops local recurrence before server calls and preserves local Stop while offline; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/quests/quest-lifecycle.test.ts`: lines 307–313. Verify uses current definition revision and stops only this quest in both stores; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/quests/quest-lifecycle.test.ts`: lines 314–324. Verify will not complete before end and records one confirmed completion afterward; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/quests/quest-lifecycle.test.ts`: lines 325–333. Verify cancels the single native occurrence before recording account cancellation; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/quests/quest-lifecycle.test.ts`: lines 334–345. Verify suppresses a server result delivered after account replacement, including native dispatch; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/quests/quest-lifecycle.test.ts`: lines 346–356. Verify requires explicit claim; reads never stop a previous account or erase its state; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/quests/quest-lifecycle.test.ts`: lines 357–362. Verify blocks delete when this device Stop cannot be confirmed, and redacts errors; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/quests/quest-lifecycle.test.ts`: lines 363–370. Verify serializes rapid schedule taps rather than issuing two writes; assert observable outcomes/dispatch ordering rather than implementation internals.
+- `apps/mobile/src/features/quests/quest-lifecycle.ts`: lines 1–39. Typed account/device/selection state distinguishes background reads from pending writes, uncertainty and sanitized user feedback.
+- `apps/mobile/src/features/quests/quest-lifecycle.ts`: lines 40–75. Create one account-detail actor with current-scope fencing, subscription state, safe cache publication and exclusive operations. Every async result is checked before UI/native work.
+- `apps/mobile/src/features/quests/quest-lifecycle.ts`: lines 76–108. Serialize user mutations; keep navigation pending only for actual writes. Read helpers decode native summary/selection and suppress stale account callbacks.
+- `apps/mobile/src/features/quests/quest-lifecycle.ts`: lines 109–168. Compile only metadata from confirmed server versions, use latest native selection count/revision and explicit/installed session policy, then require exact persisted request receipt. Never upload app IDs or install from a read.
+- `apps/mobile/src/features/quests/quest-lifecycle.ts`: lines 169–217. Expose safe subscriptions and explicit refresh. A read may recover a lost native receipt but only explicit Check clears uncertainty; background polling cannot authorize another write.
+- `apps/mobile/src/features/quests/quest-lifecycle.ts`: lines 218–261. Check native prerequisites before server CAS, then install acknowledged metadata. Server-success/device-failure remains an explicit mismatch, not active protection.
+- `apps/mobile/src/features/quests/quest-lifecycle.ts`: lines 262–270. Apply saved desired schedule only by explicit user action; reads/reconnects/remounts never resume it.
+- `apps/mobile/src/features/quests/quest-lifecycle.ts`: lines 271–304. Confirm local Stop before reading/current-definition-CAS account Stop. If API fails, keep local stopped evidence and tell user account update is unconfirmed.
+- `apps/mobile/src/features/quests/quest-lifecycle.ts`: lines 305–353. Allow completion only when server occurrence says eligible; cancel only the specific native reason before immutable account cancellation. Read confirmed credit totals, never infer completion from timer end or replay writes.
+- `apps/mobile/src/features/quests/quest-lifecycle.ts`: lines 354–385. Require explicit owner takeover, owner-bound lease and strict native confirmation. Release even on failure; scope-check postrelease and restore owner summary/selection without automatic rule resume.
+- `apps/mobile/src/features/quests/quest-lifecycle.ts`: lines 386–402. Confirm local Stop before definition deletion may proceed. Dispose invalidates callbacks/client only, retaining installed rules/history.
+- `apps/mobile/src/features/quests/use-quest-lifecycle.ts`: lines 1–43. Memoize the actor by current account/native binding and quest; subscribe with useSyncExternalStore and dispose on scope loss. Route/foreground presentation polls reuse root focusManager; no JS enforcement timer or automatic mutation.
+- `docs/Context (AGENT)/AGENT_START_HERE.md`: lines 7–16. Publish the current shared controls, actual checks, native-state restoration and Anisha/coordinated acceptance handoff above prior historical checkpoints.
+- `docs/Context (AGENT)/OPEN_DECISIONS.yaml`: lines 288–295. Record explicit-date/policy/Stop/cancel retention defaults as engineering choices, preserving PM answer status and Anisha ownership.
+- `docs/Context (AGENT)/PM_QUESTIONS.md`: lines 643–662. Document user-facing first date, session-policy fallback, offline Stop/deletion and cancellation choices; record Ishmum’s Auth ownership clarification and pending coordinated account/iOS acceptance.
+- `docs/architecture/quest-occurrence-lifecycle.md`: lines 66–102, 105–116. Specify server-first schedule/native receipt, local-first Stop/delete, non-replayed uncertainty, raw-date navigation guard, native snapshots, cancellation retention and honest Home status; distinguish per-quest earnings from spending/Dino/streak/session award features.
+- `docs/core_plan/04_react_native_integration.md`: lines 788–802. Keep existing IDs and record implemented D03c consumers/checks while preserving D02/D03 joint and D04 real-account/accessibility/signed/iOS acceptance gates; no full-parent completion.
+- `docs/core_plan_implementation_notes/artifacts/rn-09b-quest-lifecycle/evidence.json`: lines 1–69. Store final source fingerprints, exact independent checks, unchanged native phone files/settings, task-owned cleanup and pending coordinated/signed platform gates; no credentials/private inventory/device serials.
+- `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 1652–1664. Record the ten actual nested mobile HTTP scenarios and unchanged backend/SQL scope, with the complete consumer ledger in Plan04.
+- `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 1–5586. Update current resume/commit handoff and record each changed file/logical block, actual checks, measured fixes and remaining coordinated acceptance.
+- `docs/qa/quest-lifecycle.md`: lines 1–93. Provide reproducible independent native/HTTP/component checks, actual evidence/cleanup and precise coordinated D04 managed-account/native UI/TalkBack/large-text/signed/iOS cases. Do not confuse mock/preset/native-unit checks with combined acceptance.
+- `docs/qa/quest-management.md`: lines 6–10. Point historical D01 readers to the lifecycle continuation and correct current list label, without rewriting old test/proof boundaries.
+- `services/api/tests/db/test_mobile_quests_acceptance.py`: lines 57. Require eight write and two restart mobile scenarios from the existing private-report driver; child token/output remains captured and redacted and temporary reports removed.

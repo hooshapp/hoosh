@@ -640,3 +640,23 @@ No missing-event gap is converted into earned credits, saved time or a healthy
 streak. SDK bootstrap failures remain locked with explicit retry; an actual
 same-user replacement session fences old callbacks, while routine token refresh
 does not discard current forms. These choices remain revisable by PM.
+
+
+#### Shared quest controls and ownership clarification — 2026-11-11
+
+Authorized implementation choices, not additional PM answers: require an explicit
+first date and saved quest definition before Schedule. Use the installed session
+policy when present (including its reset zone); otherwise require saved session
+count/minutes and display the saved-plan or quest zone used. Missing settings link
+to existing editors; no hidden default test policy. Stop is device-first, then
+account update; offline failure may leave account-enabled/device-stopped, shown
+explicitly. Resume/Apply is always a separate action. Deletion requires a confirmed
+local Stop. Cancelling one occurrence leaves future repeats and other reasons.
+Expired cancellation metadata is pruned, future cancelled dates are retained.
+
+Ishmum reiterated that Auth/sign-in/onboarding is Anisha's responsibility. The
+D02 SDK/root foundation already added is a coordinated integration handoff for her
+review, not a takeover of those flows. Real-account phone sign-in and combined SDK
+acceptance are pending; continue shared quest/Android implementation independently.
+Anisha's iOS bridge/signed build is also not ready. No credential/token entry in
+chat, Auth administration or further Auth-flow implementation is required here.

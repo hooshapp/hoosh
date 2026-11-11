@@ -123,7 +123,7 @@ test('reads a saved quest, edits only on Save and never claims activation', asyn
   await fireEvent.changeText(screen.getByLabelText('Quest name'), 'New title');
   expect(f.stored()?.definition.title).toBe('Read a chapter');
   await press('Save quest');
-  await screen.findByText('Quest saved. App interventions have not changed.');
+  await screen.findByText('Quest details saved.');
   expect(f.stored()?.revision).toBe(2);
   expect(f.stored()?.definition.title).toBe('New title');
   expect(f.request.mock.calls.filter(([, o]) => o.method === 'PUT')).toHaveLength(1);
@@ -139,7 +139,7 @@ test('new editor saves complete fields with a stable fresh ID', async () => {
   await fireEvent.changeText(screen.getByLabelText('End time (24-hour HH:MM)'), '10:30');
   await fireEvent.changeText(screen.getByLabelText('Quest time zone'), 'UTC');
   await press('Save quest');
-  await screen.findByText('Quest saved. App interventions have not changed.');
+  await screen.findByText('Quest details saved.');
   expect(f.stored()?.definition.repeat).toBe('none');
   expect(f.request.mock.calls.find(([, o]) => o.method === 'PUT')?.[0]).toBe(`/v1/quests/${ID}`);
 });
@@ -150,7 +150,7 @@ test('committed lost save is not retried and requires explicit read/review', asy
   await fireEvent.changeText(screen.getByLabelText('Quest name'), 'Uncertain');
   await press('Save quest');
   await screen.findByText(/Change not confirmed/);
-  expect(screen.queryByText('Quest saved. App interventions have not changed.')).toBeNull();
+  expect(screen.queryByText('Quest details saved.')).toBeNull();
   await press('Check latest quest');
   await screen.findByText(/Latest saved quest: Uncertain/);
   await press('Use latest quest');
@@ -175,7 +175,7 @@ test('conflict retains raw draft, review preserves deliberate edits and save use
   await screen.findByText(/Latest saved quest: Other edit/);
   await press('Keep my quest edits');
   await press('Save quest');
-  await screen.findByText('Quest saved. App interventions have not changed.');
+  await screen.findByText('Quest details saved.');
   expect(f.stored()?.revision).toBe(3);
 });
 test('delete requires confirmation and committed lost response is recovered by read only', async () => {
@@ -222,7 +222,7 @@ test('owner replacement fences an accepted pending response and private draft', 
   await act(() => release());
   await screen.findByText('Quest no longer saved');
   expect(screen.queryByDisplayValue('A private draft')).toBeNull();
-  expect(screen.queryByText('Quest saved. App interventions have not changed.')).toBeNull();
+  expect(screen.queryByText('Quest details saved.')).toBeNull();
 });
 test('connected list shows actual saved data and removes it when offline', async () => {
   const f = setup(),
@@ -234,7 +234,7 @@ test('connected list shows actual saved data and removes it when offline', async
   );
   await screen.findByText('Read a chapter');
   expect(screen.getByText('Accepted')).toBeVisible();
-  expect(screen.getByText(/Saved · not active/)).toBeVisible();
+  expect(screen.getByText(/Saved · open to review schedule and device status/)).toBeVisible();
   await press('Edit Read a chapter');
   expect(open).toHaveBeenCalledWith(ID);
   await act(() => onlineManager.setOnline(false));

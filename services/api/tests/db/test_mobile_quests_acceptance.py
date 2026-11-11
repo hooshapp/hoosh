@@ -54,7 +54,7 @@ def mobile(origin, accounts, phase, report):
             if item.get("status") == "failed"
         ]
         pytest.fail(f"Isolated mobile quest {phase} failed: {failed or 'tool startup'}")
-    assert payload["numPassedTests"] == (5 if phase == "write" else 1)
+    assert payload["numPassedTests"] == (8 if phase == "write" else 2)
 
 
 def test_mobile_quests_http_restart_and_isolation(db_settings, profile_accounts, tmp_path):

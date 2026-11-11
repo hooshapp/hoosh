@@ -785,6 +785,21 @@ by its unique commit subject in the notes.
 
 RN-09b source: read-only Figma `27:155`, session `26dd22ea-c87c-4b6c-a571-5e74d6eff5e8`. Quests presentation is independent; no editor/persistence/native action is connected. Deferred: **RN09B-D01** approved quest/editor/recurrence API and persistence; **RN09B-D02** actual Auth/account-scoped data/actions and recovery; **RN09B-D03** approved completion/reward/native restriction evidence; **RN09B-D04** signed-device/accessibility acceptance. Source examples remain isolated. See the implementation notes for exact commit/checks and copied icon-pack provenance.
 
+#### RN09B-D03c current checkpoint — 2026-11-11
+
+Shared Schedule/Update/Apply/Stop/cancel/completion controls are implemented with
+strict account/device receipts and honest separate status. Home reads actual native
+scheduled/active state. Deletion first confirms local Stop; reads never resume rules.
+Cancellation metadata no longer creates a lifetime quota. Checks:536portable,
+698component(+2skips),643API,233PG,90JVM,104physical-native; web isolation/assets pass.
+See [lifecycle acceptance](../qa/quest-lifecycle.md) and latest notes for exact limits.
+Ishmum reiterated Anisha's Auth/signin/onboarding ownership; real-account/combined
+SDK phone acceptance awaits coordinated integration and her review of existing D02.
+Anisha's iOS bridge/build is unavailable. New combined TalkBack/large-text/focus,
+actual app/native journey and signed-platform/store acceptance remain D04 gates.
+D02/D03 have implementation evidence, not full joint/platform acceptance; parents
+and stable IDs remain open. No merge, push, deployment or Auth administration.
+
 #### RN09B-D03b current checkpoint — 2026-11-11
 
 Development schema0004 is applied and verified without changing Auth or existing

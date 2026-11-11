@@ -285,3 +285,11 @@ quest_device_defaults_2026_11_11:
     - "Bounded 256-event diagnostics with a gap count; overflow never disables protection/Open anyway or implies a reward/streak."
     - "SDK bootstrap is fail-closed/retryable; same-subject session replacement fences callbacks, routine refresh retains current scope."
   acceptance: "Native physical checks are separate from managed-account UI, TalkBack, signed release and Anisha's unavailable iOS integration."
+
+quest_controls_2026_11_11:
+  authority: "Authorized implementation defaults; not new PM answers."
+  decisions:
+    - "Explicit first date/current saved definition before Schedule; installed allowance/reset policy retained, otherwise require saved count/minutes and show chosen zone."
+    - "Confirm local Stop before account update/deletion; show account-enabled/device-stopped recovery explicitly and never resume on read."
+    - "Prune only expired native cancellation metadata; preserve future dates beyond preview."
+  ownership: "Anisha retains Auth/signin/onboarding/iOS. Existing D02 foundation awaits her review; managed-account and signed/iOS acceptance stay pending."

@@ -150,6 +150,24 @@ internal object QuestScheduleChecks {
       check(e.needed(installed, APP, during, 1, 1).size == 2)
       check(e.needed(e.cancel(OWNER, 1, null, during), APP, during, 1, 1).isEmpty())
     }
+    case {
+      val d = Memory(); val e = InterventionEngine(d); apply(e)
+      val start = java.time.LocalDate.parse("2026-01-01")
+      val expired = (0L..255L).map { QuestSchedules.reason(Q, 1, start.plusDays(it)) }.toSet()
+      d.value = d.value!!.copy(plan = d.value!!.plan.copy(cancelledQuestReasons = expired))
+      val reason = QuestSchedules.reason(Q, 1, java.time.LocalDate.parse("2026-11-09"))
+      val cancelled = e.cancelQuestOccurrence(OWNER, 1, Q, reason, during)
+      check(cancelled.plan.cancelledQuestReasons == setOf(reason))
+      check(e.needed(cancelled, APP, during, 1, 1).isEmpty())
+    }
+    case {
+      val d = Memory(); val e = InterventionEngine(d); apply(e)
+      val far = QuestSchedules.reason(Q, 1, java.time.LocalDate.parse("2027-01-01"))
+      val cancelled = e.cancelQuestOccurrence(OWNER, 1, Q, far, before)
+      val updated = apply(e, 2)
+      check(far in cancelled.plan.cancelledQuestReasons && far in updated.plan.cancelledQuestReasons)
+      check(e.needed(updated, APP, at("2027-01-01T09:30:00Z"), 1, 1).isEmpty())
+    }
     return count
   }
 }
