@@ -544,3 +544,56 @@ Calendars and multi-device synchronization is not required, thats why its not in
 Choose the initial retention, protection reliability, quest adoption, and measurable usage outcomes; decide what data we need to collect.
 We decide success by the history page, thats the most important when it comes to measuring success. We should be able to see how many turn offs were possible from session end block, mid session block, subconscious block, then how many hours of times we are able to reclaim for the user. This will help us pitch infront of the investors. For example: say that we have 20 users. And each on average are saving 10 hours a day using our app, thats 200 hours a day, 1400 hours a week, and almost 2 months combined that we are saving for the user for them to do what they love to do! 
 
+
+
+## RN09B-D02–D04 implementation defaults — 2026-11-11
+
+Authority: Ishmum explicitly requested the whole D02/D03/D04 and authorized the
+best user-facing defaults. These are engineering defaults, **not PM answers**;
+original PM replies above remain authoritative. The new request supersedes the
+older Auth/token deferral for this quest-integration task. No shared Auth project
+settings, credentials or production identities are changed automatically.
+
+- **Account integration:** Supabase remains the sole credential/session owner.
+  Connect the existing AuthSessionPort and AccountDataProvider, rather than add a
+  second token manager. Native credentials use OS secure storage; web sessions are
+  memory-only initially. No private route is shown before account bootstrap.
+  Sign-out immediately invalidates private work; local storage failure locks the
+  app instead of claiming success. Anisha can reuse/replace the producer through
+  the existing interface without changing quest consumers. This does not replace
+  her onboarding, provider setup or native iOS ownership.
+- **Save versus schedule (Q10/Q11):** Saving edits a reusable definition. Explicit
+  scheduling chooses a first local date and acknowledges the global app selection.
+  A non-repeating quest runs on that date only; repeating quests recur in the saved
+  IANA zone. Never silently interpret an undated saved definition as today.
+- **Occurrence boundaries:** Upcoming becomes active at its scheduled start and
+  ends at its scheduled end, even without JS/network. Ending releases only that
+  occurrence's restriction reason. Finishing early is explicit cancellation,
+  never automatic completion. Existing Open anyway remains available and its
+  configured per-app allowance does not erase other active reasons.
+- **Recurrence edits:** Edits affect future starts only after explicit schedule
+  update; active occurrences retain their definition/app snapshot. Stop cancels
+  future starts and releases this quest's active reasons. Delete must explicitly
+  stop this device's schedule first; failure must not claim restrictions stopped.
+- **DST/travel/overlap:** Use the quest's saved zone, not the device's new zone.
+  For ambiguous times use earliest start/latest end; nonexistent boundaries clamp
+  to the first valid instant. Skip zero-duration DST occurrences. Concurrent quests
+  retain independent reasons; canceling one never releases another or the weekly plan.
+- **Completion and rewards (Q10–Q13):** A timer ending means ended, not proof of
+  activity. The user explicitly confirms completion after the end; otherwise the
+  occurrence is missed. A canceled occurrence cannot earn completion. Use the PM’s +50 Home-quest award as the default for an ended, explicitly
+  confirmed quest, once per occurrence; label completion as self-reported.
+  Credits and points are the same non-monetary unit initially. No inferred
+  usage/saved-time claim. Preserve the PM’s session-allowance streak meaning: quest
+  completion must not redefine or fabricate that streak. An exhausted-allowance
+  event may break the relevant day; missing telemetry alone must not. Existing
+  +5/+20/+30 native quit awards and Dino/Feed producers remain separate feature
+  consumers; do not infer a quit merely from dismissing this quest editor.
+- **Suggestions:** Use transparent activity-based curated suggestions initially;
+  label their source. No suggestion is represented as AI-generated without an
+  actual model response. Model generation must stay optional and failure-safe;
+  neither restrictions nor saved quests depend on an LLM call.
+- **Acceptance:** Automated contract/account/native tests are distinct from real
+  user-account, physical Android/TalkBack and signed iOS evidence. Implement code
+  independently and record any unavailable device/account/signing gate precisely;
+  never mark D04 complete from component presets alone.

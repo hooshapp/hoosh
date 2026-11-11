@@ -775,6 +775,19 @@ by its unique commit subject in the notes.
 
 RN-09b source: read-only Figma `27:155`, session `26dd22ea-c87c-4b6c-a571-5e74d6eff5e8`. Quests presentation is independent; no editor/persistence/native action is connected. Deferred: **RN09B-D01** approved quest/editor/recurrence API and persistence; **RN09B-D02** actual Auth/account-scoped data/actions and recovery; **RN09B-D03** approved completion/reward/native restriction evidence; **RN09B-D04** signed-device/accessibility acceptance. Source examples remain isolated. See the implementation notes for exact commit/checks and copied icon-pack provenance.
 
+#### RN09B-D02–D04 continuation (2026-11-11)
+
+Ishmum authorized full D02/D03/D04 and provisional best-user defaults, recorded in
+PM_QUESTIONS.md. This request supersedes the earlier quest Auth/token deferral;
+Anisha’s broader onboarding/provider/iOS ownership remains coordinated, not replaced.
+D02 now has a real Supabase SDK session producer, secure native storage, gated root,
+existing account-scope consumers and local sign-out. Automated SDK/port/root tests
+pass; actual managed-account phone acceptance remains pending. No privileged key,
+Auth administration, account deletion or onboarding-completion assertion is added.
+D03 native recurrence/completion/reward and D04 actual platform acceptance are in
+progress under the same stable IDs. Do not read the older deferred checkpoints as
+this new request’s current scope or infer full completion from code/tests alone.
+
 #### RN09B-D01 — Saved quest management continuation (2026-11-11)
 
 Ishmum authorized persistent quest management following the shared Android journey.

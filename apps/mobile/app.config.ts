@@ -9,7 +9,7 @@ const config: ExpoConfig = {
   // Development routing only. Confirm production URL schemes during the iOS audit.
   scheme: 'disconnect-dev',
   web: { output: 'static' },
-  plugins: ['expo-router', 'expo-image', ['expo-splash-screen', { backgroundColor: '#FFF1DD' }]],
+  plugins: ['expo-router', 'expo-image', ['expo-secure-store', { configureAndroidBackup: true }], ['expo-splash-screen', { backgroundColor: '#FFF1DD' }]],
   experiments: { typedRoutes: true },
   // Isolated Android development identity; production/store identity remains unassigned.
   android: {

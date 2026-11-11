@@ -5109,3 +5109,98 @@ Ranges belong to this final acceptance/handoff commit.
 - `services/api/app/application.py`: lines 28–31. Line-wrap the human API description added in b after final lint found it exceeded 100 columns. Exported text/route/schema semantics remain unchanged.
 - `services/api/tests/db/test_mobile_quests_acceptance.py`: lines 1–79. Own the explicit test-environment mobile subprocess and two actual API processes, ephemeral credential passing, sanitized failure reporting and temporary report cleanup; assert restart uses different PIDs.
 - `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 7, 19–20, 4894, 5013–5111. Record b hash 7d85e50 during the next normal update, current a–c completion, actual HTTP/hosted/root checks, boundary/format corrections, all changed files and precise remaining Auth/native/device work. Keep c self-hash Pending until next normal update.
+
+
+### RN09B-D02–D04 — Account, occurrence and device integration continuation
+
+Date: 2026-11-11. Owner: Ishmum. Branch:
+`task/react-native/rn-09b-lifecycle-integration`; parent `b9bf936` (published and
+Foundation run 43091294680 passed mobile/API/database). New user request lifts
+Auth/token deferral for this scope and permits recorded product defaults.
+
+**Status:** In progress. First inspect shared Auth/session/query contracts and
+native debug-only installation before adding integration. Keep existing IDs and
+original evidence; no full-parent completion until actual acceptance proves it.
+Record each implementation commit and all changed file/line ranges below.
+
+**Decisions:** PM_QUESTIONS.md now records account/session authority, explicit dated
+scheduling, saved-zone recurrence, active snapshots, independent restriction reasons,
+self-reported completion, once-only credit and honest suggestion/acceptance labels.
+No Auth administration, production signing changes or managed account deletion.
+
+**Initial environment:** No `adb` on PATH; Xcode command and Docker executable
+exist. Physical acceptance requested while implementation continues. Supabase SDK
+and Expo secure storage dependencies are being installed; no secret values read.
+
+
+### RN09B-D02 — SDK session authority and private root integration
+
+**Commit message:** `feat(auth): connect SDK session authority to private app routes`.
+Date 2026-11-11; owner Ishmum; branch `task/react-native/rn-09b-lifecycle-integration`;
+parent `b9bf936`; own hash Pending until next normal notes update.
+
+**Changes and reasons:** Install official Supabase SDK plus SDK-58-compatible Expo
+SecureStore. No parallel refresh/token manager: SDK events project immutable safe
+identity through AuthSessionPort; account/generation checks fence token acquisition.
+Refresh is single-flight; generation changes at account replacement and sign-out
+intent, never ordinary token rotation. Storage failure locks the private app and
+cannot be unlocked by a later SDK callback. Local erasure is verified after SDK
+local sign-out; remote outage records unconfirmed revocation. Root mounts existing
+AccountDataProvider/query lifecycle/Stack only for signed-in identity; Settings
+exposes local sign-out. Isolated QA hosts still inject their existing providers.
+Web sessions intentionally stay in memory. Existing-account password sign-in is a
+minimal consumer dependency, not a replacement for Anisha’s full onboarding,
+signup/OAuth/recovery/UI or project Auth administration. Production native writes
+remain a separate D03 task, and signing out does not silently cancel restrictions.
+
+**Validation actually run:** `npm run check` passes 474 portable /660 component
+(+2 existing skips)/628 API; typecheck/lint/assets/Ruff/generated contracts pass.
+Eleven preexisting lint warnings remain. New focused checks: 17 portable tests,
+including real pinned SDK password login/refresh/storage/offline local sign-out;
+eight root component results (four scenarios x two presets). Existing managed
+quest/account/profile focus run passed 58 component results. `npm run mobile:export`
+passes 38 isolated JS/HTML and 71 original SVGs before ignored local public config
+was populated; no claim of managed login or phone execution from that export.
+
+**Measured corrections:** unsupported Expo --project-dir removed; dynamic SecureStore
+plugin configured explicitly. Typecheck exposed nullable AppState and async renderer
+unmount; v14 render/events are now awaited. Root test fixture needed the actual
+Expo Network subscription remove shape; corrected mock, not production lifecycle.
+Safe public-config parsing rejects service-role/secret keys and catches SDK setup
+errors rather than crashing the root. Runtime context was split so ordinary Settings
+consumers do not eagerly import/construct an SDK during component tests.
+
+**Device/config checkpoint:** Downloaded official platform-tools to the existing
+external temporary SDK (PATH had no adb). ADB detects owner’s connected Pixel 8 Pro;
+no screenshot, settings or app-state mutation yet. Created ignored mode-0600
+apps/mobile/.env from existing public project URL/publishable key only; no password,
+refresh/access token or DB credential copied to mobile. No managed-account write,
+Auth admin, native permission change, push/merge/deployment or iOS acceptance.
+
+**Remaining:** D02 actual account A/B and app restart/recovery acceptance; D03 full
+native quest lifecycle and reward integration; D04 real physical accessibility,
+native/release/iOS evidence. Superseding request/defaults are in PM_QUESTIONS.md;
+PM streak meaning and supplied native quit award amounts remain authoritative.
+
+#### Every-file ledger for this commit
+
+- `apps/mobile/.env.example`: lines 5–8. Document required public project config and gated missing-config behavior; explicitly exclude privileged keys.
+- `apps/mobile/app.config.ts`: lines 12. Register SecureStore config plugin and Android backup exclusion support without native regeneration.
+- `apps/mobile/package.json`: lines 9, 19. Add official Supabase SDK and compatible Expo SecureStore dependency.
+- `apps/mobile/src/app/_layout.tsx`: lines 16, 44–46. Gate existing Router stack through the session boundary after fonts load.
+- `apps/mobile/src/features/account/app-runtime-context.tsx`: lines 1–18. Provide type-only runtime context and isolated Settings sign-out consumer, avoiding eager SDK imports.
+- `apps/mobile/src/features/account/session-boundary.test.tsx`: lines 1–79. Verify actual port/provider mounting, account replacement, sign-out masking, storage lock and lifecycle cleanup on both presets.
+- `apps/mobile/src/features/account/session-boundary.tsx`: lines 1–65. Compose root access gate, SDK foreground refresh lifecycle, private account provider and safe existing-account sign-in/erasure feedback.
+- `apps/mobile/src/features/settings/connected-settings-screen.tsx`: lines 2, 17. Reuse profile consumer and add explicit local sign-out in the connected account region.
+- `apps/mobile/src/infrastructure/auth/platform-storage.native.ts`: lines 1–6. Use Expo OS secure storage with device-only, unlocked keychain accessibility.
+- `apps/mobile/src/infrastructure/auth/platform-storage.ts`: lines 1–2. Keep web credentials in SDK memory only, without browser persistence.
+- `apps/mobile/src/infrastructure/auth/runtime.ts`: lines 1–39. Validate public project config, configure single SDK/storage instance and compose existing API/account controller; no token constants.
+- `apps/mobile/src/infrastructure/auth/sdk.test.ts`: lines 1–39. Exercise real SDK network/storage behavior with fixture sessions and remote sign-out outage; no managed account.
+- `apps/mobile/src/infrastructure/auth/session.test.ts`: lines 1–120. Cover 16 deterministic bootstrap/refresh/account/disposal/erasure/storage races and safe snapshots.
+- `apps/mobile/src/infrastructure/auth/session.ts`: lines 1–123. Implement SDK-owned AuthSessionPort, immutable identity generations, fenced acquisition, refresh single-flight, sign-in and verified local sign-out.
+- `apps/mobile/src/infrastructure/auth/storage.ts`: lines 1–11. Make any credential storage read/write/delete failure fail closed with redacted errors.
+- `docs/Context (AGENT)/PM_QUESTIONS.md`: lines 547–599. Record expressly authorized provisional D02/D03/D04 defaults while preserving supplied PM awards/streak and clear evidence boundaries.
+- `docs/core_plan/04_react_native_integration.md`: lines 778–790. Add current D02 integration status/scope override under stable existing IDs; keep actual-account/D03/D04 open.
+- `docs/core_plan_implementation_notes/plan_02_auth_onboarding_notes.md`: lines 1–38. Create shared Auth producer handoff, exact test counts/corrections and remaining Anisha-owned flow and live acceptance gates.
+- `package-lock.json`: lines 26, 36, 6078–6169, 10160–10168, 11062–11070, 20103. Pin the SDK/SecureStore and their resolved transitive graph for reproducible installs; no automated audit upgrades.
+- `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 5135–5206. Record initial scope/environment, current detailed implementation, actual checks/failures/corrections, remaining gates and complete per-file ledger.

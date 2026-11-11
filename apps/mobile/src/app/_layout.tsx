@@ -13,6 +13,7 @@ import { Text, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { colors } from '@/design/tokens';
+import { AppSessionBoundary } from '@/features/account/session-boundary';
 
 void SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
@@ -40,7 +41,9 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <StatusBar style="dark" />
-      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.warmCanvas } }} />
+      <AppSessionBoundary>
+        <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.warmCanvas } }} />
+      </AppSessionBoundary>
     </SafeAreaProvider>
   );
 }
