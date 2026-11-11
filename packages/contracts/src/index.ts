@@ -52,3 +52,11 @@ export type QuestResponse = components['schemas']['QuestResponse'];
 export type QuestSavedResponse = components['schemas']['QuestSavedResponse'];
 export type QuestPage = components['schemas']['QuestPage'];
 export type QuestDeletedResponse = components['schemas']['QuestDeletedResponse'];
+
+/** Explicit schedule versions and self-reported outcomes, separate from definition CRUD. */
+export type QuestSchedulePut = components['schemas']['QuestSchedulePut'];
+export type QuestScheduleVersionView = components['schemas']['QuestScheduleVersionView'];
+export type QuestExecutionView = components['schemas']['QuestExecutionView'];
+export type QuestOccurrenceView = components['schemas']['QuestOccurrenceView'];
+export type QuestOutcomePut = components['schemas']['QuestOutcomePut'];
+export type QuestOutcomeView = components['schemas']['QuestOutcomeView'];

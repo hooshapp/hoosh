@@ -1,7 +1,7 @@
 # Product decisions: explicit PM choices and remaining engineering/product gates.
 # Original recommendations below are historical, not the current policy.
-version: 4
-updated_at: "2026-11-10"
+version: 5
+updated_at: "2026-11-11"
 recorded_by: "Ishmum engineering reconciliation"
 source: "PM_QUESTIONS.md#original-pm-responses"
 adr: "../architecture/pm-decisions-2026-11-09.md"
@@ -262,3 +262,18 @@ weekly_activation_2026_11_10:
     - "Weekly definition persists natively with on-demand occurrence compilation; preview horizon does not expire recurrence."
     - "Explicit Apply/Update confirms revision/spec/selection; Stop retains settings and allowance history but disables recurrence."
   retained_gates: [policy_timezone_migration, production_auth_binding, ios, quest_lifecycle, reward_computation, signed_store_acceptance]
+
+quest_integration_defaults_2026_11_11:
+  authority: "Ishmum explicitly requested whole RN09B-D02/D03/D04 and sensible user-facing defaults. Supersedes prior quest Auth/token deferral for this task; not new PM answers."
+  record: "../architecture/quest-occurrence-lifecycle.md"
+  question_record: "PM_QUESTIONS.md#rn09b-d02d04-implementation-defaults--2026-11-11"
+  refs: [PD-04, PD-05, PD-06, PD-09, PD-18, PD-20, PD-21]
+  decisions:
+    - "Supabase remains sole session/refresh authority; existing private root/controller binds real sessions, with OS secure storage and immediate sign-out invalidation."
+    - "Saving does not activate; explicit future dated scheduling snapshots current definition and global native app selection."
+    - "Saved-zone recurrence, active snapshots retained through edits, independent reasons and explicit Stop/cancellation."
+    - "End releases reason; user confirms completion after end within seven days for +50 non-monetary credits exactly once, self-reported."
+    - "Definition deletion wipes copied title/activity; non-content credit metadata remains until account cascade."
+    - "PM native quit award amounts and allowance-based streak meaning stay unchanged; no inferred usage or healthy streak from missing telemetry."
+  acceptance: "Actual managed-account, native installation, physical accessibility and signed platform checks must each be recorded; automated presets do not establish them."
+  retained_ownership: "Anisha owns broader provider setup/onboarding/iOS; this authorized shared integration consumes stable contracts."

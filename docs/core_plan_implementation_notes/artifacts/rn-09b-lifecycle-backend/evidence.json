@@ -1,0 +1,60 @@
+{
+  "date": "2026-11-11",
+  "part": "RN09B-D03a",
+  "scope": "Local backend/compiler/schema only; no native quest installation or managed-account claim",
+  "parent": "f447e68",
+  "source_sha256": {
+    "packages/contracts/openapi/foundation.openapi.json": "64b98c00ef7d288a03f0c4a7ee5a433bf8475e398b35bbcd62dbe4202e7c1269",
+    "packages/contracts/src/http.generated.ts": "03bded77f76d53d56ff33f30db0c496637f5261e1b704d3e20f948306def54dc",
+    "packages/contracts/src/index.ts": "3829425c9edb4a0cca44c931eb143a2201bc6fc9005ddc183778e927c041a314",
+    "services/api/alembic/env.py": "90136221d303e69cb211e868cbbad8e949294059bb95fc1e86851478ea38cd04",
+    "services/api/alembic/versions/20261111_0004_quest_execution.py": "59a47c442c4923a7cb2770dd27394fde938a6cab5383f5addb9b0be787f77d21",
+    "services/api/app/api/v1/quest_execution.py": "cbdb6c92f235878c2f167682ec440d818bd56f63553f0e10e1ac20f6a3ee39a2",
+    "services/api/app/application.py": "9009543d4cc4137440b6330332d839b68b411005d6643e758868bb41e220dbff",
+    "services/api/app/db/migrations.py": "55eea8b1a0249d4d99ba7c2f671a3871f9fd6cd39d2d58125f73038a45028b80",
+    "services/api/app/domain/__init__.py": "c42ceaa3129ce201f93c83ce008b13e9f37ce27e63eba95baff6e391dc4a06aa",
+    "services/api/app/domain/quest_occurrences.py": "3369c7d13ae57670cdc313269e3c7a4a3f4bb0bf15cb2016c09def95f4f115c2",
+    "services/api/app/models/__init__.py": "e6f2a4848ed3b53a9e46845b3eb1173601ce39193734e98bbbfd0e908ac02a76",
+    "services/api/app/models/quest_execution.py": "e9f225f2c7a7e7a9329c48124641064e129128aa26f6876e25ed2abdf4919543",
+    "services/api/app/repositories/quest_execution.py": "620e7a6696b5fa7805f16d307b2dffa2f0f2502c0fef7d3be06167d9d2ca0b95",
+    "services/api/app/repositories/quests.py": "8e5ec7ac6e666893090e7ae4a372a6935c5033afd10804b91a90861ca4d60338",
+    "services/api/app/schemas/quest_execution.py": "1f6a4eb4b612f1bdc71834294cb2f282283a41834eeaef6b9019ba7826fd5158",
+    "services/api/tests/api/test_schema.py": "9d02e9b974a8f3ceeae4b5095c9fab4ef4fc556c43c4eabd2d92b49c8cd2f706",
+    "services/api/tests/db/test_quest_execution.py": "bc223141d282b609f1d8ecbe367b2d6199091ca96a170fa755bfd16cb49e5ec4",
+    "services/api/tests/test_profile_metadata.py": "0b5eefa90848c46911480714d84707211a479d9970ebd65bfaf7e271fed4d151",
+    "services/api/tests/test_quest_occurrences.py": "0de39bbce4ef2bfdd523acbd13a216dd988af69c4999f2f5871477a47c16a214",
+    "services/api/tests/test_settings_contract.py": "d54957aad183e61482904086721703aad55a202b7f9a9a0303ec634f97495ae9"
+  },
+  "checks": {
+    "root": "passed",
+    "portable": 474,
+    "component": 660,
+    "existing_component_skips": 2,
+    "api": 642,
+    "postgresql": 233,
+    "schema_drift": "passed",
+    "types_lint_assets_contracts": "passed"
+  },
+  "schema": {
+    "local_head": "20261111_0004",
+    "hosted_head": "20261111_0003",
+    "hosted_migration_performed": false
+  },
+  "acceptance": {
+    "managed_accounts": false,
+    "phone_quest_flow": false,
+    "talkback_quest_flow": false,
+    "ios_native": false,
+    "signed_release": false
+  },
+  "cleanup": {
+    "local_fixture": "Retained running while D03/D04 goal continues; final cleanup pending",
+    "phone_changes": "None",
+    "credentials": "No payloads recorded"
+  },
+  "remaining": [
+    "Native recurring quest persistence and reason-scoped Stop",
+    "Shared scheduling/outcome controls and explicit uncertain-write recovery",
+    "Actual managed-account and platform/device acceptance"
+  ]
+}

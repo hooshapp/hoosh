@@ -14,6 +14,8 @@ def test_profile_shape_and_external_auth_reference_remain_unchanged():
         "public.profiles",
         "public.user_settings",
         "public.user_quests",
+        "public.quest_schedule_versions",
+        "public.quest_occurrence_outcomes",
     }
     assert set(Profile.__table__.columns.keys()) == {
         "user_id",

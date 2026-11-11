@@ -4,9 +4,9 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN09B-D01 a–c saved quest management implemented and independently accepted: strict own CRUD, conditional shared list/editor, real local mobile HTTP/restart and hosted schema 0003. a `10d8e16`, b `7d85e50`, c resolves by final entry/commit subject. Auth/root/tokens, native occurrence/rewards, Anisha’s iOS and signed/device acceptance remain deferred.
+**Current part:** RN09B-D02–D04 active. D02 SDK/root producer `0bbf714` and retained Android backup exclusions `f447e68` implemented; actual managed-account/device acceptance pending. D03a schedule/version/outcome backend locally accepted; native quest installation, shared controls and full D04 remain in progress. New user request lifts earlier quest Auth/token deferral. Hosted development remains 0003 until explicit upgrade is recorded.
 
-**Implementation branch:** `task/react-native/rn-09b-quest-management`; parent published `4c632b4`; no new push/main merge/deployment or iOS/Auth change.
+**Implementation branch:** `task/react-native/rn-09b-lifecycle-integration`; base published `b9bf936`. Local commits only; no main merge/deployment or iOS acceptance.
 
 **Commit reference:** RN-01 `2f88102`; RN-02 `2d5c0d1`; RN-03 `0741758`; RN-04 `610f570`; RN-05 preparation `0c6e4db`; RN-07 UI `5790302`; RN-08 preparation `71da2d5`; RN-09a `ff75039`. RN-10 is `9b5fbd0`.
 
@@ -5204,3 +5204,107 @@ PM streak meaning and supplied native quit award amounts remain authoritative.
 - `docs/core_plan_implementation_notes/plan_02_auth_onboarding_notes.md`: lines 1–38. Create shared Auth producer handoff, exact test counts/corrections and remaining Anisha-owned flow and live acceptance gates.
 - `package-lock.json`: lines 26, 36, 6078–6169, 10160–10168, 11062–11070, 20103. Pin the SDK/SecureStore and their resolved transitive graph for reproducible installs; no automated audit upgrades.
 - `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 5135–5206. Record initial scope/environment, current detailed implementation, actual checks/failures/corrections, remaining gates and complete per-file ledger.
+
+
+### RN09B-D03a — Occurrence schedule/version and completion backend (in progress)
+
+Parent `0bbf714` (D02 SDK/root producer). New migration 0004 is **local only**;
+hosted development still 0003. Independent normalized schedule-version rows retain
+old active snapshots; unique outcome rows serialize with definition/schedule edits
+under the same parent-row lock. Saving a definition still does not schedule it.
+Explicit first date, saved zone and repeat drive pure occurrence calculation;
+DST overlap/gap policy matches existing Kotlin weekly rules. Server time bounds
+completion and seven-day confirmation grace. One +50 award per actual occurrence;
+replays return the existing record, canceled outcomes cannot become completed.
+Definition deletion wipes every copied definition and closes schedule versions;
+non-content credit/outcome metadata remains until account cascade. Native device
+Stop/Apply/readback and UI handling are still being implemented, not implied by API.
+
+Checks so far: 14 pure date/DST/schema tests pass. Existing full local DB suite 217
+passed after initial migration. New expanded run exposed missing required validation
+error details (HTTP 500 instead of expected 422); fixed by using the existing typed
+safe envelope. Exact PG17 constraint hashes initially differed because FK deparsing
+uses search_path; pinned with the migration connection’s pg_catalog search_path.
+Current expanded suite is rerunning; do not claim it passed until result recorded.
+Ruff caught/wrapped SQL/hash literal lengths; one local editing helper had a syntax
+error, corrected before further validation. No hosted DDL or user credentials used.
+
+Phone detected; original temporary JDK cache is incomplete (missing jvm.cfg/release),
+so Gradle stopped before building. Restoring the official pinned JDK into a new
+external directory, checking its published archive digest. No device mutation yet.
+
+
+#### RN09B-D03a accepted backend checks and handoff
+
+Commit message `feat(quests): add versioned occurrence scheduling and completion`.
+Owner Ishmum, 2026-11-11; branch task/react-native/rn-09b-lifecycle-integration;
+parent f447e68; own hash Pending until next normal notes update.
+
+- Full `npm run check` passes: 474 portable, 660 component (+2 existing skips),
+  642 API; type/lint/assets/Ruff/OpenAPI/type generation pass. Existing 11 warnings.
+- `npm run api:db:test` final passes 233 actual PG17 tests (642 deselected),
+  including 16 new execution cases; 14 new deterministic date/DST/schema cases.
+  DB lifecycle tests use clocks explicitly; actual HTTP contract checks still use
+  normal ephemeral verifier and runtime role. No managed-account acceptance claim.
+- Two-connection schedule race accepts one revision and conflicts the other;
+  two concurrent completion submissions return the one existing +50 outcome,
+  with one ledger row. Definition deletion wipes all versioned text; disposable
+  Auth-owner cascade removes both tables. Security-drift damage rolls back.
+- Full metadata/path assertions were extended for exactly the two tables/three
+  routes while preserving original profile/settings columns/constraints/history.
+  Generated contracts remain reproducible without runtime/environment access.
+- Fixed measured HTTP 500 on invalid business dates by supplying required safe
+  ValidationDetails, now 422. Fixed race harness using two connections rather than
+  a barrier on the fixture’s one-connection pool. Bounded recent version work
+  rejects excessive scheduling transactionally; disabled snapshots do not consume
+  its bound, and an explicit regression proves Stop still succeeds at that limit.
+- Schedule/Outcome mutations finalize before success, serialize with parent-row
+  definition writes/deletion, and never trust client-submitted credit or times.
+  Same outcome replay is idempotent; an opposite terminal outcome conflicts.
+- Private native app selection never enters these server tables/DTOs. No hosted
+  migration yet: local head0004, development still0003. Device Stop/Apply/readback,
+  recovery across uncertain distributed writes and shared quest controls remain
+  D03 continuation. D04 managed phone/TalkBack/signed/iOS gates remain open.
+- Restored official JDK17 archive into a new external directory with verified
+  published digest. D02 debug APK build and explicit backup correction both passed;
+  actual merged manifest has both installed SecureStore backup-exclusion resources.
+  ADB currently detects unlocked Pixel; no screenshot, install, permission or account
+  mutation performed yet. No push/main merge/deployment. Disposable DB still running
+  for the continued goal; it must be stopped/restored at final cleanup.
+
+- Final receipt boundary adds explicit owner/quest identifiers to execution/outcome
+  responses so the shared client can verify both before adopting a receipt. After
+  this correction, generated artifacts, 642 API /233 PG17, workspace types and API
+  lint were rerun and passed. Earlier full root 474/660 remains the unchanged
+  mobile baseline; native build success covers D02 only, not new quest execution.
+
+#### RN09B-D03a every-file ledger
+
+- `apps/mobile/src/infrastructure/auth/README.md`: lines 1–26. Document SDK/session authority, safe public configuration, credential storage/backup and Anisha’s remaining provider/onboarding handoff.
+- `docs/Context (AGENT)/OPEN_DECISIONS.yaml`: lines 3–4, 265–279. Register expressly authorized provisional quest integration defaults without relabeling original PM answers or native quit/streak policy.
+- `docs/Context (AGENT)/PM_QUESTIONS.md`: lines 600–613. Record seven-day confirmation grace, explicit future first date, native Stop/readback requirements and unique self-reported +50 award.
+- `docs/architecture/quest-occurrence-lifecycle.md`: lines 1–71. Define version/date/time semantics, immutable outcomes, credit provenance, bounded API/history and native/account acceptance separation.
+- `docs/core_plan/04_react_native_integration.md`: lines 12–21. Expose current D02/D03/D04 status and scope override, preserving stable part IDs and remaining native/device gates.
+- `docs/core_plan_implementation_notes/artifacts/rn-09b-lifecycle-backend/evidence.json`: lines 1–60. Record sanitized source fingerprints, actual local test counts, migration boundary and pending native/account acceptance; no credentials or payloads.
+- `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 1613–1644. Record existing Plan 04 backend dependency, schema/security/validation/corrections and exact remaining hosted/mobile gates without inventing API-13.
+- `packages/contracts/openapi/foundation.openapi.json`: lines 566–752, 844–930, 2963–3785. Generate exact three new protected execution routes and typed schedule/version/occurrence/outcome receipts from the real side-effect-free app.
+- `packages/contracts/src/http.generated.ts`: lines 112–162, 381–476, 500–535, 1339–1681. Regenerate transport types and operation schemas for explicit schedule commands and same-owner/quest receipts.
+- `packages/contracts/src/index.ts`: lines 55–62. Publish type-only execution aliases for the upcoming shared consumers; existing saved-definition interface remains unchanged.
+- `services/api/alembic/env.py`: lines 5–11, 18–24. Register and include only the two new owned tables alongside unchanged existing models; managed Auth stays external.
+- `services/api/alembic/versions/20261111_0004_quest_execution.py`: lines 1–124. Add normalized snapshots/outcomes with composite cascade FKs, frozen checks, forced owner RLS and stripped ambient grants; no Auth administration.
+- `services/api/app/api/v1/quest_execution.py`: lines 1–81. Expose own GET execution, revision-safe schedule PUT and idempotent outcome PUT; validated dates/versions and commit-before-receipt boundaries.
+- `services/api/app/application.py`: lines 12, 30, 53. Assemble execution router without runtime clients or environment reads; preserve existing routes/middleware.
+- `services/api/app/db/migrations.py`: lines 16, 149–150, 168–169, 189, 191–197, 426–528. Advance local head to 0004 and strictly verify new ownership, forced RLS, exact command privileges, ambient grants/policies and PG17 constraint fingerprints.
+- `services/api/app/domain/__init__.py`: lines 1. Introduce the clock-explicit product rules package without persistence/network side effects.
+- `services/api/app/domain/quest_occurrences.py`: lines 1–38. Compile explicit one-off/daily/weekly saved-zone occurrences, overnight dates and earliest-start/latest-end DST boundaries, skipping collapsed gaps.
+- `services/api/app/models/__init__.py`: lines 5, 8. Register the two execution ORM models while preserving external managed Auth metadata.
+- `services/api/app/models/quest_execution.py`: lines 1–70. Model schedule version snapshots and unique owner/quest/version/date outcomes with legal credit/state constraints and cascade chains.
+- `services/api/app/repositories/quest_execution.py`: lines 1–308. Serialize commands with parent quest writes; enforce revision/date/time/outcome rules, preserve active snapshots, bound reads, once-only +50 and copied-text erasure.
+- `services/api/app/repositories/quests.py`: lines 102–104. Extend successful own definition deletion in the same transaction to close/disable schedules and wipe copied definition content.
+- `services/api/app/schemas/quest_execution.py`: lines 1–74. Define strict typed schedule input, canonical bounded date and explicit owner/quest/version/date output receipts with honest self-reported outcome meaning.
+- `services/api/tests/api/test_schema.py`: lines 49–51. Extend exact route inventory for three execution operations; retain deterministic environment-free export and existing wire assertions.
+- `services/api/tests/db/test_quest_execution.py`: lines 1–310. Add 16 actual PG17 cases for lifecycle/rewards, independent owners, immutable outcomes, races, security drift, deletion/cascade, HTTP validation and Stop at work bound.
+- `services/api/tests/test_profile_metadata.py`: lines 17–18. Extend exact owned-table inventory while keeping original profile columns/FK/external Auth metadata assertions.
+- `services/api/tests/test_quest_occurrences.py`: lines 1–90. Add 14 explicit-date, weekly/overnight, DST overlap/gap and invalid canonical-date contract cases.
+- `services/api/tests/test_settings_contract.py`: lines 141–142. Extend exact owned-table inventory without weakening original settings/profile migration and column contracts.
+- `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 7, 9, 5207–5310. Record initial D03 progress, actual measured fixes, final test/receipt boundary, environment restoration and every changed file/line; current native/account/device gates remain open.

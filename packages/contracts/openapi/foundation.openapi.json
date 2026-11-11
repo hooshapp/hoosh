@@ -563,6 +563,193 @@
         "title": "QuestDeletedResponse",
         "type": "object"
       },
+      "QuestExecutionView": {
+        "additionalProperties": false,
+        "properties": {
+          "completed_count": {
+            "title": "Completed Count",
+            "type": "integer"
+          },
+          "credits": {
+            "title": "Credits",
+            "type": "integer"
+          },
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "observed_at": {
+            "format": "date-time",
+            "title": "Observed At",
+            "type": "string"
+          },
+          "occurrences": {
+            "items": {
+              "$ref": "#/components/schemas/QuestOccurrenceView"
+            },
+            "title": "Occurrences",
+            "type": "array"
+          },
+          "quest_id": {
+            "format": "uuid",
+            "title": "Quest Id",
+            "type": "string"
+          },
+          "revision": {
+            "title": "Revision",
+            "type": "integer"
+          },
+          "user_id": {
+            "format": "uuid",
+            "title": "User Id",
+            "type": "string"
+          },
+          "versions": {
+            "items": {
+              "$ref": "#/components/schemas/QuestScheduleVersionView"
+            },
+            "title": "Versions",
+            "type": "array"
+          }
+        },
+        "required": [
+          "user_id",
+          "quest_id",
+          "observed_at",
+          "revision",
+          "enabled",
+          "versions",
+          "occurrences",
+          "credits",
+          "completed_count"
+        ],
+        "title": "QuestExecutionView",
+        "type": "object"
+      },
+      "QuestOccurrenceView": {
+        "additionalProperties": false,
+        "properties": {
+          "can_confirm": {
+            "title": "Can Confirm",
+            "type": "boolean"
+          },
+          "credits": {
+            "title": "Credits",
+            "type": "integer"
+          },
+          "ends_at": {
+            "format": "date-time",
+            "title": "Ends At",
+            "type": "string"
+          },
+          "local_date": {
+            "format": "date",
+            "title": "Local Date",
+            "type": "string"
+          },
+          "schedule_revision": {
+            "title": "Schedule Revision",
+            "type": "integer"
+          },
+          "starts_at": {
+            "format": "date-time",
+            "title": "Starts At",
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "upcoming",
+              "active",
+              "ended",
+              "missed",
+              "completed",
+              "cancelled"
+            ],
+            "title": "State",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "schedule_revision",
+          "local_date",
+          "starts_at",
+          "ends_at",
+          "title",
+          "state",
+          "can_confirm",
+          "credits"
+        ],
+        "title": "QuestOccurrenceView",
+        "type": "object"
+      },
+      "QuestOutcomePut": {
+        "additionalProperties": false,
+        "properties": {
+          "state": {
+            "enum": [
+              "completed",
+              "cancelled"
+            ],
+            "title": "State",
+            "type": "string"
+          }
+        },
+        "required": [
+          "state"
+        ],
+        "title": "QuestOutcomePut",
+        "type": "object"
+      },
+      "QuestOutcomeView": {
+        "additionalProperties": false,
+        "properties": {
+          "credits": {
+            "title": "Credits",
+            "type": "integer"
+          },
+          "local_date": {
+            "format": "date",
+            "title": "Local Date",
+            "type": "string"
+          },
+          "quest_id": {
+            "format": "uuid",
+            "title": "Quest Id",
+            "type": "string"
+          },
+          "schedule_revision": {
+            "title": "Schedule Revision",
+            "type": "integer"
+          },
+          "state": {
+            "enum": [
+              "completed",
+              "cancelled"
+            ],
+            "title": "State",
+            "type": "string"
+          },
+          "user_id": {
+            "format": "uuid",
+            "title": "User Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_id",
+          "quest_id",
+          "schedule_revision",
+          "local_date",
+          "state",
+          "credits"
+        ],
+        "title": "QuestOutcomeView",
+        "type": "object"
+      },
       "QuestPage": {
         "additionalProperties": false,
         "properties": {
@@ -652,6 +839,93 @@
           "quest"
         ],
         "title": "QuestSavedResponse",
+        "type": "object"
+      },
+      "QuestSchedulePut": {
+        "additionalProperties": false,
+        "properties": {
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "expected_revision": {
+            "maximum": 2147483646.0,
+            "minimum": 0.0,
+            "title": "Expected Revision",
+            "type": "integer"
+          },
+          "first_date": {
+            "format": "date",
+            "title": "First Date",
+            "type": "string"
+          },
+          "quest_revision": {
+            "maximum": 2147483647.0,
+            "minimum": 1.0,
+            "title": "Quest Revision",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "expected_revision",
+          "quest_revision",
+          "first_date",
+          "enabled"
+        ],
+        "title": "QuestSchedulePut",
+        "type": "object"
+      },
+      "QuestScheduleVersionView": {
+        "additionalProperties": false,
+        "properties": {
+          "definition": {
+            "$ref": "#/components/schemas/QuestDefinition"
+          },
+          "effective_from": {
+            "format": "date-time",
+            "title": "Effective From",
+            "type": "string"
+          },
+          "effective_until": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Effective Until"
+          },
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "first_date": {
+            "format": "date",
+            "title": "First Date",
+            "type": "string"
+          },
+          "quest_revision": {
+            "title": "Quest Revision",
+            "type": "integer"
+          },
+          "revision": {
+            "title": "Revision",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "revision",
+          "quest_revision",
+          "first_date",
+          "definition",
+          "effective_from",
+          "effective_until",
+          "enabled"
+        ],
+        "title": "QuestScheduleVersionView",
         "type": "object"
       },
       "QuestView": {
@@ -2683,6 +2957,829 @@
         "summary": "Put Quest",
         "tags": [
           "quests"
+        ]
+      }
+    },
+    "/v1/quests/{quest_id}/execution": {
+      "get": {
+        "operationId": "get_own_quest_execution",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "quest_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Quest Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "first",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "First"
+            }
+          },
+          {
+            "in": "query",
+            "name": "days",
+            "required": false,
+            "schema": {
+              "default": 14,
+              "maximum": 31,
+              "minimum": 1,
+              "title": "Days",
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestExecutionView"
+                }
+              }
+            },
+            "description": "Successful Response",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unauthorized",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "WWW-Authenticate": {
+                "required": true,
+                "schema": {
+                  "const": "Bearer",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Forbidden",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Conflict",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Request Entity Too Large",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unprocessable Entity",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Safe unexpected failure",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Service Unavailable",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "SupabaseAccessToken": []
+          }
+        ],
+        "summary": "Get Execution",
+        "tags": [
+          "quest-execution"
+        ]
+      }
+    },
+    "/v1/quests/{quest_id}/occurrences/{revision}/{day}": {
+      "put": {
+        "operationId": "record_own_quest_outcome",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "quest_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Quest Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "revision",
+            "required": true,
+            "schema": {
+              "maximum": 2147483647,
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "day",
+            "required": true,
+            "schema": {
+              "format": "date",
+              "title": "Day",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuestOutcomePut"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestOutcomeView"
+                }
+              }
+            },
+            "description": "Successful Response",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unauthorized",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "WWW-Authenticate": {
+                "required": true,
+                "schema": {
+                  "const": "Bearer",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Forbidden",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Conflict",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Request Entity Too Large",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unprocessable Entity",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Safe unexpected failure",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Service Unavailable",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "SupabaseAccessToken": []
+          }
+        ],
+        "summary": "Outcome",
+        "tags": [
+          "quest-execution"
+        ]
+      }
+    },
+    "/v1/quests/{quest_id}/schedule": {
+      "put": {
+        "operationId": "schedule_own_quest",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "quest_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Quest Id",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuestSchedulePut"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestExecutionView"
+                }
+              }
+            },
+            "description": "Successful Response",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unauthorized",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "WWW-Authenticate": {
+                "required": true,
+                "schema": {
+                  "const": "Bearer",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Forbidden",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Conflict",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Request Entity Too Large",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unprocessable Entity",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Safe unexpected failure",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Service Unavailable",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "SupabaseAccessToken": []
+          }
+        ],
+        "summary": "Schedule",
+        "tags": [
+          "quest-execution"
         ]
       }
     },

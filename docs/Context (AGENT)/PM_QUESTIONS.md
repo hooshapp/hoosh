@@ -597,3 +597,17 @@ settings, credentials or production identities are changed automatically.
   user-account, physical Android/TalkBack and signed iOS evidence. Implement code
   independently and record any unavailable device/account/signing gate precisely;
   never mark D04 complete from component presets alone.
+
+
+### RN09B lifecycle default details — 2026-11-11
+
+Provisional engineering decisions under Ishmum’s same authorization, not new PM
+answers: allow completion confirmation for seven days after scheduled end to
+support forgetting/offline use; after that show missed. Scheduled start must be
+future, on an explicit date within the next year. Editing a saved definition does
+not re-install a device schedule. Stop/Delete must confirm native Stop on this
+device before claiming protection ended; an account save alone is insufficient.
+A failed/uncertain server write requires explicit read/review, with no automatic
+mutation queue. Credits are +50 per self-reported completed occurrence, unique by
+owner/quest/schedule/date. Existing PM native quit rewards and allowance-based
+streak are not redefined. See [lifecycle contract](../architecture/quest-occurrence-lifecycle.md).

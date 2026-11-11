@@ -46,6 +46,9 @@ def test_export_is_deterministic_and_never_constructs_runtime_or_clients(monkeyp
         "/v1/settings",
         "/v1/quests",
         "/v1/quests/{quest_id}",
+        "/v1/quests/{quest_id}/execution",
+        "/v1/quests/{quest_id}/schedule",
+        "/v1/quests/{quest_id}/occurrences/{revision}/{day}",
     }
 
 

@@ -9,6 +9,7 @@ from starlette.types import Lifespan
 from app.api.health import router as health_router
 from app.api.v1.me import router as identity_router
 from app.api.v1.profiles import router as profile_router
+from app.api.v1.quest_execution import router as quest_execution_router
 from app.api.v1.quests import router as quests_router
 from app.api.v1.settings import router as settings_router
 from app.core.auth import UnavailableTokenVerifier
@@ -26,8 +27,7 @@ def create_app(*, cors_origins: Sequence[str] = (), lifespan: Lifespan | None = 
         lifespan=lifespan,
         responses={500: {"model": ErrorEnvelope, "description": "Safe unexpected failure"}},
         description=(
-            "Verified identity and isolated, revision-safe profiles, "
-            "settings and saved quests."
+            "Verified identity and isolated, revision-safe profiles, settings and saved quests."
         ),
     )
     application.state.token_verifier = UnavailableTokenVerifier()
@@ -50,5 +50,6 @@ def create_app(*, cors_origins: Sequence[str] = (), lifespan: Lifespan | None = 
     application.include_router(profile_router)
     application.include_router(settings_router)
     application.include_router(quests_router)
+    application.include_router(quest_execution_router)
     install_openapi(application)
     return application

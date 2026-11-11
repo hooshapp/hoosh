@@ -13,7 +13,7 @@ from alembic import command
 from app.models.profile import STRIP_CHARACTERS
 
 API_ROOT = Path(__file__).resolve().parents[2]
-HEAD = "20261111_0003"
+HEAD = "20261111_0004"
 LOCK_ID = 7529304120701
 
 
@@ -146,6 +146,8 @@ def verify(connection: Connection) -> dict:
         "public.profiles",
         "public.user_settings",
         "public.user_quests",
+        "public.quest_schedule_versions",
+        "public.quest_occurrence_outcomes",
         "public.alembic_version",
     ):
         if (
@@ -163,7 +165,8 @@ def verify(connection: Connection) -> dict:
                 "SELECT count(*) FROM pg_class c, LATERAL aclexplode(c.relacl) a "
                 "WHERE c.oid=to_regclass(:table) AND a.grantee<>c.relowner "
                 "AND NOT (:table IN ('public.profiles','public.user_settings',"
-                "'public.user_quests') "
+                "'public.user_quests','public.quest_schedule_versions',"
+                "'public.quest_occurrence_outcomes') "
                 "AND a.grantee="
                 "(SELECT oid FROM pg_roles WHERE rolname='disconnect_api'))"
             ),
@@ -183,8 +186,15 @@ def verify(connection: Connection) -> dict:
     _verify_policies_and_clock(connection, "profiles", "profiles")
     _verify_settings(connection)
     _verify_quests(connection)
+    _verify_execution(connection)
     for role_name in ("anon", "authenticated", "service_role"):
-        for table in ("public.profiles", "public.user_settings", "public.user_quests"):
+        for table in (
+            "public.profiles",
+            "public.user_settings",
+            "public.user_quests",
+            "public.quest_schedule_versions",
+            "public.quest_occurrence_outcomes",
+        ):
             for privilege in (
                 "SELECT",
                 "INSERT",
@@ -413,3 +423,106 @@ def _verify_quests(connection: Connection) -> None:
     if set(privileges) != {("SELECT", False), ("INSERT", False), ("UPDATE", False)}:
         raise MigrationSafetyError("Quest privileges differ from reviewed commands")
     _verify_policies_and_clock(connection, "user_quests", "quests")
+
+
+# Exact PG17 constraint fingerprints are recorded after applying the frozen local migration.
+EXECUTION_CONSTRAINT_FINGERPRINTS = {
+    "quest_schedule_versions": {
+        "ck_quest_schedule_versions_definition_object": (
+            "cb71e258cb7a46b8410d8fc2524ab62f" + "5319ee925a7d809512f9a3878bf5e796"
+        ),
+        "ck_quest_schedule_versions_ordered_times": (
+            "d3df20159f525d608e07ee948ce82c1d" + "7ae852c5c8667b3dc9e4f66dfb181c5e"
+        ),
+        "ck_quest_schedule_versions_positive_revisions": (
+            "922510238e8a08657284325ff698bbd5" + "ba7741f5bf95ed91aaa7d03180e70fb9"
+        ),
+        "fk_quest_schedule_versions_quest": (
+            "f7d7239119c6af9d9b0c4404d80d6d84" + "d9f2eb82a717876309d0ae1a6dce62e4"
+        ),
+        "pk_quest_schedule_versions": (
+            "f7a84c78b133a1b12900aefc9ca16813" + "dae05864bc568761c33b06330149f328"
+        ),
+    },
+    "quest_occurrence_outcomes": {
+        "ck_quest_occurrence_outcomes_state_credit": (
+            "dec6fdbfad7d25362f5c84bda34ac34b" + "6f2f611d57e1bdc9af4e0605cd914254"
+        ),
+        "fk_quest_occurrence_outcomes_schedule": (
+            "a946d72a89766f759666293f079dc921" + "b1285f0fb38a4d26fb2da20cfb4145ad"
+        ),
+        "pk_quest_occurrence_outcomes": (
+            "49e40f4dd47f6ebd121f4137806b337a" + "a677d8907b727958796e2467c462cc95"
+        ),
+    },
+}
+
+
+def _verify_execution(connection: Connection) -> None:
+    predicate = "(user_id = (NULLIF(current_setting('app.user_id'::text, true), ''::text))::uuid)"
+    for table, commands in (
+        ("quest_schedule_versions", {"SELECT", "INSERT", "UPDATE"}),
+        ("quest_occurrence_outcomes", {"SELECT", "INSERT"}),
+    ):
+        qualified = "public." + table
+        row = connection.execute(
+            text(
+                "SELECT "
+                "pg_get_userbyid(relowner),relrowsecurity,relforcerowsecurity FROM "
+                "pg_class WHERE oid=to_regclass(:table)"
+            ),
+            {"table": qualified},
+        ).one_or_none()
+        if row != ("postgres", True, True):
+            raise MigrationSafetyError("Quest execution ownership/RLS differs")
+        privileges = set(
+            connection.execute(
+                text(
+                    "SELECT a.privilege_type,a.is_grantable FROM pg_class c, LATERAL "
+                    "aclexplode(c.relacl) a WHERE c.oid=to_regclass(:table) AND "
+                    "a.grantee=(SELECT oid FROM pg_roles WHERE "
+                    "rolname='disconnect_api')"
+                ),
+                {"table": qualified},
+            ).all()
+        )
+        if privileges != {(command, False) for command in commands}:
+            raise MigrationSafetyError("Quest execution command privileges differ")
+        policies = connection.execute(
+            text(
+                "SELECT policyname,permissive,roles,cmd,qual,with_check FROM "
+                "pg_policies WHERE schemaname='public' AND tablename=:table"
+            ),
+            {"table": table},
+        ).all()
+        expected = {
+            (
+                f"{table}_{command.lower()}_own",
+                "PERMISSIVE",
+                ("disconnect_api",),
+                command,
+                predicate if command in {"SELECT", "UPDATE"} else None,
+                predicate if command in {"INSERT", "UPDATE"} else None,
+            )
+            for command in commands
+        }
+        observed = {
+            (name, permissive, tuple(roles), cmd, qual, check)
+            for name, permissive, roles, cmd, qual, check in policies
+        }
+        if observed != expected:
+            raise MigrationSafetyError("Quest execution owner policy differs")
+        constraints = connection.execute(
+            text(
+                "SELECT conname,pg_get_constraintdef(oid),convalidated FROM "
+                "pg_constraint WHERE conrelid=to_regclass(:table)"
+            ),
+            {"table": qualified},
+        ).all()
+        fingerprints = {
+            name: sha256(value.encode()).hexdigest() for name, value, valid in constraints if valid
+        }
+        if fingerprints != EXECUTION_CONSTRAINT_FINGERPRINTS[table] or len(fingerprints) != len(
+            constraints
+        ):
+            raise MigrationSafetyError("Quest execution constraints differ")

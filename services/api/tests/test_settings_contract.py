@@ -138,6 +138,8 @@ def test_owned_metadata_and_new_migration_preserve_the_original_profile_history(
         "public.profiles",
         "public.user_settings",
         "public.user_quests",
+        "public.quest_schedule_versions",
+        "public.quest_occurrence_outcomes",
     }
     assert set(UserSettings.__table__.c.keys()) == {
         "user_id",

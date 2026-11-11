@@ -109,6 +109,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/quests/{quest_id}/execution": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Execution */
+        get: operations["get_own_quest_execution"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/quests/{quest_id}/occurrences/{revision}/{day}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Outcome */
+        put: operations["record_own_quest_outcome"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/quests/{quest_id}/schedule": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Schedule */
+        put: operations["schedule_own_quest"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/settings": {
         parameters: {
             query?: never;
@@ -327,6 +378,102 @@ export interface components {
             /** Revision */
             revision: number;
         };
+        /** QuestExecutionView */
+        QuestExecutionView: {
+            /** Completed Count */
+            completed_count: number;
+            /** Credits */
+            credits: number;
+            /** Enabled */
+            enabled: boolean;
+            /**
+             * Observed At
+             * Format: date-time
+             */
+            observed_at: string;
+            /** Occurrences */
+            occurrences: components["schemas"]["QuestOccurrenceView"][];
+            /**
+             * Quest Id
+             * Format: uuid
+             */
+            quest_id: string;
+            /** Revision */
+            revision: number;
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+            /** Versions */
+            versions: components["schemas"]["QuestScheduleVersionView"][];
+        };
+        /** QuestOccurrenceView */
+        QuestOccurrenceView: {
+            /** Can Confirm */
+            can_confirm: boolean;
+            /** Credits */
+            credits: number;
+            /**
+             * Ends At
+             * Format: date-time
+             */
+            ends_at: string;
+            /**
+             * Local Date
+             * Format: date
+             */
+            local_date: string;
+            /** Schedule Revision */
+            schedule_revision: number;
+            /**
+             * Starts At
+             * Format: date-time
+             */
+            starts_at: string;
+            /**
+             * State
+             * @enum {string}
+             */
+            state: "upcoming" | "active" | "ended" | "missed" | "completed" | "cancelled";
+            /** Title */
+            title: string;
+        };
+        /** QuestOutcomePut */
+        QuestOutcomePut: {
+            /**
+             * State
+             * @enum {string}
+             */
+            state: "completed" | "cancelled";
+        };
+        /** QuestOutcomeView */
+        QuestOutcomeView: {
+            /** Credits */
+            credits: number;
+            /**
+             * Local Date
+             * Format: date
+             */
+            local_date: string;
+            /**
+             * Quest Id
+             * Format: uuid
+             */
+            quest_id: string;
+            /** Schedule Revision */
+            schedule_revision: number;
+            /**
+             * State
+             * @enum {string}
+             */
+            state: "completed" | "cancelled";
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+        };
         /** QuestPage */
         QuestPage: {
             /** Next Cursor */
@@ -349,6 +496,42 @@ export interface components {
         /** QuestSavedResponse */
         QuestSavedResponse: {
             quest: components["schemas"]["QuestView"];
+        };
+        /** QuestSchedulePut */
+        QuestSchedulePut: {
+            /** Enabled */
+            enabled: boolean;
+            /** Expected Revision */
+            expected_revision: number;
+            /**
+             * First Date
+             * Format: date
+             */
+            first_date: string;
+            /** Quest Revision */
+            quest_revision: number;
+        };
+        /** QuestScheduleVersionView */
+        QuestScheduleVersionView: {
+            definition: components["schemas"]["QuestDefinition"];
+            /**
+             * Effective From
+             * Format: date-time
+             */
+            effective_from: string;
+            /** Effective Until */
+            effective_until: string | null;
+            /** Enabled */
+            enabled: boolean;
+            /**
+             * First Date
+             * Format: date
+             */
+            first_date: string;
+            /** Quest Revision */
+            quest_revision: number;
+            /** Revision */
+            revision: number;
         };
         /** QuestView */
         QuestView: {
@@ -1136,6 +1319,349 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["QuestDeletedResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    "WWW-Authenticate": "Bearer";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Request Entity Too Large */
+            413: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Safe unexpected failure */
+            500: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Service Unavailable */
+            503: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    get_own_quest_execution: {
+        parameters: {
+            query?: {
+                first?: string | null;
+                days?: number;
+            };
+            header?: never;
+            path: {
+                quest_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuestExecutionView"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    "WWW-Authenticate": "Bearer";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Request Entity Too Large */
+            413: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Safe unexpected failure */
+            500: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Service Unavailable */
+            503: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    record_own_quest_outcome: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                quest_id: string;
+                revision: number;
+                day: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["QuestOutcomePut"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuestOutcomeView"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    "WWW-Authenticate": "Bearer";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Request Entity Too Large */
+            413: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Safe unexpected failure */
+            500: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Service Unavailable */
+            503: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    schedule_own_quest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                quest_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["QuestSchedulePut"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QuestExecutionView"];
                 };
             };
             /** @description Unauthorized */

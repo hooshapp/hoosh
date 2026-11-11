@@ -1610,3 +1610,35 @@ For approved disposable accounts, the settings journey snapshots current setting
 | `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 11–11 | Refresh current hosted-CI resume state and record preceding commit hash 7fe2c55; preserve original history and joint limits. |
 | `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 1519–1519 | Refresh current hosted-CI resume state and record preceding commit hash 7fe2c55; preserve original history and joint limits. |
 | `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`: lines 1578–1609 | Record exact push/run verification, all changed file ranges, evidence scope and remaining gates. Own hash stays Pending until next normal update. |
+
+
+## RN09B-D03a — Explicit quest scheduling and self-reported completion producer
+
+Date 2026-11-11; owner Ishmum; branch task/react-native/rn-09b-lifecycle-integration;
+parent f447e68. Commit message `feat(quests): add versioned occurrence scheduling and completion`.
+Own hash Pending. This is the existing Plan 04 quest feature's backend dependency,
+not a new API-13 or a claim all Foundation/joint acceptance gates are closed.
+
+Migration 0004 adds owner-isolated versioned schedules and immutable unique outcomes.
+Definition saves remain non-enforcing. Server compiler/parent locks enforce current
+revision, explicit future local date, saved-zone/DST recurrence, old-active snapshots,
+independent Stop and once-only +50 self-reported completion after end. Delete erases
+all copied definition content, leaving only non-content credit metadata until owner
+cascade. Native installation/readback and D04 remain subsequent integration work.
+
+Validation: 14 pure date/DST/strict date cases; expanded actual PostgreSQL suite
+233 passed, 642 deterministic tests deselected. Includes two independent-connection
+CAS/reward races, forced owner RLS, immutable outcomes, ambient/constraint/policy
+verification, bounded work with still-available Stop, actual HTTP and disposable
+owner cascade. 642 deterministic API tests, generated contracts and workspace
+types pass. Full root rerun passes 474 portable /660 component (+2 skips)/642 API;
+final per-file ledger and result are recorded in Plan 04.
+Original profile/settings/schema assertions preserved and extended for new tables.
+Hosted development remains 0003: no current hosted DDL or managed user operation.
+
+Corrections: required ValidationDetails fixed a measured 500→422 error; FK constraint
+fingerprints pinned using the migration connection’s search_path, matching actual
+PG17. Race fixtures now use a deliberate two-connection pool instead of blocking a
+single-connection fixture at a barrier. No production lock/atomicity check weakened.
+Detailed every-file/line ledger and commands are in the matching Plan 04 entry;
+[contract](../architecture/quest-occurrence-lifecycle.md) defines consumer meaning.

@@ -9,6 +9,16 @@
 
 **Implementation record:** Follow the [knowledge-base workflow](../core_plan_implementation_notes/README.md) and maintain [Plan 04 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md). Each commit needs its own file/line change record, reasoning, checks and handoff. Preparation alone does not complete a part; RN-01's actual evidence is recorded below and in its notes.
 
+**Current D02–D04 continuation (2026-11-11):** user explicitly authorizes full
+quest account/lifecycle/device integration and recorded engineering defaults.
+D02 SDK/root implementation is `0bbf714`, retained Android backup correction
+`f447e68`; actual managed phone acceptance remains open. D03a implements explicit
+schedule versions and self-reported completion/reward API with additive **local**
+head 0004; hosted development remains 0003 until recorded upgrade. See
+[lifecycle contract](../architecture/quest-occurrence-lifecycle.md) and latest
+notes. Native quest installation/shared controls and full D04 acceptance are still
+in progress. Older Auth/token deferrals below are historical for this new scope.
+
 **Saved quest management (2026-11-11; RN09B-D01):** own strict definition
 CRUD/storage and conditional shared Quests/editor consumers are implemented and
 accepted locally. Development schema is now `20261111_0003`, with profiles/settings

@@ -99,4 +99,7 @@ def delete_own_quest(session: UserSession, quest_id: UUID, expected: int) -> int
         if row is not None and row.definition is not None:
             _conflict(row)
         return row.revision if row else 0
+    from app.repositories.quest_execution import erase_quest_execution
+
+    erase_quest_execution(session, quest_id)
     return removed
