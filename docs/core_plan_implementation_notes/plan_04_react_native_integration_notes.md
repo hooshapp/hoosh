@@ -4,7 +4,7 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN09B-D02–D04 active. D02 SDK/root producer `0bbf714` and retained Android backup exclusions `f447e68` implemented; actual managed-account/device acceptance pending. D03a `999512a`, D03b `b5e314f` native infrastructure and D03c shared controls are implemented at the independent evidence bounds below; full joint D02/D03/D04 acceptance remains pending. Development is verified at0004. Ishmum reiterated Anisha owns Auth/signin/onboarding; existing D02 awaits her review/integration and real-account acceptance. Anisha confirmed iOS integration is not ready.
+**Current part:** RN09B-D04a independent Android acceptance implemented and recorded below. RN09B-D02–D04 remain open for coordinated acceptance. D02 SDK/root producer `0bbf714` and retained Android backup exclusions `f447e68` implemented; actual managed-account/device acceptance pending. D03a `999512a`, D03b `b5e314f` native infrastructure and D03c `91894f4` shared controls are implemented at the independent evidence bounds below; full joint D02/D03/D04 acceptance remains pending. Development is verified at0004. Ishmum reiterated Anisha owns Auth/signin/onboarding; existing D02 awaits her review/integration and real-account acceptance. Anisha confirmed iOS integration is not ready.
 
 **Implementation branch:** `task/react-native/rn-09b-lifecycle-integration`; base published `b9bf936`. Local commits only; no main merge/deployment or iOS acceptance.
 
@@ -5584,3 +5584,154 @@ one-off pinned formatter with existing single quotes; no dependency/config chang
 - `docs/qa/quest-lifecycle.md`: lines 1–93. Provide reproducible independent native/HTTP/component checks, actual evidence/cleanup and precise coordinated D04 managed-account/native UI/TalkBack/large-text/signed/iOS cases. Do not confuse mock/preset/native-unit checks with combined acceptance.
 - `docs/qa/quest-management.md`: lines 6–10. Point historical D01 readers to the lifecycle continuation and correct current list label, without rewriting old test/proof boundaries.
 - `services/api/tests/db/test_mobile_quests_acceptance.py`: lines 57. Require eight write and two restart mobile scenarios from the existing private-report driver; child token/output remains captured and redacted and temporary reports removed.
+
+### RN09B-D04a — Actual Android bridge correction and independent device acceptance
+
+- **Date/owner:** 2026-11-11, Ishmum (checks crossed UTC midnight).
+- **Branch/parent:** `task/react-native/rn-09b-lifecycle-integration`, `91894f4`.
+- **Commit:** Pending; intended `fix(android): accept nullable quest metadata across the native bridge`.
+- **Scope:** existing shared lifecycle UI + actual Android port in the isolated QA host,
+  normal local HTTP verifier and guarded disposable PG17. No new managed sign-in,
+  Supabase Auth administration, iOS implementation, hosted migration or deployment.
+
+#### Measured defects and decisions
+
+Actual UI Schedule acknowledged the account but failed before native dispatch:
+Expo SDK58 rejected nullable nested Map arguments (`ERR_UNEXPECTED`). Pure engine
+and component mocks had not crossed this JSI boundary. The Android adapter now
+serializes bounded metadata JSON; native decoding rejects excessive size/depth
+before recursive parsing, then bounds keys/nodes/containers/strings and delegates
+semantic validation to the existing runtime. Null policy/effectiveUntil values
+survive. App identifiers remain native; the shared typed interface is unchanged.
+Temporary payload/error traces were removed; QA logs only allowlisted error codes.
+
+Known missing apps/policy/service is now actionable setup feedback rather than
+an uncertain-write warning. A previously uncertain receipt remains gated until
+review. Save/account acknowledgement never implies installation. Stop still uses
+native evidence first and does not require fresh permission or HTTP availability.
+
+The QA host adds an explicit native-quest connection using a separate verified
+`qa-quest` namespace, without claiming/installing on connect. It forwards existing
+Apps/Sessions editors and retires owner leases when disconnected. The local runner
+creates only two generated users after exact loopback/marker/PG17/schema checks,
+uses the normal ephemeral-JWT verifier, writes a private ignored0600manifest and
+cleans only its successful inserts. Lifetimes are15/45/90minutes; no hosted `.env`
+or SDK credentials are read. Anisha retains managed Auth/onboarding and iOS.
+
+Three harness failures were measured and corrected honestly:
+
+1. Concurrent ordinary UiAutomation dumps left a stale registration and suppressed
+   the service being tested. An emulator reboot cleared it; screenshots/native
+   count readbacks then showed the pause. No product-service change was needed.
+   Live native observations now avoid hierarchy automation, per the Android API
+   documentation linked in the runbook. No failed CDP attempt is claimed as a
+   JavaScript pause. Actual emulator reboot with API disconnected and host JS
+   unopened supplies the narrower native reconstruction evidence.
+2. Running the database migration suite during the manual fixture caused one
+   infrastructure assertion (two users instead of zero) and cleared local fixture
+   quest rows. That fixture was retired, the suite rerun independently (233pass),
+   then a fresh fixture started. No hosted data was involved. The existing DB CLI
+   now refuses check/down/reset while the device fixture artifact exists; three
+   operator tests cover it. Direct pytest remains an operator sequencing obligation.
+3. A partially visible completion node intersected Android navigation; the helper
+   tapped Home before confirmation. Backend remained at zero. After enforcing full
+   visibility, the actual shared confirmation succeeded. One idle emulator image
+   was black while the native pause window persisted; native window absence after
+   the deadline, not that image, establishes end handling.
+
+#### Actual checks and acceptance boundary
+
+- `npm run check`: types, lint0errors/11existing warnings, original assets,
+  **538portable /719component (+2existing skips) /650deterministic API**, generated
+  OpenAPI/contracts pass. Native adapter3cases and QA-host18preset results are
+  included; preset results are not iOS-device evidence.
+- `npm run api:db:test`, after fixture cleanup: **233PostgreSQL**,650-independent
+  tests remain separate. The first concurrent run's1failure is explained above.
+- `JAVA_HOME=<pinned JDK17> npm run mobile:check-intervention-engine`: **90JVM**.
+  The first invocation without JAVA_HOME hit macOS's Java stub; setting the already
+  documented build JDK fixed the environment without source changes.
+- Pinned JDK/SDK Gradle debug APK/test APK plus library release Kotlin compile pass.
+  Final source, including the pre-parser nesting guard, passes **106physical native
+  instrumentation checks** on Pixel8Pro/Android16/API36. No physical speech, SDK
+  login or combined UI completion is inferred from those isolated native checks.
+- `npm run mobile:export`: production QA isolation and71original SVGs pass.
+- Physical shared UI saved the synthetic target and quest definition, but hit the
+  original JSI failure. Phone known native files, settings and reverse mappings
+  were restored before continuing on the dedicated API36 arm64 emulator. No
+  SecureStore/SDK credential data was backed up, erased or inspected.
+- Emulator shared UI Save, explicit first-date Schedule/Update and Apply reached
+  actual native acknowledgement. Real native pause survives emulator reboot with
+  API disconnected and host JS unopened. Open anyway reveals only the synthetic
+  target; one-minute expiry re-presents the pause; Return home reaches launcher.
+  Fresh fixture shared Schedule also starts the native pause at its saved time
+  with API disconnected. After the03:49UTC end, the native pause window was absent. Actual shared completion
+  then awarded50credits once; identical API replay retained one completion/50.
+  Offline Stop with service access revoked removed native versions and disabled
+  its receipt while account remained enabled. Reconnect/Check retained stopped
+  native revision2; explicit online Stop acknowledged account revision2/native3,
+  with50credits/one completion retained.
+
+The separate official arm64 emulator37.2.13/build16740729 archive was verified
+against Google's repository size/SHA1 in `/tmp`; the installed shared SDK emulator
+was x86_64 on this Apple Silicon Mac. This is debug/emulator evidence, not a signed
+physical/store release. No new screen-reader listening acceptance was requested.
+
+Final APK native instrumentation also passed106cases on the emulator. The full
+live timed UI used the bridge APK before the final pre-parser guard and removal
+of temporary native trace logging; it was not repeated on the final APK. Final
+source fingerprints/instrumentation and earlier live observations are distinguished
+in the artifact. The phone disconnected before the post-instrumentation baseline
+recheck; the earlier restoration passed, and isolated checks use synthetic cache
+stores. No further phone settings/UI changes were made. Local fixture cleanup
+removed its users/artifact/API; final PostgreSQL rerun233pass/650deselected, task
+Metro/emulator stopped and Compose stopped with the volume retained.
+
+#### File and line ledger
+
+Every changed source/test/doc/artifact belongs to this entry; user icon packs and
+workspace file remain excluded. Existing IDs/parent counts are preserved. The next coordinated
+work is Anisha's SDK/root review and account journey, new combined physical
+speech/focus/large-text checks, signed Android acceptance and her iOS bridge/build.
+No full D02/D03/D04 or Plan04 completion is claimed.
+
+
+- `apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/InterventionChecks.kt`: lines 24–36. Exercise actual Android JSON null/list decoding and invalid root/size/string/nesting/array limits. Two grouped native cases extend104 to106; no private production files are used.
+- `apps/mobile/dev/profile/app/_layout.tsx`: lines 9,15,19–28,37,51–55. Provide the explicit verified QA native owner to existing product consumers and retire owner/selection handles on runtime replacement. Font loading now has visible feedback instead of a blank screen; no credential storage added.
+- `apps/mobile/dev/profile/app/index.tsx`: lines 14–38,43–70,97–103. Share bounded connection/error handling, keep credentials in the existing secure memory-only field, and offer an explicit quest-native QA connection. Explain separate account/device actions; never claim/install on connect.
+- `apps/mobile/dev/profile/app/settings/[field].tsx`: lines 1–2. Forward Apps/Sessions navigation to the actual product settings route so the isolated host tests the same editors, without duplicating them.
+- `apps/mobile/dev/profile/runtime.tsx`: lines 6–7,11–34,53–55,64–107. Verify identity before native binding, reject an unavailable bridge, preserve normal HTTP/lost-response behaviour and expose a separate qa-quest owner. Bind native methods and log only bounded native error codes; never log native payloads or credentials.
+- `apps/mobile/src/features/quests/quest-lifecycle.ts`: lines 39–57,97–110,138–145,253–256. Classify definitely missing policy/apps/service as setup-required before mutation, retaining a prior uncertainty gate. Apply without a bridge gets actionable feedback; Stop remains independent of permission/HTTP availability.
+- `apps/mobile/src/features/quests/quest-lifecycle.test.ts`: lines 271–300. Verify known setup failures create no phantom server/native writes, and preserve earlier uncertainty until explicit review. These are regressions for observed actor behaviour, not managed Auth acceptance.
+- `apps/mobile/src/infrastructure/native/product-ports.android.ts`: lines 1–52. Keep the shared typed port while describing the actual Android string argument; check/bind every required method and serialize bounded quest metadata. Return real native acknowledgements; no app identifiers enter JSON.
+- `apps/mobile/src/infrastructure/native/product-ports.android.native.test.ts`: lines 1–60. Exercise the actual Android adapter against a native-module stub: nullable serialization/acknowledgement, oversize rejection before dispatch and preserved binding of other operations. jest.requireActual is loaded after mock initialization; no new lint warnings.
+- `apps/mobile/src/infrastructure/native/quest-device-qa.native.test.ts`: lines 1–107. Verify default non-native QA mode, identity-checked namespace, missing bridge/invalid identity refusal, no connect-time claims/writes and sanitized error codes under both presets. These18results are not physical/iOS execution.
+- `apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/HooshUsageModule.kt`: lines 73–76. Accept quest metadata as a string at the Expo argument boundary, decode under strict limits, then call the existing native runtime. Reject parsing errors with a fixed code/message instead of payload-bearing exceptions.
+- `apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/QuestBridgePayload.kt`: lines 1–53. Decode nullable metadata with a65536-byte/character cap, quote-aware nesting preflight and depth/node/key/container/string bounds. Delegate rule semantics to existing exact-schema validation; app identities remain native-only.
+- `scripts/quest-device-fixture.py`: lines 1–65. Validate bounded lifetime, exact guarded local DB/schema, ignored nonredirected private output and exclusive loopback port before creating generated users. Preserve any existing artifact; track only successfully inserted users for cleanup.
+- `scripts/quest-device-fixture.py`: lines 66–173. Use normal JWT verification with ephemeral JWKS and the existing test API process, validate readiness, seed two isolated local accounts/settings/quest and write an exclusive0600manifest. Bound runtime; never read hosted .env or print tokens.
+- `scripts/quest-device-fixture.py`: lines 174–216. On normal exit/SIGTERM/interrupt stop the child, remove only this runner artifact and delete only its inserted local users. Sanitize all operator exceptions and expose only15/45/90minute CLI choices.
+- `scripts/db-test.py`: lines 12,32–38. Refuse database check/down/reset while the private manual device artifact exists, before running SQL/Compose. This prevents the observed migration-suite/manual-fixture collision; direct pytest still requires documented sequencing.
+- `services/api/tests/test_quest_device_fixture.py`: lines 1–90. Use isolated fake operator resources to prove existing-artifact preservation, lifetime/schema refusal before mutation, and cleanup of only successfully inserted users after partial setup. No actual keys or hosted connection.
+- `services/api/tests/test_db_cleanup_guard.py`: lines 17–31. Isolate the guard path in every test and prove check/down/reset refusal preserves the live private artifact. Existing verified-volume reset safeguards remain covered.
+- `package.json`: lines 20. Include the new local operator script in the existing Ruff check; no package/dependency/lockfile changes.
+- `apps/mobile/dev/profile/README.md`: lines 142–156. Document explicit native QA scope, real product editor reuse, fixture/DB sequencing, private credentials/cleanup and accessibility-inspection limitations.
+- `services/api/tests/support/README.md`: lines 38–41. Explain that the manual device runner and migration suite share a disposable database and must run sequentially, including the direct-pytest obligation.
+- `docs/qa/quest-lifecycle.md`: lines 94–177. Provide reproducible local/native setup/cleanup, transport fix, primary Android automation reference and actual start/end/completion/Stop evidence. Distinguish timed bridge-build observations, final APK checks, phone disconnect and remaining SDK/speech/iOS/signed gates.
+- `docs/core_plan/04_react_native_integration.md`: lines 788–804. Record this D04a implementation/checkpoint under existing IDs and parent counts, preserving joint/signed/iOS acceptance and Anisha ownership.
+- `docs/Context (AGENT)/AGENT_START_HERE.md`: lines 7–18. Publish the latest independent Android acceptance and ownership boundary above historical checkpoints; direct new agents to the current runbook/notes.
+- `docs/core_plan_implementation_notes/artifacts/rn-09b-quest-device/evidence.json`: lines 1–101. Record final source fingerprints, measured checks, sanitized native/API outcomes, failed harness attempts, actual cleanup and precise APK/physical/signed acceptance boundaries. No raw tokens, IDs, app inventory or device serial.
+- `docs/core_plan_implementation_notes/artifacts/rn-09b-quest-device/README.md`: lines 1–36. Map each inspected raw emulator capture to its scoped observation and state final-source/phone/SDK/speech limitations.
+
+Eight binary screenshots (1344×2992PNG; binary files have no line numbers), each
+under `docs/core_plan_implementation_notes/artifacts/rn-09b-quest-device/`:
+
+- `after-reboot-native.png`: actual persisted native pause after reboot/API loss.
+- `open-anyway.png`: allowed synthetic target, no personal apps.
+- `allowance-expiry.png`: re-presented pause after one-minute allowance.
+- `schedule-ack.png`: separately acknowledged account schedule/native installation.
+- `scheduled-pause.png`: actual fresh scheduled start with API disconnected.
+- `completed-ui.png`: shared confirmation result, one completion/50credits.
+- `offline-stop.png`: truthful missing account acknowledgement after native Stop.
+- `stopped-confirmed.png`: explicit online account/device Stop acknowledged.
+
+- `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 7, 5588–5737. Record D03c hash/current part, every changed file/logical block, actual checks/cleanup, observed failures, source-build boundary and remaining coordinated work. This entry travels with the implementation commit; resolve its Pending hash by subject/history until the next normal notes update.

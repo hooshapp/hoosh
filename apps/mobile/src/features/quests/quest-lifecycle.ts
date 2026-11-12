@@ -36,6 +36,25 @@ export type QuestNativeBinding = Readonly<{
   owner: string;
   port: ProductNativePort;
 }>;
+class QuestSetupRequired extends Error {}
+function requireDeviceSetup(
+  device: DeviceQuestRead,
+  selection: SavedSelectionSummary,
+  policy: InterventionPolicy | null,
+) {
+  if (!policy)
+    throw new QuestSetupRequired(
+      'Save a session count and duration in Settings before applying this quest.',
+    );
+  if (!selection.selectedAppCount)
+    throw new QuestSetupRequired(
+      'Choose and save distracting apps on this device before applying this quest.',
+    );
+  if (!device.native.serviceConnected || !device.native.disclosureAccepted)
+    throw new QuestSetupRequired(
+      'Review app protection access and return here when the service is connected. Account and device status remain separate.',
+    );
+}
 /** One account/detail operation queue. Reads never install, resume, or replay writes. */
 export function createQuestLifecycle(
   scope: AccountScope,
@@ -75,14 +94,19 @@ export function createQuestLifecycle(
   };
   async function exclusive(work: () => Promise<void>, failure: string) {
     if (!live() || locked) return false;
+    const previouslyUnconfirmed = state.reviewRequired;
     locked = true;
     publish({ busy: true, pendingWrite: true });
     try {
       await work();
       current();
       return true;
-    } catch {
-      publish({ reviewRequired: true, message: failure });
+    } catch (error) {
+      publish({
+        reviewRequired:
+          error instanceof QuestSetupRequired ? previouslyUnconfirmed : true,
+        message: error instanceof QuestSetupRequired ? error.message : failure,
+      });
       return false;
     } finally {
       locked = false;
@@ -111,18 +135,14 @@ export function createQuestLifecycle(
     enabled: boolean,
     policy: InterventionPolicy | null,
   ) {
-    if (!device) throw new Error('Device bridge unavailable');
+    if (!device)
+      throw new QuestSetupRequired(
+        'App controls are unavailable on this device. Keep the saved quest until device access can be checked.',
+      );
     const previous = await readDevice();
     const selection = enabled ? await readSelection() : null;
     current();
-    if (
-      enabled &&
-      (!policy ||
-        !selection?.selectedAppCount ||
-        !previous.native.serviceConnected ||
-        !previous.native.disclosureAccepted)
-    )
-      throw new Error('Review device setup');
+    if (enabled && selection) requireDeviceSetup(previous, selection, policy);
     const versions = enabled
       ? remote.versions
           .filter(
@@ -233,12 +253,7 @@ export function createQuestLifecycle(
         // Check local prerequisites before creating a desired server schedule.
         const previous = await readDevice(),
           selection = await readSelection();
-        if (
-          !selection.selectedAppCount ||
-          !previous.native.serviceConnected ||
-          !previous.native.disclosureAccepted
-        )
-          throw new Error('Review device setup');
+        requireDeviceSetup(previous, selection, policy);
         const remote = await scope.write((op) =>
           scheduleQuest(
             id,

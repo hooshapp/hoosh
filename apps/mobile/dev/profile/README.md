@@ -139,3 +139,18 @@ with `npm run api:db:down` when finished. Node/mobile dependencies and the norma
 Python test dependencies must be installed. See the [acceptance matrix](../../../../docs/qa/rn09-settings-acceptance.md)
 for exact evidence and unexecuted hosted/Auth/phone/native boundaries. These tests
 do not replace the manual QA steps above or Anisha's Auth/root integration.
+
+## Quest native lifecycle fixture (RN09B-D04a)
+
+The **Connect quest device QA** option verifies the local account before exposing
+the actual Android quest/selection port in a separate owner namespace. Connect does
+not claim the device or install protection. The forwarded Apps/Sessions pages are
+the product editors. Managed SDK login/refresh/onboarding and iOS remain separate.
+
+Use the bounded, guarded local fixture and cleanup steps in
+[quest lifecycle acceptance](../../../../docs/qa/quest-lifecycle.md#d04a-isolated-android-device-fixture).
+Run the PostgreSQL suite before starting that fixture, never concurrently. Keep
+the ignored manifest and tokens private; stop the runner before database shutdown.
+For native intervention observations avoid ordinary UI hierarchy dumps, which can
+suppress the accessibility service being measured. Screenshots alone do not prove
+TalkBack speech or signed/store readiness.

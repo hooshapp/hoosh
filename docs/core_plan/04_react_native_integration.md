@@ -785,6 +785,23 @@ by its unique commit subject in the notes.
 
 RN-09b source: read-only Figma `27:155`, session `26dd22ea-c87c-4b6c-a571-5e74d6eff5e8`. Quests presentation is independent; no editor/persistence/native action is connected. Deferred: **RN09B-D01** approved quest/editor/recurrence API and persistence; **RN09B-D02** actual Auth/account-scoped data/actions and recovery; **RN09B-D03** approved completion/reward/native restriction evidence; **RN09B-D04** signed-device/accessibility acceptance. Source examples remain isolated. See the implementation notes for exact commit/checks and copied icon-pack provenance.
 
+#### RN09B-D04a independent Android checkpoint — 2026-11-11
+
+The existing isolated QA host connects verified local HTTP identity to the actual
+Android quest port without managed sign-in or automatic claiming/installation.
+Actual JSI dispatch exposed nullable Map conversion failure; bounded JSON transport
+and strict native decoding fix that boundary. Missing setup now reports the next
+action without inventing an uncertain write. Native recurring quest pause works
+after an emulator reboot with API disconnected and host JS unopened; allowance
+expiry and Return home are observed. See [acceptance](../qa/quest-lifecycle.md),
+latest per-file notes and D04a evidence for the complete observation boundary.
+Root checks pass538portable/719component(+2skips)/650API;233isolatedPG/90JVM/
+106physical-native pass. DB suite and manual device fixture must run sequentially;
+the CLI now prevents interference while the private artifact exists. D03c is
+`91894f4`. Full D02/D03/D04 joint acceptance remains open: Anisha's managed SDK/
+Auth/onboarding review, iOS bridge/build, combined new physical speech/focus and
+signed/store lifecycle evidence. Existing parents/IDs/counts are unchanged.
+
 #### RN09B-D03c current checkpoint — 2026-11-11
 
 Shared Schedule/Update/Apply/Stop/cancel/completion controls are implemented with

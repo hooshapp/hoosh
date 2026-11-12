@@ -91,3 +91,87 @@ once-only credit, without inferring success from the timer. Restore only task-ch
 phone settings/files and remove task-owned reverse ports/servers afterward. Signed
 Android app/store-policy acceptance and Anisha's signed iOS upgrade/bridge tests
 remain distinct from debug APK and library compilation.
+
+## D04a isolated Android device fixture
+
+The existing profile QA host now offers **Connect quest device QA**. This verifies
+`/v1/me` and binds the real Android port under a separate `qa-quest` owner. It does
+not claim the device or install rules on connection. Apps/Sessions use the existing
+product editors; account takeover, Save, Schedule, Apply and Stop remain explicit.
+This fixture is independent of Anisha's managed Auth/onboarding integration.
+
+Run the database suite **before** starting the device fixture:
+
+```bash
+npm run api:db:up
+npm run api:db:test
+uv run --project services/api python scripts/quest-device-fixture.py --duration-minutes 45
+```
+
+The last command stays running, uses only the marked local PG17 database and the
+normal ephemeral-JWT verifier, and creates two generated disposable users with
+settings and a saved quest. It refuses an existing fixture artifact or unknown
+schema. Optional lifetimes are15/45/90minutes. Its ignored0600manifest is
+`services/api/.local/quest-device-fixture.json`; keep its token values private and
+use only the QA host's secure input. Credentials are memory-only in this host.
+The fixture neither reads hosted `.env` nor creates Supabase Auth users. Ctrl-C or
+SIGTERM stops its API, removes the manifest and deletes only its successfully
+inserted local users. Do not run the database suite concurrently: its migration
+tests rebuild fixture tables. The database CLI now refuses check/down/reset while
+the private device artifact exists. Direct pytest invocation must observe the
+same separation. If the process is killed without cleanup, inspect its ownership
+before recovery; do not remove another operator's private artifact blindly.
+
+For a native development build, run the QA Metro entry with
+`env -u CI npx expo start apps/mobile/dev/profile --dev-client --localhost --port 8091`
+and reverse only8091/8765 to the authorized device. Connect fixture A, choose only
+the synthetic test target, save session policy and a near-future one-off quest,
+then review the disclosure and enable the protection service. A DB row, saved
+selection or enabled Settings toggle does not alone prove service connection.
+
+During live native start/expiry/reboot checks, use guarded screenshots and native
+count/receipt readback. Ordinary `uiautomator dump` can suppress the service under
+test; concurrent sessions also left a stale registration in this run. Do not
+overlap UI automation. Android documents this default and the instrumentation
+opt-out [in UiAutomation](https://developer.android.com/reference/android/app/UiAutomation#FLAG_DONT_SUPPRESS_ACCESSIBILITY_SERVICES).
+A dedicated emulator reboot cleared the stale session; no service-code change was
+made to conceal that harness failure. Do not infer SDK/session acceptance from a
+successful fixture connection, or speech acceptance from a screenshot.
+
+The actual Expo argument boundary rejected nullable nested Map values before
+Kotlin dispatch. The Android adapter now sends bounded metadata JSON and native
+decoding enforces byte/depth/node/container/string limits before the existing
+strict schema. App identities remain native. The shared typed interface and iOS
+adapter are unchanged. Missing apps/policy/service now produces actionable setup
+feedback rather than falsely declaring an uncertain write; an existing uncertain
+receipt still requires review.
+
+### D04a observations and remaining gates
+
+Dedicated API36 arm64 emulator checks observed actual shared Save/Schedule/Update/
+Apply acknowledgement, persisted native pause after reboot with API disconnected
+and host JS unopened, Open anyway, one-minute allowance expiry and Return home.
+A fresh03:46–03:49UTC occurrence started the pause offline; after its end, the
+native pause window was absent. The account remained at zero credits until the
+shared confirmation was activated: then50credits/one completion. An identical
+API replay preserved that total. Stop with API disconnected and service access
+revoked removed native versions/disabled the receipt while account state remained
+enabled. Reconnecting and Check did not resume rules; explicit Stop acknowledged
+both sides and retained the completion.
+
+Scroll a control fully above the Android navigation area before tapping; a
+partially visible completion node initially caused the test helper to tap Home.
+No completion was recorded for those failed taps. One idle-emulator screenshot
+was black while the pause window persisted; end acceptance uses native window
+absence after the deadline, not that screenshot. These are recorded harness limits.
+
+Final source passes538portable/719component(+2skips)/650API/233PG/90JVM;
+final APK passes106native instrumentation checks on both phone and emulator.
+Live timed UI used the bridge build before the final pre-parser guard and removal
+of temporary native trace logging; the full timed UI was not repeated on that final
+APK. Phone restoration passed before final isolated instrumentation; the phone
+disconnected before its final baseline recheck. No new physical speech acceptance
+or managed SDK journey is claimed. See the
+[sanitized evidence and screenshots](../core_plan_implementation_notes/artifacts/rn-09b-quest-device/evidence.json).
+Anisha's review/Auth/iOS, combined physical accessibility and signed/store checks
+remain required; this does not complete D02/D03/D04 or Plan04.

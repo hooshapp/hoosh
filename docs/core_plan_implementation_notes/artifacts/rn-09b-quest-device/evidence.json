@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "date": "2026-11-11",
+  "owner": "Ishmum",
+  "branch": "task/react-native/rn-09b-lifecycle-integration",
+  "parent": "91894f4",
+  "refs": [
+    "RN09B-D02",
+    "RN09B-D03",
+    "RN09B-D04a"
+  ],
+  "scope": "Independent local-account Android bridge/UI/native acceptance; no managed Auth or iOS implementation.",
+  "source_sha256": {
+    "apps/mobile/src/infrastructure/native/product-ports.android.ts": "ab0843ffa71337e84bc479f2376c44a9324c9063b246cbc7300314ed3f412b50",
+    "apps/mobile/src/infrastructure/native/product-ports.android.native.test.ts": "3952be1739841fb08d8c4c2555c41eb97402335a67c254f2ed472bb2d9de44b5",
+    "apps/mobile/src/infrastructure/native/quest-device-qa.native.test.ts": "6dacbaf8f0860a33ac9ff5054dc78f4e570997d29fb1c2fe7501a8409104c271",
+    "apps/mobile/src/features/quests/quest-lifecycle.ts": "a45a9ba95f1035c6850d52b9005b269e6fe51ce88e85cbd0b20a6b9cf533e831",
+    "apps/mobile/src/features/quests/quest-lifecycle.test.ts": "fd499da874079bd269087e762bb9d5c09f710d0546de2c44450a6b624e77f362",
+    "apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/HooshUsageModule.kt": "f0d6d4bd8d3332def64e3d0aa93ac4406fd420fcaf6599418faf52e6430dab4a",
+    "apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/QuestBridgePayload.kt": "c47bbf64029ca3af7b841df84fbcce7d8b7b4c92b1588ae37a192b4ccd13c7e0",
+    "apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/InterventionChecks.kt": "6b36f2a4c33213e92c324674131770d6d6e23a2b7e7737e9f64aae6d3e9b5f24",
+    "apps/mobile/dev/profile/runtime.tsx": "df71d1af68ef95328cb66b25142d7c50c550a5114dff843e0ec21a327300106b",
+    "apps/mobile/dev/profile/app/_layout.tsx": "f0bf090cb5eeb1a716de9b5ee50ded19554cf9634b2bdad0e2f0d3d71080cbf6",
+    "apps/mobile/dev/profile/app/index.tsx": "fda5753ae6e174d15dd408b67e699ce7d195d6c14142e4df3e9e8ca2f1cad7c0",
+    "apps/mobile/dev/profile/app/settings/[field].tsx": "cddbbc25d899ba78674802b09b3143373971efaf8fc6b9b9917855f1b77e1f94",
+    "scripts/quest-device-fixture.py": "f470f235fba759c5c59dabb9149ce0df3f415699db5cf2eb3ec571fd171f720a",
+    "scripts/db-test.py": "f5adcfb139f269e35cb3a5ffa626b8e252c858092ed785fd9c89cd9fb1ff9268",
+    "services/api/tests/test_quest_device_fixture.py": "3d1664df9861250dd183c2b7a745a1226885089d46a4dbaad1ab878e1032b1b6",
+    "services/api/tests/test_db_cleanup_guard.py": "8a6d44dd6503585d82f288aca841ddcd3280b578b7f9bd2ce637bf8bebc233c4",
+    "package.json": "3bbf04d98dfcdcdc915f521c5952ea337b1cfa5ecab10ce16b056de6e42a04e4"
+  },
+  "checks": {
+    "root": "538 portable; 719 component, 2 existing skips; 650 deterministic API; types, lint 0 errors/11 existing warnings, assets and generated contracts pass",
+    "database": "233 isolated PostgreSQL pass; final clean rerun233 pass/650 deselected after fixture cleanup",
+    "pure_jvm": 90,
+    "physical_native_final_apk": 106,
+    "emulator_native_final_apk": 106,
+    "native_build": "debug APK, test APK and library release Kotlin compilation pass",
+    "web_export": "38 JS/HTML isolation files, 71 original SVG assets"
+  },
+  "observed_emulator": {
+    "platform": "API36 arm64 dedicated disposable AVD",
+    "sdk_auth": "not tested; isolated normal-verifier local fixture only",
+    "saved_definition_and_selection": "actual shared UI; one synthetic target, no protection inferred from Save",
+    "schedule_update_apply": "account and native receipts acknowledged through actual JSI",
+    "reboot_offline": "native pause after emulator reboot with API disconnected and host JS unopened",
+    "allowance": "Open anyway revealed synthetic target; one-minute expiry re-presented pause",
+    "return_home": "native control reached Android launcher",
+    "scheduled_start": "fresh 03:46-03:49 UTC occurrence presented native pause with API reverse removed",
+    "scheduled_end": "native pause window absent after end; no completion inferred",
+    "completion": {
+      "credits": 50,
+      "completed_count": 1,
+      "replay_unchanged": true
+    },
+    "offline_stop": {
+      "account_still_enabled": true,
+      "credits": 50,
+      "native_versions": 0,
+      "native_enabled_receipt": false,
+      "api_reverse_removed": true,
+      "service_access_revoked": true
+    },
+    "online_check_after_stop": "native revision2, zero quest versions and disabled receipt retained; no automatic resume",
+    "explicit_online_stop": "account revision2 disabled, native revision3 disabled, 50 credits and one completion retained"
+  },
+  "fingerprint_boundary": "Hashes describe final source. Shared UI/live reboot/timer journey used the debug bridge build before the final pre-parser depth guard and removal of temporary native trace logging. Final APK includes those guards, has no temporary trace source, and passed 106 instrumentation checks on both physical phone and emulator. Full live timed UI was not repeated on that final APK.",
+  "harness_findings": [
+    "UiAutomation suppressed services; stale concurrent registration cleared by dedicated emulator reboot; native checks then used guarded screenshots/readback.",
+    "Database suite ran concurrently with manual fixture: 1 infrastructure failure and cleared local quest rows. Fixture retired, isolated suite passed233, new fixture used; CLI now refuses interference.",
+    "Partially visible UI node intersected Android navigation area; tap reached Home before completion. Helper required full visibility and confirmation was then explicitly performed. No completion was claimed for failed taps.",
+    "One screenshot during idle emulator showed black content although native pause window persisted. End acceptance uses timestamped native window absence, not that black screenshot."
+  ],
+  "physical_boundary": {
+    "restoration": "Known native files/settings/reverse mappings restored and validated before final native instrumentation; credentials excluded",
+    "final_instrumentation": "106 pass on final source",
+    "post_instrumentation_baseline_recheck": "Phone disconnected; not repeated. Instrumentation uses isolated synthetic cache stores."
+  },
+  "cleanup": {
+    "fixture": "SIGTERM cleanup confirmed; owned local users and private manifest removed, child API stopped",
+    "metro": "task Metro stopped",
+    "emulator": "task AVD stopped",
+    "database": "Final233-test rerun passed; task Compose stack stopped, volume retained"
+  },
+  "pending": [
+    "Anisha SDK/root review and managed account sign-in/restore/refresh/signout/replacement acceptance",
+    "Combined new physical TalkBack speech/focus/large text and wider state matrix",
+    "Signed Android/store acceptance",
+    "Anisha iOS bridge/signed build and platform upgrade acceptance"
+  ],
+  "screenshots": {
+    "after-reboot-native.png": "77a3ac89c3dd27e6468b1af3bb60f13df09be470be3781cbbb8055e1eefbf261",
+    "open-anyway.png": "5036cfe9530b2ab4e39943a9e731b1431e2bf2f8e87dfe30f74524650a8dab41",
+    "allowance-expiry.png": "20b1842eca2dd21b8a9477caff38eef4b6fd6eee96144f86a7a805d281cba109",
+    "schedule-ack.png": "50fa606135f41b4857b070285d0cb73b3573d2037a6f5b8023faeb9ef8655e05",
+    "scheduled-pause.png": "31451be465ba6edfd8932f47c94a79e5621c2d88b412aad159f95d21281385a9",
+    "completed-ui.png": "cbc22ee16ec274c862e2f8a69bbd64327e393b9ecf2ad8bfec3f6c1c8374cbe1",
+    "offline-stop.png": "61836f18a195734bcd4641c60a3f825f366286cc330c1bafa495981d59f0ba3f",
+    "stopped-confirmed.png": "dcf6ca85b9e3204fe433f6e395a4f006a4256e39c6e796515fadc278fc6d6cf8"
+  }
+}

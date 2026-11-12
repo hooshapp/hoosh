@@ -22,6 +22,19 @@ internal object InterventionChecks {
     val directory = File(context.cacheDir, "intervention-checks-${System.nanoTime()}"); check(!directory.exists())
     try {
       case {
+        val payload = QuestBridgePayload.decode("""{"policy":null,"versions":[{"effectiveUntil":null,"weekdays":[]}],"enabled":false}""")
+        check(payload["policy"] == null && payload["enabled"] == false)
+        val version = (payload["versions"] as List<*>).single() as Map<*, *>
+        check(version["effectiveUntil"] == null && version["weekdays"] == emptyList<Any>())
+      }
+      case {
+        listOf("[]", "{broken", "x".repeat(65537), """{"value":"${"x".repeat(257)}"}""",
+          """{"value":${"[".repeat(30)}0${"]".repeat(30)}}""",
+          """{"list":[${(0..512).joinToString(",") { "0" }}]}""").forEach { value ->
+          failure("ERR_INTERVENTION_INVALID") { QuestBridgePayload.decode(value) }
+        }
+      }
+      case {
         val store = AtomicInterventionPersistence(File(directory, "state.json")); val e = InterventionEngine(store)
         e.install(A, 0, 1, SavedSelection(1, setOf(APP)), listOf(InterventionWindow("one", 1000, 900000)), SessionPolicy("UTC", 2, 10), 1000)
         val r = e.allow(A, 1, APP, 2000, 1000, 1); check(InterventionEngine(AtomicInterventionPersistence(File(directory, "state.json"))).read(A) == r)

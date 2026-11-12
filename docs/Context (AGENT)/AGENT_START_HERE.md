@@ -4,6 +4,18 @@
 **Read in order:** `PRD.md` → `TSD.md` → current Figma design → existing source repository.  
 **Design:** https://www.figma.com/design/ukmD2ZidJ9UR2XxUkvdPoJ/App-UI?node-id=0-1
 
+**Latest independent quest-device acceptance (RN09B-D04a, 2026-11-11):**
+the real Android JSI quest write is fixed with bounded metadata JSON; missing
+prerequisites show setup feedback. The existing isolated local-account QA host
+exercises shared controls/native persistence without managed Auth. Actual emulator
+reboot/offline/native pause, allowance expiry and Return home are observed. Root
+checks538portable/719component(+2skips)/650API,233PG,90JVM,106physical-native pass.
+The manual device fixture and DB migration suite must not run concurrently; CLI
+guards now enforce the existing private artifact boundary. Phone baseline restored.
+Read [lifecycle acceptance](../qa/quest-lifecycle.md) and the latest Plan04 notes.
+Anisha still owns Auth/signin/onboarding/iOS; full joint/speech/signed acceptance
+is pending. Historical checkpoints below do not override this scope or ownership.
+
 **Latest shared lifecycle controls (RN09B-D03c, 2026-11-11):** Schedule/Apply,
 device-first Stop, occurrence cancellation, confirmed self-reported completion and
 true installed Home status are implemented.536portable/698component(+2skips)/643API/

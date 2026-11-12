@@ -12,6 +12,23 @@ module = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(module)
 
 
+@pytest.fixture(autouse=True)
+def isolate_device_fixture_guard(monkeypatch, tmp_path):
+    monkeypatch.setattr(module, "DEVICE_FIXTURE", tmp_path / "absent-device-fixture.json")
+
+
+@pytest.mark.parametrize("action", ["check", "down", "reset"])
+def test_live_device_fixture_prevents_database_interference(monkeypatch, tmp_path, action):
+    artifact = tmp_path / "private-device-fixture.json"
+    artifact.write_text("private fixture contents must not be inspected")
+    monkeypatch.setattr(module, "DEVICE_FIXTURE", artifact)
+    monkeypatch.setattr(sys, "argv", ["db-test.py", action])
+    monkeypatch.setattr(module, "run", lambda _args: pytest.fail("Database changed"))
+    with pytest.raises(SystemExit, match="scoped cleanup must finish first"):
+        module.main()
+    assert artifact.read_text() == "private fixture contents must not be inspected"
+
+
 @pytest.mark.parametrize(
     "labels",
     [

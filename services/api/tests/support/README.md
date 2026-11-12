@@ -35,6 +35,10 @@ hosted connections instead require verify-full with the downloaded CA.
 Default `npm run api:test` remains deterministic and excludes this separately
 marked group; `npm run api:db:test` and the required `database` CI job run it.
 CI creates the same Compose image/SQL/role prerequisites without cloud credentials.
+The manual RN09B device runner shares this disposable database. Finish/stop
+`scripts/quest-device-fixture.py` before running database tests or stopping/resetting
+the stack; migration tests rebuild tables. The database CLI refuses these actions
+while the runner's private artifact exists. Direct pytest must follow the same rule.
 Use `uv run --project services/api pytest services/api/tests -o addopts= -m database`
 for direct invocation. Shell APP_ENV/TEST_* values deliberately override the local
 test file, which allows CI configuration and ensures accidental unsafe values fail.

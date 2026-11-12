@@ -9,6 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 TEST_ENV = ROOT / "services/api/tests/.env"
+DEVICE_FIXTURE = ROOT / "services/api/.local/quest-device-fixture.json"
 VOLUME = "disconnect_db_test_data"
 COMPOSE = [
     "docker",
@@ -28,6 +29,13 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("action", choices=["up", "check", "down", "reset"])
     action = parser.parse_args().action
+    if action in ("check", "down", "reset") and (
+        DEVICE_FIXTURE.exists() or DEVICE_FIXTURE.is_symlink()
+    ):
+        raise SystemExit(
+            "Stop the local quest device fixture before testing/stopping its database; "
+            "its scoped cleanup must finish first."
+        )
     if action == "up":
         if not TEST_ENV.exists():
             fd = os.open(TEST_ENV, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)

@@ -268,6 +268,36 @@ it('does not create a server schedule when there are no saved distracting apps',
   await f.lifecycle.refresh();
   expect(await f.lifecycle.schedule(f.quest, '2026-11-13', policy)).toBe(false);
   expect(f.calls).toEqual([]);
+  expect(f.lifecycle.getSnapshot().reviewRequired).toBe(false);
+  expect(f.lifecycle.getSnapshot().message).toContain('Choose and save');
+});
+it('reports a disconnected service as setup before any account write and permits explicit recovery', async () => {
+  const f = setup();
+  await f.lifecycle.refresh();
+  f.port.questRead.mockImplementation(async () => {
+    const value = f.nativeRead();
+    return { ...value, native: { ...value.native, serviceConnected: false } };
+  });
+  expect(await f.lifecycle.schedule(f.quest, '2026-11-13', policy)).toBe(false);
+  expect(f.calls).toEqual([]);
+  expect(f.lifecycle.getSnapshot().message).toContain(
+    'Review app protection access',
+  );
+  expect(f.lifecycle.getSnapshot().reviewRequired).toBe(false);
+  f.port.questRead.mockImplementation(async () => f.nativeRead());
+  expect(await f.lifecycle.schedule(f.quest, '2026-11-13', policy)).toBe(true);
+});
+it('keeps an acknowledged account schedule visible when local access needs recovery', async () => {
+  const f = setup();
+  await f.lifecycle.refresh();
+  f.port.questRead.mockImplementation(async () => {
+    const value = f.nativeRead();
+    return { ...value, native: { ...value.native, disclosureAccepted: false } };
+  });
+  expect(await f.lifecycle.applySaved(policy)).toBe(false);
+  expect(f.lifecycle.getSnapshot().remote?.enabled).toBe(true);
+  expect(f.calls).toEqual([]);
+  expect(f.lifecycle.getSnapshot().reviewRequired).toBe(false);
 });
 it('keeps desired and installed state distinct after a lost native response; never replays', async () => {
   const f = setup();
