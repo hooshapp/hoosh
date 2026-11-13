@@ -5987,3 +5987,49 @@ consumer/receipt recovery, account fences and emulator acceptance, then close D0
 independent implementation in D01c. D02 remains next; no TalkBack session or iOS
 implementation is included. Keep fixture credentials, raw native archives and
 operator logs outside Git; only sanitized evidence is committed.
+
+### RN09-D01b — Android business outbox, coverage and real action producers
+
+Owner Ishmum,2026-11-13. Branch `task/react-native/rn09-d01-rewards`.
+Backend/contracts/policy commit D01a is `cb5321d`. Commit message for this slice:
+`feat(android): persist reward evidence and session nudges`.
+Native evidence is independent from the existing diagnostic journal and from
+network/React. Prices and spend remain server-only. This slice does not claim the
+iOS bridge, managed-account journey, full Plan04 or further TalkBack acceptance.
+
+Native source prefix below means
+`apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/`.
+
+| File and exact lines | Change and purpose |
+|---|---|
+| Native `RewardSignals.kt`:1–51 | Content-free business signal/state, stable installation UUID and increasing safe sequence; separate256-entry outbox/discard counter. Saved-zone daily coverage uses elapsed/wall/boot continuity, first-partial-day unknown and witnessed same-process screen-off sleep, with no usage/savings inference. |
+| Native `RewardPersistence.kt`:1–47 | AtomicFile JSON codec with strict integer/string/boolean/date/event-kind/context/order/counter validation. Corrupt or incompatible evidence never becomes valid credits or coverage. |
+| Native `InterventionModel.kt`:7,12 | Persist session encounter ID/nudge state and independent reward state as part of the existing owner record; old callers use safe defaults. |
+| Native `AtomicInterventionPersistence.kt`:24,72,78,94,97 | Format4 reads formats1–3, retains existing policy/allowances/daily history, initializes unknown old coverage, and atomically stores business queue plus session identities/nudge flag. Existing byte bound/readback checks remain. |
+| Native `InterventionEngine.kt`:56,101 | Retain business state across explicit plan/quest updates rather than reconstructing an empty outbox. |
+| Native `InterventionEngine.kt`:151–154,164–201 | Emit allowance/exhaustion only on a new session; real half-time once-per-session nudge/dismissal, explicit quit classification/session termination, service coverage interruption/checkpoint,30day pending-upload pruning and installation/owner/sequence-safe ACK prefixes. No timer or diagnostic presentation earns credits. |
+| Native `InterventionAccessibilityService.kt`:44–45,60–75,87–128 | Native periodic coverage while locked/inactive, fresh-service unknown coverage, midpoint explanation and Keep going, and Return-home receipt only after successful Android Home action. Original expiry and available user escape controls remain native. No node/content/gesture-reading capability is added. |
+| Native `InterventionRuntime.kt`:39,90,95,267–279 | Require updated disclosurev2 naming content-free reward/coverage uploads; expose bounded32-event privacy-safe envelope and leased ACK. No app key/label/session app identity crosses this wire. |
+| Native `InterventionCoordinator.kt`:27–28; Native `NativeInterventionBridge.kt`:28–29 | Add read/ACK methods to the actual coordinator/runtime delegation used by Expo, preserving bridge disposal and owner leases. |
+| Native `HooshUsageModule.kt`:73–74 | Register real rewardsRead/rewardsAck Expo methods in every native build, not the debug-only installation entry. |
+| Native `OwnerInterventionPersistence.kt`:29 | Freeze coverage when archiving/stopping a different owner while retaining that owner's immutable outbox/private history; returning never auto-resumes rules. |
+| `apps/mobile/src/infrastructure/native/product-ports.ts`:8–9; `product-ports.android.ts`:38,42–43 | Optional native reward capability bindings; older builds and absent iOS bridge cannot fake support or break unrelated quest methods. |
+| `apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/RewardChecks.kt`:1–105 | Production engine tests for allowance reuse/final exhaustion, midpoint/dismissal, quit termination, independent bounded queues, replayed prefix ACK/foreign owner, expiry retention, coverage continuity/sleep/boot/clock and DST day identity. |
+| `apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/InterventionChecks.kt`:17–21,89,117,127,147–195 | Register new pure cases; format4 legacy readback, actual AtomicFile business/session roundtrip/ACK, invalid counter/shape/type rejection, queue overflow and archived coverage/history assertions. |
+| `scripts/check-android-intervention-engine.py`:56,85,94 | Compile/run the same production reward sources and Android test cases on the cached pure Kotlin JVM runner; no downloaded fake Android APIs. |
+| This notes file:5991–6035 | Record D01a hash, per-file native decisions, measured validation and the D01c handoff.  |
+
+Validation: pure production JVM101 cases pass. Latest debug app/test APK build,
+release native Kotlin and actual Android36 dedicated-emulator instrumentation
+pass124 cases, including AtomicFile/corruption/legacy/archive coverage. No native
+unit-test task with NO-SOURCE is counted as executed tests. The existing compiler
+caught/fixed the missing coordinator method delegation and an erroneous positional
+policy decode while this work was in progress; latest builds pass. No screen-reader
+session, signed production APK, iOS or physical-phone acceptance is claimed.
+
+Resume: D01c connects the strict shared outbox transport and Home/Feed/state/error
+consumers, records portable-client TCP restart plus actual emulator journeys and
+restores the dedicated emulator native baseline/settings. Its local API fixture
+is running privately; do not run DB migrations/tests concurrently with it. Tokens,
+raw native data and baseline archive remain ignored/outside Git. No push, main
+merge or production deployment is part of this task.

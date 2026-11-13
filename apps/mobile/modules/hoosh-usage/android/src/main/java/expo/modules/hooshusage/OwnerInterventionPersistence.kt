@@ -26,7 +26,7 @@ class OwnerInterventionPersistence(private val directory: File) : InterventionPe
       quests = emptyList(), questReceipts = value.plan.questReceipts.mapValues { (_, r) -> r.copy(enabled = false) }, cancelledQuestReasons = emptySet())
     val events = value.events + InterventionEvent(UUID.randomUUID().toString(), now, "rule_deactivated", null, plan.revision)
     val dropped = maxOf(0, events.size - 256)
-    return value.copy(plan = plan, allowances = emptyList(), events = events.takeLast(256),
+    return value.copy(rewards = value.rewards.copy(covered = false), plan = plan, allowances = emptyList(), events = events.takeLast(256),
       discardedEventCount = minOf(Int.MAX_VALUE.toLong(), value.discardedEventCount.toLong() + dropped).toInt())
   }
   /** Explicit confirmed device action only; never called by reads, login, token rotation or sign-out. */

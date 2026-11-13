@@ -14,10 +14,11 @@ internal object InterventionChecks {
     try { action(); error("Expected failure") } catch (e: InterventionFailure) { check(e.code == code) }
   }
   fun run(context: Context): Int {
+    val rewards = RewardChecks.run()
     val pure = try { InterventionEngineChecks.run() } catch (e: Exception) { lastCase = InterventionEngineChecks.lastCase; throw e }
     val weekly = try { WeeklyScheduleChecks.run() } catch (e: Exception) { lastCase = pure + WeeklyScheduleChecks.lastCase; throw e }
     val quests = try { QuestScheduleChecks.run() } catch (e: Exception) { lastCase = pure + weekly + QuestScheduleChecks.lastCase; throw e }
-    var count = pure + weekly + quests; lastCase = count
+    var count = pure + weekly + quests + rewards; lastCase = count
     fun case(action: () -> Unit) { lastCase = count + 1; action(); count++ }
     val directory = File(context.cacheDir, "intervention-checks-${System.nanoTime()}"); check(!directory.exists())
     try {
@@ -85,7 +86,7 @@ internal object InterventionChecks {
         e.install(A, 0, 1, SavedSelection(1, setOf(APP)), listOf(InterventionWindow("one", 1000, 900000)), SessionPolicy("UTC", 2, 10), 1000)
         val json = org.json.JSONObject(path.readText()).put("version", 1); json.getJSONObject("plan").remove("weekly"); path.writeText(json.toString())
         check(store.read()?.plan?.weekly == null); e.cancel(A, 1, null, 2000)
-        check(org.json.JSONObject(path.readText()).getInt("version") == 3)
+        check(org.json.JSONObject(path.readText()).getInt("version") == 4)
       }
       case {
         val path = File(directory, "quests.json"); val store = AtomicInterventionPersistence(path); val e = InterventionEngine(store)
@@ -113,7 +114,7 @@ internal object InterventionChecks {
         val now = java.time.Instant.parse("2026-11-09T09:30:00Z").toEpochMilli()
         val other = "account-b:00000000-0000-4000-8000-000000000061"
         e.install(A, 0, 1, SavedSelection(1, setOf(APP)), listOf(InterventionWindow("account_a", now - 1000, now + 600000)), SessionPolicy("UTC", 2, 60), now)
-        val original = e.allow(A, 1, APP, now, 1000, 1)
+        val original = e.allow(A, 1, APP, now, 1000, 1).let { it.copy(rewards = it.rewards.copy(covered = true)).also { value -> store.write(value) } }
         failure("ERR_INTERVENTION_OTHER_ACCOUNT") { store.claim(other, false, now + 1) }
         check(e.read(A) == original)
         store.claim(other, true, now + 2)
@@ -123,6 +124,7 @@ internal object InterventionChecks {
         store.claim(A, true, now + 3)
         val restored = e.read(A)!!
         check(restored.daily == original.daily && restored.sessions == original.sessions)
+        check(restored.rewards.events == original.rewards.events && !restored.rewards.covered)
         check(restored.allowances.isEmpty() && WeeklySchedules.windows(restored.plan, now).isEmpty())
       }
       case {
@@ -141,6 +143,55 @@ internal object InterventionChecks {
         path.writeText(json.toString())
         failure("ERR_INTERVENTION_STORAGE") { AtomicInterventionPersistence(path).read() }
         path.writeText(original)
+      }
+      case {
+        val path = File(directory, "rewards.json"); val disk = AtomicInterventionPersistence(path); val e = InterventionEngine(disk)
+        e.install(A, 0, 1, SavedSelection(1, setOf(APP)), listOf(InterventionWindow("one", 1000, 900000)), SessionPolicy("UTC", 2, 60), 1000)
+        val session = e.allow(A, 1, APP, 2000, 1000, 1).sessions.single()
+        e.dismissNudge(A, 1, APP)
+        val r = e.quit(A, 1, APP, session.id, "mid_session", 32000)
+        check(AtomicInterventionPersistence(path).read() == r && r.rewards.events.size == 2)
+        e.acknowledgeRewards(A, r.rewards.installation, 1)
+        check(AtomicInterventionPersistence(path).read()!!.rewards.events.single().sequence == 2L)
+      }
+      case {
+        val path = File(directory, "rewards.json"); val original = path.readText()
+        val json = org.json.JSONObject(original)
+        json.getJSONObject("rewards").put("next", true)
+        path.writeText(json.toString()); failure("ERR_INTERVENTION_STORAGE") { AtomicInterventionPersistence(path).read() }; path.writeText(original)
+      }
+      case {
+        val path = File(directory, "rewards.json"); val original = path.readText()
+        val json = org.json.JSONObject(original)
+        json.getJSONObject("rewards").getJSONArray("events").getJSONObject(0).put("sequence", 0)
+        path.writeText(json.toString()); failure("ERR_INTERVENTION_STORAGE") { AtomicInterventionPersistence(path).read() }; path.writeText(original)
+      }
+      case {
+        val path = File(directory, "rewards.json"); val original = path.readText()
+        val json = org.json.JSONObject(original)
+        json.getJSONObject("rewards").getJSONArray("events").getJSONObject(0).put("context", org.json.JSONObject.NULL)
+        path.writeText(json.toString()); failure("ERR_INTERVENTION_STORAGE") { AtomicInterventionPersistence(path).read() }; path.writeText(original)
+      }
+      case {
+        val path = File(directory, "rewards.json"); val original = path.readText()
+        val json = org.json.JSONObject(original)
+        json.getJSONObject("rewards").put("boot", "1")
+        path.writeText(json.toString()); failure("ERR_INTERVENTION_STORAGE") { AtomicInterventionPersistence(path).read() }; path.writeText(original)
+      }
+      case {
+        val path = File(directory, "rewards.json"); val original = path.readText()
+        val json = org.json.JSONObject(original).put("version", 3); json.remove("rewards")
+        path.writeText(json.toString()); val disk = AtomicInterventionPersistence(path)
+        check(disk.read()!!.rewards.events.isEmpty())
+        InterventionEngine(disk).cancel(A, 1, null, 40000)
+        check(org.json.JSONObject(path.readText()).getInt("version") == 4)
+      }
+      case {
+        val path = File(directory, "rewards-bounded.json"); val disk = AtomicInterventionPersistence(path); val e = InterventionEngine(disk)
+        e.install(A, 0, 1, SavedSelection(1, setOf(APP)), listOf(InterventionWindow("one", 1000, 900000)), SessionPolicy("UTC", 2, 60), 1000)
+        repeat(300) { e.quit(A, 1, APP, java.util.UUID.randomUUID().toString(), "initial", 2000L + it) }
+        val r = AtomicInterventionPersistence(path).read()!!
+        check(r.rewards.events.size == 256 && r.rewards.discarded == 44L && r.events.size == 256)
       }
     } finally { check(directory.deleteRecursively()) }
     return count

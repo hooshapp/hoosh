@@ -70,6 +70,8 @@ class HooshUsageModule : Module() {
       AsyncFunction("schedulePreview") { spec: Map<String, Any>, p: Promise -> interventions(p)?.schedulePreview(spec, p) }.runOnQueue(Queues.MAIN)
       AsyncFunction("scheduleApply") { owner: String, token: String, expected: Int, revision: Int, selection: Int, spec: Map<String, Any>, p: Promise -> interventions(p)?.scheduleApply(owner, token, expected, revision, selection, spec, p) }.runOnQueue(Queues.MAIN)
       AsyncFunction("questRead") { owner: String, questId: String, p: Promise -> interventions(p)?.questRead(owner, questId, p) }.runOnQueue(Queues.MAIN)
+      AsyncFunction("rewardsRead") { owner: String, p: Promise -> interventions(p)?.rewardsRead(owner, p) }.runOnQueue(Queues.MAIN)
+      AsyncFunction("rewardsAck") { owner: String, token: String, installation: String, sequence: Long, p: Promise -> interventions(p)?.rewardsAck(owner, token, installation, sequence, p) }.runOnQueue(Queues.MAIN)
       AsyncFunction("questApply") { owner: String, token: String, expected: Int, json: String, p: Promise ->
         try { interventions(p)?.questApply(owner, token, expected, QuestBridgePayload.decode(json), p) }
         catch (_: Exception) { p.reject("ERR_INTERVENTION_INVALID", "Quest metadata is invalid.", null) }

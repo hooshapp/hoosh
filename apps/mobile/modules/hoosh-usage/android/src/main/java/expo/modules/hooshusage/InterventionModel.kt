@@ -4,12 +4,12 @@ package expo.modules.hooshusage
 data class InterventionWindow(val reasonId: String, val startsAt: Long, val endsAt: Long, val apps: Set<String> = emptySet())
 data class AppAllowance(val app: String, val reasonId: String, val revision: Int, val wallEnd: Long, val elapsedEnd: Long, val boot: Int)
 data class SessionPolicy(val timezoneId: String, val sessionsPerDay: Int, val sessionSeconds: Int)
-data class AppSession(val app: String, val wallEnd: Long, val elapsedEnd: Long, val boot: Int, val seconds: Int)
+data class AppSession(val app: String, val wallEnd: Long, val elapsedEnd: Long, val boot: Int, val seconds: Int, val id: String = java.util.UUID.randomUUID().toString(), val nudged: Boolean = false)
 data class DailySessions(val app: String, val day: String, val count: Int)
 data class InterventionEvent(val id: String, val at: Long, val kind: String, val reasonId: String?, val revision: Int, val sessionIndex: Int? = null, val exhausted: Boolean? = null)
 data class QuestReceipt(val revision: Int, val requestId: String, val enabled: Boolean)
 data class InterventionPlan(val owner: String, val revision: Int, val selectionRevision: Int, val apps: Set<String>, val windows: List<InterventionWindow>, val policy: SessionPolicy, val weekly: WeeklyInstallation? = null, val quests: List<QuestInstallation> = emptyList(), val questReceipts: Map<String, QuestReceipt> = emptyMap(), val cancelledQuestReasons: Set<String> = emptySet())
-data class InterventionRecord(val plan: InterventionPlan, val allowances: List<AppAllowance> = emptyList(), val events: List<InterventionEvent> = emptyList(), val sessions: List<AppSession> = emptyList(), val daily: List<DailySessions> = emptyList(), val discardedEventCount: Int = 0)
+data class InterventionRecord(val plan: InterventionPlan, val allowances: List<AppAllowance> = emptyList(), val events: List<InterventionEvent> = emptyList(), val sessions: List<AppSession> = emptyList(), val daily: List<DailySessions> = emptyList(), val discardedEventCount: Int = 0, val rewards: RewardState = RewardState())
 class InterventionFailure(val code: String) : RuntimeException(code)
 interface InterventionPersistence {
   fun read(): InterventionRecord?

@@ -53,7 +53,7 @@ def main() -> None:
     entry.write_text(
         "package com.hoosh.disconnect.dev\n"
         'fun main() { println("interventionEngineJvmCases=" + '
-        "(InterventionEngineChecks.run() + WeeklyScheduleChecks.run() + QuestScheduleChecks.run())) }\n"
+        "(InterventionEngineChecks.run() + WeeklyScheduleChecks.run() + QuestScheduleChecks.run() + RewardChecks.run())) }\n"
     )
     source = (
         ROOT
@@ -82,6 +82,7 @@ def main() -> None:
                 for name in [
                     "SelectionDrafts.kt",
                     "InterventionModel.kt",
+                    "RewardSignals.kt",
                     "WeeklySchedule.kt",
                     "QuestSchedules.kt",
                     "InterventionEngine.kt",
@@ -90,6 +91,7 @@ def main() -> None:
                 ]
             ),
             str(tests),
+            str(tests.with_name("RewardChecks.kt")),
             str(tests.with_name("WeeklyScheduleChecks.kt")),
             str(tests.with_name("QuestScheduleChecks.kt")),
             str(entry),

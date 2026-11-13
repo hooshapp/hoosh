@@ -21,7 +21,7 @@ class AtomicInterventionPersistence(private val path: File) : InterventionPersis
     try {
       val bytes = file.openRead().use { it.readNBytesCompat(262145) }
       check(bytes.size <= 262144)
-      val root = JSONObject(bytes.toString(Charsets.UTF_8)); val version = root.strictInt("version"); check(version in 1..3)
+      val root = JSONObject(bytes.toString(Charsets.UTF_8)); val version = root.strictInt("version"); check(version in 1..4)
       val p = root.getJSONObject("plan")
       val apps = p.getJSONArray("apps"); check(apps.length() <= 512)
       val keys = (0 until apps.length()).map { apps.strictString(it) }; check(keys.size == keys.toSet().size)
@@ -69,13 +69,13 @@ class AtomicInterventionPersistence(private val path: File) : InterventionPersis
       val events = numbers(root.getJSONArray("events")).map { InterventionEvent(it.strictString("id"), it.strictLong("at"), it.strictString("kind"), if (it.isNull("reason")) null else it.strictString("reason"), it.strictInt("revision"), if (it.isNull("index")) null else it.strictInt("index"), if (it.isNull("exhausted")) null else it.strictBoolean("exhausted")) }
       check(events.size <= 256 && events.map { it.id }.toSet().size == events.size)
       check(events.all { it.id.matches(Regex("[0-9a-f-]{36}")) && it.at >= 0 && it.revision > 0 && it.kind in setOf("rule_activated", "rule_deactivated", "shield_presented", "override_selected", "quit_selected") })
-      val sessions = numbers(root.getJSONArray("sessions")).map { AppSession(it.strictString("app"), it.strictLong("wall"), it.strictLong("elapsed"), it.strictInt("boot"), it.strictInt("seconds")) }
+      val sessions = numbers(root.getJSONArray("sessions")).map { AppSession(it.strictString("app"), it.strictLong("wall"), it.strictLong("elapsed"), it.strictInt("boot"), it.strictInt("seconds"), if (version >= 4) it.strictString("sessionId").also { id -> QuestSchedules.id(id) } else java.util.UUID.randomUUID().toString(), if (version >= 4) it.strictBoolean("nudged") else false) }
       val daily = numbers(root.getJSONArray("daily")).map { DailySessions(it.strictString("app"), it.strictString("day"), it.strictInt("count")) }
       check(sessions.size <= 512 && daily.size <= 512 && sessions.map { it.app }.toSet().size == sessions.size && daily.map { it.app }.toSet().size == daily.size)
       SelectionDrafts.validateApps((sessions.map { it.app } + daily.map { it.app }).toSet())
       check(sessions.all { it.wallEnd >= 0 && it.elapsedEnd >= 0 && it.seconds in 1..86400 } && daily.all { it.day.matches(Regex("[0-9]{4}-[0-9]{2}-[0-9]{2}")) && it.count > 0 })
       val discarded = if (version < 3) 0 else root.strictInt("discardedEventCount").also { check(it >= 0) }
-      return InterventionRecord(plan, allowances, events, sessions, daily, discarded)
+      return InterventionRecord(plan, allowances, events, sessions, daily, discarded, if (version >= 4) RewardPersistence.decode(root.getJSONObject("rewards")) else RewardState())
     } catch (_: FileNotFoundException) {
       if (listOf(path, File(path.path + ".bak"), File(path.path + ".new")).any { it.exists() } || (path.parentFile!!.exists() && !path.parentFile!!.canRead())) throw InterventionFailure("ERR_INTERVENTION_STORAGE")
       return null
@@ -91,10 +91,10 @@ class AtomicInterventionPersistence(private val path: File) : InterventionPersis
     val quests = JSONArray(p.quests.map { q -> JSONObject().put("questId", q.questId).put("revision", q.revision).put("firstDate", q.firstDate).put("repeat", q.repeat)
       .put("weekdays", JSONArray(q.schedule.weekdays)).put("start", q.schedule.start).put("end", q.schedule.end).put("nextDay", q.schedule.nextDay).put("timezone", q.schedule.timezone)
       .put("effectiveFrom", q.effectiveFrom).put("effectiveUntil", q.effectiveUntil ?: JSONObject.NULL).put("apps", JSONArray(q.apps.sorted())) })
-    val root = JSONObject().put("version", 3).put("plan", JSONObject().put("owner", p.owner).put("revision", p.revision).put("selectionRevision", p.selectionRevision).put("apps", JSONArray(p.apps.sorted())).put("windows", windows).put("weekly", weekly)
+    val root = JSONObject().put("version", 4).put("rewards", RewardPersistence.encode(value.rewards)).put("plan", JSONObject().put("owner", p.owner).put("revision", p.revision).put("selectionRevision", p.selectionRevision).put("apps", JSONArray(p.apps.sorted())).put("windows", windows).put("weekly", weekly)
       .put("quests", quests).put("questReceipts", JSONObject(p.questReceipts.mapValues { (_, r) -> JSONObject().put("revision", r.revision).put("requestId", r.requestId).put("enabled", r.enabled) })).put("questCancelled", JSONArray(p.cancelledQuestReasons.sorted()))
       .put("policy", JSONObject().put("timezone", p.policy.timezoneId).put("count", p.policy.sessionsPerDay).put("seconds", p.policy.sessionSeconds))).put("allowances", allowances).put("events", events)
-      .put("sessions", JSONArray(value.sessions.map { JSONObject().put("app", it.app).put("wall", it.wallEnd).put("elapsed", it.elapsedEnd).put("boot", it.boot).put("seconds", it.seconds) }))
+      .put("sessions", JSONArray(value.sessions.map { JSONObject().put("app", it.app).put("wall", it.wallEnd).put("elapsed", it.elapsedEnd).put("boot", it.boot).put("seconds", it.seconds).put("sessionId", it.id).put("nudged", it.nudged) }))
       .put("discardedEventCount", value.discardedEventCount)
       .put("daily", JSONArray(value.daily.map { JSONObject().put("app", it.app).put("day", it.day).put("count", it.count) }))
     val bytes = root.toString().toByteArray(Charsets.UTF_8)

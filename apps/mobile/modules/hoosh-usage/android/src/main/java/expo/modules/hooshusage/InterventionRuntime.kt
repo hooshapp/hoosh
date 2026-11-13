@@ -36,7 +36,7 @@ class InterventionRuntime private constructor(val context: Context) {
       .getEnabledAccessibilityServiceList(android.accessibilityservice.AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
       .any { it.resolveInfo?.serviceInfo?.let { info -> info.packageName == context.packageName && info.name == InterventionAccessibilityService::class.java.name } == true }
   } catch (_: Exception) { false }
-  fun consented() = preferences.getBoolean("accepted-v1", false)
+  fun consented() = preferences.getBoolean("accepted-v2", false)
   fun boot() = Settings.Global.getInt(context.contentResolver, Settings.Global.BOOT_COUNT, -1)
   fun unlocked() = LauncherAppCatalog(context).isUnlocked() == true
   internal fun engineRawRead() = engine.readInstalled()
@@ -87,12 +87,12 @@ class InterventionRuntime private constructor(val context: Context) {
     }
     reviewOwner = bridge
     review = AlertDialog.Builder(activity).setTitle("Android app protection access")
-      .setMessage("Disconnect uses Android Accessibility access to receive app-window changes and show a visible pause over apps you select during your schedules. It does not read screen contents, typed text, messages or passwords. App identities stay on this device; your saved quest details and explicit completion choices belong to your account. You can always return home, open the app anyway, stop a schedule, or disable this service in Android Settings. Disconnect is not a disability accessibility tool. Enable only Disconnect protection on the next screen.")
+      .setMessage("Disconnect uses Android Accessibility access to receive app-window changes and show a visible pause over apps you select during your schedules. It does not read screen contents, typed text, messages or passwords. App identities stay on this device. With your signed-in account, we sync content-free Return home choices, allowance exhaustion and daily protection coverage to calculate credits and streaks. These records include times and dates, not app identities or screen contents. Saved quest details and explicit completion choices also belong to your account. You can always return home, open the app anyway, stop a schedule, or disable this service in Android Settings. Disconnect is not a disability accessibility tool. Enable only Disconnect protection on the next screen.")
       .setNegativeButton("Not now") { _, _ -> promise.resolve(false) }
       .setPositiveButton("I agree — review Settings") { _, _ ->
         execute {
           try {
-            if (!preferences.edit().putBoolean("accepted-v1", true).commit()) throw InterventionFailure("ERR_INTERVENTION_STORAGE")
+            if (!preferences.edit().putBoolean("accepted-v2", true).commit()) throw InterventionFailure("ERR_INTERVENTION_STORAGE")
             main.post {
               try {
                 // A dismissing Dialog still owns window focus; use Activity lifecycle for the consented settings handoff.
@@ -264,6 +264,19 @@ class InterventionRuntime private constructor(val context: Context) {
     engine.read(owner)?.events.orEmpty().take(limit).map { mapOf("eventId" to it.id, "occurredAt" to format.format(Date(it.at)), "kind" to it.kind, "reasonId" to it.reasonId, "configRevision" to it.revision, "evidence" to if (it.kind == "shield_presented") "native_callback" else "native_action", "metadata" to mapOf("sessionIndex" to it.sessionIndex, "allowanceExhausted" to it.exhausted)) }
   }
   fun acknowledge(owner: String, token: String, ids: List<String>, promise: Promise) = call(promise) { leases.check(owner, token); engine.acknowledge(owner, ids); failure = null; notifyService(); null }
+  fun rewardsRead(owner: String, promise: Promise) = call(promise) {
+    val record = engine.rewardSnapshot(owner, System.currentTimeMillis()) ?: return@call null
+    val r = record.rewards
+    val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.US).apply { timeZone = TimeZone.getTimeZone("UTC") }
+    mapOf("installation_id" to r.installation, "timezone_id" to record.plan.policy.timezoneId,
+      "discarded" to r.discarded, "events" to r.events.take(32).map { e -> mapOf(
+        "event_id" to e.id, "sequence" to e.sequence, "occurred_at" to format.format(Date(e.at)),
+        "kind" to e.kind, "day" to e.day, "encounter_id" to e.encounter, "context" to e.context,
+        "exhausted" to e.exhausted, "covered" to e.covered) })
+  }
+  fun rewardsAck(owner: String, token: String, installation: String, sequence: Long, promise: Promise) = call(promise) {
+    leases.check(owner, token); engine.acknowledgeRewards(owner, installation, sequence); null
+  }
   fun endOwner(owner: String, erase: Boolean, promise: Promise) {
     // Retain native reasons/event ownership at sign-out; full account deletion must coordinate all stores.
     // Fence synchronously at bridge entry, before queued worker mutations can check their handles.

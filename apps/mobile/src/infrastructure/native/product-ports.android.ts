@@ -35,10 +35,12 @@ function connectedPort(): ProductNativePort | null {
     return null;
   const bridge = nativeModule as AndroidBridge;
   const bound = Object.fromEntries(
-    methods.map((key) => [key, bridge[key].bind(bridge)]),
+    methods.map((key) => [key, bridge[key]!.bind(bridge)]),
   );
   return {
     ...bound,
+    rewardsRead: bridge.rewardsRead?.bind(bridge),
+    rewardsAck: bridge.rewardsAck?.bind(bridge),
     questApply(owner, token, expected, metadata) {
       const json = JSON.stringify(metadata);
       if (json.length > 65536)

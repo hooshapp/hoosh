@@ -25,5 +25,7 @@ class NativeInterventionBridge(private val runtime: InterventionRuntime) : Inter
   override fun cancel(owner: String, token: String, expected: Int, reason: String?, promise: Promise) = runtime.cancel(owner, token, expected, reason, promise)
   override fun drain(owner: String, token: String, limit: Int, promise: Promise) = runtime.drain(owner, token, limit, promise)
   override fun acknowledge(owner: String, token: String, ids: List<String>, promise: Promise) = runtime.acknowledge(owner, token, ids, promise)
+  override fun rewardsRead(owner: String, promise: Promise) = runtime.rewardsRead(owner, promise)
+  override fun rewardsAck(owner: String, token: String, installation: String, sequence: Long, promise: Promise) = runtime.rewardsAck(owner, token, installation, sequence, promise)
   override fun endOwner(owner: String, erase: Boolean, promise: Promise) = runtime.endOwner(owner, erase, promise)
 }

@@ -41,6 +41,8 @@ class InterventionAccessibilityService : AccessibilityService() {
     runtime = InterventionRuntime.get(this); runtime.service = this
     val filter = IntentFilter(Intent.ACTION_SCREEN_OFF)
     if (Build.VERSION.SDK_INT >= 33) registerReceiver(receiver, filter, Context.RECEIVER_NOT_EXPORTED) else registerReceiver(receiver, filter)
+    // A service reconnect/process restart cannot prove the intervening coverage.
+    runtime.execute { try { runtime.engine.interruptCoverage() } catch (_: Exception) { runtime.failure = "ERR_INTERVENTION_STORAGE" } }
     main.post(pulse)
   }
   override fun onAccessibilityEvent(event: AccessibilityEvent?) {
@@ -55,20 +57,21 @@ class InterventionAccessibilityService : AccessibilityService() {
   }
   fun reconcile() {
     if (!::runtime.isInitialized) return
-    if (runtime.failure != null || !runtime.authorized() || !runtime.unlocked()) { foreground = null; generation++; hide(); return }
-    val app = foreground ?: return
+    if (runtime.failure != null || !runtime.authorized()) { foreground = null; generation++; hide(); return }
+    val app = if (runtime.unlocked()) foreground else null
     if (reading) { readPending = true; return }
     reading = true
     val token = generation
     val epoch = runtime.epoch.get()
     runtime.execute {
       try {
-        val record = runtime.engineRawRead()
-        val needed = record?.let { runtime.engine.needed(it, app, System.currentTimeMillis(), SystemClock.elapsedRealtime(), runtime.boot()) }.orEmpty()
+        val record = runtime.engine.checkpoint(System.currentTimeMillis(), SystemClock.elapsedRealtime(), runtime.boot())
+        val needed = if (app == null) emptyList() else record?.let { runtime.engine.needed(it, app, System.currentTimeMillis(), SystemClock.elapsedRealtime(), runtime.boot()) }.orEmpty()
+        val nudge = if (app == null) null else record?.let { runtime.engine.nudge(it, app, System.currentTimeMillis(), SystemClock.elapsedRealtime(), runtime.boot()) }
         main.post {
           finishRead()
           if (token != generation || epoch != runtime.epoch.get() || foreground != app || runtime.service !== this || !runtime.unlocked()) return@post
-          if (record == null || needed.isEmpty()) hide() else show(record, app, needed)
+          if (app == null || record == null || (needed.isEmpty() && nudge == null)) hide() else show(record, app, needed, nudge)
         }
       } catch (_: Exception) { runtime.failure = "ERR_INTERVENTION_STORAGE"; main.post { finishRead(); if (token == generation) hide() } }
     }
@@ -81,8 +84,9 @@ class InterventionAccessibilityService : AccessibilityService() {
     val old = overlay; overlay = null; overlayKey = null
     if (old != null) try { getSystemService(WindowManager::class.java).removeView(old) } catch (_: Exception) { runtime.failure = "ERR_INTERVENTION_OVERLAY"; disableSelf() }
   }
-  private fun show(record: InterventionRecord, app: String, reasons: List<InterventionWindow>) {
-    val key = "${record.plan.owner}:${record.plan.revision}:$app:${reasons.joinToString { it.reasonId }}"
+  private fun show(record: InterventionRecord, app: String, reasons: List<InterventionWindow>, nudge: AppSession?) {
+    val mid = reasons.isEmpty() && nudge != null
+    val key = "${record.plan.owner}:${record.plan.revision}:$app:${if (mid) nudge?.id else reasons.joinToString { it.reasonId }}"
     if (key == overlayKey) return
     hide()
     val body = LinearLayout(this).apply {
@@ -95,25 +99,32 @@ class InterventionAccessibilityService : AccessibilityService() {
     }
     fun text(value: String, size: Float, heading: Boolean = false) { body.addView(TextView(this).apply { text = value; textSize = size; if (Build.VERSION.SDK_INT >= 28) isAccessibilityHeading = heading; setTextColor(0xff222222.toInt()); setPadding(0, 16, 0, 24) }) }
     text("Disconnect", 20f)
-    text("Take a moment", 32f, heading = true)
-    text("You chose a pause for this app. ${reasons.size} schedule reason(s) apply. You can return home or open the app anyway. Finishing an activity is your choice; this pause does not confirm quest completion.", 18f)
+    text(if (mid) "Ready to return?" else "Take a moment", 32f, heading = true)
+    text(if (mid) "You are halfway through this allowance. Return home to finish this session, or keep going until your time ends. The choice is yours."
+      else "You chose a pause for this app. ${reasons.size} schedule reason(s) apply. You can return home or open the app anyway. Finishing an activity is your choice; this pause does not confirm quest completion.", 18f)
+    val session = record.sessions.find { it.app == app }
+    val context = if (mid) "mid_session" else if (session != null && session.wallEnd <= System.currentTimeMillis()) "expired" else "initial"
+    val encounter = session?.id ?: java.util.UUID.randomUUID().toString()
     val actions = mutableListOf<Button>()
     fun action(label: String, run: () -> Unit) = Button(this).also { button ->
       button.text = label; button.setOnClickListener { actions.forEach { it.isEnabled = false }; run() }; body.addView(button); actions.add(button)
     }
     fun perform(allow: Boolean) {
       val token = generation
+      // The OS action must succeed before earning a Return-home reward.
+      val homeSucceeded = if (!allow) performGlobalAction(GLOBAL_ACTION_HOME) else false
       runtime.execute {
         try {
-          if (allow) runtime.engine.allow(record.plan.owner, record.plan.revision, app, System.currentTimeMillis(), SystemClock.elapsedRealtime(), runtime.boot())
-          else runtime.engine.action(record.plan.owner, record.plan.revision, "quit_selected", System.currentTimeMillis())
+          if (allow && mid) runtime.engine.dismissNudge(record.plan.owner, record.plan.revision, app)
+          else if (allow) runtime.engine.allow(record.plan.owner, record.plan.revision, app, System.currentTimeMillis(), SystemClock.elapsedRealtime(), runtime.boot())
+          else if (homeSucceeded) runtime.engine.quit(record.plan.owner, record.plan.revision, app, encounter, context, System.currentTimeMillis())
           runtime.epoch.incrementAndGet()
           main.post { if (token == generation) { hide(); if (!allow) { foreground = null; generation++; performGlobalAction(GLOBAL_ACTION_HOME) } } }
         } catch (_: Exception) { runtime.failure = "ERR_INTERVENTION_ACTION"; main.post { if (token == generation) { hide(); foreground = null; generation++; if (allow) { android.widget.Toast.makeText(this, "App protection disabled: your choice could not be saved.", android.widget.Toast.LENGTH_LONG).show(); disableSelf() } else performGlobalAction(GLOBAL_ACTION_HOME) } } }
       }
     }
     val safe = action("Return home") { perform(false) }
-    action("Open anyway") { perform(true) }
+    action(if (mid) "Keep going" else "Open anyway") { perform(true) }
     action("Disable app protection") { hide(); foreground = null; generation++; disableSelf() }
     val content = object : ScrollView(this) {
       override fun dispatchKeyEvent(event: KeyEvent): Boolean {

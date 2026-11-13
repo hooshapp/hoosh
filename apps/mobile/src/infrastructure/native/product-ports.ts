@@ -5,6 +5,8 @@ export type ProductNativePort = QuestDevicePort & SelectionEditorPort & Selectio
   interventionEndOwner(owner: string, erase: boolean): Promise<unknown>;
   interventionClaimOwner(owner: string, token: string, stopPrevious: boolean): Promise<unknown>;
   selectionRead(owner: string): Promise<unknown>;
+  rewardsRead?(owner: string): Promise<unknown>;
+  rewardsAck?(owner: string, token: string, installation: string, sequence: number): Promise<unknown>;
 };
 /** Other platforms need their actual bridge; no success stub or synthetic default owner. */
 export const productNativePort: ProductNativePort | null = null;
