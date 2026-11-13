@@ -785,6 +785,25 @@ by its unique commit subject in the notes.
 
 RN-09b source: read-only Figma `27:155`, session `26dd22ea-c87c-4b6c-a571-5e74d6eff5e8`. Quests presentation is independent; no editor/persistence/native action is connected. Deferred: **RN09B-D01** approved quest/editor/recurrence API and persistence; **RN09B-D02** actual Auth/account-scoped data/actions and recovery; **RN09B-D03** approved completion/reward/native restriction evidence; **RN09B-D04** signed-device/accessibility acceptance. Source examples remain isolated. See the implementation notes for exact commit/checks and copied icon-pack provenance.
 
+#### RN09B-D04b latest-APK independent Android checkpoint — 2026-11-12
+
+The requested bounded independent Android debug journey/accessibility slice is
+accepted on the latest APK: actual Pixel/API36 overlapping quest installation,
+active update retaining its original snapshot, single-occurrence cancellation
+preserving another reason, owner-confirmed TalkBack labels/Open anyway/Stop focus
+return, font2.0 editor/confirmation/native controls, offline Stop, cold-host
+restart/reconnect/Check without resuming, and explicit completion50once. The
+latest-APK emulator separately accepts offline reboot/host-unopened pause,
+allowance reentry, process-kill expiry and screen-off/wake recovery. See
+[runbook](../qa/quest-lifecycle.md), latest notes and
+[evidence](../core_plan_implementation_notes/artifacts/rn-09b-quest-device-final/evidence.json).
+Original phone files/settings/reverse baseline restored and verified; fixture
+users/private artifacts/servers/database cleaned with volume retained. No runtime
+changes in this slice; D04a is `37152fd`. Deliberate force-stop unbound the service:
+saved rules surviving does not prove continued enforcement; setup must be rechecked.
+Managed SDK/joint account acceptance, Anisha's iOS and signed/store acceptance stay
+open. Existing parent IDs/counts remain unchanged; no full Plan04 completion.
+
 #### RN09B-D04a independent Android checkpoint — 2026-11-11
 
 The existing isolated QA host connects verified local HTTP identity to the actual

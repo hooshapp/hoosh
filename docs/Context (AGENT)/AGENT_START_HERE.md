@@ -4,6 +4,18 @@
 **Read in order:** `PRD.md` → `TSD.md` → current Figma design → existing source repository.  
 **Design:** https://www.figma.com/design/ukmD2ZidJ9UR2XxUkvdPoJ/App-UI?node-id=0-1
 
+**Latest Android quest acceptance (RN09B-D04b, 2026-11-12):** latest APK accepted
+for the bounded independent Pixel/API36 quest journey: overlap, active update,
+single cancellation, owner-confirmed TalkBack labels/action/Stop focus, font2.0,
+offline Stop, cold host reconnect without resuming, and completion50once. The
+latest-APK emulator also verifies offline reboot, native process-kill expiry and
+screen-off/wake. Phone original native files/settings/reverse restored and verified;
+local fixture/servers/database cleaned. Force-stop unbound the Android service;
+saved rules are not proof of continued enforcement after force-stop. Read
+[acceptance](../qa/quest-lifecycle.md) and latest Plan04 notes. No runtime change,
+managed Auth or iOS takeover in this continuation. Anisha's joint SDK/iOS work and
+signed/store gates remain open; full D02/D03/D04/Plan04 are not marked complete.
+
 **Latest independent quest-device acceptance (RN09B-D04a, 2026-11-11):**
 the real Android JSI quest write is fixed with bounded metadata JSON; missing
 prerequisites show setup feedback. The existing isolated local-account QA host

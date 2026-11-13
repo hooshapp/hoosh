@@ -1,0 +1,81 @@
+{
+  "apk_sha256": "428f677affbf28208297a6463be1dbc8272b2da3cb249dffed13a1de084b1248",
+  "native_instrumentation": {
+    "emulator": 106
+  },
+  "emulator": {
+    "acknowledged_install_before_reboot": true,
+    "reboot_offline_pause": true,
+    "host_js_unopened_after_reboot": true,
+    "allowance_reentry_daily_count": 1,
+    "process_kill_expiry": "pass; restarted native process re-presented pause after allowance without host JS/API or target relaunch",
+    "screen_off_hides_pause": true,
+    "wake_target_reentry_pause": true
+  },
+  "physical": {
+    "fresh_baseline_saved": true,
+    "only_synthetic_target_selected": true,
+    "owner_enabled_service": true,
+    "schedule_install": "pass; native revision2 with two quest versions/two enabled receipts",
+    "date": "2026-11-12 local; 2026-11-13 UTC",
+    "apk_sha256": "428f677affbf28208297a6463be1dbc8272b2da3cb249dffed13a1de084b1248",
+    "overlap_pause": "observed native pause displaying2reasons",
+    "active_update": "UI definition end02:47, tomorrow schedule revision2 installed; already-active original occurrence retains02:55; other quest remains installed",
+    "single_occurrence_cancel": "Keep reviewing left outcome unchanged; explicit confirm cancels only today A, zero credits, tomorrow A/other quest retained; native pause displays1reason",
+    "native_after_cancel": {
+      "revision": 4,
+      "quest_versions": 3,
+      "receipts": 2,
+      "enabled_receipts": [
+        true,
+        true
+      ],
+      "cancelled": 1,
+      "allowances": 0,
+      "daily_total": 0
+    },
+    "installed_apk_sha256": "428f677affbf28208297a6463be1dbc8272b2da3cb249dffed13a1de084b1248",
+    "installed_apk_matches_build": true,
+    "talkback_pause": "Owner confirms clear labels and Open anyway reveals target; native allowance1 and daily1 verified",
+    "confirmation_focus": "Owner confirms Keep reviewing returns TalkBack focus to Stop this quest",
+    "large_text": "System font2.0; actual shared editor reachable after activity recreation/reconnect; Stop confirmation title and both actions visible and executable",
+    "offline_stop": "Confirmed at font2.0/API reverse absent; only A versions removed, B retained; account acknowledgement pending",
+    "large_text_native": "At font2.0, full explanation/three actions visible; Return home reached launcher",
+    "cold_restart_after_stop": "native revision5 unchanged, one other quest retained, stopped receipt retained; reconnect did not resume",
+    "completion": "actual shared UI confirmation yields50credits/one completion; duplicate normal API replay unchanged",
+    "online_stop_recovery": "A account revision3 disabled; native stopped on read/reconnect without replay",
+    "large_text_qa_warning": "Font change recreates activity and loses memory-only fixture token. Development Router multiple-link warning appeared; cold host relaunch cleared. No managed SDK restoration claim.",
+    "post_end_target": "No pause after end, but protection service was unbound after deliberate force-stop; this is not proof of automatic end dismissal with service connected. Earlier emulator/native cases cover timer semantics.",
+    "force_stop_boundary": "Stored rules persist; no claim of enforcement after Android force-stop. Service setup must be rechecked.",
+    "baseline_restoration": "PASS: known native member content digests/settings/reverse match original private baseline; credentials excluded"
+  },
+  "cleanup": "PASS: original phone known native files/settings/reverse restored and digests verified; fixture users0/private manifest/API removed; task Metro stopped; dedicated emulator stopped before resumption; task Compose stopped, volume retained",
+  "owner": "Ishmum",
+  "date": "2026-11-12",
+  "parent": "37152fd",
+  "scope": "Latest debug APK local-fixture Android acceptance; no managed Auth/iOS/signed release",
+  "screenshots": {
+    "emulator-process-expiry.png": "9f4cce67c9d7c6b2ce569d1da122840059ee71db8aec73d61769d3bb167bc4b5",
+    "emulator-reboot.png": "62868136d1b6c3792a1e50497cca54b3b40a6c2809101dd186f522b12defb3ef"
+  },
+  "pending_external": [
+    "Anisha Auth/root review and managed account integration",
+    "Anisha iOS bridge/build",
+    "Signed Android/store acceptance"
+  ],
+  "checks": {
+    "build": "Latest debug/test APK + native library release Kotlin compilation passed at D04b start; no runtime changes since",
+    "postgresql": "233 pass/650 deselected before manual fixture; after cleanup zero local fixture users verified",
+    "emulator_native": 106,
+    "physical_apk": "Installed APK SHA256 equals built APK and earlier106-case physical instrumentation source; no new instrumentation during listening/layout tests",
+    "documentation": "Exact file/line ledger, local artifact hash and link checks; no runtime code change in this increment"
+  },
+  "boundaries": [
+    "Actual ephemeral local HTTP verifier only; no managed SDK/Auth/onboarding acceptance",
+    "Actual phone force-stop unbound service: storage survives, enforcement not established afterward",
+    "No claim of connected-service automatic end dismissal on phone after the force-stop",
+    "Dev QA Router warning on font recreation; cold relaunch cleared; not a production SDK restoration test",
+    "Physical status-bar captures remain private; only inspected synthetic emulator captures committed",
+    "Signed/store release and Anisha iOS/joint integration remain open"
+  ]
+}

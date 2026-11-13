@@ -4,13 +4,13 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN09B-D04a independent Android acceptance implemented and recorded below. RN09B-D02–D04 remain open for coordinated acceptance. D02 SDK/root producer `0bbf714` and retained Android backup exclusions `f447e68` implemented; actual managed-account/device acceptance pending. D03a `999512a`, D03b `b5e314f` native infrastructure and D03c `91894f4` shared controls are implemented at the independent evidence bounds below; full joint D02/D03/D04 acceptance remains pending. Development is verified at0004. Ishmum reiterated Anisha owns Auth/signin/onboarding; existing D02 awaits her review/integration and real-account acceptance. Anisha confirmed iOS integration is not ready.
+**Current part:** RN09B-D04b bounded independent latest-APK Android journey/accessibility acceptance completed; D04a is `37152fd`. RN09B-D02–D04 remain open for coordinated acceptance. D02 SDK/root producer `0bbf714` and retained Android backup exclusions `f447e68` implemented; actual managed-account/device acceptance pending. D03a `999512a`, D03b `b5e314f` native infrastructure and D03c `91894f4` shared controls are implemented at the independent evidence bounds below; full joint D02/D03/D04 acceptance remains pending. Development is verified at0004. Ishmum reiterated Anisha owns Auth/signin/onboarding; existing D02 awaits her review/integration and real-account acceptance. Anisha confirmed iOS integration is not ready.
 
 **Implementation branch:** `task/react-native/rn-09b-lifecycle-integration`; base published `b9bf936`. Local commits only; no main merge/deployment or iOS acceptance.
 
 **Commit reference:** RN-01 `2f88102`; RN-02 `2d5c0d1`; RN-03 `0741758`; RN-04 `610f570`; RN-05 preparation `0c6e4db`; RN-07 UI `5790302`; RN-08 preparation `71da2d5`; RN-09a `ff75039`. RN-10 is `9b5fbd0`.
 
-**Last updated:** 2026-11-11.
+**Last updated:** 2026-11-12.
 
 **Shared workflow:** [Implementation knowledge base](README.md).
 
@@ -5735,3 +5735,126 @@ under `docs/core_plan_implementation_notes/artifacts/rn-09b-quest-device/`:
 - `stopped-confirmed.png`: explicit online account/device Stop acknowledged.
 
 - `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines 7, 5588–5737. Record D03c hash/current part, every changed file/logical block, actual checks/cleanup, observed failures, source-build boundary and remaining coordinated work. This entry travels with the implementation commit; resolve its Pending hash by subject/history until the next normal notes update.
+
+
+### RN09B-D04b — Latest-APK Android quest journey and accessibility acceptance
+
+- **Owner/date:** Ishmum,2026-11-12; began2026-11-11 and resumed after interruption.
+- **Branch/parent:** `task/react-native/rn-09b-lifecycle-integration`, `37152fd`.
+- **Commit:** Pending; intended `docs(android): record final quest journey and accessibility acceptance`.
+- **Status:** requested bounded independent Android debug slice accepted; full
+  D02/D03/D04/Plan04, managed SDK/joint integration, iOS and signed/store remain open.
+- **Scope:** actual latest debug APK, generated local accounts, normal local HTTP
+  verifier and synthetic target only. This continuation changes documentation and
+  evidence, not runtime code or Anisha's Auth/onboarding/iOS implementation.
+
+#### Preparation and interruption handling
+
+Saved a fresh0600private baseline of settings/reverse mappings and only known
+native test files before mutations. SDK/SecureStore credentials were excluded.
+Latest debug APK/test APK/library release Kotlin builds pass; installed phone APK
+SHA256 matches that built APK. The original D04a final source was already accepted
+with106phone native checks; this run adds actual latest-APK UI/accessibility and
+106emulator native checks, not a new physical instrumentation claim.
+
+The isolated233PostgreSQL preflight ran before the90minute manual fixture. It used
+only the marked local PG17 database; no hosted .env/Auth users/provider settings
+were changed. The fixture cleaned itself on expiry during interruption. On resume,
+confirmed cleanup, verified original baseline archive, restarted task API/Metro
+and created fresh local users/quests. No expired credentials were replayed. Phone
+input/capture stopped when another app was foreground; resumed after owner return.
+
+User reviewed/enabled protection on the device. Saved only the synthetic test app.
+Ordinary hierarchy inspection temporarily suppresses accessibility services and
+can disable Schedule between observation and a tap. Actual Schedule/Update was
+performed from observed screenshot coordinates without another hierarchy dump,
+then normal account and durable native acknowledgement was checked. An initial
+premature emulator reboot before acknowledgement installed nothing; not counted
+as a recovery pass. Navigation immediately after Stop produced the real pending-
+write/discard guard; once server acknowledgement was checked, explicit leave
+proceeded. No automatic write replay or bypass was added to make a test pass.
+
+#### Actual accepted observations
+
+1. **Emulator latest APK:** checked one installed version/enabled receipt before
+   reboot. With API/Metro reverse mappings absent and host JS unopened, target
+   showed the native pause. Open anyway/reentry retained one daily session. After
+   killing only the emulator native process (not force-stop), service restarted
+   and re-presented the pause at allowance expiry without relaunching target/host.
+   Actual screen-off hid the pause; wake/target reentry restored it. No locked
+   screenshot. Screenshot/native-window/readback evidence used without UiAutomation.
+2. **Physical overlap:** explicit shared UI scheduling installed native revision2,
+   two quest versions/two enabled receipts; target pause visibly showed2reasons.
+3. **Active update:** UI changed A's definition end from02:55 to02:47UTC. Save
+   retained the active occurrence's original end. Explicit next-day Update produced
+   account revision2/native3 and a new future snapshot ending02:47; today's active
+   snapshot still ended02:55, and the other quest remained installed.
+4. **Single cancellation:** Keep reviewing made no cancellation; explicit confirm
+   cancelled today's A in account/native (revision4), with zero credit. Future A
+   and other quest remained; target pause then showed1reason.
+5. **TalkBack:** owner confirms clear native heading/explanation/control labels,
+   Open anyway reveals synthetic target, and Keep reviewing on shared Stop returns
+   focus/announcement to Stop this quest. Native allowance1/daily1 persisted.
+   No hierarchy dump while TalkBack active; remote tools cannot hear the speaker.
+6. **Font2.0:** actual shared editor/Stop dialog title and both actions reachable;
+   enlarged native pause full explanation/three controls visible. Return home
+   reached launcher. Font change recreated the activity and lost only memory QA
+   connection; explicit same-fixture reconnect retained native rules. Development
+   Router multiple-linking warning appeared and cleared on cold host relaunch.
+7. **Offline Stop/restart:** API reverse removed; actual shared confirmation at
+   font2.0 removed only A native versions, left B and set disabled receipt at
+   native revision5 while account stayed enabled. Cold host restart/reconnect and
+   explicit Check retained native revision5/stopped A, no automatic resume. Separate
+   confirmed online Stop disabled A account revision3. Typed time/date/IME and
+   navigation guards were exercised during these actual editor journeys.
+8. **Completion:** B's post-end account remained zero until actual shared explicit
+   confirmation, then50credits/one completion. An identical normal API replay kept
+   exactly50/one. No timer-derived completion or cancelled-A credit was inferred.
+
+All visible test times are saved UTC preferences. User-facing run dates above
+are America/New_York; physical continuation crossed2026-11-13UTC. Local private
+status-bar screenshots were inspected but are not committed; only two inspected
+synthetic emulator screenshots belong to this artifact. No raw app catalog or
+account identifiers/credentials are in Git.
+
+#### Limits, actual checks and cleanup
+
+The deliberate Android force-stop unbound protection. Stored rules survive; this
+is not enforcement-after-force-stop evidence. Recheck setup on recovery. The target
+had no pause after B ended, but service was unbound after this deliberate stop, so
+that is not evidence of automatic connected-service end dismissal on phone. Earlier
+connected emulator expiry and native cases retain their narrower timer evidence.
+No managed SDK restoration, exhaustive device matrix, signed release or iOS result.
+
+Commands actually run: pinned JDK17/SDK Gradle `:app:assembleDebug
+:app:assembleAndroidTest :hoosh-usage:compileReleaseKotlin` (pass); `npm run
+api:db:up`/`api:db:test` (233pass/650deselected before fixture); bounded local
+`quest-device-fixture.py --duration-minutes90`; native UsageProbeInstrumentation
+`-e probe interventionChecks` on emulator (106pass); installed APK and artifact
+SHA256 checks; normal local HTTP reads/idempotent replay; actual UI/owner speech
+observations above. No runtime code changed, so previous full root650API/
+538portable/719component(+2skips) result remains historical D04a evidence and was
+not misrepresented as a new run. Documentation diff/link/artifact checks pass.
+
+Actual restoration passed: known native archive member-content digests, original
+accessibility/TalkBack/font/timeout/animation settings and reverse mappings match
+baseline. No credential path read/restored. Manual fixture SIGTERM cleanup removed
+private manifest and only its generated users; guarded DB count confirms0users.
+Task Metro/API stopped; task emulator was already stopped before resumption. Task
+Compose stack stopped, volume retained. No push/merge/deployment or hosted changes.
+
+#### File and line ledger
+
+- `docs/Context (AGENT)/AGENT_START_HERE.md`: lines7–18. Publish latest bounded Android acceptance/cleanup and force-stop limit above historical checkpoints. Preserve Anisha ownership, managed/joint and signed/iOS gates.
+- `docs/core_plan/04_react_native_integration.md`: lines788–806. Record D04b under existing part IDs/counts; distinguish latest physical/emulator debug evidence from still-open full parents and external acceptance.
+- `docs/qa/quest-lifecycle.md`: lines178–236. Explain latest-APK test setup, automation suppression, actual overlap/update/cancellation/speech/large-text/offline/completion results, activity recreation and force-stop limitations, restoration and evidence link.
+- `docs/core_plan_implementation_notes/artifacts/rn-09b-quest-device-final/evidence.json`: lines1–81. Store sanitized actual APK hash/native and HTTP outcomes, owner speech reports, cleanup, inspected screenshot hashes and precise remaining gates. No private IDs/tokens/status-bar captures.
+- `docs/core_plan_implementation_notes/artifacts/rn-09b-quest-device-final/README.md`: lines1–32. Explain each committed emulator capture and scoped latest-APK/physical observations, limitations and verified cleanup.
+- `docs/core_plan_implementation_notes/artifacts/rn-09b-quest-device-final/emulator-reboot.png`: binary PNG, no line numbers. Actual latest-APK pause after acknowledged native install/reboot with host JS/API absent.
+- `docs/core_plan_implementation_notes/artifacts/rn-09b-quest-device-final/emulator-process-expiry.png`: binary PNG, no line numbers. Actual native allowance expiry after process kill/restart without target/host relaunch.
+- `docs/core_plan_implementation_notes/plan_04_react_native_integration_notes.md`: lines7,13,5740–5860. Update current status/date and give this commit its complete measured history, file ledger, checks/cleanup and external handoff. Resolve Pending own hash by subject/history until the next normal notes update.
+
+**Next:** publish/verify this branch if requested; Anisha reviews/integrates the
+existing SDK/root producer and supplies managed-account/iOS builds for coordinated
+acceptance. Signed Android/store and broader device matrix remain separate. No
+additional UI/native implementation is invented solely to expand this test slice.

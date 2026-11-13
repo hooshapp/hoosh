@@ -175,3 +175,62 @@ or managed SDK journey is claimed. See the
 [sanitized evidence and screenshots](../core_plan_implementation_notes/artifacts/rn-09b-quest-device/evidence.json).
 Anisha's review/Auth/iOS, combined physical accessibility and signed/store checks
 remain required; this does not complete D02/D03/D04 or Plan04.
+
+## D04b latest-APK continuation
+
+The next independent run uses the exact current debug APK, generated local
+accounts and the synthetic target. It does not require managed account tokens.
+The native service needs the device owner's disclosure/Settings action. Keep
+ordinary hierarchy automation out of live intervention and TalkBack observations:
+its temporary service suppression can also make an activation button unavailable
+between inspection and tapping. Use an observed screenshot position, then check
+the real account revision and persisted native receipt before proceeding.
+
+The latest-APK emulator run confirms acknowledged installation before reboot,
+offline pause with the host unopened, one allowance across target reentry,
+native process-kill recovery at allowance expiry, screen-off hiding and pause
+return after wake/target reentry. No force-stop persistence claim is made.
+
+Physical continuation confirms two overlapping installed quests and a pause with
+two reasons. Saving an edited end time leaves the active occurrence unchanged;
+an explicit next-day schedule update preserves its original end while installing
+the new future snapshot. Confirmed cancellation of today's first occurrence
+retains the future occurrence and the other quest: the target still pauses with
+one reason and no completion credits are awarded. The owner confirms TalkBack
+labels and Open anyway; native storage confirms one allowance/daily count1.
+The owner also confirms that dismissing Stop with Keep reviewing returns TalkBack
+focus to Stop this quest. At system font2.0 the editor's Stop confirmation and
+both actions were visible/reachable; the enlarged native pause showed its full
+explanation/three controls and Return home reached Android Home. Font changes
+recreated the activity and lost the memory-only fixture connection, so the same
+fixture account was explicitly reconnected. A development Router multiple-linking
+warning during this recreation cleared after a cold host relaunch. This does not
+test Supabase SDK restoration.
+
+Physical offline Stop removed only A's native versions and left B installed while
+the account still said enabled. Cold host restart, reconnect and explicit Check
+retained native revision5/stopped A without replay. Separate confirmed online Stop
+disabled account A at revision3. After B ended, its credits remained zero until
+the real shared completion confirmation; then50credits/one completion. Replaying
+the identical normal API outcome retained that total.
+
+The deliberate Android force-stop unbound the protection service. Native state
+survived, but this run does not establish enforcement after force-stop; recheck
+service setup. The final post-end target had no pause, but service was unbound,
+so that observation is not evidence of automatic end dismissal while connected.
+The earlier connected-service emulator expiry and isolated native cases remain
+the scoped timer evidence. Do not turn this into a platform hard-block guarantee.
+
+The installed phone APK hash matches the latest tested build. This continuation
+changes documentation/evidence only; no runtime workaround was introduced to pass
+the tests. The original private baseline was restored and member content digests,
+settings and reverse mappings matched. Only known native test stores were archived;
+SDK credentials were excluded. Local fixture users/manifest/API, task Metro and
+database stack were cleaned; database volume retained. No physical screenshot or
+raw inventory/account data is committed. See
+[final independent evidence](../core_plan_implementation_notes/artifacts/rn-09b-quest-device-final/evidence.json).
+
+This closes the requested bounded independent Android debug journey/accessibility
+slice on the Pixel/API36 and dedicated emulator. Full D02/D03/D04 and Plan04 remain
+open for managed SDK/joint integration, Anisha's iOS and signed/store acceptance;
+it does not certify an exhaustive device/accessibility matrix.
