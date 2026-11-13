@@ -666,3 +666,34 @@ review, not a takeover of those flows. Real-account phone sign-in and combined S
 acceptance are pending; continue shared quest/Android implementation independently.
 Anisha's iOS bridge/signed build is also not ready. No credential/token entry in
 chat, Auth administration or further Auth-flow implementation is required here.
+
+
+### RN09-D01 delivery defaults — Ishmum-authorized implementation,2026-11-13
+
+These fill remaining reward/Dino parameters for full RN09-D01, not new PM answers:
+Dino starts50health, loses5 per elapsed24hours (server clock); Feed costs20credits
+and restores up to20health, capped100. Full health or insufficient funds costs
+nothing. Original artwork bands are0–24needsCare,25–49feelingLow,50–74doingOkay,
+75–100happy. Credits/points are the same non-monetary unit. Quest50completion is
+retained in the account ledger even if the saved quest is later deleted.
+Explicit native Return home earns5 at initial pause,20 after an allowance expires,
+30 at the mid-session nudge. Never award on presentation/Open anyway/Keep going.
+Deduplicate encounter/session identity; native quit awards have a60second account
+cooldown, so repeatedly reopening cannot farm points rapidly. Offline replay does
+not duplicate awards. The final allowed session being started exhausts that day's
+per-app allowance and breaks that day's streak. A completed covered local day with
+no exhaustion increments it; missing coverage freezes/unavailable, not successful
+or broken. Require native evidence, not API receipt time, for the local date.
+Native business events remain separate from bounded diagnostic telemetry; missing
+business evidence is explicitly unknown. Permissions/restrictions never depend on
+upload success, wallet state, Feed or a model. Auth/iOS/TalkBack deferrals remain.
+
+RN09-D01 precision: health decay starts at the first wallet activity (the initial
+GET is a nonmutating50health/default0balance); the UI states that start. Pending
+device uploads are bounded256/30days; account ledger receipts remain until account
+deletion for idempotency/history. Full-day coverage needs an applied monitoring
+configuration and uninterrupted service/process/boot/clock witness, including
+screen-off sleep in the same service. Reconnect, owner archive or Stop freezes
+coverage; the first partial day is unknown. Previous Android disclosurev1 does
+not approve the added event sync; the updatedv2 disclosure names the uploaded
+content-free choices/allowance/coverage metadata explicitly.

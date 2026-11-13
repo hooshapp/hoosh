@@ -21,6 +21,7 @@ API = ROOT / "services/api"
 sys.path.insert(0, str(API))
 
 import httpx2
+from app.db.migrations import HEAD
 from tests.auth.support import LocalSigner, settings
 from tests.support import database
 
@@ -55,7 +56,7 @@ def main(duration_minutes=45):
         head = admin.execute(
             "SELECT version_num FROM public.alembic_version"
         ).fetchall()
-        if head != [("20261111_0004",)]:
+        if head != [(HEAD,)]:
             raise ValueError("Run the guarded database acceptance/migrations first")
         try:
             for user in users:

@@ -13,7 +13,7 @@ from alembic import command
 from app.models.profile import STRIP_CHARACTERS
 
 API_ROOT = Path(__file__).resolve().parents[2]
-HEAD = "20261111_0004"
+HEAD = "20261113_0005"
 LOCK_ID = 7529304120701
 
 
@@ -148,6 +148,9 @@ def verify(connection: Connection) -> dict:
         "public.user_quests",
         "public.quest_schedule_versions",
         "public.quest_occurrence_outcomes",
+        "public.reward_wallets",
+        "public.reward_entries",
+        "public.reward_streams",
         "public.alembic_version",
     ):
         if (
@@ -166,7 +169,8 @@ def verify(connection: Connection) -> dict:
                 "WHERE c.oid=to_regclass(:table) AND a.grantee<>c.relowner "
                 "AND NOT (:table IN ('public.profiles','public.user_settings',"
                 "'public.user_quests','public.quest_schedule_versions',"
-                "'public.quest_occurrence_outcomes') "
+                "'public.quest_occurrence_outcomes','public.reward_wallets',"
+                "'public.reward_entries','public.reward_streams') "
                 "AND a.grantee="
                 "(SELECT oid FROM pg_roles WHERE rolname='disconnect_api'))"
             ),
@@ -194,6 +198,9 @@ def verify(connection: Connection) -> dict:
             "public.user_quests",
             "public.quest_schedule_versions",
             "public.quest_occurrence_outcomes",
+            "public.reward_wallets",
+            "public.reward_entries",
+            "public.reward_streams",
         ):
             for privilege in (
                 "SELECT",
@@ -463,6 +470,9 @@ def _verify_execution(connection: Connection) -> None:
     for table, commands in (
         ("quest_schedule_versions", {"SELECT", "INSERT", "UPDATE"}),
         ("quest_occurrence_outcomes", {"SELECT", "INSERT"}),
+        ("reward_wallets", {"SELECT", "INSERT", "UPDATE"}),
+        ("reward_entries", {"SELECT", "INSERT"}),
+        ("reward_streams", {"SELECT", "INSERT", "UPDATE"}),
     ):
         qualified = "public." + table
         row = connection.execute(
@@ -526,3 +536,55 @@ def _verify_execution(connection: Connection) -> None:
             constraints
         ):
             raise MigrationSafetyError("Quest execution constraints differ")
+
+
+# Exact reviewed PostgreSQL17 constraint definitions for additive reward tables.
+EXECUTION_CONSTRAINT_FINGERPRINTS.update(
+    {
+        "reward_wallets": {
+            "ck_reward_wallets_balance_range": (
+                "c5e2ffc320fe0c0eb7ab21f3816e9bb86724eb8d8b1c0ee94dbee6cf82100f4a"
+            ),
+            "ck_reward_wallets_state_range": (
+                "d372000856d914d6150935cfdbbc167eba73fa061c0d0a32af5b1fc92b7e7061"
+            ),
+            "ck_reward_wallets_streak_range": (
+                "9f87829c5973bf1f80acc6f908c128585696ce69ffc3156ce591770f519c618d"
+            ),
+            "fk_reward_wallets_user_id_users": (
+                "7dffc1fe5c72443147ef9227e966626cdc6e5997f36e90bcc553577512766d2a"
+            ),
+            "pk_reward_wallets": (
+                "44756d887704fc88d8d0adc5c0c431103c555b4f8e6a4ddef6f7a7f6b4110606"
+            ),
+        },
+        "reward_entries": {
+            "ck_reward_entries_amount_range": (
+                "1da1b230cdc73fee12c97afd84d38772da4d24b842d7c25c0d6e1ffdbe859280"
+            ),
+            "ck_reward_entries_kind_choice": (
+                "1d409778369bf24981494358ecbb80a6070edc417bf749c66a09c644050f05c9"
+            ),
+            "fk_reward_entries_user_id_users": (
+                "7dffc1fe5c72443147ef9227e966626cdc6e5997f36e90bcc553577512766d2a"
+            ),
+            "pk_reward_entries": (
+                "f5d4c496f0399c9788035349120eea597a122347377c64b1c0a6112382b8fbb3"
+            ),
+            "uq_reward_delivery": (
+                "cf43a8ed4e8f1687166a50abaadd4e06cc0eeea611661d8312906a5ef2717f38"
+            ),
+        },
+        "reward_streams": {
+            "ck_reward_streams_cursor_range": (
+                "47851b24b3ee2595ccb16537d203fe5450e3ead8696032f58e36c1779acd8767"
+            ),
+            "fk_reward_streams_user_id_users": (
+                "7dffc1fe5c72443147ef9227e966626cdc6e5997f36e90bcc553577512766d2a"
+            ),
+            "pk_reward_streams": (
+                "63896590e5706c74516cffff863274fb837be30c685296e2ee54b481e2e3c53f"
+            ),
+        },
+    }
+)

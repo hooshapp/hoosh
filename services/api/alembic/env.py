@@ -21,6 +21,9 @@ def include_name(name, type_, parent_names):
             "user_quests",
             "quest_schedule_versions",
             "quest_occurrence_outcomes",
+            "reward_wallets",
+            "reward_entries",
+            "reward_streams",
         ) and parent_names.get("schema_name") in (
             None,
             "public",

@@ -35,7 +35,7 @@ class JsonPatchBodyMiddleware:
             return
         path, method = scope["path"].rstrip("/"), scope["method"]
         bounded = (method == "PATCH" and path in {"/v1/profile", "/v1/settings"}) or (
-            method in {"PUT", "DELETE"} and path.startswith("/v1/quests/")
+            method in {"PUT", "DELETE"} and path.startswith(("/v1/quests/", "/v1/rewards/"))
         )
         if not bounded:
             await self.app(scope, receive, send)

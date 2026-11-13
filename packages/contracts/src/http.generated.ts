@@ -160,6 +160,58 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/rewards": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read */
+        get: operations["get_own_rewards"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/rewards/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Events */
+        put: operations["ingest_own_reward_events"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/rewards/feed/{request_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Receipt */
+        get: operations["get_own_feed_receipt"];
+        /** Feed */
+        put: operations["feed_own_dino"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/settings": {
         parameters: {
             query?: never;
@@ -209,7 +261,7 @@ export interface components {
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
-            code: "PROFILE_CONFLICT" | "QUEST_CONFLICT" | "SETTINGS_CONFLICT";
+            code: "PROFILE_CONFLICT" | "QUEST_CONFLICT" | "REWARD_CONFLICT" | "SETTINGS_CONFLICT";
             details: components["schemas"]["ConflictDetails"];
             /** Message */
             message: string;
@@ -237,6 +289,41 @@ export interface components {
         ErrorEnvelope: {
             /** Error */
             error: components["schemas"]["GeneralErrorBody"] | components["schemas"]["UnavailableErrorBody"] | components["schemas"]["ValidationErrorBody"] | components["schemas"]["ConflictErrorBody"];
+        };
+        /** FeedPut */
+        FeedPut: {
+            /** Expected Revision */
+            expected_revision: number;
+        };
+        /** FeedReceipt */
+        FeedReceipt: {
+            /** Health Added */
+            health_added: number | null;
+            /** Recorded */
+            recorded: boolean;
+            /**
+             * Request Id
+             * Format: uuid
+             */
+            request_id: string;
+            wallet: components["schemas"]["RewardView"];
+        };
+        /** FeedResult */
+        FeedResult: {
+            /**
+             * Charged Credits
+             * @default 20
+             * @constant
+             */
+            charged_credits: 20;
+            /** Health Added */
+            health_added: number;
+            /**
+             * Request Id
+             * Format: uuid
+             */
+            request_id: string;
+            wallet: components["schemas"]["RewardView"];
         };
         /** GeneralErrorBody */
         GeneralErrorBody: {
@@ -553,6 +640,110 @@ export interface components {
              * Format: date-time
              */
             updated_at: string;
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+        };
+        /** RewardBatch */
+        RewardBatch: {
+            /** Discarded */
+            discarded: number;
+            /** Events */
+            events: components["schemas"]["RewardSignal"][];
+            /**
+             * Installation Id
+             * Format: uuid
+             */
+            installation_id: string;
+            /** Timezone Id */
+            timezone_id: string;
+        };
+        /** RewardBatchResult */
+        RewardBatchResult: {
+            /** Accepted Sequence */
+            accepted_sequence: number;
+            /**
+             * Installation Id
+             * Format: uuid
+             */
+            installation_id: string;
+            wallet: components["schemas"]["RewardView"];
+        };
+        /** RewardSignal */
+        RewardSignal: {
+            /** Context */
+            context: ("initial" | "expired" | "mid_session") | null;
+            /** Covered */
+            covered: boolean | null;
+            /**
+             * Day
+             * Format: date
+             */
+            day: string;
+            /** Encounter Id */
+            encounter_id: string | null;
+            /**
+             * Event Id
+             * Format: uuid
+             */
+            event_id: string;
+            /** Exhausted */
+            exhausted: boolean | null;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "quit" | "allowance" | "day_closed";
+            /**
+             * Occurred At
+             * Format: date-time
+             */
+            occurred_at: string;
+            /** Sequence */
+            sequence: number;
+        };
+        /** RewardView */
+        RewardView: {
+            /**
+             * Artwork
+             * @enum {string}
+             */
+            artwork: "needsCare" | "feelingLow" | "doingOkay" | "happy";
+            /** Balance */
+            balance: number;
+            /**
+             * Feed Cost
+             * @default 20
+             * @constant
+             */
+            feed_cost: 20;
+            /**
+             * Feed Health
+             * @default 20
+             * @constant
+             */
+            feed_health: 20;
+            /** Health */
+            health: number;
+            /**
+             * Observed At
+             * Format: date-time
+             */
+            observed_at: string;
+            /**
+             * Policy Version
+             * @default 1
+             * @constant
+             */
+            policy_version: 1;
+            /** Recent Week Complete */
+            recent_week_complete: boolean;
+            /** Revision */
+            revision: number;
+            /** Streak Days */
+            streak_days: number | null;
             /**
              * User Id
              * Format: uuid
@@ -1662,6 +1853,450 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["QuestExecutionView"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    "WWW-Authenticate": "Bearer";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Request Entity Too Large */
+            413: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Safe unexpected failure */
+            500: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Service Unavailable */
+            503: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    get_own_rewards: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RewardView"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    "WWW-Authenticate": "Bearer";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Request Entity Too Large */
+            413: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Safe unexpected failure */
+            500: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Service Unavailable */
+            503: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    ingest_own_reward_events: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RewardBatch"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RewardBatchResult"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    "WWW-Authenticate": "Bearer";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Request Entity Too Large */
+            413: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Safe unexpected failure */
+            500: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Service Unavailable */
+            503: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    get_own_feed_receipt: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                request_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeedReceipt"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    "WWW-Authenticate": "Bearer";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Request Entity Too Large */
+            413: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Safe unexpected failure */
+            500: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Service Unavailable */
+            503: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    feed_own_dino: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                request_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FeedPut"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeedResult"];
                 };
             };
             /** @description Unauthorized */

@@ -4,7 +4,7 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN09B-D04b bounded independent latest-APK Android journey/accessibility acceptance completed; D04a is `37152fd`. RN09B-D02–D04 remain open for coordinated acceptance. D02 SDK/root producer `0bbf714` and retained Android backup exclusions `f447e68` implemented; actual managed-account/device acceptance pending. D03a `999512a`, D03b `b5e314f` native infrastructure and D03c `91894f4` shared controls are implemented at the independent evidence bounds below; full joint D02/D03/D04 acceptance remains pending. Development is verified at0004. Ishmum reiterated Anisha owns Auth/signin/onboarding; existing D02 awaits her review/integration and real-account acceptance. Anisha confirmed iOS integration is not ready.
+**Current part:** RN09-D01 account rewards/Dino/Feed/streak and native event delivery in progress; latest acceptance is `a04d5da`, TalkBack deferral is `1dbeb6e`. RN09B-D02–D04 remain open for coordinated acceptance. D02 SDK/root producer `0bbf714` and retained Android backup exclusions `f447e68` implemented; actual managed-account/device acceptance pending. D03a `999512a`, D03b `b5e314f` native infrastructure and D03c `91894f4` shared controls are implemented at the independent evidence bounds below; full joint D02/D03/D04 acceptance remains pending. Development is verified at0004. Ishmum reiterated Anisha owns Auth/signin/onboarding; existing D02 awaits her review/integration and real-account acceptance. Anisha confirmed iOS integration is not ready.
 
 **Implementation branch:** `task/react-native/rn-09b-lifecycle-integration`; base published `b9bf936`. Local commits only; no main merge/deployment or iOS acceptance.
 
@@ -5895,3 +5895,95 @@ additional UI/native implementation is invented solely to expand this test slice
   cross-plan boundaries, changed files and honest remaining/deferred acceptance.
 - **Validation:** documentation diff/line review and `git diff --check`; no runtime
   changes, so no repeated app/backend/device tests. No phone settings were changed.
+
+
+### RN09-D01a — Account ledger, Dino/Feed policy and native event contract (in progress)
+
+Owner Ishmum,2026-11-13. Branch `task/react-native/rn09-d01-rewards`, parent
+`1dbeb6e`. Commit Pending. Scope is full existing RN09-D01, followed by D02 only
+after this feature; no Auth/onboarding/iOS takeover or new TalkBack work.
+
+Reuse verified account scopes, strict HTTP/generated contracts, own-user PostgreSQL
+transactions/RLS, existing quest outcomes, original Home/Dino artwork and native
+owner archives. Implement immutable idempotent earning/spending, Feed revision
+checks, separate business outbox/ack from bounded diagnostics, real native action
+classification and day coverage. No raw package names/content sent to backend.
+No reward inferred from a timer, cancelled quest or missing telemetry.
+
+Provisional defaults chosen under the user's full-feature/default authority and
+recorded in PM_QUESTIONS: initial Dino50; decay5 per elapsed24hours, computed at
+read/write time without workers; Feed20 credits restores up to20 health, full
+health/no funds reject without charge; original mood artwork bands25/50/75.
+Native explicit Return home awards5(initial pause)/20(after allowance expiry)/30
+(mid-session nudge), one accepted encounter/session and at most one native reward
+per60seconds per account to discourage rapid reopening farming. Quest completion
+remains50once, added atomically to wallet and retained after quest deletion.
+Daily streak only counts completed covered local days without exhausting the
+per-app allowance; missing native coverage is unknown/frozen, not a reset/success.
+The final allowance being started exhausts that day's allowance. No diagnostic
+overflow is converted into credit/streak evidence; protection/Open anyway remains
+available. These are revisable engineering defaults, not new PM-supplied answers.
+
+Commit-sized implementation: a backend domain/storage/API/security/generated types;
+b native evidence/outbox/nudge producer + shared sync; c real Home/Feed/streak
+consumer + end-to-end acceptance. Every commit records exact file/line ledger,
+checks and resume state before commit. Hosted migration/managed SDK/signed/iOS
+acceptance must remain distinguished from local implementation/device evidence.
+
+#### RN09-D01a implementation ledger — backend and contracts
+
+Commit message: `feat(rewards): add account ledger and atomic Dino feeding`.
+The commit contains the backend/contracts/policy scope below; native/shared Home
+changes continue in D01b/c on the same branch. It does not mark the full parent
+Plan04 complete. No Auth/onboarding/iOS work is reassigned.
+
+| File and exact lines in this commit | Change and purpose |
+|---|---|
+| `services/api/app/models/rewards.py`:1–77 | Three owner-keyed wallet/append-only-ledger/installation-cursor models, safe balance constraints and managed Auth CASCADE references. No quest foreign key can remove earned credits. |
+| `services/api/app/schemas/rewards.py`:1–105 | Strict content-free native signal/batch shapes, saved-zone validation, ordered events, server wallet policy, Feed CAS and non-spending Feed receipt responses. Clients cannot submit credit amounts/health/app identities. |
+| `services/api/app/repositories/rewards.py`:1–119 | Own read/default50health, server-time lazy decay, artwork bands, coverage-aware streak and seven genuine day receipts. GET does not create rows. One locked wallet serializes commands. |
+| `services/api/app/repositories/rewards.py`:120–195 | Once-only quest50 credit and atomic Feed20 charge/up-to20health, revision comparison, same-ID replay/payload conflict, no-charge failures and GET-only uncertain receipt recovery. |
+| `services/api/app/repositories/rewards.py`:196–303 | Bounded32-event ingestion,64 installation streams, immutable payload/sequence replay,30day upload age/future/order/date checks, gap reporting, encounter dedup/account60second reward cooldown and streak coverage/exhaustion rules. |
+| `services/api/app/api/v1/rewards.py`:1–69 | Verified own-wallet GET, Feed PUT/receipt GET and native events PUT through existing identity and transaction dependencies; no administrative key or auth bypass. |
+| `services/api/app/repositories/quest_execution.py`:292–295 | Record the existing eligible completed occurrence and account50 earning in the same transaction; duplicate outcomes cannot award twice. |
+| `services/api/alembic/versions/20261113_0005_rewards.py`:1–95 | Frozen additive0005 DDL, completion backfill, strict per-command own RLS/ACL and own Auth cascade; downgrade only adds/removes this feature's three tables. Historical migrations unchanged. |
+| `services/api/alembic/env.py`:24–26 | Include all three reward tables in reflection so Alembic drift checking compares actual owned tables instead of proposing duplicate creation. |
+| `services/api/app/db/migrations.py`:16,151–153,172–173,201–203,473–475,539–590 | Advance reviewed head0005; include new tables in ownership/public denial/runtime privilege checks and exact PG17 constraint/policy audit. Ledger runtime grants exclude UPDATE/DELETE. |
+| `services/api/app/models/__init__.py`:6,9–18 | Register/export new owned metadata for environment-free schema export and migrations. |
+| `services/api/app/application.py`:14,55 | Register rewards routes in the existing environment-free application assembly. |
+| `services/api/app/core/errors.py`:28–31; `services/api/app/schemas/errors.py`:18,117–122 | Fixed REWARD_CONFLICT409 with safe current revision, using the existing error envelope. |
+| `services/api/app/core/json_body.py`:38 | Apply existing16KiB JSON/content-type/duplicate-key validation to rewards PUTs before database acquisition. |
+| `packages/contracts/openapi/foundation.openapi.json`:66–67,158,188–269,1070–1313,4123–5120 | Regenerated public reward schemas/error variant/endpoints and operations from the reviewed environment-free FastAPI assembly. |
+| `packages/contracts/src/http.generated.ts`:163–214,264,293–327,649–752,1873–2316 | Pinned-generator output for those routes and strict bodies; no handwritten generated protocol. |
+| `packages/contracts/src/index.ts`:63–71 | Export wallet, signal/batch, Feed/result/receipt aliases for actual consumers. |
+| `services/api/tests/api/test_rewards.py`:1–89 | Authentication-before-DB, native/private-field rejection and malformed/oversized/duplicate JSON coverage. |
+| `services/api/tests/db/test_rewards.py`:1–366 | Real PostgreSQL concurrency, RLS A/B isolation, Feed replay/no-charge/CAS/decay, native earning/cooldown/gaps/streak, immutable ledger, completion/delete retention, actual verified HTTP/receipt, security drift, own cascade and0004→0005 backfill/preservation. |
+| `services/api/tests/api/test_schema.py`:44–46 | Require exact new paths in deterministic schema export, maintaining the no-runtime-client export check. |
+| `services/api/tests/test_profile_metadata.py`:19–21; `services/api/tests/test_settings_contract.py`:143–145 | Extend exact owned-table inventory while preserving original profile/settings shapes and historical migration assertions. |
+| `scripts/quest-device-fixture.py`:24,59; `services/api/tests/test_quest_device_fixture.py`:21 | Pin the isolated device fixture to the single reviewed HEAD rather than stale0004; existing refusal/cleanup/secret boundaries preserved. |
+| `docs/architecture/home-rewards.md`:1–107 | Explain accepted defaults, prices, decay anchor, account/CAS recovery, native coverage/privacy/retention limits and migration behavior. |
+| `docs/Context (AGENT)/PM_QUESTIONS.md`:671–699 | Record revisable Ishmum-authorized defaults and exact retention/decay/disclosure precision; no invented PM answers.  |
+| `docs/core_plan/04_react_native_integration.md`:768 | Keep RN09-D01/parent IDs; update from proposed policy gate to this in-progress implementation. |
+| This notes file:5900–5989 | Record task ownership, implementation split, exact backend changes, measured checks and a resumable handoff. |
+
+Validation at this boundary: environment-free generated schema/types match;
+663 deterministic API tests pass.253 PostgreSQL tests pass before adding the
+separate portable-client TCP acceptance in D01c. The worktree's full check also
+passed547 portable/731 component(+2 historical skips); native/shared code is not
+part of D01a's implementation claim. Tests caught/fixed missing Alembic reward
+reflection and old exact table/path inventories rather than weakening them.
+
+Development project `eaisvwqfbgdkzdfmxkvm` was guarded/read at0004, then upgraded
+additively to0005 in one administrator transaction, with current preflight and
+full post-migration audit. Hash/count snapshots of existing profiles/settings/
+quests/schedules/outcomes match before/after: two original profiles unchanged,
+other product tables empty. Subsequent Alembic check reports no operations.
+Runtime-role TLS/nonmutating absent-owner reads also pass; no managed Auth user,
+password reset, A/B access token or production deployment was used. These checks
+do not certify real-account SDK integration or C-deletion acceptance.
+
+Next: finish the independent native business producer/outbox/nudge and actual Home
+consumer/receipt recovery, account fences and emulator acceptance, then close D01's
+independent implementation in D01c. D02 remains next; no TalkBack session or iOS
+implementation is included. Keep fixture credentials, raw native archives and
+operator logs outside Git; only sanitized evidence is committed.

@@ -25,6 +25,10 @@ ERRORS = {
     ErrorCode.PROFILE_CONFLICT: (409, "Your profile changed. Review the latest version."),
     ErrorCode.SETTINGS_CONFLICT: (409, "Your settings changed. Review the latest version."),
     ErrorCode.QUEST_CONFLICT: (409, "Your quest changed. Review the latest version."),
+    ErrorCode.REWARD_CONFLICT: (
+        409,
+        "Reward state changed or this action is unavailable. Review the latest wallet.",
+    ),
     ErrorCode.REQUEST_TOO_LARGE: (413, "The request body is too large."),
     ErrorCode.VALIDATION_ERROR: (422, "Check the highlighted fields."),
     ErrorCode.AUTH_UNAVAILABLE: (503, "Identity verification is temporarily unavailable."),

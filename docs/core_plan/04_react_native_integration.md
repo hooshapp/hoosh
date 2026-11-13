@@ -765,7 +765,7 @@ sync with the notes; none is completed by the developer specimen or static expor
 
 | Ref | Home work intentionally deferred | Owner / required evidence |
 |---|---|---|
-| RN09-D01 | Approve and implement Dino health/artwork, Feed pricing/transactions, credit ledger and streak producers | PM PD-06–08/Q12–14 and feature/backend owners; current display inputs do not define policy or prove an outcome. |
+| RN09-D01 | Dino health/artwork, atomic Feed, account ledger and native streak/reward producers | Implementation in progress on `task/react-native/rn09-d01-rewards`; Ishmum-authorized defaults, backend0005, separate native business outbox and real Home consumer. See latest Plan04 notes and [policy](../architecture/home-rewards.md). Auth/iOS/TalkBack/platform gates remain separate. |
 | RN09-D02 | Provide valid weekly saved-time measurements with range/source/coverage and any comparison eligibility | PM PD-11/12/Q15/16 plus permitted native measurement and insights contracts; no usage or savings are calculated here. |
 | RN09-D03 | Define and wire temporary recommendation generation, Skip/Accept lifecycle, persistence/failure and any reward/restriction notices | PM/native/backend feature owners; no saved quest, installed restriction, completion or reward follows from a UI callback. |
 | RN09-D04 | Connect actual native status and supported permission/setup/recovery actions into the Home protection region | Native owners and RN08-D01–D06; scores, profiles and API acknowledgments are never installation evidence. |

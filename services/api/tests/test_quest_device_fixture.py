@@ -18,7 +18,7 @@ def fixture_operator(monkeypatch, tmp_path):
     module.API = tmp_path
     module.OUTPUT = tmp_path / ".local/quest-device-fixture.json"
     calls = []
-    head = [("20261111_0004",)]
+    head = [(module.HEAD,)]
     users = [UUID(int=101), UUID(int=102)]
     module.uuid4 = iter(users).__next__
 

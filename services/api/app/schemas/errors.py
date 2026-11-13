@@ -15,6 +15,7 @@ class ErrorCode(StrEnum):
     PROFILE_CONFLICT = "PROFILE_CONFLICT"
     SETTINGS_CONFLICT = "SETTINGS_CONFLICT"
     QUEST_CONFLICT = "QUEST_CONFLICT"
+    REWARD_CONFLICT = "REWARD_CONFLICT"
     REQUEST_TOO_LARGE = "REQUEST_TOO_LARGE"
     VALIDATION_ERROR = "VALIDATION_ERROR"
     AUTH_UNAVAILABLE = "AUTH_UNAVAILABLE"
@@ -113,7 +114,12 @@ class ValidationErrorBody(CommonErrorBody):
 
 
 class ConflictErrorBody(CommonErrorBody):
-    code: Literal[ErrorCode.PROFILE_CONFLICT, ErrorCode.SETTINGS_CONFLICT, ErrorCode.QUEST_CONFLICT]
+    code: Literal[
+        ErrorCode.PROFILE_CONFLICT,
+        ErrorCode.SETTINGS_CONFLICT,
+        ErrorCode.QUEST_CONFLICT,
+        ErrorCode.REWARD_CONFLICT,
+    ]
     retryable: Literal[False]
     details: ConflictDetails
 

@@ -289,6 +289,10 @@ def put_outcome(
         credits=50 if state == "completed" else 0,
     )
     session.add(row)
+    if state == "completed":
+        from app.repositories.rewards import quest_credit
+
+        quest_credit(session, quest_id, revision, day, now)
     session.flush()
     return row
 

@@ -41,6 +41,9 @@ def test_export_is_deterministic_and_never_constructs_runtime_or_clients(monkeyp
     assert ("app.main" in sys.modules) == was_main_imported
     assert set(json.loads(first)["paths"]) == {
         "/healthz",
+        "/v1/rewards",
+        "/v1/rewards/events",
+        "/v1/rewards/feed/{request_id}",
         "/v1/me",
         "/v1/profile",
         "/v1/settings",
