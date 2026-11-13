@@ -4,13 +4,13 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN09-D01 account rewards/Dino/Feed/streak and native event delivery in progress; latest acceptance is `a04d5da`, TalkBack deferral is `1dbeb6e`. RN09B-D02–D04 remain open for coordinated acceptance. D02 SDK/root producer `0bbf714` and retained Android backup exclusions `f447e68` implemented; actual managed-account/device acceptance pending. D03a `999512a`, D03b `b5e314f` native infrastructure and D03c `91894f4` shared controls are implemented at the independent evidence bounds below; full joint D02/D03/D04 acceptance remains pending. Development is verified at0004. Ishmum reiterated Anisha owns Auth/signin/onboarding; existing D02 awaits her review/integration and real-account acceptance. Anisha confirmed iOS integration is not ready.
+**Current part:** RN09-D01 shared/Android rewards/Dino/Feed/streak and native event delivery implemented and independently accepted; D01a `cb5321d`, D01b `36ebe3a`, final D01c below. Next RN09-D02; Auth/iOS/TalkBack/signed gates remain separate. Prior quest acceptance is `a04d5da`, TalkBack deferral is `1dbeb6e`. RN09B-D02–D04 remain open for coordinated acceptance. D02 SDK/root producer `0bbf714` and retained Android backup exclusions `f447e68` implemented; actual managed-account/device acceptance pending. D03a `999512a`, D03b `b5e314f` native infrastructure and D03c `91894f4` shared controls are implemented at the independent evidence bounds below; full joint D02/D03/D04 acceptance remains pending. Development is verified at0005 (RN09-D01 additive rewards; existing product rows preserved). Ishmum reiterated Anisha owns Auth/signin/onboarding; existing D02 awaits her review/integration and real-account acceptance. Anisha confirmed iOS integration is not ready.
 
-**Implementation branch:** `task/react-native/rn-09b-lifecycle-integration`; base published `b9bf936`. Local commits only; no main merge/deployment or iOS acceptance.
+**Implementation branch:** `task/react-native/rn09-d01-rewards`; parent `1dbeb6e`, backend `cb5321d`, native `36ebe3a`. Previous quest branch/base records below are historical. Local commits only; no main merge/deployment or iOS acceptance.
 
 **Commit reference:** RN-01 `2f88102`; RN-02 `2d5c0d1`; RN-03 `0741758`; RN-04 `610f570`; RN-05 preparation `0c6e4db`; RN-07 UI `5790302`; RN-08 preparation `71da2d5`; RN-09a `ff75039`. RN-10 is `9b5fbd0`.
 
-**Last updated:** 2026-11-12.
+**Last updated:** 2026-11-13.
 
 **Shared workflow:** [Implementation knowledge base](README.md).
 
@@ -6033,3 +6033,95 @@ restores the dedicated emulator native baseline/settings. Its local API fixture
 is running privately; do not run DB migrations/tests concurrently with it. Tokens,
 raw native data and baseline archive remain ignored/outside Git. No push, main
 merge or production deployment is part of this task.
+
+### RN09-D01c — Shared Home, reliable delivery and independent acceptance
+
+Owner Ishmum,2026-11-13, branch `task/react-native/rn09-d01-rewards`.
+D01a `cb5321d` and D01b `36ebe3a` are committed. This final slice adds strict
+account-scoped reward transport/ACK, real Home/Feed/streak feedback, guarded
+response-loss receipt reads and portable-client TCP restart acceptance. The final
+policy audit caught a D01a/b mistake: `>=` would break the streak at the last
+permitted session, contradicting the original2026-11-10 decision. D01c changes the
+native exhaustion test to `>` and explicitly tests last-permitted=false and first
+extra=true. PM questions/policy are corrected; this is preservation of the agreed
+rule, not a newly approved penalty. Historical D01a/b records describe those
+commits, while this correction supersedes their final-session wording.
+
+Full current workspace checks pass547portable/731component(+2historical skips)/
+663deterministic API;255PostgreSQL include real client/JWT/TCP/API-process restart.
+Native pure JVM101 and latest Android36 emulator instrumentation124 pass after
+the correction, plus debug/test APK, release Kotlin, web isolation/71original assets
+and Android Hermes export. No NO-SOURCE task is counted as tests.
+
+Actual emulator Home/Feed shows50credits/50health→30credits/70health after
+one explicit request. The local disposable quest fixture supplied the final
+actual native-event→Home sync acceptance and has now been cleaned. Only the synthetic test target
+was selected. API migration tests must not run concurrently. Instrumentation
+force-stopped the package and Android listed its service as crashed/unbound with
+no crash-buffer exception; the service required explicit emulator re-enable, as
+recorded in the existing lifecycle boundary. No force-stop resilience is claimed.
+No new TalkBack work or managed Auth account/token/iOS operation is included.
+
+Actual native Return home→wallet+5→ACK is verified: Home35credits/70health,
+businessPending0/next2/discarded0 and diagnostic quit retained. Then a deliberately
+lost Feed response committed once to15credits/90health/happy original artwork;
+Check last Feed used GET-only recovery and confirmed the charge without replay.
+Native baseline file contents/modes and accessibility settings are restored and
+verified, reverse mappings removed, task Metro/API fixture/AVD stopped and local
+fixture users/manifest cleaned. SDK credentials excluded; no real phone touched.
+
+Final backend audit also simplified Feed CAS to compare the locked row, removing
+a stale absent-wallet pre-read that could otherwise spend a concurrent first
+credit at expected_revision0. A deterministic two-connection/Event regression
+fails on `cb5321d` and passes on the corrected implementation; the competing
+Feed test now proves two distinct PostgreSQL backend PIDs. The corrected full DB
+suite passes255. This is a real concurrency regression, not an implementation-
+mirroring assertion. RN09-D02 is next and remains untouched.
+
+
+Commit message: `feat(home): connect rewards and verify reliable account delivery`.
+This closes RN09-D01's independent shared/Android implementation. Managed Auth/
+onboarding, Anisha's iOS, signed/store/wider-device acceptance, further TalkBack
+and real24hour/seven-day soak remain separate; no whole Plan04 completion or new
+work on RN09-D02 is claimed. Engineering defaults remain revisable in PM questions.
+
+#### D01c exact file/line change ledger
+
+| File and final lines in this commit | Change and purpose |
+|---|---|
+| `apps/mobile/src/features/rewards/rewards-api.ts`:1–68 | Strict own wallet/policy/price/health/artwork/streak response guards and UUID-based Feed/receipt/event HTTP functions. Exact content-free native envelope rejects unknown/private fields, ordering/shape/timezone problems and forged ACK identities/cursors before native acknowledgment. |
+| `apps/mobile/src/features/rewards/reward-sync.ts`:1–34 | Actual optional Android outbox transport, owner/generation fences after awaits, leased cleanup and at most8×32 batches. ACK only submitted prefix after verified server acceptance; upload/ACK failure retains evidence. Unsupported builds leave server quest credits/Feed usable and native coverage unavailable. |
+| `apps/mobile/src/features/rewards/use-rewards.ts`:1–93 | Existing account query/mutation lifecycle, foreground30second refresh, offline/error masking, separate native sync feedback, server-only wallet updates, deliberate Feed CAS and non-spending uncertain receipt recovery. Pending Feed survives Home remount inside the disposable account cache; no automatic charge retry or optimistic spend. |
+| `apps/mobile/src/features/rewards/rewards-feedback.tsx`:1–41 | Keep reward policy, unknown streak, sync state, Check last Feed and Refresh feedback in its own presentation component; existing Home cards/preferences stay composed rather than mixed with transport logic. |
+| `apps/mobile/src/features/home/connected-home-screen.tsx`:9–28,57–78 | Map verified server wallet to original Dino artwork/health, balance and coverage-qualified streak; wire genuine Feed/busy/recovery. Preserve settings/native status and honest unavailable D02/D03 outcomes. |
+| `apps/mobile/src/features/home/home-model.ts`:3,9,41; `home-screen.tsx`:29 | Update obsolete future-producer comments: connected rewards now exist, while these types/components remain display-only and never own scoring. |
+| `apps/mobile/src/features/quests/quest-lifecycle.ts`:357–358 | Invalidate the account wallet after a confirmed completion, with a fresh scope check; no timer/presentation claims completion or credits. |
+| `apps/mobile/src/infrastructure/api/errors.ts`:36,108–110,149,154 | Whitelist REWARD_CONFLICT409/current revision and fixed wallet-specific copy using the existing safe error classifier. |
+| `apps/mobile/src/features/rewards/rewards-api.test.ts`:1–78 | Valid/foreign/malformed policy and content-free payloads, strict Feed/receipt/ACK validation, supported/unavailable native transport, failure/late-account suppression, owner mismatch, lease cleanup and prefix-only acknowledgment. |
+| `apps/mobile/src/features/rewards/rewards-home.test.tsx`:1–95 | Actual Home/hook/controller tests for verified health/artwork/credits, Feed acknowledgment, lost-response non-spending recovery, disabled no-funds/full-health, conflicts, offline/error masking and account replacement on both SDK renderer configurations. |
+| `apps/mobile/dev/profile/acceptance/rewards-http.acceptance.ts`:1–64; `rewards-vitest.config.mts`:1–6 | Explicit guarded loopback/ephemeral-account harness runs the production client/decoder through real JWT HTTP. Verifies account isolation, Feed commit-response loss/receipt/same-ID replay, native batch replay and persistence across an actual API process restart. No production login shortcut or signed-in success stub. |
+| `services/api/tests/db/test_mobile_rewards_acceptance.py`:1–80 | Own local PostgreSQL fixture, normal ephemeral signer and two real API processes; invoke four nested portable-client scenarios with safe diagnostic titles and private report cleanup. No managed `.env` token or Auth administration. |
+| `services/api/app/repositories/rewards.py`:142–159 | Remove the unprotected pre-read and compare the locked wallet revision for Feed CAS, including first-wallet races. Once-only receipt behavior and transaction rollback remain unchanged. |
+| `services/api/tests/db/test_rewards.py`:120–151,378–430 | Make competing Feed use two real DB connections/PIDs and add deterministic concurrent first-credit/absent-wallet protection. Prior committed code fails the new regression; corrected full suite passes. |
+| Native `InterventionEngine.kt`:152–153; native test `RewardChecks.kt`:39–43 | Preserve the existing approved first-EXTRA-session exhaustion rule using `>`; regression asserts last permitted does not exhaust while first extra does. Native paths use the full prefix recorded in D01b. |
+| `packages/contracts/HTTP_API.md`:341–369 | Document actual wallet/Feed/receipt/events, private/account/revision boundaries and no automatic uncertain-charge replay beside generated contracts. |
+| `docs/architecture/home-rewards.md`:31–32,109–112 | Correct the temporary final-session wording to the original first-extra-session rule. No policy change from the agreed Q14 default. Document the retained native byte ceiling and existing reported fail-open storage handling. |
+| `docs/Context (AGENT)/PM_QUESTIONS.md`:683–685,701–706 | Correct/reconcile that same provisional D01a/b error explicitly while preserving the original PM/engineering decision history. |
+| `docs/Context (AGENT)/AGENT_START_HERE.md`:15–25 | New agent resumes from implemented D01/0005, knows genuine gates/ownership and proceeds to existing D02 rather than redoing Auth or backend migrations. |
+| `docs/core_plan/01_supabase_foundation.md`:3–13; `03_backend_foundation.md`:3–13; `README.md`:3–13 | Cross-plan checkpoint records0005, preserved rows and D01 ownership/evidence without renumbering SB/API parts or closing Anisha's/joint acceptance. |
+| `docs/core_plan/04_react_native_integration.md`:3–13,774–785 | Preserve original Home IDs, distinguish implemented D01 from the remaining rows and link current policy/notes rather than treating source specimens as producer completion. |
+| `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`:3–12 | Forward backend readers to the detailed Plan04 feature history and0005 verification; API-01–12 part counts/joint gates unchanged. |
+| `docs/qa/home-rewards.md`:1–74 | Repeatable scope/commands, measured test/UI/native evidence, instrumentation/UI Automation limitation, exact restoration and remaining platform/soak boundaries. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09-d01-rewards/evidence.json`:1–91 | Sanitized current checks, development migration preservation, exact local Feed/native/ACK observations, policy corrections, restoration and remaining gates; no tokens/account IDs/raw inventories. |
+| `artifacts/rn-09-d01-rewards/home-native-credit.png`; `home-feed-recovered.png` | Unedited actual product Home screenshots in the isolated Android36 QA host: native35credits/70health and confirmed15credits/90health/happy artwork. Developer gear is the host; no managed SDK/signed-root or Figma pixel-parity claim. |
+| This notes file:7–15,6037–6127 | Current owner/branch/part/head plus this commit's rationale, exact implementation ledger, validation, corrections, cleanup and D02 handoff. Historical earlier evidence remains intact. |
+
+Resume from RN09-D02. Do not reopen Auth/iOS/TalkBack or reapply hosted0005 simply
+because older entries describe those tasks as pending. No push/main merge or
+production deployment was requested. Only the three original unrelated untracked
+workspace/icon-pack paths remain outside this task's commits.
+
+Final cleanup: the task-started disposable database container/network is stopped
+with its volume retained. Final `npm run check` passes on the corrected worktree;
+existing lint has4warnings/0errors. No credentials or user-owned icon/workspace
+files are included. Commit D01c, then continue with RN09-D02 only when requested.

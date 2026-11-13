@@ -1,5 +1,16 @@
 # Disconnect — Core Development Plans
 
+**RN09-D01 rewards implementation (2026-11-13):** shared account wallet,
+Dino health/original artwork, atomic Feed/receipt recovery, quest50 ledger and
+Android business outbox/native quit/coverage producers are implemented. Development
+is verified at0005, preserving existing product rows. Read the latest
+[Plan04 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md)
+and [reward policy](../architecture/home-rewards.md) for evidence/defaults.
+The original first-extra-session streak rule is preserved; using the last permitted
+session alone does not break it. RN09-D02 usage/savings remains next. Managed Auth,
+Anisha's iOS, signed/store acceptance and further TalkBack work stay separate.
+
+
 **Status:** Plan 00 is complete and validated (foundation commit `0b50900`, recorded in its ledger); Plan 04 RN-01–04 producers now supply shared UI/testing, authentic-asset navigation and bounded HTTP and account query/lifecycle producers with recorded evidence; real RN-04 Auth/root wiring, Anisha-owned Plan 01/Auth acceptance, Plan 02, full API-10 and RN-06/11 remain pending; API-10 operational diagnostics/tools and independent checks are implemented; RN-10 shared UI/lifecycle hardening exists with device/live acceptance pending; RN-09a–h main/detail/editor UI exists with live integration pending; RN-05 consumer, RN-07 revisioned profile consumer and RN-08a–d Android read/usage-permission/status integration exist; its Pixel debug-device matrix passes while enforcement/iOS and joint acceptance remain open. API-01–09 backend identity/profile producers and API-11/12 settings storage/HTTP producers are implemented; mobile Auth/root, real-account settings and native enforcement/iOS integration remain pending; the Android read-only adapter is registered.\
 **Baseline inspected:** `c7a8f73` — `Set up mobile and API foundation`.\
 **Reviewed:** 2026-11-02 (bounded planning expansion; implementation evidence remains recorded per part).\

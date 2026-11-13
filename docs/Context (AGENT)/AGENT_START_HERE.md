@@ -12,6 +12,16 @@ and existing evidence; deferred is not completed. Functional controls, navigatio
 ordinary layout and recovery still need relevant checks. This does not change
 Anisha's ownership or silently defer her other platform work.
 
+**RN09-D01 rewards implementation (2026-11-13):** shared account wallet,
+Dino health/original artwork, atomic Feed/receipt recovery, quest50 ledger and
+Android business outbox/native quit/coverage producers are implemented. Development
+is verified at0005, preserving existing product rows. Read the latest
+[Plan04 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md)
+and [reward policy](../architecture/home-rewards.md) for evidence/defaults.
+The original first-extra-session streak rule is preserved; using the last permitted
+session alone does not break it. RN09-D02 usage/savings remains next. Managed Auth,
+Anisha's iOS, signed/store acceptance and further TalkBack work stay separate.
+
 **Latest Android quest acceptance (RN09B-D04b, 2026-11-12):** latest APK accepted
 for the bounded independent Pixel/API36 quest journey: overlap, active update,
 single cancellation, owner-confirmed TalkBack labels/action/Stop focus, font2.0,

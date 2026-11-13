@@ -33,6 +33,7 @@ const codeStatus = {
   PROFILE_CONFLICT: 409,
   SETTINGS_CONFLICT: 409,
   QUEST_CONFLICT: 409,
+  REWARD_CONFLICT: 409,
   REQUEST_TOO_LARGE: 413,
   VALIDATION_ERROR: 422,
   AUTH_UNAVAILABLE: 503,
@@ -104,7 +105,9 @@ export class ApiError extends Error {
         ? 'Your settings changed. Review the latest version before saving.'
         : kind === 'conflict' && metadata.code === 'QUEST_CONFLICT'
           ? 'Your quest changed. Review the latest version before saving.'
-          : messages[kind],
+          : kind === 'conflict' && metadata.code === 'REWARD_CONFLICT'
+            ? 'Your wallet changed. Review the latest balance before feeding.'
+            : messages[kind],
     );
     this.name = 'ApiError';
     this.status = metadata.status;
@@ -143,11 +146,12 @@ function safeDetails(code: ApiErrorCode | undefined, value: unknown): SafeErrorD
     code !== 'PROFILE_CONFLICT' &&
     code !== 'SETTINGS_CONFLICT' &&
     code !== 'QUEST_CONFLICT' &&
+    code !== 'REWARD_CONFLICT' &&
     code !== 'VALIDATION_ERROR'
   )
     return undefined;
   if (!isRecord(value)) throw new Error();
-  if (code === 'PROFILE_CONFLICT' || code === 'SETTINGS_CONFLICT' || code === 'QUEST_CONFLICT') {
+  if (code === 'PROFILE_CONFLICT' || code === 'SETTINGS_CONFLICT' || code === 'QUEST_CONFLICT' || code === 'REWARD_CONFLICT') {
     if (!Number.isSafeInteger(value.current_revision) || (value.current_revision as number) < 0)
       throw new Error();
     return { current_revision: value.current_revision as number };

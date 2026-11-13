@@ -1,5 +1,16 @@
 # 04 — React Native Integration and Shared Frontend Plan
 
+**RN09-D01 rewards implementation (2026-11-13):** shared account wallet,
+Dino health/original artwork, atomic Feed/receipt recovery, quest50 ledger and
+Android business outbox/native quit/coverage producers are implemented. Development
+is verified at0005, preserving existing product rows. Read the latest
+[Plan04 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md)
+and [reward policy](../architecture/home-rewards.md) for evidence/defaults.
+The original first-extra-session streak rule is preserved; using the last permitted
+session alone does not break it. RN09-D02 usage/savings remains next. Managed Auth,
+Anisha's iOS, signed/store acceptance and further TalkBack work stay separate.
+
+
 **Date:** 2026-10-28\
 **Status:** RN-01/02/03 and RN-04 producer implemented with recorded evidence; RN-04 real root wiring remains coordinated/pending, RN-05 has an independently prepared consumer with live acceptance pending, RN-07 has a revisioned consumer and conditional Settings wiring with real Auth/device acceptance pending, RN-08a–d Android read/permission integration and device acceptance are implemented (enforcement/iOS remain open), RN-09a–h main/detail/editor UI is implemented with live acceptance pending, RN-10 shared UI/lifecycle hardening is implemented with device/live checks pending, and RN-06/11 await their prerequisites. RN-02 also has native JS/Hermes exports; signed-device rendering/keyboard/screen-reader acceptance remains separate.\
 **Primary owner:** Ishmum — shared post-onboarding React Native application.\
@@ -760,12 +771,13 @@ fixed 85 px fill. Ready measurements display range/source/coverage. Unknown heal
 renders no mood/score; unavailable data never becomes zero or the Figma sample.
 OS status bars remain OS-owned; real navigation is reused rather than recreated.
 
-The following Home integration work is deliberately deferred. Keep these IDs in
-sync with the notes; none is completed by the developer specimen or static exports.
+The following original Home integration IDs track producer and acceptance work.
+Status cells include later implementation; developer specimens and static exports
+alone do not complete these rows. Keep IDs in sync with the implementation notes.
 
-| Ref | Home work intentionally deferred | Owner / required evidence |
+| Ref | Original Home integration work | Status / owner / required evidence |
 |---|---|---|
-| RN09-D01 | Dino health/artwork, atomic Feed, account ledger and native streak/reward producers | Implementation in progress on `task/react-native/rn09-d01-rewards`; Ishmum-authorized defaults, backend0005, separate native business outbox and real Home consumer. See latest Plan04 notes and [policy](../architecture/home-rewards.md). Auth/iOS/TalkBack/platform gates remain separate. |
+| RN09-D01 | Dino health/artwork, atomic Feed, account ledger and native streak/reward producers | Implementation complete; final independent acceptance recorded on `task/react-native/rn09-d01-rewards`; Ishmum-authorized defaults, backend0005, separate native business outbox and real Home consumer. See latest Plan04 notes and [policy](../architecture/home-rewards.md). Auth/iOS/TalkBack/platform gates remain separate. |
 | RN09-D02 | Provide valid weekly saved-time measurements with range/source/coverage and any comparison eligibility | PM PD-11/12/Q15/16 plus permitted native measurement and insights contracts; no usage or savings are calculated here. |
 | RN09-D03 | Define and wire temporary recommendation generation, Skip/Accept lifecycle, persistence/failure and any reward/restriction notices | PM/native/backend feature owners; no saved quest, installed restriction, completion or reward follows from a UI callback. |
 | RN09-D04 | Connect actual native status and supported permission/setup/recovery actions into the Home protection region | Native owners and RN08-D01–D06; scores, profiles and API acknowledgments are never installation evidence. |

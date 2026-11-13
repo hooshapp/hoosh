@@ -1,12 +1,12 @@
 import type { homeDinoAssets } from '@/design/home-assets';
 
-/** Local display inputs, NOT approved HTTP/native/product policy contracts. */
+/** Display inputs; connected producers validate HTTP/native policy before mapping here. */
 export type HomeDatum<T> =
   Readonly<{ state: 'ready'; value: T }> | Readonly<{ state: 'loading' | 'unavailable' | 'error' }>;
 
 export type DinoDisplay = Readonly<{
   percent: number;
-  /** Supplied explicitly by an approved future scorer; never selected from a guessed band. */
+  /** Supplied by the server reward policy; this view model never guesses a mood. */
   artwork: keyof typeof homeDinoAssets;
   feedCost: number | null;
 }>;
@@ -38,7 +38,7 @@ export type HomeModel = Readonly<{
   recommendation: HomeDatum<RecommendationDisplay> | Readonly<{ state: 'empty' }>;
 }>;
 
-/** These outcome producers remain unavailable; saved preferences have a separate summary. */
+/** Neutral defaults; connected Home supplies verified rewards and separate preferences. */
 export const unavailableHome: HomeModel = {
   dino: { state: 'unavailable' },
   credits: { state: 'unavailable' },

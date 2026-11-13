@@ -141,9 +141,6 @@ def quest_credit(session: UserSession, quest: UUID, revision: int, day: date, no
 
 def feed(session: UserSession, request_id: UUID, body: FeedPut, now: datetime):
     owner = require_user_context(session)
-    # An absent wallet is revision0; locking creates its zero-balance foundation.
-    before = session.get(Wallet, owner)
-    expected = before.revision if before else 0
     w = locked(session, now)
     source = f"feed:{request_id}"
     old = session.get(Entry, (owner, source))
@@ -155,10 +152,9 @@ def feed(session: UserSession, request_id: UUID, body: FeedPut, now: datetime):
             health_added=old.payload["health_added"],
             wallet=view(session, now),
         )
-    # Re-read locked revision: concurrent commands cannot both spend the same revision.
-    if body.expected_revision != expected or (
-        before is not None and w.revision != body.expected_revision
-    ):
+    # Compare only the locked row, including concurrent first-wallet creation.
+    # An absent revision0 cannot fund Feed and must not spend a concurrently earned balance.
+    if body.expected_revision != w.revision:
         conflict(w.revision)
     value, ticks = health(w, now)
     if w.balance < 20 or value == 100:

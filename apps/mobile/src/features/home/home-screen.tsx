@@ -26,7 +26,7 @@ export type HomeScreenProps = {
   feeding?: boolean;
   recommendationBusy?: boolean;
 };
-/** Source Home composition. A future producer owns policy, freshness and account scoping. */
+/** Source Home composition; connected features own policy, freshness and account scoping. */
 export function HomeScreen({
   model: input,
   bottomClearance,

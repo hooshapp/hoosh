@@ -1,5 +1,15 @@
 # Plan 03 — Backend Foundation Implementation Notes
 
+**RN09-D01 cross-plan handoff,2026-11-13:** Plan04 rewards adds the account
+ledger/Dino/Feed/event API and development migration0005. The full per-commit
+file/line/test/migration record is in [Plan04 notes](plan_04_react_native_integration_notes.md),
+RN09-D01a `cb5321d`, D01b `36ebe3a` and D01c. Existing two profiles and other product
+rows were preserved; full hosted schema/role/TLS/drift checks pass. This extends
+product features under the existing RN09-D01 ID; API-01–12 parts/counts and the
+user-deferred managed Auth/A/B/C-deletion joint gates are unchanged. Earlier0002/
+0003/0004 checkpoints below are historical. No Auth administration or deployment.
+
+
 **Plan:** [03_backend_foundation.md](../core_plan/03_backend_foundation.md)
 **Owner:** Ishmum. Anisha owns Supabase Auth setup and mobile sessions/onboarding.
 **Current branch:** `task/backend/plan-03-hosted-acceptance`; **parent:** `cadc91d`. Previous API-12 branch `task/backend/api-12-settings-http`, parent `21477df`. Original API-01–05 branch `task/backend/api-01-05`, starting commit `2703a23`; later planning/implementation branches are recorded per entry.

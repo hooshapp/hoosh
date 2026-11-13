@@ -354,6 +354,8 @@ export function createQuestLifecycle(
               op,
             ),
           );
+          current();
+          if (completed) void scope.client.invalidateQueries({ queryKey: scope.key('rewards') });
           remember(await scope.read((op) => readQuestExecution(id, op)));
           publish({
             message: completed

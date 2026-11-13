@@ -1,5 +1,16 @@
 # Plan 01 — Supabase Auth and Database Foundation
 
+**RN09-D01 rewards implementation (2026-11-13):** shared account wallet,
+Dino health/original artwork, atomic Feed/receipt recovery, quest50 ledger and
+Android business outbox/native quit/coverage producers are implemented. Development
+is verified at0005, preserving existing product rows. Read the latest
+[Plan04 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md)
+and [reward policy](../architecture/home-rewards.md) for evidence/defaults.
+The original first-extra-session streak rule is preserved; using the last permitted
+session alone does not break it. RN09-D02 usage/savings remains next. Managed Auth,
+Anisha's iOS, signed/store acceptance and further TalkBack work stay separate.
+
+
 **Status:** Ishmum-owned SB-04 hosted role/login/TLS and SB-05 disposable PostgreSQL infrastructure are implemented and verified. SB-01–03 and SB-06 Auth ownership/acceptance remain with Anisha.\
 **Owners:** Anisha owns Supabase Auth end to end, including development project setup and Auth configuration (SB-01–03). Ishmum owns product database roles and test infrastructure (SB-04–05). Anisha leads SB-06 with Ishmum supplying backend evidence.\
 **Area branches:** SB-01–03 use `area/auth-onboarding`; SB-04–05 use `area/backend`. Use one task branch per part, such as `task/auth/supabase-sb-01` or `task/backend/supabase-sb-04`. SB-06 has one named author, Anisha, with Ishmum contributing API/database notes.\

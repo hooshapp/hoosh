@@ -680,8 +680,8 @@ Explicit native Return home earns5 at initial pause,20 after an allowance expire
 30 at the mid-session nudge. Never award on presentation/Open anyway/Keep going.
 Deduplicate encounter/session identity; native quit awards have a60second account
 cooldown, so repeatedly reopening cannot farm points rapidly. Offline replay does
-not duplicate awards. The final allowed session being started exhausts that day's
-per-app allowance and breaks that day's streak. A completed covered local day with
+not duplicate awards. The first extra session beyond the configured per-app daily count breaks that
+day's streak; the final permitted session alone does not. A completed covered local day with
 no exhaustion increments it; missing coverage freezes/unavailable, not successful
 or broken. Require native evidence, not API receipt time, for the local date.
 Native business events remain separate from bounded diagnostic telemetry; missing
@@ -697,3 +697,10 @@ screen-off sleep in the same service. Reconnect, owner archive or Stop freezes
 coverage; the first partial day is unknown. Previous Android disclosurev1 does
 not approve the added event sync; the updatedv2 disclosure names the uploaded
 content-free choices/allowance/coverage metadata explicitly.
+
+RN09-D01 final policy reconciliation: preserve the existing2026-11-10 Q14
+implementation decision: only starting the first EXTRA session beyond the daily
+count emits exhaustion/streak break. The initial D01a/b wording/producer used
+`>=` in error; D01c corrects it to `>`, with a regression assertion for both the
+last permitted and first extra session. This is a correction to preserve existing
+accepted behavior, not a new PM answer or new final-session penalty.

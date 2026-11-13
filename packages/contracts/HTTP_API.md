@@ -337,3 +337,32 @@ branches; required-only branches previously degraded to unknown in the generator
 Compile checks reject revision-only bodies, unknown input, owners, boolean
 revisions, display-label activity IDs and null saved successes. Generated DTOs
 do not replace runtime owner/response validation in RN-09i.
+
+## RN09-D01 — account rewards and Dino
+
+Implemented by Plan04 RN09-D01; [policy](../../docs/architecture/home-rewards.md)
+and generated OpenAPI are authoritative. Normal verified bearer/own-row rules
+apply; no Auth administration or native installation follows from these requests.
+
+| Method / path | Body and effect |
+|---|---|
+| `GET /v1/rewards` | Nonmutating own wallet, policy1, health/artwork, revision, price and coverage-qualified streak. Absent wallet is balance0/health50/revision0 with unknown streak; health decay starts with first wallet activity. |
+| `PUT /v1/rewards/feed/{request_id}` | UUID request ID and strict `expected_revision`; atomic20credit charge and up-to20health, capped100. Same ID/body replays its receipt; changed body/stale balance conflicts. No funds/full health never charges. |
+| `GET /v1/rewards/feed/{request_id}` | Non-spending receipt reconciliation (`recorded`, nullable `health_added`, current wallet). Never automatically repeat an uncertain Feed with a new ID. |
+| `PUT /v1/rewards/events` | Strict installation UUID, saved IANA timezone, cumulative discarded count and1–32 ordered signals; returns accepted cursor and wallet. Ack only the actually submitted native prefix. |
+
+Signals carry event UUID, increasing safe sequence, aware UTC timestamp, local day
+and one strict shape: quit with encounter/context(initial,expired,mid_session),
+allowance with exhaustion boolean, or day_closed with exhaustion/coverage booleans.
+All other nullable signal fields are explicitly null. No credit amount, package
+name, app label or screen content is accepted. Native queue bounds are256/30days;
+prices, timestamp/date/order validation, dedup and60second native reward cooldown
+are server-owned. The ledger outlives saved quest deletion and cascades on actual
+Auth-account deletion. Native claims are client-reported, not attested usage.
+
+`REWARD_CONFLICT` is409 with sanitized `current_revision`. Refetch/review rather
+than automatically changing the revision and replaying Feed. Mutation response loss
+may have committed; use the receipt GET. Existing16KiB bounded JSON/error/auth
+handling applies. Other account IDs and stale session generations must be rejected
+at the response/cache/native ACK boundary. Unsupported native builds may use server
+quest credits/Feed but must not fabricate native rewards or streak coverage.

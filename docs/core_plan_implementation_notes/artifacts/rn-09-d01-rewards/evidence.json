@@ -1,0 +1,91 @@
+{
+  "part": "RN09-D01",
+  "owner": "Ishmum",
+  "date": "2026-11-13",
+  "branch": "task/react-native/rn09-d01-rewards",
+  "commits": {
+    "backend": "cb5321d",
+    "native": "36ebe3a",
+    "consumer": "same commit as this artifact"
+  },
+  "checks": {
+    "portable": 547,
+    "component": 731,
+    "historical_component_skips": 2,
+    "deterministic_api": 663,
+    "postgresql": 255,
+    "pure_native_jvm": 101,
+    "android36_native_instrumentation": 124,
+    "web_isolation_files": 38,
+    "original_svg_assets": 71,
+    "android_hermes_export": true,
+    "debug_and_test_apks": true,
+    "release_native_kotlin": true,
+    "distinct_postgresql_backends_for_competing_feed": 2,
+    "first_credit_race_regression_fails_on_previous_commit": true
+  },
+  "development_database": {
+    "head": "20261113_0005",
+    "old_product_data_preserved": true,
+    "existing_profiles": 2,
+    "old_settings_quests_schedules_outcomes_empty": true,
+    "schema_rls_acl_drift_check_passed": true,
+    "runtime_tls_nonmutating_read_passed": true,
+    "auth_administration_performed": false
+  },
+  "android_emulator": {
+    "api": 36,
+    "source": "Actual product Home in the existing isolated QA host, normal ephemeral JWT verifier and guarded local PostgreSQL17",
+    "initial_fixture_credits_seeded": 50,
+    "first_feed": {
+      "before_credits": 50,
+      "after_credits": 30,
+      "before_health": 50,
+      "after_health": 70
+    },
+    "native_return_home": {
+      "earned": 5,
+      "after_credits": 35,
+      "pending_business_events": 0,
+      "next_sequence": 2,
+      "discarded": 0,
+      "diagnostic_quit_retained": true
+    },
+    "uncertain_feed": {
+      "response_intentionally_lost_after_commit": true,
+      "reconciled_using_get_only": true,
+      "final_credits": 15,
+      "final_health": 90,
+      "final_revision": 5,
+      "artwork": "happy",
+      "another_feed_disabled": true
+    },
+    "streak": "unavailable - no fabricated full-day coverage",
+    "synthetic_target_only": true,
+    "talkback_run": false,
+    "force_stop_requires_service_reenable": true
+  },
+  "policy_corrections": [
+    "Only a first EXTRA session beyond the per-app daily limit breaks the streak; preserve the original approved rule.",
+    "Feed compares the locked wallet revision, including a race with its first credit; concurrency tests use two distinct PostgreSQL backend PIDs."
+  ],
+  "restoration": {
+    "native_file_contents_and_modes_restored": true,
+    "accessibility_settings_restored": true,
+    "owned_reverse_ports_removed": true,
+    "sdk_credentials_excluded": true,
+    "owned_metro_api_fixture_stopped": true,
+    "disposable_users_manifest_cleaned": true,
+    "owned_emulator_stopped": true,
+    "disposable_database_stopped_volume_retained": true
+  },
+  "remaining_separate_gates": [
+    "Anisha managed Auth/onboarding integration and account journeys",
+    "Anisha iOS bridge/device acceptance",
+    "Signed/store and wider-device acceptance",
+    "Further TalkBack work user-deferred",
+    "Real-world full-day/seven-day soak; deterministic coverage boundaries are tested"
+  ],
+  "next": "RN09-D02 usage and saved-time measurements; not implemented by this feature",
+  "credentials_or_account_ids_in_artifact": false
+}

@@ -36,7 +36,9 @@ internal object RewardChecks {
       check(e.needed(again, app, now + 1000, 2000, 1).isEmpty())
       check(again.rewards.events.size == 1 && again.sessions.single().id == r.sessions.single().id)
       val final = e.allow(owner, 1, app, now + 60000, 61000, 1)
-      check(final.rewards.events.last().exhausted == true && final.rewards.exhausted)
+      check(final.rewards.events.last().exhausted == false && !final.rewards.exhausted)
+      val extra = e.allow(owner, 1, app, now + 120000, 121000, 1)
+      check(extra.rewards.events.last().exhausted == true && extra.rewards.exhausted)
     }
     case {
       val (_, e) = engine(); val r = e.allow(owner, 1, app, now, 1000, 1)

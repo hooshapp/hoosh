@@ -117,24 +117,35 @@ def test_server_clock_decay_is_lazy_and_feed_preserves_fractional_day(resource, 
         assert view(s, later + timedelta(days=100)).health == 0
 
 
-def test_competing_feed_commands_cannot_double_spend_revision(resource, profile_accounts):
+def test_competing_feed_commands_cannot_double_spend_revision(
+    resource, profile_accounts, db_settings
+):
     a = profile_accounts[0]
     fund(resource, a)
     with resource.transaction(a) as s:
         rev = view(s, NOW).revision
+    from app.db.engine import Database
+
+    concurrent = Database(db_settings.model_copy(update={"db_pool_size": 2}))
     start = Barrier(2)
+    pids = set()
 
     def run():
-        start.wait(timeout=5)
         try:
-            with resource.transaction(a) as s:
+            with concurrent.transaction(a) as s:
+                pids.add(s.scalar(text("SELECT pg_backend_pid()")))
+                start.wait(timeout=5)
                 feed(s, uuid4(), FeedPut(expected_revision=rev), NOW)
             return "ok"
         except ApiError:
             return "conflict"
 
-    with ThreadPoolExecutor(2) as pool:
-        assert sorted(pool.map(lambda _: run(), range(2))) == ["conflict", "ok"]
+    try:
+        with ThreadPoolExecutor(2) as pool:
+            assert sorted(pool.map(lambda _: run(), range(2))) == ["conflict", "ok"]
+        assert len(pids) == 2
+    finally:
+        concurrent.close()
     with resource.transaction(a) as s:
         assert view(s, NOW).balance == 30
 
@@ -364,3 +375,56 @@ def test_previous_head_backfills_completion_without_touching_existing_rows(
                 == expected
             )
         assert run(connection, "check")["revision"] == HEAD
+
+
+def test_absent_wallet_feed_cannot_spend_a_concurrent_first_credit(
+    resource, profile_accounts, db_settings
+):
+    from threading import Event, local
+
+    from sqlalchemy import event
+
+    from app.db.engine import Database
+
+    owner = profile_accounts[0]
+    concurrent = Database(db_settings.model_copy(update={"db_pool_size": 2}))
+    created, release = Event(), Event()
+    actor = local()
+
+    def intercept(connection, cursor, statement, parameters, context, executemany):
+        if getattr(actor, "name", None) == "feed" and statement.startswith(
+            "INSERT INTO public.reward_wallets"
+        ):
+            release.set()
+
+    event.listen(concurrent.engine, "before_cursor_execute", intercept)
+
+    def earn():
+        with concurrent.transaction(owner) as s:
+            quest_credit(s, uuid4(), 1, NOW.date(), NOW)
+            created.set()
+            assert release.wait(timeout=5)
+
+    def spend():
+        actor.name = "feed"
+        assert created.wait(timeout=5)
+        try:
+            with pytest.raises(ApiError):
+                with concurrent.transaction(owner) as s:
+                    feed(s, uuid4(), FeedPut(expected_revision=0), NOW)
+        finally:
+            release.set()
+
+    try:
+        with ThreadPoolExecutor(2) as pool:
+            first = pool.submit(earn)
+            second = pool.submit(spend)
+            first.result(timeout=10)
+            second.result(timeout=10)
+    finally:
+        release.set()
+        event.remove(concurrent.engine, "before_cursor_execute", intercept)
+        concurrent.close()
+    with resource.transaction(owner) as s:
+        assert view(s, NOW).balance == 50
+        assert len(s.scalars(select(RewardEntry)).all()) == 1

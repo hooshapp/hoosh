@@ -1,5 +1,16 @@
 # Plan 03 — FastAPI Identity and Profile Foundation
 
+**RN09-D01 rewards implementation (2026-11-13):** shared account wallet,
+Dino health/original artwork, atomic Feed/receipt recovery, quest50 ledger and
+Android business outbox/native quit/coverage producers are implemented. Development
+is verified at0005, preserving existing product rows. Read the latest
+[Plan04 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md)
+and [reward policy](../architecture/home-rewards.md) for evidence/defaults.
+The original first-extra-session streak rule is preserved; using the last permitted
+session alone does not break it. RN09-D02 usage/savings remains next. Managed Auth,
+Anisha's iOS, signed/store acceptance and further TalkBack work stay separate.
+
+
 **Status:** API-01–09 are implemented: strict trust/errors, JWT/JWKS, database-independent identity, generated contracts and bounded lazy PostgreSQL units of work. API-06 passed 337 deterministic tests, 24 real PostgreSQL checks and a read-only hosted runtime/TLS smoke check. API-07 added the model, single Alembic history and profile constraints/grants/RLS, with 344 deterministic and 66 real DB tests plus hosted upgrade/check. API-08 now adds nonmutating own-profile GET and generated shapes (374 deterministic / 75 real DB tests). API-09 now adds strict bounded PATCH, canonical validation, atomic insert/CAS and own conflicts (453 deterministic / 96 real DB checks). API-10 operational diagnostics/tooling and independent checks are now implemented; managed-account HTTP identity/profile/restart checks now pass; actual browser protocol now passes; authenticated application M1/M2 and cascade/native-device acceptance remain pending.\
 **Latest checkpoint (2026-11-07):** Independent backend work and hosted settings migration/security acceptance are complete: development head `20261102_0002`, existing profiles unchanged. Settings operator read/write checks and actual local HTTP restart pass; 601 deterministic / 199 real PostgreSQL checks. Saved A/B tokens expired and user deferred live-account checks. Full API-10/Plan 03 remains OPEN for managed settings, joint Auth/root/native/device and coordinated deferred deletion acceptance. See [latest evidence](../core_plan_implementation_notes/artifacts/api-10/hosted-settings-acceptance.json) and notes.
 

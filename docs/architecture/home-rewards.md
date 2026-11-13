@@ -28,8 +28,8 @@ TalkBack work, managed-account journeys and signed/store acceptance stay separat
   going, disabled protection and timer expiry alone award nothing. The nudge is
   once per session; Keep going preserves its original expiry. Return home at
   the nudge ends that app's session, retaining the consumed session count.
-- Starting the final permitted per-app session exhausts that day and breaks the
-  streak. A completed covered local day without exhaustion increments it.
+- Starting the first extra session beyond the permitted per-app daily count
+  breaks the streak; using the final permitted session alone does not. A completed covered local day without exhaustion increments it.
   Missing coverage freezes the stored count and displays unavailable until new
   valid coverage; it is neither a fabricated successful day nor automatic reset.
   Seven dots require seven actual covered healthy day receipts, not days>=7.
@@ -105,3 +105,8 @@ Native AtomicFile format4 accepts older formats1–3, preserving policies/allowa
 old records begin with an empty reward stream and unknown coverage. Owner archives
 retain their own outbox, never another account's evidence, and never resume rules
 on read/sign-in. Standard native erasure deletes the corresponding owner archive.
+
+The existing256KiB native AtomicFile ceiling remains. Storage/size failures use
+the existing reported fail-open handling; they never become credits, fabricated
+coverage or silently accepted new rules. Network/reward sync is not a prerequisite
+for native protection, and diagnostics cannot acknowledge the business outbox.
