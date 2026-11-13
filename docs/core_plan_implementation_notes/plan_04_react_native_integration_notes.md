@@ -5858,3 +5858,40 @@ Compose stack stopped, volume retained. No push/merge/deployment or hosted chang
 existing SDK/root producer and supplies managed-account/iOS builds for coordinated
 acceptance. Signed Android/store and broader device matrix remain separate. No
 additional UI/native implementation is invented solely to expand this test slice.
+
+
+### RN10-D01 — User-directed TalkBack deferral and remaining delivery order
+
+- **Owner/date:** Ishmum,2026-11-12. Documentation only, parent `a04d5da`; commit Pending.
+- **Instruction:** skip further TalkBack-specific implementation/testing/polish for
+  now; revisit in a separate later pass. Retain existing support/evidence and keep
+  unperformed work deferred. No runtime removal, fabricated acceptance, new part
+  IDs, Auth takeover, push or deployment. Other functional/layout/recovery checks
+  and Anisha's ownership are unchanged.
+- **Plan03 boundary:** API-01–12 implementation is done. API-10 still holds current
+  managed A/B settings/restart acceptance, joint app/Auth/profile/settings/native
+  journeys and separately approved disposable-C managed deletion/cascade. Earlier
+  HTTP checks/CI remain historical passed evidence; latest branch publication is
+  separate. Auth/tokens/C-deletion remain deferred until explicitly resumed.
+- **Recommended delivery sequence:** publish/check current branch if requested;
+  build account-attributed durable native event ingestion/deduplication first,
+  then account credit balance/native quit rewards/Dino Feed/streak consumers
+  (RN08-D05/RN09-D01); measured usage/baselines and real History/Home insights
+  (RN09-D02/RN09C-D01–D02); curated suggestion Skip/Accept/persistence with optional
+  failure-safe model generation (RN09-D03); joint production Auth/root/shared
+  consumers/native binding and Anisha's iOS (RN-05/06/07, RN08, RN09-D04/D05,
+  RN09B-D02, RN09D-D01, RN10-D03/D04); signed ordinary lifecycle acceptance and RN-11/API-10
+  handoff. These backend feature producers support Plan04; they are not unfinished
+  API-01–12 foundation commits. Calendar/multi-device and unresolved demographic
+  collection remain their explicit scope/PM gates, not silently added fast-ship work.
+- **Files:** `docs/Context (AGENT)/AGENT_START_HERE.md`: lines7–14. Make the ongoing
+  TalkBack preference visible to every agent before task selection.
+- **Files:** `docs/Context (AGENT)/PM_QUESTIONS.md`: lines3–8. Record delivery authority
+  as Ishmum's instruction, not a new PM answer; preserve historical decisions.
+- **Files:** `docs/core_plan/04_react_native_integration.md`: lines1026–1031,1061.
+  Keep RN10-D01 stable, user-defer further TalkBack and preserve existing evidence
+  and separate platform gates.
+- **Files:** this notes file, lines5863–5897. Record instruction, sequencing,
+  cross-plan boundaries, changed files and honest remaining/deferred acceptance.
+- **Validation:** documentation diff/line review and `git diff --check`; no runtime
+  changes, so no repeated app/backend/device tests. No phone settings were changed.

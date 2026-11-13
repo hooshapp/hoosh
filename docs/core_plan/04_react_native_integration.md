@@ -1023,6 +1023,12 @@ live features, with these subparts individually recorded in the existing notes.
 
 ### RN-10 — Accessibility, responsive layout, and lifecycle completion
 
+**Delivery update (Ishmum,2026-11-12):** further TalkBack-specific implementation,
+speech/traversal acceptance and polish are user-deferred to a separate later pass.
+Preserve existing support/evidence. This pending slice does not block the next
+independent product/backend increments; do not mark it passed or remove ordinary
+functional/navigation/recovery checks. Anisha's iOS/VoiceOver ownership is unchanged.
+
 **Owner:** Ishmum; Anisha checks auth/onboarding regressions and iOS behavior.\
 **Dependencies:** Implemented earlier parts and a testable native build for device assertions.\
 **Requirements:** NFR-008/009/011; AC-12.
@@ -1052,7 +1058,7 @@ records the latest actual development-build scope without closing the parent par
 
 | Ref | Remaining acceptance | Owner / required evidence |
 |---|---|---|
-| RN10-D01 | Remaining VoiceOver/TalkBack traversal, announcements and focus | RN-10d verifies Android selected-tab/control/checkbox speech and modal focus/return. Full manual traversal/async speech, signed release, other devices and Anisha’s VoiceOver remain. |
+| RN10-D01 | Remaining VoiceOver/TalkBack traversal, announcements and focus | Further TalkBack work is user-deferred2026-11-12; retain existing RN-10d/D04b evidence. Anisha's VoiceOver and other platform gates remain separate; deferred speech work is not marked complete. |
 | RN10-D02 | Remaining platform/device font scale, keyboard, safe areas, focus scrolling and SVG acceptance | RN-10c/d record Pixel 8 Pro Expo Go/debug host at 1.15/2.0, software IME, measured focus viewport/footer and detail navigation. Physical keyboard, iOS, other devices and signed release remain. |
 | RN10-D03 | Real Auth/account/profile lifecycle and root integration | Anisha + Ishmum; live RN-05/06/07 round trips and account transitions. |
 | RN10-D04 | Native authorization/status foreground reconciliation | RN-08d accepts Android read/usage-permission/foreground scope (`cadc91d`); enforcement, other devices, iOS and release integration remain separate. |

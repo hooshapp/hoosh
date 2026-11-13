@@ -4,6 +4,14 @@
 **Read in order:** `PRD.md` → `TSD.md` → current Figma design → existing source repository.  
 **Design:** https://www.figma.com/design/ukmD2ZidJ9UR2XxUkvdPoJ/App-UI?node-id=0-1
 
+**Delivery preference — Ishmum,2026-11-12:** defer further TalkBack-specific
+implementation, traversal/speech testing and polish to a separate later pass.
+Do not schedule more TalkBack sessions as a prerequisite for the next app/backend
+feature work unless Ishmum explicitly resumes them. Preserve implemented behaviour
+and existing evidence; deferred is not completed. Functional controls, navigation,
+ordinary layout and recovery still need relevant checks. This does not change
+Anisha's ownership or silently defer her other platform work.
+
 **Latest Android quest acceptance (RN09B-D04b, 2026-11-12):** latest APK accepted
 for the bounded independent Pixel/API36 quest journey: overlap, active update,
 single cancellation, owner-confirmed TalkBack labels/action/Stop focus, font2.0,

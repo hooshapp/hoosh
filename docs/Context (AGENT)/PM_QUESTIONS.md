@@ -1,5 +1,11 @@
 # Disconnect — PM Questions and Answer Log
 
+**Delivery preference (Ishmum,2026-11-12; not a PM answer):** further TalkBack-only
+implementation/testing/polish is deferred to a separate later pass to prioritize
+shipping. Retain current support and accepted evidence; don't make another
+TalkBack session a prerequisite for independent feature/backend work. Existing
+part IDs remain; defer rather than mark unperformed acceptance complete.
+
 **Created:** 2026-10-28  
 **Implementation defaults (2026-11-10):** Ishmum authorized the defaults appended under Q03/Q04/Q06–Q09/Q14; see [decision record](../architecture/android-intervention-defaults.md). They are implementation authority, not PM-supplied answers.
 
