@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Debug/development-server traffic only; release uses the main loopback-only policy. -->
+<network-security-config>
+  <base-config cleartextTrafficPermitted="true" />
+</network-security-config>

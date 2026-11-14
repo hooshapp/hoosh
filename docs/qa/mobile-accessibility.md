@@ -1,5 +1,12 @@
 # Mobile accessibility and lifecycle evidence
 
+**Standalone update,2026-11-14:** internal signed R8 app now passes normal account-gate
+cold/background/offline startup without Metro and six optimized native checks on
+owned Android API36 emulator. See [standalone runbook](android-standalone.md) and
+latest Plan04 notes. Further TalkBack is still user-deferred; account/iOS/store/
+wider-device/true memory-pressure and protection lifecycle gates remain open.
+
+
 **Date:** 2026-10-30. **Owner:** Ishmum; Anisha owns real Auth/iOS and joint
 device validation. **Part:** RN-10. **Base:** RN-09a `ff75039`.
 

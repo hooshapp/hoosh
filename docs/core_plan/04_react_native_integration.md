@@ -1,5 +1,19 @@
 # 04 — React Native Integration and Shared Frontend Plan
 
+**Standalone internal Android (2026-11-14; RN-10 / RN08-D06):** real R8 release
+now has a reproducible internally signed ARM64 APK with embedded Hermes/assets,
+configuration guards and native packaging checks. Owned API36 emulator passes
+six optimized native cases plus normal account-gate cold/background/offline startup
+with no Metro or reverse ports. Main/release allows only loopback HTTP; debug LAN
+policy is preserved. Phone/credentials/hosted accounts unchanged; emulator/network
+cleanup verified. Read [runbook](../qa/android-standalone.md) and latest
+[Plan04 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md).
+This is local debug-certificate internal distribution, not store signing. Accounts,
+Anisha's Auth/iOS, full protection/signed/wider-device/memory-pressure and further
+TalkBack gates remain open. No full parent completion, push or deployment.
+Older checkpoints below are historical for this new packaging scope.
+
+
 **Normal app integration (2026-11-14; RN09-D04/D05, RN09D-D02):** normal SDK/account
 root now shares one verified-owner weekly controller across Home, Settings and
 editors. Home links its installed native status to Settings; Settings adds real
@@ -605,7 +619,7 @@ full RN-08/Plan 04 remain open. Earlier no-recurrence checkpoints are historical
 | RN08-D03 | Supply actual permission/recovery/selection/setup handlers and complete async busy/error flows | Native owners' supported platform flows. Presentation callbacks/preview notices do not prompt or grant permission, and a read refresh cannot reinitialize an absent adapter. |
 | RN08-D04 | Confirm real installation/revision reconciliation and approved overlapping restriction behavior | Debug native coordinator/weekly compiler and shared Home/Settings explicit Apply/Update/Resume/Stop readback are implemented. Production binding and broader acceptance remain open; UI/API success is not installation evidence. |
 | RN08-D05 | Decide and implement account/sign-out ownership, event attribution and any restriction transfer/cleanup | PM/native migration protocol. This module does not clear, reassign or drain native rules/events on Auth changes or unmount. |
-| RN08-D06 | Execute signed-device revocation/install-failure/foreground/offline/host-termination and accessibility checks | Platform owners' reproducible device evidence. Browser typography/layout and JS compilation do not establish OS protection or Android/iOS parity. |
+| RN08-D06 | Execute signed-device revocation/install-failure/foreground/offline/host-termination and accessibility checks | Internal R8 standalone APK/native registration and account-gate cold/background/offline startup accepted on owned Android API36 emulator; see standalone runbook. Managed-account, actual standalone protection lifecycle/revocation, wider/store/iOS and further TalkBack matrices remain open. |
 
 **Owner:** Ishmum for presentation; native owners supply/validate their adapters.\
 **Dependencies:** Native read contract reviewed in Plan 00; source audit/feasibility and native implementation for live integration. Pure status mappers/specimens can proceed earlier.\
@@ -1133,7 +1147,7 @@ records the latest actual development-build scope without closing the parent par
 | RN10-D03 | Real Auth/account/profile lifecycle and root integration | Anisha + Ishmum; live RN-05/06/07 round trips and account transitions. |
 | RN10-D04 | Native authorization/status foreground reconciliation | RN-08d accepts Android read/usage-permission/foreground scope (`cadc91d`); enforcement, other devices, iOS and release integration remain separate. |
 | RN10-D05 | Native accessibility of implemented Quests/History/Settings and detail/editor composition | Ishmum; RN-10c/d record actual Android tabs/details/editors, selected controls, dirty Back/modal focus, large text and bounded sample error/busy states. Full state/speech matrices and other platforms/builds remain. |
-| RN10-D06 | Cold start, memory pressure, background/termination/offline restoration and responsiveness | RN-10d verifies local draft background return, injected RUNNING_LOW, radio off/on and safe own-package cold start. True OS memory-pressure kill, authenticated offline/process restoration and release integration remain; no SLA. |
+| RN10-D06 | Cold start, memory pressure, background/termination/offline restoration and responsiveness | Internal R8 standalone actual normal account-gate cold/background/offline startup now accepted without Metro; RN-10d prior draft/trim/radio evidence retained. True memory-pressure kill, authenticated state restoration, wider/store/platform and protection lifecycle acceptance remain; no SLA. |
 
 ### RN-11 — Profile milestone and platform handoff evidence
 

@@ -4,9 +4,9 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN09-D04/D05 / RN09D-D02 normal account/root/native weekly integration implemented; bounded normal-root and Android native acceptance passed. Existing SDK and verified-owner account boundary reused, one shared weekly controller, normal Home → Settings, saved draft Preview/Apply/Resume/Stop and explicit claim/recovery.553portable/803component(+2skips)/682API/117JVM/146owned-emulator; default-SDK37 debug/test APKs, release Kotlin/manifest and normal web/Android exports pass. Managed-account phone, Anisha's Auth/onboarding/iOS, signed/store/wider-device and further TalkBack remain separate. No full Plan03/04 completion.
+**Current part:** RN-10 / RN08-D06 standalone internal Android packaging and bounded acceptance complete. Real R8 release, embedded Hermes/assets, separately debug-certificate-signed ARM64 APK; six public-config tests and six optimized native cases pass. Normal account-gate cold/background/offline startup accepted without Metro/reverse ports on owned API36 emulator. Full553portable/803component(+2skips)/682API passed. Phone/credentials/hosted services unchanged, emulator/network cleanup verified. Internal distribution only; signed-in account journeys, Anisha's Auth/iOS, store/wider-device/protection lifecycle/true memory-pressure and further TalkBack remain open. No full Plan03/04 completion.
 
-**Implementation branch:** `task/react-native/production-app-integration`; parent `6c1468f`. Current commit resolves by subject `feat(mobile): connect normal account app to weekly protection`. Recommendation backend/shared were `808ba94`/`6c1468f`. Local commits only; no push/main merge/deployment. Older checkpoints below are historical.
+**Implementation branch:** `task/react-native/android-standalone`; parent `a3b4393`. Commit resolves by subject `feat(android): build and verify an internal standalone app`. Normal app integration is `a3b4393`; recommendations were `808ba94`/`6c1468f`. Local commits only; no push/main merge/deployment. Older checkpoints below are historical.
 
 **Commit reference:** RN-01 `2f88102`; RN-02 `2d5c0d1`; RN-03 `0741758`; RN-04 `610f570`; RN-05 preparation `0c6e4db`; RN-07 UI `5790302`; RN-08 preparation `71da2d5`; RN-09a `ff75039`. RN-10 is `9b5fbd0`.
 
@@ -15,6 +15,9 @@
 **Shared workflow:** [Implementation knowledge base](README.md).
 
 ## Resume here
+
+- **Standalone internal APK accepted (2026-11-14; RN-10 / RN08-D06):** `npm run mobile:android:standalone` builds actual optimized release with embedded Hermes/assets and signs an internal copy using the existing local debug certificate. ARM64/min24/target36/compile37,3,426,504byte bundle,6fonts; APK/mapping hashes in [evidence](artifacts/android-standalone/evidence.json). Six config and six optimized native checks pass; normal gate cold/background/offline starts with no Metro/reverse ports. Full553/803(+2skips)/682, types/lint/contracts/assets pass. Emulator network restored and stopped, temporary UI capture/XML removed; phone/credentials/hosted accounts untouched. Read [runbook](../qa/android-standalone.md) and final per-file ledger. APK/report/mapping/keys stay ignored under build/local paths. Current actual build provenance records base HEAD plus dirty-worktree flag, not a fictitious post-commit build. Store signing, managed account and wider/platform/protection lifecycle/true memory-pressure/TalkBack gates stay open; no full parents/push/deployment.
+
 
 - **Normal-root integration implemented (2026-11-14; RN09-D04/D05 / RN09D-D02):** existing real SDK/account/native owner now shares one weekly controller above normal routes. Settings adds native selection summary, confirmed saved-draft Preview/Apply/Resume/Stop and explicit claim; Home keeps global installed status with Manage link. Fixed save-then-Apply batched-cache timing and quest-only compatibility. Independent Stop survives API offline and selection-summary failure; no automatic owner claim/install/resume. Fourteen actual-root cases per renderer,553portable/803component(+2skips)/682API,117JVM,146owned-emulator native pass. Default37 debug/test APKs/release Kotlin/manifest and normal web/Android exports pass. Phone/hosted Auth/DB untouched; emulator stopped. Read [runbook](../qa/normal-account-app.md), [evidence](artifacts/normal-account-app/evidence.json) and final every-file ledger. Next coordinated managed-account Android acceptance/Anisha review, then signed/wider-device and iOS; further TalkBack stays deferred. Full parents remain open; no push/merge.
 
@@ -6790,3 +6793,185 @@ Plan04 are not relabeled complete. No push, merge or deployment.
 | `docs/qa/android-weekly-schedule.md`: lines 8 | Replace the old blanket normal-root deferral with a dated link to current normal-account integration, preserving historical real-device native evidence and separate managed/iOS gates. |
 | `docs/qa/normal-account-app.md`: lines 1–118 | Document product root/ownership, actual user flow, Save/Preview/Apply/Stop/claim semantics, stale-cache fix, independent Stop, repeatable commands and exact current evidence/limits. No new auth/token or native speech acceptance implied. |
 | This notes file: lines 7,9,19–21,6620–6792 | Update current part/branch/resume and record start/progress/final state, decisions, corrected stale-cache/native/toolchain/test issues, all actual checks/cleanup and precise remaining coordinated gates. This every-file ledger travels in the same commit; Pending hash resolves by unique subject. |
+
+
+### RN-10 / RN08-D06 — Standalone internal Android release packaging
+
+Owner Ishmum,2026-11-14. Branch `task/react-native/android-standalone`, base
+`a3b4393`. Commit Pending; implementation started.
+
+User requested an installable app with embedded JS/assets, startup/configuration/
+native availability and release packaging checks, without Metro. Manual account
+checks remain explicitly pending; Anisha retains Auth/onboarding/iOS. Further
+TalkBack remains deferred. Connected phone will not be changed; use owned emulator.
+
+Initial audit: existing release uses Expo export:embed/Hermes, R8 and unset release
+signing; compile SDK37/target SDK36. Plan is to preserve that release path,
+validate only the existing public development configuration, build unsigned release,
+then sign an output copy with the existing local Android debug certificate for
+internal installation. Keep keys/APKs/reports ignored, preserve official/store
+signing as unset, and add a small reproducible command and artifact checks.
+No new native app flavour, production auth bypass, service grant or backend write.
+
+Acceptance pending: actual clean release build, APK static/signature checks and
+owned-emulator native smoke/normal account-gate startup with no Metro or reverse
+port. Record exact outcomes/file lines and limitations below before completion.
+
+#### Standalone progress checkpoint
+
+- Existing optimized release/Expo export:embed path builds with default SDK37;
+  minification is enabled. New wrapper validates public origins/key role, disables
+  implicit dotenv, strips other EXPO_PUBLIC fields, always rebundles, aligns and
+  signs only a separate internal output with the existing local debug key. Store
+  signing remains unset. Six config/environment negative checks pass.
+- Development native network policy allows localhost/127.0.0.1 HTTP only; remote
+  cleartext stays denied. Needed for the existing local development API without
+  broad release cleartext or a new public deployment. Actual native check pending.
+- New test-APK-only standalone probe examines exact R8-mapped module registry/
+  exported product functions and absence of debug-only intervention APIs, embedded
+  Hermes/fonts, non-debuggable flags, protection permissions and network policy.
+  It performs no sign-in/native configuration write/permission grant.
+- Preliminary release builds passed, but binary secret-marker inspection gave a
+  false positive: Hermes places adjacent string-table values after the intentional
+  sb_secret_ rejection literal. No secret value was printed. Keep actual role/key
+  checks at validated public inputs and artifact marker checks for developer-only
+  routes; do not claim a raw binary regex is a reliable credential scanner.
+  Final accepted build/packaging, runtime startup and exact file ledger pending.
+- First test compile caught nullable Android PackageInfo arrays; corrected safe
+  empty handling. No failed compile/probe is recorded as passed. Owned emulator
+  booted; physical phone remains untouched, no Metro started.
+
+#### Accepted standalone runtime checkpoint
+
+- Optimized release APK builds and signs an internal copy; actual bytecode3,426,504
+  bytes,6packaged fonts,arm64,min24,target36,compile37 and16KiB ZIP alignment.
+  Final script/report provenance and native-smoke wrapper are being finalized.
+- Read-only six-case smoke passed against actual non-debuggable R8 release on owned
+  API36 emulator. Native provider/HooshUsage/SecureStore/font classes are resolved
+  from that exact R8 mapping; product methods exist, debug-only methods do not.
+- Initial Kotlin debug instrumentation crashed because its Kotlin symbols were
+  renamed in the target release. No app startup failure was inferred. Replaced
+  with test-APK-only Java runner, selected through hooshStandaloneSmoke=true;
+  default runner/production keep rules are unchanged. An attempted extra manifest
+  instrumentation entry was ignored by AGP; use the supported runner selector.
+- Normal installed MainActivity renders Welcome back/empty credential fields with
+  embedded fonts and no Metro/reverse ports. Cold launch, background return and
+  offline cold launch (airplane on/Wi-Fi off) pass. Network baseline restored and
+  verified; no credentials entered/sign-in pressed. Phone untouched.
+- Added debug/debugOptimized-only resource overrides to preserve existing LAN
+  Metro cleartext behavior; main/release remains loopback-only.
+- Full npm check passed553portable/803component(+2skips)/682API plus6new config
+  cases, types/lint/assets/contracts. Final APK/report/native wrapper verification,
+  emulator shutdown and complete file ledger remain before commit.
+
+#### Final standalone acceptance and handoff
+
+**Commit:** Pending; `feat(android): build and verify an internal standalone app`.
+All changes below travel with this commit. The start/progress checkpoints above
+are historical within this implementation; this final record is authoritative.
+
+**What shipped in this slice:** one reproducible root command for the real normal
+release app, one explicit-owned-emulator smoke command, six focused public-config
+checks in root CI, internal APK/report output and a small read-only Java test runner.
+Existing native release build, R8, Hermes, package identity, default instrumentation
+and unset official release signing are retained. No new app flavour, dev-account
+route, fake Auth/native success, dependency, session manager, permission grant,
+provider/admin action or backend schema.
+
+**Artifact:** ignored `apps/mobile/android/app/build/outputs/standalone/` contains
+`disconnect-standalone.apk` and `build-report.json`. Exact SHA256
+`e045befc5b5b469de7dc764ef0caee2ae1ef52fbace7ff3f2388a3c14885f22c`,
+R8 mapping hash is recorded in the sanitized artifact JSON. Non-debuggable actual
+release,arm64-v8a,minSDK24,targetSDK36,compileSDK37; embedded Hermes bytecode
+3,426,504bytes,sixfont files. Signature and16KiB native ZIP alignment verified;
+this is not an actual16KiB-kernel compatibility run. Existing local Android debug
+certificate signs only the aligned output copy. Raw unsigned release remains
+unsigned; official/store signing remains unset. No keys/APKs/mappings/public-key
+values or raw UI/device logs are committed. Source HEAD a3b4393 and dirty=true
+truthfully identify the pre-commit build; do not call that a clean post-commit build.
+
+**Configuration and scope:** require explicit API/Auth public origins and a
+publishable or legacy anon key. Reject user/service-role credentials, remote HTTP,
+userinfo/path/query/whitespace origins and malformed host/key inputs. Validation
+is not remote key verification. Strip unreviewed EXPO_PUBLIC values and disable
+implicit dotenv for bundling; force rebundle so cached Gradle outputs cannot use
+an earlier .env. Errors never echo submitted key/origin values. Main/release
+network policy permits loopback HTTP only; debug/debugOptimized overrides preserve
+prior LAN Metro behavior. Standalone removes Metro dependency, not API connectivity
+requirements. Ordinary signed-in features still need accounts and a reachable API.
+
+**Actual verification:**
+
+- Full `npm run check`:553portable,803component(+2historical skips),682API, six
+  new Node configuration tests, TypeScript/Ruff/lint/OpenAPI/types/assets pass.
+  Four pre-existing mobile warnings/zero errors. No DB/DDL change or PostgreSQL
+  rerun for this packaging slice. Later metadata guard/static inspector and current
+  six Node tests were rerun against the same accepted APK.
+- Current wrapper `mobile:android:standalone` completes real Expo release embed,
+  `assembleRelease`, R8/resource optimization, internal signing, alignment and APK
+  inspection. Runs use existing JDK17/SDK37/arm64/max4workers; no toolchain downgrade.
+- Current `mobile:android:standalone:smoke -- --emulator emulator-5556` passes
+  six native cases on the installed optimized signed release, result−1. Exact
+  APK/report/mapping hashes are checked before installation. Non-emulator target
+  guard was exercised and rejected before device access. Test APK uses separate
+  Java runner only when hooshStandaloneSmoke=true; ordinary runner remains default.
+- Native cases inspect non-debuggable/no-instrumentation app flags, actual
+  Hermes/font assets, loopback-only network policy, optimized HooshUsage/SecureStore/
+  font registry and HooshUsage definitions. Required product methods survive R8;
+  temporary-picker/finite-install/test-task/feedback debug methods are absent.
+  Protection service/bind permission/usage declaration exist, broad visibility/
+  overlay/storage permissions do not. No product native method is invoked to
+  claim an owner, install rules, inspect app inventory or grant permissions.
+- Actual MainActivity renders Account access/Welcome back and empty Email/Password
+  fields from embedded code/assets. Cold force-stop/relaunch, Home/background
+  return and a new airplane-on/Wi-Fi-off cold start all pass. No Metro process
+  or ADB reverse port; no credentials entered/Sign in pressed. Native6 checks
+  registration/definitions, not a signed-in native intervention journey.
+- Original owned-emulator airplane/Wi-Fi baseline restored/verified, temporary UI
+  XML and inspected raw screenshot removed, owned emulator stopped. Connected
+  user phone was never installed/tapped/captured/changed. TalkBack stayed off. No
+  API/Metro fixture/server/hosted Auth/account/DB administration was started.
+
+**Corrections, not fabricated passes:** binary literal scanning first mistook
+Hermes's adjacent string table following the sb_secret_ rejection constant for a
+secret. Input-role guards remain enforced; marker scanning now covers actual QA
+route strings, with no claim that raw binary text matching reliably scans secrets.
+The first Kotlin test runner crashed on release-renamed Kotlin classes; actual
+normal app startup still worked. Replaced it with plain Java/Android reflection
+against exact R8 mapping, without weakening production obfuscation/adding keep
+rules. AGP ignored an attempted second instrumentation declaration; explicit
+testInstrumentationRunner selector now uses supported generation. Nullable Android
+PackageInfo test arrays were corrected. All rejected attempts are separate from
+final successful artifact/native/UI observations.
+
+**Remaining:** official upload/release key and store identity/review, Anisha's
+Auth/onboarding/iOS, real managed account profile/settings/session/account-switch
+journeys, standalone protection timing/revocation/reboot matrices, additional
+devices/actual16KiB kernel/true memory-pressure and further user-deferred TalkBack.
+Do not mark RN-10, RN08-D06, API-10, RN-06/07/11 or either parent plan fully complete.
+Next independent work may target still-missing device/lifecycle cases; accounts
+remain required for complete normal signed-in acceptance. No push, merge or deploy.
+
+#### Every-file ledger — standalone internal Android commit
+
+| File and lines in this commit | Change and reason |
+|---|---|
+| `README.md`: lines 77–91 | Document the reproducible standalone command, ignored artifact path, embedded normal app and internal-versus-store/QA/account distinctions so both developers can find the new workflow. |
+| `apps/mobile/android/app/build.gradle`: lines 93–96 | Select the plain Java standalone runner only for hooshStandaloneSmoke=true test-APK builds. Ordinary UsageProbeInstrumentation remains the default; normal release remains unsigned and no product test route/keep rule is added. |
+| `apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/StandaloneSmokeInstrumentation.java`: lines 1–101 | Read-only Java/Android instrumentation against exact optimized app: six cases verify flags/no instrumentation, Hermes/fonts, loopback-only network policy, R8 Expo registry, supported native definitions/absent debug APIs and service/permission declarations. Class names supplied from the exact mapping; no account/native install/permission writes, Kotlin runtime dependency or private errors. |
+| `apps/mobile/android/app/src/debug/res/xml/hoosh_development_network_security.xml`: lines 1–5 | Override the main policy only in debug resources, preserving existing LAN Metro cleartext behavior. No global release cleartext or extra app permission. |
+| `apps/mobile/android/app/src/debugOptimized/res/xml/hoosh_development_network_security.xml`: lines 1–5 | Preserve the same prior development-server behavior in debugOptimized while leaving release on the main loopback-only policy. |
+| `apps/mobile/android/app/src/main/AndroidManifest.xml`: lines 14 | Reference the checked-in development network policy on the existing application. Preserve native identity, secure-store backup exclusions, service registration and unset store signing; release HTTP is limited to the two intentional local API hosts. |
+| `apps/mobile/android/app/src/main/res/xml/hoosh_development_network_security.xml`: lines 1–9 | Deny general cleartext and allow localhost/127.0.0.1 for the existing local development API. Android release smoke verifies real installed policy; remote Auth/API requires HTTPS. |
+| `docs/Context (AGENT)/AGENT_START_HERE.md`: lines 15–27 | Add current standalone packaging/runtime/check/cleanup checkpoint and explicit internal/account/iOS/store/TalkBack limits. Earlier root checkpoints remain historical, not repeated work. |
+| `docs/core_plan/04_react_native_integration.md`: lines 3–16, 622, 1150 | Record the bounded standalone milestone and original RN08-D06/RN10-D06 partial acceptance. Preserve original IDs, managed-account/store/wider/protection/true-memory-pressure gates and open parents. |
+| `docs/core_plan/README.md`: lines 3–16 | Expose current standalone build and measured acceptance in execution index, keeping normal account/platform scope and store signing separate. |
+| `docs/core_plan_implementation_notes/artifacts/android-standalone/README.md`: lines 1–16 | Explain sanitized evidence, exact artifact hashes and separate native/component/UI scopes. APKs/mappings/keys/config values/raw captures remain ignored; no account or phone acceptance implied. |
+| `docs/core_plan_implementation_notes/artifacts/android-standalone/evidence.json`: lines 1–92 | Record accepted APK/mapping hashes, real SDK/ABI/Hermes/font/signature/alignment values, source HEAD plus dirty flag,6config/6native/553portable/803component/682API checks, no-Metro cold/background/offline UI and restored/stopped emulator. Explicit false auth/phone/store/16KiB-runtime/full-protection claims. |
+| `docs/qa/android-standalone.md`: lines 1–122 | Provide build/config/environment/signing/artifact/run instructions, loopback-versus-Metro/API distinctions, exact emulator/R8 smoke command, actual startup/cleanup and unverified account/store/platform gates. Explain same development package identity and no automatic uninstall/data clear. |
+| `docs/qa/mobile-accessibility.md`: lines 3–9 | Cross-reference observed standalone account-gate lifecycle/native availability, retaining user TalkBack deferral and remaining real account/iOS/device/memory-pressure/protection acceptance. |
+| `package.json`: lines 24, 40–43 | Add standalone build/config and explicit-emulator smoke commands plus focused Node checks; include six config tests in the existing root check. No dependency/lockfile or new CI service required. |
+| `scripts/android-standalone-smoke.mjs`: lines 1–119 | Require an explicit running emulator and no reverse mappings; verify exact APK/report/R8 mapping hashes. Build test-only Java runner, install only on that emulator and pass mapped classes as argument arrays, then require all6actual native cases/result−1. Refuse phones before device access; no automatic reset/uninstall/account action or error payload output. |
+| `scripts/android-standalone.mjs`: lines 1–364 | Validate only reviewed public origin/key config without echoing secrets, strip other public env and disable implicit dotenv. Always release-rebundle; build existing R8 app; align/sign a separate internal copy with existing local debug key. Verify actual SDK/package/Hermes/fonts/native registration/signature/alignment and known QA markers, then atomically publish ignored APK/report with hashes and honest source dirty status. Store signing unchanged; no raw binary credential-scanner claim. |
+| `scripts/android-standalone.test.mjs`: lines 1–109 | Six meaningful Node cases cover safe HTTPS/loopback config, missing/remote-HTTP/credential/query/path origins, privileged/user key rejection, legacy anon shape, stripped public-env/dotenv controls and non-echoing error messages. Synthetic config only; no managed Auth request. |
+| This notes file: lines7,9,19–21,6798–6977 | Update current part/branch/resume, record start/progress/final implementation, actual package/native/UI checks and cleanup, corrected string-table/runner/nullability issues, exact local artifact provenance and every changed file/range. Internal milestone only; all managed/store/platform/parent limits retained. |

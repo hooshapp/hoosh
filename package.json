@@ -21,7 +21,7 @@
     "typecheck": "npm run typecheck --workspaces --if-present",
     "lint": "npm run lint --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
-    "check": "npm run typecheck && npm run lint && npm run mobile:check-assets && npm test && npm run api:lint && npm run api:test && npm run api:check-contracts",
+    "check": "npm run typecheck && npm run lint && npm run mobile:check-assets && npm run mobile:check-standalone && npm test && npm run api:lint && npm run api:test && npm run api:check-contracts",
     "mobile:ui": "npm run ui:preview --workspace @disconnect/mobile --",
     "mobile:ui:build": "npm run ui:build --workspace @disconnect/mobile --",
     "mobile:check-ui-isolation": "node scripts/check-ui-preview-isolation.mjs",
@@ -37,6 +37,9 @@
     "api:db:reset": "uv run --project services/api python scripts/db-test.py reset",
     "api:acceptance": "uv run --project services/api python scripts/api-acceptance.py",
     "api:acceptance:login": "uv run --project services/api python scripts/acceptance-login.py",
-    "api:db:migrate": "uv run --project services/api python scripts/migrate-db.py"
+    "api:db:migrate": "uv run --project services/api python scripts/migrate-db.py",
+    "mobile:android:standalone": "node scripts/android-standalone.mjs",
+    "mobile:check-standalone": "node --test scripts/android-standalone.test.mjs",
+    "mobile:android:standalone:smoke": "node scripts/android-standalone-smoke.mjs"
   }
 }

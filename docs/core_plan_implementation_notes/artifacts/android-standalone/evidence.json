@@ -1,0 +1,92 @@
+{
+  "date": "2026-11-14",
+  "owner": "Ishmum",
+  "branch": "task/react-native/android-standalone",
+  "base_commit": "a3b4393",
+  "commit_reference": "feat(android): build and verify an internal standalone app",
+  "parts": [
+    "RN-10",
+    "RN08-D06"
+  ],
+  "artifact": {
+    "built_at": "2026-11-14T23:30:54.186Z",
+    "distribution": "INTERNAL ONLY; local Android debug certificate; not store signing",
+    "package_id": "com.hoosh.disconnect.dev",
+    "min_sdk": 24,
+    "target_sdk": 36,
+    "debuggable": false,
+    "hermes_bytecode": true,
+    "embedded_bundle_bytes": 3426504,
+    "packaged_font_count": 6,
+    "native_abis": [
+      "arm64-v8a"
+    ],
+    "native_protection_manifest": true,
+    "signature_verified": true,
+    "alignment_16k_verified": true,
+    "mapping_sha256": "a57e5bf1f70cd11b270522ffd37a50106657e71c9f0fb115b6c2c5e7ceee7e07",
+    "apk_sha256": "e045befc5b5b469de7dc764ef0caee2ae1ef52fbace7ff3f2388a3c14885f22c",
+    "api_transport": "internal_loopback_http",
+    "managed_account_acceptance": "pending",
+    "native_runtime_acceptance": "not established by packaging",
+    "source_commit": "a3b4393a43b480069327bdb0b23406d83780334d",
+    "source_worktree_dirty": true
+  },
+  "checks": {
+    "configuration_tests": 6,
+    "portable": 553,
+    "component": 803,
+    "component_existing_skips": 2,
+    "deterministic_api": 682,
+    "original_svg_assets": 71,
+    "existing_mobile_lint_warnings": 4,
+    "lint_errors": 0,
+    "release_r8_assembly": true,
+    "separate_test_apk_compiled": true,
+    "optimized_release_native_checks": 6,
+    "instrumentation_result": -1,
+    "native_smoke_command_executed": true,
+    "invalid_phone_target_rejected_before_device_access": true,
+    "current_apk_inspector_executed": true
+  },
+  "runtime": {
+    "reverse_ports_absent": true,
+    "metro_server_started": false,
+    "native_smoke_cases": 6,
+    "phone_touched": false,
+    "manual_signin": false,
+    "cold_start": true,
+    "background_return": true,
+    "offline_cold_start": true,
+    "offline_airplane_enabled": true,
+    "offline_wifi_disabled": true,
+    "emulator_network_baseline_restored": true,
+    "emulator_api": 36,
+    "signin_heading_observed": true,
+    "email_and_password_empty": true,
+    "fonts_rendered": true,
+    "credential_fields_filled": false,
+    "signin_pressed": false,
+    "emulator_stopped": true,
+    "temporary_ui_xml_removed": true,
+    "temporary_screen_capture_not_committed": true
+  },
+  "scope": {
+    "normal_production_router": true,
+    "auth_bypass_added": false,
+    "production_keep_rules_added": false,
+    "native_claim_install_or_permission_grant": false,
+    "hosted_auth_or_database_operation": false,
+    "debug_lan_policy_preserved": true,
+    "official_store_signing_configured": false,
+    "physical_phone_used": false,
+    "talkback_enabled": false
+  },
+  "limits": [
+    "Internal debug-certificate distribution using existing development package, not Play/store identity or signing.",
+    "Native6 checks actual optimized registration/definitions, not every function invocation or installed protection lifecycle.",
+    "Startup observed only through normal signed-out gate; managed account/profile/settings/session journeys remain deferred.",
+    "Actual16KiB kernel runtime, true memory-pressure kill, wider devices, Anisha-owned iOS and further TalkBack remain open.",
+    "Local APK/report/mapping/signing keys remain ignored; source HEAD plus dirty flag describes pre-commit build provenance."
+  ]
+}

@@ -74,6 +74,21 @@ npm run mobile
 
 This starts Metro for an Expo development client. An actual device requires a matching native development build. The legacy iOS source is now present under `apps/mobile/ios/` from commit `fe8f262`; its identifiers, extension targets, App Groups and signing still need auditing before RN integration. A matching Expo native build has not been established by importing that source. Do not run `expo prebuild --clean` over that working project.
 
+### Build the standalone internal Android app
+
+```bash
+JAVA_HOME=/path/to/jdk17 ANDROID_HOME=/path/to/sdk npm run mobile:android:standalone
+```
+
+This builds the real normal app with embedded Hermes/assets and signs a separate
+internal APK with the existing local debug certificate; no Metro is required to
+open it. Public development configuration comes from ignored `apps/mobile/.env`.
+The output is `apps/mobile/android/app/build/outputs/standalone/disconnect-standalone.apk`.
+It uses the existing development package identity and is not Play/store signing.
+Signed-in journeys still require accounts and a reachable API. See the
+[standalone runbook](docs/qa/android-standalone.md) for checks, emulator smoke and
+configuration/signing boundaries. The following populated UI QA host is separate.
+
 ### Interact with populated UI on an Android phone
 
 ```bash

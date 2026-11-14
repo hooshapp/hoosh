@@ -1,5 +1,19 @@
 # Disconnect — Core Development Plans
 
+**Standalone internal Android (2026-11-14; RN-10 / RN08-D06):** real R8 release
+now has a reproducible internally signed ARM64 APK with embedded Hermes/assets,
+configuration guards and native packaging checks. Owned API36 emulator passes
+six optimized native cases plus normal account-gate cold/background/offline startup
+with no Metro or reverse ports. Main/release allows only loopback HTTP; debug LAN
+policy is preserved. Phone/credentials/hosted accounts unchanged; emulator/network
+cleanup verified. Read [runbook](../qa/android-standalone.md) and latest
+[Plan04 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md).
+This is local debug-certificate internal distribution, not store signing. Accounts,
+Anisha's Auth/iOS, full protection/signed/wider-device/memory-pressure and further
+TalkBack gates remain open. No full parent completion, push or deployment.
+Older checkpoints below are historical for this new packaging scope.
+
+
 **Normal app integration (2026-11-14; RN09-D04/D05, RN09D-D02):** normal SDK/account
 root now shares one verified-owner weekly controller across Home, Settings and
 editors. Home links its installed native status to Settings; Settings adds real
