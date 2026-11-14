@@ -4,31 +4,63 @@ import { InlineStatus } from '@/components/ui/inline-status';
 import { useAccountAction } from '@/features/account/use-account-action';
 import { useSettingsSummary } from '@/features/settings/use-settings-summary';
 import { useAccountData } from '@/infrastructure/query/account-data-provider';
-import { HomePreferences, type PreferencesNavigation } from './home-preferences';
+import {
+  HomePreferences,
+  type PreferencesNavigation,
+} from './home-preferences';
 import { HomeScreen } from './home-screen';
+import { useHistory } from '@/features/history/use-history';
+import { historyProjection } from '@/features/history/history-projection';
 import { useRewards } from '@/features/rewards/use-rewards';
 import { RewardsFeedback } from '@/features/rewards/rewards-feedback';
 import { unavailableHome, type HomeModel } from './home-model';
 
 export { UnavailableDeviceProtection } from '@/features/protection/device-protection';
 
-export function ConnectedHomeScreen({ onOpen }: { onOpen?: PreferencesNavigation }) {
+export function ConnectedHomeScreen({
+  onOpen,
+  onOpenHistory,
+}: {
+  onOpen?: PreferencesNavigation;
+  onOpenHistory?: () => void;
+}) {
   const rewards = useRewards();
+  const history = useHistory();
+  const weekly = historyProjection(
+    history.snapshot?.view,
+    history.snapshot?.matching ?? false,
+  ).weekly;
   const wallet = rewards.wallet;
-  const rewardModel: HomeModel = wallet ? {
-    ...unavailableHome,
-    credits: { state: 'ready', value: wallet.balance },
-    dino: {
-      state: 'ready',
-      value: { percent: wallet.health, artwork: wallet.artwork, feedCost: wallet.feed_cost },
-    },
-    streak: wallet.streak_days === null
-      ? { state: 'unavailable' }
-      : { state: 'ready', value: { days: wallet.streak_days, recentWeekComplete: wallet.recent_week_complete } },
-  } : unavailableHome;
+  const rewardModel: HomeModel = wallet
+    ? {
+        ...unavailableHome,
+        weekly,
+        credits: { state: 'ready', value: wallet.balance },
+        dino: {
+          state: 'ready',
+          value: {
+            percent: wallet.health,
+            artwork: wallet.artwork,
+            feedCost: wallet.feed_cost,
+          },
+        },
+        streak:
+          wallet.streak_days === null
+            ? { state: 'unavailable' }
+            : {
+                state: 'ready',
+                value: {
+                  days: wallet.streak_days,
+                  recentWeekComplete: wallet.recent_week_complete,
+                },
+              },
+      }
+    : { ...unavailableHome, weekly };
   const { query, summary, availability, online } = useSettingsSummary();
   const { controller } = useAccountData();
-  const recovery = useAccountAction(controller, () => controller.recoverSession());
+  const recovery = useAccountAction(controller, () =>
+    controller.recoverSession(),
+  );
   const paused = availability === 'api_paused' || availability === 'recovering';
   const notice = paused ? (
     <>
@@ -48,15 +80,22 @@ export function ConnectedHomeScreen({ onOpen }: { onOpen?: PreferencesNavigation
       />
     </>
   ) : !online ? (
-    <InlineStatus state="unavailable" message="Connect to verify your saved preferences." />
+    <InlineStatus
+      state="unavailable"
+      message="Connect to verify your saved preferences."
+    />
   ) : availability !== 'ready' ? (
-    <InlineStatus state="unavailable" message="Saved preferences are temporarily unavailable." />
+    <InlineStatus
+      state="unavailable"
+      message="Saved preferences are temporarily unavailable."
+    />
   ) : undefined;
   return (
     <HomeScreen
       model={rewardModel}
       onFeed={rewards.canFeed ? rewards.feed : undefined}
       feeding={rewards.feeding}
+      onOpenHistory={onOpenHistory}
       preferences={
         <>
           <RewardsFeedback rewards={rewards} />

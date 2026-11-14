@@ -1,7 +1,7 @@
 # Product decisions: explicit PM choices and remaining engineering/product gates.
 # Original recommendations below are historical, not the current policy.
-version: 5
-updated_at: "2026-11-11"
+version: 6
+updated_at: "2026-11-13"
 recorded_by: "Ishmum engineering reconciliation"
 source: "PM_QUESTIONS.md#original-pm-responses"
 adr: "../architecture/pm-decisions-2026-11-09.md"
@@ -112,7 +112,7 @@ decisions:
     accepted:
       - "Selected-app metrics, fixed starting baseline, equivalent period comparison and honest unavailable states."
     remaining:
-      - "Baseline duration/capture, coverage/normalization/selection changes, negative savings and native feasibility."
+      - "Review the implemented Android History defaults below; Anisha-owned iOS feasibility and wider/signed acceptance remain separate."
   - id: PD-12
     topic: gender_based_life_year_forecast
     status: partial
@@ -293,3 +293,19 @@ quest_controls_2026_11_11:
     - "Confirm local Stop before account update/deletion; show account-enabled/device-stopped recovery explicitly and never resume on read."
     - "Prune only expired native cancellation metadata; preserve future dates beyond preview."
   ownership: "Anisha retains Auth/signin/onboarding/iOS. Existing D02 foundation awaits her review; managed-account and signed/iOS acceptance stay pending."
+
+history_implementation_defaults_2026_11_13:
+  authority: "Ishmum requested full RN09-D02/RN09C-D01-D02 implementation; these are revisable engineering defaults, not new PM answers."
+  record: "../architecture/history-measurement.md"
+  refs: [PD-11, PD-23, PD-25]
+  decisions:
+    - "Explicit native collection consent; saved global selection; aggregate-only daily durations/date/count/coverage; no package identity or raw-event upload."
+    - "First seven consecutive reported closed local days freeze baseline; try retained previous seven, otherwise collect prospectively."
+    - "Later complete seven/28day windows, real day-length normalization, identical selection/zone/series; missing remains unknown."
+    - "Negative differences stay increased usage; zero baseline has no percentage; no causal or lifespan claim."
+    - "Explicit restart/CAS on selection/device/zone change; reads never initialize or replace a baseline."
+    - "Owner-checked local Stop works offline/revoked and clears local collection; existing server summaries remain until replacement/account deletion."
+    - "Synced explicit quit receipts deduplicate installation/encounter and retain initial/expired/mid-session counts including cooldown-no-credit quits."
+    - "Native bounded56day/32KiB aggregate cache; server56recent days plus frozen baseline until replacement/account deletion."
+  source: "Android retained selected-app foreground estimate, policy1; witnessed boundaries do not guarantee lossless OS telemetry."
+  retained_gates: [pm_review_of_defaults, ios, managed_auth_sdk_acceptance, prospective_soak, wider_signed_store_acceptance, further_talkback, PD-12_forecast]

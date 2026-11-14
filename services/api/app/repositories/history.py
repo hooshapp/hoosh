@@ -51,12 +51,17 @@ def turn_offs(session, owner, start, end, zone):
     start_at = datetime.combine(start, datetime.min.time(), zone)
     end_at = datetime.combine(end, datetime.min.time(), zone)
     entries = session.scalars(
-        select(RewardEntry).where(
+        select(RewardEntry)
+        .where(
             RewardEntry.user_id == owner,
             RewardEntry.kind == "native",
             RewardEntry.payload["kind"].astext == "quit",
             RewardEntry.payload["occurred_at"].astext.cast(DateTime(timezone=True)) >= start_at,
             RewardEntry.payload["occurred_at"].astext.cast(DateTime(timezone=True)) < end_at,
+        )
+        .order_by(
+            RewardEntry.payload["occurred_at"].astext.cast(DateTime(timezone=True)),
+            RewardEntry.sequence,
         )
     )
     counts = {"initial": 0, "expired": 0, "mid_session": 0}
@@ -187,7 +192,8 @@ def save(session: UserSession, body: HistoryPut, now: datetime):
                 .returning(Record.user_id)
             ).scalar_one_or_none()
             if inserted is None:
-                conflict(1)
+                latest = session.get(Record, owner, populate_existing=True)
+                conflict(latest.revision if latest else 1)
             row = session.get(Record, owner, populate_existing=True)
         else:
             if row.revision >= 2147483647:

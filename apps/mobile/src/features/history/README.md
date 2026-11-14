@@ -1,46 +1,40 @@
-# History presentation — RN-09c
+# History — RN09-D02 / RN09C-D01–D02
 
-Figma `27:153`, read-only session `26dd22ea-c87c-4b6c-a571-5e74d6eff5e8`.
-`HistoryScreen` composes the original summary typography, dividers, metric hierarchy,
-comparison and optional next-page affordance. `Screen` owns scrolling/safe areas and
-measured tab clearance; the OS owns the status bar. No fixed phone-sized app canvas.
+The existing Figma summary/progress/reclaimed views now consume the real account
+History API when mounted inside AccountDataProvider. An absent provider keeps the
+honest unavailable presentation. History and Home share one account-scoped query;
+source examples remain isolated from production routes.
 
-`HistoryModel` is a local presentation interface, not an insights API contract.
-Each independent reading is loading, error, unavailable or ready. Ready readings
-require finite nonnegative values, display text, period, source and coverage. Zero
-is valid; missing evidence is unavailable. Before/now requires explicit producer
-eligibility plus valid evidence for both readings. The view never computes saved
-time by subtraction, percentages, rewards or forecasts. Evidence is visible below
-each reading: a deliberate accessibility/transparency adaptation to the source.
-Small green text uses the existing readableSuccess token. Optional next/retry
-callbacks delegate intent only. No handler means no dead navigation control.
+`history-api.ts` strictly decodes aggregate/native envelopes and server arithmetic,
+coverage, own identity, series metadata and date bounds. `use-history.ts` reads
+native retained estimates, synchronizes existing quit receipts and uploads only a
+matching series. Explicit Start/Restart uses the native disclosure and the reviewed
+server revision; ordinary reads never initialize or replace a baseline. Stop clears
+only local collection state, including offline, revoked-access and changed-selection
+states. It cancels pending History reads before acknowledging the local stop.
+Account/session-generation fencing, offline/error masking and foreground/manual
+refresh reuse the existing data infrastructure. No authentication implementation,
+protection activation or raw app identity upload is added.
 
-The actual route supplies `unavailableHistory`. Source numbers exist only in the
-separate developer specimen. New SVGs are unchanged original-pack copies at
-20×20, 20×20 and 32×8, recorded in the asset manifest and browser byte/bounds checks.
+`history-projection.ts` maps server-provided current/baseline/difference values to
+the existing views. Every measurement carries date range, source, coverage and saved
+time zone. Week is seven closed days; month explicitly means28days/four weeks.
+Unknown data remains unavailable; real zero is valid. Increased usage stays signed;
+zero baseline has no percentage. The detail validator checks supplied arithmetic;
+it does not manufacture an outcome. Time-freed circles are absent for increased
+usage. Turn-offs count actual synced explicit quit receipts by nudge type, including
+cooldown-no-credit decisions, not generic app closes or permission absence.
 
-Remaining: **RN09C-D01** approved measurement semantics, permitted sources and
-insights schema (PD-11); **RN09C-D02** real account/generation-scoped data, coverage,
-comparison eligibility and recovery; **RN09C-D03** detail frames `10570:192` and
-`10570:193`/navigation once their supported data exists, forecast excluded until
-PD-12; **RN09C-D04** signed-device/screen-reader acceptance. The summary UI does not
-complete live History acceptance or RN-11.
+The first seven consecutive reported days form a fixed baseline. Comparisons
+require later complete non-overlapping periods with the same saved selection/zone.
+Android event retention and foreground semantics limit accuracy; these are selected
+app foreground estimates, not attention measurements or causal savings. Selection,
+uninstall/device/zone mismatch requires explicit restart. No fallback uses the
+Figma's51/10/80%/1.8years as account data. PD-12 forecast remains excluded.
 
-## RN-09h details and real tab navigation
-
-`HistoryExperience` retains the existing tab shell while navigating summary →
-progress → reclaimed. Week/month readings are independent; the view never fills
-missing months from weekly values. `HistoryDetail` requires producer eligibility,
-positive baseline, non-increasing current usage, valid source/period/coverage and
-a finite reduction in 0–100. Saved hours and narrative are supplied, never derived
-from the comparison by this UI. Zero reduction is valid; zero baseline is not a
-valid percentage comparison. Error/loading/unavailable/ineligible states retain
-Back/period navigation and reveal no stale sample outcomes.
-
-The ten-circle diagram uses exact original green/tan ellipse child assets; values
-control full/partial clipped buckets without changing source SVG roots. Source
-frame 10570:193 lifespan/gender forecast is deliberately replaced by supplied
-period saved hours and evidence under PD-12. No demographic forecast is computed.
-Source status bar/home indicator remain OS-owned; cards wrap/scroll at narrow widths.
-RN09C-D03 detail UI/navigation is prepared; forecast approval and D01/D02/D04 real
-measurement/account-scoped data/device acceptance remain pending.
+Read [policy](../../../../../docs/architecture/history-measurement.md),
+[acceptance](../../../../../docs/qa/history-measurement.md) and the latest Plan04
+notes for exact native/storage/HTTP/UI evidence. Figma `27:153`, `10570:192` and
+`10570:193` presentation and original SVG artwork remain the source. Signed/wider
+Android acceptance, Anisha-owned iOS/Auth SDK and further user-deferred TalkBack
+remain separate gates; this does not complete Plan04 or RN-11.

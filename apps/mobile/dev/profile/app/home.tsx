@@ -11,6 +11,7 @@ export default function Home() {
   const { runtime } = useRuntime();
   return runtime ? (
     <ConnectedHomeScreen
+      onOpenHistory={() => router.push('./history')}
       onOpen={{
         activities: () => router.push('./activities'),
         days: () => router.push('./plan?field=days'),
@@ -19,6 +20,9 @@ export default function Home() {
       }}
     />
   ) : (
-    <HomeScreen model={unavailableHome} protection={<UnavailableDeviceProtection />} />
+    <HomeScreen
+      model={unavailableHome}
+      protection={<UnavailableDeviceProtection />}
+    />
   );
 }

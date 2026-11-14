@@ -18,14 +18,20 @@ const data: HistoryDetail = {
   eligible: true,
   baseline: { ...metric, value: 100 },
   current: { ...metric, value: 20 },
-  savedHours: metric,
+  savedHours: { ...metric, value: 80, display: '80' },
   reduction: { ...metric, value: 80, display: '80' },
   narrative: ['Supplied test narrative'],
 };
 test('zero baseline, missing evidence, unsupported percent and ineligibility suppress comparison claims', () => {
-  expect(usableHistoryDetail({ ...data, baseline: { ...metric, value: 0 } })).toBe(false);
-  expect(usableHistoryDetail({ ...data, reduction: { ...metric, value: 101 } })).toBe(false);
-  expect(usableHistoryDetail({ ...data, current: { ...metric, coverage: '' } })).toBe(false);
+  expect(
+    usableHistoryDetail({ ...data, baseline: { ...metric, value: 0 } }),
+  ).toBe(false);
+  expect(
+    usableHistoryDetail({ ...data, reduction: { ...metric, value: 101 } }),
+  ).toBe(false);
+  expect(
+    usableHistoryDetail({ ...data, current: { ...metric, coverage: '' } }),
+  ).toBe(false);
   expect(usableHistoryDetail({ ...data, eligible: false })).toBe(false);
 });
 test('real page/period navigation never substitutes weekly data into unavailable month', async () => {
@@ -35,12 +41,16 @@ test('real page/period navigation never substitutes weekly data into unavailable
       periods={{ ...unavailableHistoryPeriods, week: { state: 'ready', data } }}
     />,
   );
-  await userEvent.press(screen.getByRole('button', { name: 'Next history page' }));
+  await userEvent.press(
+    screen.getByRole('button', { name: 'Next history page' }),
+  );
   expect(screen.getByText('80')).toBeVisible();
   await userEvent.press(screen.getByRole('button', { name: 'This month' }));
   expect(screen.queryByText('80')).toBeNull();
   expect(screen.queryByText('Supplied test narrative')).toBeNull();
-  await userEvent.press(screen.getByRole('button', { name: 'View time reclaimed' }));
+  await userEvent.press(
+    screen.getByRole('button', { name: 'View time reclaimed' }),
+  );
   expect(screen.queryByText(/years/)).toBeNull();
   await userEvent.press(screen.getByRole('button', { name: 'Back' }));
   await userEvent.press(screen.getByRole('button', { name: 'This week' }));
@@ -66,7 +76,12 @@ test('zero reduction remains a valid observed result, distinct from unavailabili
     <HistoryDetails
       reading={{
         state: 'ready',
-        data: { ...data, reduction: { ...metric, value: 0, display: '0' } },
+        data: {
+          ...data,
+          current: { ...metric, value: 100 },
+          savedHours: { ...metric, value: 0, display: '0' },
+          reduction: { ...metric, value: 0, display: '0' },
+        },
       }}
       period="week"
       onPeriodChange={jest.fn()}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 
 import { Button } from '@/components/ui/button';
@@ -18,10 +18,16 @@ import {
 export type HistoryScreenProps = {
   model: HistoryModel;
   onRetry?: () => void;
+  controls?: ReactNode;
   /** Only supply when the host has a real next page. No invented detail route. */
   onNext?: () => void;
 };
-export function HistoryScreen({ model, onRetry, onNext }: HistoryScreenProps) {
+export function HistoryScreen({
+  model,
+  onRetry,
+  onNext,
+  controls,
+}: HistoryScreenProps) {
   const [width, setWidth] = useState<number>();
   const { fontScale } = useWindowDimensions();
   const compact = (width !== undefined && width < 320) || fontScale > 1.3;
@@ -59,7 +65,9 @@ export function HistoryScreen({ model, onRetry, onNext }: HistoryScreenProps) {
         </View>
         <View style={styles.divider} />
         <Text accessibilityRole="header" style={styles.eyebrow}>
-          Weekly screen time
+          {model.periodDays === 28
+            ? '28-day screen time'
+            : 'Weekly screen time'}
         </Text>
         <View style={styles.comparison}>
           {comparison ? (
@@ -93,10 +101,16 @@ export function HistoryScreen({ model, onRetry, onNext }: HistoryScreenProps) {
         <Metric
           reading={model.savedHours}
           label="hours"
-          caption="saved"
+          caption={
+            model.savedHours.state === 'ready' &&
+            model.savedHours.data.value < 0
+              ? 'increased usage'
+              : 'saved (estimated)'
+          }
           compact={compact}
           onRetry={onRetry}
         />
+        {controls}
         {onNext ? (
           <View style={styles.footer}>
             <DesignArtwork
@@ -134,7 +148,10 @@ function Metric({
   compact: boolean;
   onRetry?: () => void;
 }) {
-  if (reading.state !== 'ready' || !isUsableMetric(reading.data))
+  if (
+    reading.state !== 'ready' ||
+    !isUsableMetric(reading.data, label === 'hours')
+  )
     return (
       <ReadingStatus
         state={reading.state === 'ready' ? 'unavailable' : reading.state}

@@ -1,5 +1,18 @@
 # Plan 03 — FastAPI Identity and Profile Foundation
 
+**History implementation (2026-11-13; RN09-D02 / RN09C-D01–D02):**
+shared Home/History now use the verified account API and real Android selected-app
+foreground estimates. Explicit Start/Restart consent, fixed seven-day baseline,
+comparable seven/28-day periods, signed changes, nudge-type quit counts and
+permission/selection/offline/restart recovery are implemented. Development is
+verified at `20261114_0006`, with existing product data preserved. Read the
+[measurement policy](../architecture/history-measurement.md),
+[acceptance](../qa/history-measurement.md) and latest
+[Plan04 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md).
+Anisha's Auth/iOS, signed/wider-device acceptance, further TalkBack and PD-12
+forecast remain separate. The following older checkpoints are historical.
+
+
 **RN09-D01 rewards implementation (2026-11-13):** shared account wallet,
 Dino health/original artwork, atomic Feed/receipt recovery, quest50 ledger and
 Android business outbox/native quit/coverage producers are implemented. Development

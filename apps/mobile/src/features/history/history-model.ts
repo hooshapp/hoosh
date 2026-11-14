@@ -1,4 +1,4 @@
-/** Presentation only. The future insights producer owns measurement and eligibility. */
+/** Presentation only. The account insights producer owns measurement and eligibility. */
 export type HistoryMetric = Readonly<{
   value: number;
   display: string;
@@ -15,6 +15,7 @@ export type HistoryComparison = Readonly<{
   now: HistoryMetric;
 }>;
 export type HistoryModel = Readonly<{
+  periodDays?: 7 | 28;
   periodLabel: string | null;
   turnOffs: HistoryReading<HistoryMetric>;
   screenTime: HistoryReading<HistoryComparison>;
@@ -26,11 +27,11 @@ export const unavailableHistory: HistoryModel = {
   screenTime: { state: 'unavailable' },
   savedHours: { state: 'unavailable' },
 };
-/** Zero is valid. Missing provenance, NaN and negative readings are not measurements. */
-export function isUsableMetric(metric: HistoryMetric): boolean {
+/** Zero is valid. Missing provenance/NaN are invalid; signed differences opt in. */
+export function isUsableMetric(metric: HistoryMetric, signed = false): boolean {
   return (
     Number.isFinite(metric.value) &&
-    metric.value >= 0 &&
+    (signed || metric.value >= 0) &&
     [metric.display, metric.period, metric.source, metric.coverage].every(
       (text) => text.trim().length > 0,
     )

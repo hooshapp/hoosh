@@ -12,6 +12,7 @@ export default function Home() {
   if (account?.scope)
     return (
       <ConnectedHomeScreen
+        onOpenHistory={() => router.push('/(tabs)/history')}
         onOpen={{
           activities: open('activities'),
           days: open('days'),
@@ -20,5 +21,7 @@ export default function Home() {
         }}
       />
     );
-  return <HomeScreen model={unavailableHome} protection={<DeviceProtection />} />;
+  return (
+    <HomeScreen model={unavailableHome} protection={<DeviceProtection />} />
+  );
 }

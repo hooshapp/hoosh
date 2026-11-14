@@ -724,3 +724,10 @@ cooldown-no-credit quits, not shield presentations or generic app closes. Receip
 coverage is described separately from usage completeness. Lifespan prediction
 remains disabled under Q16/PD-12. These are documented engineering defaults, not
 new PM answers; product decisions remain revisable.
+
+History collection has separate explicit Start/Restart consent. Stopping collection
+is a local owner-checked action that works offline or after usage revocation; it
+erases local collection state but retains existing server summaries until replaced
+or the account is deleted. It does not activate or stop app protection. A pending
+read is cancelled so it cannot restore a stopped collection's presentation. These
+are recovery/privacy implementation choices, not additional PM-supplied answers.

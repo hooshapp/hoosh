@@ -59,6 +59,10 @@ export default function Index() {
               onPress={() => router.push('./quests')}
             />
             <Button
+              label="Open live History"
+              onPress={() => router.push('./history')}
+            />
+            <Button
               label="Open live Home"
               onPress={() => router.push('./home')}
             />

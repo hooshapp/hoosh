@@ -4,9 +4,9 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN09-D01 shared/Android rewards/Dino/Feed/streak and native event delivery implemented and independently accepted; D01a `cb5321d`, D01b `36ebe3a`, final D01c below. Next RN09-D02; Auth/iOS/TalkBack/signed gates remain separate. Prior quest acceptance is `a04d5da`, TalkBack deferral is `1dbeb6e`. RN09B-D02–D04 remain open for coordinated acceptance. D02 SDK/root producer `0bbf714` and retained Android backup exclusions `f447e68` implemented; actual managed-account/device acceptance pending. D03a `999512a`, D03b `b5e314f` native infrastructure and D03c `91894f4` shared controls are implemented at the independent evidence bounds below; full joint D02/D03/D04 acceptance remains pending. Development is verified at0005 (RN09-D01 additive rewards; existing product rows preserved). Ishmum reiterated Anisha owns Auth/signin/onboarding; existing D02 awaits her review/integration and real-account acceptance. Anisha confirmed iOS integration is not ready.
+**Current part:** RN09-D02 / RN09C-D01–D02 backend/shared/Android History is implemented and independently accepted. Backend `6bb5850`, native `918ac0d`, shared/acceptance D01c below. Fixed seven-day baseline, seven/28-day account comparisons, synced nudge-type quits, actual native consent/collection/recovery and Home integration are available. Development head `20261114_0006`; existing product rows preserved. Anisha-owned Auth/iOS, signed/wider-device, further user-deferred TalkBack, prospective soak and PD-12 forecast remain separate. Parent Plan04 remains open. Prior rewards D01c is `f87a006`.
 
-**Implementation branch:** `task/react-native/rn09-d01-rewards`; parent `1dbeb6e`, backend `cb5321d`, native `36ebe3a`. Previous quest branch/base records below are historical. Local commits only; no main merge/deployment or iOS acceptance.
+**Implementation branch:** `task/react-native/rn09-d02-history`; parent `f87a006`, backend `6bb5850`, native `918ac0d`. Local commits only; no push/main merge/deployment or iOS acceptance. Older branch/checkpoint records below are historical.
 
 **Commit reference:** RN-01 `2f88102`; RN-02 `2d5c0d1`; RN-03 `0741758`; RN-04 `610f570`; RN-05 preparation `0c6e4db`; RN-07 UI `5790302`; RN-08 preparation `71da2d5`; RN-09a `ff75039`. RN-10 is `9b5fbd0`.
 
@@ -15,6 +15,9 @@
 **Shared workflow:** [Implementation knowledge base](README.md).
 
 ## Resume here
+
+- **History completion (2026-11-13; RN09-D02 / RN09C-D01–D02):** backend/shared/Android implementation and bounded independent acceptance complete. Read final History D01c entry, [policy](../architecture/history-measurement.md), [acceptance](../qa/history-measurement.md) and [sanitized evidence](artifacts/rn-09-history/evidence.json). Real Pixel returned seven reported days for one synthetic saved app; baseline frozen, overlap correctly prevents savings. Consent cancellation, empty-selection refusal, revocation/Stop and explicit restart/cold reconnect pass. Phone files/settings/reverse restored, fixture users/servers removed, disposable DB stopped with volume retained. Auth SDK/iOS/signed/wider-device/further TalkBack and PD-12 forecast remain separate. No real later7/28day soak or full Plan04 completion is claimed.
+
 
 - **RN09B-D01 completion of independent slice (2026-11-11):** backend `10d8e16` and shared consumer `7d85e50` implement strict saved definition CRUD with owner RLS/CAS, content-free deletion receipts/tombstones, real accepted list/editing, pagination and uncertain/offline/conflict/account-scope handling. Full root 457 portable/652 component (+2 skips)/628 API; 217 real PostgreSQL checks and six portable-client TCP/restart cases pass, final selected driver passes at committed a/b. Hosted development 0003 applied/security/no-drift verified; profiles/settings preserved, quest table empty. Disposable API processes/container/network stopped; volume retained. Read [runbook](../qa/quest-management.md), [evidence](artifacts/rn-09b-quest-management/evidence.json) and final entry. No managed-token/Auth/root/native activation/reward/iOS/device or GitHub/push claim. Stable IDs/open parents unchanged; c own hash Pending until next normal update.
 
@@ -6254,3 +6257,147 @@ consent→aggregate→verified API→History phone check, then restore phone and
 owned fixture/Metro. No DB suite while the manual fixture is running.
 
 This commit updates this notes file:6207–6256 for its native ledger/checkpoint.
+
+### History D01c — Scoped Home/History, recovery and final acceptance
+
+**Parts:** RN09-D02 / RN09C-D01–D02. **Owner/date:** Ishmum,2026-11-13
+(local date;0006 uses the UTC2026-11-14 migration identifier).
+**Branch:** `task/react-native/rn09-d02-history`; base `f87a006`, backend D01a
+`6bb5850`, native D01b `918ac0d`. **Commit:** Pending, subject
+`feat(history): connect account insights and verify Android flow`.
+
+Backend/shared/Android implementation and bounded independent acceptance are
+complete. Real saved global native apps → retained OS estimate → aggregate-only
+verified account HTTP → PostgreSQL17 → the existing Home/History summary/detail
+views is connected. Shared readers never initialize/reset a baseline, infer
+protection or display source specimen results. First seven consecutive reported
+closed days freeze baseline; later complete seven/28day windows normalize actual
+midnight lengths. Real zero, negative difference, missing/incomplete data and
+zero-baseline percentage absence are distinct. Nudge receipts count explicit
+native quits once per installation/encounter, including no-credit cooldown quits.
+
+Meaningful corrections in this slice:
+
+- Stop was initially gated by matching-series presentation and the HTTP mutation
+  helper. It now remains reachable after changed selection/revoked permission and
+  works offline through the existing local account action helper. It cancels the
+  pending History query so late native reads cannot restore active presentation.
+  It clears only the owner's local collector; server summaries and protection stay.
+- Native unsupported/read-error copy no longer implies a working collector.
+  Unconfirmed replacement uses a fresh read; stale CAS cannot replace newer state.
+- Deterministically order deduplicated quit receipts by occurrence time/sequence.
+  Concurrent first creation now reports the actual winning revision, not1; the
+  two-connection test checks that exact value. No atomicity/RLS check is weakened.
+- The phone's first attempt had no saved apps and correctly failed. Final acceptance
+  explicitly checked the synthetic checkbox, staged1count and editor Save before
+  collection. Do not infer Save from the picker closing or a tap alone.
+- The final shared Home/History test needed a real test Router for native focus and
+  an explicit unavailable unrelated protection port. Fixture omissions were fixed;
+  runtime validation and native status were not mocked into success. Scoped TS
+  formatting preserves single quotes and wraps touched imports/JSX/styles; dispersed
+  formatting hunks below do not imply unrelated behavior changes.
+
+**Verification actually run:** final `npm run check` passes551portable,
+757component(+2historical skips),673deterministicAPI; contracts/schema/types and
+lint pass with four pre-existing mobile warnings/zero errors. One clean sequential
+`npm run api:db:test` passes270actualPG cases, including five nested real mobile
+TCP/API-restart cases. After the first-create revision correction, the14History
+DB cases pass again; the subsequent source change only wraps that assertion for
+lint. No whole DB suite ran alongside the manual phone fixture. JVM116 and actual
+Pixel/API36 instrumentation145, debug app/test APK and release native Kotlin pass
+in D01b. Final `npm run mobile:export` passes isolation38files/original SVG71;
+final QA Android Hermes export passes. Source/decode/portable/HTTP tests never use
+managed users/tokens or an Auth verification override.
+
+**Physical evidence:** Pixel8Pro/Android16/API36, normal functional controls with
+TalkBack left off. Native consent cancellation kept server revision0/no series.
+With only the synthetic app saved, actual OS collection returned7reported days,
+750byte private aggregate cache and account baseline7/7. The view correctly showed
+baseline overlap and null comparison savings, never a manufactured reduction.
+Revocation recovery and Stop while revoked passed; explicit replacement and cold
+host reconnect preserved series/revision/baseline. Final local-only Stop refinement
+is additionally covered by offline and late-read component tests; the new offline
+case was not repeated on the restored phone. The physical native Stop method is
+unchanged. PNGs contain actual shared views in the isolated QA host, not a signed
+managed-Auth app acceptance; floating gear belongs to that host.
+
+**Hosted verification:** guarded development0005→`20261114_0006` preserved row
+counts/content digests for all eight prior product tables (two existing profiles).
+Exact head/no-drift/forced-RLS/ACL/constraint and runtime TLS/nonmutating missing-own
+read pass. No managed Auth/user/provider/credential action, A/B token or hosted
+cascade test. Stop/restore removed only own phone/UI changes: baseline native file
+contents/modes, accessibility settings, original usage allow mode and reverse
+mappings verified. SDK credentials excluded. Owned Metro/API stopped; fixture
+users/manifest removed; disposable container stopped with labeled volume retained.
+Private backups/tokens/local reports remain ignored/outside Git.
+
+**Remaining:** prospective later7/28day soak and wider signed/store Android,
+Anisha's Auth SDK/iOS, further user-deferred TalkBack and PD-12 forecast. The
+42day HTTP inputs are synthetic calculations, not phone soak evidence. Android's
+source remains a retained-event foreground estimate, not lossless attestation or
+causal savings. Full Plan04/RN-11 and existing deferred Plan03 account/deletion gates
+remain open. Original part IDs/counts are preserved. No push/merge/deployment here;
+next reader should use the current ledger, not old UI-only/future-source checkpoints.
+
+#### Every changed file / exact ranges in this commit
+
+Ranges refer to this commit, not earlier historical line references. All newly
+added files are accounted for; binary PNGs have no textual line numbers.
+
+| File and exact changed lines | Change and purpose |
+|---|---|
+| `apps/mobile/dev/profile/acceptance/history-http.acceptance.ts`:1–151 | Five guarded local real-client TCP cases: missing state, aggregate comparison, A/B/C isolation, lost committed response, stale replacement and API-process restart. Synthetic42day inputs stay in this isolated acceptance runner; no managed Auth or phone measurements are fabricated. |
+| `apps/mobile/dev/profile/acceptance/history-vitest.config.mts`:1–9 | Separate serial Node acceptance entry with bounded timeout, not the ordinary portable test suite. It runs only from the explicit local API fixture environment. |
+| `apps/mobile/dev/profile/app/history.tsx`:1–16 | Mount the actual connected History consumer in the isolated account QA host, otherwise retain honest unavailable presentation. No alternative production implementation or Auth bypass. |
+| `apps/mobile/dev/profile/app/home.tsx`:14,23–26 | Forward real Home History navigation to the QA route while preserving other live Home handlers. Import wrapping follows scoped single-quote formatting. |
+| `apps/mobile/dev/profile/app/index.tsx`:61–64 | Expose Open live History only after the isolated account runtime exists; navigates to actual product components, not a static source specimen. |
+| `apps/mobile/src/app/(tabs)/history.tsx`:1–2,7–14 | Mount connected History only under the existing private account provider; an absent scope retains unavailable summary/details. No new login/session authority. |
+| `apps/mobile/src/app/(tabs)/index.tsx`:15,24–26 | Pass genuine History-tab navigation into the connected Home consumer. No invented action or metric follows from a callback. |
+| `apps/mobile/src/features/history/README.md`:1,3–6,8–17,19–26,28–33,35–40 | Replace stale UI-only/future-contract descriptions with actual API/native/query/projection, offline Stop, privacy, source/coverage and remaining platform boundaries; preserve original Figma/artwork references. |
+| `apps/mobile/src/features/history/__tests__/history-fixture.ts`:1–32 | Isolated coherent strict History response fixture, with seven/28day calculations and receipt counts; never imported by production routes. |
+| `apps/mobile/src/features/history/connected-history-screen.test.tsx`:1–148 | Private provider/native/HTTP fixtures with safe verified-owner envelopes, separate native collection controls and deliberately unavailable unrelated protection. No production success stub. |
+| `apps/mobile/src/features/history/connected-history-screen.test.tsx`:149–248 | Actual summary/detail/period/receipt display, negative/zero baseline, selection mismatch, cancelled consent and offline/account replacement checks. |
+| `apps/mobile/src/features/history/connected-history-screen.test.tsx`:249–325 | Confirmed restart reviewed revision, stopped collection, committed-response-loss reconciliation and native failure/selection recovery assertions. |
+| `apps/mobile/src/features/history/connected-history-screen.test.tsx`:326–381 | Actual Router Home+History shared-query/offline masking, local offline Stop with zero HTTP requests, and late native read cancellation after Stop. These are behavior regressions, not duplicated implementation assertions. |
+| `apps/mobile/src/features/history/connected-history-screen.tsx`:1–44 | Project current account data and distinguish offline/missing/unsupported/native failure/revoked/changed selection/zone/locked/baseline/incomplete states without fabricated metrics. |
+| `apps/mobile/src/features/history/connected-history-screen.tsx`:45–120 | Compose existing Figma History views with source/date/coverage, real review/Start/Restart/Stop/retry controls and scoped feedback. Use readable local check time; Stop remains reachable offline/revoked/changed-selection. |
+| `apps/mobile/src/features/history/history-api.test.ts`:1–111 | Portable strict server/native decode and projection tests for private/malformed fields, coverage/arithmetic/identity, signed changes and missing-source boundaries. |
+| `apps/mobile/src/features/history/history-api.ts`:1–95 | Strict numeric/date/7-or28day window, null/coverage and server arithmetic validation; preserve genuine zeros and signed differences. |
+| `apps/mobile/src/features/history/history-api.ts`:96–191 | Own-account/series/baseline/source/timezone decoder plus real GET/PUT client and matching acknowledgment checks; no competing handwritten wire protocol. |
+| `apps/mobile/src/features/history/history-api.ts`:192–284 | Strict native ready/unavailable union and exact aggregate-only series/day keys, ordered bounds and type checks; raw identities/fingerprints/events are rejected. |
+| `apps/mobile/src/features/history/history-details-model.ts`:1–5,10,17–19,27–31,33–42 | Allow signed differences and zero-baseline measured hours while withholding percentages. Validate producer-provided baseline/current/difference/reduction coherence; no UI-manufactured savings. Reflow types/imports only elsewhere. |
+| `apps/mobile/src/features/history/history-details.test.tsx`:21,26–34,44–46,51–53,79–84 | Correct historical example arithmetic to match strict supplied-value validation and preserve zero-reduction semantics. Formatting wraps existing cases; no production validation is weakened. |
+| `apps/mobile/src/features/history/history-details.tsx`:1,24,34,37–39,45–46,56–58,60–63,75,81–84,90–92,97–127,129,132–135,142–144,159–163,166–168,170–172,189,225–229,233–237,244–245,247–248,258–268,277–282,310–315,323–333,335–340,342–347,355–359,361–366 | Reuse existing detail pages/original circle assets for7/28day periods, signed increased-usage copy and zero-baseline percentage explanation. Hide false positive time-freed circles, accept real controls below details and retain navigation/retry; other hunks are scoped formatting/style reflow. |
+| `apps/mobile/src/features/history/history-experience.tsx`:1–3,11,14,17,20,22–24,27–52,62 | Add optional independently supplied month summary and local7/28day switching; thread real collection/recovery controls through existing summary/progress/reclaimed pages. Preserve old unavailable/specimen behavior when no live month is supplied. |
+| `apps/mobile/src/features/history/history-model.ts`:1,18,30–31,34 | Add explicit optional period length and signed-metric opt-in; nonnegative usage/count metrics and provenance validation remain strict. Update stale future-producer comments. |
+| `apps/mobile/src/features/history/history-projection.ts`:1–94 | Map eligible server-supplied readings to existing detail metrics/narrative with exact source/date/zone/coverage. Negative values stay increased usage; zero baseline withholds percentage. |
+| `apps/mobile/src/features/history/history-projection.ts`:95–144 | Build independent seven/28day summary, nudge receipt counts and the shared Home weekly model. Missing/overlapping/incomplete evidence remains unavailable; no forecast or causal claim. |
+| `apps/mobile/src/features/history/history-screen.tsx`:1,21,25–30,68–70,104–109,113,151–154 | Render28day heading when appropriate, increased-usage caption for negative differences and real account controls within the existing scroll layout. Preserve original metric/evidence/retry/pagination components; other hunks reflow formatting. |
+| `apps/mobile/src/features/history/use-history.ts`:1–107 | Use existing private owner/query lifecycle; sync actual reward quit receipts, read native aggregates and account History, and upload only matching series metadata. Check account/generation after awaits; native absence/error never creates a series. |
+| `apps/mobile/src/features/history/use-history.ts`:108–179 | Bounded foreground/manual60second refresh and explicit native Start/Restart lease/disclosure. Capture reviewed server revision before confirmation, use CAS and reconcile unconfirmed responses by read, never automatic replacement. |
+| `apps/mobile/src/features/history/use-history.ts`:180–222 | Local owner-checked Stop via existing account action helper, independent of network/API readiness. Cancel pending History query, erase native owner cache, update stopped metadata without exposing cached metrics, retain server summaries and release lease. |
+| `apps/mobile/src/features/history/use-history.ts`:223–271 | Expose safe scoped availability/busy/Start/Stop/usage-settings controls. Offline hides private metrics while local Stop remains usable; action lock prevents duplicate start/stop and foreground refetch verifies permission return. |
+| `apps/mobile/src/features/home/connected-home-screen.tsx`:7–10,12–13,20–26,28–32,34–58,61–63,83–86,88–91,98 | Read the same History query/projection as History and bind weekly account measurements independently of wallet availability. Pass genuine History navigation; preserve reward/settings/private controller behavior. Other hunks reflow existing imports/JSX. |
+| `apps/mobile/src/features/home/home-model.test.ts`:4–8,25–28,35–41,48–51,55–74,79–82,87,89–95,98–101,106–113 | Preserve finite signed weekly differences and retain rejection of NaN/Infinity/missing provenance. Existing unrelated safety assertions only reflow; no negative balance/health relaxation. |
+| `apps/mobile/src/features/home/home-model.ts`:5–6,39–41,55–63,83–85,105–107 | Allow finite signed hours for the weekly baseline difference, retaining all required source/range/coverage fields and unrelated card validation. Other hunks are type/expression wrapping. |
+| `apps/mobile/src/features/home/home-overview.tsx`:29–30,33–40,46–47,50–52,78–82,127–128,135–137,147–151,155–159,171–175,185–190,221–231,233–250,275–280,295–299,301–306,325–330 | Show signed weekly values rounded to two decimals, with increased-usage versus estimated-saved copy; preserve zero and unknown state. Other hunks are existing JSX/style wrapping without artwork/layout policy changes. |
+| `apps/mobile/src/infrastructure/api/errors.ts`:37,78–84,110–118,127–128,134–135,142–145,150–152,157–159,161–164,170,175–185,189–193,255–256,258–261,275–277 | Recognize HISTORY_CONFLICT409 in the existing safe code/type/message/revision-detail boundary. Preserve strict unknown-field/detail validation and retry semantics; other hunks reflow long expressions. |
+| `docs/Context (AGENT)/AGENT_START_HERE.md`:15–26 | Add the current History implementation/schema/runbook/notes handoff before historical checkpoints; preserve ownership and deferred platform/Auth/TalkBack/forecast gates. |
+| `docs/Context (AGENT)/OPEN_DECISIONS.yaml`:3–4,115,296–311 | Advance revision/date, distinguish implemented Android defaults from remaining PM review/iOS feasibility, and record consent,7/28day/normalization/privacy/receipt/retention choices without relabeling original PM answers. |
+| `docs/Context (AGENT)/PM_QUESTIONS.md`:727–733 | Append offline/revoked local Stop and pending-read cancellation as revisable engineering recovery/privacy defaults. Prior original PM answers remain intact. |
+| `docs/core_plan/01_supabase_foundation.md`:3–15 | Current0006 History cross-plan checkpoint and policy/evidence links; preserve Anisha Auth ownership and SB part IDs. |
+| `docs/core_plan/03_backend_foundation.md`:3–15 | Current History API/schema/acceptance checkpoint under Plan04; original API-01–12 counts and user-deferred managed-account/deletion gates remain unchanged. |
+| `docs/core_plan/04_react_native_integration.md`:3–15,747,794,800–814 | Update current checkpoint, RN-09c and RN09-D02 status; add explicit current RN09C-D01–D04 ledger using original IDs. Distinguish implementation/independent acceptance from soak/iOS/Auth/signed/TalkBack/forecast gates and full parent completion. |
+| `docs/core_plan/README.md`:3–15 | Expose current History API/Android/shared completion and0006 checkpoint in execution index; keep earlier checkpoints historical, not fresh next-step instructions. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09-history/README.md`:1–18 | Explain sanitized artifacts and actual QA-host context, original capture purpose and boundaries; no managed SDK or prospective comparison claim. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09-history/evidence.json`:1–97 | Record sanitized real check counts, native collection/consent/recovery, preserved hosted data, phone/settings restoration, cleanup and unverified gates. Contains no UUID/token/serial/raw inventory. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09-history/history-consent.png`:binary PNG | Actual native collection disclosure before starting, including metadata-only upload, fixed baseline and restart/protection boundaries. Binary PNG1344×2992; line numbers do not apply. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09-history/history-recovered.png`:binary PNG | Actual product History after cold host reconnect: retained baseline ready, overlapping comparison unavailable and human-readable check time. Binary PNG1344×2992; QA gear is host UI. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09-history/history-stopped.png`:binary PNG | Actual stopped-collection acknowledgment after revoking usage access, with stored summaries retained. Binary PNG1344×2992; phone permission/settings restored afterward. |
+| `docs/core_plan_implementation_notes/plan_01_supabase_foundation_notes.md`:3–13 | Cross-reference the single detailed Plan04 ledger for0006 preservation/RLS/ACL/TLS acceptance; no duplicated source inventory or SB/Auth takeover. |
+| `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`:3–13 | Cross-reference History backend/shared/acceptance commits and current0006 evidence while retaining existing API part IDs and deferred managed-account/deletion gates. |
+| `docs/qa/history-measurement.md`:1–109 | Reproducible automated/native/phone acceptance, explicit real versus synthetic evidence, restoration/fixture sequencing and latest results/limits. Distinguish new offline Stop component coverage from earlier phone-native Stop observation. |
+| `services/api/app/repositories/history.py`:54–55,62–65,195–196 | Order quit receipts by actual event time then sequence before encounter deduplication. On concurrent first-series insert loss, read the winning actual revision instead of returning hard-coded1; existing writes/baseline semantics unchanged. |
+| `services/api/tests/db/test_history.py`:198–200,204–209 | Strengthen real two-connection first-series race to assert the conflict revision equals the persisted winner, alongside exactly one success. Reflow one101character assertion to satisfy existing lint. |
+| `services/api/tests/db/test_mobile_history_acceptance.py`:1–77 | Run actual verified TCP API and production portable client across independent API processes; assert exact five nested cases and owner isolation. Private environment tokens/reports never appear in failure output and temp reports are removed. |
+| This notes file:7,9,19–21,6260–6403 | Current part/branch/resume checkpoint and this per-commit decisions, corrections, actual verification, phone/hosted restoration, every-file ledger and remaining-gates handoff. |

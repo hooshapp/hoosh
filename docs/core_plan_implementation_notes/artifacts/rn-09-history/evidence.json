@@ -1,0 +1,97 @@
+{
+  "part_ids": [
+    "RN09-D02",
+    "RN09C-D01",
+    "RN09C-D02"
+  ],
+  "date": "2026-11-13",
+  "branch": "task/react-native/rn09-d02-history",
+  "scope": "Backend/shared/Android implementation and bounded independent acceptance; managed Auth, iOS, signed/wider-device, further TalkBack and PD-12 forecast excluded",
+  "commits": {
+    "backend": "6bb5850",
+    "native": "918ac0d",
+    "shared_and_acceptance": "Pending in this commit"
+  },
+  "checks": {
+    "portable": 551,
+    "component": 757,
+    "component_existing_skips": 2,
+    "deterministic_api": 673,
+    "postgresql": 270,
+    "nested_real_mobile_tcp_and_restart": 5,
+    "history_post_correction_postgresql": 14,
+    "pure_jvm": 116,
+    "physical_android_instrumentation": 145,
+    "lint_errors": 0,
+    "pre_existing_lint_warnings": 4,
+    "web_isolated_files": 38,
+    "original_svg_assets": 71,
+    "debug_and_test_apk": true,
+    "release_kotlin": true,
+    "web_export": true,
+    "qa_android_hermes_export": true,
+    "offline_local_stop_and_late_read_component_regressions": true
+  },
+  "phone": {
+    "model": "Pixel 8 Pro",
+    "android": 16,
+    "api": 36,
+    "only_synthetic_target_selected": true,
+    "cancel_kept_revision_zero_and_no_series": true,
+    "empty_saved_selection_rejected": true,
+    "saved_selection_confirmed_before_start": true,
+    "real_os_reported_days": 7,
+    "native_cache_bytes_in_readback": 750,
+    "fixed_baseline_progress": 7,
+    "comparison_reason": "baseline_overlap",
+    "comparison_savings_null": true,
+    "revoked_usage_explained": true,
+    "stop_while_revoked_confirmed": true,
+    "explicit_restart_confirmed": true,
+    "cold_restart_preserved_series_revision_and_baseline": true,
+    "managed_auth_sdk_used": false,
+    "accessibility_service_enabled_for_history": false,
+    "talkback_enabled": false
+  },
+  "restoration": {
+    "native_file_contents_and_modes_restored": true,
+    "accessibility_settings_restored": true,
+    "reverse_mappings_restored": true,
+    "usage_permission_restored": true,
+    "sdk_credentials_excluded": true,
+    "owned_fixture_users_and_manifest_removed": true,
+    "owned_metro_and_api_stopped": true,
+    "disposable_db_stopped_with_volume_retained": true
+  },
+  "hosted": {
+    "previous_head": "20261113_0005",
+    "head": "20261114_0006",
+    "existing_eight_product_tables_counts_and_digests_preserved": true,
+    "existing_profile_count": 2,
+    "no_drift_and_forced_rls_acl_verification": true,
+    "runtime_tls_and_missing_own_read": true,
+    "managed_auth_user_provider_or_credential_action": false
+  },
+  "limitations": [
+    "Seven retained OS estimate days are not a prospective seven-day soak or proof of lossless Android events.",
+    "No real later seven/28-day comparison exists yet for the freshly created phone series.",
+    "The 42-day HTTP comparison inputs are synthetic isolated fixtures, never seeded into phone measurement.",
+    "No managed Auth SDK account acceptance, iOS, signed/store/wider-device or further TalkBack acceptance.",
+    "No lifespan forecast or causal savings claim.",
+    "The final local-only Stop refinement is verified by shared component tests; the new offline case was not repeated on the restored phone."
+  ],
+  "screenshots": {
+    "history-recovered.png": {
+      "sha256": "232e8063b14e388d62bf3d99280620ec366c306f82c66bc48084792e2c89bc20",
+      "context": "Actual product History components in isolated local-account QA host; floating gear is developer host UI."
+    },
+    "history-consent.png": {
+      "sha256": "9ca0449eed0b4fbefa3d3894718d65cc84029a0ec3e794cb5d9bb6dc1cda654b",
+      "context": "Actual product History components in isolated local-account QA host; floating gear is developer host UI."
+    },
+    "history-stopped.png": {
+      "sha256": "60e6ba0efe46322acc08e9a7befc96ff803dfe02003ab7c1f40474ec7b01d52e",
+      "context": "Actual product History components in isolated local-account QA host; floating gear is developer host UI."
+    }
+  }
+}

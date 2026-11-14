@@ -34,6 +34,7 @@ const codeStatus = {
   SETTINGS_CONFLICT: 409,
   QUEST_CONFLICT: 409,
   REWARD_CONFLICT: 409,
+  HISTORY_CONFLICT: 409,
   REQUEST_TOO_LARGE: 413,
   VALIDATION_ERROR: 422,
   AUTH_UNAVAILABLE: 503,
@@ -74,8 +75,13 @@ const fieldCodes = [
   'invalid_range',
   'invalid_timezone',
 ] as const;
-export type ValidationIssue = { field: (typeof fields)[number]; code: (typeof fieldCodes)[number] };
-export type SafeErrorDetails = { current_revision: number } | { fields: ValidationIssue[] };
+export type ValidationIssue = {
+  field: (typeof fields)[number];
+  code: (typeof fieldCodes)[number];
+};
+export type SafeErrorDetails =
+  | { current_revision: number }
+  | { fields: ValidationIssue[] };
 export type ApiErrorMetadata = {
   status?: number;
   code?: ApiErrorCode;
@@ -101,13 +107,15 @@ export class ApiError extends Error {
     metadata: ApiErrorMetadata = {},
   ) {
     super(
-      kind === 'conflict' && metadata.code === 'SETTINGS_CONFLICT'
-        ? 'Your settings changed. Review the latest version before saving.'
-        : kind === 'conflict' && metadata.code === 'QUEST_CONFLICT'
-          ? 'Your quest changed. Review the latest version before saving.'
-          : kind === 'conflict' && metadata.code === 'REWARD_CONFLICT'
-            ? 'Your wallet changed. Review the latest balance before feeding.'
-            : messages[kind],
+      kind === 'conflict' && metadata.code === 'HISTORY_CONFLICT'
+        ? 'History changed. Review the latest measurement series.'
+        : kind === 'conflict' && metadata.code === 'SETTINGS_CONFLICT'
+          ? 'Your settings changed. Review the latest version before saving.'
+          : kind === 'conflict' && metadata.code === 'QUEST_CONFLICT'
+            ? 'Your quest changed. Review the latest version before saving.'
+            : kind === 'conflict' && metadata.code === 'REWARD_CONFLICT'
+              ? 'Your wallet changed. Review the latest balance before feeding.'
+              : messages[kind],
     );
     this.name = 'ApiError';
     this.status = metadata.status;
@@ -116,47 +124,73 @@ export class ApiError extends Error {
     this.retryAfterMs = metadata.retryAfterMs;
     this.details = metadata.details;
     this.retryable =
-      metadata.retryable ?? ['network', 'timeout', 'unavailable', 'rate_limited'].includes(kind);
+      metadata.retryable ??
+      ['network', 'timeout', 'unavailable', 'rate_limited'].includes(kind);
     this.recoveryPaused = metadata.recoveryPaused ?? false;
     this.requestMayHaveCommitted = metadata.requestMayHaveCommitted ?? false;
   }
 }
 export function safeRequestId(value: unknown): string | undefined {
-  return typeof value === 'string' && /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(value)
+  return typeof value === 'string' &&
+    /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(value)
     ? value.toLowerCase()
     : undefined;
 }
 export function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
-export function retryAfterMs(value: string | null, now: number): number | undefined {
+export function retryAfterMs(
+  value: string | null,
+  now: number,
+): number | undefined {
   if (!value) return undefined;
   let delay: number;
   if (/^\d{1,10}$/.test(value)) delay = Number(value) * 1000;
   else if (
-    /^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \d{2} [A-Z][a-z]{2} \d{4} \d{2}:\d{2}:\d{2} GMT$/.test(value)
+    /^(Mon|Tue|Wed|Thu|Fri|Sat|Sun), \d{2} [A-Z][a-z]{2} \d{4} \d{2}:\d{2}:\d{2} GMT$/.test(
+      value,
+    )
   )
     delay = Date.parse(value) - now;
   else return undefined;
   // Never shorten a longer server cooldown into an earlier automatic retry.
-  return Number.isFinite(delay) && delay <= 60_000 ? Math.max(0, delay) : undefined;
+  return Number.isFinite(delay) && delay <= 60_000
+    ? Math.max(0, delay)
+    : undefined;
 }
-function safeDetails(code: ApiErrorCode | undefined, value: unknown): SafeErrorDetails | undefined {
+function safeDetails(
+  code: ApiErrorCode | undefined,
+  value: unknown,
+): SafeErrorDetails | undefined {
   if (
     code !== 'PROFILE_CONFLICT' &&
     code !== 'SETTINGS_CONFLICT' &&
     code !== 'QUEST_CONFLICT' &&
     code !== 'REWARD_CONFLICT' &&
+    code !== 'HISTORY_CONFLICT' &&
     code !== 'VALIDATION_ERROR'
   )
     return undefined;
   if (!isRecord(value)) throw new Error();
-  if (code === 'PROFILE_CONFLICT' || code === 'SETTINGS_CONFLICT' || code === 'QUEST_CONFLICT' || code === 'REWARD_CONFLICT') {
-    if (!Number.isSafeInteger(value.current_revision) || (value.current_revision as number) < 0)
+  if (
+    code === 'PROFILE_CONFLICT' ||
+    code === 'SETTINGS_CONFLICT' ||
+    code === 'QUEST_CONFLICT' ||
+    code === 'REWARD_CONFLICT' ||
+    code === 'HISTORY_CONFLICT'
+  ) {
+    if (
+      !Number.isSafeInteger(value.current_revision) ||
+      (value.current_revision as number) < 0
+    )
       throw new Error();
     return { current_revision: value.current_revision as number };
   }
-  if (!Array.isArray(value.fields) || value.fields.length < 1 || value.fields.length > 10)
+  if (
+    !Array.isArray(value.fields) ||
+    value.fields.length < 1 ||
+    value.fields.length > 10
+  )
     throw new Error();
   return {
     fields: value.fields.map((issue: unknown) => {
@@ -218,9 +252,13 @@ export function httpError(
     };
     const kind = kinds[response.status] ?? 'invalid_response';
     metadata.retryable =
-      kind === 'rate_limited' || ([502, 503, 504].includes(response.status) && error.retryable);
+      kind === 'rate_limited' ||
+      ([502, 503, 504].includes(response.status) && error.retryable);
     if (response.status === 429) {
-      metadata.retryAfterMs = retryAfterMs(response.headers.get('Retry-After'), now);
+      metadata.retryAfterMs = retryAfterMs(
+        response.headers.get('Retry-After'),
+        now,
+      );
       metadata.retryable = metadata.retryAfterMs !== undefined;
     }
     return new ApiError(kind, metadata);
@@ -234,7 +272,9 @@ export function httpError(
 }
 export function authUnavailable(error: unknown): ApiError {
   const retryable =
-    isRecord(error) && error.name === 'AuthUnavailableError' && typeof error.retryable === 'boolean'
+    isRecord(error) &&
+    error.name === 'AuthUnavailableError' &&
+    typeof error.retryable === 'boolean'
       ? error.retryable
       : true;
   return new ApiError('unavailable', { retryable });

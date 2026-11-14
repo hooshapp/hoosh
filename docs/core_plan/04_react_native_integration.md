@@ -1,5 +1,18 @@
 # 04 — React Native Integration and Shared Frontend Plan
 
+**History implementation (2026-11-13; RN09-D02 / RN09C-D01–D02):**
+shared Home/History now use the verified account API and real Android selected-app
+foreground estimates. Explicit Start/Restart consent, fixed seven-day baseline,
+comparable seven/28-day periods, signed changes, nudge-type quit counts and
+permission/selection/offline/restart recovery are implemented. Development is
+verified at `20261114_0006`, with existing product data preserved. Read the
+[measurement policy](../architecture/history-measurement.md),
+[acceptance](../qa/history-measurement.md) and latest
+[Plan04 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md).
+Anisha's Auth/iOS, signed/wider-device acceptance, further TalkBack and PD-12
+forecast remain separate. The following older checkpoints are historical.
+
+
 **RN09-D01 rewards implementation (2026-11-13):** shared account wallet,
 Dino health/original artwork, atomic Feed/receipt recovery, quest50 ledger and
 Android business outbox/native quit/coverage producers are implemented. Development
@@ -731,7 +744,7 @@ subparts, not a redefinition of earlier work or its dependencies.
 |---|---|---|
 | RN-09a | Home composition, source assets, local display model, explicit feature states, isolated Figma specimen and tests | Implemented under `feat(mobile): compose Home with explicit feature availability`; self-hash recorded in the next normal notes update. The real Home route receives unavailable inputs; no live producer/action is connected. |
 | RN-09b | Quests presentation; suggestions distinct from accepted/saved occurrences; editors only against the agreed schema | Presentation and saved-definition CRUD/schema/consumer implemented under RN09B-D01 a–c; real Auth/root, occurrence activation/completion/rewards and signed-device acceptance remain under D02–D04. |
-| RN-09c | History presentation with honest unavailable states and isolated source examples | Summary plus RN-09h details/navigation UI implemented; real metrics/account integration/device acceptance remain deferred under RN09C-D01/D02/D04; PD-12 forecast remains excluded. |
+| RN-09c | History presentation with honest unavailable states and isolated source examples | Summary/details plus RN09C-D01/D02 backend/shared/Android measurement and account recovery implemented and independently accepted. Managed Auth/iOS/signed acceptance remains separate under the existing coordinated gates; PD-12 forecast excluded. |
 | RN-09d | Settings composition reusing RN-07 profile and genuine availability for plan/app/activity editors | Presentation implemented; RN09D-D01–D04 and RN07-D01–D07/native-selection/shared-schema gates remain before live persistence/actions. |
 
 ### RN-09 remaining UI execution — Ishmum, 2026-10-30
@@ -778,11 +791,26 @@ alone do not complete these rows. Keep IDs in sync with the implementation notes
 | Ref | Original Home integration work | Status / owner / required evidence |
 |---|---|---|
 | RN09-D01 | Dino health/artwork, atomic Feed, account ledger and native streak/reward producers | Implementation complete; final independent acceptance recorded on `task/react-native/rn09-d01-rewards`; Ishmum-authorized defaults, backend0005, separate native business outbox and real Home consumer. See latest Plan04 notes and [policy](../architecture/home-rewards.md). Auth/iOS/TalkBack/platform gates remain separate. |
-| RN09-D02 | Weekly selected-app estimates, fixed baseline/signed comparison with source/range/coverage | Implementing with RN09C-D01–D02 on `task/react-native/rn09-d02-history`; strict account API and real Android collector. See [policy](../architecture/history-measurement.md) and latest Plan04 notes; forecast remains gated PD-12. |
+| RN09-D02 | Weekly selected-app estimates, fixed baseline/signed comparison with source/range/coverage | Backend/shared/Android implementation and independent acceptance complete on `task/react-native/rn09-d02-history`; real Pixel native→verified API→PG→UI, frozen baseline and no fabricated comparison. See [policy](../architecture/history-measurement.md), [acceptance](../qa/history-measurement.md) and latest notes. Auth/iOS/signed/TalkBack and PD-12 gates remain separate. |
 | RN09-D03 | Define and wire temporary recommendation generation, Skip/Accept lifecycle, persistence/failure and any reward/restriction notices | PM/native/backend feature owners; no saved quest, installed restriction, completion or reward follows from a UI callback. |
 | RN09-D04 | Connect actual native status and supported permission/setup/recovery actions into the Home protection region | Native owners and RN08-D01–D06; scores, profiles and API acknowledgments are never installation evidence. |
 | RN09-D05 | Wire real account-scoped Home producers, freshness/errors, cancellation and guarded mutations | Auth/backend/RN owners using RN-04 scope/generation rules; no A-to-B data, stale action or uncertain write may be accepted. |
 | RN09-D06 | Execute signed-device rendering, native SVG, font/screen-reader/focus and lifecycle acceptance | Platform owners with RN-10 evidence; browser reflow and Hermes compilation do not establish device behavior. |
+
+**Current History integration ledger (2026-11-13):**
+
+| Original ref | Current scope and evidence |
+|---|---|
+| RN09C-D01 | Implemented: reviewed selected-app estimate policy, native bounded collector/private cache, aggregate-only generated HTTP schema, forced owner RLS and additive0006. Android native145/JVM116 checks and physical seven-day retained-data collection accepted. |
+| RN09C-D02 | Implemented: own account insights, shared Home/History query, coverage/eligibility, consent/CAS, lost-response/restart/offline/selection/permission recovery. Real mobile-client TCP/API restart/PostgreSQL isolation and bounded Pixel journey accepted. Managed SDK/root, iOS and signed/wider-device acceptance remain their existing joint gates. |
+| RN09C-D03 | Existing detail navigation now consumes real week/28-day readings. PD-12 lifespan forecast remains excluded; no new formula or demographic inference. |
+| RN09C-D04 | Bounded ordinary Android controls/revocation/cold-restart accepted here. Signed/wider-device and Anisha-owned iOS remain pending; further TalkBack user-deferred. |
+
+No parent Plan04 completion or new part IDs/counts follow from this feature. Seven
+reported baseline days on the phone are retained OS estimates, not seven days of
+prospective soak. A later non-overlapping window is required for actual comparison;
+42-day synthetic acceptance inputs prove calculation/recovery only.
+
 
 RN-09a–h independent UI/local-interaction scope is implemented. The four main
 surfaces and all eleven reviewed detail frames are covered in the

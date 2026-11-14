@@ -2,7 +2,8 @@ import type { homeDinoAssets } from '@/design/home-assets';
 
 /** Display inputs; connected producers validate HTTP/native policy before mapping here. */
 export type HomeDatum<T> =
-  Readonly<{ state: 'ready'; value: T }> | Readonly<{ state: 'loading' | 'unavailable' | 'error' }>;
+  | Readonly<{ state: 'ready'; value: T }>
+  | Readonly<{ state: 'loading' | 'unavailable' | 'error' }>;
 
 export type DinoDisplay = Readonly<{
   percent: number;
@@ -35,7 +36,9 @@ export type HomeModel = Readonly<{
   credits: HomeDatum<number>;
   weekly: HomeDatum<WeeklyDisplay>;
   streak: HomeDatum<StreakDisplay>;
-  recommendation: HomeDatum<RecommendationDisplay> | Readonly<{ state: 'empty' }>;
+  recommendation:
+    | HomeDatum<RecommendationDisplay>
+    | Readonly<{ state: 'empty' }>;
 }>;
 
 /** Neutral defaults; connected Home supplies verified rewards and separate preferences. */
@@ -49,9 +52,15 @@ export const unavailableHome: HomeModel = {
 
 // Defensive display guards, not response validators or reward/measurement definitions.
 const count = (value: number) => Number.isSafeInteger(value) && value >= 0;
-const text = (value: string) => typeof value === 'string' && value.trim().length > 0;
-function checked<T>(datum: HomeDatum<T>, valid: (value: T) => boolean): HomeDatum<T> {
-  return datum.state === 'ready' && !valid(datum.value) ? { state: 'unavailable' } : datum;
+const text = (value: string) =>
+  typeof value === 'string' && value.trim().length > 0;
+function checked<T>(
+  datum: HomeDatum<T>,
+  valid: (value: T) => boolean,
+): HomeDatum<T> {
+  return datum.state === 'ready' && !valid(datum.value)
+    ? { state: 'unavailable' }
+    : datum;
 }
 export function validateHomeDisplay(model: HomeModel): HomeModel {
   return {
@@ -71,8 +80,9 @@ export function validateHomeDisplay(model: HomeModel): HomeModel {
       (v) =>
         !!v &&
         Number.isFinite(v.hours) &&
-        v.hours >= 0 &&
-        [v.periodLabel, v.rangeLabel, v.sourceLabel, v.coverageLabel].every(text),
+        [v.periodLabel, v.rangeLabel, v.sourceLabel, v.coverageLabel].every(
+          text,
+        ),
     ),
     streak: checked(
       model.streak,
@@ -92,7 +102,9 @@ export function validateHomeDisplay(model: HomeModel): HomeModel {
   };
 }
 
-export function unavailableLabel(state: Exclude<HomeDatum<never>['state'], 'ready'>) {
+export function unavailableLabel(
+  state: Exclude<HomeDatum<never>['state'], 'ready'>,
+) {
   return state === 'loading'
     ? 'Loading…'
     : state === 'error'

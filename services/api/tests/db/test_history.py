@@ -195,13 +195,18 @@ def test_concurrent_distinct_first_series_cannot_replace_each_other(db_settings,
             with db.transaction(owner) as s:
                 start.wait(timeout=5)
                 save(s, body(), NOW)
-            return "ok"
-        except ApiError:
-            return "conflict"
+            return "ok", None
+        except ApiError as error:
+            return "conflict", error.details.current_revision
 
     try:
         with ThreadPoolExecutor(2) as pool:
-            assert sorted(pool.map(run, [1, 2])) == ["conflict", "ok"]
+            results = list(pool.map(run, [1, 2]))
+        assert sorted(kind for kind, _ in results) == ["conflict", "ok"]
+        with db.transaction(owner) as session:
+            winning_revision = view(session, NOW).revision
+        losing_revision = next(revision for kind, revision in results if kind == "conflict")
+        assert losing_revision == winning_revision
     finally:
         db.close()
 

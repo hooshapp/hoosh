@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { Button } from '@/components/ui/button';
 import { Screen } from '@/components/ui/screen';
@@ -20,6 +21,7 @@ type Props = {
   onNext?: () => void;
   onRetry?: () => void;
   reclaimed?: boolean;
+  controls?: ReactNode;
 };
 export function HistoryDetails({
   reading,
@@ -29,15 +31,19 @@ export function HistoryDetails({
   onNext,
   onRetry,
   reclaimed = false,
+  controls,
 }: Props) {
   const detail =
-    reading.state === 'ready' && usableHistoryDetail(reading.data) ? reading.data : null;
+    reading.state === 'ready' && usableHistoryDetail(reading.data)
+      ? reading.data
+      : null;
   const state = reading.state === 'ready' ? 'unavailable' : reading.state;
   return (
     <Screen
       title={reclaimed ? 'Time reclaimed' : 'Your progress'}
       header={null}
-      contentStyle={styles.screen}>
+      contentStyle={styles.screen}
+    >
       <View style={styles.nav}>
         <Button
           label="Back"
@@ -47,9 +53,14 @@ export function HistoryDetails({
           style={styles.back}
           labelStyle={styles.backText}
         />
-        <DesignArtwork asset={reclaimed ? assets.reclaimedDots : assets.progressDots} />
+        <DesignArtwork
+          asset={reclaimed ? assets.reclaimedDots : assets.progressDots}
+        />
       </View>
-      <Text accessibilityRole={reclaimed ? 'header' : undefined} style={styles.eyebrow}>
+      <Text
+        accessibilityRole={reclaimed ? 'header' : undefined}
+        style={styles.eyebrow}
+      >
         {reclaimed ? 'Screen time reduction' : 'Your progress'}
       </Text>
       {!reclaimed ? (
@@ -61,54 +72,76 @@ export function HistoryDetails({
             {(['week', 'month'] as const).map((value) => (
               <Button
                 key={value}
-                label={`This ${value}`}
+                label={value === 'month' ? 'Last 28 days' : 'Last 7 days'}
                 selected={period === value}
                 accessibilityLabel={`This ${value}`}
                 onPress={() => onPeriodChange(value)}
                 variant="secondary"
                 style={[styles.segment, period === value && styles.active]}
-                labelStyle={[styles.segmentText, period === value && { color: colors.warmCanvas }]}
+                labelStyle={[
+                  styles.segmentText,
+                  period === value && { color: colors.warmCanvas },
+                ]}
               />
             ))}
           </View>
         </>
       ) : (
-        <Text style={styles.caption}>Each circle = 10% of your previous usage</Text>
+        <Text style={styles.caption}>
+          Each circle = 10% of your previous usage
+        </Text>
       )}
       {detail ? (
         reclaimed ? (
           <>
-            <ReductionCircles percentage={detail.reduction.value} />
-            <View style={styles.legend}>
-              <View style={styles.legendItem}>
-                <DesignArtwork asset={assets.freedLegend} />
-                <Text style={styles.legendText}>
-                  {detail.reduction.value % 10 === 0
-                    ? `${detail.reduction.value / 10} of 10`
-                    : `${detail.reduction.display}%`}{' '}
-                  — time freed
-                </Text>
+            {detail.percentageAvailable !== false &&
+            detail.reduction.value >= 0 ? (
+              <ReductionCircles percentage={detail.reduction.value} />
+            ) : (
+              <Text style={styles.paragraph}>
+                {detail.percentageAvailable === false
+                  ? 'Percentage is unavailable because baseline usage was zero.'
+                  : 'Usage increased; no time-freed circles are shown.'}
+              </Text>
+            )}
+            {detail.percentageAvailable !== false &&
+            detail.reduction.value >= 0 ? (
+              <View style={styles.legend}>
+                <View style={styles.legendItem}>
+                  <DesignArtwork asset={assets.freedLegend} />
+                  <Text style={styles.legendText}>
+                    {detail.reduction.value % 10 === 0
+                      ? `${detail.reduction.value / 10} of 10`
+                      : `${detail.reduction.display}%`}{' '}
+                    — time freed
+                  </Text>
+                </View>
+                <View style={styles.legendItem}>
+                  <DesignArtwork asset={assets.remainingLegend} />
+                  <Text style={styles.legendText}>
+                    {detail.reduction.value % 10 === 0
+                      ? `${10 - detail.reduction.value / 10} of 10`
+                      : `${100 - detail.reduction.value}%`}{' '}
+                    — remaining
+                  </Text>
+                </View>
               </View>
-              <View style={styles.legendItem}>
-                <DesignArtwork asset={assets.remainingLegend} />
-                <Text style={styles.legendText}>
-                  {detail.reduction.value % 10 === 0
-                    ? `${10 - detail.reduction.value / 10} of 10`
-                    : `${100 - detail.reduction.value}%`}{' '}
-                  — remaining
-                </Text>
-              </View>
-            </View>
+            ) : null}
             <View style={styles.divider} />
             <Text accessibilityRole="header" style={styles.eyebrow}>
-              Time reclaimed · {detail.savedHours.period}
+              {detail.savedHours.value < 0
+                ? 'Additional usage'
+                : 'Estimated time reclaimed'}{' '}
+              · {detail.savedHours.period}
             </Text>
             <View style={styles.statRow}>
               <Text style={styles.saved}>{detail.savedHours.display}</Text>
               <Text style={styles.hours}>hours</Text>
             </View>
             <Text style={styles.paragraph}>
-              More room for books, movement, and moments that matter.
+              {detail.savedHours.value < 0
+                ? 'This period used more time than the fixed baseline. No savings are claimed.'
+                : 'A comparison with your fixed starting baseline; this is not a causal estimate.'}
             </Text>
             <Evidence detail={detail} />
           </>
@@ -123,12 +156,20 @@ export function HistoryDetails({
               ))}
             </View>
             <View style={styles.divider} />
-            <Text style={styles.eyebrow}>Less screen time</Text>
+            <Text style={styles.eyebrow}>
+              {detail.reduction.value < 0
+                ? 'More screen time'
+                : 'Less screen time'}
+            </Text>
             <View style={styles.statRow}>
               <Text style={styles.number}>{detail.reduction.display}</Text>
-              <Text style={styles.percent}>%</Text>
+              <Text style={styles.percent}>
+                {detail.percentageAvailable === false ? '' : '%'}
+              </Text>
             </View>
-            <Text style={styles.caption}>reduction compared to {detail.baseline.period}</Text>
+            <Text style={styles.caption}>
+              reduction compared to {detail.baseline.period}
+            </Text>
             <Evidence detail={detail} />
           </>
         )
@@ -145,6 +186,7 @@ export function HistoryDetails({
           onRetry={state === 'error' ? onRetry : undefined}
         />
       )}
+      {controls}
       {onNext && !reclaimed ? (
         <View style={styles.nextRow}>
           <Button
@@ -180,20 +222,30 @@ function Evidence({ detail }: { detail: HistoryDetail }) {
 function ReductionCircles({ percentage }: { percentage: number }) {
   const filled = percentage / 10;
   return (
-    <View accessible accessibilityLabel={`${percentage}% less screen time`} style={styles.circles}>
+    <View
+      accessible
+      accessibilityLabel={`${percentage}% less screen time`}
+      style={styles.circles}
+    >
       {Array.from({ length: 10 }, (_, i) => (
         <View
           key={i}
-          style={{ width: assets.remainingCircle.width, height: assets.remainingCircle.height }}>
+          style={{
+            width: assets.remainingCircle.width,
+            height: assets.remainingCircle.height,
+          }}
+        >
           <DesignArtwork asset={assets.remainingCircle} />
           <View
             style={{
               position: 'absolute',
               left: 0,
               top: 0,
-              width: Math.max(0, Math.min(1, filled - i)) * assets.freedCircle.width,
+              width:
+                Math.max(0, Math.min(1, filled - i)) * assets.freedCircle.width,
               overflow: 'hidden',
-            }}>
+            }}
+          >
             <DesignArtwork asset={assets.freedCircle} />
           </View>
         </View>
@@ -203,8 +255,17 @@ function ReductionCircles({ percentage }: { percentage: number }) {
 }
 const styles = StyleSheet.create({
   screen: { paddingHorizontal: 28, paddingTop: 16, gap: 12 },
-  nav: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  back: { minHeight: 44, paddingHorizontal: 0, borderWidth: 0, backgroundColor: 'transparent' },
+  nav: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  back: {
+    minHeight: 44,
+    paddingHorizontal: 0,
+    borderWidth: 0,
+    backgroundColor: 'transparent',
+  },
   backText: { fontSize: 13, color: colors.muted },
   eyebrow: {
     fontFamily: fonts.bold,
@@ -213,7 +274,12 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     color: '#6B6257',
   },
-  title: { fontFamily: fonts.bold, fontSize: 32, lineHeight: 42, color: colors.warmForeground },
+  title: {
+    fontFamily: fonts.bold,
+    fontSize: 32,
+    lineHeight: 42,
+    color: colors.warmForeground,
+  },
   segments: {
     flexDirection: 'row',
     borderWidth: 1,
@@ -241,7 +307,12 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     color: colors.warmForeground,
   },
-  statRow: { flexDirection: 'row', alignItems: 'baseline', flexWrap: 'wrap', gap: 4 },
+  statRow: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
+    flexWrap: 'wrap',
+    gap: 4,
+  },
   number: {
     fontFamily: fonts.bold,
     fontSize: 96,
@@ -249,12 +320,31 @@ const styles = StyleSheet.create({
     color: colors.success,
     flexShrink: 1,
   },
-  percent: { fontFamily: fonts.bold, fontSize: 48, color: colors.readableSuccess },
-  caption: { fontFamily: fonts.regular, fontSize: 13, lineHeight: 18, color: '#6B6257' },
+  percent: {
+    fontFamily: fonts.bold,
+    fontSize: 48,
+    color: colors.readableSuccess,
+  },
+  caption: {
+    fontFamily: fonts.regular,
+    fontSize: 13,
+    lineHeight: 18,
+    color: '#6B6257',
+  },
   circles: { flexDirection: 'row', flexWrap: 'wrap', gap: 9.16, rowGap: 12 },
-  legend: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginVertical: 12 },
+  legend: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+    marginVertical: 12,
+  },
   legendItem: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  legendText: { fontFamily: fonts.regular, fontSize: 11, lineHeight: 16, color: colors.muted },
+  legendText: {
+    fontFamily: fonts.regular,
+    fontSize: 11,
+    lineHeight: 16,
+    color: colors.muted,
+  },
   saved: {
     fontFamily: fonts.bold,
     fontSize: 76,
@@ -262,9 +352,18 @@ const styles = StyleSheet.create({
     color: colors.success,
     flexShrink: 1,
   },
-  hours: { fontFamily: fonts.bold, fontSize: 24, color: colors.readableSuccess },
+  hours: {
+    fontFamily: fonts.bold,
+    fontSize: 24,
+    color: colors.readableSuccess,
+  },
   evidence: { gap: 4, marginTop: 12 },
-  evidenceText: { fontFamily: fonts.regular, fontSize: 12, lineHeight: 17, color: colors.muted },
+  evidenceText: {
+    fontFamily: fonts.regular,
+    fontSize: 12,
+    lineHeight: 17,
+    color: colors.muted,
+  },
   nextRow: { alignItems: 'flex-end', marginTop: 24 },
   next: {
     width: 48,

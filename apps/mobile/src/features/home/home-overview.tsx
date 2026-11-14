@@ -26,20 +26,30 @@ export function HomeOverview({
   feeding = false,
 }: Props) {
   const [failedDino, setFailedDino] = useState<unknown>();
-  const dinoSource = dino.state === 'ready' ? homeDinoAssets[dino.value.artwork] : undefined;
+  const dinoSource =
+    dino.state === 'ready' ? homeDinoAssets[dino.value.artwork] : undefined;
   useAnnouncement(feeding ? 'Feeding Dino…' : undefined);
   return (
-    <View style={[styles.overview, stacked && styles.stacked]} testID="home-overview">
-      <View style={[styles.dinoCard, !stacked && styles.dinoColumn]} testID="home-dino-card">
+    <View
+      style={[styles.overview, stacked && styles.stacked]}
+      testID="home-overview"
+    >
+      <View
+        style={[styles.dinoCard, !stacked && styles.dinoColumn]}
+        testID="home-dino-card"
+      >
         {dino.state === 'ready' ? (
           <>
             <View
               style={styles.health}
               accessible
-              accessibilityLabel={`Dino health ${dino.value.percent}%`}>
+              accessibilityLabel={`Dino health ${dino.value.percent}%`}
+            >
               <HomeArtwork asset={homeAssets.heart} testID="home-heart" />
               <View style={styles.track}>
-                <View style={[styles.fill, { width: `${dino.value.percent}%` }]} />
+                <View
+                  style={[styles.fill, { width: `${dino.value.percent}%` }]}
+                />
               </View>
               <Text style={styles.percent}>{dino.value.percent}%</Text>
             </View>
@@ -65,7 +75,11 @@ export function HomeOverview({
             <Text accessibilityRole="header" style={styles.dinoHeading}>
               Dino health
             </Text>
-            <Text accessibilityLiveRegion="polite" aria-live="polite" style={styles.unavailable}>
+            <Text
+              accessibilityLiveRegion="polite"
+              aria-live="polite"
+              style={styles.unavailable}
+            >
               {unavailableLabel(dino.state)}
             </Text>
             <Text style={styles.hint}>
@@ -110,14 +124,17 @@ export function HomeOverview({
         <View
           style={styles.credits}
           accessible
-          accessibilityLabel={`Credits: ${credits.state === 'ready' ? credits.value : unavailableLabel(credits.state)}`}>
+          accessibilityLabel={`Credits: ${credits.state === 'ready' ? credits.value : unavailableLabel(credits.state)}`}
+        >
           <Text style={styles.creditsLabel}>✦ Credits</Text>
           <View style={styles.divider} />
           <Text testID="home-credit-value" style={styles.creditsValue}>
             {credits.state === 'ready' ? credits.value : '—'}
           </Text>
           {credits.state === 'ready' ? null : (
-            <Text style={styles.creditHint}>{unavailableLabel(credits.state)}</Text>
+            <Text style={styles.creditHint}>
+              {unavailableLabel(credits.state)}
+            </Text>
           )}
         </View>
         <View style={styles.weekly} testID="home-weekly-card">
@@ -127,11 +144,19 @@ export function HomeOverview({
           <Text style={styles.period}>
             {weekly.state === 'ready' ? weekly.value.periodLabel : 'Time saved'}
           </Text>
-          <Text style={styles.hours}>{weekly.state === 'ready' ? weekly.value.hours : '—'}</Text>
+          <Text style={styles.hours}>
+            {weekly.state === 'ready'
+              ? Number(weekly.value.hours.toFixed(2))
+              : '—'}
+          </Text>
           {weekly.state === 'ready' ? (
             <>
               <Text style={styles.unit}>HRS</Text>
-              <Text style={styles.saved}>saved 🧠</Text>
+              <Text style={styles.saved}>
+                {weekly.value.hours < 0
+                  ? 'increased usage'
+                  : 'saved (estimated) 🧠'}
+              </Text>
               {onOpenHistory ? (
                 <Button
                   label=">"
@@ -143,7 +168,11 @@ export function HomeOverview({
               ) : null}
             </>
           ) : (
-            <Text accessibilityLiveRegion="polite" aria-live="polite" style={styles.saved}>
+            <Text
+              accessibilityLiveRegion="polite"
+              aria-live="polite"
+              style={styles.saved}
+            >
               {unavailableLabel(weekly.state)}
             </Text>
           )}
@@ -153,7 +182,12 @@ export function HomeOverview({
   );
 }
 const styles = StyleSheet.create({
-  overview: { flexDirection: 'row', gap: 16, alignItems: 'stretch', marginBottom: 6 },
+  overview: {
+    flexDirection: 'row',
+    gap: 16,
+    alignItems: 'stretch',
+    marginBottom: 6,
+  },
   stacked: { flexDirection: 'column' },
   // Flex distributes the content width; the left card also owns its 3 px border.
   dinoColumn: { flex: 193 },
@@ -184,12 +218,36 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   fill: { height: 7, borderRadius: 4, backgroundColor: colors.action },
-  percent: { fontFamily: fonts.bold, fontSize: 9, color: colors.readableSuccess },
-  habitat: { height: 110, width: 110, justifyContent: 'center', alignItems: 'center' },
+  percent: {
+    fontFamily: fonts.bold,
+    fontSize: 9,
+    color: colors.readableSuccess,
+  },
+  habitat: {
+    height: 110,
+    width: 110,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   dino: { width: 110, height: 110 },
-  dinoUnavailable: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 8, padding: 14 },
-  dinoHeading: { fontFamily: fonts.bold, fontSize: 17, color: colors.warmForeground },
-  unavailable: { fontFamily: fonts.medium, fontSize: 13, color: colors.muted, textAlign: 'center' },
+  dinoUnavailable: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    padding: 14,
+  },
+  dinoHeading: {
+    fontFamily: fonts.bold,
+    fontSize: 17,
+    color: colors.warmForeground,
+  },
+  unavailable: {
+    fontFamily: fonts.medium,
+    fontSize: 13,
+    color: colors.muted,
+    textAlign: 'center',
+  },
   hint: {
     fontFamily: fonts.regular,
     fontSize: 12,
@@ -214,7 +272,12 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: colors.readableSuccess,
   },
-  costText: { fontFamily: fonts.bold, fontSize: 10, lineHeight: 13, color: colors.white },
+  costText: {
+    fontFamily: fonts.bold,
+    fontSize: 10,
+    lineHeight: 13,
+    color: colors.white,
+  },
   statsColumn: { minWidth: 0, gap: 12 },
   statsFlex: { flex: 149 },
   credits: {
@@ -229,9 +292,18 @@ const styles = StyleSheet.create({
     gap: 6,
     flexWrap: 'wrap',
   },
-  creditsLabel: { fontFamily: fonts.regular, fontSize: 11, color: colors.warmHeader },
+  creditsLabel: {
+    fontFamily: fonts.regular,
+    fontSize: 11,
+    color: colors.warmHeader,
+  },
   divider: { width: 1, height: 14, backgroundColor: '#444444' },
-  creditsValue: { fontFamily: fonts.bold, fontSize: 15, color: colors.warmHeader, flexShrink: 1 },
+  creditsValue: {
+    fontFamily: fonts.bold,
+    fontSize: 15,
+    color: colors.warmHeader,
+    flexShrink: 1,
+  },
   creditHint: {
     width: '100%',
     textAlign: 'center',
@@ -250,7 +322,12 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   ellipse: { position: 'absolute', left: 80, top: -30 },
-  period: { fontFamily: fonts.medium, fontSize: 11, color: colors.onAction, opacity: 0.8 },
+  period: {
+    fontFamily: fonts.medium,
+    fontSize: 11,
+    color: colors.onAction,
+    opacity: 0.8,
+  },
   hours: { fontFamily: fonts.bold, fontSize: 38, color: colors.onAction },
   unit: { fontFamily: fonts.bold, fontSize: 17, color: colors.onAction },
   saved: {

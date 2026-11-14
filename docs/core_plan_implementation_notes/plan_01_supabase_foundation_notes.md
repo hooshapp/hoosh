@@ -1,5 +1,16 @@
 # Plan 01 — Supabase Foundation Implementation Notes
 
+**History product-schema handoff,2026-11-13:** Plan04 RN09-D02/RN09C-D01–D02 adds
+aggregate selected-app History, fixed baseline/7/28-day comparisons and migration
+`20261114_0006`. Development upgrade/no-drift/RLS/ACL and runtime TLS/own missing
+read pass; prior eight product tables' row counts/content digests are preserved.
+Backend `6bb5850`, native `918ac0d`; complete shared/acceptance per-file ledger is
+in [Plan04 notes](plan_04_react_native_integration_notes.md), History D01c, and the
+[runbook](../qa/history-measurement.md). No Anisha-owned Auth/user/provider operation,
+managed A/B token test or hosted deletion. Existing SB/API IDs and deferred joint
+gates are unchanged; older schema checkpoints below remain historical.
+
+
 **Plan:** [01_supabase_foundation.md](../core_plan/01_supabase_foundation.md).
 **Owner for this work:** Ishmum; Anisha retains SB-01–03 and leads SB-06.
 **Starting commit:** `d4f3e38`. **Started:** 2026-11-01.
