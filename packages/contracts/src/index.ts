@@ -75,3 +75,7 @@ export type HistoryDay = components['schemas']['HistoryDay'];
 export type HistoryPut = components['schemas']['HistoryPut'];
 export type HistoryWindow = components['schemas']['HistoryWindow'];
 export type HistoryView = components['schemas']['HistoryView'];
+
+export type RecommendationOffer = components['schemas']['RecommendationOffer'];
+export type RecommendationView = components['schemas']['RecommendationView'];
+export type RecommendationAction = components['schemas']['RecommendationAction'];

@@ -23,6 +23,7 @@ def include_name(name, type_, parent_names):
             "quest_occurrence_outcomes",
             "reward_wallets",
             "history_records",
+            "recommendation_decisions",
             "reward_entries",
             "reward_streams",
         ) and parent_names.get("schema_name") in (

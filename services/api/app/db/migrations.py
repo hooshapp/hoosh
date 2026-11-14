@@ -13,7 +13,7 @@ from alembic import command
 from app.models.profile import STRIP_CHARACTERS
 
 API_ROOT = Path(__file__).resolve().parents[2]
-HEAD = "20261114_0006"
+HEAD = "20261114_0007"
 LOCK_ID = 7529304120701
 
 
@@ -152,6 +152,7 @@ def verify(connection: Connection) -> dict:
         "public.reward_entries",
         "public.reward_streams",
         "public.history_records",
+        "public.recommendation_decisions",
         "public.alembic_version",
     ):
         if (
@@ -171,7 +172,8 @@ def verify(connection: Connection) -> dict:
                 "AND NOT (:table IN ('public.profiles','public.user_settings',"
                 "'public.user_quests','public.quest_schedule_versions',"
                 "'public.quest_occurrence_outcomes','public.reward_wallets',"
-                "'public.reward_entries','public.reward_streams','public.history_records') "
+                "'public.reward_entries','public.reward_streams','public.history_records',"
+                "'public.recommendation_decisions') "
                 "AND a.grantee="
                 "(SELECT oid FROM pg_roles WHERE rolname='disconnect_api'))"
             ),
@@ -203,6 +205,7 @@ def verify(connection: Connection) -> dict:
             "public.reward_entries",
             "public.reward_streams",
             "public.history_records",
+            "public.recommendation_decisions",
         ):
             for privilege in (
                 "SELECT",
@@ -476,6 +479,7 @@ def _verify_execution(connection: Connection) -> None:
         ("reward_entries", {"SELECT", "INSERT"}),
         ("reward_streams", {"SELECT", "INSERT", "UPDATE"}),
         ("history_records", {"SELECT", "INSERT", "UPDATE"}),
+        ("recommendation_decisions", {"SELECT", "INSERT", "UPDATE"}),
     ):
         qualified = "public." + table
         row = connection.execute(
@@ -609,4 +613,22 @@ EXECUTION_CONSTRAINT_FINGERPRINTS["history_records"] = {
         "7dffc1fe5c72443147ef9227e966626cdc6e5997f36e90bcc553577512766d2a"
     ),
     "pk_history_records": ("44756d887704fc88d8d0adc5c0c431103c555b4f8e6a4ddef6f7a7f6b4110606"),
+}
+
+EXECUTION_CONSTRAINT_FINGERPRINTS["recommendation_decisions"] = {
+    "ck_recommendation_decisions_cooldown_positive": (
+        "3c7338763e9c4bf63d78dc80bb365110ecb49cbea13e8d4956d640e7d9238e84"
+    ),
+    "ck_recommendation_decisions_decision_choice": (
+        "b2d49407947b2cfd1803da0f8ca945a93eaea08427cd79c59de27cc99a48c7ca"
+    ),
+    "ck_recommendation_decisions_quest_coherent": (
+        "3669cea81e2d5f5359dbf841380cad6c9efb59cf6c96786138c82a4c4d000016"
+    ),
+    "fk_recommendation_decisions_user_id_users": (
+        "7dffc1fe5c72443147ef9227e966626cdc6e5997f36e90bcc553577512766d2a"
+    ),
+    "pk_recommendation_decisions": (
+        "44756d887704fc88d8d0adc5c0c431103c555b4f8e6a4ddef6f7a7f6b4110606"
+    ),
 }

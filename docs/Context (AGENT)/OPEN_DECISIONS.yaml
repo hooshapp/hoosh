@@ -1,7 +1,7 @@
 # Product decisions: explicit PM choices and remaining engineering/product gates.
 # Original recommendations below are historical, not the current policy.
-version: 6
-updated_at: "2026-11-13"
+version: 7
+updated_at: "2026-11-14"
 recorded_by: "Ishmum engineering reconciliation"
 source: "PM_QUESTIONS.md#original-pm-responses"
 adr: "../architecture/pm-decisions-2026-11-09.md"
@@ -309,3 +309,15 @@ history_implementation_defaults_2026_11_13:
     - "Native bounded56day/32KiB aggregate cache; server56recent days plus frozen baseline until replacement/account deletion."
   source: "Android retained selected-app foreground estimate, policy1; witnessed boundaries do not guarantee lossless OS telemetry."
   retained_gates: [pm_review_of_defaults, ios, managed_auth_sdk_acceptance, prospective_soak, wider_signed_store_acceptance, further_talkback, PD-12_forecast]
+
+recommendations_implementation_defaults_2026_11_14:
+  authority: "Ishmum requested full RN09-D03; revisable engineering defaults, not additional PM answers."
+  record: "../architecture/home-recommendations.md"
+  refs: [PD-06, PD-16, PD-26]
+  decisions:
+    - "Existing TSD activity-template fallback, generic10minute break without saved supported interests; friendly tone, no AI/usage-routine claim or custom-text echo."
+    - "Offer expires at next15minute boundary; preferences revision/time slot fence stale acceptance."
+    - "Skip/Accept persists24hour cooldown; one owner-private receipt row; atomic, serialized and same-action replay-safe."
+    - "Accept saves one repeat-none quest and opens review. Explicit date/schedule/native Apply before protection; no award on Accept."
+    - "Existing self-reported completion50once after occurrence end; no second scheduler or reward path."
+  retained_gates: [generated_ai_provider_inputs_budget_evaluation, pm_review_of_defaults, managed_auth_sdk_acceptance, ios, further_talkback, signed_store_acceptance]

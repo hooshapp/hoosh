@@ -396,3 +396,25 @@ Source is an Android retained foreground estimate, not attested lossless telemet
 or causal savings. See [measurement policy](../../docs/architecture/history-measurement.md).
 Native permission/selection mismatch and unsupported iOS remain genuine unavailable
 states. Lifespan forecast remains excluded under PD-12.
+
+## RN09-D03 — temporary Home recommendations
+
+- `GET /v1/recommendations/current` is a nonmutating verified-own read. Version1
+  returns an activity/generic template offer (opaque ID, bounded title/activity,
+  duration, completion50, saved zone and expiry), or a durable accepted/skipped
+  receipt with next-offer time. No usage inference or AI-generation claim.
+- `PUT /v1/recommendations/decision` accepts only `offer_id` and
+  `action: accepted|skipped`. Strict16KiB JSON/duplicate-key/auth guards apply.
+  Stale, foreign, opposite or cooldown-invalid choices return
+  `RECOMMENDATION_CONFLICT409` with safe fixed copy and no invented revision detail.
+- Accept atomically creates exactly one `repeat=none` saved quest and decision;
+  replay returns it without scheduling/activating/rewarding. Normal quest review,
+  first date, explicit schedule/native Apply and completion50once remain separate.
+  A deleted accepted quest yields no review target and is never recreated by replay.
+- Skip creates no quest/reward/protection change. Either decision starts24hours
+  cooldown. Receipt storage is one forced-RLS own row, replaced only after cooldown;
+  account deletion cascades it. Reads/refreshes never accept an offer.
+- Normal account query lifetime fences private results/navigation. Offline and
+  failed reads mask advice; uncertain writes require verified GET recovery before
+  another choice, never automatic mutation replay. See
+  [policy](../../docs/architecture/home-recommendations.md).

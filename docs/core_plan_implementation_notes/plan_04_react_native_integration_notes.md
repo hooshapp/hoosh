@@ -4,13 +4,13 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN09-D02 / RN09C-D01–D02 backend/shared/Android History is implemented and independently accepted. Backend `6bb5850`, native `918ac0d`, shared/acceptance D01c below. Fixed seven-day baseline, seven/28-day account comparisons, synced nudge-type quits, actual native consent/collection/recovery and Home integration are available. Development head `20261114_0006`; existing product rows preserved. Anisha-owned Auth/iOS, signed/wider-device, further user-deferred TalkBack, prospective soak and PD-12 forecast remain separate. Parent Plan04 remains open. Prior rewards D01c is `f87a006`.
+**Current part:** RN09-D03 Recommendations in progress: deterministic template/decision/backend0007 implemented; shared Home/native review/recovery and acceptance continue in the latest entries below. Prior History completed at `011f5ef`. Anisha-owned Auth/iOS, further TalkBack and signed/store acceptance remain separate; no delivered AI generation is claimed.
 
-**Implementation branch:** `task/react-native/rn09-d02-history`; parent `f87a006`, backend `6bb5850`, native `918ac0d`. Local commits only; no push/main merge/deployment or iOS acceptance. Older branch/checkpoint records below are historical.
+**Implementation branch:** `task/react-native/rn09-d03-recommendations`; parent `011f5ef`. Local commits only; no push/main merge/deployment. Older task branches/checkpoints below are historical.
 
 **Commit reference:** RN-01 `2f88102`; RN-02 `2d5c0d1`; RN-03 `0741758`; RN-04 `610f570`; RN-05 preparation `0c6e4db`; RN-07 UI `5790302`; RN-08 preparation `71da2d5`; RN-09a `ff75039`. RN-10 is `9b5fbd0`.
 
-**Last updated:** 2026-11-13.
+**Last updated:** 2026-11-14.
 
 **Shared workflow:** [Implementation knowledge base](README.md).
 
@@ -6401,3 +6401,90 @@ added files are accounted for; binary PNGs have no textual line numbers.
 | `services/api/tests/db/test_history.py`:198–200,204–209 | Strengthen real two-connection first-series race to assert the conflict revision equals the persisted winner, alongside exactly one success. Reflow one101character assertion to satisfy existing lint. |
 | `services/api/tests/db/test_mobile_history_acceptance.py`:1–77 | Run actual verified TCP API and production portable client across independent API processes; assert exact five nested cases and owner isolation. Private environment tokens/reports never appear in failure output and temp reports are removed. |
 | This notes file:7,9,19–21,6260–6403 | Current part/branch/resume checkpoint and this per-commit decisions, corrections, actual verification, phone/hosted restoration, every-file ledger and remaining-gates handoff. |
+
+### RN09-D03 — Recommendations (implementation started)
+
+Owner Ishmum,2026-11-14. Branch `task/react-native/rn09-d03-recommendations`,
+base `011f5ef`. Preserve existing part IDs; three logical slices: deterministic
+account recommendation/decision producer; shared Home Accept/Skip/recovery and
+one-time quest handoff; regression/TCP/Android compilation and final evidence.
+
+Implement the existing TSD's transparent activity-template fallback, not an
+unselected LLM/provider. One offer is valid until the next15minute boundary;
+Skip/Accept starts a24hour cooldown to avoid repeated prompts/farming. A decision
+is durable, owner-isolated and replay-safe. Accept explicitly creates a one-time
+saved quest (`repeat=none`) and opens the existing review/schedule/native Apply
+flow; it does not silently install protection or award50credits. The existing
+user-confirmed completion/outcome/ledger handles50once after the quest ends.
+All globally selected apps are used only when the native Apply step confirms the
+current selection. No raw app inventory, demographics or usage inference is used.
+Custom activity text is not echoed into generated advice. Offline/uncertain writes
+require readback, never automatic repeat. These are revisable engineering defaults,
+not new PM answers. Anisha's Auth/iOS, further TalkBack and signed/store acceptance
+remain separate. Detailed every-file/range notes travel with each implementation
+commit. Existing user workspace/icon directories stay untouched.
+
+#### RN09-D03a — Recommendation policy, durable decision and one-time quest producer
+
+Owner Ishmum,2026-11-14. Commit Pending,
+`feat(recommendations): persist temporary offers and one-time acceptance`.
+Branch `task/react-native/rn09-d03-recommendations`, base `011f5ef`.
+
+The backend is implemented and development schema0007 applied. GET never persists
+an offer or creates a quest. An explicit accepted decision and exactly one repeat-none
+quest commit atomically; Skip saves only a receipt. Neither schedules native rules
+nor earns credit. Row locking/upsert serializes mixed and identical concurrent
+requests; matching replays cannot recreate deleted quests. Stale settings/15minute
+slots and24hour cooldown reject unsafe changes. Existing explicit quest first-date/
+Schedule/native Apply and self-reported completion50once are reused. Generic fallback
+requires no saved interests; custom text/raw app usage/demographics are never inputs.
+
+Local validation: full workspace553portable/769component(+2historical skips)/
+681deterministicAPI and exact contract/type checks pass in the in-progress shared
+checkout. Clean sequential actual PostgreSQL287 pass, including16 new recommendation
+cases and five nested real-mobile-client TCP/API-process-restart cases. Driver/shared
+files are committed in D03b. Initial checks caught a QA-relative-route type, fixture
+context/expired-envelope expectation and an acceptance import name; corrected rather
+than weakening guards. Normal verified ephemeral JWTs, no managed Auth/token bypass.
+
+Pinned development0006→0007 preserves before/after count/content digests for all nine
+prior product tables. Exact schema/RLS/ACL/constraint and runtime TLS/nonmutating
+own-generic read pass; separate Alembic no-drift check also passes. Two existing
+profiles preserved; no Auth/user/provider/credential/deletion operation. New receipt
+is one row per owner until replacement/account deletion; accepted quest retention
+uses existing user-controlled definition/tombstone policy. Initial CHECK explicitly
+requires non-null accepted quest ID to avoid SQL three-valued-null acceptance.
+
+Remaining this task: finish shared Home Accept/Skip/recovery and actual Android
+emulator journey/cleanup. Generated AI under PD-26, Anisha-owned Auth/iOS, further
+TalkBack and signed/store gates remain separate. No push/merge/deployment.
+
+| File and exact changed lines in this commit | Change and purpose |
+|---|---|
+| `docs/Context (AGENT)/OPEN_DECISIONS.yaml`:3–4,312–323 | Advance decision register/date and append revisable template, expiry/cooldown, review/Apply/reward defaults. Keep generated-AI/provider/evaluation and other platform gates open; do not relabel PM answers. |
+| `docs/Context (AGENT)/PM_QUESTIONS.md`:734–751 | Append exact engineering choices and their authority, distinction from AI generation, no auto protection/credits, replay/deletion and existing quest handoff. |
+| `docs/architecture/home-recommendations.md`:1–84 | Define complete transient offer/decision/one-time review/activation/reward flow, saved-interest/generic privacy defaults, expiry/cadence/timezone/DST, bounded RLS receipt and recovery/AI boundaries. |
+| `packages/contracts/HTTP_API.md`:399–420 | Document own nonmutating GET, strict decision PUT,409 safe conflict without invented revision, atomic repeat-none creation, cooldown, deletion/replay and scoped recovery. |
+| `packages/contracts/openapi/foundation.openapi.json`:159,278,1409–1567,5109–5596 | Environment-free generated recommendation schemas/routes and general409 error variant; no runtime credentials or handwritten schema duplication. |
+| `packages/contracts/src/http.generated.ts`:197–230,402,836–909,2350–2569 | Pinned generator output matching new HTTP DTOs/operations and safe recommendation conflict code. |
+| `packages/contracts/src/index.ts`:78–81 | Export type-only generated RecommendationOffer/View/Action aliases for consumers; no second protocol. |
+| `services/api/alembic/env.py`:26 | Reflect new owned table in the single Alembic drift authority; managed Auth remains external. |
+| `services/api/alembic/versions/20261114_0007_recommendations.py`:1–48 | Frozen additive receipt table DDL with strict accepted/quest-null coherence, positive cooldown, managed Auth cascade, forced own RLS and runtime SELECT/INSERT/UPDATE only. Prior migrations unchanged. |
+| `services/api/app/api/v1/recommendations.py`:1–42 | Verified own GET and transactional decision PUT with existing JWT/UOW/errors; commit precedes response and no Auth administration/provider shortcut. |
+| `services/api/app/application.py`:15,59 | Register actual recommendation routes in side-effect-free application assembly. |
+| `services/api/app/core/errors.py`:28–30 | Add fixed RECOMMENDATION_CONFLICT409 copy; no caller text or guessed revision details. |
+| `services/api/app/core/json_body.py`:39–41 | Include recommendation PUT in existing strict16KiB UTF8/object/duplicate JSON guard before dependency acquisition. |
+| `services/api/app/db/migrations.py`:16,155,175–176,208,482,617–634 | Advance HEAD0007 and owned table/public/runtime ACL/force-RLS/exact-policy inventory. Pin exact PG17 constraint fingerprints derived from rollback-only isolated frozen DDL, not weakening existing drift checks. |
+| `services/api/app/domain/recommendations.py`:1–70 | Pure deterministic saved-interest/timezone matching or generic fallback, stable15minute/settings-revision offer ID, server-owned reward/duration/source and valid near-term non-repeating definition using existing DST resolver. No custom-text echo/raw usage/LLM. |
+| `services/api/app/models/__init__.py`:7,13 | Register/export RecommendationDecision under the single owned metadata authority. |
+| `services/api/app/models/recommendations.py`:1–33 | One content-free bounded decision per owner, exact cooldown/action/quest constraints and managed Auth CASCADE; no saved suggestion list or raw preferences copied to receipt. |
+| `services/api/app/repositories/recommendations.py`:1–119 | Nonmutating own proposal/receipt reads; row-lock/first-insert race serialization, stable same-action replay, opposite/stale/foreign/cooldown rejection, atomic quest creation and receipt, deleted-target no resurrection. Catch only expected missing-owner FK as403; unrelated errors remain failures. |
+| `services/api/app/schemas/errors.py`:18,94 | General fixed recommendation409 variant without ConflictDetails; other revisioned conflict variants unchanged. |
+| `services/api/app/schemas/recommendations.py`:1–40 | Strict decision-only input and versioned offer/receipt output with UTC times, source, expiry and completion50; no client-supplied title/credit/activation claims. |
+| `services/api/tests/api/test_recommendations.py`:1–72 | Eight deterministic checks for untrusted extra/client fields, malformed decisions, actual midnight/fall-back future-definition resolver, auth and bounded/duplicate JSON before DB. |
+| `services/api/tests/api/test_schema.py`:46–47 | Extend exact environment-free route inventory with current/decision endpoints. |
+| `services/api/tests/db/test_recommendations.py`:1–253 | Sixteen real PG cases: transient reads/preferences/privacy; replay/opposite/cadence/stale inputs; one-time/no-schedule/no-credit Accept; deleted-ID and transactional failure; owner isolation; concurrent identical/opposite decisions; actual schedule/completion50once; security drift;0006 preservation and disposable-only Auth cascade. |
+| `services/api/tests/test_profile_metadata.py`:23 | Extend owned model inventory while retaining original profile/external Auth assertions. |
+| `services/api/tests/test_settings_contract.py`:147 | Extend owned model inventory without changing existing settings schema/history contracts. |
+| `docs/core_plan/04_react_native_integration.md`:795 | Mark original RN09-D03 backend/defaults implemented and shared/Android acceptance in progress; preserve IDs and generated-AI/platform gates. |
+| This notes file:7,9,13,6426–6490 | Current task/branch/date and this commit scope, decisions, checks/corrections, hosted preservation and every-file handoff. Earlier start entry6405–6426 travels with this first implementation commit. |

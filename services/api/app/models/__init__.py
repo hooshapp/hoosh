@@ -4,11 +4,13 @@ from app.models.history import HistoryRecord
 from app.models.profile import Profile
 from app.models.quest import UserQuest
 from app.models.quest_execution import QuestOccurrenceOutcome, QuestScheduleVersion
+from app.models.recommendations import RecommendationDecision
 from app.models.rewards import RewardEntry, RewardStream, RewardWallet
 from app.models.settings import UserSettings
 
 __all__ = [
     "Profile",
+    "RecommendationDecision",
     "HistoryRecord",
     "UserSettings",
     "UserQuest",

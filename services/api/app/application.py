@@ -12,6 +12,7 @@ from app.api.v1.me import router as identity_router
 from app.api.v1.profiles import router as profile_router
 from app.api.v1.quest_execution import router as quest_execution_router
 from app.api.v1.quests import router as quests_router
+from app.api.v1.recommendations import router as recommendations_router
 from app.api.v1.rewards import router as rewards_router
 from app.api.v1.settings import router as settings_router
 from app.core.auth import UnavailableTokenVerifier
@@ -55,5 +56,6 @@ def create_app(*, cors_origins: Sequence[str] = (), lifespan: Lifespan | None = 
     application.include_router(quest_execution_router)
     application.include_router(rewards_router)
     application.include_router(history_router)
+    application.include_router(recommendations_router)
     install_openapi(application)
     return application

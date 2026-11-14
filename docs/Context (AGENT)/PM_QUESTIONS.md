@@ -731,3 +731,21 @@ erases local collection state but retains existing server summaries until replac
 or the account is deleted. It does not activate or stop app protection. A pending
 read is cancelled so it cannot restore a stopped collection's presentation. These
 are recovery/privacy implementation choices, not additional PM-supplied answers.
+
+
+### RN09-D03 implementation defaults —2026-11-14
+
+Ishmum requested full Recommendations implementation. Use the TSD's transparent
+activity-template fallback first; this is not delivered AI generation or usage-time
+inference. Support selected built-in interests, generic10minute offline fallback,
+friendly optional language and no echo of custom text/demographics. Offers expire
+at the next15minute boundary and change when saved preferences change. Skip/Accept
+records a24hour cooldown. Accept explicitly saves one non-repeating quest and opens
+review; it does not award credits or install protection. Review the time/date,
+permissions/current global app selection and explicitly schedule/Apply with the
+existing quest controls. Completion earns the existing50once after end and explicit
+self-report. Same-action replay never creates another quest; deleted accepted quests
+stay deleted. These cadence/duration/privacy/recovery choices are revisable
+engineering defaults, not additional PM answers. Generated AI remains a separate
+PD-26 provider/input/budget/evaluation decision. Read
+[policy](../architecture/home-recommendations.md) for exact behavior and limits.
