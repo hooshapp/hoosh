@@ -1,0 +1,116 @@
+{
+  "parts": [
+    "RN09-D03"
+  ],
+  "date": "2026-11-14",
+  "branch": "task/react-native/rn09-d03-recommendations",
+  "backend_commit": "808ba94",
+  "shared_commit": "Pending in this commit",
+  "policy": "activity-template fallback1; generated AI remains PD-26",
+  "checks": {
+    "portable": 553,
+    "component": 773,
+    "component_existing_skips": 2,
+    "deterministic_api": 682,
+    "postgresql": 287,
+    "recommendation_postgresql_cases": 16,
+    "nested_real_mobile_tcp_and_restart_cases": 5,
+    "lint_errors": 0,
+    "pre_existing_mobile_warnings": 4,
+    "web_isolated_files": 38,
+    "original_svg_assets": 71,
+    "qa_android_hermes_export": true,
+    "native_source_changed": false,
+    "new_native_instrumentation_count_claimed": false,
+    "spring_gap_fold_midnight_proposals_keep_actual_duration": true
+  },
+  "emulator": {
+    "api": 36,
+    "actual_interest_offer": true,
+    "accepted_once_repeat_none": true,
+    "initial_schedule_disabled": true,
+    "initial_balance": 0,
+    "only_synthetic_target_selected": true,
+    "explicit_disclosure_and_native_apply": true,
+    "actual_native_pause": true,
+    "confirmed_stop_released_target": true,
+    "account_disabled_after_stop": true,
+    "final_balance": 0,
+    "accepted_and_skip_cold_restart_persistence": true,
+    "test_window_retimed_through_verified_api": true,
+    "duration_minutes_kept": 20,
+    "full20minute_soak": false,
+    "existing_fixture_seed_quests_per_account": 1
+  },
+  "phone": {
+    "model": "Pixel 8 Pro",
+    "api": 36,
+    "actual_offer_and_accept_review": true,
+    "repeat_none_and_accepted_id_unique": true,
+    "automatic_schedule": false,
+    "balance_after_accept": 0,
+    "second_account_skip_saved": true,
+    "second_account_new_quest_count": 0,
+    "prior_account_review_target_exposed": false,
+    "new_accessibility_permission_or_claim": false,
+    "talkback_enabled": false
+  },
+  "hosted": {
+    "previous_head": "20261114_0006",
+    "head": "20261114_0007",
+    "nine_prior_product_tables_counts_and_digests_preserved": true,
+    "original_profile_count": 2,
+    "no_drift_and_forced_rls_acl_constraint_checks": true,
+    "runtime_tls_and_own_nonmutating_read": true,
+    "hosted_auth_user_provider_credential_or_deletion_action": false
+  },
+  "restoration": {
+    "emulator": {
+      "native_file_contents_and_modes_restored": true,
+      "accessibility_settings_restored": true,
+      "reverse_mappings_restored": true,
+      "usage_permission_restored": true,
+      "sdk_credentials_excluded": true
+    },
+    "phone": {
+      "native_file_directory_contents_and_modes_restored": true,
+      "native_path_inventory_restored": true,
+      "accessibility_settings_restored": true,
+      "usage_permission_restored": true,
+      "usb_stay_awake_restored": true,
+      "reverse_mappings_restored": true,
+      "sdk_credentials_excluded": true
+    },
+    "both_fixture_users_and_manifests_cleaned": true,
+    "owned_servers_and_emulator_stopped": true,
+    "disposable_database_stopped_labeled_volume_retained": true
+  },
+  "limits": [
+    "Generated AI/provider/input/budget/evaluation remains a separate PD-26 extension.",
+    "Managed Auth SDK, Anisha-owned iOS, wider/signed/store and further TalkBack remain separate.",
+    "Physical phone acceptance is UI/decision/review only; native Apply/pause/Stop and cold restarts were tested on the owned emulator.",
+    "Completion50once is tested against the real database at an advanced test time; no physical20minute task completion or usage outcome is fabricated."
+  ],
+  "screenshots": {
+    "phone-offer.png": {
+      "sha256": "1a44b1a4ac55be5f795077f9751be8ca64bf1ff910af30676ff4af64f0b612b9",
+      "context": "Actual product components in isolated QA host/native synthetic target; floating gear belongs to developer host."
+    },
+    "phone-review.png": {
+      "sha256": "c355120f13e70ad8e14158111c27d6bc0e92151f999a0ac36541dccaa6b7a5a9",
+      "context": "Actual product components in isolated QA host/native synthetic target; floating gear belongs to developer host."
+    },
+    "phone-skip.png": {
+      "sha256": "407a24edfa907fb5bf68e8eadb0cd1fb64301d446d908703cd0271fc3faa3ca1",
+      "context": "Actual product components in isolated QA host/native synthetic target; floating gear belongs to developer host."
+    },
+    "emulator-native-pause.png": {
+      "sha256": "c927160146acac97fc8a8e57168798d2b22ff1ff0ecd35ffffa5d2128ccd8861",
+      "context": "Actual product components in isolated QA host/native synthetic target; floating gear belongs to developer host."
+    },
+    "emulator-target-after-stop.png": {
+      "sha256": "19340bf379ac6c2a29a6ba65977c1254b169629b1c85f6d1e3396b3196005bb3",
+      "context": "Actual product components in isolated QA host/native synthetic target; floating gear belongs to developer host."
+    }
+  }
+}

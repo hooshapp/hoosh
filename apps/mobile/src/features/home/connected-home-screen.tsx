@@ -1,3 +1,5 @@
+import { useRecommendations } from '@/features/recommendations/use-recommendations';
+import { RecommendationFeedback } from '@/features/recommendations/recommendation-feedback';
 import { Button } from '@/components/ui/button';
 import { DeviceProtection } from '@/features/protection/device-protection';
 import { InlineStatus } from '@/components/ui/inline-status';
@@ -20,10 +22,13 @@ export { UnavailableDeviceProtection } from '@/features/protection/device-protec
 export function ConnectedHomeScreen({
   onOpen,
   onOpenHistory,
+  onOpenQuest,
 }: {
   onOpen?: PreferencesNavigation;
   onOpenHistory?: () => void;
+  onOpenQuest?: (id: string) => void;
 }) {
+  const recommendations = useRecommendations(onOpenQuest);
   const rewards = useRewards();
   const history = useHistory();
   const weekly = historyProjection(
@@ -34,6 +39,7 @@ export function ConnectedHomeScreen({
   const rewardModel: HomeModel = wallet
     ? {
         ...unavailableHome,
+        recommendation: recommendations.recommendation,
         weekly,
         credits: { state: 'ready', value: wallet.balance },
         dino: {
@@ -55,7 +61,11 @@ export function ConnectedHomeScreen({
                 },
               },
       }
-    : { ...unavailableHome, weekly };
+    : {
+        ...unavailableHome,
+        weekly,
+        recommendation: recommendations.recommendation,
+      };
   const { query, summary, availability, online } = useSettingsSummary();
   const { controller } = useAccountData();
   const recovery = useAccountAction(controller, () =>
@@ -95,6 +105,21 @@ export function ConnectedHomeScreen({
       model={rewardModel}
       onFeed={rewards.canFeed ? rewards.feed : undefined}
       feeding={rewards.feeding}
+      onAcceptRecommendation={
+        recommendations.canAct && onOpenQuest
+          ? recommendations.accept
+          : undefined
+      }
+      onSkipRecommendation={
+        recommendations.canAct ? recommendations.skip : undefined
+      }
+      recommendationBusy={recommendations.busy}
+      recommendationFeedback={
+        <RecommendationFeedback
+          recommendations={recommendations}
+          onOpen={onOpenQuest}
+        />
+      }
       onOpenHistory={onOpenHistory}
       preferences={
         <>

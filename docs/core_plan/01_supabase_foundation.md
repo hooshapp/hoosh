@@ -1,5 +1,21 @@
 # Plan 01 — Supabase Auth and Database Foundation
 
+**Recommendations implementation (2026-11-14; RN09-D03):** activity-template
+Home offers, durable Skip/Accept/cooldown, replay-safe one-time quest creation and
+scoped recovery are implemented. Accept opens existing quest review; explicit
+Schedule/native Apply is still required, and completion50once uses the existing
+ledger. Actual Android36 emulator offer→review→Apply→pause→Stop and cold-restart
+Accept/Skip persistence pass; Pixel/API36 Home Accept/review and second-account Skip
+also pass without new permissions. Development is verified at `20261114_0007`, preserving
+all nine prior product tables. Read [policy](../architecture/home-recommendations.md),
+[acceptance](../qa/home-recommendations.md) and latest
+[Plan04 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md).
+This is the TSD's template fallback; generated AI/provider/evaluation remains PD-26.
+Anisha's Auth/iOS, full physical/native and signed/store matrices, and further
+TalkBack remain separate.
+The following earlier checkpoints are historical.
+
+
 **History implementation (2026-11-13; RN09-D02 / RN09C-D01–D02):**
 shared Home/History now use the verified account API and real Android selected-app
 foreground estimates. Explicit Start/Restart consent, fixed seven-day baseline,

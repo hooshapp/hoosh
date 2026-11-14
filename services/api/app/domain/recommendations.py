@@ -63,8 +63,12 @@ def one_time_definition(value: RecommendationOffer, now: datetime) -> QuestDefin
             timezone_id=value.timezone_id,
         )
         bounds = occurrence(definition, start.date(), start.date())
-        if bounds and bounds[0] > now:
+        if (
+            bounds
+            and bounds[0] > now
+            and bounds[1] - bounds[0] == timedelta(minutes=value.duration_minutes)
+        ):
             return definition
-        # Avoid proposing the earlier occurrence of a repeated fall-back clock time.
+        # Avoid past fold occurrences and gap/fold windows with a different real duration.
         start += timedelta(minutes=1)
     raise ValueError("No valid near-term quest time")

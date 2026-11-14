@@ -28,7 +28,9 @@ def test_reject_client_decision_claims(patch):
         RecommendationAction.model_validate(dict(offer_id=str(uuid4()), action="accepted") | patch)
 
 
-@pytest.mark.parametrize("stamp", ["2026-11-15T04:59:30+00:00", "2026-11-01T06:50:00+00:00"])
+@pytest.mark.parametrize(
+    "stamp", ["2026-11-15T04:59:30+00:00", "2026-11-01T06:50:00+00:00", "2026-03-08T06:50:00+00:00"]
+)
 def test_saved_zone_midnight_and_fall_back_offer(stamp):
     now = datetime.fromisoformat(stamp)
     prefs = SimpleNamespace(
@@ -47,6 +49,7 @@ def test_saved_zone_midnight_and_fall_back_offer(stamp):
         day += timedelta(days=1)
     times = occurrence(definition, day, day)
     assert times and times[0] > now
+    assert times[1] - times[0] == timedelta(minutes=value.duration_minutes)
     assert definition.repeat == "none"
     assert value.expires_at.tzinfo == UTC
 

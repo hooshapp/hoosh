@@ -7,7 +7,11 @@ import { homeAssets } from '@/design/home-assets';
 import { colors, fonts } from '@/design/tokens';
 
 import { HomeArtwork } from './home-artwork';
-import { unavailableLabel, validateHomeDisplay, type HomeModel } from './home-model';
+import {
+  unavailableLabel,
+  validateHomeDisplay,
+  type HomeModel,
+} from './home-model';
 import { HomeOverview } from './home-overview';
 import { HomeRecommendation } from './home-recommendation';
 
@@ -25,6 +29,7 @@ export type HomeScreenProps = {
   onSkipRecommendation?: (id: string) => void;
   feeding?: boolean;
   recommendationBusy?: boolean;
+  recommendationFeedback?: ReactNode;
 };
 /** Source Home composition; connected features own policy, freshness and account scoping. */
 export function HomeScreen({
@@ -39,17 +44,28 @@ export function HomeScreen({
   onSkipRecommendation,
   feeding = false,
   recommendationBusy = false,
+  recommendationFeedback,
 }: HomeScreenProps) {
   const model = validateHomeDisplay(input);
   const [contentWidth, setContentWidth] = useState<number>();
   const { fontScale } = useWindowDimensions();
-  const stacked = (contentWidth !== undefined && contentWidth < 300) || fontScale > 1.3;
+  const stacked =
+    (contentWidth !== undefined && contentWidth < 300) || fontScale > 1.3;
   return (
-    <Screen title="Home" bottomClearance={bottomClearance} header={null} contentStyle={styles.content} testID="home-scroll">
+    <Screen
+      title="Home"
+      bottomClearance={bottomClearance}
+      header={null}
+      contentStyle={styles.content}
+      testID="home-scroll"
+    >
       <View
         testID="home-content"
         style={styles.body}
-        onLayout={({ nativeEvent }) => setContentWidth(Math.ceil(nativeEvent.layout.width))}>
+        onLayout={({ nativeEvent }) =>
+          setContentWidth(Math.ceil(nativeEvent.layout.width))
+        }
+      >
         {protectionPlacement === 'top' ? protection : null}
         <HomeOverview
           dino={model.dino}
@@ -67,6 +83,7 @@ export function HomeScreen({
           busy={recommendationBusy}
           stacked={stacked}
         />
+        {recommendationFeedback}
         <View style={styles.streak} testID="home-streak">
           <View style={styles.streakText}>
             <Text style={styles.streakLabel}>Current streak</Text>
@@ -76,7 +93,8 @@ export function HomeScreen({
                 : unavailableLabel(model.streak.state)}
             </Text>
           </View>
-          {model.streak.state === 'ready' && model.streak.value.recentWeekComplete ? (
+          {model.streak.state === 'ready' &&
+          model.streak.value.recentWeekComplete ? (
             <HomeArtwork asset={homeAssets.streak} testID="home-streak-dots" />
           ) : null}
         </View>
@@ -113,6 +131,16 @@ const styles = StyleSheet.create({
     lineHeight: 14,
     color: colors.warmHeader,
   },
-  streakValue: { fontFamily: fonts.bold, fontSize: 20, lineHeight: 26, color: colors.warmHeader },
-  provenance: { fontFamily: fonts.regular, fontSize: 12, lineHeight: 18, color: colors.muted },
+  streakValue: {
+    fontFamily: fonts.bold,
+    fontSize: 20,
+    lineHeight: 26,
+    color: colors.warmHeader,
+  },
+  provenance: {
+    fontFamily: fonts.regular,
+    fontSize: 12,
+    lineHeight: 18,
+    color: colors.muted,
+  },
 });

@@ -1,5 +1,17 @@
 # Plan 01 — Supabase Foundation Implementation Notes
 
+**RN09-D03 recommendation handoff,2026-11-14:** Plan04 adds a bounded private
+recommendation decision row and own current/decision API; accepted one-time quests
+reuse existing scheduling/native/outcome/reward contracts. Development0006→0007
+preserved all nine prior product table count/content digests, with exact no-drift/
+forced-RLS/ACL/constraint and runtime TLS/own nonmutating read checks passing.
+Backend `808ba94`; every-file source/consumer/acceptance ledger is in the latest
+[Plan04 notes](plan_04_react_native_integration_notes.md) and
+[runbook](../qa/home-recommendations.md). Existing SB/API IDs and deferred managed
+account/deletion gates are unchanged. No hosted Auth/user/provider action, credential
+reset, deployment or new managed-token acceptance. Older heads below are historical.
+
+
 **History product-schema handoff,2026-11-13:** Plan04 RN09-D02/RN09C-D01–D02 adds
 aggregate selected-app History, fixed baseline/7/28-day comparisons and migration
 `20261114_0006`. Development upgrade/no-drift/RLS/ACL and runtime TLS/own missing

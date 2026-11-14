@@ -11,6 +11,7 @@ export default function Home() {
   const { runtime } = useRuntime();
   return runtime ? (
     <ConnectedHomeScreen
+      onOpenQuest={(id) => router.push({ pathname: './quest', params: { id } })}
       onOpenHistory={() => router.push('./history')}
       onOpen={{
         activities: () => router.push('./activities'),

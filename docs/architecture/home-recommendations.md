@@ -34,7 +34,9 @@ The saved default starts roughly two minutes ahead for review and lasts10–20mi
 depending on activity (music15). It uses the saved plan's IANA zone, otherwise UTC,
 which is visible in quest review. Midnight rollover and fall-back ambiguity use the
 existing occurrence resolver; review still requires an explicit first date and
-future start. If review takes longer, edit the time before scheduling. Defaults
+future start. Proposals skip gap/fold intervals whose actual duration differs from
+the template minutes; user-edited schedules retain the existing resolver semantics.
+If review takes longer, edit the time before scheduling. Defaults
 can be changed in the editor. It starts with `repeat=none` and no repeat weekdays;
 only an explicit later edit may make it recurring. An accepted one-time definition
 remains under Accepted until the user deletes it; it is never attached to the

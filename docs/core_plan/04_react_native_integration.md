@@ -1,5 +1,21 @@
 # 04 — React Native Integration and Shared Frontend Plan
 
+**Recommendations implementation (2026-11-14; RN09-D03):** activity-template
+Home offers, durable Skip/Accept/cooldown, replay-safe one-time quest creation and
+scoped recovery are implemented. Accept opens existing quest review; explicit
+Schedule/native Apply is still required, and completion50once uses the existing
+ledger. Actual Android36 emulator offer→review→Apply→pause→Stop and cold-restart
+Accept/Skip persistence pass; Pixel/API36 Home Accept/review and second-account Skip
+also pass without new permissions. Development is verified at `20261114_0007`, preserving
+all nine prior product tables. Read [policy](../architecture/home-recommendations.md),
+[acceptance](../qa/home-recommendations.md) and latest
+[Plan04 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md).
+This is the TSD's template fallback; generated AI/provider/evaluation remains PD-26.
+Anisha's Auth/iOS, full physical/native and signed/store matrices, and further
+TalkBack remain separate.
+The following earlier checkpoints are historical.
+
+
 **History implementation (2026-11-13; RN09-D02 / RN09C-D01–D02):**
 shared Home/History now use the verified account API and real Android selected-app
 foreground estimates. Explicit Start/Restart consent, fixed seven-day baseline,
@@ -792,7 +808,7 @@ alone do not complete these rows. Keep IDs in sync with the implementation notes
 |---|---|---|
 | RN09-D01 | Dino health/artwork, atomic Feed, account ledger and native streak/reward producers | Implementation complete; final independent acceptance recorded on `task/react-native/rn09-d01-rewards`; Ishmum-authorized defaults, backend0005, separate native business outbox and real Home consumer. See latest Plan04 notes and [policy](../architecture/home-rewards.md). Auth/iOS/TalkBack/platform gates remain separate. |
 | RN09-D02 | Weekly selected-app estimates, fixed baseline/signed comparison with source/range/coverage | Backend/shared/Android implementation and independent acceptance complete on `task/react-native/rn09-d02-history`; real Pixel native→verified API→PG→UI, frozen baseline and no fabricated comparison. See [policy](../architecture/history-measurement.md), [acceptance](../qa/history-measurement.md) and latest notes. Auth/iOS/signed/TalkBack and PD-12 gates remain separate. |
-| RN09-D03 | Temporary activity-template recommendations, durable Skip/Accept and one-time quest review | Backend/schema/defaults implemented on `task/react-native/rn09-d03-recommendations`; shared Home/recovery and Android acceptance in progress. See [policy](../architecture/home-recommendations.md). Accept saves repeat-none definition only; explicit schedule/Apply and completion remain separate. Generated AI and platform gates remain open. |
+| RN09-D03 | Temporary activity-template recommendations, durable Skip/Accept and one-time quest review | Backend/shared/Android implementation and bounded emulator acceptance complete on `task/react-native/rn09-d03-recommendations`; backend `808ba94`, shared/evidence in latest notes. See [policy](../architecture/home-recommendations.md) and [acceptance](../qa/home-recommendations.md). Accept saves repeat-none definition; explicit Schedule/Apply and end-time self-report50once are reused. Generated AI remains PD-26; Auth/iOS/physical/signed/TalkBack gates remain separate. |
 | RN09-D04 | Connect actual native status and supported permission/setup/recovery actions into the Home protection region | Native owners and RN08-D01–D06; scores, profiles and API acknowledgments are never installation evidence. |
 | RN09-D05 | Wire real account-scoped Home producers, freshness/errors, cancellation and guarded mutations | Auth/backend/RN owners using RN-04 scope/generation rules; no A-to-B data, stale action or uncertain write may be accepted. |
 | RN09-D06 | Execute signed-device rendering, native SVG, font/screen-reader/focus and lifecycle acceptance | Platform owners with RN-10 evidence; browser reflow and Hermes compilation do not establish device behavior. |

@@ -4,7 +4,7 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN09-D03 Recommendations in progress: deterministic template/decision/backend0007 implemented; shared Home/native review/recovery and acceptance continue in the latest entries below. Prior History completed at `011f5ef`. Anisha-owned Auth/iOS, further TalkBack and signed/store acceptance remain separate; no delivered AI generation is claimed.
+**Current part:** RN09-D03 Recommendations backend/shared/Android implementation and bounded independent acceptance complete. Backend `808ba94`; shared/acceptance commit below. Development head `20261114_0007`, prior nine product tables preserved. Activity-template offers, durable Skip/Accept, one-time review/native Apply/Stop and cold-restart recovery are verified. Generated AI remains PD-26, not delivered by this template fallback. Pixel/API36 Home Accept/Skip UI is also verified; full physical/native matrices, Anisha's Auth/iOS, signed/store and further TalkBack stay separate. No full parent Plan04 completion.
 
 **Implementation branch:** `task/react-native/rn09-d03-recommendations`; parent `011f5ef`. Local commits only; no push/main merge/deployment. Older task branches/checkpoints below are historical.
 
@@ -15,6 +15,9 @@
 **Shared workflow:** [Implementation knowledge base](README.md).
 
 ## Resume here
+
+- **RN09-D03 complete independent slice (2026-11-14):** backend `808ba94` plus final shared/acceptance entry below. Real activity-template offers, durable Skip/Accept/cooldown, repeat-none quest review and scoped uncertain/offline/deleted/stale/unmounted recovery are implemented. Emulator actual Schedule/Apply/pause/Stop and cold persistence pass; Pixel/API36 Home Accept/review and second-account Skip pass. Final553portable/773component(+2skips)/682API/287PG, exports and development0007 security/TLS/preservation pass. Both device baselines/phone USB wake/reverse/settings and owned fixture/server cleanup verified. Generated AI remains PD-26; Anisha's Auth/iOS, full signed/wider-device and further TalkBack remain separate. Read [policy](../architecture/home-recommendations.md), [acceptance](../qa/home-recommendations.md) and [evidence](artifacts/rn-09-recommendations/evidence.json). No parent completion or push/merge/deployment.
+
 
 - **History completion (2026-11-13; RN09-D02 / RN09C-D01–D02):** backend/shared/Android implementation and bounded independent acceptance complete. Read final History D01c entry, [policy](../architecture/history-measurement.md), [acceptance](../qa/history-measurement.md) and [sanitized evidence](artifacts/rn-09-history/evidence.json). Real Pixel returned seven reported days for one synthetic saved app; baseline frozen, overlap correctly prevents savings. Consent cancellation, empty-selection refusal, revocation/Stop and explicit restart/cold reconnect pass. Phone files/settings/reverse restored, fixture users/servers removed, disposable DB stopped with volume retained. Auth SDK/iOS/signed/wider-device/further TalkBack and PD-12 forecast remain separate. No real later7/28day soak or full Plan04 completion is claimed.
 
@@ -6488,3 +6491,126 @@ TalkBack and signed/store gates remain separate. No push/merge/deployment.
 | `services/api/tests/test_settings_contract.py`:147 | Extend owned model inventory without changing existing settings schema/history contracts. |
 | `docs/core_plan/04_react_native_integration.md`:795 | Mark original RN09-D03 backend/defaults implemented and shared/Android acceptance in progress; preserve IDs and generated-AI/platform gates. |
 | This notes file:7,9,13,6426–6490 | Current task/branch/date and this commit scope, decisions, checks/corrections, hosted preservation and every-file handoff. Earlier start entry6405–6426 travels with this first implementation commit. |
+
+#### RN09-D03b — Home decisions, one-time review and final Android acceptance
+
+Owner Ishmum,2026-11-14. Branch `task/react-native/rn09-d03-recommendations`,
+backend D03a `808ba94`, task base `011f5ef`. Commit Pending, subject
+`feat(home): connect recommendations and verify one-time quest flow`.
+This commit combines the shared-consumer and independent acceptance slices planned
+at task start; no new top-level part or parallel scheduler/credit path is added.
+
+Implementation and independent backend/shared/Android acceptance are complete.
+Home's real activity-template/generic offer now has durable Skip/Accept/cooldown,
+scoped freshness/errors/expiry, readback for uncertain writes and canonical review
+navigation. Accept saves exactly one repeat-none quest and opens the existing
+editor; explicit date/Schedule/Apply and end-time self-report50once are retained.
+Original assets, existing data/auth/native contracts and user-controlled edits are
+reused. Generated AI/provider/input/budget/evaluation remains PD-26; this TSD fallback
+does not claim usage-routine inference or delivered model generation.
+
+Meaningful corrections/recovery choices:
+
+- Accepted-target deletion is not a new successful save: response/null target gives
+  honest copy, no recreation/navigation. A Home unmount suppresses late UI/navigation
+  while canonical account receipt cache and quest invalidation remain safe.
+- Final review found spring-gap/fold proposals could inherit a shorter/longer actual
+  interval from existing wall-clock resolution. Require the advertised real duration
+  when choosing defaults; nine API/domain cases now cover midnight, spring gap and
+  repeated fall-back. No existing user-edited schedule/compiler policy is changed.
+- The QA relative route and driver readWallet import/long-line errors were fixed;
+  expired-response tests assert disabled action rather than falsely assuming the
+  server as-of envelope itself is malformed. Account test fixtures keep B's data
+  separate instead of relabeling A's receipt. Assertions were not weakened.
+- Manual fixtures already seed one unrelated quest per account. Verify a recommended
+  ID appears once and count delta+1; Skip delta0. An initial total-count1 check was
+  corrected against the inspected fixture, not treated as duplicate creation.
+- Phone setup waited for the actual credential field after initial loading. One
+  restore verification returned invalid USB archive output; no pass was claimed.
+  Fresh scoped fingerprints checked files AND directories/modes/path inventory;
+  remaining owned reverse ports and original power/a11y/usage settings were then
+  restored/reverified. SDK credentials and user app content were never included.
+
+**Checks:** final `npm run check`:553portable,773component(+2historical skips),
+682deterministicAPI, types/schema/pinned generation and lint pass; four pre-existing
+mobile warnings/zero errors. Final clean sequential `npm run api:db:test`:287PG,
+including16 recommendation DB cases and five nested actual production-mobile-client
+TCP/API-process restart cases. No DB suite ran alongside a manual fixture.
+Production web export/isolation38files/original SVG71 and QA Android Hermes export
+pass. No native source/dependency/signing change or new native instrumentation
+count is claimed; existing debug native APK/interfaces are reused.
+
+**Actual Android:** owned API36 emulator: actual Home Accept→repeat-none20minute
+review, schedule disabled/balance0 before explicit activation. Claim/disclosure and
+saved synthetic-only target precede actual editor first date/Schedule/native Apply;
+account and device acknowledgments observed separately. Setup outlasted the first
+proposed time, so the accepted fixture definition was moved forward through verified
+API, duration20kept, before editor scheduling. Real native pause appears with one
+reason; confirmed Stop releases target and disables account schedule, balance0.
+No UI Automation dump during intervention callbacks. Same-account accepted review
+and B Skip survive cold host restarts. No20minute completion soak is fabricated;
+actual50once completion is tested through real PG/ledger at an advanced test time.
+
+Physical Pixel8Pro/API36: current Home offer/Accept opens real non-repeating editor,
+recommended ID appears once, schedule stays disabled and balance0. Same-host second
+isolated account has no A review target; Skip saves cooldown, adds no quest/reward.
+No physical native claim, protection enablement or new accessibility permission.
+TalkBack stays off. Temporary USB stay-awake is recorded and restored. Actual source
+components in isolated QA host, not managed SDK or signed product-root acceptance;
+gear belongs to developer host. Screenshots are unedited actual captures.
+
+**Hosted/cleanup:** development0006→0007 retains before/after counts/content digests
+for nine prior product tables, with existing two profiles preserved. Exact no-drift,
+forced RLS/ACL/constraints and runtime TLS/own nonmutating generic read pass. No
+hosted Auth/user/provider/credential/deletion action. Emulator/phone native state,
+known path contents/modes, a11y/usage/reverse and phone USB wake verified restored;
+private SDK credentials excluded. Both fixture runs remove only their own disposable
+users/manifest. Owned Metro/API/emulator stopped; final disposable DB stopped with
+labeled volume retained. Private backups/tokens/raw UI XML remain outside Git/removed.
+
+**Handoff:** original RN09-D03 independent implementation is complete; no full
+Plan04/RN-11 closure or new part counts. Anisha's Auth/onboarding/iOS, managed-account
+SDK acceptance, full physical/native/signed/store matrices, further user-deferred
+TalkBack and generated-AI PD-26 remain separate. PM defaults stay revisable and are
+not additional PM answers. Existing user workspace/icon-pack paths untouched.
+Local commits only; no push/main merge/deployment in this task.
+
+| File and exact changed lines in this commit | Change and purpose |
+|---|---|
+| `apps/mobile/dev/profile/acceptance/recommendations-http.acceptance.ts`:1–175 | Five guarded serial production-client TCP cases: nonmutating generic offer, accepted one-time definition/replay/no schedule or credit, lost committed Skip/readback/opposite rejection, foreign-ID isolation and actual API-process restart. Loopback/marker/credential environment is explicit; no managed SDK bypass. |
+| `apps/mobile/dev/profile/acceptance/recommendations-vitest.config.mts`:1–9 | Separate bounded Node HTTP acceptance entry, outside portable UI tests; serial test execution preserves intentional write/restart phases. |
+| `apps/mobile/dev/profile/app/home.tsx`:14 | Supply real relative QA quest navigation for Accept/review using the production editor. Does not add a second feature implementation or activate native rules. |
+| `apps/mobile/src/app/(tabs)/index.tsx`:15–17 | Supply actual protected quest/[id] navigation to connected Home; no action while account provider is absent. |
+| `apps/mobile/src/features/home/connected-home-screen.tsx`:1–2,25,29,31,42,64–68,108–122 | Compose one account-scoped recommendation consumer independently of wallet/history availability, real Accept/Skip/busy controls and cooldown/review/recovery feedback. Enable Accept only with a real review destination; unrelated Home regions and source assets retain existing behavior. |
+| `apps/mobile/src/features/home/home-screen.tsx`:10–14,32,47,52–53,55–61,65–68,86,96–97,134–145 | Add an optional owner-supplied recommendation feedback region immediately after the existing card, preserving controlled intent callbacks. Other hunks are scoped single-quote Prettier import/JSX wrapping; no design/artwork/touch policy replacement. |
+| `apps/mobile/src/features/recommendations/README.md`:1–31 | Document actual decoder/query/mutation/recovery/route/native/reward boundaries and portable/TCP test separation; generated AI remains a future extension. |
+| `apps/mobile/src/features/recommendations/__tests__/fixture.ts`:1–23 | Isolated coherent dynamic-time public UUID offer fixture, never imported by production routes or used as a measured account outcome. |
+| `apps/mobile/src/features/recommendations/recommendation-feedback.tsx`:1–44 | Render scoped decision/cooldown/recovery copy, real accepted-quest review and safe manual refresh. Disable retry when account/network readiness prevents a meaningful request; reuse existing controls/tokens. |
+| `apps/mobile/src/features/recommendations/recommendations-api.test.ts`:1–54 | Portable own/version/source/expiry/duration/reward/coherent-state validation, missing-context rejection and accepted/deleted/skipped receipt distinctions. Unknown input is not blindly cast into view state. |
+| `apps/mobile/src/features/recommendations/recommendations-api.ts`:1–97 | Strict own response decoding for policy/source/expiry/timezone/duration/reward and offer-versus-receipt coherence. Reconstruct reviewed fields only, preserving null deleted targets instead of retaining arbitrary raw payload. |
+| `apps/mobile/src/features/recommendations/recommendations-api.ts`:98–123 | Production GET/PUT clients, signal/account context and action/accepted-ID acknowledgment checks. No manual auth header, native activation or automatic write replay. |
+| `apps/mobile/src/features/recommendations/recommendations-home.test.tsx`:1–279 | Eight behavior cases across both component renderers: actual Home template/Accept navigation/one PUT, Skip, lost committed response recovery/no replay, offline and expired action suppression, account replacement, deleted-target acknowledgment and same-account Home unmount suppressing late navigation. Transport fixtures keep accounts separate; no production success stub. |
+| `apps/mobile/src/features/recommendations/use-recommendations.ts`:1–79 | Existing private account/query lifetime plus mounted-view guard, online state and safe foreground/manual30second reads. Expiry is presentation-only; server revalidates offer identity and cooldown. Verified readback clears uncertainty and reports canonical saved/deleted/skipped state. |
+| `apps/mobile/src/features/recommendations/use-recommendations.ts`:80–117 | Use existing non-replaying account mutation, cancel stale recommendation reads around PUT and cache only current acknowledgment. Invalidate saved quests before the mounted-view UI/navigation guard; stale-account or unmounted callbacks cannot open an old quest. |
+| `apps/mobile/src/features/recommendations/use-recommendations.ts`:118–172 | Honest Home model/source/reward/restriction copy, expired/offline/error/empty states and action gating. Same-flight lock prevents duplicate decisions; reviewed saved target is the only navigation destination. |
+| `apps/mobile/src/infrastructure/api/errors.ts`:38 | Recognize RECOMMENDATION_CONFLICT409 within existing safe status/code classification; retain fixed client messaging and no arbitrary server detail propagation. |
+| `docs/Context (AGENT)/AGENT_START_HERE.md`:15–29 | Current implementation/schema/native/phone/acceptance handoff before historical checkpoints, with precise template-versus-generated-AI and coordinated platform ownership boundaries. |
+| `docs/architecture/home-recommendations.md`:37–39 | Clarify that generated default proposals avoid DST gap/fold intervals whose real duration differs from template minutes; existing user-edited quest resolver semantics remain unchanged. |
+| `docs/core_plan/01_supabase_foundation.md`:3–18 | Current0007 recommendations/owned product database checkpoint; preserve Anisha Auth ownership and all original SB IDs/gates. |
+| `docs/core_plan/03_backend_foundation.md`:3–18 | Current recommendation API/schema/acceptance cross-plan handoff without inventing API-13 or closing deferred managed-account/deletion work. |
+| `docs/core_plan/04_react_native_integration.md`:3–18,811 | Add current feature/checkpoint, mark original RN09-D03 implementation/independent acceptance complete and retain generated-AI/physical-native/signed/Auth/iOS/TalkBack distinctions. Existing IDs and parent counts unchanged. |
+| `docs/core_plan/README.md`:3–18 | Expose latest RN09-D03/0007 execution/evidence checkpoint before old next-step prose; keep existing plan ownership and IDs. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09-recommendations/README.md`:1–21 | Explain exact image contexts and actual-versus-synthetic/native-versus-shared scope; no private credential or fake soak/attested outcome evidence. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09-recommendations/emulator-native-pause.png`:binary PNG | Actual native pause for the explicitly applied accepted recommendation and sole synthetic target. Binary PNG; pause is not completion/credit evidence. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09-recommendations/emulator-target-after-stop.png`:binary PNG | Actual synthetic target visible without intervention after confirmed local/account Stop. Binary PNG; backed separately by own API/native state observations. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09-recommendations/evidence.json`:1–116 | Sanitized final counts/booleans, DST correction, emulator and phone observations, hosted data preservation/security, restoration/cleanup and explicit unverified gates; includes PNG hashes without user UUID/token/serial/inventory. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09-recommendations/phone-offer.png`:binary PNG | Current actual Pixel Home interest-template offer before Accept, including completion-only reward and explicit protection handoff. Binary PNG; no textual line numbers. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09-recommendations/phone-review.png`:binary PNG | Actual phone repeat-none quest review after accepted acknowledgment, with schedule/reward still off. Binary PNG; floating gear is developer host UI. |
+| `docs/core_plan_implementation_notes/artifacts/rn-09-recommendations/phone-skip.png`:binary PNG | Actual second-account saved Skip/cooldown after account switch, no A review target or new quest/credit. Binary PNG; original fixture quest remains independently seeded. |
+| `docs/core_plan_implementation_notes/plan_01_supabase_foundation_notes.md`:3–14 | Cross-reference single detailed Plan04 per-file ledger and0007 preservation/RLS/ACL/TLS evidence, retaining SB ownership and deferred joint gates. |
+| `docs/core_plan_implementation_notes/plan_03_backend_foundation_notes.md`:3–14 | Cross-reference recommendation API/consumer/native handoff and current schema while leaving original API-01–12 and managed-token/cascade gates intact. |
+| `docs/qa/home-recommendations.md`:1–124 | Reproducible unit/DB/TCP/component/export and Android procedures, 287 final database cases, explicit seeded-quest baseline/deltas, physical UI and emulator native/cold results, DST and restoration corrections, no fabricated20minute soak or managed Auth/iOS claims. |
+| `services/api/app/domain/recommendations.py`:66–70,72 | Final review correction: require actual UTC-resolved duration to equal template minutes before selecting a proposed start. Skip DST gap/fold candidates that would otherwise protect for a shorter/longer interval; existing quest scheduler is unchanged. |
+| `services/api/tests/api/test_recommendations.py`:31–33,52 | Add actual spring-forward case and real interval-duration assertion alongside midnight/fall-back. Confirms valid future proposals and exactly the advertised template minutes. |
+| `services/api/tests/db/test_mobile_recommendations_acceptance.py`:1–78 | Drive five production-client cases against normal verified JWT TCP FastAPI/PG, then an independent API process with persisted decisions/quest isolation. Bounded child environment, fixed failure titles and private temporary reports avoid credential output. |
+| This notes file:7,19–21,6494–6616 | Current completed part/resume checkpoint and this per-commit scope, corrections, final checks, physical/emulator/hosted results, exact file ledger, cleanup and honest remaining-gate handoff. |

@@ -12,6 +12,9 @@ export default function Home() {
   if (account?.scope)
     return (
       <ConnectedHomeScreen
+        onOpenQuest={(id) =>
+          router.push({ pathname: '/quest/[id]', params: { id } })
+        }
         onOpenHistory={() => router.push('/(tabs)/history')}
         onOpen={{
           activities: open('activities'),
