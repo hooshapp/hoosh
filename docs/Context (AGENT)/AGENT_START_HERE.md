@@ -12,6 +12,19 @@ and existing evidence; deferred is not completed. Functional controls, navigatio
 ordinary layout and recovery still need relevant checks. This does not change
 Anisha's ownership or silently defer her other platform work.
 
+**Normal app integration (2026-11-14; RN09-D04/D05, RN09D-D02):** normal SDK/account
+root now shares one verified-owner weekly controller across Home, Settings and
+editors. Home links its installed native status to Settings; Settings adds real
+selection counts, explicit Preview/Apply/Resume/Stop and confirmed device-account
+claim. Saved drafts and installed protection stay separate; offline/selection-read
+failure still permits confirmed native Stop. Save-then-Apply cache timing and
+quest-only native compatibility are fixed. Read [acceptance](../qa/normal-account-app.md)
+and latest [Plan04 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md).
+Normal-root component tests and rebuilt native emulator checks pass; real managed
+account phone acceptance, Anisha's Auth/onboarding/iOS, signed/wider-device and
+further TalkBack gates remain open. No hosted Auth/DDL change or full parent completion.
+Older checkpoints below are historical for this new integration scope.
+
 **Recommendations implementation (2026-11-14; RN09-D03):** activity-template
 Home offers, durable Skip/Accept/cooldown, replay-safe one-time quest creation and
 scoped recovery are implemented. Accept opens existing quest review; explicit

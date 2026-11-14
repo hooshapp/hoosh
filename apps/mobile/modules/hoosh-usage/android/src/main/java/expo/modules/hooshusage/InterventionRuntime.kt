@@ -157,7 +157,7 @@ class InterventionRuntime private constructor(val context: Context) {
     val allWindows = value?.let { WeeklySchedules.windows(it.plan, now) }.orEmpty()
     val windows = allWindows.filter { it.reasonId.startsWith("weekly_") }
     return mapOf("observedAt" to now, "native" to summary(value, now, allowed), "spec" to weekly?.let { scheduleWire(it, value.plan.policy) },
-      "enabled" to (weekly?.enabled == true), "windows" to previewWindows(windows), "otherReasonCount" to (allWindows.size - windows.size), "otherInstallation" to (value != null && weekly == null && allWindows.isNotEmpty()))
+      "enabled" to (weekly?.enabled == true), "windows" to previewWindows(windows), "otherReasonCount" to (allWindows.size - windows.size), "otherInstallation" to WeeklySchedules.hasOtherInstallation(value?.plan, allWindows))
   }
   fun scheduleRead(owner: String, promise: Promise) = call(promise) { scheduleSummary(owner) }
   fun schedulePreview(spec: Map<String, Any>, promise: Promise) = call(promise) {

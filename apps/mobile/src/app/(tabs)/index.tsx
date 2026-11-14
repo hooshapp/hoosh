@@ -12,6 +12,7 @@ export default function Home() {
   if (account?.scope)
     return (
       <ConnectedHomeScreen
+        onManageProtection={() => router.navigate('/(tabs)/settings')}
         onOpenQuest={(id) =>
           router.push({ pathname: '/quest/[id]', params: { id } })
         }

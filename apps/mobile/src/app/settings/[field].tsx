@@ -21,15 +21,26 @@ import { ActivityPreferencesScreen } from '@/features/settings/activity-preferen
 import { PlanDraftScreen } from '@/features/settings/plan-draft-screen';
 import { isPlanField } from '@/features/plans/plan-draft-model';
 import { NativeAppsEditor } from '@/features/preferences/native-apps-editor';
+import { useAccountWeeklyPlan } from '@/features/plans/account-weekly-plan';
 import { useNativeOwner } from '@/features/protection/native-owner-boundary';
 export default function PreferenceDetail() {
   const { field } = useLocalSearchParams<{ field: string }>();
   const account = useOptionalAccountData();
   const native = useNativeOwner();
+  const weekly = useAccountWeeklyPlan();
   if (field === 'apps' && native)
-    return <NativeAppsEditor owner={native.owner} generation={native.generation} port={native.port} onBack={() => {
-      if (router.canGoBack()) router.back(); else router.replace('/(tabs)/settings');
-    }} />;
+    return (
+      <NativeAppsEditor
+        owner={native.owner}
+        generation={native.generation}
+        port={native.port}
+        onBack={() => {
+          void weekly?.plan.refresh();
+          if (router.canGoBack()) router.back();
+          else router.replace('/(tabs)/settings');
+        }}
+      />
+    );
   if (isPlanField(field) && account?.scope)
     return (
       <PlanDraftScreen
@@ -60,7 +71,11 @@ function UnavailableDetail({ field }: { field: string }) {
     custom: '',
   });
   const [days, setDays] = useState<readonly number[]>([]);
-  const [hours, setHours] = useState<HoursDraft>({ start: '', end: '', nextDay: false });
+  const [hours, setHours] = useState<HoursDraft>({
+    start: '',
+    end: '',
+    nextDay: false,
+  });
   const dirty =
     activities.customSelected ||
     activities.custom !== '' ||
@@ -101,15 +116,29 @@ function UnavailableDetail({ field }: { field: string }) {
     ) : ['days', 'hours', 'sessions'].includes(field) ? (
       <EditorPage
         title={
-          field === 'days' ? 'Active Days' : field === 'hours' ? 'Active Hours' : 'App Sessions'
+          field === 'days'
+            ? 'Active Days'
+            : field === 'hours'
+              ? 'Active Hours'
+              : 'App Sessions'
         }
         dirty={dirty}
         onBack={back}
       >
         {field === 'days' ? (
-          <DaysEditor days={days} onChange={setDays} dirty={dirty} state="unavailable" />
+          <DaysEditor
+            days={days}
+            onChange={setDays}
+            dirty={dirty}
+            state="unavailable"
+          />
         ) : field === 'hours' ? (
-          <HoursEditor draft={hours} onChange={setHours} dirty={dirty} state="unavailable" />
+          <HoursEditor
+            draft={hours}
+            onChange={setHours}
+            dirty={dirty}
+            state="unavailable"
+          />
         ) : (
           <SessionsEditor
             draft={{ count: null, minutes: null }}

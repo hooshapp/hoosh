@@ -12,6 +12,10 @@ data class WeeklyInstallation(val schedule: WeeklySchedule, val apps: Set<String
 
 /** Pure native compiler. Resolves on demand indefinitely; returned preview is bounded, not an expiry horizon. */
 object WeeklySchedules {
+  /** Quests share the coordinator; only unrelated finite diagnostics block weekly Apply. */
+  fun hasOtherInstallation(plan: InterventionPlan?, windows: List<InterventionWindow>): Boolean =
+    plan != null && plan.weekly == null && windows.any { !QuestSchedules.isReasonId(it.reasonId) }
+
   fun fixed(plan: InterventionPlan): List<InterventionWindow> = plan.windows.filter {
     !(plan.weekly != null && it.reasonId.matches(Regex("weekly_[0-9]{4}-[0-9]{2}-[0-9]{2}"))) && !QuestSchedules.isReasonId(it.reasonId)
   }

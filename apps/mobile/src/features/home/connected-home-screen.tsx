@@ -23,10 +23,12 @@ export function ConnectedHomeScreen({
   onOpen,
   onOpenHistory,
   onOpenQuest,
+  onManageProtection,
 }: {
   onOpen?: PreferencesNavigation;
   onOpenHistory?: () => void;
   onOpenQuest?: (id: string) => void;
+  onManageProtection?: () => void;
 }) {
   const recommendations = useRecommendations(onOpenQuest);
   const rewards = useRewards();
@@ -140,7 +142,7 @@ export function ConnectedHomeScreen({
           />
         </>
       }
-      protection={<DeviceProtection />}
+      protection={<DeviceProtection onManage={onManageProtection} />}
     />
   );
 }

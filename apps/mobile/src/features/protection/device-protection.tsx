@@ -27,19 +27,39 @@ export function UnavailableDeviceProtection() {
   );
 }
 /** Existing Router host provides focus; private Auth/cache state is not native ownership evidence. */
-export function DeviceProtection() {
+export function DeviceProtection({ onManage }: { onManage?: () => void } = {}) {
   const owner = useNativeOwner();
-  if (owner) return <InstalledDeviceProtection key={`${owner.owner}:${owner.generation}`} owner={owner} />;
+  if (owner)
+    return (
+      <View style={{ gap: 12 }}>
+        <InstalledDeviceProtection
+          key={`${owner.owner}:${owner.generation}`}
+          owner={owner}
+        />
+        {onManage ? (
+          <Button label="Manage app schedule" variant="secondary" onPress={onManage} />
+        ) : null}
+      </View>
+    );
   return deviceProtectionIntegration.availability === 'connected' ? (
     <FocusedProtection integration={deviceProtectionIntegration} />
   ) : (
     <UnavailableDeviceProtection />
   );
 }
-function FocusedProtection({ integration }: { integration: ProtectionIntegration }) {
+function FocusedProtection({
+  integration,
+}: {
+  integration: ProtectionIntegration;
+}) {
   const focused = useIsFocused();
   const active = useSyncExternalStore(subscribe, snapshot, serverSnapshot);
-  return <DeviceProtectionView integration={integration} visible={focused && active} />;
+  return (
+    <DeviceProtectionView
+      integration={integration}
+      visible={focused && active}
+    />
+  );
 }
 /** QA can supply actual visibility without a Router. Desired native revision is deliberately unknown. */
 export function DeviceProtectionView({
@@ -60,10 +80,14 @@ export function DeviceProtectionView({
           authorization === 'not_requested'
         ? 'Usage access is not allowed. Granting access does not activate protection.'
         : 'Usage access could not be verified.';
-  if (integration.availability !== 'connected') return <UnavailableDeviceProtection />;
+  if (integration.availability !== 'connected')
+    return <UnavailableDeviceProtection />;
   return (
     <View style={{ gap: 12 }}>
-      <ProtectionStatus model={status.model} onRetry={visible ? status.refresh : undefined} />
+      <ProtectionStatus
+        model={status.model}
+        onRetry={visible ? status.refresh : undefined}
+      />
       <EmptyCard title="Usage access" description={message} />
       {permission.failed ? (
         <InlineStatus

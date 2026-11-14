@@ -1,0 +1,77 @@
+{
+  "date": "2026-11-14",
+  "owner": "Ishmum",
+  "branch": "task/react-native/production-app-integration",
+  "base_commit": "6c1468f",
+  "commit_reference": "feat(mobile): connect normal account app to weekly protection",
+  "parts": [
+    "RN-04/05 integration",
+    "RN08-D02\u2013D05 integration",
+    "RN09-D04",
+    "RN09-D05",
+    "RN09D-D02"
+  ],
+  "implementation": {
+    "normal_root_uses_existing_sdk_and_account_scope": true,
+    "native_owner_requires_same_account_api_identity": true,
+    "one_weekly_controller_above_real_router": true,
+    "home_retains_rewards_history_recommendations_and_installed_status": true,
+    "settings_uses_confirmed_account_draft_and_native_summary": true,
+    "apply_uses_canonical_cache_at_tap_time": true,
+    "explicit_apply_resume_stop_and_confirmed_claim": true,
+    "no_automatic_claim_install_resume": true,
+    "offline_and_selection_read_failure_allow_confirmed_stop": true,
+    "quest_only_installation_compatible": true,
+    "old_bridge_weekly_unavailable_preserves_quests": true
+  },
+  "checks": {
+    "portable": 553,
+    "component": 803,
+    "component_existing_skips": 2,
+    "deterministic_api": 682,
+    "normal_root_cases_per_renderer": 14,
+    "native_renderers": 2,
+    "jvm": 117,
+    "emulator_native": 146,
+    "emulator_instrumentation_result": -1,
+    "lint_errors": 0,
+    "existing_lint_warnings": 4,
+    "web_export_isolated_files": 38,
+    "original_svg_assets": 71,
+    "normal_android_hermes_export": true,
+    "typescript": true,
+    "pinned_openapi_contracts": true,
+    "debug_app_and_test_apks": true,
+    "release_kotlin_and_release_manifest": true,
+    "gradle_default_compile_sdk": 37,
+    "gradle_default_build_tools": "37.0.0",
+    "jdk_major": 17,
+    "postgresql_suite_rerun": false
+  },
+  "runtime_scope": {
+    "component_tests_use_actual_root_routes_and_session_implementation": true,
+    "component_external_sdk_api_native_edges_are_synthetic": true,
+    "emulator_api": 36,
+    "emulator_tests_use_synthetic_isolated_storage": true,
+    "normal_root_live_native_pause_observed_in_this_task": false,
+    "managed_supabase_signin_observed_in_this_task": false,
+    "physical_phone_used": false,
+    "phone_settings_or_permissions_changed": false,
+    "talkback_enabled": false,
+    "hosted_auth_or_database_changed": false,
+    "owned_emulator_stopped": true,
+    "native_test_cleanup_reported_success": true,
+    "production_auth_bypass_added": false
+  },
+  "limits": [
+    "Managed-account phone A/B/profile/settings/restart/session acceptance remains joint with Anisha.",
+    "Anisha owns signup/providers/onboarding and iOS; no iOS native runtime acceptance is claimed.",
+    "Signed/store/wider-device/true memory-pressure and further TalkBack remain open or user-deferred.",
+    "No hosted deletion or account administration; Plan03/API10 and full Plan04 remain open.",
+    "SDK archives/environment repaired locally; no dependency/build-target change in repository."
+  ],
+  "apk_sha256": {
+    "debug_apk": "be030391b8b3a65e88526875a7d09ace650de52db732818cfd5b8c466ad4fdf8",
+    "test_apk": "983c7ec721d4fd9043f953c95da70e47fe4cd24b923778ace41ccd11dc1fc2e5"
+  }
+}

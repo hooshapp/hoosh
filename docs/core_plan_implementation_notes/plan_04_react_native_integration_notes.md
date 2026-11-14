@@ -4,9 +4,9 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN09-D03 Recommendations backend/shared/Android implementation and bounded independent acceptance complete. Backend `808ba94`; shared/acceptance commit below. Development head `20261114_0007`, prior nine product tables preserved. Activity-template offers, durable Skip/Accept, one-time review/native Apply/Stop and cold-restart recovery are verified. Generated AI remains PD-26, not delivered by this template fallback. Pixel/API36 Home Accept/Skip UI is also verified; full physical/native matrices, Anisha's Auth/iOS, signed/store and further TalkBack stay separate. No full parent Plan04 completion.
+**Current part:** RN09-D04/D05 / RN09D-D02 normal account/root/native weekly integration implemented; bounded normal-root and Android native acceptance passed. Existing SDK and verified-owner account boundary reused, one shared weekly controller, normal Home → Settings, saved draft Preview/Apply/Resume/Stop and explicit claim/recovery.553portable/803component(+2skips)/682API/117JVM/146owned-emulator; default-SDK37 debug/test APKs, release Kotlin/manifest and normal web/Android exports pass. Managed-account phone, Anisha's Auth/onboarding/iOS, signed/store/wider-device and further TalkBack remain separate. No full Plan03/04 completion.
 
-**Implementation branch:** `task/react-native/rn09-d03-recommendations`; parent `011f5ef`. Local commits only; no push/main merge/deployment. Older task branches/checkpoints below are historical.
+**Implementation branch:** `task/react-native/production-app-integration`; parent `6c1468f`. Current commit resolves by subject `feat(mobile): connect normal account app to weekly protection`. Recommendation backend/shared were `808ba94`/`6c1468f`. Local commits only; no push/main merge/deployment. Older checkpoints below are historical.
 
 **Commit reference:** RN-01 `2f88102`; RN-02 `2d5c0d1`; RN-03 `0741758`; RN-04 `610f570`; RN-05 preparation `0c6e4db`; RN-07 UI `5790302`; RN-08 preparation `71da2d5`; RN-09a `ff75039`. RN-10 is `9b5fbd0`.
 
@@ -15,6 +15,9 @@
 **Shared workflow:** [Implementation knowledge base](README.md).
 
 ## Resume here
+
+- **Normal-root integration implemented (2026-11-14; RN09-D04/D05 / RN09D-D02):** existing real SDK/account/native owner now shares one weekly controller above normal routes. Settings adds native selection summary, confirmed saved-draft Preview/Apply/Resume/Stop and explicit claim; Home keeps global installed status with Manage link. Fixed save-then-Apply batched-cache timing and quest-only compatibility. Independent Stop survives API offline and selection-summary failure; no automatic owner claim/install/resume. Fourteen actual-root cases per renderer,553portable/803component(+2skips)/682API,117JVM,146owned-emulator native pass. Default37 debug/test APKs/release Kotlin/manifest and normal web/Android exports pass. Phone/hosted Auth/DB untouched; emulator stopped. Read [runbook](../qa/normal-account-app.md), [evidence](artifacts/normal-account-app/evidence.json) and final every-file ledger. Next coordinated managed-account Android acceptance/Anisha review, then signed/wider-device and iOS; further TalkBack stays deferred. Full parents remain open; no push/merge.
+
 
 - **RN09-D03 complete independent slice (2026-11-14):** backend `808ba94` plus final shared/acceptance entry below. Real activity-template offers, durable Skip/Accept/cooldown, repeat-none quest review and scoped uncertain/offline/deleted/stale/unmounted recovery are implemented. Emulator actual Schedule/Apply/pause/Stop and cold persistence pass; Pixel/API36 Home Accept/review and second-account Skip pass. Final553portable/773component(+2skips)/682API/287PG, exports and development0007 security/TLS/preservation pass. Both device baselines/phone USB wake/reverse/settings and owned fixture/server cleanup verified. Generated AI remains PD-26; Anisha's Auth/iOS, full signed/wider-device and further TalkBack remain separate. Read [policy](../architecture/home-recommendations.md), [acceptance](../qa/home-recommendations.md) and [evidence](artifacts/rn-09-recommendations/evidence.json). No parent completion or push/merge/deployment.
 
@@ -6614,3 +6617,176 @@ Local commits only; no push/main merge/deployment in this task.
 | `services/api/tests/api/test_recommendations.py`:31–33,52 | Add actual spring-forward case and real interval-duration assertion alongside midnight/fall-back. Confirms valid future proposals and exactly the advertised template minutes. |
 | `services/api/tests/db/test_mobile_recommendations_acceptance.py`:1–78 | Drive five production-client cases against normal verified JWT TCP FastAPI/PG, then an independent API process with persisted decisions/quest isolation. Bounded child environment, fixed failure titles and private temporary reports avoid credential output. |
 | This notes file:7,19–21,6494–6616 | Current completed part/resume checkpoint and this per-commit scope, corrections, final checks, physical/emulator/hosted results, exact file ledger, cleanup and honest remaining-gate handoff. |
+
+
+### RN09-D04/D05 / RN09D-D02 — Normal account app and native weekly protection
+
+Owner Ishmum, 2026-11-14. Branch `task/react-native/production-app-integration`,
+base `6c1468f`. Implementation and bounded normal-root/native acceptance completed; commit hash Pending.
+Git reference: `feat(mobile): connect normal account app to weekly protection`.
+
+User authorized connecting existing shared screens/native protection to the normal
+account/root. Anisha retains sign-in/onboarding/iOS ownership; no Auth provider,
+hosted account administration, credentials or deletion is requested. Existing real
+Supabase SDK/root/account-scope composition is retained. Further TalkBack is deferred.
+
+Initial source audit: normal Home already consumes rewards/History/recommendations
+and native quest status; normal Settings/profile and saved draft routes exist.
+Weekly Apply/Preview/Stop currently lives only in the explicit-owner development
+journey, and product native port omits weekly methods. Quest-only native records
+are incorrectly tagged as incompatible finite installations by weekly reads.
+
+Implementation sequence: expose the supported weekly bridge and correct that
+classification; connect one verified-owner account weekly controller to normal
+Home/Settings, sourcing only confirmed saved drafts; add explicit device-account
+claim/recovery and app-selection summaries. Preserve native readback/CAS, explicit
+Apply/Stop, separate account/native evidence, offline Stop and scope fences.
+Add normal-root and consumer tests, exports/native checks, then the exact per-file
+line ledger and final acceptance limits. No production bypass/test account seed.
+
+At task start validation was pending; the final record below supersedes that
+checkpoint. Managed-account phone, signed/iOS and wider-device acceptance remain
+unverified. No completion was claimed at task start.
+
+#### Integration progress checkpoint
+
+- Reused the real AppSessionBoundary → AccountDataProvider → verified native-owner
+  composition; one AccountWeeklyPlanBoundary now serves normal Home, Settings and
+  detail routes. No managed sign-in UI/provider/admin changes or private test mode.
+- Added optional all-or-none weekly bridge exposure; older bridges retain quests.
+  Quests alone no longer classify as an incompatible finite setup. Pure JVM117
+  passed (one new classification case); actual Android build validation ongoing.
+- Normal Settings now shows saved native selection counts, Preview/Apply/Resume/
+  Stop and explicit confirmed device-account takeover. Saved account drafts still
+  require explicit Apply. Stop reads device state and stays available offline or
+  when selection storage fails. Native status polling reads selection summaries
+  rather than creating editor leases and interfering with open picker drafts.
+- Real Router/root tests caught stale settings after editor Save: Query observer
+  notifications are batched, so Apply/Preview now inspect canonical cache state at
+  tap time. No old plan is applied merely because a provider render lagged behind.
+  Failed-write readback also clears a resolved review gate without auto-replay.
+- First expanded focused component run:49passed across iOS/Android renderers.
+  Further recovery cases and final root regression/export checks still pending.
+  Full initial run exposed old Settings title expectations (fixed by rendering
+  weekly controls only when the native account context exists) and one existing
+ 5second timeout under concurrent Gradle/emulator load; rerun sequentially before
+  claiming acceptance. No test timeout/assertion weakening.
+- Temporary SDK had incomplete JDK/NDK/platform/build-tool files. Reused intact
+  pinned JDK17, restored official checksum-verified SDK archives and correct
+  executable symlinks. Earlier missing Kotlin references disappeared on clean
+  compilation with unchanged source sets; the suspected source exclusion was not
+  real. SDK36 compile is rejected by installed Expo dependencies requiring37;
+  native final builds use default37, not a dependency downgrade. Local installed
+  platform metadata is needed for AGP to recognize the newer37.0 archive. These
+  are environment repairs, not repository/toolchain/dependency changes.
+- Phone is detected but not used or changed in this task. Owned headless emulator
+  booted for subsequent synthetic native instrumentation. TalkBack stays off.
+
+#### Final implementation and acceptance
+
+**Commit:** Pending, `feat(mobile): connect normal account app to weekly protection`.
+This entry and its file/line ledger travel with the implementation. Same existing
+part IDs; no extra feature plan, session manager, persisted JS cache or write queue.
+
+**Changes and decisions:**
+
+- Existing normal Root/SDK/account/verified-native-owner composition is preserved;
+  one weekly context now sits above actual Router tabs/details. Home's rewards,
+  Dino, History and recommendations reuse their existing producers. Home has one
+  installed-device protection region and Manage link; weekly controls live in
+  normal Settings rather than a duplicated active-status card or developer page.
+- Normal Settings keeps profile/sign-out/activities and saved draft editors, adds
+  device selection counts and explicit Preview/Apply/Update/Resume/Stop/access.
+  No missing/cleared/offline/unverified draft falls back to a retained installation.
+  A confirmed native Stop is independent of the API and selection-summary storage.
+- Saved app-editor return refreshes the shared native observation. Routine status
+  uses native selectionRead without opening picker drafts; old weekly bridge
+  absence disables weekly controls while preserving quest/selection methods.
+- Apply/Preview reads current cache at tap time: real Router tests exposed batched
+  query observers retaining the old draft just after editor Save. The acknowledged
+  new draft now reaches native; source freshness/account/network guards still run.
+- Failed or lost native writes never auto-replay. Explicit refresh either confirms
+  the attempted version or exposes a different confirmed schedule and releases the
+  review gate. Owner/generation replacement disposes old clients/handles and
+  suppresses late Apply; sign-out retains installed rules under existing policy.
+- Confirmed Settings device claim reuses existing native claim/archive semantics:
+  stops previous-account rules, retains its history, installs/resumes nothing,
+  releases even a late lease and hides raw errors. Anisha's Auth screen/provider/
+  onboarding/iOS scope is unchanged; no account administration/managed deletion.
+- Native weekly summary previously called a quest-only record incompatible even
+  though native Apply supports coexistence. A pure shared classification helper
+  now rejects only unrelated finite diagnostic reasons; quest-only installs remain
+  compatible, with existing native overlap and Stop-preserves-quests rules intact.
+
+**Final checks actually run:**
+
+- `npm run check`:553portable,803component(+2historical skips),682API, TypeScript,
+  lint (4existing warnings/0errors), original assets and pinned OpenAPI/types pass.
+  Fourteen normal-root cases run under both native renderers, plus two new Android
+  wrapper tests. Final focused Home/root/protection regressions:72passed.
+- `npm run mobile:export`: real production web graph,38-file developer isolation
+  and71original SVGs pass. Normal `expo export --platform android` emits Hermes.
+- `JAVA_HOME=... npm run mobile:check-intervention-engine`:117pure JVM cases pass.
+  Default compileSDK37/build-tools37 debug app and test APK builds, release Kotlin
+  and release manifest pass with JDK17/arm64/4workers. No source-set exclusion,
+  dependency downgrade, altered build target or environment file is committed.
+- Rebuilt APKs installed only on the owned API36 emulator: actual instrumented
+  `interventionChecksPassed=146`, result−1. New classification plus existing real
+  Kotlin/AtomicFile/weekly/quest/reward/History regressions pass. Test synthetic
+  cache/unique-owner files cleaned in finally. Owned emulator stopped; phone and
+  user settings/permissions/TalkBack/credentials were never changed. No Metro/API
+  fixture/server or database started, no hosted Auth/DDL action. DB suite not rerun.
+
+**Corrections during verification:** initial default JDK path was incomplete, and
+SDK/NDK executables/metadata had been removed from temporary tooling. Restored
+official archives with repository SHA1 checks and correct symlink extraction; reused
+intact pinned JDK17. A preliminary SDK36 build compiled Kotlin but correctly failed
+AAR metadata because installed Expo dependencies require37. Final build used default37;
+local installed metadata normalized newer37.0 platform recognition without changing
+android.jar. Suspected missing Kotlin source exclusion disappeared on clean rebuild
+with unchanged source sets. Initial Settings fixture title regression was corrected
+by keeping the old draft-only surface when native weekly context is absent. One
+pre-existing five-second async test timed out during concurrent native load; final
+sequential whole check and focused72passed without weakening assertions/timeouts.
+Router fake timers require microtask flushing for same-turn Button guards; editor
+acceptance waits for actual Draft saved acknowledgment. No failed attempt is counted
+as successful runtime evidence. Files touched for readability are recorded below.
+
+**Limits / next:** implementation is ready for Anisha's coordinated normal managed
+account Android journey and Auth/onboarding review. Current A/B tokens/managed
+settings/profile/restart/session/links and disposable-C deletion remain their stated
+gates. No actual managed sign-in/normal-root native-pause or physical-device flow
+was executed in this slice; native146 is emulator instrumentation, not UI speech or
+new end-to-end normal-root protection. iOS, signed/store, wider/memory-pressure and
+further user-deferred TalkBack remain open. Plan03/API-10, RN-06/07/11 and full
+Plan04 are not relabeled complete. No push, merge or deployment.
+
+#### Every-file ledger for this commit
+
+| File and lines in this commit | Change and reason |
+|---|---|
+| `apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/WeeklyScheduleChecks.kt`: lines 52–60 | Add one pure classification regression shared by JVM/Android: empty/quest-only/weekly records are compatible; unrelated finite diagnostic reasons remain incompatible. Synthetic identities only; native suite now117JVM/146emulator. |
+| `apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/InterventionRuntime.kt`: lines 160 | Use the tested native classification in scheduleSummary so a quest-only installed record no longer disables weekly Apply. Existing reason counts, native owner access, policies and installation CAS remain unchanged. |
+| `apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/WeeklySchedule.kt`: lines 15–18 | Define the small pure hasOtherInstallation helper from the existing exact QuestSchedules reason parser. Weekly coexistence remains distinct from replacing an unrelated finite diagnostic installation. |
+| `apps/mobile/src/app/(tabs)/index.tsx`: lines 15 | Bind normal Home Manage app schedule to the actual Settings tab, retaining existing detail/History/recommended-quest routing and account scope. |
+| `apps/mobile/src/app/settings/[field].tsx`: lines 24, 30, 32–43, 74–78, 119–123, 129–134, 136–141 | Read the account weekly context and refresh its device observation when saved native Apps editor returns. Existing generation-bound picker and persisted plan/activity editors remain; remaining hunks are readability formatting. |
+| `apps/mobile/src/features/account/session-boundary.tsx`: lines 1–6, 13–16, 19, 23–29, 31–35, 44–48, 54–58, 66–76, 79–80, 84–176 | Mount one AccountWeeklyPlanBoundary inside existing AccountDataProvider and verified NativeOwnerBoundary, above normal Router children. Preserve existing SDK/session/login/storage/root lifecycle implementation; remaining hunks expand long JSX for readability. |
+| `apps/mobile/src/features/home/connected-home-screen.tsx`: lines 26, 31, 145 | Accept an optional onManageProtection navigation callback and pass it into the existing installed DeviceProtection region. Rewards, History, recommendations and settings producers remain unchanged. |
+| `apps/mobile/src/features/plans/account-plan-controls.tsx`: lines 1–173 | Add normal Settings weekly status/selection-change feedback and explicit Preview/Apply/Resume/Stop/refresh/access controls, complete/fresh draft gates and native preview. Show separate claim feedback plus deliberate device-account confirmation; no automatic claim/install/replay. Stop remains independent of account/selection-read failures. |
+| `apps/mobile/src/features/plans/account-weekly-plan.tsx`: lines 1–168 | Add optional all-or-none weekly-port check and a single verified owner/generation context shared by actual routes. Source only confirmed same-account settings and read canonical cache at tap time to close batched-render Save/Apply races. Explicit claim is guarded, scoped, safely acknowledged and always releases its native lease; no second Auth manager or synthetic owner. |
+| `apps/mobile/src/features/plans/normal-app-integration.test.tsx`: lines 1–615 | Fourteen actual Root/Router cases per native renderer cover identity gate, Home producers/navigation, editor Save then exact new Apply, offline Stop, lost/rejected writes/readback, confirmed/cancelled claim, A→B in-flight fencing, old bridge, selection failure, cleared draft, sign-out retention and permission recovery. Real session implementation; external SDK/API/native edges are explicitly synthetic. |
+| `apps/mobile/src/features/plans/use-weekly-plan.ts`: lines 2–9, 11–31, 33–47, 49–55, 57–59, 63–81, 83–94, 96–108, 110, 112–130, 132–192, 195–203, 205–211, 214–216, 222–228, 229, 231–237, 239–244, 247–260, 262–263, 266–273, 275–280, 282–290, 293–296, 299–302, 305–308, 310–343, 346–365 | Extend existing weekly controller with canonical saved-account source/getter while preserving isolated local-stage consumer. Read selection summaries without opening drafts, keep confirmed Stop independent of summary failure, suppress installation from unavailable sources, and reconcile matched/different uncertain-write readback without replay. Existing native CAS/readback/foreground/epoch/disposal retained; format long implementation for review. |
+| `apps/mobile/src/features/plans/weekly-plan-status.ts`: lines 3–11, 13–27, 30–58, 60–122, 126–128 | Add optional selectionAvailable flag to ready observations, distinguishing unknown selection from confirmed zero without losing installed weekly status/Stop. Existing status mapper/timing behavior is unchanged; other hunks are formatting. |
+| `apps/mobile/src/features/protection/device-protection.tsx`: lines 30, 32–43, 50–54, 57–62, 83–84, 87–90 | Keep one global installed protection region, append optional Manage app schedule navigation for verified-owner normal Home, preserve native/legacy/unsupported read fallback. Weekly controls stay in Settings; remaining hunks format existing JSX. |
+| `apps/mobile/src/features/settings/connected-settings-screen.tsx`: lines 1–2, 10–12, 14–28, 34, 37–43 | Compose native selected-app count/error/unavailable summary and AccountPlanControls only when actual account-native context exists. Keep old draft-only title/surface without that context, retaining profile/sign-out/activities and saved preferences query. |
+| `apps/mobile/src/infrastructure/native/product-ports.android.native.test.ts`: lines 7, 11–18, 70–106 | Mock complete/absent weekly method groups, verify real Android wrapper argument forwarding/binding, and prove older bridges preserve quest methods without fabricated weekly support. Existing nullable quest transport tests retained. |
+| `apps/mobile/src/infrastructure/native/product-ports.android.ts`: lines 42–53 | Expose scheduleRead/Preview/Apply/interventionCancel only as one complete native group; bind to actual module receiver. Older modules keep prior quest/selection/history/reward behavior; no success stubs. |
+| `apps/mobile/src/infrastructure/native/product-ports.ts`: lines 1–5, 8–36 | Add optional weekly method group to existing product port using the shared WeeklySchedulePort type. Other platforms remain null/unavailable until their real bridge exists; keep existing ownership/quest/history/reward contracts. |
+| `docs/Context (AGENT)/AGENT_START_HERE.md`: lines 15–27 | Add current normal-app implementation/verification checkpoint, runbook/notes and explicit remaining managed-account/Anisha/platform/TalkBack gates; historical checkpoints stay dated. |
+| `docs/core_plan/04_react_native_integration.md`: lines 3–16, 826–827 | Add current normal-root checkpoint and update original RN09-D04/D05 status cells to implemented wiring with measured limits. Preserve stable IDs/parents, Anisha ownership and pending managed/signed/iOS acceptance. |
+| `docs/core_plan/README.md`: lines 3–16 | Expose current normal-root/native wiring and acceptance boundary in execution index so a new agent does not redo implemented producer work or infer full parent completion. |
+| `docs/core_plan_implementation_notes/artifacts/normal-account-app/README.md`: lines 1–14 | Explain sanitized evidence/APK hashes and exact component-versus-emulator-versus-unverified-managed boundaries; links are repository-relative, no private captures/credentials. |
+| `docs/core_plan_implementation_notes/artifacts/normal-account-app/evidence.json`: lines 1–77 | Record actual final553/803/682,117JVM/146emulator, default37 native/debug/release/export results, rebuilt APK hashes, test boundaries and cleanup. Explicitly false live phone/managed sign-in/new normal-root pause claims; no secret/serial/user inventory. |
+| `docs/qa/android-weekly-schedule.md`: lines 8 | Replace the old blanket normal-root deferral with a dated link to current normal-account integration, preserving historical real-device native evidence and separate managed/iOS gates. |
+| `docs/qa/normal-account-app.md`: lines 1–118 | Document product root/ownership, actual user flow, Save/Preview/Apply/Stop/claim semantics, stale-cache fix, independent Stop, repeatable commands and exact current evidence/limits. No new auth/token or native speech acceptance implied. |
+| This notes file: lines 7,9,19–21,6620–6792 | Update current part/branch/resume and record start/progress/final state, decisions, corrected stale-cache/native/toolchain/test issues, all actual checks/cleanup and precise remaining coordinated gates. This every-file ledger travels in the same commit; Pending hash resolves by unique subject. |

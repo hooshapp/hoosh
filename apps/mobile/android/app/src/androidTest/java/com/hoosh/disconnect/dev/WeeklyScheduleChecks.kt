@@ -49,6 +49,15 @@ internal object WeeklyScheduleChecks {
     case { val d = Memory(); val e = InterventionEngine(d); val now = at("2026-11-09T10:00:00Z"); install(e, schedule(), now); try { install(e, schedule(), now, 0); error("stale") } catch (x: InterventionFailure) { check(x.code == "ERR_INTERVENTION_CONFLICT") }; check(e.read(OWNER)!!.plan.revision == 1) }
     case { val d = Memory(); val e = InterventionEngine(d); val now = at("2026-11-09T10:00:00Z"); install(e, schedule(), now); try { install(e, schedule(zone = "America/New_York"), now, 1); error("zone") } catch (x: InterventionFailure) { check(x.code == "ERR_INTERVENTION_TIMEZONE_MIGRATION") }; check(e.read(OWNER)!!.plan.policy.timezoneId == "UTC") }
     case { val d = Memory(); val e = InterventionEngine(d); val now = at("2026-11-09T08:00:00Z"); val r = install(e, schedule(), now); val a = InterventionProtectionSnapshot.read(r, true, true, false, now)["status"] as Map<*, *>; val b = InterventionProtectionSnapshot.read(r, true, true, false, at("2026-12-28T10:00:00Z"))["status"] as Map<*, *>; check(a["state"] == "inactive" && b["state"] == "active"); check((b["installedReasonIds"] as List<*>).contains("weekly_2026-12-28")) }
+    case {
+      val d = Memory(); val e = InterventionEngine(d); val now = at("2026-11-09T10:00:00Z")
+      val r = install(e, schedule(), now)
+      val quest = InterventionWindow("q_00000000000040008000000000000001_v1_d20261109", now, now + 60000, setOf(APP))
+      check(!WeeklySchedules.hasOtherInstallation(null, emptyList()))
+      check(!WeeklySchedules.hasOtherInstallation(r.plan.copy(weekly = null, windows = listOf(quest)), listOf(quest)))
+      check(WeeklySchedules.hasOtherInstallation(r.plan.copy(weekly = null), listOf(InterventionWindow("diagnostic", now, now + 60000, setOf(APP)))))
+      check(!WeeklySchedules.hasOtherInstallation(r.plan, WeeklySchedules.windows(r.plan, now)))
+    }
     return count
   }
 }

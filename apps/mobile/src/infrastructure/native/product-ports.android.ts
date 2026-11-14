@@ -39,6 +39,18 @@ function connectedPort(): ProductNativePort | null {
   );
   return {
     ...bound,
+    // Weekly support is optional as a group: older installed bridges retain quests.
+    ...(typeof bridge.scheduleRead === 'function' &&
+    typeof bridge.schedulePreview === 'function' &&
+    typeof bridge.scheduleApply === 'function' &&
+    typeof bridge.interventionCancel === 'function'
+      ? {
+          scheduleRead: bridge.scheduleRead.bind(bridge),
+          schedulePreview: bridge.schedulePreview.bind(bridge),
+          scheduleApply: bridge.scheduleApply.bind(bridge),
+          interventionCancel: bridge.interventionCancel.bind(bridge),
+        }
+      : {}),
     historyStop: bridge.historyStop?.bind(bridge),
     historyRead: bridge.historyRead?.bind(bridge),
     historyStart: bridge.historyStart?.bind(bridge),

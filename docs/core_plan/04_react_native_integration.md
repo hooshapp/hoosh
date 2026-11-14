@@ -1,5 +1,19 @@
 # 04 — React Native Integration and Shared Frontend Plan
 
+**Normal app integration (2026-11-14; RN09-D04/D05, RN09D-D02):** normal SDK/account
+root now shares one verified-owner weekly controller across Home, Settings and
+editors. Home links its installed native status to Settings; Settings adds real
+selection counts, explicit Preview/Apply/Resume/Stop and confirmed device-account
+claim. Saved drafts and installed protection stay separate; offline/selection-read
+failure still permits confirmed native Stop. Save-then-Apply cache timing and
+quest-only native compatibility are fixed. Read [acceptance](../qa/normal-account-app.md)
+and latest [Plan04 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md).
+Normal-root component tests and rebuilt native emulator checks pass; real managed
+account phone acceptance, Anisha's Auth/onboarding/iOS, signed/wider-device and
+further TalkBack gates remain open. No hosted Auth/DDL change or full parent completion.
+Older checkpoints below are historical for this new integration scope.
+
+
 **Recommendations implementation (2026-11-14; RN09-D03):** activity-template
 Home offers, durable Skip/Accept/cooldown, replay-safe one-time quest creation and
 scoped recovery are implemented. Accept opens existing quest review; explicit
@@ -809,8 +823,8 @@ alone do not complete these rows. Keep IDs in sync with the implementation notes
 | RN09-D01 | Dino health/artwork, atomic Feed, account ledger and native streak/reward producers | Implementation complete; final independent acceptance recorded on `task/react-native/rn09-d01-rewards`; Ishmum-authorized defaults, backend0005, separate native business outbox and real Home consumer. See latest Plan04 notes and [policy](../architecture/home-rewards.md). Auth/iOS/TalkBack/platform gates remain separate. |
 | RN09-D02 | Weekly selected-app estimates, fixed baseline/signed comparison with source/range/coverage | Backend/shared/Android implementation and independent acceptance complete on `task/react-native/rn09-d02-history`; real Pixel native→verified API→PG→UI, frozen baseline and no fabricated comparison. See [policy](../architecture/history-measurement.md), [acceptance](../qa/history-measurement.md) and latest notes. Auth/iOS/signed/TalkBack and PD-12 gates remain separate. |
 | RN09-D03 | Temporary activity-template recommendations, durable Skip/Accept and one-time quest review | Backend/shared/Android implementation and bounded emulator acceptance complete on `task/react-native/rn09-d03-recommendations`; backend `808ba94`, shared/evidence in latest notes. See [policy](../architecture/home-recommendations.md) and [acceptance](../qa/home-recommendations.md). Accept saves repeat-none definition; explicit Schedule/Apply and end-time self-report50once are reused. Generated AI remains PD-26; Auth/iOS/physical/signed/TalkBack gates remain separate. |
-| RN09-D04 | Connect actual native status and supported permission/setup/recovery actions into the Home protection region | Native owners and RN08-D01–D06; scores, profiles and API acknowledgments are never installation evidence. |
-| RN09-D05 | Wire real account-scoped Home producers, freshness/errors, cancellation and guarded mutations | Auth/backend/RN owners using RN-04 scope/generation rules; no A-to-B data, stale action or uncertain write may be accepted. |
+| RN09-D04 | Connect actual native status and supported permission/setup/recovery actions into the Home protection region | Android normal-root implementation connected: installed status → normal Settings weekly Preview/Apply/Resume/Stop/access/claim. Reuses real native readback; 146 emulator checks and normal-root tests pass. Managed-account/signed/iOS acceptance remains separate; see normal-app runbook/latest notes. |
+| RN09-D05 | Wire real account-scoped Home producers, freshness/errors, cancellation and guarded mutations | Normal SDK/root/account/native composition implemented and tested through actual Router components. Rewards/History/recommendations stay on existing scoped producers; weekly controller consumes only confirmed saved drafts. Account switch/sign-out/late Apply and uncertain-write recovery covered. Real managed-account/platform acceptance remains open with Anisha. |
 | RN09-D06 | Execute signed-device rendering, native SVG, font/screen-reader/focus and lifecycle acceptance | Platform owners with RN-10 evidence; browser reflow and Hermes compilation do not establish device behavior. |
 
 **Current History integration ledger (2026-11-13):**

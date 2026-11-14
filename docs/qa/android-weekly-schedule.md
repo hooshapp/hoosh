@@ -5,7 +5,7 @@
 
 Complete saved `PlanDraft` values now have an explicit-owner consumer and native
 weekly compiler. The existing native developer host composes the consumer with
-synthetic local owner A. Main account/root/Auth wiring and iOS remain deferred.
+synthetic local owner A. The later [normal-account integration](normal-account-app.md) connects the existing SDK/root and saved Settings draft; managed-account acceptance and iOS remain open.
 This is a real local installation flow; it is not a connected production account.
 
 ## Behavior and trust boundaries
