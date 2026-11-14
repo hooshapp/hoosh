@@ -25,6 +25,7 @@ ERRORS = {
     ErrorCode.PROFILE_CONFLICT: (409, "Your profile changed. Review the latest version."),
     ErrorCode.SETTINGS_CONFLICT: (409, "Your settings changed. Review the latest version."),
     ErrorCode.QUEST_CONFLICT: (409, "Your quest changed. Review the latest version."),
+    ErrorCode.HISTORY_CONFLICT: (409, "History changed. Review the latest measurement series."),
     ErrorCode.REWARD_CONFLICT: (
         409,
         "Reward state changed or this action is unavailable. Review the latest wallet.",

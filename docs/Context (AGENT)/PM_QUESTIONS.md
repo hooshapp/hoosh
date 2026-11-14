@@ -704,3 +704,23 @@ count emits exhaustion/streak break. The initial D01a/b wording/producer used
 `>=` in error; D01c corrects it to `>`, with a regression assertion for both the
 last permitted and first extra session. This is a correction to preserve existing
 accepted behavior, not a new PM answer or new final-session penalty.
+
+### RN09-D02 / RN09C-D01–D02 implementation defaults —2026-11-13
+
+Under Ishmum's request to implement History fully, use the first seven consecutive
+complete local days for the same saved app selection as a fixed baseline. Start
+with the previous seven closed days where Android retains adequate event evidence;
+otherwise collect prospectively until such a run exists. Current periods are the
+last seven/28 closed local days AFTER the baseline (28days explicitly means four
+weeks, not an unequal calendar month). Normalize each day to24hours for DST before
+comparing; show actual date ranges, source, observed time and coverage. A zero
+baseline has no percentage reduction; negative savings mean increased usage and
+must stay visible. No data, retention loss, event cap, permission/lock/reboot gap,
+selection or saved-timezone change makes the affected comparison unavailable,
+never measured0. Changing selection/device/timezone needs an explicit new baseline;
+no automatic reset or mixing of accounts/selections. Turn-offs count uniquely
+accepted explicit native quits by initial/expired/mid-session type, including
+cooldown-no-credit quits, not shield presentations or generic app closes. Receipt
+coverage is described separately from usage completeness. Lifespan prediction
+remains disabled under Q16/PD-12. These are documented engineering defaults, not
+new PM answers; product decisions remain revisable.

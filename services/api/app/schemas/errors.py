@@ -15,6 +15,7 @@ class ErrorCode(StrEnum):
     PROFILE_CONFLICT = "PROFILE_CONFLICT"
     SETTINGS_CONFLICT = "SETTINGS_CONFLICT"
     QUEST_CONFLICT = "QUEST_CONFLICT"
+    HISTORY_CONFLICT = "HISTORY_CONFLICT"
     REWARD_CONFLICT = "REWARD_CONFLICT"
     REQUEST_TOO_LARGE = "REQUEST_TOO_LARGE"
     VALIDATION_ERROR = "VALIDATION_ERROR"
@@ -119,6 +120,7 @@ class ConflictErrorBody(CommonErrorBody):
         ErrorCode.SETTINGS_CONFLICT,
         ErrorCode.QUEST_CONFLICT,
         ErrorCode.REWARD_CONFLICT,
+        ErrorCode.HISTORY_CONFLICT,
     ]
     retryable: Literal[False]
     details: ConflictDetails

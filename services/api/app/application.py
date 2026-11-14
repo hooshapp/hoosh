@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from starlette.types import Lifespan
 
 from app.api.health import router as health_router
+from app.api.v1.history import router as history_router
 from app.api.v1.me import router as identity_router
 from app.api.v1.profiles import router as profile_router
 from app.api.v1.quest_execution import router as quest_execution_router
@@ -53,5 +54,6 @@ def create_app(*, cors_origins: Sequence[str] = (), lifespan: Lifespan | None = 
     application.include_router(quests_router)
     application.include_router(quest_execution_router)
     application.include_router(rewards_router)
+    application.include_router(history_router)
     install_openapi(application)
     return application

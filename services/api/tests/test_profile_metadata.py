@@ -19,6 +19,7 @@ def test_profile_shape_and_external_auth_reference_remain_unchanged():
         "public.reward_wallets",
         "public.reward_entries",
         "public.reward_streams",
+        "public.history_records",
     }
     assert set(Profile.__table__.columns.keys()) == {
         "user_id",

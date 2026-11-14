@@ -143,6 +143,7 @@ def test_owned_metadata_and_new_migration_preserve_the_original_profile_history(
         "public.reward_wallets",
         "public.reward_entries",
         "public.reward_streams",
+        "public.history_records",
     }
     assert set(UserSettings.__table__.c.keys()) == {
         "user_id",

@@ -6125,3 +6125,81 @@ Final cleanup: the task-started disposable database container/network is stopped
 with its volume retained. Final `npm run check` passes on the corrected worktree;
 existing lint has4warnings/0errors. No credentials or user-owned icon/workspace
 files are included. Commit D01c, then continue with RN09-D02 only when requested.
+
+### RN09-D02 / RN09C-D01–D02 — History measurement and account consumers (in progress)
+
+Owner Ishmum,2026-11-13. Branch `task/react-native/rn09-d02-history`, base
+`f87a006`. User requests full existing IDs with implementation notes. Further
+TalkBack work and Anisha-owned Auth/onboarding/iOS remain separate. Preserve all
+user-owned untracked workspace/icon-pack paths. No push/deployment requested.
+
+Approach: content-free saved-selection daily Android usage estimates, durable
+account-owned summaries, a fixed first seven consecutive complete-day baseline,
+7day/28day comparisons after that baseline, real nudge-type turn-offs from the
+existing immutable native receipts and common Home/History account queries.
+Retained Android event data is bounded and may be incomplete; empty/truncated/
+locked/permission-denied/selection-mismatched data never means zero. Native package
+identities/class/event records stay local; server receives aggregate dates/duration
+and coverage only. Negative differences stay visible as increased usage; no false
+positive savings. Lifespan forecast remains gated PD-12. Native writes require
+explicit collection consent; network/History cannot install or alter protection.
+
+Official Android API review: queryEvents retains only a few days and can be null
+while the user is locked; queryUsageStats may expand requested ranges to whole
+intervals, so it cannot be relabelled as exact selected-date duration. Use bounded
+per-day event reconstruction with retained begin/end witnesses, overlapping activity
+union, screen-off/keyguard and reboot ambiguity handling; label the result an
+Android foreground estimate and document its remaining OS completeness limitation.
+A same-service best-effort daily capture preserves summaries before OS retention
+expires; missing capture remains unknown. Further file/line/commit/test entries
+will be written before each implementation commit.
+
+#### History D01a — Backend aggregate series and strict HTTP contract
+
+Commit message: `feat(history): persist private baseline and comparison series`.
+Scope: RN09-D02/RN09C-D01 measurement schema/producer and RN09C-D02 account HTTP;
+shared/native consumers continue in the next slices.270 real PostgreSQL tests and
+673 deterministic API tests pass, including five nested production-mobile-client
+TCP/API-process restart tests (consumer files stay in D01c). No hosted change yet.
+
+The initial test runs caught SQL NULL versus JSON null for the optional baseline,
+missing route registration, and incomplete test imports; these were fixed, not
+ignored. Two overlapping whole DB-suite processes briefly interfered with their
+DDL/fixture snapshots. All processes stopped, the existing guarded disposable
+volume was reset (marker/labels checked; no hosted target), and one clean sequential
+suite passed270 cases. Do not run migration suites or manual device fixtures
+concurrently. This is a test orchestration correction, not a product data failure.
+
+| File and exact lines in this commit | Change and purpose |
+|---|---|
+| `packages/contracts/HTTP_API.md`:369–398 | Document actual aggregate wire/null/coverage/source/CAS/replay/negative/default-deny semantics alongside existing contract. |
+| `packages/contracts/openapi/foundation.openapi.json`:67–68,151,335–669,2030–2517 | Environment-free generated History schemas/routes/error variant and operation definitions. |
+| `packages/contracts/src/http.generated.ts`:26–59,298,395–513,1046–1265 | Pinned-generator matching TypeScript History DTOs/routes/operations. |
+| `packages/contracts/src/index.ts`:72–77 | Public generated History aliases for shared consumers; no competing handwritten protocol. |
+| `services/api/alembic/env.py`:25 | Reflect History-owned table for real drift checks, retaining managed Auth exclusion. |
+| `services/api/app/application.py`:10,57 | Register the actual History routes in environment-free assembly. |
+| `services/api/app/core/errors.py`:28 | Fixed HISTORY_CONFLICT409 copy in existing safe errors. |
+| `services/api/app/core/json_body.py`:38–39 | Apply existing bounded JSON/media/duplicate-key guards to History PUT before DB acquisition. |
+| `services/api/app/db/migrations.py`:16,154,174,205,478,594–612 | Advance HEAD0006, include History in owner/public/runtime ACL and exact policy/PG17 constraint fingerprint checks. |
+| `services/api/app/models/__init__.py`:3,12 | Register/export HistoryRecord under the single metadata authority. |
+| `services/api/app/schemas/errors.py`:18,123 | Add HISTORY_CONFLICT to the discriminated conflict envelope. |
+| `services/api/tests/api/test_schema.py`:45–46 | Exact new route inventory and deterministic no-runtime/network export. |
+| `services/api/tests/test_profile_metadata.py`:22 | Extend owned inventory while retaining original profile/external Auth shape/history checks. |
+| `services/api/tests/test_settings_contract.py`:146 | Extend owned inventory without changing original settings schema or historical migration assertions. |
+| `services/api/alembic/versions/20261114_0006_history.py`:1–51 | Frozen additive0006 DDL, forced own-user RLS and reviewed runtime-only SELECT/INSERT/UPDATE; historical migrations/data unchanged. |
+| `services/api/app/api/v1/history.py`:1–34 | Normal verified own GET and transactional aggregate-series PUT; no provider/admin shortcut or new authentication implementation. |
+| `services/api/app/models/history.py`:1–39 | One own-user bounded JSONB series/baseline model with managed Auth CASCADE; SQL-null baseline, count/revision/JSON/timezone constraints and no native app identities. |
+| `services/api/app/repositories/history.py`:1–234 | Nonmutating own read; closed saved-zone days, real DST normalization, immutable first7day baseline, equivalent7/28day eligibility, missing/negative/zero handling, unique event-time quit-type counts, serialized same-series merge and explicit replacement CAS. |
+| `services/api/app/schemas/history.py`:1–78 | Strict aggregate-only input, ordered/bounded days, fixed source, null-versus-reported coverage, saved IANA zone and provenance/eligibility response DTOs. |
+| `services/api/tests/api/test_history.py`:1–60 | Malformed/private/native input rejection, auth-before-DB and oversized/duplicate JSON checks. |
+| `services/api/tests/db/test_history.py`:1–255 | Real DB baseline freeze, replay/repair, coverage/selection/zone/overlap/negative/zero/DST, actual verified HTTP/isolation, concurrent first-series race, schema/security drift and0005 additive-upgrade preservation. |
+| `docs/architecture/history-measurement.md`:1–120 | Policy/defaults, official Android source/limitations, consent/retention/measurement/account boundaries and no forecast/causal claims. |
+| `docs/Context (AGENT)/PM_QUESTIONS.md`:707–726 | Append user-requested implementation defaults; preserve original PM answers and distinguish engineering choices. |
+| `docs/core_plan/04_react_native_integration.md`:781 | Update original RN09-D02 status without renumbering or closing unrelated platform/forecast gates. |
+| This notes file:6129–6205 | Task-start status and per-commit backend ledger, tests/corrections and shared/native continuation handoff. |
+
+Next: strict Android native retained-event reducer/private aggregate cache with
+explicit consent, shared account consumer/Home/History projections and actual
+phone acceptance. Auth/iOS/further TalkBack/forecast remain separate; never render
+fixture durations as real measured user history. Existing untracked icon/workspace
+paths remain untouched. No push/main merge/deployment is authorized here.

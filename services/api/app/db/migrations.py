@@ -13,7 +13,7 @@ from alembic import command
 from app.models.profile import STRIP_CHARACTERS
 
 API_ROOT = Path(__file__).resolve().parents[2]
-HEAD = "20261113_0005"
+HEAD = "20261114_0006"
 LOCK_ID = 7529304120701
 
 
@@ -151,6 +151,7 @@ def verify(connection: Connection) -> dict:
         "public.reward_wallets",
         "public.reward_entries",
         "public.reward_streams",
+        "public.history_records",
         "public.alembic_version",
     ):
         if (
@@ -170,7 +171,7 @@ def verify(connection: Connection) -> dict:
                 "AND NOT (:table IN ('public.profiles','public.user_settings',"
                 "'public.user_quests','public.quest_schedule_versions',"
                 "'public.quest_occurrence_outcomes','public.reward_wallets',"
-                "'public.reward_entries','public.reward_streams') "
+                "'public.reward_entries','public.reward_streams','public.history_records') "
                 "AND a.grantee="
                 "(SELECT oid FROM pg_roles WHERE rolname='disconnect_api'))"
             ),
@@ -201,6 +202,7 @@ def verify(connection: Connection) -> dict:
             "public.reward_wallets",
             "public.reward_entries",
             "public.reward_streams",
+            "public.history_records",
         ):
             for privilege in (
                 "SELECT",
@@ -473,6 +475,7 @@ def _verify_execution(connection: Connection) -> None:
         ("reward_wallets", {"SELECT", "INSERT", "UPDATE"}),
         ("reward_entries", {"SELECT", "INSERT"}),
         ("reward_streams", {"SELECT", "INSERT", "UPDATE"}),
+        ("history_records", {"SELECT", "INSERT", "UPDATE"}),
     ):
         qualified = "public." + table
         row = connection.execute(
@@ -588,3 +591,22 @@ EXECUTION_CONSTRAINT_FINGERPRINTS.update(
         },
     }
 )
+
+EXECUTION_CONSTRAINT_FINGERPRINTS["history_records"] = {
+    "ck_history_records_json_shape": (
+        "b7df068bf554c1b29dc7309efaef31f44f0ad8d16a47a546a58670b5a398037c"
+    ),
+    "ck_history_records_revision_positive": (
+        "7c0ddfd91f9bdc7bd607f558b7220a0d09efdbea0973a07402460329265b9c9f"
+    ),
+    "ck_history_records_selection_range": (
+        "ca4484be8fb4c30d43d66ce7add4cfdc432f4054eaf07436dd62f453418bb385"
+    ),
+    "ck_history_records_timezone_bound": (
+        "3539d723f7db0242af5b079345dba8b94b7c4b4ddd8aad6799f1c1405ffd4e26"
+    ),
+    "fk_history_records_user_id_users": (
+        "7dffc1fe5c72443147ef9227e966626cdc6e5997f36e90bcc553577512766d2a"
+    ),
+    "pk_history_records": ("44756d887704fc88d8d0adc5c0c431103c555b4f8e6a4ddef6f7a7f6b4110606"),
+}

@@ -23,6 +23,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read */
+        get: operations["get_own_history"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/v1/history/series": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Save */
+        put: operations["save_own_history_series"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/me": {
         parameters: {
             query?: never;
@@ -261,7 +295,7 @@ export interface components {
              * @description discriminator enum property added by openapi-typescript
              * @enum {string}
              */
-            code: "PROFILE_CONFLICT" | "QUEST_CONFLICT" | "REWARD_CONFLICT" | "SETTINGS_CONFLICT";
+            code: "HISTORY_CONFLICT" | "PROFILE_CONFLICT" | "QUEST_CONFLICT" | "REWARD_CONFLICT" | "SETTINGS_CONFLICT";
             details: components["schemas"]["ConflictDetails"];
             /** Message */
             message: string;
@@ -357,6 +391,125 @@ export interface components {
              * @constant
              */
             status: "ok";
+        };
+        /** HistoryDay */
+        HistoryDay: {
+            /**
+             * Coverage
+             * @enum {string}
+             */
+            coverage: "reported" | "missing" | "capped" | "interrupted";
+            /**
+             * Day
+             * Format: date
+             */
+            day: string;
+            /** Usage Ms */
+            usage_ms: number | null;
+        };
+        /** HistoryPut */
+        HistoryPut: {
+            /** Days */
+            days: components["schemas"]["HistoryDay"][];
+            /** Expected Revision */
+            expected_revision: number;
+            /** Selected Count */
+            selected_count: number;
+            /**
+             * Series Id
+             * Format: uuid
+             */
+            series_id: string;
+            /**
+             * Source
+             * @constant
+             */
+            source: "android_usage_events_v1";
+            /**
+             * Started On
+             * Format: date
+             */
+            started_on: string;
+            /** Timezone Id */
+            timezone_id: string;
+        };
+        /** HistoryView */
+        HistoryView: {
+            /** Baseline Ends Before */
+            baseline_ends_before: string | null;
+            /** Baseline Reported Days */
+            baseline_reported_days: number;
+            /** Baseline Starts On */
+            baseline_starts_on: string | null;
+            month: components["schemas"]["HistoryWindow"];
+            /**
+             * Observed At
+             * Format: date-time
+             */
+            observed_at: string;
+            /**
+             * Policy Version
+             * @default 1
+             * @constant
+             */
+            policy_version: 1;
+            /** Revision */
+            revision: number;
+            /** Selected Count */
+            selected_count: number | null;
+            /** Series Id */
+            series_id: string | null;
+            /**
+             * Source
+             * @constant
+             */
+            source: "android_usage_events_v1";
+            /** Started On */
+            started_on: string | null;
+            /** Timezone Id */
+            timezone_id: string | null;
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+            week: components["schemas"]["HistoryWindow"];
+        };
+        /** HistoryWindow */
+        HistoryWindow: {
+            /** Baseline Ms */
+            baseline_ms: number | null;
+            /** Eligible */
+            eligible: boolean;
+            /**
+             * Ends Before
+             * Format: date
+             */
+            ends_before: string;
+            /** Expected Days */
+            expected_days: number;
+            /**
+             * Reason
+             * @enum {string}
+             */
+            reason: "ready" | "collecting_baseline" | "baseline_overlap" | "incomplete";
+            /** Reduction Percent */
+            reduction_percent: number | null;
+            /** Reported Days */
+            reported_days: number;
+            /** Saved Ms */
+            saved_ms: number | null;
+            /**
+             * Starts On
+             * Format: date
+             */
+            starts_on: string;
+            /** Turn Offs */
+            turn_offs: {
+                [key: string]: number;
+            };
+            /** Usage Ms */
+            usage_ms: number | null;
         };
         /**
          * MeResponse
@@ -882,6 +1035,226 @@ export interface operations {
             };
             /** @description Safe unexpected failure */
             500: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    get_own_history: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HistoryView"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    "WWW-Authenticate": "Bearer";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Request Entity Too Large */
+            413: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Safe unexpected failure */
+            500: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Service Unavailable */
+            503: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    save_own_history_series: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HistoryPut"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HistoryView"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    "WWW-Authenticate": "Bearer";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Request Entity Too Large */
+            413: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Safe unexpected failure */
+            500: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Service Unavailable */
+            503: {
                 headers: {
                     "Cache-Control": "no-store";
                     /** @description Server-generated UUID; matches error.request_id on failures. */

@@ -69,3 +69,9 @@ export type RewardBatchResult = components['schemas']['RewardBatchResult'];
 export type FeedPut = components['schemas']['FeedPut'];
 export type FeedResult = components['schemas']['FeedResult'];
 export type FeedReceipt = components['schemas']['FeedReceipt'];
+
+/** Aggregate-only selected-app usage and coverage-qualified fixed baseline. */
+export type HistoryDay = components['schemas']['HistoryDay'];
+export type HistoryPut = components['schemas']['HistoryPut'];
+export type HistoryWindow = components['schemas']['HistoryWindow'];
+export type HistoryView = components['schemas']['HistoryView'];

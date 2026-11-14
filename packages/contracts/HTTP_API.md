@@ -366,3 +366,33 @@ may have committed; use the receipt GET. Existing16KiB bounded JSON/error/auth
 handling applies. Other account IDs and stale session generations must be rejected
 at the response/cache/native ACK boundary. Unsupported native builds may use server
 quest credits/Feed but must not fabricate native rewards or streak coverage.
+
+## RN09-D02 / RN09C-D01–D02 — History
+
+`GET /v1/history` returns only the verified account's bounded measurement series,
+policy1/source `android_usage_events_v1`, fixed baseline dates/progress and7/28day
+closed windows. Each window carries dates, expected/reported coverage, nullable
+normalized usage/baseline/signed difference/percentage, explicit eligibility/reason
+and unique native quit counts by initial/expired/mid_session. No measurement row
+is created by GET. Missing usage is null, while synced receipt counts may be0.
+The28day window is explicitly four weeks, not an unequal calendar month.
+
+`PUT /v1/history/series` accepts strict `expected_revision`, UUID `series_id`, IANA
+zone, selected count1–512, start date, fixed source and0–56 ordered closed daily
+aggregates. Each day has date, coverage and nullable usage_ms. Reported days require
+a duration no greater than that day's23/24/25hour length; all unknown coverage
+requires null. No app identity, class, selection hash or raw event payload is allowed.
+The server freezes the first7consecutive reported-day baseline, normalizes each day
+to24hours for DST comparisons, and preserves signed changes. Current periods must
+be complete and after the baseline. Zero baseline has no percentage.
+
+Same-series replay/merge cannot reset the baseline or rewrite reported daily values;
+unknown may repair to reported. A different series explicitly replaces the account
+baseline only with its reviewed revision. HISTORY_CONFLICT409 uses sanitized
+current_revision; refetch/review instead of blindly replaying a replacement.
+Response-loss recovery uses GET and the stable native series ID. Existing bounded
+JSON, normal verified bearer, account-generation fencing and forced-RLS rules apply.
+Source is an Android retained foreground estimate, not attested lossless telemetry
+or causal savings. See [measurement policy](../../docs/architecture/history-measurement.md).
+Native permission/selection mismatch and unsupported iOS remain genuine unavailable
+states. Lifespan forecast remains excluded under PD-12.
