@@ -23,6 +23,7 @@ class InterventionRuntime private constructor(val context: Context) {
   val leases = InterventionLeases()
   private val persistence = OwnerInterventionPersistence(context.noBackupFilesDir)
   val engine = InterventionEngine(persistence)
+  val history = HistoryCollector(context)
   private val worker = Executors.newSingleThreadExecutor()
   private val main = Handler(Looper.getMainLooper())
   @Volatile var service: InterventionAccessibilityService? = null
@@ -264,6 +265,22 @@ class InterventionRuntime private constructor(val context: Context) {
     engine.read(owner)?.events.orEmpty().take(limit).map { mapOf("eventId" to it.id, "occurredAt" to format.format(Date(it.at)), "kind" to it.kind, "reasonId" to it.reasonId, "configRevision" to it.revision, "evidence" to if (it.kind == "shield_presented") "native_callback" else "native_action", "metadata" to mapOf("sessionIndex" to it.sessionIndex, "allowanceExhausted" to it.exhausted)) }
   }
   fun acknowledge(owner: String, token: String, ids: List<String>, promise: Promise) = call(promise) { leases.check(owner, token); engine.acknowledge(owner, ids); failure = null; notifyService(); null }
+  fun historyStop(owner: String, token: String, promise: Promise) = call(promise) { leases.check(owner,token); history.erase(owner); null }
+  fun historyRead(owner: String, promise: Promise) = call(promise) { history.read(owner) }
+  fun historyStart(bridge: String, activity: Activity, owner: String, token: String, promise: Promise) {
+    if (!leases.isOpen(bridge) || activity.isFinishing || activity.isDestroyed || !activity.hasWindowFocus() || review != null) {
+      promise.reject("ERR_HISTORY_UNAVAILABLE", "History setup is unavailable.", null); return
+    }
+    reviewOwner = bridge
+    review = AlertDialog.Builder(activity).setTitle("Start selected-app History?")
+      .setMessage("Disconnect will read Android's retained foreground usage for the apps you saved on this device. Only daily durations, dates, selected-app count and coverage are synced to your account. App names, package identities and raw events stay on this device. The first seven complete days become a fixed baseline. Missing data stays unavailable. Restarting replaces this account's current baseline; it does not change app protection. Usage access is separate and can be disabled in Android Settings.")
+      .setNegativeButton("Not now") { _, _ -> promise.resolve(null) }
+      .setPositiveButton("Start History") { _, _ -> call(promise) {
+        leases.check(owner,token); history.begin(owner,java.time.ZoneId.systemDefault().id)
+      } }.setOnCancelListener { promise.resolve(null) }.create().also { dialog ->
+        dialog.setOnDismissListener { review = null; reviewOwner = null }; dialog.show()
+      }
+  }
   fun rewardsRead(owner: String, promise: Promise) = call(promise) {
     val record = engine.rewardSnapshot(owner, System.currentTimeMillis()) ?: return@call null
     val r = record.rewards
@@ -283,7 +300,7 @@ class InterventionRuntime private constructor(val context: Context) {
     try { leases.end(owner, erase) } catch (e: Exception) { reject(promise, e); return }
     call(promise, true) {
     try {
-      if (erase) { persistence.eraseOwner(owner); leases.erased(owner) } else engine.read(owner)
+      if (erase) { persistence.eraseOwner(owner); history.erase(owner); leases.erased(owner) } else engine.read(owner)
     } catch (e: InterventionFailure) {
       if (e.code == "ERR_INTERVENTION_OWNER") leases.erased(owner) // Never poison a different owner's future scope.
       throw e

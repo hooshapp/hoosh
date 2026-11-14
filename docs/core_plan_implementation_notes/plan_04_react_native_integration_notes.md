@@ -6203,3 +6203,54 @@ explicit consent, shared account consumer/Home/History projections and actual
 phone acceptance. Auth/iOS/further TalkBack/forecast remain separate; never render
 fixture durations as real measured user history. Existing untracked icon/workspace
 paths remain untouched. No push/main merge/deployment is authorized here.
+
+### History D01b — Native measurement, private cache and consent
+
+Owner Ishmum,2026-11-13. Branch `task/react-native/rn09-d02-history`;
+backend D01a is `6bb5850`. Commit message:
+`feat(android): collect private selected-app History estimates`.
+
+Native interval reconstruction and file/cache bounds are production code, not
+synthetic measurements. Empty/missing data stays unknown; native identities/class
+keys remain ephemeral/local. Explicit collection consent and usage permission are
+separate from protection and Auth. Start/restart never silently changes another
+account, native app selection or restrictions. Unsupported iOS remains unavailable.
+
+| File and exact changed lines | Change and purpose |
+|---|---|
+| `apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/InterventionChecks.kt`:17 | Register the new production reducer and actual Android storage checks with the existing runner. |
+| `apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/HooshUsageModule.kt`:73–79 | Expose real History read/start/stop to Expo in native builds; require foreground Activity for the consent dialog. |
+| `apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/InterventionAccessibilityService.kt`:76 | Best-effort capture for an already configured owner after normal protection reconcile; History catches its own errors so measurement cannot disable protection. |
+| `apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/InterventionCoordinator.kt`:27–29 | Actual optional History read/start/stop coordinator protocol, with activity/owner/lease context. |
+| `apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/InterventionRuntime.kt`:26,268–283,303 | Own History read, leased foreground native consent Start/Restart, Stop and owner-erasure delegation. Consent names metadata upload/baseline/limitations and does not enable permissions or change protection. |
+| `apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/NativeInterventionBridge.kt`:28–30 | Delegate History methods through the existing shared native actor and bridge lifetime, not a parallel success stub. |
+| `apps/mobile/src/infrastructure/native/product-ports.android.ts`:42–45 | Bind optional real module methods without changing existing required quest/selection methods or old-build availability. |
+| `apps/mobile/src/infrastructure/native/product-ports.ts`:8–11 | Optional History read/start/stop and existing usage-settings capability; no absent/iOS implementation is fabricated. |
+| `scripts/check-android-intervention-engine.py`:56,86,96 | Compile/run the production History reducer and same Android pure cases via cached JVM tooling. |
+| `apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/HistoryStorageChecks.kt`:1–29 | Six real Android owner-private cache checks: absent state, malformed JSON/version/type/size rejection and erasure. Generated owner only; remove only its own files in finally. |
+| `apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/HistoryUsageChecks.kt`:1–29 | Fifteen actual reducer cases for duration/overlap/clipping/real zero/screen/keyguard, empty/unknown/cap/order/unmatched pause/reboot and STOPPED-vs-PAUSED semantics. |
+| `apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/HistoryCollector.kt`:1–123 | Owner-hashed no-backup32KiB/56day AtomicFile aggregate cache with strict version/shape/date/type/selection validation; explicit collection lifecycle, stable opaque series ID, saved-zone/selection/uninstall mismatch, bounded OS query, permission/lock rechecks, daily cache retention and best-effort30minute capture. No raw package/class/events persist or cross the bridge. |
+| `apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/HistoryUsage.kt`:1–49 | Pure actual native selected-resumed-activity union reducer, clipping real midnight intervals and interactive/keyguard periods; refuse missing boundary state/witnesses, cap, unordered events, unmatched pauses or shutdown/startup ambiguity. Reports OS foreground estimates, never fabricated zero. |
+
+Checks: debug app/test APK and release Kotlin build; pure JVM116cases; actual
+Pixel8Pro/Android16 instrumentation145cases pass, including real AtomicFile/cache
+corruption checks. The prior139 run preceded six added storage checks. Test-created
+random History owners are erased. No native NO-SOURCE task is counted as a test.
+No TalkBack session or new app-protection/usage permission grant was needed; phone
+already allows usage access, independently re-read rather than inferred from a
+launch. Baseline native files/history/settings/reverse were saved privately before
+installation; final consumer acceptance will restore and verify them. SDK/Auth
+credentials are excluded from backups/logs/Git.
+
+Development Supabase0005→0006 now applied through guarded administrator transaction
+and verified by Alembic/security checks, with before/after hashes/counts identical
+for existing profiles/settings/quests/schedules/outcomes/reward tables. Two original
+profiles preserved; other product tables empty. No managed Auth/user/provider
+operation or A/B token use. Shared API/History/phone readback remains D01c; do not
+claim physical7/28day comparison evidence from these bounded native tests.
+
+Next: finish shared account consumer/recovery/Home integration and actual native
+consent→aggregate→verified API→History phone check, then restore phone and stop
+owned fixture/Metro. No DB suite while the manual fixture is running.
+
+This commit updates this notes file:6207–6256 for its native ledger/checkpoint.

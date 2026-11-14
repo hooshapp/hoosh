@@ -39,6 +39,10 @@ function connectedPort(): ProductNativePort | null {
   );
   return {
     ...bound,
+    historyStop: bridge.historyStop?.bind(bridge),
+    historyRead: bridge.historyRead?.bind(bridge),
+    historyStart: bridge.historyStart?.bind(bridge),
+    openUsageAccess: bridge.openUsageAccess?.bind(bridge),
     rewardsRead: bridge.rewardsRead?.bind(bridge),
     rewardsAck: bridge.rewardsAck?.bind(bridge),
     questApply(owner, token, expected, metadata) {

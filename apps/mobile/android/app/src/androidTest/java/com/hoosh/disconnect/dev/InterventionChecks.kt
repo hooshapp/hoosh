@@ -14,7 +14,7 @@ internal object InterventionChecks {
     try { action(); error("Expected failure") } catch (e: InterventionFailure) { check(e.code == code) }
   }
   fun run(context: Context): Int {
-    val rewards = RewardChecks.run()
+    val rewards = RewardChecks.run() + HistoryUsageChecks.run() + HistoryStorageChecks.run(context)
     val pure = try { InterventionEngineChecks.run() } catch (e: Exception) { lastCase = InterventionEngineChecks.lastCase; throw e }
     val weekly = try { WeeklyScheduleChecks.run() } catch (e: Exception) { lastCase = pure + WeeklyScheduleChecks.lastCase; throw e }
     val quests = try { QuestScheduleChecks.run() } catch (e: Exception) { lastCase = pure + weekly + QuestScheduleChecks.lastCase; throw e }

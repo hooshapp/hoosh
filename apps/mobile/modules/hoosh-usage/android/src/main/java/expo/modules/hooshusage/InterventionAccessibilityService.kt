@@ -73,6 +73,7 @@ class InterventionAccessibilityService : AccessibilityService() {
           if (token != generation || epoch != runtime.epoch.get() || foreground != app || runtime.service !== this || !runtime.unlocked()) return@post
           if (app == null || record == null || (needed.isEmpty() && nudge == null)) hide() else show(record, app, needed, nudge)
         }
+        if (record != null) runtime.history.capture(record.plan.owner, System.currentTimeMillis())
       } catch (_: Exception) { runtime.failure = "ERR_INTERVENTION_STORAGE"; main.post { finishRead(); if (token == generation) hide() } }
     }
   }

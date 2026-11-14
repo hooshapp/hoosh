@@ -5,6 +5,10 @@ export type ProductNativePort = QuestDevicePort & SelectionEditorPort & Selectio
   interventionEndOwner(owner: string, erase: boolean): Promise<unknown>;
   interventionClaimOwner(owner: string, token: string, stopPrevious: boolean): Promise<unknown>;
   selectionRead(owner: string): Promise<unknown>;
+  historyStop?(owner: string, token: string): Promise<unknown>;
+  historyRead?(owner: string): Promise<unknown>;
+  historyStart?(owner: string, token: string): Promise<unknown>;
+  openUsageAccess?(): Promise<unknown>;
   rewardsRead?(owner: string): Promise<unknown>;
   rewardsAck?(owner: string, token: string, installation: string, sequence: number): Promise<unknown>;
 };

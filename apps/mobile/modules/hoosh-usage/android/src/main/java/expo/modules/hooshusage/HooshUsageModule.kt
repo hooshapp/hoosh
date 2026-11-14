@@ -70,6 +70,13 @@ class HooshUsageModule : Module() {
       AsyncFunction("schedulePreview") { spec: Map<String, Any>, p: Promise -> interventions(p)?.schedulePreview(spec, p) }.runOnQueue(Queues.MAIN)
       AsyncFunction("scheduleApply") { owner: String, token: String, expected: Int, revision: Int, selection: Int, spec: Map<String, Any>, p: Promise -> interventions(p)?.scheduleApply(owner, token, expected, revision, selection, spec, p) }.runOnQueue(Queues.MAIN)
       AsyncFunction("questRead") { owner: String, questId: String, p: Promise -> interventions(p)?.questRead(owner, questId, p) }.runOnQueue(Queues.MAIN)
+      AsyncFunction("historyStop") { owner: String, token: String, p: Promise -> interventions(p)?.historyStop(owner, token, p) }.runOnQueue(Queues.MAIN)
+      AsyncFunction("historyRead") { owner: String, p: Promise -> interventions(p)?.historyRead(owner, p) }.runOnQueue(Queues.MAIN)
+      AsyncFunction("historyStart") { owner: String, token: String, p: Promise ->
+        val activity = appContext.currentActivity
+        if (activity == null) p.reject("ERR_HISTORY_UNAVAILABLE", "No foreground History setup.", null)
+        else interventions(p)?.historyStart(activity, owner, token, p)
+      }.runOnQueue(Queues.MAIN)
       AsyncFunction("rewardsRead") { owner: String, p: Promise -> interventions(p)?.rewardsRead(owner, p) }.runOnQueue(Queues.MAIN)
       AsyncFunction("rewardsAck") { owner: String, token: String, installation: String, sequence: Long, p: Promise -> interventions(p)?.rewardsAck(owner, token, installation, sequence, p) }.runOnQueue(Queues.MAIN)
       AsyncFunction("questApply") { owner: String, token: String, expected: Int, json: String, p: Promise ->
