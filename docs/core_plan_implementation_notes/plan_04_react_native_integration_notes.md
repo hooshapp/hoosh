@@ -6,7 +6,7 @@
 
 **Current part:** RN10-D06 / RN08-D06 independent optimized native lifecycle pass complete. Exact existing internal R8 APK on fresh API30 emulator passed offline weekly pause, identical allowance/deadline/count after SIGKILL, old-boot allowance reblocking while its wall deadline remained future, permission loss/re-enable, native Disable access and network return. Force stop correctly removes enforcement; app launch plus explicit access off/on was required to recover. Native rules/budget/business outbox persisted; no account/Metro or production runtime change. Six native smoke/six config cases, fixture build/guards and default-runner manifest pass. All task settings restored; emulator stopped and fresh AVD removed. Auth/iOS/TalkBack, true LMK/OEM/store/normal account Apply/Stop and full parent completion remain separate.
 
-**Implementation branch:** `task/react-native/android-protection-lifecycle`; base `41d8da8` (completed layout pass). Current commit Pending; resolve by unique subject `test(android): verify standalone protection lifecycle`. No push/main merge/deployment.
+**Implementation branch:** `task/react-native/android-protection-lifecycle`; native lifecycle source `0e27d63`, layout `41d8da8`, standalone `515cf7d`. Source pushed and Foundation mobile/API/database checks passed; this receipt commit is Pending and resolves by `docs: record Android publication checks`. No main merge or deployment.
 
 **Commit reference:** RN-01 `2f88102`; RN-02 `2d5c0d1`; RN-03 `0741758`; RN-04 `610f570`; RN-05 preparation `0c6e4db`; RN-07 UI `5790302`; RN-08 preparation `71da2d5`; RN-09a `ff75039`. RN-10 is `9b5fbd0`.
 
@@ -15,6 +15,9 @@
 **Shared workflow:** [Implementation knowledge base](README.md).
 
 ## Resume here
+
+- **Publication verified (2026-11-15):** pushed exact source `0e27d63` including standalone/layout ancestors to the current branch; [Foundation43761603564](https://github.com/hooshapp/hoosh/actions/runs/43761603564) passed mobile/API/database. [Receipt](artifacts/android-publication.json) pins SHA/run/job IDs. This is hosted Node/API/PG validation, not hosted native/emulator or managed-account acceptance. Documentation-only receipt will also be pushed and its exact head checked; no main merge/deployment or new acceptance of deferred work.
+
 
 - **Optimized native lifecycle accepted (2026-11-15; RN10-D06/RN08-D06):** [runbook](../qa/android-protection-lifecycle.md), [evidence](artifacts/android-protection-lifecycle/evidence.json). Actual existing R8 standalone APK/owned API30 weekly fixture covers offline pause, same-deadline SIGKILL, boot-bound allowance reblocking without budget reset, permission loss/re-enable/native disable, force-stop limitation/explicit access-toggle recovery and network return retaining native revision/count/business outbox. Six smoke and six config checks pass; default instrumentation selection preserved. Only test-APK initializer/target/test selection/docs added. Direct synthetic install/consent is not product Apply/disclosure/Auth acceptance; no normal account or speech work. Baselines/service/reverse verified restored, owned emulator stopped/fresh AVD removed; phone/other data untouched. Remaining true LMK/OEM/store/wider/account/iOS/speech gates keep full parent parts open. Local commit only, no push.
 
@@ -7339,3 +7342,52 @@ provenance remains the exact older artifact in evidence, not a new source build.
 | `docs/core_plan_implementation_notes/artifacts/android-protection-lifecycle/force-stopped.png`: binary | Actual target without pause while the host package is stopped and service unbound. Source evidence distinguishes Force stop from ordinary SIGKILL. |
 | `docs/core_plan_implementation_notes/artifacts/android-protection-lifecycle/explicit-recovery.png`: binary | Actual pause after manual host launch plus required access off/on on this API30 emulator. No universal OEM/continuous-protection or managed SDK claim. |
 | This notes file: lines 7,9,19–21,7171–7341 | Current/branch/resume checkpoint plus gap rationale, setup/implementation decisions, rejected attempts, actual phase outcomes, command results, Force stop semantics, cleanup, remaining scope and every-file ledger. Local Pending hash resolves through the unique commit subject. |
+
+### Publication — standalone, compact layout and native lifecycle
+
+Ishmum,2026-11-15. Branch `task/react-native/android-protection-lifecycle`.
+Initial source head `0e27d638487c3af17fc4742092129dfc05169ac0` pushed normally;
+remote ref matches. This includes standalone515cf7d and layout41d8da8 ancestors.
+No main merge, Auth/iOS/deferred acceptance or deployment is requested/claimed.
+
+Foundation push workflow43761603564 started for that exact SHA:
+https://github.com/hooshapp/hoosh/actions/runs/43761603564
+All three jobs completed successfully for the exact source SHA; the public run
+metadata and connected job reads agree. The record-only receipt is committed
+separately and its final head will also be checked before reporting completion. Connector commit statuses were empty and its run-list
+wrapper only supports PR-triggered runs; the public Actions API supplied the push
+run ID, then connected GitHub job reads verified actual jobs. Do not treat empty
+legacy statuses as a passed Actions workflow.
+
+
+#### Publication result and scope
+
+Source0e27d63 is pushed with standalone515cf7d/layout41d8da8 ancestors. Remote ref
+was checked against the full SHA; no intermediate branch ref, main merge or PR
+was required. Foundation43761603564 completed successfully with mobile, API and
+database jobs. Public Actions metadata pins event=push/head SHA; connected job
+reads and direct job metadata both confirm all three successes. Empty legacy
+commit statuses were not treated as Actions acceptance. No logs/credentials or
+personal files were copied into evidence.
+
+The workflow covers mobile types/lint/portable/component/specimen/export/assets,
+API lint/tests/generated contracts and isolated PostgreSQL/migration/RLS/HTTP
+checks with cleanup. It does not build/run Android instrumentation; those local
+native/package/device records retain their exact earlier scope. User untracked
+workspace/icon directories remain untouched. No deployment, Auth or managed-account
+operation, deferred acceptance, main merge or full parent completion occurred.
+This publication receipt is documentation-only and is pushed/checked as well;
+its own hash stays Pending by unique subject, without an endless receipt chain.
+
+
+#### Every-file ledger — GitHub publication receipt
+
+Unique commit subject: `docs: record Android publication checks`; own hash Pending.
+
+| File and lines in this commit | Change and reason |
+|---|---|
+| `docs/Context (AGENT)/AGENT_START_HERE.md`: lines 15–22,33 | Add exact pushed source/branch/run/jobs receipt and remove the superseded unpushed wording from the latest native milestone. Preserve open acceptance and no-merge/deployment boundaries. |
+| `docs/core_plan/04_react_native_integration.md`: lines 3–10,21 | Publish the same verified CI checkpoint without changing stable part IDs or marking deferred/native/device/whole-plan acceptance complete. |
+| `docs/core_plan/README.md`: lines 3–10,21 | Update the execution index with actual branch publication and three successful jobs, so a new agent does not repeat an already completed push/check step. |
+| `docs/core_plan_implementation_notes/artifacts/android-publication.json`: lines 1–41 | Pin full product SHA, push event/branch/run attempt, job IDs/results/URLs and scope. No logs, credentials, native CI or managed-account acceptance is claimed. |
+| This notes file: lines 9,19–21,7346–7393 | Update current branch/resume and record push, remote-SHA check, connector limitation, actual Actions verification, validation scope and this per-file ledger. Record-only receipt is also pushed and its head checked; self hash resolves by subject. |

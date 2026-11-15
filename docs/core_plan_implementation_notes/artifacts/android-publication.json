@@ -1,0 +1,41 @@
+{
+  "verifiedDate": "2026-11-15",
+  "repository": "hooshapp/hoosh",
+  "branch": "task/react-native/android-protection-lifecycle",
+  "verifiedSourceCommit": "0e27d638487c3af17fc4742092129dfc05169ac0",
+  "workflow": "Foundation checks",
+  "runId": 43761603564,
+  "runAttempt": 1,
+  "url": "https://github.com/hooshapp/hoosh/actions/runs/43761603564",
+  "event": "push",
+  "status": "completed",
+  "conclusion": "success",
+  "jobs": [
+    {
+      "name": "mobile",
+      "id": 132957413695,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/hooshapp/hoosh/actions/runs/43761603564/job/132957413695"
+    },
+    {
+      "name": "database",
+      "id": 132957413982,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/hooshapp/hoosh/actions/runs/43761603564/job/132957413982"
+    },
+    {
+      "name": "api",
+      "id": 132957413986,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/hooshapp/hoosh/actions/runs/43761603564/job/132957413986"
+    }
+  ],
+  "scope": "Hosted API, disposable PostgreSQL and mobile portable/component/export checks. Native APK/emulator tests retain their separately recorded local evidence.",
+  "mainMerged": false,
+  "deploymentPerformed": false,
+  "managedAccountsAccepted": false,
+  "receiptCommitReference": "docs: record Android publication checks"
+}

@@ -12,6 +12,14 @@ and existing evidence; deferred is not completed. Functional controls, navigatio
 ordinary layout and recovery still need relevant checks. This does not change
 Anisha's ownership or silently defer her other platform work.
 
+**GitHub publication verified (2026-11-15):** source `0e27d63` and its
+standalone/layout ancestors are pushed on `task/react-native/android-protection-lifecycle`.
+[Foundation run43761603564](https://github.com/hooshapp/hoosh/actions/runs/43761603564)
+passed mobile, API and database jobs for that exact SHA. See
+[receipt](../core_plan_implementation_notes/artifacts/android-publication.json).
+Native device/APK results remain separate local evidence; no main merge,
+deployment, managed-account or deferred acceptance is inferred.
+
 **Optimized native lifecycle (2026-11-15; RN10-D06 / RN08-D06):** fresh
 API30/Android11 emulator now accepts the existing internal R8 APK's offline native
 weekly pause, same-deadline/budget SIGKILL recovery, boot-bound allowance reblocking,
@@ -22,7 +30,7 @@ Only test-APK setup/runner selection changed; production service is unchanged.
 Read [scope, evidence and cleanup](../qa/android-protection-lifecycle.md) and
 [Plan04 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md).
 Direct synthetic setup is not product disclosure/Apply/SDK acceptance. True LMK,
-OEM/store/account/iOS/speech gates remain open; no full parent completion or push.
+OEM/store/account/iOS/speech gates remain open; no full parent completion. Publication is recorded above.
 
 **Compact/older Android layout (checks 2026-11-14, finalized 2026-11-15;
 RN10-D02/D05):** the isolated host now has normal-text coverage of all 19
