@@ -1,0 +1,243 @@
+{
+  "date": "2026-11-15",
+  "owner": "Ishmum",
+  "refs": [
+    "RN10-D06",
+    "RN08-D06"
+  ],
+  "sourceBase": "41d8da8d7948517d84f73883b387eb9e658a2eaf",
+  "sourceWorktreeDirty": true,
+  "artifact": {
+    "built_at": "2026-11-14T23:30:54.186Z",
+    "distribution": "INTERNAL ONLY; local Android debug certificate; not store signing",
+    "package_id": "com.hoosh.disconnect.dev",
+    "min_sdk": 24,
+    "target_sdk": 36,
+    "debuggable": false,
+    "hermes_bytecode": true,
+    "embedded_bundle_bytes": 3426504,
+    "packaged_font_count": 6,
+    "native_abis": [
+      "arm64-v8a"
+    ],
+    "native_protection_manifest": true,
+    "signature_verified": true,
+    "alignment_16k_verified": true,
+    "mapping_sha256": "a57e5bf1f70cd11b270522ffd37a50106657e71c9f0fb115b6c2c5e7ceee7e07",
+    "apk_sha256": "e045befc5b5b469de7dc764ef0caee2ae1ef52fbace7ff3f2388a3c14885f22c",
+    "api_transport": "internal_loopback_http",
+    "managed_account_acceptance": "pending",
+    "native_runtime_acceptance": "not established by packaging",
+    "source_commit": "a3b4393a43b480069327bdb0b23406d83780334d",
+    "source_worktree_dirty": true
+  },
+  "nativeProductionSourcesUnchangedSince": "515cf7d",
+  "runtime": {
+    "androidApi": 30,
+    "androidVersion": "11",
+    "abi": "arm64-v8a",
+    "logicalViewportDp": [
+      360,
+      640
+    ],
+    "hardware": "owned fresh ARM64 emulator",
+    "noReverseMappings": true
+  },
+  "fixture": {
+    "type": "test-APK-only direct synthetic native v4 seed; not product Apply/disclosure/Auth",
+    "sessionSeconds": 120,
+    "sessionsPerDay": 3,
+    "wrongConfirmationRejected": true,
+    "existingStateRejectedWithoutMutation": true,
+    "currentOccurrenceEndsWithinMinutes": 45,
+    "weeklyTemplateRecursUntilCleanup": true,
+    "guardRequiresNonDebuggableTarget": true,
+    "guardRequiresEmulatorHardware": true,
+    "negativeDebugOrHardwareGuardRunsPerformed": false,
+    "testApkSha256AtRun": "bb2cbd49551eb337af83129947405bcd6054a21d3aa1da97aadee760042e96da"
+  },
+  "observations": [
+    {
+      "phase": "standalone-offline-initial",
+      "overlayVisible": true,
+      "revision": 1,
+      "weeklyEnabled": true,
+      "dailyUsed": 0,
+      "storedSessionCount": 0,
+      "covered": false,
+      "details": {}
+    },
+    {
+      "phase": "allowance-before-sigkill",
+      "overlayVisible": false,
+      "revision": 1,
+      "weeklyEnabled": true,
+      "dailyUsed": 1,
+      "storedSessionCount": 1,
+      "covered": false,
+      "details": {}
+    },
+    {
+      "phase": "before-controlled-sigkill",
+      "overlayVisible": false,
+      "revision": 1,
+      "weeklyEnabled": true,
+      "dailyUsed": 1,
+      "storedSessionCount": 1,
+      "covered": false,
+      "details": {}
+    },
+    {
+      "phase": "sigkill-rebind-same-allowance",
+      "overlayVisible": false,
+      "revision": 1,
+      "weeklyEnabled": true,
+      "dailyUsed": 1,
+      "storedSessionCount": 1,
+      "covered": false,
+      "details": {
+        "processChanged": true,
+        "sameSessionAndDeadline": true
+      }
+    },
+    {
+      "phase": "offline-reboot-reblocks-old-boot-allowance",
+      "overlayVisible": true,
+      "revision": 1,
+      "weeklyEnabled": true,
+      "dailyUsed": 1,
+      "storedSessionCount": 1,
+      "covered": false,
+      "details": {
+        "bootChanged": true,
+        "oldDeadlineStillFuture": true,
+        "dailyBudgetRetained": true
+      }
+    },
+    {
+      "phase": "permission-revoked-offline-target-usable",
+      "overlayVisible": false,
+      "revision": 1,
+      "weeklyEnabled": true,
+      "dailyUsed": 1,
+      "storedSessionCount": 1,
+      "covered": false,
+      "details": {
+        "serviceBound": false,
+        "nativeRulesAndBusinessOutboxRetained": true
+      }
+    },
+    {
+      "phase": "permission-restored-offline-pause",
+      "overlayVisible": true,
+      "revision": 1,
+      "weeklyEnabled": true,
+      "dailyUsed": 1,
+      "storedSessionCount": 1,
+      "covered": false,
+      "details": {
+        "serviceBound": true,
+        "budgetAndRevisionRetained": true
+      }
+    },
+    {
+      "phase": "native-disable-access-offline",
+      "overlayVisible": false,
+      "revision": 1,
+      "weeklyEnabled": true,
+      "dailyUsed": 1,
+      "storedSessionCount": 1,
+      "covered": false,
+      "details": {
+        "serviceBound": false,
+        "rulesRetainedNotEnforced": true
+      }
+    },
+    {
+      "phase": "force-stop-is-not-process-restart",
+      "overlayVisible": false,
+      "revision": 1,
+      "weeklyEnabled": true,
+      "dailyUsed": 1,
+      "storedSessionCount": 1,
+      "covered": false,
+      "details": {
+        "packageStopped": true,
+        "serviceBound": false,
+        "continuousProtectionClaimed": false
+      }
+    },
+    {
+      "phase": "explicit-force-stop-recovery",
+      "overlayVisible": true,
+      "revision": 1,
+      "weeklyEnabled": true,
+      "dailyUsed": 1,
+      "storedSessionCount": 1,
+      "covered": false,
+      "details": {
+        "manualLaunchClearedStopped": true,
+        "manualLaunchAloneRebound": false,
+        "explicitPermissionToggleRequired": true
+      }
+    },
+    {
+      "phase": "network-restored-no-reinstall",
+      "overlayVisible": true,
+      "revision": 1,
+      "weeklyEnabled": true,
+      "dailyUsed": 1,
+      "storedSessionCount": 1,
+      "covered": false,
+      "details": {
+        "activeNetworkReturned": true,
+        "noApiOrMetro": true,
+        "samePolicyBudgetBusinessOutbox": true
+      }
+    }
+  ],
+  "checks": {
+    "standaloneReadOnlyNativeOnApi30": 6,
+    "publicConfigNodeTests": 6,
+    "fixtureTestApkBuild": "passed",
+    "defaultInstrumentationManifest": "UsageProbeInstrumentation preserved",
+    "nativeOrAppRuntimeCodeChanged": false
+  },
+  "cleanup": {
+    "restoredSettings": {
+      "secure/enabled_accessibility_services": true,
+      "secure/accessibility_enabled": true,
+      "system/font_scale": true,
+      "global/airplane_mode_on": true,
+      "global/wifi_on": true,
+      "global/mobile_data": true
+    },
+    "noBoundProtectionService": true,
+    "noReverseMappings": true,
+    "appForceStopped": true,
+    "onlyFreshOwnedAvd": true,
+    "ownedEmulatorStopped": true,
+    "freshTaskAvdRemoved": true,
+    "noPhysicalDeviceTouched": true,
+    "noAccountOrPermissionChangesOutsideOwnedEmulator": true
+  },
+  "notClaimed": [
+    "OS low-memory-killer or OEM battery-management behavior",
+    "Full Android24/36/OEM/store matrix",
+    "Normal managed-account/root Schedule/Apply/Stop or Supabase acceptance",
+    "Actual prominent-disclosure flow acceptance from seeded test consent",
+    "iOS",
+    "TalkBack",
+    "Server delivery or credits for retained native outbox events",
+    "Continuous protection across permission revocation or Force stop",
+    "Full RN10-D06/RN08-D06/Plan04 completion"
+  ],
+  "screenshots": {
+    "explicit-recovery.png": "124d240843cda31c6c869e78d485e4a8a6c74033a88fdf6f82731bac2802f04a",
+    "force-stopped.png": "92ff0313df97731fab5c43040a4d671d2e7454198419bfe87bedd2e75481dcef",
+    "offline-reboot-pause.png": "124d240843cda31c6c869e78d485e4a8a6c74033a88fdf6f82731bac2802f04a",
+    "permission-restored-offline.png": "124d240843cda31c6c869e78d485e4a8a6c74033a88fdf6f82731bac2802f04a",
+    "permission-revoked.png": "92ff0313df97731fab5c43040a4d671d2e7454198419bfe87bedd2e75481dcef",
+    "process-kill-allowance.png": "ec4329498459acd9675a3fe2822c3abc071bc81e2d838fb603cae23c69602b34"
+  }
+}

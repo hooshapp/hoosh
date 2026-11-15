@@ -120,3 +120,16 @@ Auth/onboarding/iOS, full device/screen-reader/true memory-pressure matrices, Pl
 signing/review and full RN-10/RN08-D06/Plan04 completion remain open. The
 [Plan04 implementation notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md)
 record source lines, failed attempts, exact artifact hashes and current limits.
+
+
+## Independent optimized native protection supplement — 2026-11-15
+
+The same exact internal APK now has bounded API30 synthetic weekly native
+protection evidence beyond the read-only smoke: offline pause, allowance retention
+through SIGKILL, reboot reblocking without budget reset, permission loss/re-enable,
+native Disable access, explicit Force stop recovery and network return. See
+[the lifecycle runbook](android-protection-lifecycle.md) and its per-file notes.
+It uses a separate test-APK initializer; it does not add a normal app bypass or
+accept product disclosure/selection/Apply/SDK flows. Force stop remains an observed
+interruption requiring explicit recovery, not continuous enforcement. True LMK,
+OEM/wider/store/iOS/TalkBack and managed-account gates retain their original scope.

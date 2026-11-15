@@ -4,9 +4,9 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN10-D02/D05 bounded Android layout/input pass complete. Both owned API 30/360×640dp and API 36/320×568dp emulators covered all 19 normal pages; targeted system text 2.0 covered 16/9 pages, long labels,16 sample state presentations, actual IME input and ordinary confirmations. Fixed quest heading reflow, mixed-unit Ready history sample and keyboard-obstructing QA footer. Mobile 553 portable / 807 component(+2 existing skips), types/lint/export/isolation/71 SVGs pass. Runtime checks 2026-11-14; finalized 2026-11-15. API 30 baselines restored; task AVDs discarded after interruption, with API 36 settings not reverified because its temporary system image disappeared. No account/Auth/iOS/protection/TalkBack work, push or full Plan03/04 completion.
+**Current part:** RN10-D06 / RN08-D06 independent optimized native lifecycle pass complete. Exact existing internal R8 APK on fresh API30 emulator passed offline weekly pause, identical allowance/deadline/count after SIGKILL, old-boot allowance reblocking while its wall deadline remained future, permission loss/re-enable, native Disable access and network return. Force stop correctly removes enforcement; app launch plus explicit access off/on was required to recover. Native rules/budget/business outbox persisted; no account/Metro or production runtime change. Six native smoke/six config cases, fixture build/guards and default-runner manifest pass. All task settings restored; emulator stopped and fresh AVD removed. Auth/iOS/TalkBack, true LMK/OEM/store/normal account Apply/Stop and full parent completion remain separate.
 
-**Implementation branch:** `task/react-native/android-layout-coverage`; base `515cf7d` (standalone internal Android). This commit is Pending; resolve by unique subject `fix(mobile): verify compact and older Android layouts`. Local commit only; no push/main merge/deployment. Older checkpoints below are historical.
+**Implementation branch:** `task/react-native/android-protection-lifecycle`; base `41d8da8` (completed layout pass). Current commit Pending; resolve by unique subject `test(android): verify standalone protection lifecycle`. No push/main merge/deployment.
 
 **Commit reference:** RN-01 `2f88102`; RN-02 `2d5c0d1`; RN-03 `0741758`; RN-04 `610f570`; RN-05 preparation `0c6e4db`; RN-07 UI `5790302`; RN-08 preparation `71da2d5`; RN-09a `ff75039`. RN-10 is `9b5fbd0`.
 
@@ -15,6 +15,9 @@
 **Shared workflow:** [Implementation knowledge base](README.md).
 
 ## Resume here
+
+- **Optimized native lifecycle accepted (2026-11-15; RN10-D06/RN08-D06):** [runbook](../qa/android-protection-lifecycle.md), [evidence](artifacts/android-protection-lifecycle/evidence.json). Actual existing R8 standalone APK/owned API30 weekly fixture covers offline pause, same-deadline SIGKILL, boot-bound allowance reblocking without budget reset, permission loss/re-enable/native disable, force-stop limitation/explicit access-toggle recovery and network return retaining native revision/count/business outbox. Six smoke and six config checks pass; default instrumentation selection preserved. Only test-APK initializer/target/test selection/docs added. Direct synthetic install/consent is not product Apply/disclosure/Auth acceptance; no normal account or speech work. Baselines/service/reverse verified restored, owned emulator stopped/fresh AVD removed; phone/other data untouched. Remaining true LMK/OEM/store/wider/account/iOS/speech gates keep full parent parts open. Local commit only, no push.
+
 
 - **Bounded Android layouts accepted (finalized 2026-11-15; RN10-D02/D05):** read [coverage/runbook](../qa/android-layout-coverage.md) and [sanitized evidence](artifacts/android-layout-coverage/evidence.json). All19normal pages on API 30/36,16/9 enlarged pages, long-label and16 bounded states, actual software input and ordinary modal actions passed with the three documented fixes. Full mobile 553/807(+2 existing skips), types/lint and production export/isolation/71 assets pass;14 focused cases repeated after resumption. No personal phone/account/protection/TalkBack used. API 30 settings restored and emulator stopped; on resumption all emulators/Metro were gone and API 36's image was missing, so only fresh task-owned AVDs/definitions were discarded. Settings restoration on API 36 was not reverified. Remaining physical external keyboard/OEM/minimum API, normal real-account and signed/release/platform/speech acceptance stay separate; full RN-10/Plan04 remain open. No independent layout defect remains observed in this measured matrix. Local commit only, no push.
 
@@ -7164,3 +7167,175 @@ hashes, not a fictitious post-commit runtime build.
 | `docs/core_plan_implementation_notes/artifacts/android-layout-coverage/compact-confirmation.png`: binary | Actual enlarged native dirty-exit modal; ordinary Keep/Back/Discard controls were exercised separately from deferred speech and real Router integration. |
 | `docs/core_plan_implementation_notes/artifacts/android-layout-coverage/older-history-ready.png`: binary | Corrected normal-size API30 Progress sample shows validated80%synthetic content after the fixture fix. Does not claim measured user savings. |
 | This notes file: lines 7,9,13,19,6983–7166 | Update current/resume/branch/date and record start, discoveries, decisions, fixes, rejected attempts, exact validation, interruption recovery, cleanup, remaining gates and every-file ledger. Commit hash remains Pending per workflow; resolve by its unique subject. |
+
+### RN10-D06 / RN08-D06 — Standalone native protection lifecycle gaps
+
+Owner: Ishmum. Started 2026-11-15, branch
+`task/react-native/android-protection-lifecycle`, base `41d8da8`. Commit Pending.
+Scope: target missing independent native lifecycle evidence, preserve user Auth/
+accounts/iOS/TalkBack deferrals and original part IDs. No phone is connected;
+use a fresh task-owned ARM64 emulator, synthetic native owner and test target.
+
+Evidence audit: RN09B-D04a/b already accept debug-build offline reboot with JS
+unopened, process-kill allowance expiry and screen-off/wake. Weekly/task-removal
+and earlier isolated persistence tests also exist. The internal R8 standalone
+milestone only accepts six read-only native checks and normal account-gate cold/
+background/offline startup; it explicitly excludes actual standalone protection.
+Do not repeat the entire UI/backend/managed-account suite or relabel those old
+results as optimized release evidence. New matrix: optimized native weekly pause,
+running-allowance process kill/reboot, Accessibility revocation/re-enable, offline
+Stop and explicit force-stop recovery/limitations. Real LMK/OEM/store/account/iOS/
+speech remain distinct; observed failures will drive only necessary fixes.
+
+Use only test-APK fixtures, never a new app/debug bypass or production keep rule.
+Fixture writes must refuse existing app data and remain emulator-only, synthetic
+and explicitly labeled; direct seeded installation is not Schedule/Apply/Auth or
+prominent-disclosure acceptance. Actual overlay/service observations follow after
+fixture initialization with no API/Metro/JS dependency. Avoid ordinary hierarchy
+automation while service is active, and restore/remove only owned test resources.
+
+Gap implementation: a separate plain-Java AndroidTest initializer and target will
+seed one bounded, 45 minute synthetic weekly plan with 120 second allowances under
+an emulator-only owner. Initialization rejects real hardware, debuggable targets
+and any pre-existing native directory/fixture marker. It creates only the private
+native fixture plus explicit synthetic disclosure acceptance; these are not
+product Save/Apply/consent/SDK acceptance. No production code, R8 keep rules or
+account bypass is added. Read-only native smoke remains unchanged. Subsequent
+live service phases use no instrumentation/hierarchy driver, API, Metro or JS.
+
+Refined matrix: existing debug offline Stop is retained as prior evidence. New
+release service tests cover offline pause, allowance kill/reboot preservation,
+Accessibility revocation/re-enable, native Disable app protection and force-stop
+limitations/recovery. Actual normal-app Stop still needs a real owner/account;
+seeding a stopped file will not be passed off as exercising that production API.
+
+Runtime startup: test APK/fixture compiled; optimized standalone passes all six
+read-only smoke cases on API 30. Wrong confirmation and existing-native-state
+initialization are rejected; repeat attempt leaves state bytes unchanged. AGP
+registers only its configured instrumentation runner, so fixture selection uses
+`-PhooshStandaloneLifecycle=true`; an attempted extra manifest registration was
+removed after its no-run rejection. Ordinary/smoke runners remain available.
+
+Initial live wait was rejected: service bound but the first target window event
+occurred before binding, and the helper queried a window dump variant lacking
+current focus. Corrected the focus query and performed an actual Home→target
+transition. Production R8 service then showed Disconnect pause with zero daily
+usage, native weekly revision 1 and no API/Metro/JS; Android reports no active
+default network. No production service fix was needed. Service reconnection still
+requires a new observed app-window event; this is recorded, not hidden.
+
+Actual optimized process check: Open anyway created one 120 second native session/
+daily count 1. Root SIGKILL was applied to the exact owned app process, not Force
+stop. A changed process and service rebound; target reentry retained the exact
+session ID, wall/elapsed deadlines and daily count 1, with coverage still false.
+The initial polling helper treated temporary pid absence as an error; it was
+corrected and a second controlled kill/rebind passed without another allowance.
+Reboot was then initiated during that running allowance; acceptance is pending.
+
+
+Optimized reboot acceptance: after reboot the actual standalone native pause
+returned offline on target reentry with host JS still unopened. The pre-reboot
+allowance's wall deadline remained in the future, but its boot ID differed from
+the new OS boot; daily count remained1 and exact stored session/deadline remained
+unchanged. This verifies conservative boot-bound allowance behavior and no budget
+reset, separately from the older debug reboot-before-allowance evidence.
+
+Live optimized recovery passed: Accessibility revocation removed the pause and
+unbound the service while the controlled target remained usable. Native revision 1,
+weekly settings, daily count 1, stored session and business outbox were retained.
+Explicit re-enable plus a fresh target window restored the pause offline. Native
+Disable app protection also removed access/pause offline without clearing rules.
+
+Force stop was tested separately from SIGKILL. It hid the pause, unbound service
+and marked the package stopped; target reentry alone did not restore protection.
+Explicit app launch/review restored service/pause under the observed recovery
+path (record exact toggle requirement in final evidence). Wi-Fi/data return then
+left revision/count/outbox unchanged with no Apply/reinstall, API or Metro server.
+No continual enforcement or full coverage is inferred across revocation/force stop.
+
+
+#### Final independent lifecycle acceptance — 2026-11-15
+
+All new optimized weekly fixture phases passed. Existing debug quest/task-removal/
+offline Stop evidence is retained, not rerun or promoted into release/account
+acceptance. The exact R8 standalone APK hash and original source dirty-base report
+are in the new evidence; native production source/resource files are unchanged
+from standalone commit 515cf7d. The newer JS layout commit is not falsely claimed
+as embedded in that previously built APK. Main native/runtime code needed no fix.
+
+Force-stop result is deliberately explicit: the package-stopped flag cleared on
+manual app launch, but this Android 11 service did not rebind until access was
+turned off/on. Fresh target entry then paused. Android documents user interaction
+as the intended way out of stopped state; this run does not promise identical
+OEM rebinding or continuous enforcement while stopped/revoked. All observed gaps
+retained coverage=false, native revision 1, daily count 1 and the same business
+outbox. Retention is not HTTP acknowledgement or credits.
+
+Fixture lifetime clarification: today's UTC occurrence ends within 45 minutes;
+its all-weekday template recurs daily and is not globally self-expiring. Cleanup
+must remove the disposable AVD. This fixture is not a production permission grant
+flow, selection save, Schedule/Apply, native Stop API or managed-account test.
+Native Disable access removes service enforcement and retains rules, which is a
+different outcome from Stop. Wrong-confirmation/existing-native-state guards were
+actually exercised; real-hardware/debug-target negative runs were not attempted.
+
+Checks actually run:
+
+- `:app:assembleDebugAndroidTest -PhooshStandaloneSmoke=true`: build and existing
+  six read-only native smoke cases pass on the new API 30 runtime/exact APK.
+- `:app:assembleDebugAndroidTest -PhooshStandaloneLifecycle=true`: fixture test
+  APK builds; expected wrong-confirmation/existing-state refusals and successful
+  initialization pass. Existing state refusal preserves bytes before service use.
+- Live native table: offline pause; same-session/deadline/count SIGKILL recovery;
+  offline reboot with old deadline still future; Accessibility revoke/re-enable;
+  native Disable app protection; Force stop versus process kill; explicit app
+  launch+access-toggle recovery; network return without Apply/reinstall.
+- `:app:processDebugAndroidTestManifest` with no special flag: original
+  UsageProbeInstrumentation remains selected. Its 146 previous checks were not
+  unnecessarily rerun against the R8 target; that Kotlin runner is a debug test.
+- `npm run mobile:check-standalone`: all six public-config Node cases pass.
+- Captures are unmodified synthetic target/native pause windows; final live
+  helpers require unlocked owned focus/UID and avoid UIAutomation while active.
+  No personal or account/password UI capture, TalkBack session or API/Metro server.
+
+Cleanup: six saved settings (service list/accessibility, font, airplane, Wi-Fi,
+mobile data) match baseline. No bound protection service or reverse mappings;
+only the owned app was force-stopped. Emulator stopped; only its fresh task AVD
+and definition were discarded. Shared SDK/artifacts, other AVDs, phone/settings,
+accounts/Auth credentials and databases were not changed. No push/merge/deploy.
+
+Handoff: consume the new bounded native result, not the fixture as a product
+account integration. Normal managed-owner Apply/Stop/joint root and Anisha's iOS,
+actual LMK/OEM/battery/store/wider-device and deferred speech remain separate.
+RN10-D06/RN08-D06/Plan04 are not marked fully complete. Do not add a boot receiver,
+background bypass, production test API or R8 keep rule to pretend Android Force
+stop can guarantee continued enforcement.
+
+
+#### Every-file ledger — standalone native lifecycle commit
+
+Resolve Pending by unique subject `test(android): verify standalone protection lifecycle`.
+Line ranges describe this commit; binary images have no source lines. Runtime APK
+provenance remains the exact older artifact in evidence, not a new source build.
+
+| File and lines in this commit | Change and reason |
+|---|---|
+| `apps/mobile/android/app/build.gradle`: lines 93–98 | Add explicit test-APK-only lifecycle runner selection while preserving the existing smoke flag and ordinary Kotlin runner. No production keep rule, signing/package/permission/runtime change. |
+| `apps/mobile/android/app/src/androidTest/AndroidManifest.xml`: lines 3–6 | Register only the separate test APK's plain-Java launcher target. The fixture instrumentation itself is selected through AGP; attempted duplicate manual registration was removed after its no-run rejection. |
+| `apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/StandaloneLifecycleFixture.java`: lines 1–94 | Guard emulator hardware, explicit confirmation, non-debuggable fixed target and absence of native data/marker; atomically seed one synthetic v4 weekly/native consent fixture. Fixed stage-only failures avoid private payloads. Current occurrence ends within45minutes but template recurs; disposal is mandatory. This is not production selection/Apply/disclosure/Auth acceptance. |
+| `apps/mobile/android/app/src/androidTest/java/com/hoosh/disconnect/dev/StandaloneLifecycleTargetActivity.java`: lines 1–17 | Minimal Android-only Java target in the test APK, usable alongside R8 without relying on renamed target Kotlin. No third-party app inventory, credentials or user content. |
+| `docs/Context (AGENT)/AGENT_START_HERE.md`: lines 15–26 | Latest measured lifecycle checkpoint, Force stop caveat, test-only boundary and evidence link for resuming agents. Preserve Auth/iOS/TalkBack ownership/deferral and open full parents. |
+| `docs/core_plan/04_react_native_integration.md`: lines 3–14,646,1174 | Update existing RN08-D06/RN10-D06 evidence in place for optimized API30 native lifecycle. Keep original IDs and separate real Apply/SDK, true LMK/OEM/store/platform/speech gates. |
+| `docs/core_plan/README.md`: lines 3–14 | Add the same latest execution receipt so the completed independent checks are not scheduled again as wholly missing. No full-plan or normal managed-account acceptance inferred. |
+| `docs/qa/android-standalone.md`: lines 123–135 | Cross-reference actual protection beyond the earlier read-only/account-gate milestone while preserving that original exact artifact and smoke protocol. Test-only seeding is not a normal app bypass. |
+| `docs/qa/mobile-accessibility.md`: lines 3–8,94 | Add optimized native lifecycle supplement to the existing D06 record. Keep physical/account/true memory-pressure/platform/speech limits and historical evidence. |
+| `docs/qa/android-protection-lifecycle.md`: lines 1–136 | Gap audit, exact binary/runtime/setup scope, complete observed matrix, rejected harness attempts, reproducible flags/steps, no-UIAutomation and cleanup rules, actual checks and remaining gates. Link primary Android suppression/stopped-state guidance without universal OEM promises. |
+| `docs/core_plan_implementation_notes/artifacts/android-protection-lifecycle/README.md`: lines 1–28 | Explain six unmodified synthetic captures, separate native state evidence, fixture recurrence/cleanup and real-account/credit/disclosure limits. |
+| `docs/core_plan_implementation_notes/artifacts/android-protection-lifecycle/evidence.json`: lines 1–243 | Exact original R8 APK/build provenance, API30 runtime, initializer guards,11aggregate observations, Force stop toggle requirement, checks, restored baselines/AVD removal and image hashes. Forbidden hardware/debug guard negative runs are explicitly unperformed. No device serials, accounts or real app inventories. |
+| `docs/core_plan_implementation_notes/artifacts/android-protection-lifecycle/process-kill-allowance.png`: binary | Actual controlled target after SIGKILL/service rebind; separate native readback proves retained session/deadlines/count. Screenshot alone is not timer proof. |
+| `docs/core_plan_implementation_notes/artifacts/android-protection-lifecycle/offline-reboot-pause.png`: binary | Actual optimized pause after offline reboot with old allowance wall deadline still future; native boot and count comparisons provide the acceptance evidence. |
+| `docs/core_plan_implementation_notes/artifacts/android-protection-lifecycle/permission-revoked.png`: binary | Actual owned target is usable after service revocation; retained installation is not presented as enforcement. |
+| `docs/core_plan_implementation_notes/artifacts/android-protection-lifecycle/permission-restored-offline.png`: binary | Actual pause after explicit service re-enable and fresh target window, offline and with unchanged native revision/budget/outbox. |
+| `docs/core_plan_implementation_notes/artifacts/android-protection-lifecycle/force-stopped.png`: binary | Actual target without pause while the host package is stopped and service unbound. Source evidence distinguishes Force stop from ordinary SIGKILL. |
+| `docs/core_plan_implementation_notes/artifacts/android-protection-lifecycle/explicit-recovery.png`: binary | Actual pause after manual host launch plus required access off/on on this API30 emulator. No universal OEM/continuous-protection or managed SDK claim. |
+| This notes file: lines 7,9,19–21,7171–7341 | Current/branch/resume checkpoint plus gap rationale, setup/implementation decisions, rejected attempts, actual phase outcomes, command results, Force stop semantics, cleanup, remaining scope and every-file ledger. Local Pending hash resolves through the unique commit subject. |

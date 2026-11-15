@@ -1,5 +1,11 @@
 # Mobile accessibility and lifecycle evidence
 
+**Optimized native lifecycle update (2026-11-15):** a fresh API30 emulator
+accepts the existing internal R8 APK's independent synthetic weekly protection
+through offline process/reboot/permission/force-stop/network conditions. Force stop
+requires explicit recovery; this does not certify normal account-root Apply or
+true LMK/OEM/iOS/speech. See [matrix and cleanup](android-protection-lifecycle.md).
+
 **Compact/older Android update (finalized 2026-11-15):** RN10-D02/D05 now have
 bounded API 30 / 360×640 dp and API 36 / 320×568 dp development-host layout/input
 coverage at normal and enlarged system text, with three observed fixes. See
@@ -85,7 +91,7 @@ browser emulation or mocked public native APIs.
 | RN10-D03 | Real Auth/account/profile lifecycle, guarded root provider integration and two-account/restored-session transitions | Anisha + Ishmum. RN-05/06 and RN-07 live evidence; current callbacks/provider tests do not establish integration. |
 | RN10-D04 | Real native authorization/status visibility and foreground reconciliation | RN-08d (`cadc91d`) accepts Android read/usage Settings/foreground scope. Enforcement, iOS and release integration remain separate; RN-10d preserves existing usage access. |
 | RN10-D05 | Native accessibility of implemented Quests/History/Settings and detail/editor composition | RN-10c/d Android layout, details, dirty navigation, modal return and bounded sample states are recorded. The supplement adds enlarged inline composition, ordinary confirmations and 16 bounded loading/error/unavailable/busy states. Speech is deferred; other platforms/devices and release builds remain; Anisha owns iOS. |
-| RN10-D06 | Cold start, memory pressure, process death, background/foreground/offline restoration and measured responsiveness | RN-10d records local-draft background, injected trim callback, radio toggle and safe cold start. True OS memory-pressure kill, authenticated offline/process restoration and release integration remain; no SLA. |
+| RN10-D06 | Cold start, memory pressure, process death, background/foreground/offline restoration and measured responsiveness | RN-10d records local-draft background, injected trim callback, radio toggle and safe cold start. The optimized API30 supplement adds actual synthetic weekly offline/SIGKILL/reboot/permission/force-stop/network recovery. True LMK, managed account-root Apply, OEM/wider/store/platform acceptance remain; no SLA. |
 
 ## RN-11 readiness — live milestone cannot run yet
 

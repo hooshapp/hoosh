@@ -90,10 +90,12 @@ android {
 
     namespace 'com.hoosh.disconnect.dev'
     defaultConfig {
-        // Test APK only: the Java runner can inspect an R8 app without unminified Kotlin.
-        testInstrumentationRunner findProperty('hooshStandaloneSmoke') == 'true'
-            ? 'com.hoosh.disconnect.dev.StandaloneSmokeInstrumentation'
-            : 'com.hoosh.disconnect.dev.UsageProbeInstrumentation'
+        // Test APK only: plain-Java runners work beside an R8 app without unminified Kotlin.
+        testInstrumentationRunner findProperty('hooshStandaloneLifecycle') == 'true'
+            ? 'com.hoosh.disconnect.dev.StandaloneLifecycleFixture'
+            : findProperty('hooshStandaloneSmoke') == 'true'
+                ? 'com.hoosh.disconnect.dev.StandaloneSmokeInstrumentation'
+                : 'com.hoosh.disconnect.dev.UsageProbeInstrumentation'
         applicationId 'com.hoosh.disconnect.dev'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion

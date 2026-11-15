@@ -1,5 +1,17 @@
 # 04 — React Native Integration and Shared Frontend Plan
 
+**Optimized native lifecycle (2026-11-15; RN10-D06 / RN08-D06):** fresh
+API30/Android11 emulator now accepts the existing internal R8 APK's offline native
+weekly pause, same-deadline/budget SIGKILL recovery, boot-bound allowance reblocking,
+permission revoke/re-enable, native Disable access and network return. Force stop
+removes enforcement; this run required explicit app launch plus access off/on to
+recover. Native revision/budget/business outbox persisted, without account or Metro.
+Only test-APK setup/runner selection changed; production service is unchanged.
+Read [scope, evidence and cleanup](../qa/android-protection-lifecycle.md) and
+[Plan04 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md).
+Direct synthetic setup is not product disclosure/Apply/SDK acceptance. True LMK,
+OEM/store/account/iOS/speech gates remain open; no full parent completion or push.
+
 **Compact/older Android layout (checks 2026-11-14, finalized 2026-11-15;
 RN10-D02/D05):** the isolated host now has normal-text coverage of all 19
 presentation pages on API 30 / 360×640 dp and API 36 / 320×568 dp, targeted
@@ -631,7 +643,7 @@ full RN-08/Plan 04 remain open. Earlier no-recurrence checkpoints are historical
 | RN08-D03 | Supply actual permission/recovery/selection/setup handlers and complete async busy/error flows | Native owners' supported platform flows. Presentation callbacks/preview notices do not prompt or grant permission, and a read refresh cannot reinitialize an absent adapter. |
 | RN08-D04 | Confirm real installation/revision reconciliation and approved overlapping restriction behavior | Debug native coordinator/weekly compiler and shared Home/Settings explicit Apply/Update/Resume/Stop readback are implemented. Production binding and broader acceptance remain open; UI/API success is not installation evidence. |
 | RN08-D05 | Decide and implement account/sign-out ownership, event attribution and any restriction transfer/cleanup | PM/native migration protocol. This module does not clear, reassign or drain native rules/events on Auth changes or unmount. |
-| RN08-D06 | Execute signed-device revocation/install-failure/foreground/offline/host-termination and accessibility checks | Internal R8 standalone APK/native registration and account-gate cold/background/offline startup accepted on owned Android API36 emulator; see standalone runbook. Managed-account, actual standalone protection lifecycle/revocation, wider/store/iOS and further TalkBack matrices remain open. |
+| RN08-D06 | Execute signed-device revocation/install-failure/foreground/offline/host-termination and accessibility checks | Internal R8 standalone APK/native registration and account-gate cold/background/offline startup accepted on owned Android API36 emulator; see standalone runbook. Optimized API30 synthetic weekly lifecycle now accepts offline pause, SIGKILL/reboot allowance/budget behavior, revoke/re-enable, native disable/network return and explicit force-stop recovery; see lifecycle runbook. Real disclosure/Apply/managed-account, true LMK/OEM/wider/store/iOS and further TalkBack remain open. |
 
 **Owner:** Ishmum for presentation; native owners supply/validate their adapters.\
 **Dependencies:** Native read contract reviewed in Plan 00; source audit/feasibility and native implementation for live integration. Pure status mappers/specimens can proceed earlier.\
@@ -1159,7 +1171,7 @@ records the latest actual development-build scope without closing the parent par
 | RN10-D03 | Real Auth/account/profile lifecycle and root integration | Anisha + Ishmum; live RN-05/06/07 round trips and account transitions. |
 | RN10-D04 | Native authorization/status foreground reconciliation | RN-08d accepts Android read/usage-permission/foreground scope (`cadc91d`); enforcement, other devices, iOS and release integration remain separate. |
 | RN10-D05 | Native accessibility of implemented Quests/History/Settings and detail/editor composition | Ishmum; RN-10c/d record actual Android tabs/details/editors, selected controls, dirty Back/modal focus, large text and bounded sample error/busy states. The API 30/36 supplement adds enlarged inline composition, ordinary confirmations and 16 bounded sample states. Further speech is deferred; full state/platform/signed-build matrices remain. |
-| RN10-D06 | Cold start, memory pressure, background/termination/offline restoration and responsiveness | Internal R8 standalone actual normal account-gate cold/background/offline startup now accepted without Metro; RN-10d prior draft/trim/radio evidence retained. True memory-pressure kill, authenticated state restoration, wider/store/platform and protection lifecycle acceptance remain; no SLA. |
+| RN10-D06 | Cold start, memory pressure, background/termination/offline restoration and responsiveness | Internal R8 standalone actual normal account-gate cold/background/offline startup now accepted without Metro; RN-10d prior draft/trim/radio evidence retained. Optimized API30 native weekly lifecycle now accepts offline pause, SIGKILL/reboot allowance/budget recovery, permission loss/re-enable and force-stop/network recovery; saved rules do not imply enforcement while stopped. True LMK, real account/disclosure/Apply, OEM/wider/store/platform acceptance remain; no SLA. |
 
 ### RN-11 — Profile milestone and platform handoff evidence
 

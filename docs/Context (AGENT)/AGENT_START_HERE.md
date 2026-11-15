@@ -12,6 +12,18 @@ and existing evidence; deferred is not completed. Functional controls, navigatio
 ordinary layout and recovery still need relevant checks. This does not change
 Anisha's ownership or silently defer her other platform work.
 
+**Optimized native lifecycle (2026-11-15; RN10-D06 / RN08-D06):** fresh
+API30/Android11 emulator now accepts the existing internal R8 APK's offline native
+weekly pause, same-deadline/budget SIGKILL recovery, boot-bound allowance reblocking,
+permission revoke/re-enable, native Disable access and network return. Force stop
+removes enforcement; this run required explicit app launch plus access off/on to
+recover. Native revision/budget/business outbox persisted, without account or Metro.
+Only test-APK setup/runner selection changed; production service is unchanged.
+Read [scope, evidence and cleanup](../qa/android-protection-lifecycle.md) and
+[Plan04 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md).
+Direct synthetic setup is not product disclosure/Apply/SDK acceptance. True LMK,
+OEM/store/account/iOS/speech gates remain open; no full parent completion or push.
+
 **Compact/older Android layout (checks 2026-11-14, finalized 2026-11-15;
 RN10-D02/D05):** the isolated host now has normal-text coverage of all 19
 presentation pages on API 30 / 360×640 dp and API 36 / 320×568 dp, targeted
