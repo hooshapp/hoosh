@@ -1,5 +1,17 @@
 # 04 — React Native Integration and Shared Frontend Plan
 
+**Compact/older Android layout (checks 2026-11-14, finalized 2026-11-15;
+RN10-D02/D05):** the isolated host now has normal-text coverage of all 19
+presentation pages on API 30 / 360×640 dp and API 36 / 320×568 dp, targeted
+system text 2.0, actual software input, inline settings and ordinary confirmations.
+Fixed enlarged quest heading reflow, mixed-unit Ready history sample and QA
+keyboard footer obstruction. Mobile 553 portable / 807 component tests pass;
+production export/isolation/71 SVGs pass. No Auth/API/iOS/protection or TalkBack
+session was opened. Read [coverage and cleanup](../qa/android-layout-coverage.md)
+and [Plan04 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md).
+This completes the requested bounded pass, not full RN-10/Plan04 or release,
+physical-keyboard/OEM/account/platform acceptance. Local commit only; no push.
+
 **Standalone internal Android (2026-11-14; RN-10 / RN08-D06):** real R8 release
 now has a reproducible internally signed ARM64 APK with embedded Hermes/assets,
 configuration guards and native packaging checks. Owned API36 emulator passes
@@ -1143,10 +1155,10 @@ records the latest actual development-build scope without closing the parent par
 | Ref | Remaining acceptance | Owner / required evidence |
 |---|---|---|
 | RN10-D01 | Remaining VoiceOver/TalkBack traversal, announcements and focus | Further TalkBack work is user-deferred2026-11-12; retain existing RN-10d/D04b evidence. Anisha's VoiceOver and other platform gates remain separate; deferred speech work is not marked complete. |
-| RN10-D02 | Remaining platform/device font scale, keyboard, safe areas, focus scrolling and SVG acceptance | RN-10c/d record Pixel 8 Pro Expo Go/debug host at 1.15/2.0, software IME, measured focus viewport/footer and detail navigation. Physical keyboard, iOS, other devices and signed release remain. |
+| RN10-D02 | Remaining platform/device font scale, keyboard, safe areas, focus scrolling and SVG acceptance | RN-10c/d record Pixel 8 Pro Expo Go/debug host at 1.15/2.0, software IME, measured focus viewport/footer and detail navigation. API 30/36 compact/older-runtime supplement accepts normal/2.0 text, software input, inline/footer layout and original-asset scrolling. Physical keyboard, iOS, additional OEM/minimum-API and signed UI remain. |
 | RN10-D03 | Real Auth/account/profile lifecycle and root integration | Anisha + Ishmum; live RN-05/06/07 round trips and account transitions. |
 | RN10-D04 | Native authorization/status foreground reconciliation | RN-08d accepts Android read/usage-permission/foreground scope (`cadc91d`); enforcement, other devices, iOS and release integration remain separate. |
-| RN10-D05 | Native accessibility of implemented Quests/History/Settings and detail/editor composition | Ishmum; RN-10c/d record actual Android tabs/details/editors, selected controls, dirty Back/modal focus, large text and bounded sample error/busy states. Full state/speech matrices and other platforms/builds remain. |
+| RN10-D05 | Native accessibility of implemented Quests/History/Settings and detail/editor composition | Ishmum; RN-10c/d record actual Android tabs/details/editors, selected controls, dirty Back/modal focus, large text and bounded sample error/busy states. The API 30/36 supplement adds enlarged inline composition, ordinary confirmations and 16 bounded sample states. Further speech is deferred; full state/platform/signed-build matrices remain. |
 | RN10-D06 | Cold start, memory pressure, background/termination/offline restoration and responsiveness | Internal R8 standalone actual normal account-gate cold/background/offline startup now accepted without Metro; RN-10d prior draft/trim/radio evidence retained. True memory-pressure kill, authenticated state restoration, wider/store/platform and protection lifecycle acceptance remain; no SLA. |
 
 ### RN-11 — Profile milestone and platform handoff evidence

@@ -111,8 +111,9 @@ export const historyExample: HistoryModel = {
 
 export const historyDetailExample: HistoryDetail = {
   eligible: true,
-  baseline: historyMetric(750, '12h 30m', 'when you started'),
-  current: historyMetric(150, '2h 30m'),
+  // Detail comparisons use hours, including their numeric consistency check.
+  baseline: historyMetric(12.5, '12h 30m', 'when you started'),
+  current: historyMetric(2.5, '2h 30m'),
   savedHours: historyMetric(10, '10'),
   reduction: historyMetric(80, '80'),
   narrative: [

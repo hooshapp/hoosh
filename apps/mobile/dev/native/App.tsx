@@ -1,11 +1,11 @@
 import { AppJourneyQa } from './app-journey';
 import { WeeklyScheduleQa } from './weekly-schedule';
 import { InterventionQa } from './interventions';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { UsageProbe } from './usage-probe';
 import { AppSelectionPreview } from './selection-preview';
 import { DurableSelectionQa } from './durable-selection';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { Keyboard, StyleSheet, Text, View, ScrollView } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
@@ -122,6 +122,12 @@ export default function App() {
   );
 }
 function QaHost() {
+  const [keyboardVisible, setKeyboardVisible] = useState(() => Keyboard.isVisible());
+  useEffect(() => {
+    const show = Keyboard.addListener('keyboardDidShow', () => setKeyboardVisible(true));
+    const hide = Keyboard.addListener('keyboardDidHide', () => setKeyboardVisible(false));
+    return () => { show.remove(); hide.remove(); };
+  }, []);
   const [page, setPage] = useState<Page | null>(null),
     [scenario, setScenario] = useState<Scenario>('Ready'),
     [reset, setReset] = useState(0);
@@ -162,6 +168,9 @@ function QaHost() {
       {page !== 'App journey' ? <View
         onLayout={(e) => metrics?.reportHeight(Math.ceil(e.nativeEvent.layout.height))}
         style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 8) }]}>
+        {keyboardVisible && !realNative ? (
+          <Text style={styles.qaLabel}>UI QA · sample only</Text>
+        ) : <>
         <Text style={styles.qaLabel}>
           {realNative ? (page === 'Weekly schedule' ? 'WEEKLY LOCAL INSTALLATION' : page === 'Android interventions' ? 'FINITE NATIVE INTERVENTION TEST' : page === 'Android probe' ? 'REAL ANDROID CAPABILITY PROBE' : page === 'Saved apps editor' ? 'LOCAL SAVED SELECTION QA' : 'TEMPORARY ANDROID SELECTION PREVIEW') : `UI QA SAMPLE · ${page ?? 'Screens'} · ${scenario}`}
         </Text>
@@ -190,6 +199,7 @@ function QaHost() {
             style={styles.action}
           />
         </View>
+        </>}
       </View> : null}
     </View>
   );

@@ -12,6 +12,18 @@ and existing evidence; deferred is not completed. Functional controls, navigatio
 ordinary layout and recovery still need relevant checks. This does not change
 Anisha's ownership or silently defer her other platform work.
 
+**Compact/older Android layout (checks 2026-11-14, finalized 2026-11-15;
+RN10-D02/D05):** the isolated host now has normal-text coverage of all 19
+presentation pages on API 30 / 360×640 dp and API 36 / 320×568 dp, targeted
+system text 2.0, actual software input, inline settings and ordinary confirmations.
+Fixed enlarged quest heading reflow, mixed-unit Ready history sample and QA
+keyboard footer obstruction. Mobile 553 portable / 807 component tests pass;
+production export/isolation/71 SVGs pass. No Auth/API/iOS/protection or TalkBack
+session was opened. Read [coverage and cleanup](../qa/android-layout-coverage.md)
+and [Plan04 notes](../core_plan_implementation_notes/plan_04_react_native_integration_notes.md).
+This completes the requested bounded pass, not full RN-10/Plan04 or release,
+physical-keyboard/OEM/account/platform acceptance. Local commit only; no push.
+
 **Standalone internal Android (2026-11-14; RN-10 / RN08-D06):** real R8 release
 now has a reproducible internally signed ARM64 APK with embedded Hermes/assets,
 configuration guards and native packaging checks. Owned API36 emulator passes

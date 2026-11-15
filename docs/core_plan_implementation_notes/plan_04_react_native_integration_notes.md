@@ -4,17 +4,20 @@
 
 **Owner:** Ishmum. Anisha owns Auth/onboarding and iOS; these shared primitives are ready for her consumers.
 
-**Current part:** RN-10 / RN08-D06 standalone internal Android packaging and bounded acceptance complete. Real R8 release, embedded Hermes/assets, separately debug-certificate-signed ARM64 APK; six public-config tests and six optimized native cases pass. Normal account-gate cold/background/offline startup accepted without Metro/reverse ports on owned API36 emulator. Full553portable/803component(+2skips)/682API passed. Phone/credentials/hosted services unchanged, emulator/network cleanup verified. Internal distribution only; signed-in account journeys, Anisha's Auth/iOS, store/wider-device/protection lifecycle/true memory-pressure and further TalkBack remain open. No full Plan03/04 completion.
+**Current part:** RN10-D02/D05 bounded Android layout/input pass complete. Both owned API 30/360×640dp and API 36/320×568dp emulators covered all 19 normal pages; targeted system text 2.0 covered 16/9 pages, long labels,16 sample state presentations, actual IME input and ordinary confirmations. Fixed quest heading reflow, mixed-unit Ready history sample and keyboard-obstructing QA footer. Mobile 553 portable / 807 component(+2 existing skips), types/lint/export/isolation/71 SVGs pass. Runtime checks 2026-11-14; finalized 2026-11-15. API 30 baselines restored; task AVDs discarded after interruption, with API 36 settings not reverified because its temporary system image disappeared. No account/Auth/iOS/protection/TalkBack work, push or full Plan03/04 completion.
 
-**Implementation branch:** `task/react-native/android-standalone`; parent `a3b4393`. Commit resolves by subject `feat(android): build and verify an internal standalone app`. Normal app integration is `a3b4393`; recommendations were `808ba94`/`6c1468f`. Local commits only; no push/main merge/deployment. Older checkpoints below are historical.
+**Implementation branch:** `task/react-native/android-layout-coverage`; base `515cf7d` (standalone internal Android). This commit is Pending; resolve by unique subject `fix(mobile): verify compact and older Android layouts`. Local commit only; no push/main merge/deployment. Older checkpoints below are historical.
 
 **Commit reference:** RN-01 `2f88102`; RN-02 `2d5c0d1`; RN-03 `0741758`; RN-04 `610f570`; RN-05 preparation `0c6e4db`; RN-07 UI `5790302`; RN-08 preparation `71da2d5`; RN-09a `ff75039`. RN-10 is `9b5fbd0`.
 
-**Last updated:** 2026-11-14.
+**Last updated:** 2026-11-15.
 
 **Shared workflow:** [Implementation knowledge base](README.md).
 
 ## Resume here
+
+- **Bounded Android layouts accepted (finalized 2026-11-15; RN10-D02/D05):** read [coverage/runbook](../qa/android-layout-coverage.md) and [sanitized evidence](artifacts/android-layout-coverage/evidence.json). All19normal pages on API 30/36,16/9 enlarged pages, long-label and16 bounded states, actual software input and ordinary modal actions passed with the three documented fixes. Full mobile 553/807(+2 existing skips), types/lint and production export/isolation/71 assets pass;14 focused cases repeated after resumption. No personal phone/account/protection/TalkBack used. API 30 settings restored and emulator stopped; on resumption all emulators/Metro were gone and API 36's image was missing, so only fresh task-owned AVDs/definitions were discarded. Settings restoration on API 36 was not reverified. Remaining physical external keyboard/OEM/minimum API, normal real-account and signed/release/platform/speech acceptance stay separate; full RN-10/Plan04 remain open. No independent layout defect remains observed in this measured matrix. Local commit only, no push.
+
 
 - **Standalone internal APK accepted (2026-11-14; RN-10 / RN08-D06):** `npm run mobile:android:standalone` builds actual optimized release with embedded Hermes/assets and signs an internal copy using the existing local debug certificate. ARM64/min24/target36/compile37,3,426,504byte bundle,6fonts; APK/mapping hashes in [evidence](artifacts/android-standalone/evidence.json). Six config and six optimized native checks pass; normal gate cold/background/offline starts with no Metro/reverse ports. Full553/803(+2skips)/682, types/lint/contracts/assets pass. Emulator network restored and stopped, temporary UI capture/XML removed; phone/credentials/hosted accounts untouched. Read [runbook](../qa/android-standalone.md) and final per-file ledger. APK/report/mapping/keys stay ignored under build/local paths. Current actual build provenance records base HEAD plus dirty-worktree flag, not a fictitious post-commit build. Store signing, managed account and wider/platform/protection lifecycle/true memory-pressure/TalkBack gates stay open; no full parents/push/deployment.
 
@@ -6975,3 +6978,189 @@ remain required for complete normal signed-in acceptance. No push, merge or depl
 | `scripts/android-standalone.mjs`: lines 1–364 | Validate only reviewed public origin/key config without echoing secrets, strip other public env and disable implicit dotenv. Always release-rebundle; build existing R8 app; align/sign a separate internal copy with existing local debug key. Verify actual SDK/package/Hermes/fonts/native registration/signature/alignment and known QA markers, then atomically publish ignored APK/report with hashes and honest source dirty status. Store signing unchanged; no raw binary credential-scanner claim. |
 | `scripts/android-standalone.test.mjs`: lines 1–109 | Six meaningful Node cases cover safe HTTPS/loopback config, missing/remote-HTTP/credential/query/path origins, privileged/user key rejection, legacy anon shape, stripped public-env/dotenv controls and non-echoing error messages. Synthetic config only; no managed Auth request. |
 | This notes file: lines7,9,19–21,6798–6977 | Update current part/branch/resume, record start/progress/final implementation, actual package/native/UI checks and cleanup, corrected string-table/runner/nullability issues, exact local artifact provenance and every changed file/range. Internal milestone only; all managed/store/platform/parent limits retained. |
+
+
+### RN10-D02/D05 — Smaller Android layouts, OS coverage and keyboard
+
+Owner Ishmum, 2026-11-14. Branch `task/react-native/android-layout-coverage`, base
+`515cf7d`. Commit Pending; resolve by subject
+`fix(mobile): verify compact and older Android layouts`. Started 2026-11-14;
+finalized 2026-11-15 after usage interruption.
+
+User requests ordinary shared layout/large text/keyboard checks using the existing
+isolated screen host. Further TalkBack remains deferred. No account/Auth/iOS or
+backend/native intervention work is included. No physical phone is currently
+connected; use owned emulators, preserve baselines and never grant test protection.
+
+Plan: Android API 36 at compact viewport plus another Android version (official
+ARM64 system image), normal/enlarged text, all 19 presentation pages at normal
+scale and targeted long-text/keyboard/modal/last-action flows at enlarged scale.
+Exclude six native diagnostic pages from this layout-only pass. Use the existing
+debug APK/QA entry, no production preview bypass. Investigate observed defects,
+fix shared code with focused regression checks, retest actual native layout and
+write exact per-file/test/device evidence. Physical external keyboard, iOS and
+signed-in/release/full accessibility matrices remain distinct. Acceptance pending.
+
+Progress: debug APK rebuilt successfully with the existing Java17/Android toolchain.
+Fresh owned API 36 ARM64 emulator is 640×1136px at320dpi (320×568dp); a second fresh
+API 30 ARM64 Google APIs emulator is720×1280px at320dpi (360×640dp). The older
+system image was verified against Google's repository archive checksum. Both
+booted, installed the existing development APK and loaded the isolated nested
+QA app from loopback Metro8090. App-owned UI captures verify the QA footer and
+synthetic Home/Quests rendering; this is actual Android execution, not a browser
+viewport. No account sign-in, API server, native diagnostic page or protection
+permission is used. Full page/large-font/input acceptance is in progress.
+
+Baseline verification before layout changes: mobile TypeScript passes, mobile lint
+has zero errors and the same four pre-existing warnings, and all 99 component
+suites pass (803 passed,2 existing skipped). These deterministic checks are separate
+from emulator layout/input observations; they do not stand in for the latter.
+
+Observed defect during native screenshots: Ready Progress and Time reclaimed use
+`historyDetailExample`, whose baseline/current numeric values are750/150 minutes
+but `savedHours` is10 hours. The newer `usableHistoryDetail` consistency guard
+correctly rejects that mixed-unit fixture, hiding the populated detail layout.
+Fix the development-only detail values to12.5/2.5 hours, keep display strings and
+the production guard, add a focused real-component fixture regression, then
+repeat actual detail layout coverage. This is a QA fixture defect, not failed
+history measurement or a reason to weaken production validation.
+
+Fixture correction implemented: `dev/shared/ui-samples.ts` now supplies12.5/2.5
+hour numeric detail values. Two added real HistoryDetails render cases first failed
+on Android against the old sample (2 failed/5 passed), then both platform projects
+passed14/14 after correction. Cases assert populated80%/10hour details and the
+reclaimed diagram rather than merely testing a copied formula. Production guards,
+measurements, routes and account behaviour are unchanged. Android11 completed
+all 19 normal-size pages and asset-inventory end; its original two unavailable detail
+captures are defect reproduction, not successful populated-detail evidence.
+Repaired native detail/large-font coverage remains in progress.
+
+Further observed product layout defect: API 30 at system font_scale=2.0/360dp
+renders the quest editor header as `Perso` / `nalize` / `quest`. Back consumes a
+horizontal slot while the expanded heading could use the full row. Preserve
+large text and the Back target; stack quest navigation at enlarged font scale,
+then compare the same native screen and recheck navigation/actions. Detail
+headers already have their own compact Back treatment and should retain it.
+
+Actual IME probe on API 36/320×568dp/font 2.0 confirmed keyboard shown, then found
+no remaining ScrollView viewport: the full, enlarged fixed QA footer reserved
+most of the compact window. This is developer chrome, not an account/profile
+failure. The initial automation had tapped a visible field label while its input
+was below the viewport; that no-IME attempt is discarded. The corrected probe
+targets the actual EditText and requires Android's shown-IME state. Compact only
+presentation-sample QA chrome while IME is visible, retain a sample marker and
+restore full controls on dismissal. Do not change native diagnostic safety text.
+
+QA footer now uses a compact sample marker while presentation IME is open and
+restores full controls on dismissal. Keyboard subscriptions clean up on unmount;
+six native diagnostics retain their full safety footer. Native execution caught
+an unbound `Keyboard.isVisible` lazy initializer during this change; corrected it
+to a bound closure and restarted only the two owned sample apps. Discard the
+interrupted/error captures; acceptance resumes against the corrected host.
+
+Compact-footer native retest: API 36/320×568dp/font 2.0 now shows the actual software
+IME and the focused Profile EditText fully above it (bounds40,48–600,162px),
+containing the synthetic typed `_layout` segment. The prior full-footer build had
+no visible EditText/scroll viewport under the same conditions. This accepts the
+observed test-host obstruction fix; final-action/dismissal and other fields are
+still being exercised. No production tab-bar policy was changed for this QA issue.
+
+Coverage progress: both owned runtimes completed all 19 normal-size presentation
+pages and reached asset-inventory end. API 30 completed16 targeted enlarged-text
+pages plus Home/Activities long-text samples and16 bounded state presentations
+(Loading/Error/Unavailable/Busy across Quests/History/Settings/Profile). State
+capture does not imply every scenario produces a unique visual or real API state.
+API 36 compact/text 2.0 accepted actual Profile/Activities/quest-name text entry,
+keyboard dismissal/scroll and UI-only Save; invalid 25:99 time keeps Save disabled,
+and numeric 90 minute duration entry reaches Save. Native modal/remaining compact
+large-text comparisons are in progress. No speech or real persistence claim.
+
+
+#### Final acceptance and interruption recovery — 2026-11-15
+
+The final API 36 script completed during the interruption. Its persisted matrix
+and actual captures confirm all nine targeted enlarged pages: Home, Quests,
+Settings, History, Personalize, Hours, Sessions, Progress and Time reclaimed.
+No loop hit its maximum scroll budget. Review confirmed compact title readability,
+wrapped Hours scale endpoints, fully readable Save labels, final detail navigation
+and evidence text. Both original-asset inventory runs reached the final navigation
+assets. API 30's corrected normal detail and same-font heading/action reruns pass.
+
+Actual software IME and synthetic typing passed on Profile on both OS versions,
+plus custom Activities/quest name on compact API 36. Invalid 25:99 time keeps Save
+disabled; 90 minute number-pad duration reaches Save. Ordinary modal Keep editing,
+Android Back keeping draft, explicit Discard returning to sample Screens and
+Cancel quest→Keep quest passed. UI intent is not persistence or a live account.
+The larger QA footer and developer gear are separate from product layout.
+
+The temporary automation was corrected to target actual EditText, check current
+mInputShown rather than a stale IME-view flag, require readable action labels,
+scroll through clear margins instead of intercepting text-input gestures, and
+reverse a scroll that had moved a target above the viewport. Interrupted/error
+attempts were excluded; no input/capture continued into a foreign foreground app.
+These temporary helpers/raw XML/logs remain outside Git; no new app test framework
+or production preview bypass was introduced.
+
+Validation actually run:
+
+- Existing Android debug APK rebuilt and installed on both fresh ARM64 emulators;
+  actual QA host/source executed through Metro8090. No native source modification.
+- `npm run typecheck --workspace @disconnect/mobile`: pass, repeated on resumption.
+- `npm run lint --workspace @disconnect/mobile`: zero errors, four pre-existing warnings.
+- `npm test --workspace @disconnect/mobile`:553 portable and807 component pass,
+  two existing component skips. No backend rerun is needed for these mobile-only changes.
+- Fixture regression: two new Android cases fail against the old sample;14 cases
+  across both renderers pass after correction. Focused Jest file repeated after
+  resumption:14/14 pass. These are part of807, not an extra807+14 total.
+- `npm run mobile:export`: actual production web export,38-file preview-isolation
+  check and all 71 original local SVG export checks pass. All SVGs remain unchanged.
+- Native UI: all 19 normal pages on each runtime;16enlarged API 30 and9enlarged API 36
+  pages;16 bounded state presentations and Home/Activities long-text examples;
+  actual software input and ordinary modals as above. No TalkBack/speech claim.
+
+Cleanup: API 30 original font/IME/accessibility/size/density were verified restored,
+its task reverse removed and emulator stopped. On resumption no emulator or owned
+Metro was running and port 8090 was clear. API 36's temporary shared system image had
+disappeared, so a cleanup-only restart failed before boot. Its settings were not
+reverified; instead its fresh task-owned AVD/definition was discarded, along with
+the already-restored API 30 task AVD. Shared SDK files/other AVDs were not deleted.
+No personal device, account, Auth, server, database, permission or native installed
+policy was changed. No push, merge or deployment.
+
+Remaining: physical external keyboard and additional OEM/minimum-API devices,
+normal managed-account and signed/release UI, Anisha's Auth/iOS and deferred
+speech acceptance. RN-10/Plan04 stay open for those independent gates. Handoff:
+use the final QA record/evidence and current code; do not repeat this completed
+bounded matrix or invent real-account/protection evidence from sample callbacks.
+
+
+#### Every-file ledger — compact/older Android layout commit
+
+Ranges refer to this commit, resolved by the unique subject above. Binary images
+have no source line numbers. The evidence records the tested dirty base/source
+hashes, not a fictitious post-commit runtime build.
+
+| File and lines in this commit | Change and reason |
+|---|---|
+| `apps/mobile/dev/native/App.tsx`: lines 4,8,125–130 | Track actual software-keyboard visibility in the isolated host. The bound lazy initializer works with RN's instance method; both listeners are removed on unmount. |
+| `apps/mobile/dev/native/App.tsx`: lines 171–202 | Compact only presentation-sample footer content during IME display, restoring full QA controls on dismissal through measured footer geometry. Keep native diagnostics' existing full warning/footer behavior. |
+| `apps/mobile/dev/native/README.md`: lines 5–8,31 | Correct the host inventory to19presentation examples/six real native diagnostics and explain local synthetic versus native effects. No Auth/Router/API capability is inferred from the preview. |
+| `apps/mobile/dev/native/README.md`: lines 40–44 | Explain compact keyboard chrome and how to recover Screens/State/Reset. This prevents the tested QA-only obstruction from confusing future input checks. |
+| `apps/mobile/dev/native/README.md`: lines 65–69,97–105 | Preserve explicit TalkBack deferral and link measured compact/older-runtime coverage/limits while keeping historical phone evidence. |
+| `apps/mobile/dev/shared/ui-samples.ts`: lines 114–116 | Use12.5/2.5hour numeric baseline/current in the development history detail fixture, consistent with10saved hours. Keep production validation, display strings and shared web/native sample reuse. |
+| `apps/mobile/src/features/editors/editor-controls.tsx`: lines 196–197,206,226,290–291 | Stack the quest Back target above a full-width heading when fontScale>1.3 so enlarged Personalize no longer breaks mid-word. Preserve standard-size quest and compact detail-header layouts, font scaling and navigation semantics. |
+| `apps/mobile/src/features/history/history-details.test.tsx`: lines 10–33 | Render the actual Ready detail fixture in Progress/reclaimed modes; assert80%/10hour content and the original reclaimed diagram rather than an unavailable fallback. New cases reproduce the old failure and pass across both platform projects. |
+| `docs/Context (AGENT)/AGENT_START_HERE.md`: lines 15–26 | Add the latest bounded Android receipt, three fixes, checks and handoff links while retaining ownership, user speech deferral and open parent/account/platform gates. |
+| `docs/core_plan/04_react_native_integration.md`: lines 3–14,1158,1161 | Record actual layout milestone and update existing RN10-D02/D05 rows in place. Preserve IDs and remaining physical keyboard/OEM/minimum-API/iOS/account/signed/speech acceptance. |
+| `docs/core_plan/README.md`: lines 3–14 | Expose the same latest measured checkpoint in the execution index so a new agent does not restart completed layout work or infer full Plan04 completion. |
+| `docs/qa/mobile-accessibility.md`: lines 3–9,84,87 | Link the new bounded matrix and add compact/older-runtime evidence to the original acceptance rows. Retain historical results and deferred speech/remaining platform limits. |
+| `docs/qa/android-layout-coverage.md`: lines 1–138 | Record exact runtimes/viewports/font settings, presentation-only scope, normal/enlarged/state/input/modal runs, defects/retests, reproducible host steps, commands/results, interruption cleanup and explicit limits. |
+| `docs/core_plan_implementation_notes/artifacts/android-layout-coverage/README.md`: lines 1–29 | Explain all six sanitized captures, source/evidence boundaries and synthetic data. Developer chrome/viewport cropping, real Router and speech remain separate. |
+| `docs/core_plan_implementation_notes/artifacts/android-layout-coverage/evidence.json`: lines 1–478 | Machine-readable actual19/19normal and16/9enlarged page matrices,16state cases, input/modal results, source/runtime/image hashes, checks and asymmetric cleanup. Explicitly false/unclaimed account, phone, speech, release and full-parent acceptance. |
+| `docs/core_plan_implementation_notes/artifacts/android-layout-coverage/quest-heading-before.png`: binary | Actual API30/text2.0 failure reproduction: Back squeezed the title into `Perso` / `nalize` / `quest`. Unmodified owned-emulator capture, no private account. |
+| `docs/core_plan_implementation_notes/artifacts/android-layout-coverage/quest-heading-after.png`: binary | Same OS/viewport/font after the fix: full-width Personalize heading with Back still reachable. Preserves text size instead of hiding or shrinking the title. |
+| `docs/core_plan_implementation_notes/artifacts/android-layout-coverage/keyboard-before.png`: binary | Actual compact API36/text2.0 IME with the full QA footer consuming the form viewport. Reproduction only, not an accepted input result. |
+| `docs/core_plan_implementation_notes/artifacts/android-layout-coverage/keyboard-after.png`: binary | Same compact runtime/font with focused synthetic Profile input visible above the software keyboard after QA-footer compaction. Not a persisted profile or a physical phone test. |
+| `docs/core_plan_implementation_notes/artifacts/android-layout-coverage/compact-confirmation.png`: binary | Actual enlarged native dirty-exit modal; ordinary Keep/Back/Discard controls were exercised separately from deferred speech and real Router integration. |
+| `docs/core_plan_implementation_notes/artifacts/android-layout-coverage/older-history-ready.png`: binary | Corrected normal-size API30 Progress sample shows validated80%synthetic content after the fixture fix. Does not claim measured user savings. |
+| This notes file: lines 7,9,13,19,6983–7166 | Update current/resume/branch/date and record start, discoveries, decisions, fixes, rejected attempts, exact validation, interruption recovery, cleanup, remaining gates and every-file ledger. Commit hash remains Pending per workflow; resolve by its unique subject. |

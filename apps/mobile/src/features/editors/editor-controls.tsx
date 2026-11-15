@@ -193,6 +193,8 @@ export function EditorPage({
   const [leaving, setLeaving] = useState(false);
   const { fontScale } = useWindowDimensions();
   const iconBack = variant === 'detail' && fontScale > 1.3;
+  // Enlarged quest headings need the full width instead of a slot beside Back.
+  const stackedNavigation = variant === 'quest' && fontScale > 1.3;
   const backWidth = iconBack ? 44 : 76;
   const back = useRef<ComponentRef<typeof Button>>(null);
   const restoreBackFocus = useDialogFocusReturn(back);
@@ -201,7 +203,7 @@ export function EditorPage({
       title={title}
       header={null}
       contentStyle={[editorStyles.page, variant === 'detail' && { paddingHorizontal: 20 }]}>
-      <View style={editorStyles.navigation}>
+      <View style={[editorStyles.navigation, stackedNavigation && editorStyles.stackedNavigation]}>
         <Button
           ref={back}
           label={variant === 'detail' && !iconBack ? 'Back' : ''}
@@ -221,6 +223,7 @@ export function EditorPage({
           style={[
             editorStyles.title,
             variant === 'detail' && { fontSize: 17, lineHeight: 23, textAlign: 'center' },
+            stackedNavigation && editorStyles.stackedTitle,
           ]}>
           {title}
         </Text>
@@ -284,6 +287,8 @@ export function TimeControl({
 export const editorStyles = StyleSheet.create({
   page: { paddingHorizontal: 16, paddingTop: 4, gap: 16 },
   navigation: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  stackedNavigation: { flexDirection: 'column', alignItems: 'flex-start' },
+  stackedTitle: { flex: 0, alignSelf: 'stretch' },
   title: { fontFamily: fonts.bold, fontSize: 25, lineHeight: 33, color: colors.darkNav, flex: 1 },
   back: {
     width: 44,

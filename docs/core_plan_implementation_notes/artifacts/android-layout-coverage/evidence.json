@@ -1,0 +1,478 @@
+{
+  "runDate": "2026-11-14",
+  "finalizedDate": "2026-11-15",
+  "owner": "Ishmum",
+  "partIds": [
+    "RN10-D02",
+    "RN10-D05"
+  ],
+  "branch": "task/react-native/android-layout-coverage",
+  "sourceBase": "515cf7d118513d1d5a4b998bf6440486dd6441b5",
+  "sourceWorktreeDirty": true,
+  "sourceHashes": {
+    "apps/mobile/dev/native/App.tsx": "70e7ef9df6192257250462d4e263bce8852e31438bda625ef4d9311b5114fb3d",
+    "apps/mobile/dev/shared/ui-samples.ts": "3d88a0f69334c7a83ba7ba744d4a67a068882ed1728d2b5c7973b06d7b71e6ed",
+    "apps/mobile/src/features/editors/editor-controls.tsx": "9e5803ac12034d388d92eb743f60f9898c53e9be71dd529c499826247f916493",
+    "apps/mobile/src/features/history/history-details.test.tsx": "d85d9129df1b8221fcaa29d59dc7484be0cfe7d3ff8c2d1cc13bac00933a04e6"
+  },
+  "debugRuntimeApkSha256AtFinalization": "fd45f3d7e7e95b0edc195feb47c5a9232825486a34fc7e66135f47a4f833b5ee",
+  "entry": "apps/mobile/dev/native/index.tsx",
+  "transport": "Loopback Metro8090 in existing development client; not embedded release JavaScript",
+  "runtimes": [
+    {
+      "sdk": 30,
+      "os": "Android 11",
+      "abi": "arm64-v8a",
+      "pixels": [
+        720,
+        1280
+      ],
+      "densityDpi": 320,
+      "logicalDp": [
+        360,
+        640
+      ],
+      "fontScaleSettings": [
+        "default 1.0",
+        "2.0"
+      ],
+      "normalPages": [
+        {
+          "page": "Home",
+          "scrollSteps": 2
+        },
+        {
+          "page": "Quests",
+          "scrollSteps": 2
+        },
+        {
+          "page": "Settings",
+          "scrollSteps": 3
+        },
+        {
+          "page": "History",
+          "scrollSteps": 3
+        },
+        {
+          "page": "Personalize",
+          "scrollSteps": 3
+        },
+        {
+          "page": "Custom quest",
+          "scrollSteps": 3
+        },
+        {
+          "page": "Edit quest",
+          "scrollSteps": 3
+        },
+        {
+          "page": "Age",
+          "scrollSteps": 3
+        },
+        {
+          "page": "Activities",
+          "scrollSteps": 2
+        },
+        {
+          "page": "Apps",
+          "scrollSteps": 2
+        },
+        {
+          "page": "Native selection",
+          "scrollSteps": 2
+        },
+        {
+          "page": "Gender",
+          "scrollSteps": 4
+        },
+        {
+          "page": "Days",
+          "scrollSteps": 5
+        },
+        {
+          "page": "Hours",
+          "scrollSteps": 4
+        },
+        {
+          "page": "Sessions",
+          "scrollSteps": 4
+        },
+        {
+          "page": "Progress",
+          "scrollSteps": 2
+        },
+        {
+          "page": "Time reclaimed",
+          "scrollSteps": 2
+        },
+        {
+          "page": "Profile",
+          "scrollSteps": 2
+        },
+        {
+          "page": "Original assets",
+          "scrollSteps": 15
+        }
+      ],
+      "enlargedPages": [
+        {
+          "page": "Home",
+          "scrollSteps": 6
+        },
+        {
+          "page": "Quests",
+          "scrollSteps": 6
+        },
+        {
+          "page": "Settings",
+          "scrollSteps": 8
+        },
+        {
+          "page": "History",
+          "scrollSteps": 7
+        },
+        {
+          "page": "Personalize",
+          "scrollSteps": 8
+        },
+        {
+          "page": "Age",
+          "scrollSteps": 6
+        },
+        {
+          "page": "Activities",
+          "scrollSteps": 5
+        },
+        {
+          "page": "Apps",
+          "scrollSteps": 5
+        },
+        {
+          "page": "Native selection",
+          "scrollSteps": 4
+        },
+        {
+          "page": "Gender",
+          "scrollSteps": 8
+        },
+        {
+          "page": "Days",
+          "scrollSteps": 7
+        },
+        {
+          "page": "Hours",
+          "scrollSteps": 4
+        },
+        {
+          "page": "Sessions",
+          "scrollSteps": 4
+        },
+        {
+          "page": "Progress",
+          "scrollSteps": 9
+        },
+        {
+          "page": "Time reclaimed",
+          "scrollSteps": 7
+        },
+        {
+          "page": "Profile",
+          "scrollSteps": 4
+        }
+      ]
+    },
+    {
+      "sdk": 36,
+      "os": "Android 16",
+      "abi": "arm64-v8a",
+      "pixels": [
+        640,
+        1136
+      ],
+      "densityDpi": 320,
+      "logicalDp": [
+        320,
+        568
+      ],
+      "fontScaleSettings": [
+        "1.0",
+        "2.0"
+      ],
+      "normalPages": [
+        {
+          "page": "Home",
+          "scrollSteps": 3
+        },
+        {
+          "page": "Quests",
+          "scrollSteps": 3
+        },
+        {
+          "page": "Settings",
+          "scrollSteps": 4
+        },
+        {
+          "page": "History",
+          "scrollSteps": 4
+        },
+        {
+          "page": "Personalize",
+          "scrollSteps": 4
+        },
+        {
+          "page": "Custom quest",
+          "scrollSteps": 3
+        },
+        {
+          "page": "Edit quest",
+          "scrollSteps": 3
+        },
+        {
+          "page": "Age",
+          "scrollSteps": 3
+        },
+        {
+          "page": "Activities",
+          "scrollSteps": 3
+        },
+        {
+          "page": "Apps",
+          "scrollSteps": 3
+        },
+        {
+          "page": "Native selection",
+          "scrollSteps": 2
+        },
+        {
+          "page": "Gender",
+          "scrollSteps": 5
+        },
+        {
+          "page": "Days",
+          "scrollSteps": 6
+        },
+        {
+          "page": "Hours",
+          "scrollSteps": 5
+        },
+        {
+          "page": "Sessions",
+          "scrollSteps": 5
+        },
+        {
+          "page": "Progress",
+          "scrollSteps": 3
+        },
+        {
+          "page": "Time reclaimed",
+          "scrollSteps": 3
+        },
+        {
+          "page": "Profile",
+          "scrollSteps": 2
+        },
+        {
+          "page": "Original assets",
+          "scrollSteps": 20
+        }
+      ],
+      "enlargedPages": [
+        {
+          "page": "Home",
+          "scrollSteps": 8
+        },
+        {
+          "page": "Quests",
+          "scrollSteps": 9
+        },
+        {
+          "page": "Settings",
+          "scrollSteps": 13
+        },
+        {
+          "page": "History",
+          "scrollSteps": 10
+        },
+        {
+          "page": "Personalize",
+          "scrollSteps": 11
+        },
+        {
+          "page": "Hours",
+          "scrollSteps": 7
+        },
+        {
+          "page": "Sessions",
+          "scrollSteps": 6
+        },
+        {
+          "page": "Progress",
+          "scrollSteps": 11
+        },
+        {
+          "page": "Time reclaimed",
+          "scrollSteps": 10
+        }
+      ]
+    }
+  ],
+  "boundedStatePresentations": [
+    {
+      "page": "quests",
+      "state": "loading"
+    },
+    {
+      "page": "quests",
+      "state": "error"
+    },
+    {
+      "page": "quests",
+      "state": "unavailable"
+    },
+    {
+      "page": "quests",
+      "state": "busy"
+    },
+    {
+      "page": "history",
+      "state": "loading"
+    },
+    {
+      "page": "history",
+      "state": "error"
+    },
+    {
+      "page": "history",
+      "state": "unavailable"
+    },
+    {
+      "page": "history",
+      "state": "busy"
+    },
+    {
+      "page": "settings",
+      "state": "loading"
+    },
+    {
+      "page": "settings",
+      "state": "error"
+    },
+    {
+      "page": "settings",
+      "state": "unavailable"
+    },
+    {
+      "page": "settings",
+      "state": "busy"
+    },
+    {
+      "page": "profile",
+      "state": "loading"
+    },
+    {
+      "page": "profile",
+      "state": "error"
+    },
+    {
+      "page": "profile",
+      "state": "unavailable"
+    },
+    {
+      "page": "profile",
+      "state": "busy"
+    }
+  ],
+  "longTextPresentations": [
+    "Home",
+    "Activities"
+  ],
+  "nativeInputsAccepted": [
+    "API36 Profile actual IME, synthetic typing, final UI-only Save",
+    "API36 custom activity actual IME, synthetic typing, final UI-only Save",
+    "API36 quest name actual IME and reachable Save",
+    "API36 invalid 25:99 time, Save disabled",
+    "API36 number-pad 90-minute duration and reachable Save",
+    "API30 Profile actual IME, synthetic typing, final UI-only Save"
+  ],
+  "ordinaryModalActionsAccepted": [
+    "Keep editing",
+    "Android Back keeps draft",
+    "Discard and leave returns to sample Screens",
+    "Cancel quest then Keep quest"
+  ],
+  "defectsFixed": [
+    "Development detail fixture mixed minutes and hours; production guard preserved",
+    "Enlarged quest heading squeezed beside Back; stack for full width",
+    "QA footer consumed software-keyboard viewport; compact presentation chrome during IME"
+  ],
+  "retests": [
+    "API30 normal Progress and Time reclaimed populated after fixture correction",
+    "API30 same-size/font Personalize heading and final actions after reflow fix",
+    "API36 enlarged all final nine pages after fixes"
+  ],
+  "verification": {
+    "mobileTypecheck": "passed; repeated on resumption",
+    "mobileLint": {
+      "errors": 0,
+      "preExistingWarnings": 4
+    },
+    "mobilePortableTestsPassed": 553,
+    "mobileComponentTestsPassed": 807,
+    "existingComponentSkips": 2,
+    "fixtureRedAndroid": {
+      "failed": 2,
+      "passed": 5
+    },
+    "fixtureGreenBothRenderers": 14,
+    "fixtureResumedBothRenderers": 14,
+    "productionWebExport": true,
+    "productionPreviewIsolationFiles": 38,
+    "originalSvgExportCount": 71
+  },
+  "cleanup": {
+    "api30": {
+      "runtimeSdk": "30",
+      "settingsRestored": {
+        "system/font_scale": true,
+        "secure/show_ime_with_hard_keyboard": true,
+        "secure/accessibility_enabled": true,
+        "secure/enabled_accessibility_services": true,
+        "size": true,
+        "density": true,
+        "taskReverseRemoved": true
+      },
+      "appForceStopped": true,
+      "emulatorStopRequested": true
+    },
+    "api36": {
+      "runtimeSdk": "36",
+      "settingsRestoredAfterInterruption": false,
+      "cleanupMethod": "Discarded fresh task-owned AVD and definition after confirming no running Android device or emulator process. Shared API36 system image was missing, so settings restoration could not be rerun.",
+      "ownedTemporaryAvdRemoved": true,
+      "taskAvdHomeRemoved": true,
+      "physicalDeviceTouched": false,
+      "sharedSdkOrOtherAvdsRemoved": false
+    },
+    "noRunningAdbDevicesAtFinalization": true,
+    "ownedMetroNotRunningAndPort8090Clear": true,
+    "taskTemporaryAvdsAndDefinitionsRemoved": true
+  },
+  "notClaimed": [
+    "Physical phone or external keyboard acceptance",
+    "All Android versions, minimum API24 or OEM matrix",
+    "Real account or persistence acceptance",
+    "iOS or Auth integration",
+    "Signed release UI acceptance",
+    "TalkBack or speech acceptance",
+    "Full RN-10 or Plan04 completion",
+    "Native installation/protection acceptance in this layout-only pass"
+  ],
+  "screenshots": {
+    "compact-confirmation.png": "a9a3e50bcc1cde97606ab017dac755df30cab3d5386f950379809818a5a55198",
+    "keyboard-after.png": "bab7cc0e9be8defa6a1a47e4270d23312ad3b95a5c025153807d6a88f5511c1a",
+    "keyboard-before.png": "1e58aec21559efa7e34db13569dce40d851054197396d173173dcff2b8c52a0f",
+    "older-history-ready.png": "42d0fd986a0375d0b508382841cdb1bfa8b213a801fd0c1f085b5334abd11ada",
+    "quest-heading-after.png": "007d2b82638f9dba45985e80c1c3993aa0aa30aed0555345ab8b5d8e993a7436",
+    "quest-heading-before.png": "78c4ac746e426c41410109bfd01d94a01b048a108081f41e115a47eac5f78000"
+  }
+}

@@ -7,6 +7,30 @@ import {
   type HistoryDetail,
 } from './history-details-model';
 import { unavailableHistory, type HistoryMetric } from './history-model';
+import { historyDetailExample } from '../../../dev/shared/ui-samples';
+
+test.each([false, true])(
+  'the isolated Ready detail fixture renders populated content (reclaimed=%s)',
+  async (reclaimed) => {
+    await render(
+      <HistoryDetails
+        reading={{ state: 'ready', data: historyDetailExample }}
+        period="week"
+        onPeriodChange={jest.fn()}
+        onBack={jest.fn()}
+        reclaimed={reclaimed}
+      />,
+    );
+    if (reclaimed) {
+      expect(screen.getByLabelText('80% less screen time')).toBeVisible();
+      expect(screen.getByText('10')).toBeVisible();
+    } else {
+      expect(screen.getByText('80')).toBeVisible();
+      expect(screen.getByText(historyDetailExample.narrative[0])).toBeVisible();
+    }
+    expect(screen.queryByText(/isn’t available yet/)).toBeNull();
+  },
+);
 const metric: HistoryMetric = {
   value: 10,
   display: '10',

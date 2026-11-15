@@ -1,5 +1,12 @@
 # Mobile accessibility and lifecycle evidence
 
+**Compact/older Android update (finalized 2026-11-15):** RN10-D02/D05 now have
+bounded API 30 / 360×640 dp and API 36 / 320×568 dp development-host layout/input
+coverage at normal and enlarged system text, with three observed fixes. See
+[the detailed matrix, checks and cleanup](android-layout-coverage.md). Further
+TalkBack remains user-deferred; physical keyboard/OEM, account, iOS and signed UI
+acceptance are separate. Historical records below keep their original scope.
+
 **Standalone update,2026-11-14:** internal signed R8 app now passes normal account-gate
 cold/background/offline startup without Metro and six optimized native checks on
 owned Android API36 emulator. See [standalone runbook](android-standalone.md) and
@@ -74,10 +81,10 @@ browser emulation or mocked public native APIs.
 | Ref | Remaining work | Owner / acceptance evidence |
 |---|---|---|
 | RN10-D01 | VoiceOver/TalkBack traversal, selected-tab announcements, confirmation/status/error speech and focus | RN-10d has Android selected-tab/control/checkbox speech and modal focus/return. Anisha owns iOS. Full manual traversal/async speech, supported devices and signed release remain. |
-| RN10-D02 | Actual Dynamic Type/font scaling, software/hardware keyboard, safe areas, focus scrolling and SVG rendering | RN-10c/d have Pixel 8 Pro Expo Go/debug host at 1.15/2.0, IME/SVG/detail navigation and measured focus/footer fixes. Physical keyboard, iOS, other devices and signed release remain; portrait stays configured. |
+| RN10-D02 | Actual Dynamic Type/font scaling, software/hardware keyboard, safe areas, focus scrolling and SVG rendering | RN-10c/d have Pixel 8 Pro Expo Go/debug host at 1.15/2.0, IME/SVG/detail navigation and measured focus/footer fixes. The compact/older-runtime supplement adds API 30/36 normal/2.0 text, software input, safe/footer layout and original-asset scrolling. Physical keyboard, iOS, additional OEM/minimum-API and signed release remain; portrait stays configured. |
 | RN10-D03 | Real Auth/account/profile lifecycle, guarded root provider integration and two-account/restored-session transitions | Anisha + Ishmum. RN-05/06 and RN-07 live evidence; current callbacks/provider tests do not establish integration. |
 | RN10-D04 | Real native authorization/status visibility and foreground reconciliation | RN-08d (`cadc91d`) accepts Android read/usage Settings/foreground scope. Enforcement, iOS and release integration remain separate; RN-10d preserves existing usage access. |
-| RN10-D05 | Native accessibility of implemented Quests/History/Settings and detail/editor composition | RN-10c/d Android layout, details, dirty navigation, modal return and bounded sample states are recorded. Full traversal/state matrices, other platforms/devices and release builds remain; Anisha owns iOS. |
+| RN10-D05 | Native accessibility of implemented Quests/History/Settings and detail/editor composition | RN-10c/d Android layout, details, dirty navigation, modal return and bounded sample states are recorded. The supplement adds enlarged inline composition, ordinary confirmations and 16 bounded loading/error/unavailable/busy states. Speech is deferred; other platforms/devices and release builds remain; Anisha owns iOS. |
 | RN10-D06 | Cold start, memory pressure, process death, background/foreground/offline restoration and measured responsiveness | RN-10d records local-draft background, injected trim callback, radio toggle and safe cold start. True OS memory-pressure kill, authenticated offline/process restoration and release integration remain; no SLA. |
 
 ## RN-11 readiness — live milestone cannot run yet

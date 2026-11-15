@@ -2,9 +2,10 @@
 
 This separate developer project renders the actual shared components with explicitly
 labeled local examples. Ishmum owns the Android run; Anisha can reuse it for shared
-iOS presentation checks. It does not import Expo Router, Auth, API clients or native
-production protection adapters. Ordinary app exports must never include this directory or
-`dev/shared/ui-samples.ts`.
+iOS presentation checks. The 19 presentation examples use synthetic local data;
+the six native diagnostics described below can perform real local native actions.
+There is no account sign-in, Router or API integration in this host. Ordinary app
+exports must never include this directory or `dev/shared/ui-samples.ts`.
 
 ## Open on the phone
 
@@ -27,7 +28,7 @@ If LAN access is unavailable, `adb reverse tcp:8090 tcp:8090` allows opening
 `exp://127.0.0.1:8090` in Expo Go on the connected Android phone.
 Do not record device serials, account tokens, email addresses or personal screens.
 
-Use **Screens** to choose among 23 pages (19 source examples plus four native diagnostics), **State** to cycle Ready, Loading, Error,
+Use **Screens** to choose among 25 pages (19 source examples plus six native diagnostics), **State** to cycle Ready, Loading, Error,
 Unavailable, Busy and Long text, and **Reset** to restore the local draft. State
 changes also reset drafts. Not every component has a distinct presentation for
 all six states; editor Loading uses unavailable and a missing monthly series
@@ -35,6 +36,11 @@ stays unavailable. For ordinary UI examples, saving/accept/feed/retry callbacks 
 UI-intent notice. Native diagnostics have the explicit real local effects documented below. No UI sample becomes a saved plan, earned reward, installed app or
 measured usage. The footer is QA chrome, not the actual navigation bar. Its Screens
 and Reset controls intentionally bypass draft retention for test setup.
+
+While the software keyboard is open on a presentation example, the footer
+compacts to a sample marker so enlarged QA controls do not consume the form's
+viewport. Dismiss the keyboard to restore Screens/State/Reset. The six native
+diagnostics retain their full disclosure footer.
 
 Examples shared with the web specimen live in `../shared/ui-samples.ts` so the two
 previews do not drift. Feature controllers still own real wire schemas and saves.
@@ -56,9 +62,11 @@ system font/display settings to their original values after the run.
 3. Open the software keyboard, reach the final form action and dismiss it. Open
    dirty-exit and quest cancellation prompts: safe action receives focus, Android
    Back keeps the draft, explicit discard exits, and busy actions cannot repeat.
-4. With TalkBack, inspect traversal, selected/check states, errors, availability
+4. **User-deferred:** with TalkBack, inspect traversal, selected/check states, errors, availability
    messages and modal focus/return. Speech must be observed on the device; mocked
    accessibility calls and DOM labels are not speech evidence.
+   Further TalkBack work is deferred by Ishmum; ordinary layout/input acceptance
+   does not require enabling it or close this speech/traversal gate.
 5. Return to Home after background/foreground, loss/restoration of connectivity
    and a fresh launch. Local QA drafts may reset on remount; no persistence or
    protection behavior is claimed. Do not run destructive memory/permission tests
@@ -85,6 +93,15 @@ restoration and integration acceptance. Do not mark RN10-D01/D02/D06 complete fr
 a successful bundle request, browser screenshot or component test.
 
 ## Current evidence
+
+The 2026-11-14 compact/older Android supplement covers all 19 presentation pages
+at normal text on owned API 30 / 360×640 dp and API 36 / 320×568 dp emulators,
+targeted system text 2.0 layouts, software input, inline settings and ordinary
+confirmations. It fixes quest heading reflow, a mixed-unit Ready history fixture
+and keyboard-obstructing QA chrome. See [coverage and limits](../../../../docs/qa/android-layout-coverage.md).
+This is development-host evidence; TalkBack, physical external keyboard, real
+accounts, iOS and signed/release UI remain separate. The historical phone runs
+below retain their original scope.
 
 RN-10b recorded compile-only results before a phone was connected. RN-10c now
 records actual Pixel 8 Pro / Android 16 / Expo Go 58.0.5 observations at system
