@@ -31,11 +31,12 @@ import {
   questionDraftKey,
   serializeQuestionDraft,
 } from './draft';
-import { getScreenTimeAuthorization, requestScreenTimeAuthorization } from '@/infrastructure/screen-time/authorization';
+import { getSelectedWeeklyMinutes, getScreenTimeAuthorization, requestScreenTimeAuthorization } from '@/infrastructure/screen-time/authorization';
 import type { AuthorizationState } from '@disconnect/contracts';
 import { figmaIcons } from './figma-icons';
 import { ManualPlanScreen } from './ManualPlanScreen';
 import { manualPlanKey, parseManualPlan, validateManualPlan } from './manual-plan';
+import { suggestPlan, validWeeklyMinutes } from './suggested-plan';
 import { PlanScreens } from './PlanScreens';
 
 type QuestionStep = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
@@ -90,6 +91,9 @@ export function OnboardingQuestions() {
   const draftWrites = useRef<Promise<void>>(Promise.resolve());
   const [step, setStep] = useState<QuestionStep>(0);
   const [planChoice, setPlanChoice] = useState<'manual' | 'suggested'>('suggested');
+  const [weeklyMinutes, setWeeklyMinutes] = useState('');
+  const [automaticBaseline, setAutomaticBaseline] = useState(false);
+  const [acceptedBaseline, setAcceptedBaseline] = useState<number>();
   const [gender, setGender] = useState<string | null>(null);
   const [age, setAge] = useState(24);
   const [ageChosen, setAgeChosen] = useState(false);
@@ -107,10 +111,16 @@ export function OnboardingQuestions() {
   const [authorization, setAuthorization] = useState<AuthorizationState>('not_requested');
   const [requestingPermission, setRequestingPermission] = useState(false);
   useEffect(() => {
-    if (step !== 5) return;
-    const timer = setTimeout(() => setStep(6), 1800);
-    return () => clearTimeout(timer);
-  }, [step]);
+    if (step !== 5 || !accountId) return;
+    let current = true;
+    void Promise.resolve().then(() => getSelectedWeeklyMinutes(answers.apps)).catch(() => null).then(value => {
+      if (!current) return;
+      setWeeklyMinutes(validWeeklyMinutes(value) ? String(value) : '');
+      setAutomaticBaseline(validWeeklyMinutes(value));
+      setStep(6);
+    });
+    return () => { current = false; };
+  }, [step, accountId, answers.apps]);
   useEffect(() => {
     if (step !== 4) return;
     let current = true;
@@ -152,6 +162,9 @@ export function OnboardingQuestions() {
         notice = 'Your saved setup was out of date, so we started a fresh one.';
       }
       if (cancelled) return;
+      setAcceptedBaseline(draft?.suggestionWeeklyMinutes);
+      setWeeklyMinutes(draft?.suggestionWeeklyMinutes?.toString() ?? '');
+      setAutomaticBaseline(false);
       if (draft) {
         setStep((draft.gender && draft.age ? draft.step : 0) as QuestionStep);
         setPlanChoice(draft.planChoice ?? 'suggested');
@@ -181,14 +194,14 @@ export function OnboardingQuestions() {
 
   const saveDraft = useCallback(() => {
     if (!accountId) return Promise.reject(new Error('Sign in required'));
-    const value = serializeQuestionDraft({ step, planChoice, apps: answers.apps, hobbies: answers.hobbies, age: ageChosen ? age : undefined, gender: gender ?? undefined });
+    const value = serializeQuestionDraft({ step, planChoice, suggestionWeeklyMinutes: acceptedBaseline, apps: answers.apps, hobbies: answers.hobbies, age: ageChosen ? age : undefined, gender: gender ?? undefined });
     const nextWrite = draftWrites.current.catch(() => undefined).then(() =>
       AsyncStorage.setItem(questionDraftKey(accountId), value),
     );
     draftWrites.current = nextWrite;
     void nextWrite.then(() => setDraftWriteFailed(false)).catch(() => setDraftWriteFailed(true));
     return nextWrite;
-  }, [accountId, answers.apps, answers.hobbies, step, age, ageChosen, gender, planChoice]);
+  }, [accountId, answers.apps, answers.hobbies, step, age, ageChosen, gender, planChoice, acceptedBaseline]);
 
   useEffect(() => {
     if (!draftReady) return;
@@ -222,7 +235,11 @@ export function OnboardingQuestions() {
       if (currentAccount.current !== accountId) return;
       const manualPlan = planChoice === 'manual' ? parseManualPlan(await AsyncStorage.getItem(manualPlanKey(accountId))) : null;
       if (planChoice === 'manual' && (!manualPlan || validateManualPlan(manualPlan))) throw new Error('Manual plan unavailable');
-      const savedAnswers = { ...makeSavedQuestionAnswers(answers.apps, answers.hobbies, authorization, { age, gender }), ...(manualPlan ? { apps: manualPlan.apps, manualPlan } : {}) };
+      const suggestion = planChoice === 'suggested' && acceptedBaseline !== undefined ? suggestPlan(acceptedBaseline) : null;
+      const suggestedPlan = suggestion && acceptedBaseline !== undefined
+        ? { ...suggestion, weeklyMinutes: acceptedBaseline, apps: answers.apps }
+        : undefined;
+      const savedAnswers = { ...makeSavedQuestionAnswers(answers.apps, answers.hobbies, authorization, { age, gender }), ...(manualPlan ? { apps: manualPlan.apps, manualPlan } : {}), suggestedPlan };
       await AsyncStorage.setItem(questionAnswersKey(accountId), JSON.stringify(savedAnswers));
       if (currentAccount.current !== accountId) return;
       await AsyncStorage.setItem(questionCompleteKey(accountId), '1');
@@ -234,7 +251,7 @@ export function OnboardingQuestions() {
       finishInFlight.current = false;
       setSaving(false);
     }
-  }, [accountId, answers.apps, answers.hobbies, router, saveDraft, authorization, age, ageChosen, gender, planChoice]);
+  }, [accountId, answers.apps, answers.hobbies, router, saveDraft, authorization, age, ageChosen, gender, planChoice, acceptedBaseline]);
 
   const finishOnboarding = useCallback(async () => {
     await finish();
@@ -331,7 +348,15 @@ export function OnboardingQuestions() {
   if (step === 8) return <ManualPlanScreen key={accountId} accountId={accountId} initialApps={answers.apps} onBack={() => setStep(6)} onSaved={() => { setPlanChoice('manual'); setStep(7); }} />;
 
   if (step >= 5) return <PlanScreens stage={step === 5 ? 'loading' : step === 6 ? 'plan' : 'complete'} apps={answers.apps} hobbies={answers.hobbies} saving={saving} error={saveError}
-    onPrepared={() => setStep(6)} onAccept={() => { setPlanChoice('suggested'); setStep(7); }} onEdit={() => setStep(8)} onBack={() => setStep(4)} onFinish={() => { void finishOnboarding(); }} />;
+    weeklyMinutes={weeklyMinutes} automatic={automaticBaseline}
+    onBaseline={value => { setWeeklyMinutes(value); setAutomaticBaseline(false); }}
+    onSkip={() => { setAcceptedBaseline(undefined); setPlanChoice('suggested'); setStep(7); }}
+    onAccept={() => {
+      if (!/^\d+$/.test(weeklyMinutes) || !suggestPlan(Number(weeklyMinutes)) || !answers.apps.length) return;
+      setAcceptedBaseline(Number(weeklyMinutes)); setPlanChoice('suggested'); setStep(7);
+    }}
+    onEdit={() => setStep(8)} onBack={() => { setAcceptedBaseline(undefined); setWeeklyMinutes(''); setAutomaticBaseline(false); setStep(4); }}
+    onFinish={() => { void finishOnboarding(); }} />;
 
   return (
     <KeyboardAvoidingView style={styles.screen} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
@@ -573,7 +598,7 @@ function PermissionStep({ notice, authorization }: { notice: boolean; authorizat
         <SvgXmlIcon name="permission-glow" width={160} height={160} />
       </View>
       <Text style={styles.description}>
-        {Platform.OS === 'android' ? 'Allow usage access so Hoosh can help you understand your app habits and take breaks.' : 'We need to see which apps you use so we can protect the ones you choose and help you take breaks when it matters.'}
+        {Platform.OS === 'android' ? 'Allow Usage Access to estimate your selected apps’ total use over the last seven complete days.' : 'Screen Time permission supports device controls. For plan suggestions, enter the usage total for your selected apps from Settings → Screen Time.'}
       </Text>
       <View style={styles.permissionCard}>
         <View style={styles.permissionArt}>

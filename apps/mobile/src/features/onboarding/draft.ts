@@ -1,3 +1,4 @@
+import { validWeeklyMinutes, type suggestPlan } from './suggested-plan';
 import type { ManualPlan } from './manual-plan';
 import type { AuthorizationState } from '@disconnect/contracts';
 export const QUESTION_DRAFT_VERSION = 1 as const;
@@ -6,6 +7,7 @@ export const QUESTION_STEPS = 9 as const;
 export type QuestionDraft = {
   version: typeof QUESTION_DRAFT_VERSION;
   step: number;
+  suggestionWeeklyMinutes?: number;
   planChoice?: 'manual' | 'suggested';
   apps: string[];
   hobbies: string[];
@@ -18,6 +20,7 @@ export type SavedQuestionAnswers = {
   apps: string[];
   hobbies: string[];
   screenTimeAccess: AuthorizationState;
+  suggestedPlan?: NonNullable<ReturnType<typeof suggestPlan>> & { weeklyMinutes: number; apps: string[] };
   manualPlan?: ManualPlan;
   age?: number;
   gender?: string;
@@ -53,6 +56,7 @@ export function parseQuestionDraft(raw: string | null): QuestionDraft | null {
   if (!value.hobbies.every(item => typeof item === 'string' && item.trim().length > 0 && item.trim().length <= 40)) return null;
   return {
     version: QUESTION_DRAFT_VERSION,
+    ...(validWeeklyMinutes(value.suggestionWeeklyMinutes) ? { suggestionWeeklyMinutes: value.suggestionWeeklyMinutes } : {}),
     step: value.step as number,
     ...(value.planChoice === 'manual' || value.planChoice === 'suggested' ? {planChoice: value.planChoice} : {}),
     apps: uniqueStrings(value.apps as string[]),

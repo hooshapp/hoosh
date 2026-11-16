@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 import type { AuthorizationState } from '@disconnect/contracts';
 
 interface AuthorizationModule {
+  getSelectedWeeklyMinutes?(apps: string[]): Promise<number | null>;
   getAuthorization(): Promise<string>;
   requestAuthorization(): Promise<string>;
 }
@@ -21,4 +22,13 @@ export async function getScreenTimeAuthorization(): Promise<AuthorizationState> 
 export async function requestScreenTimeAuthorization(): Promise<AuthorizationState> {
   const module = nativeModule();
   return module ? normalize(await module.requestAuthorization()) : 'unavailable';
+}
+
+export async function getSelectedWeeklyMinutes(apps: string[]): Promise<number | null> {
+  if (Platform.OS !== 'android') return null;
+  try {
+    return await nativeModule()?.getSelectedWeeklyMinutes?.(apps) ?? null;
+  } catch {
+    return null;
+  }
 }

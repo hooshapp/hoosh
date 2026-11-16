@@ -111,14 +111,15 @@ it('resumes the account-scoped last step and saves only approved preference fiel
   await render(<OnboardingQuestions />, { wrapper: Wrapper });
   expect(await screen.findByText('Screen Time access')).toBeTruthy();
   await fireEvent.press(screen.getByRole('button', { name: 'Not now' }));
-  await screen.findByText('We created a plan for you', {}, { timeout: 4000 });
+  await screen.findByText('Review your plan', {}, { timeout: 4000 });
+  await fireEvent.changeText(screen.getByLabelText('Seven-day selected-app minutes'), '1050');
   await fireEvent.press(screen.getByRole('button', { name: 'Go with suggestion' }));
   await screen.findByText('You’re all set!');
   await fireEvent.press(screen.getByRole('button', { name: 'Let’s start →' }));
   await waitFor(() => expect(mockReplace).toHaveBeenCalledWith('/(tabs)'));
   const saved = JSON.parse(mockStorage.get(questionAnswersKey('account-a')) ?? '{}') as Record<string, unknown>;
   expect(saved).toMatchObject({ apps: ['X'], hobbies: ['Walking'], screenTimeAccess: 'unavailable' });
-  expect(saved).toMatchObject({ gender: 'Other', age: 25 });
+  expect(saved).toMatchObject({ gender: 'Other', age: 25, suggestedPlan: { baselineHours: 3, sessionsPerDay: 6, minutesPerSession: 10, dailyAccessMinutes: 60, apps: ['X'] } });
   expect(mockStorage.get(questionCompleteKey('account-a'))).toBe('1');
   expect(mockStorage.has(questionDraftKey('account-a'))).toBe(false);
 });
@@ -151,8 +152,8 @@ it('continues only after native authorization is confirmed, and saves that obser
   expect(await screen.findByRole('button', { name: 'Continue →' })).toBeTruthy();
   expect(mockReplace).not.toHaveBeenCalled();
   await fireEvent.press(screen.getByRole('button', { name: 'Continue →' }));
-  await screen.findByText('We created a plan for you', {}, { timeout: 4000 });
-  await fireEvent.press(screen.getByRole('button', { name: 'Go with suggestion' }));
+  await screen.findByText('Review your plan', {}, { timeout: 4000 });
+  await fireEvent.press(screen.getByRole('button', { name: 'Skip' }));
   await screen.findByText('You’re all set!');
   await fireEvent.press(screen.getByRole('button', { name: 'Let’s start →' }));
   await waitFor(() => expect(mockReplace).toHaveBeenCalledWith('/(tabs)'));
@@ -177,8 +178,8 @@ it('includes a typed custom activity when the user presses Next without the plus
   await fireEvent.press(screen.getByRole('button', { name: 'Next →' }));
   await screen.findByText('Screen Time access');
   await fireEvent.press(screen.getByRole('button', { name: 'Not now' }));
-  await screen.findByText('We created a plan for you', {}, { timeout: 4000 });
-  await fireEvent.press(screen.getByRole('button', { name: 'Go with suggestion' }));
+  await screen.findByText('Review your plan', {}, { timeout: 4000 });
+  await fireEvent.press(screen.getByRole('button', { name: 'Skip' }));
   await screen.findByText('You’re all set!');
   await fireEvent.press(screen.getByRole('button', { name: 'Let’s start →' }));
   await waitFor(() => expect(mockReplace).toHaveBeenCalled());
@@ -199,9 +200,7 @@ it('resumes congratulations without completing or navigating until the final act
 it('lets users skip local preparation and edit their own choices without completing setup', async () => {
   mockStorage.set(questionDraftKey('account-a'), serializeQuestionDraft({ age: 25, gender: 'Other', step: 5, apps: [], hobbies: [] }));
   await render(<OnboardingQuestions />, { wrapper: Wrapper });
-  await screen.findByText('Preparing your plan preview');
-  await fireEvent.press(screen.getByRole('button', { name: 'View my plan' }));
-  await screen.findByText('No apps chosen yet');
+  await screen.findByText('Choose apps before creating a suggested plan.');
   await fireEvent.press(screen.getByRole('button', { name: 'Set up on my own' }));
   await screen.findByText('Set up on your own');
   expect(mockStorage.has(questionCompleteKey('account-a'))).toBe(false);
@@ -252,7 +251,7 @@ it('single-flights rapid final taps while storage is pending', async () => {
 it('saves a manual plan before congratulations and includes it in completed answers', async () => {
   mockStorage.set(questionDraftKey('account-a'), serializeQuestionDraft({ age: 25, gender: 'Other', step: 6, apps: ['Instagram','Snapchat'], hobbies: ['Reading'] }));
   await render(<OnboardingQuestions />, { wrapper: Wrapper });
-  await screen.findByText('We created a plan for you');
+  await screen.findByText('Review your plan');
   await fireEvent.press(screen.getByRole('button', {name:'Set up on my own'}));
   await screen.findByText('Set up on your own');
   await fireEvent.press(screen.getByRole('button', {name:'App Sessions'}));

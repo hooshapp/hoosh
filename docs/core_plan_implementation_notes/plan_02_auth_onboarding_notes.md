@@ -2,9 +2,15 @@
 
 **Owner:** Anisha. **Branch:** `landing-page`. **Status:** In progress; see [ledger](../core_plan/02_auth_onboarding.md). **Starting point:** `adc969c` before the introduction increment.
 
-## Resume checkpoint — November 1, 2026
+## Resume checkpoint — November 15, 2026
 
-Auth and five questionnaire screens exist on this branch. A new-account confirmation email was received and the account confirmed, though the message landed in Spam. The browser callback encountered a missing initiating verifier; native-device auth and API identity handoff remain unverified. Age and gender are currently transient; the owner wants persistence, while supported age, purpose and privacy details remain open. The uncommitted plan preview is illustrative and does not install a plan. See [Auth QA](../qa/auth-foundation.md), [onboarding scope](../implementation/onboarding-questions.md), [remaining work](../implementation/remaining-work.md) and [native build evidence](../runbooks/native-development-builds.md).
+**Current parts:** AUTH-11 usage read and AUTH-12 plan suggestion on `landing-page`. Base `01c7a17`. Suggestion changes are pending commit. The manual-plan flow landed in `322064d` and the age/avatar changes in `4cbe8c3`. Earlier QA remains historical.
+
+**Current behavior:** Android Usage Access can supply an estimated seven-day total for the selected supported apps. iOS keeps the Family Controls permission step and asks the user to enter a total from Screen Time. The preview shows a single shared daily budget from the Figma chart. Onboarding saves accepted suggestions locally. No plan gets installed from this screen.
+
+**Evidence:** Android native module compilation, mobile typecheck/lint, 15 onboarding component tests and 15 calculation/draft tests passed. Verify the automatic read on an Android phone with seven days of data and the manual entry path on a signed iPhone. Visual acceptance is open.
+
+**Ishmum handoff:** His [Android lifecycle notes](https://github.com/hooshapp/hoosh/blob/cee632c/docs/qa/android-protection-lifecycle.md) describe his branch at `cee632c`. They serve as reference evidence. Resume shared integration at [INT-BASE-C01](https://github.com/hooshapp/hoosh/blob/ea0eb55/docs/integration_plan/03_shared_foundation_reconciliation.md#int-base-c01--complete-inventory-and-reproducible-baseline). Reconcile the chart’s shared daily budget with the base’s per-app allowances before wiring Apply. No integration source was ported during this increment.
 
 ## AUTH-10a — Introduction, commit a9feec4
 
@@ -284,3 +290,26 @@ Owner requested sign-in before questionnaires/session setup, with Settings for l
 ## Legacy Swift name/email study enrollment — supersedes password-first pilot
 
 Owner prioritized research progression and requested no password/Google/email verification steps. Added private anonymous authenticated enrollment with name/email labels; same-phone Keychain resume; participant own-row storage and admin-only progression views. Owner enabled Anonymous sign-ins and applied additive study SQL manually while browser control timed out. Existing email-account confirmation remains enabled. Live enrollment/upsert/readback/refresh and private-view denial passed; migration/ownership/aggregation suites passed on isolated PostgreSQL. New signed build passed, but phone installation lost its wired connection and is awaiting reconnection. See `docs/implementation/legacy-swift-study-enrollment.md`; no Git push or release.
+
+
+## AUTH-11/12 — Usage-based starting plan
+
+**Date:** 2026-11-15. **Owner:** Anisha. **Branch:** `landing-page`. **Commit:** Pending. **Source:** Figma rule chart `10769:238`; existing onboarding/permission code at `01c7a17`. Related implementation notes cover [the questionnaire and plan](../implementation/onboarding-questions.md#usage-based-suggested-plan).
+
+| File and working-tree lines | Change and reason |
+|---|---|
+| `apps/mobile/modules/hoosh-screen-time/android/src/main/java/expo/modules/hooshscreentime/HooshScreenTimeModule.kt` 4–5, 18, 40–81 | Reads seven complete local days of Android foreground usage for known selected packages after authorization. Incomplete results fall back to manual input. |
+| `apps/mobile/src/infrastructure/screen-time/authorization.ts` 6, 26–34 | Exposes the optional Android native reader to onboarding and handles unavailable or older builds. |
+| `apps/mobile/src/features/onboarding/suggested-plan.ts` 1–18 | Applies the eight rows, nearest match with ties up, and one shared daily budget. Offers manual setup at or below 25 min/day because the lowest chart cap would provide no reduction. |
+| `apps/mobile/src/features/onboarding/OnboardingQuestions.tsx` 34–39, 94–96, 114–123, 165–167, 197–204, 238–254, 351–359, 601 | Requests the baseline, passes it to the review UI, keeps the accepted baseline in the draft, and saves the accepted suggestion locally. Explains the platform source at the permission step. |
+| `apps/mobile/src/features/onboarding/PlanScreens.tsx` 1–27, 32, 50–79 | Replaces the flat break example with usage entry and a shared budget, preserving manual setup and skip. Removes obsolete per-app example cards. |
+| `apps/mobile/src/features/onboarding/draft.ts` 1, 10, 23, 59 | Adds optional usage/plan fields to the local record so older drafts remain readable. |
+| `apps/mobile/src/features/onboarding/suggested-plan.test.ts` 1–17 | Checks the midpoint, shared cap, and invalid or too-low input. |
+| `apps/mobile/src/features/onboarding/OnboardingQuestions.test.tsx` 114–122, 155–156, 181–182, 203, 254 | Checks acceptance and local storage of the calculated plan. Updates the skip and manual setup scenarios for a missing baseline. |
+| `docs/implementation/onboarding-questions.md` 62–84 | Documents data sources, fallbacks and validation scope. |
+| `docs/core_plan/02_auth_onboarding.md` 355–357 | Updates the AUTH-10–12 tracker with implementation and acceptance status. |
+| `docs/core_plan_implementation_notes/plan_02_auth_onboarding_notes.md` | Records this checkpoint and source inventory. |
+
+**Validation:** `npm run typecheck --workspace @disconnect/mobile` and `npm run lint --workspace @disconnect/mobile` passed. Focused Jest onboarding suite passed 15 tests. Focused Vitest suggestion/draft suites passed 15 tests total. The isolated dev host passed `./gradlew :hoosh-screen-time:compileDebugKotlin --offline --console=plain`; the existing deprecated AppOps call produced a warning. Compile evidence covers the bridge source, not permission grants or real usage retrieval.
+
+**Remaining:** Android phone usage read and comparison to system totals, iPhone permission/manual entry, visual acceptance, then the combined real-account Save/Apply/Stop flow. Shared budget semantics require reconciliation before native installation. Device tests for this increment are pending. The unrelated Swift typography edit is outside this entry.

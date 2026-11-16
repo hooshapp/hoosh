@@ -1,7 +1,8 @@
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { SvgXml } from 'react-native-svg';
 import { colors, fonts } from '@/design/tokens';
+import { suggestPlan } from './suggested-plan';
 import { figmaIcons } from './figma-icons';
 
 type Props = {
@@ -10,7 +11,10 @@ type Props = {
   hobbies: string[];
   saving: boolean;
   error: string | null;
-  onPrepared(): void;
+  weeklyMinutes: string;
+  automatic: boolean;
+  onBaseline(value: string): void;
+  onSkip(): void;
   onAccept(): void;
   onEdit(): void;
   onBack(): void;
@@ -18,13 +22,14 @@ type Props = {
 };
 
 /** Figma 52:690, 50:87, 50:89. These are local previews, not native policies. */
-export function PlanScreens({ stage, apps, hobbies, saving, error, onPrepared, onAccept, onEdit, onBack, onFinish }: Props) {
+export function PlanScreens({ stage, apps, hobbies, saving, error, weeklyMinutes, automatic, onBaseline, onSkip, onAccept, onEdit, onBack, onFinish }: Props) {
   const insets = useSafeAreaInsets();
+  const plan = apps.length && /^\d+$/.test(weeklyMinutes) ? suggestPlan(Number(weeklyMinutes)) : null;
   const complete = stage === 'complete';
   return <View style={s.screen}>
     <View style={[s.container, { paddingTop: Math.max(insets.top, 44), paddingBottom: Math.max(insets.bottom, 24) }]}>
       <View style={s.topAction}>
-        {!complete && <Pressable accessibilityRole="button" onPress={onAccept} style={s.skip}><Text style={s.muted}>Skip</Text></Pressable>}
+        {!complete && <Pressable accessibilityRole="button" onPress={onSkip} style={s.skip}><Text style={s.muted}>Skip</Text></Pressable>}
       </View>
       <View accessibilityRole="progressbar" accessibilityLabel={`Onboarding step ${complete ? 7 : 6} of 7`}
         accessibilityValue={{ min: 1, max: 7, now: complete ? 7 : 6 }} style={s.progress}>
@@ -42,8 +47,8 @@ export function PlanScreens({ stage, apps, hobbies, saving, error, onPrepared, o
           <Text style={s.completeNote}>{hobbies.length ? 'Your activities are ready to save on this device.' : 'You can choose your activities later.'} App protection has not been activated.</Text>
           <View style={s.rule} />
         </> : <>
-          <Text accessibilityRole="header" style={s.title}>{stage === 'loading' ? 'Preparing your plan preview' : 'We created a plan for you'}</Text>
-          <Text style={s.description}>{stage === 'loading' ? 'A little less scrolling. A little more time for what you love.' : `Preview ${apps.length ? apps.join(' and ') : 'your app breaks'} with 10-minute breaks. Make room for ${hobbies.join(' and ') || 'what you love'}.`}</Text>
+          <Text accessibilityRole="header" style={s.title}>{stage === 'loading' ? 'Preparing your plan' : 'Review your plan'}</Text>
+          <Text style={s.description}>{stage === 'loading' ? 'A little less scrolling. A little more time for what you love.' : apps.length ? `One daily budget shared across ${apps.join(', ')}.` : 'Choose apps before creating a suggested plan.'}</Text>
           {stage === 'loading' ? <>
             <Image accessible={false} source={require('../../../assets/onboarding/plan/questions-plan-loading-art.png')} style={s.loadingArt} resizeMode="contain" />
             <Text style={s.loadingCopy}>Putting your preview together ···</Text>
@@ -53,22 +58,24 @@ export function PlanScreens({ stage, apps, hobbies, saving, error, onPrepared, o
               <Stage title="Preparing your suggestion" detail="Making room for what you love" last />
             </View>
             <Text style={s.reassurance}>Your suggestion is up next.</Text>
-            <Text style={s.centerCopy}>A local preview, ready for you to review.</Text>
-            <Action label="View my plan" onPress={onPrepared} />
+            <Text style={s.centerCopy}>Checking for a seven-day usage total.</Text>
           </> : <>
             <View style={s.cards}>
-              {apps.length === 0 && <View style={s.card}><Text style={s.cardTitle}>No apps chosen yet</Text><Text style={s.detail}>Choose your apps to preview a suggestion.</Text></View>}
-              {apps.map((app, i) => <View key={app} style={s.card}>
-                <View style={s.row}><AppIcon name={app} /><View style={s.cardName}><Text style={s.cardTitle}>{app}</Text><Text style={s.detail}>10 min break</Text></View><Text style={s.badge}>10 MIN</Text></View>
-                <Text style={s.detail}>Replace one 10-minute scroll session each day, so you can keep more time for {hobbies[i % Math.max(hobbies.length, 1)] || 'what you love'}.</Text>
-              </View>)}
-              <View style={[s.card, s.estimate]}>
-                <View style={s.row}><Text style={[s.cardTitle, s.cardName]}>Weekly estimate</Text><Text style={s.badge}>{apps.length * 70} MIN</Text></View>
-                <Text style={s.detail}>Illustration only: replacing one 10-minute scroll session per selected app each day. This is not measured time saved.</Text>
-              </View>
+              {apps.length > 0 && <View style={s.card}>
+                <Text style={s.cardTitle}>Selected-app use over seven days</Text>
+                <Text style={s.detail}>{automatic ? 'Total from Android Usage Access.' : 'Add the minutes for just these apps across seven complete days in Screen Time or Digital Wellbeing. Enter that total below.'}</Text>
+                <TextInput accessibilityLabel="Seven-day selected-app minutes" keyboardType="number-pad" value={weeklyMinutes}
+                  onChangeText={onBaseline} placeholder="Total minutes" placeholderTextColor={colors.darkMuted} style={[s.detail, { minHeight: 44 }]} />
+                {weeklyMinutes !== '' && !plan && <Text accessibilityRole="alert" style={s.detail}>Enter a valid seven-day total above 175 minutes to get a reduction suggestion, or set up your own plan.</Text>}
+              </View>}
+              {plan && <View style={[s.card, s.estimate]}>
+                <View style={s.row}><Text style={[s.cardTitle, s.cardName]}>Shared daily access</Text><Text style={s.badge}>{plan.dailyAccessMinutes} MIN</Text></View>
+                <Text style={s.detail}>{plan.sessionsPerDay} sessions per day × {plan.minutesPerSession} minutes per session</Text>
+                <Text style={s.detail}>Matched to the {plan.baselineHours} h/day starting-use row. This starting limit may be a substantial cut. Choose a different limit if it feels too difficult.</Text>
+              </View>}
             </View>
-            <Action label="Go with suggestion" onPress={onAccept} />
-            <Text style={s.reassurance}>Preview only. No restrictions will be applied.</Text>
+            {plan && <Action label="Go with suggestion" onPress={onAccept} />}
+            <Text style={s.reassurance}>Saving a suggestion does not turn on app restrictions.</Text>
             <Action label="Set up on my own" onPress={onEdit} secondary />
             <Text style={s.reassurance}>Choose your days, hours, app sessions and apps.</Text>
             <Pressable accessibilityRole="button" onPress={onBack} style={s.back}><Text style={s.centerCopy}>Back</Text></Pressable>
@@ -92,11 +99,6 @@ function ActivityIcon({ name }: { name: string }) {
   const icons: Record<string, string> = { Gym: 'hobby-gym', Reading: 'hobby-book', 'Arts & crafts': 'hobby-arts', Walking: 'hobby-walk', Music: 'hobby-music', Cooking: 'hobby-cooking' };
   const icon = figmaIcons[icons[name] as keyof typeof figmaIcons];
   return icon ? <SvgXml xml={icon} width={14} height={14} /> : null;
-}
-function AppIcon({ name }: { name: string }) {
-  const icons: Record<string, string> = { Instagram: 'app-camera', Snapchat: 'app-ghost', TikTok: 'app-play', YouTube: 'app-play', X: 'app-bird' };
-  const xml = figmaIcons[icons[name] as keyof typeof figmaIcons];
-  return <View style={s.appIcon}>{xml ? <SvgXml xml={xml} width={20} height={20} /> : <Text style={s.chipText}>R</Text>}</View>;
 }
 const s = StyleSheet.create({
   screen: { flex: 1, backgroundColor: colors.darkCanvas },

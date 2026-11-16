@@ -11,8 +11,8 @@ import AppKit
 enum DashboardFont {
     private static let isRegistered: Bool = {
 #if canImport(UIKit)
-        guard let data = NSDataAsset(name: "InterVariable")?.data as CFData,
-              let provider = CGDataProvider(data: data),
+        guard let asset = NSDataAsset(name: "InterVariable"),
+              let provider = CGDataProvider(data: asset.data as CFData),
               let font = CGFont(provider) else {
             assertionFailure("InterVariable font asset could not be loaded.")
             return false

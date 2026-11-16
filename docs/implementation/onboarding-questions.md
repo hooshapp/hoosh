@@ -59,3 +59,26 @@ Re-run `npm run typecheck`, `npm run lint`, and `npm test` from `apps/mobile` af
 ## Manual editor follow-up — November 2, 2026
 
 The five requested manual-plan Figma presentations are implemented with local saving, draft recovery, validation and completed-answer integration. See [manual-plan.md](manual-plan.md) for exact source frames, behavior, 182 passing mobile tests, browser acceptance and retained native/server boundaries. This supersedes the earlier preference-question return action.
+
+## Usage-based suggested plan
+
+Figma `10769:238` supplies eight fixed rows. Divide the selected-app minutes
+over seven complete days by seven, match the nearest row (ties go to the higher
+row), and offer one shared daily budget. The user can accept, skip, or set up a
+different plan. At or below 25 minutes per day the smallest row would not reduce
+usage, so offer manual setup. An accepted suggestion is saved locally with the
+selected app labels. It does not install restrictions or schedule later reductions.
+
+Android requests existing Usage Access, then attempts to read daily foreground
+time for known selected packages. Missing days, unsupported aliases, and
+unavailable usage return to manual entry. These are OS-reported estimates and
+need runtime validation on a device with seven complete days of usable history.
+On iOS, keep the existing Family Controls permission step and let the user
+copy the selected-app total from Settings → Screen Time. Apple’s direct
+DeviceActivityData API requires additional entitlement and authorization and
+has regional limits for distributed builds. Web and older native builds use
+the same manual fallback. Usage totals are kept local.
+
+Validation: focused onboarding and draft/calculation suites, mobile typecheck
+and lint, and Android module Kotlin compilation in the isolated dev host.
+Physical-device usage retrieval and visual acceptance remain pending.
