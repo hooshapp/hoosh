@@ -1,5 +1,12 @@
 # Disconnect — Core Development Plans
 
+**Cross-branch integration planning (2026-11-15):** see the
+[five integration plans and dependency order](../integration_plan/README.md) and
+[integration implementation notes workflow](../integration_notes/README.md).
+They coordinate existing core work without renumbering or completing its IDs.
+**INT-BASE-C01 (Integration Plan 03) is the first implementation task.** Plans are
+drafted only; no source merge, runtime change or acceptance is implied.
+
 **Status:** Plan 00 is complete and validated (foundation commit `0b50900`, recorded in its ledger); Plans 01–04 remain implementation drafts. Auth, private API endpoints, database and native adapters are not implemented.\
 **Baseline inspected:** `c7a8f73` — `Set up mobile and API foundation`.\
 **Reviewed:** 2026-10-28.\

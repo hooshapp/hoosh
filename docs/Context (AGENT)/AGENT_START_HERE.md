@@ -4,6 +4,16 @@
 **Read in order:** `PRD.md` → `TSD.md` → current Figma design → existing source repository.  
 **Design:** https://www.figma.com/design/ukmD2ZidJ9UR2XxUkvdPoJ/App-UI?node-id=0-1
 
+**Cross-branch integration plans (2026-11-15; planning only):** the
+[integration index](../integration_plan/README.md) coordinates Anisha's
+`landing-page` Auth/onboarding/Swift source with Ishmum's current shared app,
+Android and FastAPI backend. Read it and the
+[integration notes workflow](../integration_notes/README.md) before integration.
+Start with **INT-BASE-C01 in Integration Plan 03**, then Auth, onboarding and normal
+Android acceptance; iOS proceeds under Anisha's ownership. Five plans have six
+stable commit increments each. No integration code/merge/acceptance is claimed by
+drafting them; existing core IDs, deferrals and evidence remain intact.
+
 **Checkout status (2026-10-28):** A shared Expo/React Native shell, accepted type-only Auth/native interfaces with synthetic HTTP fixtures (Plan 00 committed as `0b50900`), and a FastAPI health foundation now exist. See [`../README.md`](../README.md) for actual setup/check commands. Auth, database access, and native protection are not connected. The provided legacy Swift source is preserved in `apps/mobile/ios/`; read [the source audit](architecture/existing-ios-audit.md). React Native wiring and signed/device validation remain prerequisites for iOS integration. The shell opens Home as a development preview and does not claim active protection.
 
 **Engineering ownership:** Ishmum owns main/shared React Native UI, Android, backend/product database and shared testing. Anisha owns all Supabase Auth/project setup (SB-01–03), mobile Auth/onboarding and iOS. Ishmum owns only the Supabase product database work (SB-04/05), not Auth administration. Build against the shared contracts independently, then wire real outputs when ready; mark integration-dependent parts complete only after joint validation. Read [the accepted decisions](../architecture/identity-foundation.md) and [core execution order](../core_plan/README.md) before foundation work.
