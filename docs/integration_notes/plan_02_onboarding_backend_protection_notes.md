@@ -1,6 +1,6 @@
 # Plan 02 — Onboarding into the shared app
 
-**Checkpoint:** INT-ONB-C02 local checks complete. **Next:** INT-ONB-C03. **Branch:** `integration/shared-product`. **Starting revision:** `c01788e` (ONB-C01). **Commit:** Pending.
+**Checkpoint:** INT-ONB-C03 fixture checks passed. **Next:** INT-ONB-C04. **Branch:** `integration/shared-product`. **Starting revision:** `d241a81` (ONB-C02). **Commit:** Pending.
 
 ## INT-ONB-C01 — Introduction and scoped setup progress
 
@@ -25,3 +25,14 @@ Typecheck, 632 unit tests and 76 targeted component tests passed. Lint reported 
 ### Verification
 
 TypeScript, 640 unit tests, 58 routed component tests, the production web export and asset checks passed. Lint reported four existing warnings. Chrome at 393 × 852, using a fixture account and API, verified selecting hobbies, entering custom text, editing manual days, reviewing the plan, reloading, and rendering the Figma artwork. The component tests covered both paths and preserving existing settings without a PATCH or native Apply. No physical-device or live database verification was performed in this checkpoint.
+
+## INT-ONB-C03 — Account save and recovery
+
+- The setup review uses the shared settings query and mutation. A reviewed save sends changed activities and plan fields in one revision-checked PATCH. Missing settings are distinct from a read failure. Only validated same-owner receipts advance the shared cache.
+- Hoosh records the exact pending fields and expected revision locally before sending. Conflicts and uncertain replies require a fresh read and an explicit decision. Matching values can be confirmed without another PATCH. Keeping edits preserves the originally submitted fields and requires a new save against the reviewed revision. A late receipt cannot replace a different local attempt.
+- Optional profile review uses the existing AUTH-C05 editor and signup-name handoff. Its receipt is recorded independently so settings recovery never replays profile work. If account settings save succeeds but the setup receipt fails locally, the retry only records progress. A restarted setup can recover from current account values.
+- Offline deferral keeps an unsynced draft that can be reopened from Settings. After a confirmed settings review, the local permission checkpoint is ready for C04. No permission request or native Apply runs from a settings save.
+
+### Verification
+
+TypeScript, 641 mobile unit tests, 136 targeted component tests, 682 API tests and the production web export passed. Lint reported the four existing warnings. Routed tests covered the combined PATCH, a concurrent revision conflict, preservation of unrelated fields, lost reply, restart, local receipt failure, account replacement during save and offline deferral. Chrome exercised the real app HTTP client against a fixture server, including the separate profile save, dropped settings reply, reload, reconciliation without a second PATCH and readback in Settings. The disposable PostgreSQL suite was left open because Docker and a local PostgreSQL instance were unavailable. Physical-device permissions remain C04/C06 work.

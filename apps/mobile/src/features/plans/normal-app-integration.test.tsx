@@ -107,6 +107,7 @@ function fixture({
   identityUnavailable = false,
   signedOut = false,
   recoveryPending = false,
+  settingsMissing = false,
 } = {}) {
   let authRevision = 0;
   const makeSession = (id: string) => ({
@@ -169,6 +170,8 @@ function fixture({
     : null;
   const settings = new Map<string, SettingsResponse>();
   let pendingAccountASettings: Promise<void> | null = null;
+  let beforeSettingsPatch: (() => Promise<void>) | undefined;
+  let afterSettingsPatch: (() => Promise<void>) | undefined;
   const row = (
     id: string,
     value: PlanDraft | null,
@@ -183,7 +186,7 @@ function fixture({
       updated_at: '2026-11-14T00:00:00Z',
     },
   });
-  settings.set(A, row(A, draft));
+  settings.set(A, settingsMissing ? { settings: null } : row(A, draft));
   settings.set(B, { settings: null });
   const request = jest.fn(async (path, options) => {
     const state = auth.getSnapshot();
@@ -199,16 +202,25 @@ function fixture({
       result = { user_id: account.user_id, email: null };
     } else if (path === '/v1/settings') {
       if (options.method === 'PATCH') {
+        await beforeSettingsPatch?.();
         const previous = settings.get(account.user_id)!;
         const value = previous.settings;
         if (options.json.expected_revision !== (value?.revision ?? 0))
           throw new ApiError('conflict', { code: 'SETTINGS_CONFLICT' });
-        result = row(
+        const updated = row(
           account.user_id,
-          options.json.plan_draft ?? value?.plan_draft ?? null,
+          'plan_draft' in options.json ? options.json.plan_draft : value?.plan_draft ?? null,
           (value?.revision ?? 0) + 1,
         );
-        settings.set(account.user_id, result as SettingsResponse);
+        if (!updated.settings) throw new Error('Fixture settings missing');
+        const activities = 'activities' in options.json ? options.json.activities : value?.activities;
+        updated.settings.activities = {
+          selected_activity_ids: activities?.selected_activity_ids ?? [],
+          custom_text: activities?.custom_text?.trim() ?? null,
+        };
+        result = updated;
+        settings.set(account.user_id, updated);
+        await afterSettingsPatch?.();
       } else {
         if (account.user_id === A && pendingAccountASettings) await pendingAccountASettings;
         result = settings.get(account.user_id);
@@ -382,6 +394,8 @@ function fixture({
     permission: (value: boolean) => {
       permission = value;
     },
+    onBeforeSettingsPatch: (fn: () => Promise<void>) => { beforeSettingsPatch = fn; },
+    onAfterSettingsPatch: (fn: () => Promise<void>) => { afterSettingsPatch = fn; },
     delayAccountASettings: (work: Promise<void>) => { pendingAccountASettings = work; },
     pendingSelection: (p: Promise<void>) => {
       pendingSelection = p;
@@ -932,6 +946,168 @@ test.each([false, true])('setup reviews a local plan via the manual path (%s)', 
     expect(f.request.mock.calls.some(([, options]) => options.method === 'PATCH')).toBe(false);
     expect(f.port.scheduleApply).not.toHaveBeenCalled();
   } finally {
+    await AsyncStorage.clear();
+  }
+});
+
+const setupKey = `hoosh.setup.fixture.${A}`;
+const reviewedSetup = {
+  version: 1,
+  step: 'review',
+  settingsBaseRevision: 0,
+  activities: { selected_activity_ids: ['gym'], custom_text: '  Sketching 🦖  ' },
+  planDraft: SAVED,
+};
+
+async function openSetupReview(progress: object = reviewedSetup) {
+  await AsyncStorage.setItem(setupKey, JSON.stringify(progress));
+  await renderRouter(routes, { initialUrl: '/welcome' });
+  await screen.findByRole('header', { name: 'Review your draft' });
+}
+
+function settingsWrites(f: ReturnType<typeof fixture>) {
+  return f.request.mock.calls.filter(([path, options]) => path === '/v1/settings' && options.method === 'PATCH');
+}
+
+test('setup saves the reviewed activities and plan together and records the revision', async () => {
+  const f = fixture({ settingsMissing: true });
+  try {
+    await openSetupReview();
+    await press('Save to my account');
+    await screen.findByText('Your preferences are saved to your account.');
+    expect(settingsWrites(f).map(([, options]) => options.json)).toEqual([{
+      expected_revision: 0, activities: reviewedSetup.activities, plan_draft: SAVED,
+    }]);
+    expect(f.settings.get(A)?.settings?.activities.custom_text).toBe('Sketching 🦖');
+    expect(JSON.parse((await AsyncStorage.getItem(setupKey))!)).toMatchObject({ step: 'permission', settingsRevision: 1 });
+    await press('Finish for now');
+    await waitFor(() => expect(screen).toHavePathname('/'));
+    expect(f.port.scheduleApply).not.toHaveBeenCalled();
+  } finally {
+    await AsyncStorage.clear();
+  }
+});
+
+test('setup conflict requires a new decision and preserves an unrelated schedule', async () => {
+  const f = fixture();
+  const previous = f.settings.get(A)!.settings!;
+  try {
+    await openSetupReview({ ...reviewedSetup, settingsBaseRevision: 1, planDraft: undefined });
+    f.onBeforeSettingsPatch(async () => {
+      f.settings.set(A, { settings: { ...previous, revision: 2, plan_draft: { ...SAVED, session_count: 7 } } });
+    });
+    await press('Save to my account');
+    await screen.findByText('Settings changed elsewhere. Review the latest values.');
+    await press('Check latest settings');
+    await screen.findByText('7 per day · 1 min each per app');
+    await press('Keep my edits');
+    expect(settingsWrites(f)).toHaveLength(1);
+    await press('Save to my account');
+    await screen.findByText('Your preferences are saved to your account.');
+    expect(settingsWrites(f)[1]?.[1].json).toEqual({
+      expected_revision: 2, activities: reviewedSetup.activities,
+    });
+    expect(f.settings.get(A)?.settings?.plan_draft?.session_count).toBe(7);
+  } finally {
+    await AsyncStorage.clear();
+  }
+});
+
+test('a lost reply reconciles canonical settings and never sends a duplicate PATCH', async () => {
+  const f = fixture({ settingsMissing: true });
+  f.onAfterSettingsPatch(async () => { throw new ApiError('network', { requestMayHaveCommitted: true }); });
+  try {
+    await openSetupReview();
+    await press('Save to my account');
+    await screen.findByText('The save could not be confirmed. Check the latest settings.');
+    await press('Check latest settings');
+    await press('Confirm saved settings');
+    await screen.findByText('Your preferences are saved to your account.');
+    expect(settingsWrites(f)).toHaveLength(1);
+  } finally {
+    await AsyncStorage.clear();
+  }
+});
+
+test('a restart with a pending attempt requires readback even if the server row is missing', async () => {
+  const f = fixture({ settingsMissing: true });
+  try {
+    await openSetupReview({
+      ...reviewedSetup,
+      settingsAttempt: { expected_revision: 0, activities: reviewedSetup.activities, plan_draft: SAVED },
+    });
+    expect(screen.queryByRole('button', { name: 'Save to my account' })).toBeNull();
+    await press('Check latest settings');
+    await press('Keep my edits');
+    expect(settingsWrites(f)).toHaveLength(0);
+    await press('Save to my account');
+    await screen.findByText('Your preferences are saved to your account.');
+    expect(settingsWrites(f)).toHaveLength(1);
+  } finally {
+    await AsyncStorage.clear();
+  }
+});
+
+test('a local receipt failure retries only the local write', async () => {
+  const f = fixture({ settingsMissing: true });
+  f.onAfterSettingsPatch(async () => {
+    jest.mocked(AsyncStorage.setItem).mockRejectedValueOnce(new Error('fixture disk failure'));
+  });
+  try {
+    await openSetupReview();
+    await press('Save to my account');
+    await screen.findByText('Your settings were saved to your account.');
+    await screen.findByText('Setup could not be saved. Try again.');
+    await press('Record setup progress');
+    await screen.findByText('Your preferences are saved to your account.');
+    expect(settingsWrites(f)).toHaveLength(1);
+  } finally {
+    await AsyncStorage.clear();
+  }
+});
+
+test('logout during a save leaves the old account pending and keeps the new account isolated', async () => {
+  const f = fixture({ settingsMissing: true });
+  let finish!: () => void;
+  const gate = new Promise<void>(resolve => { finish = resolve; });
+  f.onAfterSettingsPatch(() => gate);
+  try {
+    await openSetupReview();
+    await press('Save to my account');
+    await waitFor(() => expect(settingsWrites(f)).toHaveLength(1));
+    await act(() => { f.switch(); });
+    await waitFor(() => expect(screen).toHavePathname('/'));
+    await act(finish);
+    expect(JSON.parse((await AsyncStorage.getItem(setupKey))!)).toMatchObject({
+      step: 'review', settingsAttempt: { expected_revision: 0 },
+    });
+    expect(await AsyncStorage.getItem(`hoosh.setup.fixture.${B}`)).toBeNull();
+    expect(screen.queryByText('Your preferences are saved to your account.')).toBeNull();
+  } finally {
+    finish();
+    await AsyncStorage.clear();
+  }
+});
+
+test('offline setup can finish for now and later reopen its unsynced draft', async () => {
+  const f = fixture({ settingsMissing: true });
+  try {
+    await openSetupReview();
+    await act(() => onlineManager.setOnline(false));
+    expect(screen.getByRole('button', { name: 'Save to my account' })).toBeDisabled();
+    await press('Finish setup for now');
+    await waitFor(() => expect(screen).toHavePathname('/'));
+    expect(JSON.parse((await AsyncStorage.getItem(setupKey))!)).toMatchObject({
+      step: 'complete', settingsDeferred: true, activities: reviewedSetup.activities, planDraft: SAVED,
+    });
+    expect(settingsWrites(f)).toHaveLength(0);
+    await act(() => onlineManager.setOnline(true));
+    await act(() => router.push('/(onboarding)/welcome'));
+    await press('Resume my draft');
+    await screen.findByRole('header', { name: 'Review your draft' });
+    expect(settingsWrites(f)).toHaveLength(0);
+  } finally {
+    onlineManager.setOnline(true);
     await AsyncStorage.clear();
   }
 });

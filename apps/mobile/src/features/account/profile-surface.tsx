@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { InlineStatus } from '@/components/ui/inline-status';
 import { useUiTheme } from '@/components/ui/theme';
 import { fonts } from '@/design/tokens';
+import { LeaveConfirmation } from '@/features/editors/editor-controls';
 import { useRouteDraftGuard } from '@/features/editors/use-route-draft-guard';
 import { useIdentityQuery } from './identity-query';
 import { AccountHeader } from './account-header';
@@ -15,10 +16,15 @@ import type { SignupNameDraft } from './signup-name-handoff';
 import { useAccountAction } from './use-account-action';
 
 /** Real private consumer: the Auth owner's AccountDataProvider is its only dependency. */
-export function ProfileSurface() {
+export function ProfileSurface({ onProfileSaved, onBackToSetup, recordingSetup }: {
+  onProfileSaved?: (revision: number) => void;
+  onBackToSetup?: () => void;
+  recordingSetup?: boolean;
+}) {
   const identity = useIdentityQuery();
   const { availability, controller, scope } = useAccountData();
   const handoff = useAppRuntime()?.signupNameHandoff;
+  const [leaving, setLeaving] = useState(false);
   const [signupDraft, setSignupDraft] = useState<SignupNameDraft | null>(null);
   const [clearingDraft, setClearingDraft] = useState(false);
   const [draftClearFailed, setDraftClearFailed] = useState(false);
@@ -46,7 +52,7 @@ export function ProfileSurface() {
     }
   }
 
-  const editor = useProfileEditor(id => { void clearSignupDraft(id); });
+  const editor = useProfileEditor(id => { void clearSignupDraft(id); }, onProfileSaved);
   const guard = useRouteDraftGuard(editor.dirty);
   const theme = useUiTheme();
   const recovery = useAccountAction(controller, () => controller.recoverSession());
@@ -55,6 +61,9 @@ export function ProfileSurface() {
   return (
     <View>
       {guard.confirmation}
+      {leaving && onBackToSetup && (
+        <LeaveConfirmation onKeep={() => setLeaving(false)} onDiscard={onBackToSetup} />
+      )}
       <AccountHeader
         identity={available ? (identity.data ?? null) : null}
         displayName={available ? editor.displayName : null}
@@ -149,6 +158,14 @@ export function ProfileSurface() {
             />
           </View>
         ) : null}
+        {onBackToSetup && (
+          <Button label="Back to plan review" variant="secondary"
+            disabled={recordingSetup || editor.form?.state.kind === 'saving'}
+            onPress={() => {
+              if (editor.dirty) setLeaving(true);
+              else onBackToSetup();
+            }} />
+        )}
       </View>
     </View>
   );

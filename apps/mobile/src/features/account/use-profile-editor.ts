@@ -49,7 +49,10 @@ function saveError(error: unknown): ProfileFormState {
 }
 
 /** Volatile, account-keyed drafts. Nothing is persisted or automatically replayed. */
-export function useProfileEditor(onSignupNameSaved?: (id: string) => void) {
+export function useProfileEditor(
+  onSignupNameSaved?: (id: string) => void,
+  onProfileSaved?: (revision: number) => void,
+) {
   const online = useSyncExternalStore(subscribeOnline, onlineSnapshot, serverOnlineSnapshot);
   const { scope, availability } = useAccountData();
   const query = useAccountQuery(['profile'], readProfile);
@@ -81,6 +84,7 @@ export function useProfileEditor(onSignupNameSaved?: (id: string) => void) {
     onSuccess: (response) => {
       scope?.client.setQueryData(scope.key('profile'), response);
       if (!mounted.current) return;
+      onProfileSaved?.(response.profile.revision);
       if (editor?.signupDraftId) onSignupNameSaved?.(editor.signupDraftId);
       setEditor(fresh(response.profile));
       setReview(null);

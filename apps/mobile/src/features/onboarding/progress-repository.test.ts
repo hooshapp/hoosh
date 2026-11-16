@@ -85,3 +85,16 @@ it('bounds stalled reads without treating them as a new setup', async () => {
     vi.useRealTimers();
   }
 });
+
+it('rejects a late receipt for a different persisted settings attempt', async () => {
+  const { repo } = fixture();
+  const a = scope('a').value;
+  const old = { expected_revision: 0, plan_draft: null };
+  const current = { expected_revision: 1, plan_draft: null };
+  await repo.save(a, { version: 1, step: 'review', settingsAttempt: current });
+  await expect(repo.save(a, { version: 1, step: 'permission', settingsRevision: 1 }, old))
+    .rejects.toMatchObject({ kind: 'conflict' });
+  await expect(repo.read(a)).resolves.toMatchObject({
+    status: 'found', progress: { settingsAttempt: current },
+  });
+});

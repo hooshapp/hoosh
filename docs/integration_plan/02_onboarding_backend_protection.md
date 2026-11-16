@@ -68,9 +68,9 @@ normalizer as a destructive request sanitizer.
 | Part | Intended commit | State / prerequisite |
 |---|---|---|
 | INT-ONB-C01 | `feat(onboarding): add scoped resumable setup state` | Committed as `c01788e`. [C01 evidence](../integration_notes/plan_02_onboarding_backend_protection_notes.md) |
-| INT-ONB-C02 | `feat(onboarding): map reviewed choices to product contracts` | Local checks passed; commit pending. [C02 evidence](../integration_notes/plan_02_onboarding_backend_protection_notes.md#int-onb-c02--questionnaire-and-plan-review) |
-| INT-ONB-C03 | `feat(onboarding): save preferences with revision recovery` | Next; C02, AUTH-C05 handoff |
-| INT-ONB-C04 | `feat(onboarding): connect real app selection and permission` | Planned; C01/C02; native platform availability |
+| INT-ONB-C02 | `feat(onboarding): map reviewed choices to product contracts` | Committed as `d241a81`. [C02 evidence](../integration_notes/plan_02_onboarding_backend_protection_notes.md#int-onb-c02--questionnaire-and-plan-review) |
+| INT-ONB-C03 | `feat(onboarding): save preferences with revision recovery` | Fixture checks passed; disposable database acceptance open. [C03 evidence](../integration_notes/plan_02_onboarding_backend_protection_notes.md#int-onb-c03--account-save-and-recovery) |
+| INT-ONB-C04 | `feat(onboarding): connect real app selection and permission` | Next; native platform availability |
 | INT-ONB-C05 | `feat(onboarding): reconcile explicit protection activation` | Planned; C03/C04 |
 | INT-ONB-C06 | `test(onboarding): verify complete and interrupted setup` | Planned; C01–C05 |
 

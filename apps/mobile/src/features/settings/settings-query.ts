@@ -16,7 +16,7 @@ export function useSettingsQuery() {
 }
 /** Both settings editors must share this query/revision; writes never replay. */
 export function useSettingsMutation(options: {
-  onSuccess: (response: SettingsSavedResponse) => void;
+  onSuccess: (response: SettingsSavedResponse, patch: SettingsPatch) => void;
   onError: (error: unknown) => void;
 }) {
   const { scope } = useAccountData();
@@ -30,14 +30,14 @@ export function useSettingsMutation(options: {
       await scope.client.cancelQueries(filter);
       return response;
     },
-    onSuccess: (response) => {
+    onSuccess: (response, patch) => {
       if (!scope) return;
       scope.client.setQueryData<SettingsResponse>(scope.key('settings'), (current) =>
         current?.settings && current.settings.revision > response.settings.revision
           ? current
           : response,
       );
-      options.onSuccess(response);
+      options.onSuccess(response, patch);
     },
     onError: options.onError,
   });

@@ -15,6 +15,9 @@ export type OnboardingProgress = Readonly<{
   planDraft?: PlanDraft | null;
   profileRevision?: number;
   settingsRevision?: number;
+  settingsBaseRevision?: number;
+  settingsAttempt?: SettingsPatch;
+  settingsDeferred?: boolean;
   permissionDeferred?: boolean;
 }>;
 
@@ -26,7 +29,7 @@ export type OnboardingProgressRead =
  * when the account or session changes. Plan 02 supplies storage and conversion. */
 export interface OnboardingProgressRepository {
   read(scope: AccountScope): Promise<OnboardingProgressRead>;
-  save(scope: AccountScope, progress: OnboardingProgress): Promise<void>;
+  save(scope: AccountScope, progress: OnboardingProgress, expectedAttempt?: SettingsPatch): Promise<void>;
   discard(scope: AccountScope): Promise<void>;
 }
 
@@ -54,7 +57,7 @@ const steps = new Set(['preferences', 'plan', 'permission', 'review', 'complete'
 const revision = (value: unknown): value is number =>
   typeof value === 'number' && Number.isInteger(value) && value > 0 && value <= 2147483647;
 
-function decodeLocalActivities(value: unknown): SettingsPatch['activities'] {
+function decodeLocalActivities(value: unknown): Exclude<SettingsPatch['activities'], undefined> {
   if (value === null) return null;
   if (!isRecord(value) || !Array.isArray(value.selected_activity_ids) ||
     !value.selected_activity_ids.every(isActivityId) ||
@@ -66,6 +69,23 @@ function decodeLocalActivities(value: unknown): SettingsPatch['activities'] {
   return result.value;
 }
 
+function decodeAttempt(value: unknown): SettingsPatch {
+  if (!isRecord(value) || !(value.expected_revision === 0 || revision(value.expected_revision)) ||
+    value.expected_revision >= 2147483647 ||
+    (value.activities === undefined && value.plan_draft === undefined)) {
+    throw new ApiError('invalid_response');
+  }
+  const expected_revision = value.expected_revision;
+  if (value.activities !== undefined) {
+    return {
+      expected_revision,
+      activities: decodeLocalActivities(value.activities),
+      ...(value.plan_draft !== undefined ? { plan_draft: decodePlanDraft(value.plan_draft) } : {}),
+    };
+  }
+  return { expected_revision, plan_draft: decodePlanDraft(value.plan_draft) };
+}
+
 function decodeProgress(raw: string | null): OnboardingProgressRead {
   if (raw === null) return { status: 'not_started' };
   try {
@@ -75,6 +95,9 @@ function decodeProgress(raw: string | null): OnboardingProgressRead {
     if (typeof value.step !== 'string' || !steps.has(value.step) ||
       (value.profileRevision !== undefined && !revision(value.profileRevision)) ||
       (value.settingsRevision !== undefined && !revision(value.settingsRevision)) ||
+      (value.settingsBaseRevision !== undefined && value.settingsBaseRevision !== 0 && !revision(value.settingsBaseRevision)) ||
+      (value.settingsDeferred !== undefined && typeof value.settingsDeferred !== 'boolean') ||
+      (value.settingsAttempt !== undefined && (value.step !== 'review' || value.settingsRevision !== undefined)) ||
       (value.permissionDeferred !== undefined && typeof value.permissionDeferred !== 'boolean')) {
       return { status: 'read_failed' };
     }
@@ -87,6 +110,9 @@ function decodeProgress(raw: string | null): OnboardingProgressRead {
       ...(value.planDraft !== undefined ? { planDraft: decodePlanDraft(value.planDraft) } : {}),
       ...(value.profileRevision !== undefined ? { profileRevision: value.profileRevision } : {}),
       ...(value.settingsRevision !== undefined ? { settingsRevision: value.settingsRevision } : {}),
+      ...(value.settingsBaseRevision !== undefined ? { settingsBaseRevision: value.settingsBaseRevision as number } : {}),
+      ...(value.settingsAttempt !== undefined ? { settingsAttempt: decodeAttempt(value.settingsAttempt) } : {}),
+      ...(value.settingsDeferred !== undefined ? { settingsDeferred: value.settingsDeferred } : {}),
       ...(value.permissionDeferred !== undefined ? { permissionDeferred: value.permissionDeferred } : {}),
     };
     return { status: 'found', progress };
@@ -105,12 +131,19 @@ export function createOnboardingProgressRepository(storage: ProgressStorage, pro
   }
   const keyFor = (scope: AccountScope) => `hoosh.setup.${project}.${scope.account.user_id}`;
 
-  function write(scope: AccountScope, raw: string | null) {
+  function write(scope: AccountScope, raw: string | null, expectedAttempt?: SettingsPatch) {
     return enqueue(async () => {
       scope.assertCurrent();
       const key = keyFor(scope);
       const previous = await boundedRead(storage, key);
       scope.assertCurrent();
+      if (expectedAttempt) {
+        const stored = decodeProgress(previous);
+        if (stored.status !== 'found' ||
+          JSON.stringify(stored.progress.settingsAttempt) !== JSON.stringify(expectedAttempt)) {
+          throw new ApiError('conflict');
+        }
+      }
       if (raw === null) await storage.removeItem(key);
       else await storage.setItem(key, raw);
       if (!scope.isCurrent()) {
@@ -135,10 +168,10 @@ export function createOnboardingProgressRepository(storage: ProgressStorage, pro
       scope.assertCurrent();
       return decodeProgress(value);
     }),
-    async save(scope, progress) {
+    async save(scope, progress, expectedAttempt) {
       const decoded = decodeProgress(JSON.stringify(progress));
       if (decoded.status !== 'found') throw new ApiError('invalid_response');
-      await write(scope, JSON.stringify(decoded.progress));
+      await write(scope, JSON.stringify(decoded.progress), expectedAttempt);
     },
     discard: scope => write(scope, null),
   };

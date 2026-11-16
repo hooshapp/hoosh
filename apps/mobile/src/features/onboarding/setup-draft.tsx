@@ -1,5 +1,5 @@
 import type { PlanDraft } from '@disconnect/contracts';
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
@@ -36,7 +36,7 @@ function Art({ source, size = 20 }: { source: number; size?: number }) {
 }
 
 export function SetupDraft({
-  progress, busy, failed, onSave, onLeave, onDiscard,
+  progress, busy, failed, onSave, onLeave, onDiscard, reviewActions,
 }: {
   progress: OnboardingProgress;
   busy: boolean;
@@ -44,6 +44,7 @@ export function SetupDraft({
   onSave: (progress: OnboardingProgress) => void;
   onLeave: () => void;
   onDiscard: () => void;
+  reviewActions?: ReactNode;
 }) {
   const [activities, setActivities] = useState(() => activityDraft(progress.activities ?? null));
   const [input, setInput] = useState(() =>
@@ -83,7 +84,7 @@ export function SetupDraft({
   return (
     <Screen dark title={title} contentStyle={styles.content} header={
       <View style={styles.heading}>
-        <Pressable accessibilityRole="button" disabled={busy} onPress={back} style={styles.back}>
+        <Pressable accessibilityRole="button" disabled={busy || !!progress.settingsAttempt} onPress={back} style={styles.back}>
           {manual ? <Art source={require('../../../assets/icons/setup/back.svg')} size={16} />
             : <Art source={require('../../../assets/onboarding/arrow-left.svg')} size={18} />}
           <Text style={styles.body}>{preferences ? 'Back to Home' : 'Back'}</Text>
@@ -167,10 +168,11 @@ export function SetupDraft({
             {!manual && <Button label="Set up on my own" variant="secondary" disabled={busy}
               onPress={() => { setError(undefined); setManual(true); }} />}
           </>}
-          {review && <Button label="Continue to Home" variant="secondary" onPress={onLeave} />}
+          {review && reviewActions}
+          {review && <Button label="Continue to Home" variant="secondary" disabled={busy} onPress={onLeave} />}
         </>
       )}
-      {review && <Button label="Discard setup progress" variant="secondary" disabled={busy} onPress={onDiscard} />}
+      {review && !progress.settingsAttempt && <Button label="Discard setup progress" variant="secondary" disabled={busy} onPress={onDiscard} />}
       {(error || failed) && <Text accessibilityRole="alert" style={styles.error}>{error ?? 'Setup could not be saved. Try again.'}</Text>}
     </Screen>
   );

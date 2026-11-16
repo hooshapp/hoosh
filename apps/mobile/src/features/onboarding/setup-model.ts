@@ -1,4 +1,4 @@
-import type { ActivityPreferences, PlanDraft, SettingsView } from '@disconnect/contracts';
+import type { ActivityPreferences, PlanDraft, SettingsPatch, SettingsView } from '@disconnect/contracts';
 import { planDraftInput, planDraftSection, type PlanDraftInput } from '../plans/plan-draft-model';
 import { minutesTime } from '../editors/draft-utils';
 import { activityDraft, activityPayload } from '../preferences/activity-model';
@@ -67,4 +67,33 @@ export function reviewSavedSettings(settings: SettingsView): { activities: Activ
     activities: activityDraft(settings.activities),
     plan: settings.plan_draft === null ? null : planDraftInput(settings.plan_draft),
   };
+}
+
+
+type SettingsComparison = { expected_revision: number } & Pick<SettingsPatch, 'activities' | 'plan_draft'>;
+
+/** Compare reviewed request fields against canonical readback without changing what we send. */
+export function changedSettings(
+  reviewed: Pick<SettingsPatch, 'activities' | 'plan_draft'>,
+  saved: SettingsView | null,
+): SettingsComparison {
+  const patch: SettingsComparison = { expected_revision: saved?.revision ?? 0 };
+  if (reviewed.activities !== undefined) {
+    const ids = reviewed.activities?.selected_activity_ids ?? [];
+    const previousIds = saved?.activities.selected_activity_ids ?? [];
+    const custom = reviewed.activities?.custom_text?.replace(edgeWhitespace, '') ?? null;
+    if (ids.length !== previousIds.length || ids.some((id, index) => id !== previousIds[index]) ||
+      custom !== (saved?.activities.custom_text ?? null)) {
+      patch.activities = reviewed.activities;
+    }
+  }
+  if (reviewed.plan_draft !== undefined &&
+    JSON.stringify(reviewed.plan_draft) !== JSON.stringify(saved?.plan_draft ?? null)) {
+    patch.plan_draft = reviewed.plan_draft;
+  }
+  return patch;
+}
+
+export function hasSettingsChanges(patch: SettingsComparison): patch is SettingsPatch {
+  return patch.activities !== undefined || patch.plan_draft !== undefined;
 }

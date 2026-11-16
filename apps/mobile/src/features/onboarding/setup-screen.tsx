@@ -1,19 +1,22 @@
+import type { SettingsPatch } from '@disconnect/contracts';
 import { useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Text } from 'react-native';
 
 import { Button } from '@/components/ui/button';
 import { Screen } from '@/components/ui/screen';
 import { useUiTheme } from '@/components/ui/theme';
 import { useAppRuntime } from '@/features/account/app-runtime-context';
+import { ProfileSurface } from '@/features/account/profile-surface';
 import { useIdentityQuery } from '@/features/account/identity-query';
-import { readSettings } from '@/features/settings/settings-api';
-import { useAccountData, useAccountQuery } from '@/infrastructure/query/account-data-provider';
+import { useSettingsQuery } from '@/features/settings/settings-query';
+import { useAccountData } from '@/infrastructure/query/account-data-provider';
 
 import type { OnboardingProgress, OnboardingProgressRead } from './progress-repository';
 import { PlanSummary, SetupDraft } from './setup-draft';
 import { reviewSavedSettings } from './setup-model';
 import { activityPayload, activitySummary } from '../preferences/activity-model';
+import { SetupSettingsReview } from './setup-settings-review';
 import { setupRepository } from './progress-storage';
 
 export function SetupScreen() {
@@ -24,11 +27,14 @@ export function SetupScreen() {
   const repo = project ? setupRepository(project) : null;
   const identity = useIdentityQuery();
   const verified = scope && !identity.isError && identity.data?.user_id === scope.account.user_id;
-  const settings = useAccountQuery(['settings'], readSettings);
+  const settings = useSettingsQuery();
   const [result, setResult] = useState<OnboardingProgressRead | null>(null);
   const [attempt, setAttempt] = useState(0);
   const [busy, setBusy] = useState(false);
   const [failed, setFailed] = useState(false);
+  const writing = useRef(false);
+  const [reviewProfile, setReviewProfile] = useState(false);
+  const [profileReceipt, setProfileReceipt] = useState<number>();
 
   useEffect(() => {
     if (!scope || !repo || !verified) return;
@@ -49,19 +55,23 @@ export function SetupScreen() {
           : result.progress.step === 'review' ? 'ready_to_finish' : 'draft'
         : result.status;
 
-  async function update(progress: OnboardingProgress | null) {
-    if (busy || !repo || !scope || !verified || !scope.isCurrent()) return;
+  async function update(progress: OnboardingProgress | null, expectedAttempt?: SettingsPatch) {
+    if (writing.current || !repo || !scope || !verified || !scope.isCurrent()) return false;
+    writing.current = true;
     setBusy(true);
     setFailed(false);
     try {
-      if (progress) await repo.save(scope, progress);
+      if (progress) await repo.save(scope, progress, expectedAttempt);
       else await repo.discard(scope);
-      if (!scope.isCurrent()) return;
+      if (!scope.isCurrent()) return false;
       setResult(progress ? { status: 'found', progress } : { status: 'not_started' });
       if (progress?.step === 'complete') router.replace('/(tabs)');
+      return true;
     } catch {
       if (scope.isCurrent()) setFailed(true);
+      return false;
     } finally {
+      writing.current = false;
       if (scope.isCurrent()) setBusy(false);
     }
   }
@@ -73,12 +83,66 @@ export function SetupScreen() {
     void settings.refetch();
   };
   const progress = result?.status === 'found' ? result.progress : null;
-  if (progress && (status === 'draft' || status === 'ready_to_finish') &&
-    (progress.step === 'preferences' || progress.step === 'plan' ||
-      (progress.step === 'review' && progress.settingsRevision === undefined))) {
+  if (verified && reviewProfile && progress?.step === 'review' && !progress.settingsAttempt) {
+    return (
+      <Screen title="Review your profile">
+        <ProfileSurface recordingSetup={busy} onBackToSetup={() => setReviewProfile(false)} onProfileSaved={revision => {
+          setProfileReceipt(revision);
+          void update({ ...progress, profileRevision: revision });
+        }} />
+        {failed && profileReceipt !== undefined && (
+          <>
+            <Text accessibilityRole="alert" style={{ color: theme.error }}>
+              Your profile was saved. Retry recording your setup progress.
+            </Text>
+            <Button label="Record profile progress" busy={busy} onPress={() => {
+              void update({ ...progress, profileRevision: profileReceipt });
+            }} />
+          </>
+        )}
+      </Screen>
+    );
+  }
+
+  if (verified && progress && (progress.step === 'preferences' || progress.step === 'plan' ||
+    (progress.step === 'review' && progress.settingsRevision === undefined))) {
     return (
       <SetupDraft key={progress.step} progress={progress} busy={busy} failed={failed}
-        onDiscard={() => { void update(null); }} onSave={next => { void update(next); }} onLeave={() => router.replace('/(tabs)')} />
+        onDiscard={() => { void update(null); }}
+        onSave={next => { void update(next); }}
+        onLeave={() => router.replace('/(tabs)')}
+        reviewActions={progress.step === 'review' && (
+          <>
+            {!progress.settingsAttempt && (
+              <Button label="Review profile" variant="secondary" disabled={busy}
+                onPress={() => { setProfileReceipt(undefined); setFailed(false); setReviewProfile(true); }} />
+            )}
+            <SetupSettingsReview progress={progress} busy={busy} record={update} />
+            {!progress.settingsAttempt && (
+              <Button label="Finish setup for now" variant="secondary" disabled={busy} onPress={() => {
+                void update({ ...progress, step: 'complete', settingsDeferred: true });
+              }} />
+            )}
+          </>
+        )}
+      />
+    );
+  }
+
+  if (verified && progress?.step === 'permission') {
+    return (
+      <Screen title="Preferences reviewed">
+        <Text style={{ color: theme.foreground }}>
+          {progress.settingsRevision === undefined
+            ? 'No account settings changes were needed.'
+            : 'Your preferences are saved to your account.'}
+        </Text>
+        <Text style={{ color: theme.foreground }}>Screen Time setup can be finished later.</Text>
+        {failed && <Text accessibilityRole="alert" style={{ color: theme.error }}>Setup progress could not be recorded. Try again.</Text>}
+        <Button label="Finish for now" busy={busy} onPress={() => {
+          void update({ ...progress, step: 'complete', permissionDeferred: true });
+        }} />
+      </Screen>
     );
   }
 
@@ -91,7 +155,9 @@ export function SetupScreen() {
       : 'Start setup on this device. You can return here to finish later.',
     draft: 'Your setup progress is saved on this device. You can leave and return later.',
     ready_to_finish: 'Review the settings already saved for this account.',
-    completed: 'Setup is complete on this device.',
+    completed: progress?.settingsDeferred
+      ? 'You finished setup for now. Your draft is still on this device.'
+      : 'Setup is complete on this device.',
     read_failed: 'Your saved progress could not be read. Retry before starting over.',
     incompatible: 'Your saved setup was created by another version of Hoosh. Retry or discard it to start over.',
   }[status];
@@ -116,7 +182,12 @@ export function SetupScreen() {
         <Button label={existing ? 'Review saved settings' : 'Start setup'} busy={busy} onPress={() => {
           void update(existing
             ? { version: 1, step: 'review', settingsRevision: existing.revision }
-            : { version: 1, step: 'preferences' });
+            : { version: 1, step: 'preferences', settingsBaseRevision: 0 });
+        }} />
+      )}
+      {status === 'completed' && progress?.settingsDeferred && (
+        <Button label="Resume my draft" busy={busy} onPress={() => {
+          void update({ ...progress, step: 'review', settingsDeferred: undefined });
         }} />
       )}
       {existing && status === 'ready_to_finish' && (
