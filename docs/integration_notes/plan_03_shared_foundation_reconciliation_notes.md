@@ -1,6 +1,6 @@
 # Plan 03 — Shared foundation reconciliation
 
-**Checkpoint:** INT-BASE-C03 checks complete. **Next part:** INT-BASE-C04. **Owner / reviewer:** Ishmum / Anisha per the shared plan. Anisha requested starting the integration. **Branch:** `integration/shared-product`. **C01 commit:** `59e4da9`. **C02 commit:** `d07a108`. **C03 commit:** Pending.
+**Checkpoint:** INT-BASE-C04 checks complete. **Next part:** INT-BASE-C05 and parallel iOS source/signing audit. **Owner / reviewer:** Ishmum / Anisha per the shared plan. Anisha requested starting the integration. **Branch:** `integration/shared-product`. **C01 commit:** `59e4da9`. **C02 commit:** `d07a108`. **C03 commit:** `e411344`. **C04 commit:** Pending.
 
 **Read on resume:** [execution order](../integration_plan/README.md), [foundation plan](../integration_plan/03_shared_foundation_reconciliation.md), and [notes workflow](README.md). Update this checkpoint and the owning ledger after each increment.
 
@@ -70,3 +70,34 @@ Next, **INT-BASE-C03** brings over the original Auth and onboarding assets and r
 - All 50 targeted Jest checks passed for Button, Field, Screen, RouteButton and Settings across the two configured projects.
 
 Next, **INT-BASE-C04** defines how the root layout, auth session, onboarding and native adapters connect. Once those interfaces are agreed, begin the iOS source and signing review alongside Android work. Native integration and signed-device acceptance remain later steps.
+
+## INT-BASE-C04 — App composition and native handoff
+
+**Date:** 2026-11-15. **Branch:** `integration/shared-product`. **Starting revision:** `e411344`. **Commit:** Pending. **Plan:** [C04](../integration_plan/03_shared_foundation_reconciliation.md#int-base-c04--composition-and-native-handoff-seams).
+
+| Interface | Handoff |
+|---|---|
+| `infrastructure/auth/runtime.ts` | `createAppRuntime(producer)` takes one `AppAuthProducer`. The API client and account controller use its same auth port. An omitted producer creates the current baseline SDK. Only the selected producer handles SDK refresh and lifecycle. AUTH will supply its producer in the root when ready. |
+| `features/account/session-boundary.tsx` | The root can render public content with the shared runtime context outside the private query, account, native owner, and weekly providers. AUTH will decide route/guard ordering and may hold private providers detached during account recovery even when Supabase has a session. The current login fallback remains active for the existing root. |
+| `features/account/signup-name-handoff.ts` | AUTH-C05 supplies a verified-account signup draft with a stable ID. Explicit review and the existing revision-checked `ProfilePatch` mutation stay in the profile owner. Clear by draft ID after a confirmed save or explicit discard. |
+| `features/onboarding/progress-repository.ts` | ONB-C01 supplies installation-local, account-scoped storage and stale-operation fencing. The interface distinguishes missing, failed and incompatible reads. The record uses approved `SettingsPatch` activities and `PlanDraft`, revision receipts and permission deferral. Plan 02 owns conversion and persistence. |
+
+### Native registry and payloads
+
+The platform-resolved `infrastructure/native/product-ports` entry is the registry. Android binds the checked HooshUsage bridge with explicit methods and retains its JSON serialization for quest metadata. iOS and web currently resolve to the unavailable entry. `NativeOwnerBoundary` still binds only after matching the current account with `/v1/me`. Its handles are scoped to the current account generation, and cleanup does not remove installed rules.
+
+| Method group | Scope |
+|---|---|
+| Owner and selection | `interventionOpen/Release/EndOwner/ClaimOwner`, `selectionBegin/Pick/Commit/Release/EndOwner/Read`. Preserve explicit claims and owner-scoped handles. |
+| Quest | `questRead/Apply/Cancel` and access review use the existing quest request and receipt types. |
+| Weekly | `scheduleRead/Preview/Apply` and `interventionCancel` are available together. Missing weekly support leaves Android quests and selection usable. |
+| Optional reads and sync | `historyRead/Start/Stop`, `rewardsRead/Ack`, and `openUsageAccess` reflect actual methods. Unsupported actions stay unavailable. |
+| Platform-specific representations | `decodeInterventionProtectionRead` requires Android overlay capability data. History native and HTTP decoders currently require `android_usage_events_v1`. Before adding iOS support, extend only the relevant contracts and decoders with actual supported representations and Android regressions. A permission bridge by itself cannot satisfy `ProductNativePort`. |
+
+The iOS source and signing audit may start once this boundary is accepted. Native changes land after C06. No provider configuration or device permission changed during C04.
+
+### Verification and next step
+
+- All 554 mobile unit tests and 73 targeted component/native-adapter tests passed locally. The new tests cover supplied Auth without default SDK creation, public content without private context, and stale private scope rejection when recovery detaches it. Existing tests exercise account replacement, app lifecycle cleanup, verified native owner handling and Android quests with weekly support absent.
+- Typecheck and production web export passed, including developer preview isolation and artwork integrity. Lint reported four existing warnings.
+- C05 exercises the retained end-to-end components and normal account boundaries. The iOS audit may now inspect source and signing alongside this work. Live providers, packaged binary behavior and signed phones remain later acceptance gates.

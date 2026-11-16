@@ -179,11 +179,12 @@ function fixture({
   } as unknown as AccountApi;
   mockRuntime = {
     auth,
-    sdk: { auth: sdk },
+    canClearSession: true,
+    setForeground: (active) => active ? sdk.startAutoRefresh() : sdk.stopAutoRefresh(),
     api,
     nativeNamespace: 'fixture',
     controller: createAccountDataController(auth, api),
-  } as unknown as AppRuntime;
+  };
   let revision: number | null = installed ? 3 : null,
     enabled = installed,
     spec: PlanDraft | null = installed ? SAVED : null,

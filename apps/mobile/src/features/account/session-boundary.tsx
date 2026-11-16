@@ -23,9 +23,14 @@ import { NativeOwnerBoundary } from '@/features/protection/native-owner-boundary
 export function AppSessionBoundary({
   children,
   runtime: supplied,
+  publicContent,
+  holdPrivate = false,
 }: {
   children: ReactNode;
   runtime?: AppRuntime;
+  publicContent?: ReactNode;
+  /** A pending auth recovery flow can keep private providers detached. */
+  holdPrivate?: boolean;
 }) {
   const [runtime] = useState(() => supplied ?? createAppRuntime());
   const snapshot = useSyncExternalStore(
@@ -36,29 +41,28 @@ export function AppSessionBoundary({
   useEffect(() => {
     void runtime.auth.start();
     const foreground = (state: string | null | undefined) => {
-      if (state === 'active') runtime.sdk?.auth.startAutoRefresh();
-      else runtime.sdk?.auth.stopAutoRefresh();
+      runtime.setForeground(state === 'active');
     };
     foreground(AppState.currentState);
     const listener = AppState.addEventListener('change', foreground);
     return () => {
       listener.remove();
-      runtime.sdk?.auth.stopAutoRefresh();
+      runtime.setForeground(false);
       runtime.auth.dispose();
     };
   }, [runtime]);
   return (
     <AppRuntimeContext.Provider value={runtime}>
       <QueryLifecycleBoundary>
-        {snapshot.status === 'signed_in' ? (
+        {snapshot.status === 'signed_in' && !holdPrivate ? (
           <AccountDataProvider controller={runtime.controller}>
             <NativeOwnerBoundary>
               <AccountWeeklyPlanBoundary>{children}</AccountWeeklyPlanBoundary>
             </NativeOwnerBoundary>
           </AccountDataProvider>
-        ) : (
+        ) : publicContent === undefined ? (
           <SessionAccess runtime={runtime} status={snapshot.status} />
-        )}
+        ) : publicContent}
       </QueryLifecycleBoundary>
     </AppRuntimeContext.Provider>
   );
@@ -151,7 +155,7 @@ function SessionAccess({
                 }}
               />
             ) : null}
-            {runtime.sdk ? (
+            {runtime.canClearSession ? (
               <>
                 <Button
                   label="Clear this device’s session"

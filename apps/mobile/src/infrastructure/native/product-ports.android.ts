@@ -10,7 +10,7 @@ type AndroidBridge = Omit<ProductNativePort, 'questApply'> & {
 };
 const nativeModule =
   requireOptionalNativeModule<Partial<AndroidBridge>>('HooshUsage');
-const methods: (keyof ProductNativePort)[] = [
+const methods = [
   'questRead',
   'questApply',
   'questCancel',
@@ -26,19 +26,32 @@ const methods: (keyof ProductNativePort)[] = [
   'selectionRelease',
   'selectionEndOwner',
   'selectionRead',
-];
+] as const satisfies readonly (keyof AndroidBridge)[];
+
+type RequiredMethod = (typeof methods)[number];
+type ConnectedBridge = Partial<AndroidBridge> & Pick<AndroidBridge, RequiredMethod>;
+
+function hasProductMethods(bridge: Partial<AndroidBridge> | null): bridge is ConnectedBridge {
+  return bridge !== null && methods.every((key) => typeof bridge[key] === 'function');
+}
 function connectedPort(): ProductNativePort | null {
-  if (
-    !nativeModule ||
-    !methods.every((key) => typeof nativeModule[key] === 'function')
-  )
-    return null;
-  const bridge = nativeModule as AndroidBridge;
-  const bound = Object.fromEntries(
-    methods.map((key) => [key, bridge[key]!.bind(bridge)]),
-  );
+  if (!hasProductMethods(nativeModule)) return null;
+  const bridge = nativeModule;
   return {
-    ...bound,
+    questRead: bridge.questRead.bind(bridge),
+    questCancel: bridge.questCancel.bind(bridge),
+    interventionOpen: bridge.interventionOpen.bind(bridge),
+    interventionRelease: bridge.interventionRelease.bind(bridge),
+    interventionReviewAccess: bridge.interventionReviewAccess.bind(bridge),
+    interventionEndOwner: bridge.interventionEndOwner.bind(bridge),
+    interventionClaimOwner: bridge.interventionClaimOwner.bind(bridge),
+    interventionProtectionRead: bridge.interventionProtectionRead.bind(bridge),
+    selectionBegin: bridge.selectionBegin.bind(bridge),
+    selectionPick: bridge.selectionPick.bind(bridge),
+    selectionCommit: bridge.selectionCommit.bind(bridge),
+    selectionRelease: bridge.selectionRelease.bind(bridge),
+    selectionEndOwner: bridge.selectionEndOwner.bind(bridge),
+    selectionRead: bridge.selectionRead.bind(bridge),
     // Weekly support is optional as a group: older installed bridges retain quests.
     ...(typeof bridge.scheduleRead === 'function' &&
     typeof bridge.schedulePreview === 'function' &&
@@ -65,6 +78,6 @@ function connectedPort(): ProductNativePort | null {
         );
       return bridge.questApply(owner, token, expected, json);
     },
-  } as ProductNativePort;
+  };
 }
 export const productNativePort = connectedPort();

@@ -4,7 +4,7 @@ import type { SupabaseClient, Session } from '@supabase/supabase-js';
 import { createAuthSession } from '@/infrastructure/auth/session';
 import type { AppRuntime } from '@/infrastructure/auth/runtime';
 import { createAccountDataController } from '@/infrastructure/query/account-controller';
-import { useAccountData } from '@/infrastructure/query/account-data-provider';
+import { useAccountData, useOptionalAccountData } from '@/infrastructure/query/account-data-provider';
 import type { AccountApi } from '@/infrastructure/query/account-scope';
 import { AppSessionBoundary } from './session-boundary';
 import { AppSignOutAction } from './app-runtime-context';
@@ -28,8 +28,12 @@ function setup(initial: string | null = null) {
   };
   const auth = createAuthSession(sdk as unknown as SupabaseClient['auth']);
   const api = { configuration: { status: 'ready' }, getRecoveryState: () => 'ready' } as unknown as AccountApi;
-  const runtime = { auth, sdk: { auth: sdk }, api, controller: createAccountDataController(auth, api) } as unknown as AppRuntime;
-  return { runtime, sdk, switch: () => { stored = { user: { id: B }, access_token: 'fixture-other' } as Session; emit?.('SIGNED_IN', stored); } };
+  const runtime: AppRuntime = {
+    auth, api, nativeNamespace: null, canClearSession: true,
+    setForeground: (active) => active ? sdk.startAutoRefresh() : sdk.stopAutoRefresh(),
+    controller: createAccountDataController(auth, api),
+  };
+  return { runtime, auth, sdk, switch: () => { stored = { user: { id: B }, access_token: 'fixture-other' } as Session; emit?.('SIGNED_IN', stored); } };
 }
 function Private() {
   const { scope } = useAccountData();
@@ -62,7 +66,7 @@ it('locks on storage failure, ignoring a later signed-in SDK event', async () =>
   const fixture = setup(A);
   await render(<AppSessionBoundary runtime={fixture.runtime}><Private /></AppSessionBoundary>);
   await screen.findByText(`Private account ${A}`);
-  await act(() => fixture.runtime.auth.storageFailed());
+  await act(() => fixture.auth.storageFailed());
   await act(fixture.switch);
   await screen.findByText('Account access unavailable');
   expect(screen.queryByText(/Private account/)).toBeNull();
@@ -85,4 +89,38 @@ it('keeps bootstrap outages locked and offers deliberate recovery rather than a 
   expect(screen.queryByText(/Private account/)).toBeNull();
   await fireEvent.press(screen.getByRole('button', { name: 'Retry account access' }));
   await screen.findByText(`Private account ${A}`);
+});
+
+it('keeps supplied public content outside private providers and mounts the account scope once', async () => {
+  const { runtime, auth, sdk } = setup();
+  function Public() {
+    const account = useOptionalAccountData();
+    return <Text>{account ? 'Unexpected private scope' : 'Public account route'}</Text>;
+  }
+  await render(<AppSessionBoundary runtime={runtime} publicContent={<Public />}><Private /></AppSessionBoundary>);
+  await screen.findByText('Public account route');
+  expect(runtime.controller.getSnapshot().scope).toBeNull();
+  await act(() => auth.signIn('fixture@example.test', 'fixture-password'));
+  await screen.findByText(`Private account ${A}`);
+  expect(screen.queryByText('Public account route')).toBeNull();
+  expect(sdk.onAuthStateChange).toHaveBeenCalledTimes(1);
+});
+
+it('detaches private scope during a recovery flow even when Auth has a session', async () => {
+  const { runtime, sdk } = setup(A);
+  const content = (holdPrivate: boolean) => (
+    <AppSessionBoundary runtime={runtime} holdPrivate={holdPrivate} publicContent={<Text>Recovery route</Text>}>
+      <Private />
+    </AppSessionBoundary>
+  );
+  const view = await render(content(false));
+  await screen.findByText(`Private account ${A}`);
+  const previous = runtime.controller.getSnapshot().scope;
+  expect(previous?.isCurrent()).toBe(true);
+  await view.rerender(content(true));
+  await screen.findByText('Recovery route');
+  expect(screen.queryByText(/Private account/)).toBeNull();
+  expect(previous?.isCurrent()).toBe(false);
+  expect(runtime.controller.getSnapshot().scope).toBeNull();
+  expect(sdk.onAuthStateChange).toHaveBeenCalledTimes(1);
 });
