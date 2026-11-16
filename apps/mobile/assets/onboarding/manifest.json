@@ -1,0 +1,107 @@
+{
+  "figmaFileKey": "ukmD2ZidJ9UR2XxUkvdPoJ",
+  "frames": [
+    {
+      "nodeId": "27:113",
+      "screen": "gender"
+    },
+    {
+      "nodeId": "48:79",
+      "screen": "age"
+    },
+    {
+      "nodeId": "48:81",
+      "screen": "most-used-apps"
+    },
+    {
+      "nodeId": "50:83",
+      "screen": "hobbies"
+    },
+    {
+      "nodeId": "50:85",
+      "screen": "screen-time-permission"
+    }
+  ],
+  "assets": [
+    {
+      "path": "app-bird.svg",
+      "sha256": "df4453ddf2b5be001df1ab91782f4d309f82b7687b0895983669db9dcaab7d61"
+    },
+    {
+      "path": "app-camera.svg",
+      "sha256": "8dbf69b593368f43301e1d7888675a45ad917af10ea55f5d369cc6b749f156eb"
+    },
+    {
+      "path": "app-ghost.svg",
+      "sha256": "c1fea671bee213ee923d7af75fcad41028284e02e82586b8566c04276a163ff1"
+    },
+    {
+      "path": "app-play.svg",
+      "sha256": "d167480efb631f8bd67161b92377c06b2adcc1569637c157aa20042c656e12c5"
+    },
+    {
+      "path": "arrow-left.svg",
+      "sha256": "41784f367f04c7013f661a2493abb713c04683d972b97fb64e014140ee1063e6"
+    },
+    {
+      "path": "check.svg",
+      "sha256": "d4963f26093724ce25f3fdcb405ef6c9c3688f375055e9cf40f4fc0e1c6b5578"
+    },
+    {
+      "path": "gender-female.svg",
+      "sha256": "0b2aa9667cca4ff1597e218d39906d49f4358d327a2c0ba2c03b438eaaf7de8c"
+    },
+    {
+      "path": "gender-male.svg",
+      "sha256": "af9693838be4af8b5157b1c08308fc8f7a8e3e11803f4fc228a12e310fdf7d33"
+    },
+    {
+      "path": "gender-other.svg",
+      "sha256": "c14f358fba05de264dbf127d1969b211a8d7ebdbeaca2ec87f5129d4c50ed55d"
+    },
+    {
+      "path": "gender-star.svg",
+      "sha256": "c05d1589d841d99c00ca16b7f015e931056704340f146b3ad5f8536d481ab490"
+    },
+    {
+      "path": "hobby-arts.svg",
+      "sha256": "1607339b859d467fc1914d1a6d10f30cacb3f5e7c80b7e5205fbc8ef6b8f500f"
+    },
+    {
+      "path": "hobby-book.svg",
+      "sha256": "4dfafe2ac8866d67a0a3e75ec372e7535c42664721863c0c7b2ca0ba3629d42c"
+    },
+    {
+      "path": "hobby-cooking.svg",
+      "sha256": "bd7d81c4f40db4798faaa992170ae664a0e2dfe58526c112b41d271555b7688c"
+    },
+    {
+      "path": "hobby-gym.svg",
+      "sha256": "c86acb28aa3cf06f38b6cf01816cdad5d1bd874ece0c3162af759f52a590cb49"
+    },
+    {
+      "path": "hobby-music.svg",
+      "sha256": "f4d4268153141c1332e33d9be7e3678b70d9a166db23aa886d89176637c5b57e"
+    },
+    {
+      "path": "hobby-walk.svg",
+      "sha256": "8a9358af5343334ae0062496cb7446af01b7aaf5aeca09c3e68277e1e3f6bdb1"
+    },
+    {
+      "path": "permission/dinosaur.svg",
+      "sha256": "dd5f93461834936aa2d631c38d9651a18abd325f20ee1f75a26143148c3f5cf9"
+    },
+    {
+      "path": "permission/glow.svg",
+      "sha256": "63c4ad2d4603b90e20dad704fe0cbbaff3b9604e6eb56991d8ac82242339b751"
+    },
+    {
+      "path": "permission/sparkle.svg",
+      "sha256": "990bb61c4d79614d9c5d259928757f9595f36aed188b53e7ea8d6c7b9219d2c3"
+    },
+    {
+      "path": "plus.svg",
+      "sha256": "e0506e2130d12a7520a9dae5dd78ab67b9d232ca8a46cf51b3a51f6302a2c4d7"
+    }
+  ]
+}

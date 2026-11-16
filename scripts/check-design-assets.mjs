@@ -28,6 +28,21 @@ for (const asset of manifest.assets) {
   if (asset.usage === 'navigation') navigationHashes.add(asset.sha256);
 }
 
+const integrationManifest = JSON.parse(
+  await readFile(join(assetsRoot, 'integration-assets.json'), 'utf8'),
+);
+const integrationAssets = Object.entries(integrationManifest.sha256ByPath);
+for (const [file, sha256] of integrationAssets) {
+  let directory = assetsRoot;
+  for (const segment of file.split('/')) {
+    if (!(await readdir(directory)).includes(segment))
+      throw new Error(`Missing integration asset or mismatched path casing: ${file}`);
+    directory = join(directory, segment);
+  }
+  if (digest(await readFile(directory)) !== sha256)
+    throw new Error(`Landing-page asset bytes changed: ${file}`);
+}
+
 async function svgFiles(directory) {
   const groups = await Promise.all(
     (await readdir(directory, { withFileTypes: true })).map((entry) => {
@@ -50,3 +65,4 @@ if (process.argv.includes('--export')) {
 console.log(
   `Design assets passed: ${manifest.assets.length} original local SVGs${process.argv.includes('--export') ? ', including all navigation assets in the app export' : ''}${process.argv.includes('--pack') ? `; ${packCopies} exact original-pack copies` : ''}.`,
 );
+console.log(`Integration artwork passed: ${integrationAssets.length} files match the landing-page snapshot.`);

@@ -1,0 +1,12 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Disconnect dinosaur">
+<path id="Vector" d="M22 24L15 18L16 29L7 27L12 37L3 40L16 47L28 37L22 24Z" fill="#248D40"/>
+<path id="Vector_2" d="M24 27V14C24 9.33333 26.6667 7 32 7H47C51.6667 7 54 9.33333 54 14V24C54 27.3333 52 29 48 29H38V35C38 41 36 45.3333 32 48V54H23V46H18C14 46 11 44 9 40L4 30C10 33.3333 14.6667 34.6667 18 34L24 27Z" fill="#33C659"/>
+<path id="Vector_3" d="M29 30H38V37C38 42.3333 35.3333 46 30 48H23V41C27 39.6667 29 36 29 30Z" fill="#9CEAAE"/>
+<path id="Vector_4" d="M35 32H44V37H35V32Z" fill="#33C659"/>
+<path id="Vector_5" d="M46 15.5C46 14.1193 44.8807 13 43.5 13C42.1193 13 41 14.1193 41 15.5V16.5C41 17.8807 42.1193 19 43.5 19C44.8807 19 46 17.8807 46 16.5V15.5Z" fill="#172C1C"/>
+<path id="Vector_6" d="M42.5 15.5C43.0523 15.5 43.5 15.0523 43.5 14.5C43.5 13.9477 43.0523 13.5 42.5 13.5C41.9477 13.5 41.5 13.9477 41.5 14.5C41.5 15.0523 41.9477 15.5 42.5 15.5Z" fill="white"/>
+<path id="Vector_7" d="M44 23H51" stroke="#172C1C" stroke-width="2" stroke-linecap="round"/>
+<path id="Vector_8" d="M23 51H33V55H23V51Z" fill="#248D40"/>
+</g>
+</svg>

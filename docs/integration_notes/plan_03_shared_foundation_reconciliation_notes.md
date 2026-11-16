@@ -1,6 +1,6 @@
 # Plan 03 — Shared foundation reconciliation
 
-**Checkpoint:** INT-BASE-C02 checks complete. **Next part:** INT-BASE-C03. **Owner / reviewer:** Ishmum / Anisha per the shared plan. Anisha requested starting the integration. **Branch:** `integration/shared-product`. **C01 commit:** `59e4da9`. **C02 commit:** Pending.
+**Checkpoint:** INT-BASE-C03 checks complete. **Next part:** INT-BASE-C04. **Owner / reviewer:** Ishmum / Anisha per the shared plan. Anisha requested starting the integration. **Branch:** `integration/shared-product`. **C01 commit:** `59e4da9`. **C02 commit:** `d07a108`. **C03 commit:** Pending.
 
 **Read on resume:** [execution order](../integration_plan/README.md), [foundation plan](../integration_plan/03_shared_foundation_reconciliation.md), and [notes workflow](README.md). Update this checkpoint and the owning ledger after each increment.
 
@@ -52,3 +52,21 @@ Fetched landing-page at `b6d61df5c8a2c1eacbe28a38e06b84b5bcd368d1` for this incr
 - Device permission behavior and hosted provider sign-in remain part of the later acceptance steps.
 
 Next, **INT-BASE-C03** brings over the original Auth and onboarding assets and reconciles the shared UI primitives and test setup.
+
+## INT-BASE-C03 — Shared artwork and UI compatibility
+
+**Date:** 2026-11-15. **Branch:** `integration/shared-product`. **Starting revision:** `d07a108`. **Commit:** Pending. **Plan:** [C03](../integration_plan/03_shared_foundation_reconciliation.md#int-base-c03--shared-primitives-assets-and-test-compatibility).
+
+- Copied the complete `apps/mobile/assets/{auth,intro,onboarding}` trees from Anisha’s landing-page `b6d61df5c8a2c1eacbe28a38e06b84b5bcd368d1`. The original SVGs, PNGs and five manifests retain their source frame/node IDs and recorded hashes. The new `apps/mobile/assets/integration-assets.json` pins exact paths and SHA-256 hashes for all 59 files, including originals whose hashes were absent from the source manifests. No preexisting design assets changed.
+- Extended `scripts/check-design-assets.mjs` to verify the imported bytes and exact path casing alongside the original asset checks. The existing production export check still verifies the current navigation artwork.
+- Added the 38 display assets to the existing isolated gallery in `apps/mobile/dev/ui/asset-gallery.tsx`. The gallery excludes full-frame and vector-source originals. The product bundle gets the artwork through real screen imports when those routes are ported.
+- Both branches use the same four registered Space Grotesk weights. Keep the shared Button press guard, controlled Field behavior, Screen safe areas and local dark theme. Auth and onboarding retain their keyboard, focus and error ownership when ported. Use existing `DesignArtwork`/`expo-image` for local artwork where it reproduces the source, and the available PNG renders for Auth/intro/plan art. Landing-page's SVG XML helper and test mocks were reviewed as source references. Prefer static SVG imports and the shared safe-area mock in the receiving screens. Signed-device decoding and layout remain acceptance checks.
+
+### Verification
+
+- All 59 imported paths/hash checks and all 71 existing asset checks passed. Independently compared the hashes in each of the five source manifests.
+- The isolated Vite build contains all 38 display assets byte-for-byte. The production web export retained all eight navigation originals and passed isolation across 38 app JavaScript/HTML files.
+- Typecheck passed. Lint passed with the same four existing warnings. No app route, native project, dependency or test mock changed.
+- All 50 targeted Jest checks passed for Button, Field, Screen, RouteButton and Settings across the two configured projects.
+
+Next, **INT-BASE-C04** defines how the root layout, auth session, onboarding and native adapters connect. Once those interfaces are agreed, begin the iOS source and signing review alongside Android work. Native integration and signed-device acceptance remain later steps.

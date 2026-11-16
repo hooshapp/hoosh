@@ -1,6 +1,14 @@
 import { navigationAssets } from '@/design/navigation-assets';
 import { mascotAssets, mascotBounds } from '@/design/mascot-assets';
 
+const integrationArtwork = import.meta.glob<string>(
+  [
+    '../../assets/{auth,intro,onboarding}/**/*.{png,svg}',
+    '!../../assets/**/originals/**',
+  ],
+  { eager: true, query: '?url', import: 'default' },
+);
+
 /** A source inventory, not a product screen or an inferred health state. */
 export function AssetGallery() {
   return (
@@ -36,6 +44,18 @@ export function AssetGallery() {
             <figcaption>{name} — unscored artwork</figcaption>
           </figure>
         ))}
+      </div>
+      <h3>Sign-in and onboarding artwork</h3>
+      <div className="asset-grid">
+        {Object.entries(integrationArtwork).map(([path, source]) => {
+          const label = path.replace('../../assets/', '');
+          return (
+            <figure key={path}>
+              <img src={source} alt="" />
+              <figcaption>{label}</figcaption>
+            </figure>
+          );
+        })}
       </div>
     </section>
   );

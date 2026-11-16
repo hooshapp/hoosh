@@ -1,0 +1,52 @@
+{
+  "figma_file": "ukmD2ZidJ9UR2XxUkvdPoJ",
+  "frames": [
+    "1:2",
+    "6:34",
+    "6:71"
+  ],
+  "assets": [
+    {
+      "render": "arrow-white.png",
+      "vector_source": "originals/arrow-white.svg",
+      "figma_node": "6:18",
+      "render_dimensions": [
+        52,
+        52
+      ],
+      "design_slot": [
+        52,
+        52
+      ],
+      "sha256": "f6c517b1fa459339ec56bb484cfdd99f66a4b7dabf00206b65eaeda924ce926e"
+    },
+    {
+      "render": "arrow-muted.png",
+      "vector_source": "originals/arrow-muted.svg",
+      "figma_node": "6:53",
+      "render_dimensions": [
+        52,
+        52
+      ],
+      "design_slot": [
+        52,
+        52
+      ],
+      "sha256": "6e6180c0e3fbb5a9ec1075112f3b7bf6d21c4683189109708e96b666b38695e7"
+    },
+    {
+      "render": "dinosaur.png",
+      "vector_source": "originals/dinosaur.svg",
+      "figma_node": "39:16",
+      "render_dimensions": [
+        151,
+        136
+      ],
+      "design_slot": [
+        151,
+        136
+      ],
+      "sha256": "97bafd2041e016c42ea7f6d77cc606ca86d38cd32bbc2ab2a924e2888b0023bb"
+    }
+  ]
+}

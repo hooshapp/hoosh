@@ -1,0 +1,39 @@
+{
+  "figmaFile": "ukmD2ZidJ9UR2XxUkvdPoJ",
+  "frames": {
+    "questions-plan-loading": "52:690",
+    "questions-plan": "50:87",
+    "questions-congratulations": "50:89"
+  },
+  "source": "Original frame SVG exports from Figma, November 2, 2026. Artwork crops preserve source vectors; PNG renders are 3x. UI text and controls are React Native components.",
+  "assets": [
+    {
+      "path": "originals/questions-congratulations.svg",
+      "sha256": "55868c62ee43ef8409019b1125e90e60fa0d831c13f0a6c99923b4d4227ac873"
+    },
+    {
+      "path": "originals/questions-plan-loading.svg",
+      "sha256": "2f08a6e9fbe7533e8d7efa4aa360918b52c9870c63cb3564736d752ffa6cb157"
+    },
+    {
+      "path": "originals/questions-plan.svg",
+      "sha256": "a2deef8fd61057ce41828472eef56232be0b50412ee7c62cc2a411920824d6a9"
+    },
+    {
+      "path": "questions-congratulations-art.png",
+      "sha256": "3bbb314ab6263aa55f4e9766159e28e5c900440d70ba4b6f0e5f0606e8e43dc7"
+    },
+    {
+      "path": "questions-congratulations-art.svg",
+      "sha256": "104f4fb99213dc095d627dcc6449d93d2b178bd718578682bbc6653fdaa9198e"
+    },
+    {
+      "path": "questions-plan-loading-art.png",
+      "sha256": "36c899d11c4700f01362a43c3b107c5f03304e716ae9e98799f296b7f87b3418"
+    },
+    {
+      "path": "questions-plan-loading-art.svg",
+      "sha256": "45e3d1cd501543ee9f51afefa3e7f72c48816dd450810dc80ebabdc47bcbc4f4"
+    }
+  ]
+}
