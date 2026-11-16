@@ -6,7 +6,7 @@
     "@disconnect/contracts": "*",
     "@expo-google-fonts/space-grotesk": "^0.4.1",
     "@expo/ui": "~58.0.25",
-    "@supabase/supabase-js": "^2.119.0",
+    "@supabase/supabase-js": "2.119.0",
     "@tanstack/react-query": "^5.105.0",
     "expo": "~58.0.21",
     "expo-constants": "~58.0.14",

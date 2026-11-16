@@ -1,6 +1,6 @@
 # Plan 03 — Shared foundation reconciliation
 
-**Checkpoint:** INT-BASE-C01 inventory and automated checks complete. **Next part:** INT-BASE-C02. **Owner / reviewer:** Ishmum / Anisha per the shared plan. Anisha requested starting the integration. **Branch:** `integration/shared-product`. **Commit:** Pending.
+**Checkpoint:** INT-BASE-C02 checks complete. **Next part:** INT-BASE-C03. **Owner / reviewer:** Ishmum / Anisha per the shared plan. Anisha requested starting the integration. **Branch:** `integration/shared-product`. **C01 commit:** `59e4da9`. **C02 commit:** Pending.
 
 **Read on resume:** [execution order](../integration_plan/README.md), [foundation plan](../integration_plan/03_shared_foundation_reconciliation.md), and [notes workflow](README.md). Update this checkpoint and the owning ledger after each increment.
 
@@ -22,7 +22,7 @@ Created a separate worktree from Ishmum’s implementation tip and brought over 
 
 ### Validation and next action
 
-The source checkout remains on `landing-page` with its working edits. Baseline checks run in the integration worktree with its own dependencies. The [commit inventory](artifacts/base-c01-commit-inventory.txt) records the divergence (`<` is landing-page and `>` is the retained baseline).
+At C01, the source checkout was on `landing-page` with working edits. The integration branch now resides in the main repository checkout. Baseline checks run in the integration worktree with its own dependencies. The [commit inventory](artifacts/base-c01-commit-inventory.txt) records the divergence (`<` is landing-page and `>` is the retained baseline).
 
 | Check | Result |
 |---|---|
@@ -34,4 +34,21 @@ The source checkout remains on `landing-page` with its working edits. Baseline c
 
 Interactive startup, connected sign-in, live database checks and signed-device runs remain unverified in this checkout.
 
-Start **INT-BASE-C02** by comparing manifests, lockfile and Expo/native config. Preserve the base Android application ID and protection settings, and run both branches' auth regressions against the proposed shared Supabase SDK before choosing a version. The retained base resolves Supabase 2.119.0 and React Native 0.88.1. Landing-page uses Supabase 2.118.0 and React Native 0.88.0.
+## INT-BASE-C02 — Dependency and configuration reconciliation
+
+Fetched landing-page at `b6d61df5c8a2c1eacbe28a38e06b84b5bcd368d1` for this increment. The delta since the C01 inventory adds the suggested-plan implementation and related notes. Use that committed revision as the starting source when the onboarding port begins.
+
+- Pinned the retained Supabase SDK to 2.119.0 after the landing-page qualification run. The lockfile changes only the workspace dependency declaration. Retained Expo ~58.0.21, React 19.3.0 and React Native 0.88.1, with the base Query, Secure Store, Image, Network and build/test tooling.
+- Both app configs already use `disconnect-dev`. Retained the Android development application ID, backup rules and blocked permission declarations. The reviewed landing-page callback forms are `disconnect-dev://auth/callback`, `http://localhost:8081/auth/callback` and `http://localhost:8090/auth/callback`. Apply route-specific callback handling in AUTH-C03.
+- Documented the three public provider switches with false defaults in the example env. Add native Apple, browser, crypto or other dependencies with the corresponding imports and tests in the feature increments. The Apple entitlement and platform signing configuration are part of the iOS handoff.
+
+### Checks
+
+- Regenerated the root lockfile and ran a clean install with the pinned Node 24.20.0 and npm 11.19.0.
+- Ran seven landing-page auth suites from an isolated source snapshot against the integration dependency tree. All 48 tests passed, including the real-SDK local logout and late refresh test, callback correlation and storage.
+- Integration typecheck passed after regenerating the ignored Expo Router declarations from the current branch with `expo customize tsconfig.json`. The original workspace still had generated route types from landing-page.
+- All 553 integration mobile unit tests and all six Android standalone configuration guard tests passed. `npm ls` reported only the selected React, React Native, Supabase JS and Supabase Auth versions.
+- Android `:app:processDebugMainManifest` and `:hoosh-usage:compileDebugKotlin` passed with the existing deprecation and manifest warnings. Inspected the merged debug manifest for application ID, Usage Access, overlay exclusion, Secure Store backups, network policy and URL scheme. Confirmed the corresponding public Expo configuration.
+- Device permission behavior and hosted provider sign-in remain part of the later acceptance steps.
+
+Next, **INT-BASE-C03** brings over the original Auth and onboarding assets and reconciles the shared UI primitives and test setup.

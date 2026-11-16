@@ -39,9 +39,9 @@ functionality was intentionally removed.
 
 | Part | Intended commit | State / prerequisite |
 |---|---|---|
-| INT-BASE-C01 | `chore(integration): establish audited source baseline` | Inventory and automated checks complete; interactive startup and commit pending. [Baseline checkpoint](../integration_notes/plan_03_shared_foundation_reconciliation_notes.md) |
-| INT-BASE-C02 | `build(mobile): reconcile integration dependencies and config` | Next; C01 |
-| INT-BASE-C03 | `feat(mobile): reconcile shared onboarding and auth assets` | Planned; C02 |
+| INT-BASE-C01 | `chore(integration): establish audited source baseline` | Inventory and automated checks recorded in `59e4da9`; interactive startup pending. [Baseline checkpoint](../integration_notes/plan_03_shared_foundation_reconciliation_notes.md) |
+| INT-BASE-C02 | `build(mobile): reconcile integration dependencies and config` | Checks passed; commit pending. [C02 checks](../integration_notes/plan_03_shared_foundation_reconciliation_notes.md#int-base-c02--dependency-and-configuration-reconciliation) |
+| INT-BASE-C03 | `feat(mobile): reconcile shared onboarding and auth assets` | Next; C02 |
 | INT-BASE-C04 | `refactor(mobile): establish integration composition seams` | Planned; C02/C03 |
 | INT-BASE-C05 | `test(mobile): protect existing features during integration` | Planned; C04 |
 | INT-BASE-C06 | `chore(integration): verify shared foundation handoff` | Planned; C01–C05 |
@@ -75,8 +75,8 @@ work in a worktree if necessary and record its relationship to the base.
 ### INT-BASE-C02 — Dependency, build and configuration reconciliation
 
 The inspected base uses Expo `~58.0.21`, RN `0.88.1`, React `19.3.0` and Supabase
-`^2.119.0`; teammate uses the same Expo/React line, RN `0.88.0` and pinned Supabase
-`2.118.0`. These are observations, not permission to upgrade everything.
+`^2.119.0` before reconciliation. Landing-page uses the same Expo/React line,
+RN `0.88.0` and pinned Supabase `2.118.0`.
 
 1. Keep the base's compatible RN/toolchain versions initially. Choose one exact
    Supabase SDK release after running both branches' real-SDK session/logout/link
