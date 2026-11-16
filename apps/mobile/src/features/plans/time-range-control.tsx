@@ -3,10 +3,8 @@ import { PanResponder, Platform, StyleSheet, View } from 'react-native';
 import { DesignArtwork } from '@/components/ui/design-artwork';
 import { planeditorAssets } from '@/design/planeditor-assets';
 import { colors } from '@/design/tokens';
-import { formatTime } from '@/features/editors/draft-utils';
-export function minutesTime(value: number): string {
-  return `${String(Math.floor(value / 60)).padStart(2, '0')}:${String(value % 60).padStart(2, '0')}`;
-}
+import { formatTime, minutesTime } from '@/features/editors/draft-utils';
+export { minutesTime } from '../editors/draft-utils';
 /** Two independent accessible/keyboard/drag controls. No installation or scheduling engine. */
 export function TimeRangeControl({
   start,

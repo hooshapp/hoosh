@@ -11,6 +11,9 @@ import { readSettings } from '@/features/settings/settings-api';
 import { useAccountData, useAccountQuery } from '@/infrastructure/query/account-data-provider';
 
 import type { OnboardingProgress, OnboardingProgressRead } from './progress-repository';
+import { PlanSummary, SetupDraft } from './setup-draft';
+import { reviewSavedSettings } from './setup-model';
+import { activityPayload, activitySummary } from '../preferences/activity-model';
 import { setupRepository } from './progress-storage';
 
 export function SetupScreen() {
@@ -69,6 +72,17 @@ export function SetupScreen() {
     void identity.refetch();
     void settings.refetch();
   };
+  const progress = result?.status === 'found' ? result.progress : null;
+  if (progress && (status === 'draft' || status === 'ready_to_finish') &&
+    (progress.step === 'preferences' || progress.step === 'plan' ||
+      (progress.step === 'review' && progress.settingsRevision === undefined))) {
+    return (
+      <SetupDraft key={progress.step} progress={progress} busy={busy} failed={failed}
+        onDiscard={() => { void update(null); }} onSave={next => { void update(next); }} onLeave={() => router.replace('/(tabs)')} />
+    );
+  }
+
+  const saved = existing && status === 'ready_to_finish' ? reviewSavedSettings(existing) : null;
   const copy = {
     loading: 'Checking your account and saved setup…',
     unavailable: 'Your account or saved settings could not be verified. Try again when connected.',
@@ -86,7 +100,13 @@ export function SetupScreen() {
     <Screen title="Set up Hoosh">
       <Text accessibilityLiveRegion="polite" style={{ color: theme.foreground }}>{copy}</Text>
       {failed && <Text accessibilityRole="alert" style={{ color: theme.error }}>Setup could not be saved. Try again.</Text>}
-      {existing && (status === 'not_started' || status === 'ready_to_finish') && (
+      {saved && existing && (
+        <>
+          <Text style={{ color: theme.foreground }}>{activitySummary(activityPayload(saved.activities)) ?? 'No saved activities'}</Text>
+          <PlanSummary plan={existing.plan_draft} />
+        </>
+      )}
+      {existing && status === 'not_started' && (
         <Text style={{ color: theme.foreground }}>
           Saved activities: {existing.activities.selected_activity_ids.length}
           {existing.plan_draft ? '. A schedule draft is saved.' : '. No schedule draft is saved.'}

@@ -1,6 +1,6 @@
 # Plan 02 — Onboarding into the shared app
 
-**Checkpoint:** INT-ONB-C01 local checks complete. **Next:** INT-ONB-C02. **Branch:** `integration/shared-product`. **Starting revision:** `b5b8c10` (AUTH-C06). **Commit:** Pending.
+**Checkpoint:** INT-ONB-C02 local checks complete. **Next:** INT-ONB-C03. **Branch:** `integration/shared-product`. **Starting revision:** `c01788e` (ONB-C01). **Commit:** Pending.
 
 ## INT-ONB-C01 — Introduction and scoped setup progress
 
@@ -14,3 +14,14 @@ Intro source: landing-page `b6d61df5c8a2c1eacbe28a38e06b84b5bcd368d1`.
 ### Verification
 
 Typecheck, 632 unit tests and 76 targeted component tests passed. Lint reported the four existing warnings. Chrome verified the reference artwork positions at 393 × 852, five light scrolls into the next page, completion into sign-up and the returning-launch path. The normal-root fixture verified resume without a redirect loop and preserving existing server settings and installed protection. Repository tests cover project/user isolation, stalled/unreadable/incompatible storage and write retirement. Android debug assembly and the production web export passed. No physical-device or hosted settings-database acceptance was performed.
+
+## INT-ONB-C02 — Questionnaire and plan review
+
+- Wired the hobbies, starter plan, manual schedule and draft review into the scoped setup route. Visual references were Figma `50:83`, `50:87` and `10556:120`. The manual setup artwork uses original Figma SVGs. The screen progression reflects the current flow, and the plan cards show actual schedule values in place of the old example apps and savings estimates.
+- **Engineering decision:** use the reviewed manual defaults for both paths: Monday–Friday, 09:00–22:00 in the explicit device IANA zone, two 15-minute sessions per app. The manual path edits the same draft. Incomplete schedules remain drafts. There is no AI or usage-derived recommendation.
+- Activities use the shared IDs and custom text is validated against the shared API boundary while preserving raw input for canonicalization on save. Unrecognized IDs, multiple custom values and invalid schedules require correction. Existing server values are displayed without overwriting them. The setup draft is local and resumable at the reviewed step.
+- Age/gender collection is deferred under PD-17. The app selection row shows that selection is unavailable during this step. Server save and revision recovery belong to C03, real platform permissions and selection to C04, and explicit protection Apply to C05.
+
+### Verification
+
+TypeScript, 640 unit tests, 58 routed component tests, the production web export and asset checks passed. Lint reported four existing warnings. Chrome at 393 × 852, using a fixture account and API, verified selecting hobbies, entering custom text, editing manual days, reviewing the plan, reloading, and rendering the Figma artwork. The component tests covered both paths and preserving existing settings without a PATCH or native Apply. No physical-device or live database verification was performed in this checkpoint.

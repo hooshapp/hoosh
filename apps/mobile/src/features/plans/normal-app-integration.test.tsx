@@ -875,7 +875,8 @@ test('setup reviews existing settings without replacing them and records local c
     await fireEvent.press(screen.getByRole('link', { name: 'Set up Hoosh' }));
     await screen.findByRole('button', { name: 'Review saved settings' });
     await press('Review saved settings');
-    await screen.findByText(/Saved activities: 1/);
+    await screen.findByText('Reading');
+    await screen.findByText('Active Hours');
     await press('Keep my settings');
     await waitFor(() => expect(screen).toHavePathname('/'));
     expect(f.request.mock.calls.some(([, options]) => options.method === 'PATCH')).toBe(false);
@@ -892,13 +893,44 @@ test('an incomplete local setup resumes once on Home and can be left without a l
   await AsyncStorage.setItem(`hoosh.setup.fixture.${A}`, JSON.stringify({ version: 1, step: 'preferences' }));
   try {
     await renderRouter(routes);
-    await screen.findByText('Your setup progress is saved on this device. You can leave and return later.');
+    await screen.findByText('What do you want to do instead?');
     expect(screen).toHavePathname('/welcome');
-    await press('Continue to Home');
+    await press('Back to Home');
     await waitFor(() => expect(screen).toHavePathname('/'));
     expect(screen.queryByText('Set up Hoosh')).toBeNull();
     expect(f.port.interventionClaimOwner).not.toHaveBeenCalled();
     expect(f.request.mock.calls.some(([, options]) => options.method === 'PATCH')).toBe(false);
+  } finally {
+    await AsyncStorage.clear();
+  }
+});
+
+test.each([false, true])('setup reviews a local plan via the manual path (%s)', async manual => {
+  const f = fixture();
+  const key = `hoosh.setup.fixture.${A}`;
+  await AsyncStorage.setItem(key, JSON.stringify({ version: 1, step: 'preferences' }));
+  try {
+    await renderRouter(routes, { initialUrl: '/welcome' });
+    const hobby = await screen.findByRole('checkbox', { name: 'Gym' });
+    await fireEvent.press(hobby);
+    await fireEvent.changeText(screen.getByLabelText('Custom activity'), '  Sketching 🦖  ');
+    await press('Next →');
+    await screen.findByRole('header', { name: 'We created a plan for you' });
+    if (manual) {
+      await press('Set up on my own');
+      await press('Active Days');
+      await fireEvent.press(screen.getByRole('checkbox', { name: 'Sunday' }));
+      await press('Review days');
+    }
+    await press(manual ? 'Review my plan' : 'Go with suggestion');
+    await screen.findByRole('header', { name: 'Review your draft' });
+    expect(JSON.parse((await AsyncStorage.getItem(key))!)).toMatchObject({
+      step: 'review',
+      activities: { selected_activity_ids: ['gym'], custom_text: '  Sketching 🦖  ' },
+      planDraft: { weekdays: manual ? [0, 1, 2, 3, 4, 6] : [0, 1, 2, 3, 4], session_count: 2, session_minutes: 15 },
+    });
+    expect(f.request.mock.calls.some(([, options]) => options.method === 'PATCH')).toBe(false);
+    expect(f.port.scheduleApply).not.toHaveBeenCalled();
   } finally {
     await AsyncStorage.clear();
   }

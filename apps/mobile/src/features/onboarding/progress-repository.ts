@@ -1,7 +1,9 @@
 import type { PlanDraft, SettingsPatch } from '@disconnect/contracts';
 
 import { ApiError, isRecord } from '../../infrastructure/api/errors';
-import { decodeActivityPreferences, decodePlanDraft } from '../settings/settings-api';
+import { decodePlanDraft } from '../settings/settings-api';
+import { isActivityId } from '../preferences/activity-model';
+import { setupActivities } from './setup-model';
 import type { AccountScope } from '@/infrastructure/query/account-scope';
 
 /** Setup progress is local to this installation and verified account. It does
@@ -52,6 +54,18 @@ const steps = new Set(['preferences', 'plan', 'permission', 'review', 'complete'
 const revision = (value: unknown): value is number =>
   typeof value === 'number' && Number.isInteger(value) && value > 0 && value <= 2147483647;
 
+function decodeLocalActivities(value: unknown): SettingsPatch['activities'] {
+  if (value === null) return null;
+  if (!isRecord(value) || !Array.isArray(value.selected_activity_ids) ||
+    !value.selected_activity_ids.every(isActivityId) ||
+    (value.custom_text !== null && typeof value.custom_text !== 'string')) {
+    throw new ApiError('invalid_response');
+  }
+  const result = setupActivities(value.selected_activity_ids, value.custom_text === null ? [] : [value.custom_text]);
+  if (result.error !== undefined) throw new ApiError('invalid_response');
+  return result.value;
+}
+
 function decodeProgress(raw: string | null): OnboardingProgressRead {
   if (raw === null) return { status: 'not_started' };
   try {
@@ -68,7 +82,7 @@ function decodeProgress(raw: string | null): OnboardingProgressRead {
       version: 1,
       step: value.step as OnboardingProgress['step'],
       ...(value.activities !== undefined ? {
-        activities: value.activities === null ? null : decodeActivityPreferences(value.activities),
+        activities: decodeLocalActivities(value.activities),
       } : {}),
       ...(value.planDraft !== undefined ? { planDraft: decodePlanDraft(value.planDraft) } : {}),
       ...(value.profileRevision !== undefined ? { profileRevision: value.profileRevision } : {}),
