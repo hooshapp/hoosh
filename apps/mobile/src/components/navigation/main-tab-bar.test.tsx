@@ -1,3 +1,4 @@
+import type { AuthSnapshot } from '@disconnect/contracts';
 import { act, fireEvent, screen, userEvent } from '@testing-library/react-native';
 import { router, Stack, Tabs } from 'expo-router';
 import { renderRouter } from 'expo-router/testing-library';
@@ -13,9 +14,19 @@ import Settings from '@/app/(tabs)/settings';
 import SignIn from '@/app/(auth)/sign-in';
 import { Screen } from '@/components/ui/screen';
 import { Field } from '@/components/ui/field';
+import { AppRuntimeContext } from '@/features/account/app-runtime-context';
+import type { AppRuntime } from '@/infrastructure/auth/runtime';
 
 import { FloatingTabBarProvider } from './floating-tab-bar-metrics';
 import { MainTabBar } from './main-tab-bar';
+
+const signedOut: AuthSnapshot = { status: 'signed_out', sessionGeneration: 0 };
+const fixtureRuntime = {
+  auth: {
+    getSnapshot: () => signedOut,
+    subscribe: () => () => undefined,
+  },
+} as unknown as AppRuntime;
 
 function TestRoot({
   insets = { top: 44, right: 0, bottom: 34, left: 0 },
@@ -28,7 +39,9 @@ function TestRoot({
         frame: { x: 0, y: 0, width: 393, height: 852 },
         insets,
       }}>
-      <Stack screenOptions={{ headerShown: false }} />
+      <AppRuntimeContext.Provider value={fixtureRuntime}>
+        <Stack screenOptions={{ headerShown: false }} />
+      </AppRuntimeContext.Provider>
     </SafeAreaProvider>
   );
 }
@@ -103,7 +116,7 @@ describe('Main navigation', () => {
     await renderRouter(actualRoutes, { initialUrl: '/settings' });
     expect(screen.queryByRole('link', { name: 'View sign-in screen' })).toBeNull();
     await act(() => router.push('/(auth)/sign-in'));
-    expect(await screen.findByRole('header', { name: 'Welcome back' })).toBeVisible();
+    expect(await screen.findByRole('header', { name: 'Hoosh login' })).toBeVisible();
     expect(screen.queryByRole('tab', { name: 'Settings' })).not.toBeOnTheScreen();
     await act(() => router.back());
     expect(screen.getByRole('tab', { name: 'Settings' })).toBeSelected();

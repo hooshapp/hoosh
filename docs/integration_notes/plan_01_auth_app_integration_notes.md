@@ -1,6 +1,6 @@
 # Plan 01 — Auth into the actual app
 
-**Checkpoint:** INT-AUTH-C05 local checks complete. **Next:** INT-AUTH-C06 and live account acceptance. **Owner / reviewer:** Anisha / Ishmum. **Branch:** `integration/shared-product`. **Base:** `6167e364e605728a18556af503469dcfb6d9b217`. **C01 commit:** `0dfb490`. **C02 commit:** `4f07e6d`. **C03 commit:** `83815eb`. **C04 commit:** `7ac27c6`. **C05 commit:** Pending.
+**Checkpoint:** INT-AUTH-C06 local checks complete. **Next:** INT-ONB-C01. Live auth acceptance remains open. **Owner / reviewer:** Anisha / Ishmum. **Branch:** `integration/shared-product`. **Base:** `6167e364e605728a18556af503469dcfb6d9b217`. **C01 commit:** `0dfb490`. **C02 commit:** `4f07e6d`. **C03 commit:** `83815eb`. **C04 commit:** `7ac27c6`. **C05 commit:** `ae49cd8`. **C06 commit:** Pending.
 
 ## INT-AUTH-C01 — Consolidate the application session authority
 
@@ -84,3 +84,20 @@ Manual walkthrough: sign in with an existing development test account, confirm H
 ### Verification
 
 Typecheck, lint, web export, 613 unit tests and 84 targeted profile/root/native-storage tests passed. Lint has four existing warnings. The tests cover reviewed adoption with the current profile revision, explicit discard, uncertain writes, expired names and account scope rejection, exact legacy cleanup and retry, and malformed pending metadata. Keychain/backup/reinstall checks on physical devices and the hosted account walkthrough remain for later acceptance.
+
+## INT-AUTH-C06 — Integrated verification and handoff
+
+**Starting revision:** `ae49cd8cc4797023688339266ea6837b7107c5de` (AUTH-C05). **Commit:** Pending. Supabase JS and Auth SDK 2.119.0, Expo 58.0.21, React Native 0.88.1. Local checks used Node 24.20.0 and npm 11.19.0.
+
+- The first full run exposed a stale tab-navigation fixture. Updated `components/navigation/main-tab-bar.test.tsx` to supply a public Auth runtime and assert the real Hoosh heading while retaining the navigation/back coverage.
+- Used Chrome and an isolated loopback Expo server with intercepted Supabase and FastAPI responses. Exercised email signup confirmation in the same tab after reload, replay rejection and clean callback URL, matching `/v1/me` identity, explicit signup-name adoption at the existing profile revision, a confirmed save, session/profile restore, local sign-out and protected deep-link rejection. Password recovery updated the password and cleared the local session. Simulated Apple and Google browser flows both reached Home. The isolated fixture server was stopped after testing.
+- The live development preview remains at `http://localhost:8090/sign-in`. Its local API responds at `http://127.0.0.1:8000/healthz`. A database connection was not configured here. Apple and Google remain disabled in that preview. No live account credentials, real email, real provider sign-in, database profile save, or signed physical-device behavior was exercised.
+- Development callbacks remain `http://localhost:8081/auth/callback`, `http://localhost:8090/auth/callback`, and `disconnect-dev://auth/callback`, with a pending flow match required. C06 local evidence does not supersede the signed iOS host, Android device, mail delivery, provider cancellation/restart and storage/backup acceptance gates.
+
+### Local evidence
+
+The final `npm run check` passed with 613 unit tests, 859 component tests (two skipped), six Android standalone guards and 682 default API tests (287 deselected). Generated OpenAPI and HTTP types matched. Production web export passed preview isolation and artwork integrity. Android and iOS JavaScript bundles exported successfully. The provider fixture confirmed local logout and private-route removal. Remote revocation failure and its local-clear reporting are covered by the deterministic suite.
+
+### Handoff
+
+Plan 02 consumes the existing `AppAuthProducer` and account scope, the link hold in `AppSessionBoundary`, `SignupNameHandoff` for verified review and save, and the account generation/teardown boundary. Add onboarding routing only after the auth flow is settled. Keep the existing private app available until setup has an account-scoped result. VERIFY-C02 should record the real-account walkthrough, managed API/profile evidence, and installed-device callback behavior separately from browser fixtures.

@@ -1,6 +1,6 @@
 # Integration 01 — Auth into the actual application
 
-**Lead:** Anisha. **Consumer/native/API review:** Ishmum. **Status:** C05 local checks complete.
+**Lead:** Anisha. **Consumer/native/API review:** Ishmum. **Status:** C06 local checks complete; live acceptance pending.
 **Prerequisite:** INT-BASE-C01–C06. **Notes when started:**
 `docs/integration_notes/plan_01_auth_app_integration_notes.md`.
 
@@ -57,8 +57,8 @@ Primary paths: `apps/mobile/src/features/auth/`, `src/infrastructure/auth/`,
 | INT-AUTH-C02 | `feat(auth): connect account forms and public routes` | Checks passed in `4f07e6d`. [C02 evidence](../integration_notes/plan_01_auth_app_integration_notes.md#int-auth-c02--account-forms-and-public-navigation) |
 | INT-AUTH-C03 | `feat(auth): integrate verified callback and recovery flows` | Local and fixture checks passed in `83815eb`; live acceptance pending. [C03 evidence](../integration_notes/plan_01_auth_app_integration_notes.md#int-auth-c03--verified-callback-password-recovery-and-providers) |
 | INT-AUTH-C04 | `feat(auth): compose guarded account and native lifecycles` | Local checks passed in `7ac27c6`; user walkthrough unrecorded. [C04 evidence](../integration_notes/plan_01_auth_app_integration_notes.md#int-auth-c04--normal-root-account-cleanup-and-retained-protection) |
-| INT-AUTH-C05 | `feat(auth): reconcile profile drafts and session upgrades` | Local checks passed; commit pending. [C05 evidence](../integration_notes/plan_01_auth_app_integration_notes.md#int-auth-c05--signup-name-and-session-upgrades) |
-| INT-AUTH-C06 | `test(auth): verify integrated account and provider journeys` | Next; C01–C05; live resources for real evidence |
+| INT-AUTH-C05 | `feat(auth): reconcile profile drafts and session upgrades` | Local checks passed in `ae49cd8`. [C05 evidence](../integration_notes/plan_01_auth_app_integration_notes.md#int-auth-c05--signup-name-and-session-upgrades) |
+| INT-AUTH-C06 | `test(auth): verify integrated account and provider journeys` | Local checks passed; live acceptance and commit pending. [C06 evidence](../integration_notes/plan_01_auth_app_integration_notes.md#int-auth-c06--integrated-verification-and-handoff) |
 
 ### INT-AUTH-C01 — One SDK/controller and compatible session behavior
 
