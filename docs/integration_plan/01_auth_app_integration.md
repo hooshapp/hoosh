@@ -1,6 +1,6 @@
 # Integration 01 — Auth into the actual application
 
-**Lead:** Anisha. **Consumer/native/API review:** Ishmum. **Status:** C03 local checks complete.
+**Lead:** Anisha. **Consumer/native/API review:** Ishmum. **Status:** C04 local checks complete.
 **Prerequisite:** INT-BASE-C01–C06. **Notes when started:**
 `docs/integration_notes/plan_01_auth_app_integration_notes.md`.
 
@@ -55,9 +55,9 @@ Primary paths: `apps/mobile/src/features/auth/`, `src/infrastructure/auth/`,
 |---|---|---|
 | INT-AUTH-C01 | `refactor(auth): consolidate the application session authority` | Checks passed in `0dfb490`. [C01 evidence](../integration_notes/plan_01_auth_app_integration_notes.md) |
 | INT-AUTH-C02 | `feat(auth): connect account forms and public routes` | Checks passed in `4f07e6d`. [C02 evidence](../integration_notes/plan_01_auth_app_integration_notes.md#int-auth-c02--account-forms-and-public-navigation) |
-| INT-AUTH-C03 | `feat(auth): integrate verified callback and recovery flows` | Local and fixture checks passed; live acceptance pending. [C03 evidence](../integration_notes/plan_01_auth_app_integration_notes.md#int-auth-c03--verified-callback-password-recovery-and-providers) |
-| INT-AUTH-C04 | `feat(auth): compose guarded account and native lifecycles` | Next; C01–C03 |
-| INT-AUTH-C05 | `feat(auth): reconcile profile drafts and session upgrades` | Planned; C04 |
+| INT-AUTH-C03 | `feat(auth): integrate verified callback and recovery flows` | Local and fixture checks passed in `83815eb`; live acceptance pending. [C03 evidence](../integration_notes/plan_01_auth_app_integration_notes.md#int-auth-c03--verified-callback-password-recovery-and-providers) |
+| INT-AUTH-C04 | `feat(auth): compose guarded account and native lifecycles` | Local checks passed; user walkthrough and commit pending. [C04 evidence](../integration_notes/plan_01_auth_app_integration_notes.md#int-auth-c04--normal-root-account-cleanup-and-retained-protection) |
+| INT-AUTH-C05 | `feat(auth): reconcile profile drafts and session upgrades` | Next; C04 |
 | INT-AUTH-C06 | `test(auth): verify integrated account and provider journeys` | Planned; C01–C05; live resources for real evidence |
 
 ### INT-AUTH-C01 — One SDK/controller and compatible session behavior

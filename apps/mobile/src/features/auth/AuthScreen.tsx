@@ -219,6 +219,10 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
               {links.pending?.kind === 'signup' && <Link href="/(auth)/confirm-email" asChild>
                 <Pressable accessibilityRole="link" style={styles.switchLink}><Text style={styles.switchText}>View confirmation instructions</Text></Pressable>
               </Link>}
+              {snapshot.status === 'signed_out' &&
+                runtime.authLinks?.getLastSignOutResult()?.remoteRevocation === 'unconfirmed' && (
+                  <Text accessibilityRole="alert" style={styles.notice}>Signed out on this device. Server sign-out could not be confirmed.</Text>
+                )}
               {notice ? <Text accessibilityRole="alert" accessibilityLiveRegion="polite" style={styles.notice}>{notice}</Text> : null}
               <Link href={signup ? '/(auth)/sign-in' : '/(auth)/sign-up'} replace asChild>
                 <Pressable accessibilityRole="link" disabled={busy} accessibilityState={{ disabled: busy }} style={styles.switchLink}>

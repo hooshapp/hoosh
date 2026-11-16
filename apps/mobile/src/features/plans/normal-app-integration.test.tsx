@@ -1,5 +1,5 @@
 import type { PlanDraft, SettingsResponse } from '@disconnect/contracts';
-import type { Session, SupabaseClient } from '@supabase/supabase-js';
+import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
 import {
   act,
   fireEvent,
@@ -34,7 +34,8 @@ import Quests from '@/app/(tabs)/quests';
 import History from '@/app/(tabs)/history';
 import PreferenceDetail from '@/app/settings/[field]';
 import { INITIAL_LINK_STATE, type LinkState } from '@/features/auth/link-flow';
-import { createAuthSession } from '@/infrastructure/auth/session';
+import { SessionController } from '@/features/auth/session-controller';
+import type { AuthRuntime } from '@/infrastructure/auth/supabase';
 import { createAccountDataController } from '@/infrastructure/query/account-controller';
 import type { AccountApi } from '@/infrastructure/query/account-scope';
 import { ApiError } from '@/infrastructure/api/errors';
@@ -104,20 +105,38 @@ function fixture({
   identityPending = false,
   identityUnavailable = false,
   signedOut = false,
+  recoveryPending = false,
 } = {}) {
-  let stored: Session | null = signedOut ? null : {
-    user: { id: A },
-    access_token: 'synthetic-sdk-credential',
-  } as Session;
-  let emit: ((event: string, session: Session | null) => void) | undefined;
+  let authRevision = 0;
+  const makeSession = (id: string) => ({
+    user: { id },
+    access_token: `fixture.${btoa(JSON.stringify({ session_id: `fixture-${++authRevision}` }))}.signature`,
+    expires_at: Date.now() / 1000 + 3600,
+  }) as Session;
+  let stored: Session | null = signedOut ? null : makeSession(A);
+  let emit: ((event: AuthChangeEvent, session: Session | null) => void) | undefined;
+  const storage = new Map<string, string>();
+  if (recoveryPending) {
+    const flowId = 'fixture-recovery-flow';
+    storage.set('fixture-session.pending', JSON.stringify({
+      id: flowId,
+      phase: 'recovery',
+      kind: 'recovery',
+      email: 'fixture@example.test',
+      createdAt: Date.now(),
+      lastSentAt: Date.now(),
+      sessionKey: `${A}:fixture-${authRevision}`,
+      redirectUrl: `disconnect-dev://auth/callback?flow=${flowId}`,
+    }));
+  }
   const sdk = {
     getSession: jest.fn(async () => ({
       data: { session: stored },
       error: null,
     })),
-    onAuthStateChange: jest.fn((fn) => {
+    onAuthStateChange: jest.fn((fn: typeof emit) => {
       emit = fn;
-      return { data: { subscription: { unsubscribe: () => {} } } };
+      return { data: { subscription: { unsubscribe: () => { emit = undefined; } } } };
     }),
     refreshSession: jest.fn(async () => ({
       data: { session: stored },
@@ -126,13 +145,21 @@ function fixture({
     signOut: jest.fn(async () => {
       stored = null;
       emit?.('SIGNED_OUT', null);
-      return { error: null };
+      return { error: null as unknown };
     }),
     signInWithPassword: jest.fn(),
-    startAutoRefresh: jest.fn(),
-    stopAutoRefresh: jest.fn(),
+    startAutoRefresh: jest.fn(async () => undefined),
+    stopAutoRefresh: jest.fn(async () => undefined),
   };
-  const auth = createAuthSession(sdk as unknown as SupabaseClient['auth']);
+  const auth = new SessionController(() => ({
+    client: { auth: sdk },
+    config: { storageKey: 'fixture-session' },
+    storage: {
+      getItem: async (key: string) => key === 'fixture-session' ? stored?.access_token ?? null : storage.get(key) ?? null,
+      setItem: async (key: string, value: string) => { storage.set(key, value); },
+      removeItem: async (key: string) => { storage.delete(key); },
+    },
+  }) as unknown as AuthRuntime);
   let identityResolve!: () => void;
   const identityWait = identityPending
     ? new Promise<void>((yes) => {
@@ -140,6 +167,7 @@ function fixture({
       })
     : null;
   const settings = new Map<string, SettingsResponse>();
+  let pendingAccountASettings: Promise<void> | null = null;
   const row = (
     id: string,
     value: PlanDraft | null,
@@ -180,7 +208,10 @@ function fixture({
           (value?.revision ?? 0) + 1,
         );
         settings.set(account.user_id, result as SettingsResponse);
-      } else result = settings.get(account.user_id);
+      } else {
+        if (account.user_id === A && pendingAccountASettings) await pendingAccountASettings;
+        result = settings.get(account.user_id);
+      }
     } else if (path === '/v1/profile') result = { profile: null };
     else if (path === '/v1/rewards')
       result = {
@@ -212,7 +243,10 @@ function fixture({
   mockRuntime = {
     auth,
     canClearSession: true,
-    setForeground: (active) => active ? sdk.startAutoRefresh() : sdk.stopAutoRefresh(),
+    setForeground: auth.setForeground,
+    getPrivateAccessHeld: auth.getPrivateAccessHeld,
+    authForms: auth,
+    authLinks: auth,
     api,
     nativeNamespace: 'fixture',
     controller: createAccountDataController(auth, api),
@@ -335,6 +369,8 @@ function fixture({
     settings,
     installation,
     sdk,
+    auth,
+    finishSignOut: () => { stored = null; emit?.('SIGNED_OUT', null); },
     unlockIdentity: () => identityResolve(),
     loseApply: () => {
       loseApply = true;
@@ -345,15 +381,14 @@ function fixture({
     permission: (value: boolean) => {
       permission = value;
     },
+    delayAccountASettings: (work: Promise<void>) => { pendingAccountASettings = work; },
     pendingSelection: (p: Promise<void>) => {
       pendingSelection = p;
     },
     switch: (id = B) => {
-      stored = {
-        user: { id },
-        access_token: 'synthetic-other-credential',
-      } as Session;
+      stored = makeSession(id);
       emit?.('SIGNED_IN', stored);
+      return stored;
     },
   };
 }
@@ -542,6 +577,9 @@ test('account replacement during an opened selection fences the prior Apply and 
   await waitFor(() => expect(f.port.selectionBegin).toHaveBeenCalledTimes(1));
   await act(() => f.switch());
   await act(release);
+  await waitFor(() => expect(screen).toHavePathname('/'));
+  expect(router.canGoBack()).toBe(false);
+  await fireEvent.press(screen.getByRole('tab', { name: 'Settings' }));
   await screen.findByText(
     'Save days, hours, a time zone and session allowances before applying.',
   );
@@ -690,15 +728,14 @@ test('public login retains password bytes and keeps validation errors in the for
   await fireEvent.press(screen.getByRole('button', { name: 'Show password' }));
   expect(screen.getByLabelText('Password').props.secureTextEntry).toBe(false);
   await fireEvent.press(screen.getByRole('button', { name: 'Log in' }));
-  await screen.findByText('Unable to complete this request. Check your connection and try again.');
+  await screen.findByText('Email or password is incorrect.');
   expect(f.sdk.signInWithPassword).toHaveBeenCalledWith({ email: 'demo@example.test', password: ' short ' });
 });
 
 test('a successful login opens the shared Home and keeps auth screens out of its back stack', async () => {
   const f = fixture({ signedOut: true });
   f.sdk.signInWithPassword.mockImplementationOnce(async () => {
-    f.switch(A);
-    return { data: { session: { user: { id: A }, access_token: 'synthetic-test-session' } }, error: null };
+    return { data: { session: f.switch(A) }, error: null };
   });
   await renderRouter(routes, { initialUrl: '/sign-in' });
   await screen.findByRole('header', { name: 'Hoosh login' });
@@ -762,4 +799,67 @@ test('forgot-password is reachable from the public sign-in form', async () => {
   await fireEvent.press(link);
   await screen.findByText('Reset your password');
   expect(screen).toHavePathname('/forgot-password');
+});
+
+
+test('local sign-out detaches private data before failed remote revocation returns', async () => {
+  const f = fixture({ installed: true });
+  let finish!: () => void;
+  const server = new Promise<void>(resolve => { finish = resolve; });
+  f.sdk.signOut.mockImplementationOnce(async () => {
+    await server;
+    f.finishSignOut();
+    return { error: { code: 'fixture-offline' } };
+  });
+  await renderRouter(routes, { initialUrl: '/settings' });
+  await screen.findByRole('button', { name: 'Stop weekly plan' });
+  await press('Sign out of this device');
+  expect(screen.queryByRole('button', { name: 'Stop weekly plan' })).toBeNull();
+  await waitFor(() => expect(f.port.interventionEndOwner).toHaveBeenCalledWith(`fixture:${A}`, false));
+  expect(f.installation().enabled).toBe(true);
+  await act(finish);
+  await screen.findByText('Signed out on this device. Server sign-out could not be confirmed.');
+  expect(await f.auth.getAccessToken()).toBeNull();
+  expect(f.port.interventionCancel).not.toHaveBeenCalled();
+});
+
+test('same-user session replacement clears the private editor and its back history', async () => {
+  const f = fixture();
+  await renderRouter(routes, { initialUrl: '/settings' });
+  await screen.findByText('No weekly plan applied');
+  await act(() => router.push({ pathname: '/settings/[field]', params: { field: 'days' } }));
+  await waitFor(() => expect(screen).toHavePathname('/settings/days'));
+  await act(() => { f.switch(A); });
+  await waitFor(() => expect(screen).toHavePathname('/'));
+  expect(router.canGoBack()).toBe(false);
+  expect(f.port.selectionEndOwner).toHaveBeenCalledWith(`fixture:${A}`, false);
+  expect(f.port.interventionClaimOwner).not.toHaveBeenCalled();
+});
+
+
+test('a restored recovery session cannot open private tabs or acquire a product token', async () => {
+  const f = fixture({ recoveryPending: true, installed: true });
+  await renderRouter(routes, { initialUrl: '/settings' });
+  await screen.findByRole('header', { name: 'Hoosh login' });
+  expect(screen.queryByRole('tab', { name: 'Settings' })).toBeNull();
+  expect(f.auth.canResetPassword()).toBe(true);
+  await expect(f.auth.getAccessToken()).rejects.toMatchObject({ reason: 'not_ready' });
+  expect(f.request).not.toHaveBeenCalled();
+  expect(f.port.interventionOpen).not.toHaveBeenCalled();
+});
+
+
+test('a delayed Settings response from account A cannot populate account B', async () => {
+  const f = fixture();
+  let release!: () => void;
+  f.delayAccountASettings(new Promise<void>(resolve => { release = resolve; }));
+  await renderRouter(routes, { initialUrl: '/settings' });
+  await waitFor(() => expect(f.request).toHaveBeenCalledWith('/v1/settings', expect.anything()));
+  await act(() => { f.switch(); });
+  await waitFor(() => expect(screen).toHavePathname('/'));
+  await fireEvent.press(screen.getByRole('tab', { name: 'Settings' }));
+  await screen.findByText('Save days, hours, a time zone and session allowances before applying.');
+  await act(release);
+  expect(screen.getByRole('button', { name: 'Apply saved plan' })).toBeDisabled();
+  expect(f.port.scheduleApply).not.toHaveBeenCalled();
 });

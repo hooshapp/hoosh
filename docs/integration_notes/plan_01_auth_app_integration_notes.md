@@ -1,6 +1,6 @@
 # Plan 01 — Auth into the actual app
 
-**Checkpoint:** INT-AUTH-C03 local checks complete. **Next:** INT-AUTH-C04. **Owner / reviewer:** Anisha / Ishmum. **Branch:** `integration/shared-product`. **Base:** `6167e364e605728a18556af503469dcfb6d9b217`. **C01 commit:** `0dfb490`. **C02 commit:** `4f07e6d`. **C03 commit:** Pending.
+**Checkpoint:** INT-AUTH-C04 local checks complete. **Next:** user sign-in walkthrough, then INT-AUTH-C05. **Owner / reviewer:** Anisha / Ishmum. **Branch:** `integration/shared-product`. **Base:** `6167e364e605728a18556af503469dcfb6d9b217`. **C01 commit:** `0dfb490`. **C02 commit:** `4f07e6d`. **C03 commit:** `83815eb`. **C04 commit:** Pending.
 
 ## INT-AUTH-C01 — Consolidate the application session authority
 
@@ -51,3 +51,22 @@ AUTH-C02 connects the actual Figma-derived sign-in, sign-up and public routes. R
 - Browser tests used the installed Supabase SDK and intercepted provider responses. Verified cold-reload confirmation in the same tab, replay rejection and clean URL, password update followed by local sign-out, and Apple/Google browser PKCE reaching Home. No real email or provider sign-in occurred.
 - Web export and Android debug assembly passed. Inspected the packaged APK for the exact Android callback filter. Signed native callback handling and real provider/delivery acceptance remain pending. The fixture server was stopped; localhost:8090 remains the visual preview with providers disabled.
 - Next is AUTH-C04, the shared root/account cleanup and normal-session walkthrough.
+
+## INT-AUTH-C04 — Normal root, account cleanup and retained protection
+
+**Starting revision:** `83815eb` (AUTH-C03). **Commit:** Pending.
+
+- Separated the root's session startup/disposal from its public/private composition. The controller's held-access flag keeps incomplete signup, OAuth and recovery state outside account and native providers. Verified normal sessions continue through the existing app until Plan 02 connects onboarding.
+- On account generation replacement, reset the actual app stack to Home, including when the incoming session has the same user ID. The private account scope retires old queries/forms and native leases. A routine token refresh retains the generation and existing navigation.
+- Display remote revocation uncertainty on the public login screen after local sign-out. The controller hides private content at intent and owns local erasure/retry state. Android effect cleanup still expires previous handles and selection drafts without stopping installed rules or claiming a new owner. Independent native Stop remains available in its existing authorized account context.
+- The normal-root fixture now uses the shared SessionController. Root checks cover restored recovery without a product token, late results during account replacement, stale back-stack cleanup, delayed remote revocation and native rules surviving local sign-out. The wider unit suite covers refresh fencing and uncertain mutations.
+
+### Verification
+
+Typecheck, web export, 609 unit tests and 74 targeted root/account/native-boundary tests passed. Lint passed with four existing warnings. Browser smoke confirmed an enabled email sign-in form and a signed-out redirect from `/settings`. The loopback API answered health checks and rejected a request without a session.
+
+### Preview and handoff
+
+The local preview at `http://localhost:8090/sign-in` uses the existing development Supabase project. The loopback API uses its public ES256 signing metadata and accepts CORS from the preview. No database connection was configured for this walkthrough. Apple/Google remain disabled for this preview. No real test user was signed in by the implementation run.
+
+Manual walkthrough: sign in with an existing development test account, confirm Home opens, open Settings, select **Sign out of this device**, then revisit `/settings` and confirm login is shown. Owner-protected Android behavior remains a device test. Proceed with AUTH-C05 after review.

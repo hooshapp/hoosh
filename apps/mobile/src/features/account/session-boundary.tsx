@@ -33,17 +33,6 @@ export function AppSessionBoundary({
   holdPrivate?: boolean;
 }) {
   const [runtime] = useState(() => supplied ?? createAppRuntime());
-  const snapshot = useSyncExternalStore(
-    runtime.auth.subscribe,
-    runtime.auth.getSnapshot,
-    runtime.auth.getSnapshot,
-  );
-  const accessHeld = useSyncExternalStore(
-    runtime.auth.subscribe,
-    runtime.getPrivateAccessHeld ?? privateAccessOpen,
-    privateAccessOpen,
-  );
-  const privateHeld = holdPrivate || accessHeld;
   useEffect(() => {
     void runtime.auth.start();
     const foreground = (state: string | null | undefined) => {
@@ -59,22 +48,46 @@ export function AppSessionBoundary({
   }, [runtime]);
   return (
     <AppRuntimeContext.Provider value={runtime}>
-      <QueryLifecycleBoundary>
-        {snapshot.status === 'signed_in' && !privateHeld ? (
-          <AccountDataProvider controller={runtime.controller}>
-            <NativeOwnerBoundary>
-              <AccountWeeklyPlanBoundary>{children}</AccountWeeklyPlanBoundary>
-            </NativeOwnerBoundary>
-          </AccountDataProvider>
-        ) : publicContent === undefined ? (
-          <SessionAccess
-            runtime={runtime}
-            status={snapshot.status}
-            recoveryHeld={snapshot.status === 'signed_in' && privateHeld}
-          />
-        ) : publicContent}
-      </QueryLifecycleBoundary>
+      <SessionContent runtime={runtime} publicContent={publicContent} holdPrivate={holdPrivate}>
+        {children}
+      </SessionContent>
     </AppRuntimeContext.Provider>
+  );
+}
+
+function SessionContent({ runtime, children, publicContent, holdPrivate }: {
+  runtime: AppRuntime;
+  children: ReactNode;
+  publicContent?: ReactNode;
+  holdPrivate: boolean;
+}) {
+  const snapshot = useSyncExternalStore(
+    runtime.auth.subscribe,
+    runtime.auth.getSnapshot,
+    runtime.auth.getSnapshot,
+  );
+  const accessHeld = useSyncExternalStore(
+    runtime.auth.subscribe,
+    runtime.getPrivateAccessHeld ?? privateAccessOpen,
+    privateAccessOpen,
+  );
+  const privateHeld = holdPrivate || accessHeld;
+  return (
+    <QueryLifecycleBoundary>
+      {snapshot.status === 'signed_in' && !privateHeld ? (
+        <AccountDataProvider controller={runtime.controller}>
+          <NativeOwnerBoundary>
+            <AccountWeeklyPlanBoundary>{children}</AccountWeeklyPlanBoundary>
+          </NativeOwnerBoundary>
+        </AccountDataProvider>
+      ) : publicContent === undefined ? (
+        <SessionAccess
+          runtime={runtime}
+          status={snapshot.status}
+          recoveryHeld={snapshot.status === 'signed_in' && privateHeld}
+        />
+      ) : publicContent}
+    </QueryLifecycleBoundary>
   );
 }
 const privateAccessOpen = () => false;

@@ -5,10 +5,10 @@ import {
   SpaceGrotesk_700Bold,
   useFonts,
 } from '@expo-google-fonts/space-grotesk';
-import { Stack } from 'expo-router';
+import { Stack, useNavigationContainerRef } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
+import { useEffect, useRef, type RefObject } from 'react';
 import { Text, View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -19,6 +19,7 @@ import { usePublicAuth } from '@/features/auth/use-public-auth';
 void SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
 export default function RootLayout() {
+  const previousPrivateGenerationRef = useRef<number | null>(null);
   const [loaded, error] = useFonts({
     SpaceGrotesk_300Light,
     SpaceGrotesk_400Regular,
@@ -42,14 +43,41 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <AppSessionBoundary publicContent={<AppNavigator publicOnly />}>
-        <AppNavigator />
+        <AppNavigator previousPrivateGenerationRef={previousPrivateGenerationRef} />
       </AppSessionBoundary>
     </SafeAreaProvider>
   );
 }
 
-function AppNavigator({ publicOnly = false }: { publicOnly?: boolean }) {
+function AppNavigator({ publicOnly = false, previousPrivateGenerationRef }: {
+  publicOnly?: boolean;
+  previousPrivateGenerationRef?: RefObject<number | null>;
+}) {
   const { snapshot } = usePublicAuth();
+  const navigation = useNavigationContainerRef();
+  const generation = snapshot.sessionGeneration;
+  useEffect(() => {
+    if (!previousPrivateGenerationRef || snapshot.status !== 'signed_in') return;
+    const previous = previousPrivateGenerationRef.current;
+    previousPrivateGenerationRef.current = generation;
+    // The account scope remounts the private navigator. Replace its current
+    // location too, so a new session cannot inherit the previous editor URL.
+    if (previous !== null && previous !== generation) {
+      const root = navigation.getRootState();
+      // Expo keeps the app layout stack inside its outer navigation container.
+      const state = root.routes[root.index]?.state;
+      if (!state || state.stale !== false) return;
+      navigation.dispatch({
+        type: 'RESET',
+        target: state.key,
+        payload: {
+          ...state,
+          index: 0,
+          routes: [{ name: '(tabs)', key: `(tabs)-session-${generation}` }],
+        },
+      });
+    }
+  }, [generation, navigation, previousPrivateGenerationRef, snapshot.status]);
   // Wait for session restoration before a protected deep link can be discarded.
   if (snapshot.status === 'bootstrapping' || snapshot.status === 'signing_out') {
     return <View style={{ flex: 1, backgroundColor: colors.darkCanvas }} />;
