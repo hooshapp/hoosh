@@ -9,12 +9,14 @@ import {
   useAccountQuery,
 } from '@/infrastructure/query/account-data-provider';
 import { readProfile, saveProfile } from './api';
+import type { SignupNameDraft } from './signup-name-handoff';
 import type { ProfileFormProps, ProfileFormState, ProfileNameDraft } from './profile-form';
 
 type Editor = {
   base: ProfileView | null;
   draft: ProfileNameDraft;
   state: ProfileFormState;
+  signupDraftId?: string;
 };
 const subscribeOnline = (notify: () => void) => onlineManager.subscribe(notify);
 const onlineSnapshot = () => onlineManager.isOnline();
@@ -47,7 +49,7 @@ function saveError(error: unknown): ProfileFormState {
 }
 
 /** Volatile, account-keyed drafts. Nothing is persisted or automatically replayed. */
-export function useProfileEditor() {
+export function useProfileEditor(onSignupNameSaved?: (id: string) => void) {
   const online = useSyncExternalStore(subscribeOnline, onlineSnapshot, serverOnlineSnapshot);
   const { scope, availability } = useAccountData();
   const query = useAccountQuery(['profile'], readProfile);
@@ -79,6 +81,7 @@ export function useProfileEditor() {
     onSuccess: (response) => {
       scope?.client.setQueryData(scope.key('profile'), response);
       if (!mounted.current) return;
+      if (editor?.signupDraftId) onSignupNameSaved?.(editor.signupDraftId);
       setEditor(fresh(response.profile));
       setReview(null);
     },
@@ -122,6 +125,7 @@ export function useProfileEditor() {
         ? {
             base: review.profile,
             draft: editor.draft,
+            signupDraftId: editor.signupDraftId,
             state: { kind: 'ready' },
           }
         : fresh(review.profile),
@@ -177,6 +181,10 @@ export function useProfileEditor() {
       : null;
   return {
     form,
+    adoptSignupName(draft: SignupNameDraft) {
+      if (!editor || !enabled || review || mutation.isPending || dirty(editor) || editor.state.kind !== 'ready') return;
+      setEditor({ ...editor, draft: { kind: 'text', value: draft.displayName }, signupDraftId: draft.id });
+    },
     query,
     review,
     reviewing,

@@ -1,5 +1,6 @@
 import type { AuthAccountActions, AuthSessionPort } from '@disconnect/contracts';
 
+import type { SignupNameHandoff } from '@/features/account/signup-name-handoff';
 import { SessionController } from '../../features/auth/session-controller';
 import { createApiClient } from '../api/client';
 import { createAccountDataController } from '../query/account-controller';
@@ -18,6 +19,7 @@ export type AppAuthProducer = Readonly<{
   authLinks?: Pick<SessionController,
     'handleCallback' | 'requestRecovery' | 'canResetPassword' | 'updatePassword' |
     'beginOAuth' | 'signInWithApple' | 'getLastSignOutResult'>;
+  signupNameHandoff?: SignupNameHandoff;
   setForeground: (active: boolean) => void;
   canClearSession: boolean;
   nativeNamespace: string | null;
@@ -44,6 +46,18 @@ function createDefaultAuthProducer(): AppAuthProducer {
     auth: controller,
     authForms: controller,
     authLinks: controller,
+    signupNameHandoff: {
+      async read(scope) {
+        scope.assertCurrent();
+        const draft = await controller.readSignupName(scope.account);
+        scope.assertCurrent();
+        return draft;
+      },
+      async clear(scope, id) {
+        scope.assertCurrent();
+        await controller.clearSignupName(scope.account, id);
+      },
+    },
     nativeNamespace,
     canClearSession: Boolean(config),
     getPrivateAccessHeld: controller.getPrivateAccessHeld,

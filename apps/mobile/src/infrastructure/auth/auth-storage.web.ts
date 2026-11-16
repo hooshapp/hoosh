@@ -4,7 +4,7 @@ import { serializeStorage } from './serialized-storage';
 /** One SDK broadcast channel per page instance, backed by stable tab storage.
  * This prevents SDK cross-tab broadcasts from leaking sessions between tabs
  * while preserving verifier/session continuity after a same-tab callback reload. */
-export function createAuthStorage(namespace: string, onFailure?: () => void) {
+export function createAuthStorage(namespace: string, onFailure?: (key: string) => void) {
   const storageKey = `${namespace}.${globalThis.crypto.randomUUID()}`;
   function store() {
     if (typeof window === 'undefined') throw new AuthUnavailableError('storage');

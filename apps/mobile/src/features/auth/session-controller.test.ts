@@ -15,7 +15,7 @@ function deferred<T>() {
   const promise = new Promise<T>((a, b) => { resolve = a; reject = b; });
   return { promise, resolve, reject };
 }
-function fixture(initial: Session | null = null) {
+function fixture(initial: Session | null = null, clearLegacySession?: () => Promise<void>) {
   let current = initial;
   let listener: ((event: AuthChangeEvent, value: Session | null) => void) | null = null;
   const unsubscribe = vi.fn(() => { listener = null; });
@@ -39,7 +39,7 @@ function fixture(initial: Session | null = null) {
     setItem: vi.fn(async (key: string, value: string) => { data.set(key, value); }),
     removeItem: vi.fn(async (key: string) => { data.delete(key); }),
   };
-  const runtime = { client: { auth }, storage, config: { storageKey: 'test-key' } } as unknown as AuthRuntime;
+  const runtime = { client: { auth }, storage, config: { storageKey: 'test-key' }, clearLegacySession } as unknown as AuthRuntime;
   const controller = new SessionController(() => runtime);
   return { controller, auth, storage, emit, unsubscribe };
 }
@@ -196,4 +196,59 @@ it('retires private access on active storage failure and ignores a late SDK even
   await f.controller.signOut();
   expect(f.controller.getSnapshot().status).toBe('signed_out');
   f.controller.dispose();
+});
+
+
+it('does not read legacy credentials on startup, even when a canonical session exists', async () => {
+  const clearLegacy = vi.fn(async () => undefined);
+  for (const initial of [null, session()]) {
+    const f = fixture(initial, clearLegacy);
+    await f.controller.start();
+    expect(f.controller.getSnapshot().status).toBe(initial ? 'signed_in' : 'signed_out');
+    expect(f.storage.getItem.mock.calls.map(([key]) => key)).not.toContain('disconnect.auth.v1');
+    f.controller.stop();
+  }
+  expect(clearLegacy).not.toHaveBeenCalled();
+});
+
+it('keeps the logout marker when exact legacy cleanup fails and retries the cleanup', async () => {
+  const clearLegacy = vi.fn(async () => undefined);
+  clearLegacy.mockRejectedValueOnce(new Error('fixture secure cleanup failure'));
+  const f = fixture(session(), clearLegacy);
+  await f.controller.start();
+  await expect(f.controller.signOut()).rejects.toMatchObject({ reason: 'storage' });
+  expect(f.controller.getSnapshot()).toMatchObject({ status: 'unavailable', reason: 'storage' });
+  expect(f.storage.removeItem).not.toHaveBeenCalledWith('test-key.logout');
+  await f.controller.start();
+  expect(clearLegacy).toHaveBeenCalledTimes(2);
+  expect(f.storage.removeItem).toHaveBeenCalledWith('test-key.logout');
+  expect(f.controller.getSnapshot().status).toBe('signed_out');
+  f.controller.stop();
+});
+
+it('quarantines malformed pending metadata without silently erasing a stored session', async () => {
+  const f = fixture(session());
+  await f.storage.setItem('test-key.pending', '{malformed');
+  await f.controller.start();
+  expect(f.controller.getSnapshot()).toMatchObject({ status: 'unavailable', reason: 'storage' });
+  expect(f.auth.signOut).not.toHaveBeenCalled();
+  expect(f.storage.removeItem).not.toHaveBeenCalledWith('test-key.pending');
+  await f.controller.signOut();
+  expect(f.controller.getSnapshot().status).toBe('signed_out');
+  f.controller.stop();
+});
+
+it('ignores expired name drafts and never reads a draft for a different account generation', async () => {
+  const f = fixture(session());
+  await f.controller.start();
+  const current = { user_id: 'a', sessionGeneration: f.controller.getSnapshot().sessionGeneration };
+  const key = 'test-key.signup-name.a';
+  await f.storage.setItem(key, JSON.stringify({ id: 'old-draft', userId: 'a', name: 'Old', createdAt: Date.now() - 86400001 }));
+  await expect(f.controller.readSignupName(current)).resolves.toBeNull();
+  await f.storage.setItem(key, JSON.stringify({ id: 'fresh-draft', userId: 'a', name: 'Current', createdAt: Date.now() }));
+  await expect(f.controller.readSignupName({ ...current, user_id: 'b' })).resolves.toBeNull();
+  await expect(f.controller.readSignupName({ ...current, sessionGeneration: 0 })).resolves.toBeNull();
+  await f.controller.clearSignupName(current, 'different-id');
+  await expect(f.controller.readSignupName(current)).resolves.toEqual({ id: 'fresh-draft', displayName: 'Current' });
+  f.controller.stop();
 });

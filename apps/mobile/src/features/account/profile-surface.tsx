@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import { Button } from '@/components/ui/button';
 import { InlineStatus } from '@/components/ui/inline-status';
@@ -9,15 +10,45 @@ import { AccountHeader } from './account-header';
 import { ProfileForm } from './profile-form';
 import { useProfileEditor } from './use-profile-editor';
 import { useAccountData } from '@/infrastructure/query/account-data-provider';
+import { useAppRuntime } from './app-runtime-context';
+import type { SignupNameDraft } from './signup-name-handoff';
 import { useAccountAction } from './use-account-action';
 
 /** Real private consumer: the Auth owner's AccountDataProvider is its only dependency. */
 export function ProfileSurface() {
   const identity = useIdentityQuery();
-  const editor = useProfileEditor();
+  const { availability, controller, scope } = useAccountData();
+  const handoff = useAppRuntime()?.signupNameHandoff;
+  const [signupDraft, setSignupDraft] = useState<SignupNameDraft | null>(null);
+  const [clearingDraft, setClearingDraft] = useState(false);
+  const [draftClearFailed, setDraftClearFailed] = useState(false);
+  const verified = scope && !identity.isError && identity.data?.user_id === scope.account.user_id;
+  useEffect(() => {
+    if (!scope || !verified || !handoff) return;
+    let active = true;
+    void handoff.read(scope).then(draft => {
+      if (active && scope.isCurrent()) setSignupDraft(draft);
+    }).catch(() => undefined);
+    return () => { active = false; };
+  }, [handoff, scope, verified]);
+
+  async function clearSignupDraft(id: string) {
+    if (!scope || !handoff || !verified || clearingDraft || !scope.isCurrent()) return;
+    setClearingDraft(true);
+    setDraftClearFailed(false);
+    try {
+      await handoff.clear(scope, id);
+      if (scope.isCurrent()) setSignupDraft(current => current?.id === id ? null : current);
+    } catch {
+      if (scope.isCurrent()) setDraftClearFailed(true);
+    } finally {
+      if (scope.isCurrent()) setClearingDraft(false);
+    }
+  }
+
+  const editor = useProfileEditor(id => { void clearSignupDraft(id); });
   const guard = useRouteDraftGuard(editor.dirty);
   const theme = useUiTheme();
-  const { availability, controller } = useAccountData();
   const recovery = useAccountAction(controller, () => controller.recoverSession());
   const available = availability === 'ready';
   const paused = availability === 'api_paused' || availability === 'recovering';
@@ -71,6 +102,17 @@ export function ProfileSurface() {
                   : 'Loading your profile…'
             }
           />
+        ) : null}
+        {verified && available && signupDraft && editor.form ? (
+          <View style={styles.review}>
+            <Text style={{ color: theme.foreground }}>Name from signup: {signupDraft.displayName}</Text>
+            <Text style={{ color: theme.foreground }}>Use it in the editor to review and save it to your profile.</Text>
+            <Button label="Use signup name" disabled={!editor.enabled || editor.dirty || clearingDraft}
+              onPress={() => editor.adoptSignupName(signupDraft)} />
+            <Button label="Discard signup name" variant="secondary" disabled={editor.dirty || clearingDraft}
+              onPress={() => { void clearSignupDraft(signupDraft.id); }} />
+            {draftClearFailed && <InlineStatus state="error" message="The signup name could not be removed. Try again." />}
+          </View>
         ) : null}
         {editor.form ? <ProfileForm {...editor.form} /> : null}
         {editor.reviewing ? (

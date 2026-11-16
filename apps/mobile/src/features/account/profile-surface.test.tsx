@@ -6,6 +6,9 @@ import { ApiError } from '@/infrastructure/api/errors';
 import { createAccountDataController } from '@/infrastructure/query/account-controller';
 import { AccountDataProvider } from '@/infrastructure/query/account-data-provider';
 import type { AccountApi } from '@/infrastructure/query/account-scope';
+import type { AppRuntime } from '@/infrastructure/auth/runtime';
+import { AppRuntimeContext } from './app-runtime-context';
+import type { SignupNameHandoff } from './signup-name-handoff';
 import { ProfileSurface } from './profile-surface';
 
 jest.mock('@/features/editors/use-route-draft-guard', () => ({
@@ -83,10 +86,12 @@ function setup(initial: ReturnType<typeof row> | null = row()) {
     },
   };
 }
-async function mount(app: ReturnType<typeof setup>) {
+async function mount(app: ReturnType<typeof setup>, signupNameHandoff?: SignupNameHandoff) {
   await render(
     <AccountDataProvider controller={app.controller} fallback={<Text>Closed</Text>}>
-      <ProfileSurface />
+      <AppRuntimeContext.Provider value={signupNameHandoff ? { signupNameHandoff } as AppRuntime : null}>
+        <ProfileSurface />
+      </AppRuntimeContext.Provider>
     </AccountDataProvider>,
   );
   await screen.findByLabelText('Display name');
@@ -300,4 +305,53 @@ test('offline status immediately disables save and reconnect never replays an ed
   expect(name().props.value).toBe('Offline draft');
   await press('Discard changes');
   expect(name().props.value).toBe('Original');
+});
+
+
+test('signup name needs explicit review and a confirmed revision-checked save', async () => {
+  const app = setup();
+  const handoff = {
+    read: jest.fn(async () => ({ id: 'fixture-name', displayName: '  Signup Name  ' })),
+    clear: jest.fn(async () => {}),
+  };
+  await mount(app, handoff);
+  await screen.findByText('Use signup name');
+  expect(name().props.value).toBe('Original');
+  await press('Use signup name');
+  expect(name().props.value).toBe('  Signup Name  ');
+  expect(app.patch).not.toHaveBeenCalled();
+  expect(handoff.clear).not.toHaveBeenCalled();
+  await press('Save changes');
+  await waitFor(() => expect(handoff.clear).toHaveBeenCalledWith(expect.anything(), 'fixture-name'));
+  expect(app.patch).toHaveBeenCalledWith({ expected_revision: 1, display_name: '  Signup Name  ' });
+});
+
+test('an uncertain profile save leaves the original signup suggestion intact', async () => {
+  const app = setup();
+  app.patch.mockRejectedValueOnce(new ApiError('timeout', { requestMayHaveCommitted: true }));
+  const handoff = {
+    read: jest.fn(async () => ({ id: 'fixture-name', displayName: 'Signup Name' })),
+    clear: jest.fn(async () => {}),
+  };
+  await mount(app, handoff);
+  await screen.findByText('Use signup name');
+  await press('Use signup name');
+  await press('Save changes');
+  await screen.findByText('Check latest profile');
+  expect(handoff.clear).not.toHaveBeenCalled();
+  expect(app.patch).toHaveBeenCalledTimes(1);
+});
+
+test('discard removes the stored suggestion without writing a profile', async () => {
+  const app = setup();
+  const handoff = {
+    read: jest.fn(async () => ({ id: 'fixture-name', displayName: 'Signup Name' })),
+    clear: jest.fn(async () => {}),
+  };
+  await mount(app, handoff);
+  await screen.findByText('Discard signup name');
+  await press('Discard signup name');
+  await waitFor(() => expect(screen.queryByText('Discard signup name')).toBeNull());
+  expect(handoff.clear).toHaveBeenCalledWith(expect.anything(), 'fixture-name');
+  expect(app.patch).not.toHaveBeenCalled();
 });

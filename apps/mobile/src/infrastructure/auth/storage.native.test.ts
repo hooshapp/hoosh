@@ -19,3 +19,13 @@ it('fails visibly when SecureStore rejects realistic or large payloads', async (
   const { storage, storageKey } = createAuthStorage('project-session');
   await expect(storage.setItem(storageKey, 'x'.repeat(4096))).rejects.toMatchObject({ reason: 'storage' });
 });
+
+
+it('clears and checks only the old shared app credential keys during explicit sign-out', async () => {
+  const get = jest.mocked(SecureStore.getItemAsync);
+  get.mockResolvedValueOnce(null).mockResolvedValueOnce(null).mockResolvedValueOnce(null);
+  await createAuthStorage('project-session').clearLegacySession();
+  const keys = ['disconnect.auth.v1', 'disconnect.auth.v1-code-verifier', 'disconnect.auth.v1-user'];
+  expect(jest.mocked(SecureStore.deleteItemAsync).mock.calls.map(([key]) => key)).toEqual(keys);
+  expect(get.mock.calls.map(([key]) => key)).toEqual(keys);
+});

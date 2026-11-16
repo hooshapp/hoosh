@@ -1,6 +1,6 @@
 # Plan 01 — Auth into the actual app
 
-**Checkpoint:** INT-AUTH-C04 local checks complete. **Next:** user sign-in walkthrough, then INT-AUTH-C05. **Owner / reviewer:** Anisha / Ishmum. **Branch:** `integration/shared-product`. **Base:** `6167e364e605728a18556af503469dcfb6d9b217`. **C01 commit:** `0dfb490`. **C02 commit:** `4f07e6d`. **C03 commit:** `83815eb`. **C04 commit:** Pending.
+**Checkpoint:** INT-AUTH-C05 local checks complete. **Next:** INT-AUTH-C06 and live account acceptance. **Owner / reviewer:** Anisha / Ishmum. **Branch:** `integration/shared-product`. **Base:** `6167e364e605728a18556af503469dcfb6d9b217`. **C01 commit:** `0dfb490`. **C02 commit:** `4f07e6d`. **C03 commit:** `83815eb`. **C04 commit:** `7ac27c6`. **C05 commit:** Pending.
 
 ## INT-AUTH-C01 — Consolidate the application session authority
 
@@ -70,3 +70,17 @@ Typecheck, web export, 609 unit tests and 74 targeted root/account/native-bounda
 The local preview at `http://localhost:8090/sign-in` uses the existing development Supabase project. The loopback API uses its public ES256 signing metadata and accepts CORS from the preview. No database connection was configured for this walkthrough. Apple/Google remain disabled for this preview. No real test user was signed in by the implementation run.
 
 Manual walkthrough: sign in with an existing development test account, confirm Home opens, open Settings, select **Sign out of this device**, then revisit `/settings` and confirm login is shown. Owner-protected Android behavior remains a device test. Proceed with AUTH-C05 after review.
+
+## INT-AUTH-C05 — Signup name and session upgrades
+
+**Starting revision:** `7ac27c6` (AUTH-C04). **Commit:** Pending.
+
+- Signup and first-time native Apple can store a 24-hour local name suggestion under the project and SDK user ID. Settings reads it through the account scope only after matching the verified `/v1/me` identity. **Use signup name** copies it into the editor. **Save changes** still uses the loaded profile revision and sends the editable raw value through the existing profile API. An existing profile is never overwritten automatically.
+- A confirmed save of the adopted draft or explicit **Discard signup name** clears the matching draft ID. Conflict, uncertain save, owner replacement and local storage failure preserve the suggestion for later review. Optional name storage failure does not break an otherwise verified session. Stale, malformed or old unversioned names are not eligible.
+- The existing Android development ID (`com.hoosh.disconnect.dev`) uses SecureStore. Keep the project-scoped `disconnect.auth.v1.<project-host>` family, including SDK verifier and logout keys. Native users whose only credential was in the retired unscoped shared key sign in again. Explicit local logout removes and checks only the old shared session, verifier and user keys, then clears its persisted logout intent. Interrupted logout retries that cleanup. Link cancellation does not retire the old shared keys.
+- Web uses the current tab's scoped storage. The pre-integration shared web runtime used memory-only credentials. The Swift pilot (`com.AnishaDasgupta.DisconnectApp`) remains separate. No anonymous pilot identity, credential, bundle configuration or Keychain group is imported or changed.
+- Unreadable or expired pending-flow metadata keeps private access locked until the user explicitly clears the session. Startup does not erase valid credentials merely because the associated metadata cannot be interpreted. The canonical callback origins and scheme are unchanged.
+
+### Verification
+
+Typecheck, lint, web export, 613 unit tests and 84 targeted profile/root/native-storage tests passed. Lint has four existing warnings. The tests cover reviewed adoption with the current profile revision, explicit discard, uncertain writes, expired names and account scope rejection, exact legacy cleanup and retry, and malformed pending metadata. Keychain/backup/reinstall checks on physical devices and the hosted account walkthrough remain for later acceptance.

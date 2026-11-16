@@ -48,8 +48,11 @@ it('awaits signup confirmation without persisting password or putting name in Au
   const url = f.controller.getLinkSnapshot().pending!.redirectUrl + '&code=synthetic-code';
   const a = f.controller.handleCallback(url); const b = f.controller.handleCallback(url); expect(a).toBe(b);
   expect(await a).toBe('/(tabs)'); expect(f.auth.exchangeCodeForSession).toHaveBeenCalledTimes(1);
-  expect(f.controller.getLinkSnapshot()).toMatchObject({ pending: null, draftName: 'Alex' });
-  expect(JSON.parse(f.store.get('test.signup-name')!)).toEqual({ userId: 'a', name: 'Alex' }); f.controller.stop();
+  expect(f.controller.getLinkSnapshot().pending).toBeNull();
+  const snapshot = f.controller.getSnapshot();
+  await expect(f.controller.readSignupName({ user_id: f.session.user.id, sessionGeneration: snapshot.sessionGeneration }))
+    .resolves.toMatchObject({ displayName: 'Alex' });
+  expect(JSON.parse(f.store.get('test.signup-name.a')!)).toMatchObject({ userId: 'a', name: 'Alex' }); f.controller.stop();
 });
 it('cannot authorize a reset from a query parameter or without an SDK recovery event', async () => {
   const f = fixture(); await f.controller.start();
@@ -137,7 +140,7 @@ it('uses the SDK for Apple identity and binds the first-grant name to its return
   const f = fixture(); await f.controller.start();
   await f.controller.signInWithApple(async () => ({ token: 'synthetic-id-token', nonce: 'synthetic-raw-nonce', displayName: 'Alex' }));
   expect(f.auth.signInWithIdToken).toHaveBeenCalledWith({ provider: 'apple', token: 'synthetic-id-token', nonce: 'synthetic-raw-nonce' });
-  expect(JSON.parse(f.store.get('test.signup-name')!)).toEqual({ userId: 'a', name: 'Alex' });
+  expect(JSON.parse(f.store.get('test.signup-name.a')!)).toMatchObject({ userId: 'a', name: 'Alex' });
   expect([...f.store.values()].join()).not.toContain('synthetic-id-token'); f.controller.stop();
 });
 it('does not send a canceled or stale native credential to Supabase', async () => {

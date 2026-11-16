@@ -1,5 +1,7 @@
 import type { AuthAccountActions, AuthSessionPort, AuthSnapshot, SignOutResult } from '@disconnect/contracts';
 import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
+import type { SignupNameDraft } from '@/features/account/signup-name-handoff';
+import type { RequestAccount } from '@/infrastructure/api/types';
 import type { AuthRuntime } from '@/infrastructure/auth/supabase';
 import { INITIAL_LINK_STATE, type LinkState, type PendingLink, type SocialProvider, callbackBase, callbackKey, parsePendingLink, validateCallback } from './link-flow';
 import { AuthUnavailableError } from '../../infrastructure/auth/errors';
@@ -28,6 +30,7 @@ export class SessionController implements AuthSessionPort, AuthAccountActions {
   private lastSignOut: SignOutResult | null = null;
   readonly getLastSignOutResult = () => this.lastSignOut;
   private logout: Promise<SignOutResult> | null = null;
+  private finishLegacyLogout = true;
 
   constructor(private readonly factory: () => AuthRuntime) {}
   readonly getSnapshot = () => this.snapshot;
@@ -60,7 +63,6 @@ export class SessionController implements AuthSessionPort, AuthAccountActions {
     if (!session) {
       const changed = this.identityKey !== null;
       this.session = null; this.identityKey = null; this.recoveryEventKey = null;
-      if (this.links.draftName) this.publishLinks({ ...this.links, draftName: null });
       this.publish({ status: 'signed_out', sessionGeneration: this.snapshot.sessionGeneration + (changed ? 1 : 0) });
       return;
     }
@@ -76,7 +78,6 @@ export class SessionController implements AuthSessionPort, AuthAccountActions {
       (!sid && event === 'SIGNED_IN' && this.session?.access_token !== session.access_token);
     if (event === 'PASSWORD_RECOVERY') this.recoveryEventKey = key;
     else if (this.identityKey !== key) this.recoveryEventKey = null;
-    if (this.identityKey !== key && this.links.draftName) this.publishLinks({ ...this.links, draftName: null });
     this.identityKey = key; this.session = session;
     this.publish({ status: 'signed_in', sessionGeneration: this.snapshot.sessionGeneration + (replacement ? 1 : 0),
       user: Object.freeze({ user_id: session.user.id, email: session.user.email ?? null }),
@@ -98,7 +99,7 @@ export class SessionController implements AuthSessionPort, AuthAccountActions {
       this.unavailable(stage);
     }, 20000);
     try {
-      if (this.suspended) await this.signOut();
+      if (this.suspended) await this.signOut(this.finishLegacyLogout);
       if (!current()) return;
       this.runtime ??= this.factory();
       const auth = this.runtime.client.auth;
@@ -111,37 +112,26 @@ export class SessionController implements AuthSessionPort, AuthAccountActions {
       }).data.subscription;
       const marker = await this.runtime.storage.getItem(this.runtime.config.storageKey + '.logout');
       if (!current()) return;
-      if (marker === '1') { this.suspended = true; await this.signOut(); }
+      if (marker === '1' || marker === 'link') {
+        this.suspended = true;
+        await this.signOut(marker === '1');
+      } else if (marker !== null) throw new AuthUnavailableError('storage');
       if (!current()) return;
       const rawPending = await this.runtime.storage.getItem(this.runtime.config.storageKey + '.pending');
       if (!current()) return;
       const pending = parsePendingLink(rawPending);
-      if (rawPending && !pending) { this.suspended = true; await this.signOut(); }
+      // Unknown metadata could belong to a recovery session. Preserve credentials
+      // and hold access until the user explicitly clears the interrupted flow.
+      if (rawPending && !pending) throw new AuthUnavailableError('storage');
       if (!current()) return;
       this.publishLinks({ ...this.links, pending, processing: false });
       stage = 'bootstrap';
       const { data, error } = await auth.getSession();
       if (!current()) return;
-      stage = 'storage';
-      const rawDraft = await this.runtime.storage.getItem(this.runtime.config.storageKey + '.signup-name');
-      if (!current()) return;
-      let draft: { userId?: unknown; name?: unknown } | null = null;
-      try { draft = rawDraft ? JSON.parse(rawDraft) : null; } catch { /* clear malformed data below */ }
-      let newer = queued as { event: AuthChangeEvent; session: Session | null } | null;
-      let candidate = newer ? newer.session : data.session;
-      if (rawDraft && (!candidate || draft?.userId !== candidate.user.id || typeof draft.name !== 'string' || draft.name.length > 320)) {
-        await this.runtime.storage.removeItem(this.runtime.config.storageKey + '.signup-name');
-        if (!current()) return;
-        draft = null;
-      }
-      newer = queued as { event: AuthChangeEvent; session: Session | null } | null;
-      candidate = newer ? newer.session : data.session;
-      if (error && !newer) { stage = 'bootstrap'; throw error; }
+      const newer = queued as { event: AuthChangeEvent; session: Session | null } | null;
+      if (error && !newer) throw error;
       restoring = false;
-      this.adopt(newer?.event ?? 'INITIAL_SESSION', candidate);
-      if (candidate && draft?.userId === candidate.user.id && typeof draft.name === 'string' && draft.name.length <= 320) {
-        this.publishLinks({ ...this.links, draftName: draft.name });
-      }
+      this.adopt(newer?.event ?? 'INITIAL_SESSION', newer ? newer.session : data.session);
       this.setForeground(this.foreground);
     } catch (error) {
       if (!current()) return;
@@ -271,10 +261,51 @@ export class SessionController implements AuthSessionPort, AuthAccountActions {
     // A user without a session is only awaiting confirmation, never authenticated.
   });
   private async recordName(pending: PendingLink, userId: string) {
-    if (!pending.displayName || !this.runtime) return;
-    await this.runtime.storage.setItem(this.runtime.config.storageKey + '.signup-name', JSON.stringify({ userId, name: pending.displayName }));
-    this.publishLinks({ ...this.links, draftName: pending.displayName });
+    const runtime = this.runtime;
+    if (!pending.displayName?.trim() || !runtime || !/^[a-zA-Z0-9_-]{1,64}$/.test(userId)) return;
+    try {
+      await runtime.storage.setItem(this.signupNameKey(runtime, userId), JSON.stringify({
+        id: pending.id, name: pending.displayName, userId, createdAt: Date.now(),
+      }));
+    } catch {
+      // A name suggestion is optional. A failed write cannot turn verified auth into a failure.
+    }
   }
+
+  private signupNameKey(runtime: AuthRuntime, userId: string) {
+    return `${runtime.config.storageKey}.signup-name.${userId}`;
+  }
+
+  private ownsDraft(account: RequestAccount) {
+    return this.active && this.snapshot.status === 'signed_in' && !this.getPrivateAccessHeld() &&
+      this.snapshot.user.user_id === account.user_id && this.snapshot.sessionGeneration === account.sessionGeneration;
+  }
+
+  readonly readSignupName = async (account: RequestAccount): Promise<SignupNameDraft | null> => {
+    const runtime = this.runtime;
+    if (!runtime || !this.ownsDraft(account) || !/^[a-zA-Z0-9_-]{1,64}$/.test(account.user_id)) return null;
+    const raw = await runtime.storage.getItem(this.signupNameKey(runtime, account.user_id));
+    if (!raw || !this.ownsDraft(account)) return null;
+    try {
+      const value = JSON.parse(raw);
+      const now = Date.now();
+      if (value?.userId !== account.user_id || typeof value.id !== 'string' ||
+        typeof value.name !== 'string' || !value.name.trim() || value.name.length > 320 ||
+        typeof value.createdAt !== 'number' || !Number.isFinite(value.createdAt) ||
+        value.createdAt > now || now - value.createdAt >= 24 * 60 * 60 * 1000) return null;
+      return { id: value.id, displayName: value.name };
+    } catch {
+      return null;
+    }
+  };
+
+  readonly clearSignupName = async (account: RequestAccount, draftId: string): Promise<void> => {
+    const draft = await this.readSignupName(account);
+    if (this.runtime && draft?.id === draftId && this.ownsDraft(account)) {
+      await this.runtime.storage.removeItem(this.signupNameKey(this.runtime, account.user_id));
+    }
+  };
+
   readonly requestConfirmation = (email: string, webOrigin?: string) => this.exclusive(async () => {
     const { client } = this.requireRuntime();
     if (this.session) throw new AuthUnavailableError('not_ready');
@@ -308,7 +339,7 @@ export class SessionController implements AuthSessionPort, AuthAccountActions {
   readonly cancelLink = async () => {
     if (!this.runtime && !this.links.pending) return;
     if (this.operation) throw new AuthUnavailableError('not_ready');
-    if (this.links.pending) await this.signOut();
+    if (this.links.pending) await this.signOut(false);
     else { await this.savePending(null); this.actionEpoch++; this.callbacks.clear(); }
   };
   readonly handleCallback = (url: string): Promise<string> => {
@@ -394,10 +425,11 @@ export class SessionController implements AuthSessionPort, AuthAccountActions {
     this.refresh = work().finally(() => { this.refresh = null; });
     return this.refresh;
   };
-  readonly signOut = (): Promise<SignOutResult> => {
+  readonly signOut = (clearLegacy = true): Promise<SignOutResult> => {
     if (this.logout) return this.logout;
     if (!this.runtime) return Promise.reject(new AuthUnavailableError('configuration', false));
     const runtime = this.runtime;
+    this.finishLegacyLogout = clearLegacy;
     const wasSignedOut = this.snapshot.status === 'signed_out';
     this.actionEpoch++; this.callbacks.clear();
     this.suspended = true; this.session = null; this.identityKey = null;
@@ -405,7 +437,7 @@ export class SessionController implements AuthSessionPort, AuthAccountActions {
     const deadline = setTimeout(() => { if (this.logout) this.unavailable('storage'); }, 20000);
     const work = async (): Promise<SignOutResult> => {
       try {
-        await runtime.storage.setItem(runtime.config.storageKey + '.logout', '1');
+        await runtime.storage.setItem(runtime.config.storageKey + '.logout', clearLegacy ? '1' : 'link');
         await runtime.client.auth.stopAutoRefresh();
         // Finish an already-started sign-in before erasing its SDK result.
         await this.operation?.catch(() => undefined);
@@ -416,6 +448,8 @@ export class SessionController implements AuthSessionPort, AuthAccountActions {
         const check = await runtime.client.auth.getSession();
         if (check.error || check.data.session) throw new AuthUnavailableError('storage');
         await this.savePending(null);
+        if (clearLegacy) await runtime.clearLegacySession?.();
+        // This unversioned draft predates account-scoped expiration metadata.
         await runtime.storage.removeItem(runtime.config.storageKey + '.signup-name');
         await runtime.storage.removeItem(runtime.config.storageKey + '.logout');
         this.publishLinks(INITIAL_LINK_STATE);

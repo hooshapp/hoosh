@@ -1,13 +1,16 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 
 import { createAuthStorage } from './auth-storage';
 import { readAuthConfig } from './config';
 import { ensureAuthCrypto } from './crypto';
 
 /** Called by controller startup. Merely constructing the app runtime is safe during export. */
-export function createAuthRuntime(config: ReturnType<typeof readAuthConfig>, onStorageFailure: () => void) {
+export function createAuthRuntime(config: ReturnType<typeof readAuthConfig>, onStorageFailure: () => void): AuthRuntime {
   ensureAuthCrypto();
-  const { storage, storageKey } = createAuthStorage(config.storageKey, onStorageFailure);
+  const adapter = createAuthStorage(config.storageKey, key => {
+    if (!key.includes('.signup-name.')) onStorageFailure();
+  });
+  const { storage, storageKey } = adapter;
   const client = createClient(config.url, config.key, {
     auth: {
       storage,
@@ -33,6 +36,11 @@ export function createAuthRuntime(config: ReturnType<typeof readAuthConfig>, onS
       },
     },
   });
-  return { client, storage, config: { ...config, storageKey } };
+  return { ...adapter, client, config: { ...config, storageKey } };
 }
-export type AuthRuntime = ReturnType<typeof createAuthRuntime>;
+export type AuthRuntime = {
+  client: Pick<SupabaseClient, 'auth'>;
+  storage: ReturnType<typeof createAuthStorage>['storage'];
+  config: ReturnType<typeof readAuthConfig>;
+  clearLegacySession?: () => Promise<void>;
+};

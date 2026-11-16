@@ -7,19 +7,19 @@ export interface AuthStorage {
 }
 
 /** One queue for session/verifier operations; failures don't poison later cleanup. */
-export function serializeStorage(storage: AuthStorage, onFailure?: () => void): AuthStorage {
+export function serializeStorage(storage: AuthStorage, onFailure?: (key: string) => void): AuthStorage {
   let tail: Promise<unknown> = Promise.resolve();
-  function enqueue<T>(work: () => Promise<T>): Promise<T> {
+  function enqueue<T>(key: string, work: () => Promise<T>): Promise<T> {
     const next = tail.then(work).catch(() => {
-      onFailure?.();
+      onFailure?.(key);
       throw new AuthUnavailableError('storage');
     });
     tail = next.catch(() => undefined);
     return next;
   }
   return {
-    getItem: key => enqueue(() => storage.getItem(key)),
-    setItem: (key, value) => enqueue(() => storage.setItem(key, value)),
-    removeItem: key => enqueue(() => storage.removeItem(key)),
+    getItem: key => enqueue(key, () => storage.getItem(key)),
+    setItem: (key, value) => enqueue(key, () => storage.setItem(key, value)),
+    removeItem: key => enqueue(key, () => storage.removeItem(key)),
   };
 }

@@ -16,11 +16,16 @@ sessionStorage with a separate SDK channel per instance. Storage failures lock p
 clearing the device session is the explicit recovery action. Native Android main
 manifest and Expo plugin both reference supported credential backup exclusions.
 
-Existing-account password login still uses the baseline form. Connect the
-landing-page forms in AUTH-C02 and callback routes in AUTH-C03. The baseline
-unscoped key is untouched; this step can require signing in again. AUTH-C05 owns
-legacy key reconciliation. No Auth admin/project setting or account
-creation/deletion is performed here. Supabase callback is synchronous and never
+The shared app uses the project-scoped session key and asks users to sign in
+again if their only credential is from the old unscoped shared build. Startup
+does not import that key, choose a session by email, or read the standalone
+Swift pilot's credentials. Explicit native sign-out retires the exact old shared
+session, verifier and user keys, with readback before logout completion.
+Interrupted link cancellation only clears the canonical flow. An unreadable
+pending callback keeps private access locked until explicit session cleanup.
+A matched signup name is an optional 24-hour local suggestion in Settings.
+The profile is updated through a confirmed revision-checked save.
+Supabase callback is synchronous and never
 awaits another SDK call while its internal lock may be held. Foreground lifecycle
 alone starts SDK auto-refresh; ordinary token acquisition is fenced before/after.
 

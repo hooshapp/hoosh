@@ -8,8 +8,8 @@ export type PendingLink = {
   redirectUrl: string; email: string; displayName?: string;
   phase: 'requested' | 'consuming' | 'recovery'; sessionKey?: string;
 };
-export type LinkState = { pending: PendingLink | null; processing: boolean; draftName: string | null };
-export const INITIAL_LINK_STATE: LinkState = { pending: null, processing: false, draftName: null };
+export type LinkState = { pending: PendingLink | null; processing: boolean };
+export const INITIAL_LINK_STATE: LinkState = { pending: null, processing: false };
 
 export function parsePendingLink(raw: string | null, now = Date.now()): PendingLink | null {
   if (!raw) return null;
