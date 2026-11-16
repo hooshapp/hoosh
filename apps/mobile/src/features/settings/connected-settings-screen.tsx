@@ -1,3 +1,4 @@
+import { RouteButton } from '@/components/ui/route-button';
 import { useAccountWeeklyPlan } from '@/features/plans/account-weekly-plan';
 import { AccountPlanControls } from '@/features/plans/account-plan-controls';
 import { ProfileSurface } from '@/features/account/profile-surface';
@@ -37,6 +38,7 @@ export function ConnectedSettingsScreen({
       planContent={device ? <AccountPlanControls /> : undefined}
       accountContent={
         <>
+          <RouteButton href="/(onboarding)/welcome" label="Set up Hoosh" />
           <ProfileSurface />
           <AppSignOutAction />
         </>

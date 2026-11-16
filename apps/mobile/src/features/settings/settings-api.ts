@@ -23,7 +23,7 @@ const nullableInteger = (v: unknown, max: number): v is number | null =>
 // never JS trim. Raw request drafts bypass this response-only validator unchanged.
 const edgeSpace =
   /^[\u0009-\u000d\u001c-\u0020\u0085\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]|[\u0009-\u000d\u001c-\u0020\u0085\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]$/u;
-function activities(value: unknown): ActivityPreferences {
+export function decodeActivityPreferences(value: unknown): ActivityPreferences {
   if (
     !isRecord(value) ||
     !Array.isArray(value.selected_activity_ids) ||
@@ -51,7 +51,7 @@ function activities(value: unknown): ActivityPreferences {
 }
 const time = (value: unknown): value is string | null =>
   value === null || (typeof value === 'string' && /^(?:[01][0-9]|2[0-3]):[0-5][0-9]$/.test(value));
-function plan(value: unknown): PlanDraft | null {
+export function decodePlanDraft(value: unknown): PlanDraft | null {
   if (value === null) return null;
   if (
     !isRecord(value) ||
@@ -123,8 +123,8 @@ export function decodeSettingsResponse(
       revision: row.revision,
       created_at: row.created_at,
       updated_at: row.updated_at,
-      activities: activities(row.activities),
-      plan_draft: plan(row.plan_draft),
+      activities: decodeActivityPreferences(row.activities),
+      plan_draft: decodePlanDraft(row.plan_draft),
     },
   };
 }

@@ -67,8 +67,8 @@ normalizer as a destructive request sanitizer.
 
 | Part | Intended commit | State / prerequisite |
 |---|---|---|
-| INT-ONB-C01 | `feat(onboarding): add scoped resumable setup state` | Planned; AUTH-C01–C04, BASE |
-| INT-ONB-C02 | `feat(onboarding): map reviewed choices to product contracts` | Planned; C01 |
+| INT-ONB-C01 | `feat(onboarding): add scoped resumable setup state` | Local checks passed; commit pending. [C01 evidence](../integration_notes/plan_02_onboarding_backend_protection_notes.md) |
+| INT-ONB-C02 | `feat(onboarding): map reviewed choices to product contracts` | Next; C01 |
 | INT-ONB-C03 | `feat(onboarding): save preferences with revision recovery` | Planned; C02, AUTH-C05 handoff |
 | INT-ONB-C04 | `feat(onboarding): connect real app selection and permission` | Planned; C01/C02; native platform availability |
 | INT-ONB-C05 | `feat(onboarding): reconcile explicit protection activation` | Planned; C03/C04 |

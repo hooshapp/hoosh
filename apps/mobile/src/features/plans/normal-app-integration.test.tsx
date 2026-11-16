@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { PlanDraft, SettingsResponse } from '@disconnect/contracts';
 import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
 import {
@@ -862,4 +863,43 @@ test('a delayed Settings response from account A cannot populate account B', asy
   await act(release);
   expect(screen.getByRole('button', { name: 'Apply saved plan' })).toBeDisabled();
   expect(f.port.scheduleApply).not.toHaveBeenCalled();
+});
+
+
+test('setup reviews existing settings without replacing them and records local completion', async () => {
+  const f = fixture({ installed: true });
+  await AsyncStorage.clear();
+  try {
+    await renderRouter(routes, { initialUrl: '/settings' });
+    await screen.findByRole('button', { name: 'Stop weekly plan' });
+    await fireEvent.press(screen.getByRole('link', { name: 'Set up Hoosh' }));
+    await screen.findByRole('button', { name: 'Review saved settings' });
+    await press('Review saved settings');
+    await screen.findByText(/Saved activities: 1/);
+    await press('Keep my settings');
+    await waitFor(() => expect(screen).toHavePathname('/'));
+    expect(f.request.mock.calls.some(([, options]) => options.method === 'PATCH')).toBe(false);
+    expect(f.port.scheduleApply).not.toHaveBeenCalled();
+    expect(f.installation().enabled).toBe(true);
+  } finally {
+    await AsyncStorage.clear();
+  }
+});
+
+
+test('an incomplete local setup resumes once on Home and can be left without a loop', async () => {
+  const f = fixture();
+  await AsyncStorage.setItem(`hoosh.setup.fixture.${A}`, JSON.stringify({ version: 1, step: 'preferences' }));
+  try {
+    await renderRouter(routes);
+    await screen.findByText('Your setup progress is saved on this device. You can leave and return later.');
+    expect(screen).toHavePathname('/welcome');
+    await press('Continue to Home');
+    await waitFor(() => expect(screen).toHavePathname('/'));
+    expect(screen.queryByText('Set up Hoosh')).toBeNull();
+    expect(f.port.interventionClaimOwner).not.toHaveBeenCalled();
+    expect(f.request.mock.calls.some(([, options]) => options.method === 'PATCH')).toBe(false);
+  } finally {
+    await AsyncStorage.clear();
+  }
 });

@@ -14,6 +14,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { colors } from '@/design/tokens';
 import { AppSessionBoundary } from '@/features/account/session-boundary';
+import { SetupResume } from '@/features/onboarding/setup-resume';
 import { usePublicAuth } from '@/features/auth/use-public-auth';
 
 void SplashScreen.preventAutoHideAsync().catch(() => undefined);
@@ -100,6 +101,7 @@ function AppNavigator({ publicOnly = false, previousPrivateGenerationRef }: {
           <Stack.Screen name="(onboarding)" />
         </Stack.Protected>
       </Stack>
+      {!publicOnly && <SetupResume />}
     </>
   );
 }
