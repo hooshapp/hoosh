@@ -1,8 +1,10 @@
 # Shared-product integration execution index
 
-**Prepared:** 2026-11-15. **Status:** `integration/shared-product` is set up. See the
-[foundation checkpoint](../integration_notes/plan_03_shared_foundation_reconciliation_notes.md)
-for completed checks and the next step. **Owners:** Ishmum (shared RN, Android, FastAPI/product
+**Prepared:** 2026-11-15. **Status:** the foundation handoff is recorded on
+`integration/shared-product`. Start with
+[AUTH-C01](01_auth_app_integration.md#int-auth-c01--one-sdkcontroller-and-compatible-session-behavior)
+and see the [foundation checkpoint](../integration_notes/plan_03_shared_foundation_reconciliation_notes.md)
+for evidence, the publication state and the parallel iOS audit. **Owners:** Ishmum (shared RN, Android, FastAPI/product
 database) and Anisha (Auth/onboarding, Supabase Auth, iOS/signing).
 
 ## Outcome and scope

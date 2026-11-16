@@ -1,6 +1,6 @@
 # Plan 03 — Shared foundation reconciliation
 
-**Checkpoint:** INT-BASE-C05 checks complete. **Next part:** INT-BASE-C06. **Parallel work available:** iOS source/signing audit. **Owner / reviewer:** Ishmum / Anisha per the shared plan. Anisha requested starting the integration. **Branch:** `integration/shared-product`. **C01 commit:** `59e4da9`. **C02 commit:** `d07a108`. **C03 commit:** `e411344`. **C04 commit:** `b4db69a`. **C05 commit:** Pending.
+**Checkpoint:** INT-BASE-C06 local checks complete. **Next:** INT-AUTH-C01 and parallel iOS source/signing audit. **Branch:** `integration/shared-product`. **Tested revision:** `05a6c6e`. **C06 commit and GitHub checks:** Pending.
 
 **Read on resume:** [execution order](../integration_plan/README.md), [foundation plan](../integration_plan/03_shared_foundation_reconciliation.md), and [notes workflow](README.md). Update this checkpoint and the owning ledger after each increment.
 
@@ -118,3 +118,27 @@ The iOS source and signing audit may start once this boundary is accepted. Nativ
 - The fixture APK is packaging evidence only. Hosted accounts, installed app behavior and physical-device permission prompts remain later acceptance checks. No dashboard or device state changed. Build outputs remain local.
 
 Next, **INT-BASE-C06** verifies the reproducible foundation handoff and records which source paths actually landed and which are still planned.
+
+## INT-BASE-C06 — Reproducible foundation handoff
+
+**Date:** 2026-11-16. **Branch:** `integration/shared-product`. **Runtime and test revision:** `05a6c6ef66e4c5600b907f97c2b201aee791d08f`. **C06 documentation commit:** Pending.
+
+The [source disposition inventory](artifacts/base-c01-path-inventory.tsv) now pairs the original proposal with the actual foundation disposition. The final comparison used Ishmum's original baseline `cee632c2c4c4230d6da240d6de574391bea0c996` and Anisha's latest inspected source `b6d61df5c8a2c1eacbe28a38e06b84b5bcd368d1`. It includes the later suggested-plan source and test. Identical Git blobs establish the 59 artwork files copied from landing-page. Shared runtime, API and native interfaces use the foundation implementation described in C02–C05.
+
+The tracked foundation diff preserves native projects and IDs, API source and migrations, generated contracts and workflow definitions. The root lockfile pins the existing Supabase dependency without changing a resolved runtime package. The diff contains no tracked private config artifacts or matches for the checked secret/key formats. The local toolchains and iOS development plist remain untracked.
+
+| Handoff | Starting point |
+|---|---|
+| [AUTH-C01](../integration_plan/01_auth_app_integration.md#int-auth-c01--one-sdkcontroller-and-compatible-session-behavior) | Adapt the landing-page session controller to `AppAuthProducer` and pass it to `createAppRuntime`. Keep one SDK/refresh owner for the root, API and account controller. Verify bootstrap, storage and generation behavior before switching the root. The first normal route walkthrough is AUTH-C04. |
+| [ONB-C01](../integration_plan/02_onboarding_backend_protection.md#int-onb-c01--scoped-progress-and-root-routing) | Begin after the AUTH-C01–C04 handoff. Consume `OnboardingProgressRepository` and the C03 artwork. Reuse account-scoped profile/settings helpers and keep review/save separate from device Apply. Resolve the suggested shared-budget display against the per-app Android contract before activation. |
+| [IOS-C01](../integration_plan/04_ios_native_integration.md#int-ios-c01--host-target-audit-and-early-feasibility-proof) | Source/signing audit can proceed in parallel. Reuse the platform-resolved native registry and verified ownership boundary. Inspect host and extensions, entitlements and existing storage before exposing capabilities. |
+| [VERIFY-C01](../integration_plan/05_combined_app_verification.md#int-verify-c01--minimal-repeatable-environment-and-fixtures) | Prepare repeatable fixtures and platform evidence. Collect managed-account and on-device results when their feature routes connect. |
+
+Resolved versions: Node 24.20.0, npm 11.19.0, Expo 58.0.21, Expo Router 58.0.28, React 19.3.0, RN 0.88.1, Supabase JS/Auth 2.119.0, Expo Image 58.0.18 and Secure Store 58.0.3. Python 3.12.16 and uv 0.13.8 run the local API checks. Android uses JDK 17, SDK 37 and build-tools 37.0.0, NDK 27.1.12297006, ARM64, min API 24 and target API 36.
+
+### Verification and publication
+
+- `npm run check` passed. Results include 554 mobile unit tests, 813 component tests with two skipped, 682 default API tests with 287 deselected, six standalone guards, matching OpenAPI and generated HTTP types, and the four existing ESLint warnings. The separate database suite was outside this run.
+- The isolated UI build and production web export passed, including preview isolation, the 71 existing assets and 59 landing-page files.
+- Rebuilt the Android ARM64 debug APK and the internal R8-optimized standalone APK from the runtime revision above. The standalone fixture used synthetic public settings and produced the same SHA-256 as C05: `649ab7c60b9613ae583e036a9ddd032072055c1596d8ce4b1f446c2e0a0c1f4b`. Confirmed the embedded Hermes bundle, HooshUsage binding and native DEX module, manifest registration, local signature and 16 KiB alignment.
+- The exact C06 head's GitHub Foundation run is pending the user commit and push. APK installation, live account flows and real-device behavior remain later acceptance work.
