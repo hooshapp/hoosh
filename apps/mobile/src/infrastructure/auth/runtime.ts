@@ -1,56 +1,47 @@
 import type { AuthAccountActions, AuthSessionPort } from '@disconnect/contracts';
-import { createClient } from '@supabase/supabase-js';
+
+import { SessionController } from '../../features/auth/session-controller';
 import { createApiClient } from '../api/client';
 import { createAccountDataController } from '../query/account-controller';
-import { nativeAuthStorage } from './platform-storage';
-import { createAuthSession, type AppAuthSession } from './session';
-import { guardedAuthStorage } from './storage';
+import { readAuthConfig } from './config';
+import { AuthUnavailableError } from './errors';
+import { createAuthRuntime } from './supabase';
 
-function publicConfig(url: string | undefined, key: string | undefined) {
-  if (!url || !key || key.startsWith('sb_secret_')) return null;
-  try {
-    const u = new URL(url);
-    if (url.trim() !== url || u.protocol !== 'https:' || u.pathname !== '/' || u.search || u.hash || u.username || u.password) return null;
-    // Legacy keys must explicitly be anon; never bundle service-role JWTs.
-    if (!key.startsWith('sb_publishable_')) {
-      const claims = JSON.parse(atob(key.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));
-      if (claims.role !== 'anon') return null;
-    }
-    return { url: u.origin, key };
-  } catch { return null; }
-}
 export type AppAuthProducer = Readonly<{
-  auth: AuthSessionPort & AuthAccountActions & Pick<AppAuthSession,
-    'start' | 'dispose' | 'signIn' | 'retryBootstrap'>;
+  auth: AuthSessionPort & AuthAccountActions & {
+    start(): Promise<void>;
+    dispose(): void;
+    signIn(email: string, password: string): Promise<void>;
+    retryBootstrap(): Promise<void>;
+  };
   setForeground: (active: boolean) => void;
   canClearSession: boolean;
   nativeNamespace: string | null;
+  getPrivateAccessHeld?: () => boolean;
 }>;
 
 function createDefaultAuthProducer(): AppAuthProducer {
-  const config = publicConfig(process.env.EXPO_PUBLIC_SUPABASE_URL, process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY);
-  let auth: AppAuthSession | undefined;
-  const makeClient = () => config ? createClient(config.url, config.key, {
-    auth: {
-      storageKey: 'disconnect.auth.v1',
-      storage: nativeAuthStorage ? guardedAuthStorage(nativeAuthStorage, () => auth?.storageFailed()) : undefined,
-      persistSession: Boolean(nativeAuthStorage),
-      autoRefreshToken: false, detectSessionInUrl: false,
-    },
-  }) : null;
-  let sdk: ReturnType<typeof makeClient>;
-  try { sdk = makeClient(); } catch { sdk = null; }
-  auth = createAuthSession(sdk?.auth ?? null);
+  let config: ReturnType<typeof readAuthConfig> | null = null;
+  try {
+    config = readAuthConfig(
+      process.env.EXPO_PUBLIC_SUPABASE_URL,
+      process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+    );
+  } catch (error) {
+    if (!(error instanceof AuthUnavailableError)) throw error;
+  }
   const host = config ? new URL(config.url).hostname : '';
   const nativeNamespace = /^([a-z0-9_-]{1,64})\.supabase\.co$/.exec(host)?.[1] ?? null;
+  const controller: SessionController = new SessionController(() => {
+    if (!config) throw new AuthUnavailableError('configuration', false);
+    return createAuthRuntime(config, controller.storageFailed);
+  });
   return {
-    auth,
+    auth: controller,
     nativeNamespace,
-    canClearSession: sdk !== null,
-    setForeground(active) {
-      if (active) sdk?.auth.startAutoRefresh();
-      else sdk?.auth.stopAutoRefresh();
-    },
+    canClearSession: Boolean(config),
+    getPrivateAccessHeld: controller.getPrivateAccessHeld,
+    setForeground: controller.setForeground,
   };
 }
 

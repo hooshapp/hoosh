@@ -1,6 +1,8 @@
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { Text } from 'react-native';
 import type { SupabaseClient, Session } from '@supabase/supabase-js';
+import { SessionController } from '@/features/auth/session-controller';
+import type { AuthRuntime } from '@/infrastructure/auth/supabase';
 import { createAuthSession } from '@/infrastructure/auth/session';
 import type { AppRuntime } from '@/infrastructure/auth/runtime';
 import { createAccountDataController } from '@/infrastructure/query/account-controller';
@@ -22,9 +24,9 @@ function setup(initial: string | null = null) {
     getSession: jest.fn(async () => ({ data: { session: stored }, error: null })),
     onAuthStateChange: jest.fn((fn) => { emit = fn; return { data: { subscription: { unsubscribe: () => { emit = undefined; } } } }; }),
     refreshSession: jest.fn(async () => ({ data: { session: stored }, error: null })),
-    signInWithPassword: jest.fn(async () => { stored = { user: { id: A }, access_token: 'fixture-private' } as Session; emit?.('SIGNED_IN', stored); return { data: { session: stored }, error: null }; }),
+    signInWithPassword: jest.fn(async () => { stored = { user: { id: A }, access_token: 'fixture-private', expires_at: Date.now() / 1000 + 3600 } as Session; emit?.('SIGNED_IN', stored); return { data: { session: stored }, error: null }; }),
     signOut: jest.fn(async () => { stored = null; emit?.('SIGNED_OUT', null); return { error: null }; }),
-    startAutoRefresh: jest.fn(), stopAutoRefresh: jest.fn(),
+    startAutoRefresh: jest.fn(async () => undefined), stopAutoRefresh: jest.fn(async () => undefined),
   };
   const auth = createAuthSession(sdk as unknown as SupabaseClient['auth']);
   const api = { configuration: { status: 'ready' }, getRecoveryState: () => 'ready' } as unknown as AccountApi;
@@ -123,4 +125,34 @@ it('detaches private scope during a recovery flow even when Auth has a session',
   expect(previous?.isCurrent()).toBe(false);
   expect(runtime.controller.getSnapshot().scope).toBeNull();
   expect(sdk.onAuthStateChange).toHaveBeenCalledTimes(1);
+});
+
+it('signs in through the baseline form with the landing-page session controller', async () => {
+  const { runtime: fallback, sdk } = setup();
+  const create = jest.fn(() => ({
+    client: { auth: sdk },
+    config: { storageKey: 'fixture-session' },
+    storage: {
+      getItem: async () => null,
+      setItem: async () => {},
+      removeItem: async () => {},
+    },
+  }) as unknown as AuthRuntime);
+  const auth = new SessionController(create);
+  const runtime: AppRuntime = {
+    ...fallback,
+    auth,
+    controller: createAccountDataController(auth, fallback.api),
+    getPrivateAccessHeld: auth.getPrivateAccessHeld,
+    setForeground: auth.setForeground,
+  };
+  const view = await render(<AppSessionBoundary runtime={runtime}><Private /></AppSessionBoundary>);
+  await screen.findByText('Welcome back');
+  await fireEvent.changeText(screen.getByLabelText('Email'), 'fixture@example.test');
+  await fireEvent.changeText(screen.getByLabelText('Password'), 'fixture-password');
+  await fireEvent.press(screen.getByRole('button', { name: 'Sign in' }));
+  await screen.findByText(`Private account ${A}`);
+  expect(create).toHaveBeenCalledTimes(1);
+  expect(sdk.onAuthStateChange).toHaveBeenCalledTimes(1);
+  await view.unmount();
 });

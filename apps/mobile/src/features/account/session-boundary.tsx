@@ -38,6 +38,12 @@ export function AppSessionBoundary({
     runtime.auth.getSnapshot,
     runtime.auth.getSnapshot,
   );
+  const accessHeld = useSyncExternalStore(
+    runtime.auth.subscribe,
+    runtime.getPrivateAccessHeld ?? privateAccessOpen,
+    privateAccessOpen,
+  );
+  const privateHeld = holdPrivate || accessHeld;
   useEffect(() => {
     void runtime.auth.start();
     const foreground = (state: string | null | undefined) => {
@@ -54,25 +60,33 @@ export function AppSessionBoundary({
   return (
     <AppRuntimeContext.Provider value={runtime}>
       <QueryLifecycleBoundary>
-        {snapshot.status === 'signed_in' && !holdPrivate ? (
+        {snapshot.status === 'signed_in' && !privateHeld ? (
           <AccountDataProvider controller={runtime.controller}>
             <NativeOwnerBoundary>
               <AccountWeeklyPlanBoundary>{children}</AccountWeeklyPlanBoundary>
             </NativeOwnerBoundary>
           </AccountDataProvider>
         ) : publicContent === undefined ? (
-          <SessionAccess runtime={runtime} status={snapshot.status} />
+          <SessionAccess
+            runtime={runtime}
+            status={snapshot.status}
+            recoveryHeld={snapshot.status === 'signed_in' && privateHeld}
+          />
         ) : publicContent}
       </QueryLifecycleBoundary>
     </AppRuntimeContext.Provider>
   );
 }
+const privateAccessOpen = () => false;
+
 function SessionAccess({
   runtime,
   status,
+  recoveryHeld,
 }: {
   runtime: AppRuntime;
   status: string;
+  recoveryHeld: boolean;
 }) {
   const [email, setEmail] = useState(''),
     [password, setPassword] = useState('');
@@ -136,10 +150,12 @@ function SessionAccess({
               </Text>
             ) : null}
           </>
-        ) : status === 'unavailable' ? (
+        ) : status === 'unavailable' || recoveryHeld ? (
           <>
             <Text>
-              {retryableBootstrap
+              {recoveryHeld
+                ? 'Clear this device’s session to return to sign in.'
+                : retryableBootstrap
                 ? 'Account access could not be restored. Check your connection and try again. Your private information is hidden.'
                 : 'Check this build’s account configuration and secure storage, then try again. Your private information is hidden.'}
             </Text>
