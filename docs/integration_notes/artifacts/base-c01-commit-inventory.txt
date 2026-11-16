@@ -1,0 +1,104 @@
+> cee632c docs: record Android publication checks
+> 0e27d63 test(android): verify standalone protection lifecycle
+> 41d8da8 fix(mobile): verify compact and older Android layouts
+> 515cf7d feat(android): build and verify an internal standalone app
+> a3b4393 feat(mobile): connect normal account app to weekly protection
+> 6c1468f feat(home): connect recommendations and verify one-time quest flow
+> 808ba94 feat(recommendations): persist temporary offers and one-time acceptance
+> 011f5ef feat(history): connect account insights and verify Android flow
+> 918ac0d feat(android): collect private selected-app History estimates
+> 6bb5850 feat(history): persist private baseline and comparison series
+> f87a006 feat(home): connect rewards and verify reliable account delivery
+> 36ebe3a feat(android): persist reward evidence and session nudges
+> cb5321d feat(rewards): add account ledger and atomic Dino feeding
+> 1dbeb6e docs(plan): defer further TalkBack work and record delivery order
+> a04d5da docs(android): record final quest journey and accessibility acceptance
+> 37152fd fix(android): accept nullable quest metadata across the native bridge
+> 91894f4 feat(quests): connect account and device lifecycle controls
+> b5e314f feat(android): persist account-owned recurring quest protection
+> 999512a feat(quests): add versioned occurrence scheduling and completion
+> f447e68 fix(auth): exclude device credentials from Android backups
+> 0bbf714 feat(auth): connect SDK session authority to private app routes
+> b9bf936 test(quests): verify mobile HTTP persistence and record schema handoff
+> 7d85e50 feat(mobile): connect saved quest management to scoped API
+> 10d8e16 feat(quests): persist revisioned account-owned quest definitions
+> 4c632b4 docs(mobile): record Android branch GitHub verification
+> 69d8351 docs(mobile): record shared journey phone acceptance
+> 2602f37 feat(mobile): connect weekly plans to shared Home and Settings
+> 62d0396 feat(android): apply weekly plan settings with native recurrence
+> 0f30ae9 feat(android): verify lifecycle recovery and prepare shared status reader
+< 01c7a17 Redesign the Home, History, Feedback, and Settings screens to match the revised beta visual system while preserving existing behavior.
+> 696eec1 fix(android): verify intervention setup and device lifecycle
+> 4f986e8 feat(android): add native intervention coordinator and owner fencing
+< b1b6b9f fix bugs
+> 56e7ba4 docs(android): record picker lock-return acceptance
+< e409f1e fixed bugs
+> 082b1b9 feat(android): harden selection lifecycle and picker accessibility
+< 44b0702 old app revised
+> 751633b feat(android): add revisioned local selection drafts and editor save
+> e9e2d90 docs: reconcile PM answers and update implementation gates
+> 90cdc44 feat(android): add volatile native app-selection preview
+> 6e36788 test(android): add app-context selection discovery probe
+> 9fda458 docs(android): investigate app visibility and selection
+> f2fae39 docs(mobile): record RN-10 GitHub verification
+> 0f7f74e fix(mobile): improve Android focus and record RN-10 device checks
+> e55e314 docs(api): record successful GitHub foundation checks
+> 7fe2c55 test(api): verify hosted settings readiness and acceptance
+< 6117890 old swift code adjustments
+< 322064d implmented the set your own plan pages and it is tested
+> cadc91d test(android): verify permission and status lifecycle
+> d1aa6ee feat(protection-ui): connect Android status and foreground refresh
+> 6734a26 feat(android): expose measured capabilities and usage access
+> 6117b96 chore(android): add a bounded capability probe
+> a0cb9bc test(mobile): verify settings persistence and isolation
+> dd74a80 feat(home): consume saved preferences and device availability
+> 1326601 feat(settings): persist non-enforcing plan drafts
+> daf4247 feat(settings): persist alternative activity preferences
+> 90fe8e3 feat(settings): add scoped settings reads and updates
+> 21477df feat(settings): define revisioned settings draft storage
+> d590858 docs: expand RN-08 and RN-09 execution steps
+> f32e87c feat(mobile): wire revisioned profile editing through account scopes
+< 4cbe8c3 Update onboarding age and avatar choices
+> f201d0c test(api): verify browser protocol and isolated startup modes
+> 138387f docs(api): record managed-account acceptance evidence
+> 188c5dd feat(api): add operational diagnostics and acceptance checks
+> c563ff6 feat(api): save profiles with optimistic concurrency
+> ca275af feat(api): read the authenticated user's profile
+> 4d8d1fc feat(db): migrate minimal profiles with runtime row isolation
+> 45a8c2e feat(db): add scoped PostgreSQL sessions and integration fixtures
+> 302b214 test(db): add disposable PostgreSQL integration environment
+< 8e573b9 reorganized file structure
+> 53d6c8b chore(db): define least-privilege development database access
+< bb4b540 User's onboarding questions, screen time validation not tested yet
+> d4f3e38 chore(contracts): generate identity API types from OpenAPI
+> 06f5704 feat(api): expose database-independent authenticated identity
+> 35ba307 feat(auth): resolve and cache project-pinned signing keys
+> bdd62a6 feat(auth): verify Supabase access-token signatures and claims
+> 8ce121d feat(api): add identity configuration and structured errors
+> 2703a23 fix(mobile): polish weekday reflow and native tab backgrounds
+> 704bc49 fix(mobile): prepare native UI QA and harden confirmation dialogs
+> ab7d855 fix(mobile): wire original icon pack with verified source geometry
+> f67a8ea feat(mobile): complete History details and RN-09 UI coverage
+> b319d75 feat(mobile): complete shared days hours and session editor UI
+> d0206b4 feat(mobile): complete preference editors and inline Settings composition
+> 3c9d20d feat(mobile): complete quest editor presentation and local draft flow
+> 4cf7b30 feat(mobile): compose Settings with controlled profile and feature availability
+> c1c84c3 feat(mobile): compose History with evidence-aware metric states
+> 2bbebad feat(mobile): compose Quests with independent suggestion states
+> 9b5fbd0 fix(mobile): improve accessible feedback layout and lifecycle cleanup
+> ff75039 feat(mobile): compose Home with explicit feature availability
+< 32165ea Completed sign in and sign up authentications set up
+> 71da2d5 feat(mobile): prepare capability-aware protection status UI
+> 5790302 feat(mobile): prepare profile editor UI without persistence
+> 0c6e4db feat(mobile): prepare guarded identity account surface
+> 610f570 feat(mobile): isolate account server state and lifecycle
+> 0741758 feat(mobile): harden account-scoped HTTP requests
+> 2d5c0d1 feat(mobile): add authentic assets and floating main navigation
+> 2f88102 feat(mobile): add shared accessible screen state primitives
+> 6a64e98 docs: relocate context and establish implementation knowledge base
+< de81305 docs(onboarding): record intro implementation evidence
+< a9feec4 feat(onboarding): add first-launch scrolling introduction
+< adc969c Merge branch 'main' into landing-page
+< e00dbb3 chore(ios): complete and verify legacy source import
+< 6a044a0 added old ios swift code
+< 661b558 docs: add Figma design review

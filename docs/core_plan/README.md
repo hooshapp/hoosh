@@ -1,5 +1,7 @@
 # Disconnect — Core Development Plans
 
+For the combined app, start with the [shared product integration guide](../integration_plan/README.md).
+
 **GitHub publication verified (2026-11-15):** source `0e27d63` and its
 standalone/layout ancestors are pushed on `task/react-native/android-protection-lifecycle`.
 [Foundation run43761603564](https://github.com/hooshapp/hoosh/actions/runs/43761603564)

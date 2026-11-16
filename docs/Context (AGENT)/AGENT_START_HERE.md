@@ -1,5 +1,7 @@
 # Disconnect — AI Engineering Agent Start Here
 
+For the combined app, start with the [shared product integration guide](../integration_plan/README.md).
+
 **Start date:** 2026-10-28  
 **Read in order:** `PRD.md` → `TSD.md` → current Figma design → existing source repository.  
 **Design:** https://www.figma.com/design/ukmD2ZidJ9UR2XxUkvdPoJ/App-UI?node-id=0-1
