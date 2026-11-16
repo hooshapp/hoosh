@@ -42,9 +42,9 @@ functionality was intentionally removed.
 | INT-BASE-C01 | `chore(integration): establish audited source baseline` | Inventory and automated checks recorded in `59e4da9`; interactive startup pending. [Baseline checkpoint](../integration_notes/plan_03_shared_foundation_reconciliation_notes.md) |
 | INT-BASE-C02 | `build(mobile): reconcile integration dependencies and config` | Checks passed in `d07a108`. [C02 checks](../integration_notes/plan_03_shared_foundation_reconciliation_notes.md#int-base-c02--dependency-and-configuration-reconciliation) |
 | INT-BASE-C03 | `feat(mobile): reconcile shared onboarding and auth assets` | Checks passed in `e411344`. [C03 notes](../integration_notes/plan_03_shared_foundation_reconciliation_notes.md#int-base-c03--shared-artwork-and-ui-compatibility) |
-| INT-BASE-C04 | `refactor(mobile): establish integration composition seams` | Checks passed; commit pending. [C04 notes](../integration_notes/plan_03_shared_foundation_reconciliation_notes.md#int-base-c04--app-composition-and-native-handoff) |
-| INT-BASE-C05 | `test(mobile): protect existing features during integration` | Next; C04 |
-| INT-BASE-C06 | `chore(integration): verify shared foundation handoff` | Planned; C01–C05 |
+| INT-BASE-C04 | `refactor(mobile): establish integration composition seams` | Checks passed in `b4db69a`. [C04 notes](../integration_notes/plan_03_shared_foundation_reconciliation_notes.md#int-base-c04--app-composition-and-native-handoff) |
+| INT-BASE-C05 | `test(mobile): protect existing features during integration` | Checks passed; commit pending. [C05 evidence](../integration_notes/plan_03_shared_foundation_reconciliation_notes.md#int-base-c05--retained-product-and-account-boundaries) |
+| INT-BASE-C06 | `chore(integration): verify shared foundation handoff` | Next; C01–C05 |
 
 ### INT-BASE-C01 — Complete inventory and reproducible baseline
 

@@ -73,6 +73,7 @@ function fixture({
   locked = false,
   draft = SAVED as PlanDraft | null,
   identityPending = false,
+  identityUnavailable = false,
 } = {}) {
   let stored: Session | null = {
     user: { id: A },
@@ -135,6 +136,7 @@ function fixture({
     let result: unknown;
     if (path === '/v1/me') {
       if (identityWait) await identityWait;
+      if (identityUnavailable) throw new ApiError('unavailable');
       result = { user_id: account.user_id, email: null };
     } else if (path === '/v1/settings') {
       if (options.method === 'PATCH') {
@@ -394,6 +396,21 @@ test('normal root never binds SDK identity to native before the verified API ide
   expect(f.port.interventionOpen).not.toHaveBeenCalled();
   await act(f.unlockIdentity);
   await screen.findByText('No weekly plan applied');
+});
+
+test('an unavailable API identity keeps the signed-in app from binding native state', async () => {
+  const f = fixture({ identityUnavailable: true });
+  await renderRouter(routes, { initialUrl: '/settings' });
+  await waitFor(() =>
+    expect(f.request).toHaveBeenCalledWith('/v1/me', expect.anything()),
+  );
+  expect(screen.getByRole('button', { name: 'Sign out of this device' })).toBeTruthy();
+  expect(screen.queryByRole('button', { name: 'Preview saved plan' })).toBeNull();
+  expect(screen).toHavePathname('/settings');
+  expect(screen.queryByText('Welcome back')).toBeNull();
+  expect(f.port.selectionRead).not.toHaveBeenCalled();
+  expect(f.port.scheduleRead).not.toHaveBeenCalled();
+  expect(f.port.interventionClaimOwner).not.toHaveBeenCalled();
 });
 
 test('saved editor changes update account draft only; explicit Apply then uses the newly acknowledged draft', async () => {

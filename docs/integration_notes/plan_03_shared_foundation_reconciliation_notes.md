@@ -1,6 +1,6 @@
 # Plan 03 — Shared foundation reconciliation
 
-**Checkpoint:** INT-BASE-C04 checks complete. **Next part:** INT-BASE-C05 and parallel iOS source/signing audit. **Owner / reviewer:** Ishmum / Anisha per the shared plan. Anisha requested starting the integration. **Branch:** `integration/shared-product`. **C01 commit:** `59e4da9`. **C02 commit:** `d07a108`. **C03 commit:** `e411344`. **C04 commit:** Pending.
+**Checkpoint:** INT-BASE-C05 checks complete. **Next part:** INT-BASE-C06. **Parallel work available:** iOS source/signing audit. **Owner / reviewer:** Ishmum / Anisha per the shared plan. Anisha requested starting the integration. **Branch:** `integration/shared-product`. **C01 commit:** `59e4da9`. **C02 commit:** `d07a108`. **C03 commit:** `e411344`. **C04 commit:** `b4db69a`. **C05 commit:** Pending.
 
 **Read on resume:** [execution order](../integration_plan/README.md), [foundation plan](../integration_plan/03_shared_foundation_reconciliation.md), and [notes workflow](README.md). Update this checkpoint and the owning ledger after each increment.
 
@@ -101,3 +101,20 @@ The iOS source and signing audit may start once this boundary is accepted. Nativ
 - All 554 mobile unit tests and 73 targeted component/native-adapter tests passed locally. The new tests cover supplied Auth without default SDK creation, public content without private context, and stale private scope rejection when recovery detaches it. Existing tests exercise account replacement, app lifecycle cleanup, verified native owner handling and Android quests with weekly support absent.
 - Typecheck and production web export passed, including developer preview isolation and artwork integrity. Lint reported four existing warnings.
 - C05 exercises the retained end-to-end components and normal account boundaries. The iOS audit may now inspect source and signing alongside this work. Live providers, packaged binary behavior and signed phones remain later acceptance gates.
+
+## INT-BASE-C05 — Retained product and account boundaries
+
+**Starting revision:** `b4db69a`. **Branch:** `integration/shared-product`. **Commit:** Pending. The preceding commit is titled `INT-AUTH-C04` in Git and implements `INT-BASE-C04` in the plan.
+
+- Extended the normal Expo Router root fixture in `apps/mobile/src/features/plans/normal-app-integration.test.tsx` to exercise an unavailable `/v1/me` after sign-in. Verified that Settings and sign-out remain available while native owner claim, saved selections and weekly reads remain gated. The rejected fixture request cannot activate protection. No runtime source was changed.
+- The existing root suite covers saved-plan editing, explicit Preview/Apply/Stop, sign-out retaining installed protection, account replacement during selection, permission revocation and quest availability without weekly support. The wider unit/component suites exercise cache and dirty-draft behavior, uncertain-request readback, API refresh and stale-account guards, quest and weekly coexistence, reward/outbox replay, and History unavailable states.
+
+### Local regression evidence
+
+- Node 24.20.0 / npm 11.19.0 typecheck, standalone configuration guard tests and full mobile tests passed. Vitest ran 554 tests. Jest passed 812 tests in 99 suites with two skips. A separate final run of the normal-root suite passed 30 checks across both configured projects.
+- Production web export passed asset integrity and preview isolation. Lint reported four existing warnings. The test fixture and standalone build use no hosted credentials or live accounts.
+- `:app:assembleDebug` passed on JDK 17 and Android SDK 37 for ARM64. Verified the debug APK signature, HooshUsage in the packaged DEX, and Usage Access/protection service registration in the packaged manifest. Gradle created the standard local Android debug key. No APK was installed.
+- Built the R8-optimized standalone APK with embedded Hermes, using a synthetic publishable key and no dotenv input. The packaging checker passed signature, 16 KiB alignment, SDK/ABI, bundled fonts, service/permission registration and QA isolation. Independently confirmed that the packaged DEX contains the HooshUsage module after R8 and the embedded JS contains its binding. APK SHA-256: `649ab7c60b9613ae583e036a9ddd032072055c1596d8ce4b1f446c2e0a0c1f4b`. Build report records base `b4db69a2f959571134e3b6ac353df4a899fe36b6` with the test and notes edits in the worktree.
+- The fixture APK is packaging evidence only. Hosted accounts, installed app behavior and physical-device permission prompts remain later acceptance checks. No dashboard or device state changed. Build outputs remain local.
+
+Next, **INT-BASE-C06** verifies the reproducible foundation handoff and records which source paths actually landed and which are still planned.
