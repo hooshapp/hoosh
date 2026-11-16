@@ -8,6 +8,12 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 
 import { colors, fonts } from '@/design/tokens';
 import { authErrorMessage } from '@/infrastructure/auth/errors';
+import { appleAvailable, requestAppleCredential } from '@/infrastructure/auth/apple';
+import { openOAuthBrowser } from '@/infrastructure/auth/oauth-browser';
+import { socialConfig } from '@/infrastructure/auth/social-config';
+
+import { AppleButton } from './AppleButton';
+import type { SocialProvider } from './link-flow';
 import { usePublicAuth } from './use-public-auth';
 import { type AuthMode, type AuthValues, validateAuthForm } from './validation';
 
@@ -17,10 +23,18 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
   const { runtime, snapshot, links } = usePublicAuth();
   const controller = runtime.authForms;
   const [busy, setBusy] = useState(false);
+  const [nativeAppleAvailable, setNativeAppleAvailable] = useState(false);
   const [needsConfirmation, setNeedsConfirmation] = useState(false);
   const submitting = useRef(false);
   const mounted = useRef(true);
   useEffect(() => { mounted.current = true; return () => { mounted.current = false; }; }, []);
+  useEffect(() => {
+    let active = true;
+    if (Platform.OS === 'ios' && socialConfig.appleNative) {
+      void appleAvailable().then(value => { if (active) setNativeAppleAvailable(value); }).catch(() => undefined);
+    }
+    return () => { active = false; };
+  }, []);
   const insets = useSafeAreaInsets();
   const { height } = useWindowDimensions();
   const [values, setValues] = useState<AuthValues>({ name: '', email: '', password: '' });
@@ -32,6 +46,37 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
   const errors = attempted ? validateAuthForm(mode, values) : {};
   const [passwordVisible, setPasswordVisible] = useState(false);
   const accountLocked = busy || snapshot.status !== 'signed_out' || (signup && (!controller || !!links.pending));
+
+  const appleEnabled = Platform.OS === 'ios' ? socialConfig.appleNative && nativeAppleAvailable : socialConfig.appleOAuth;
+  const providersLocked = accountLocked || !!links.pending || !runtime.authLinks;
+
+  async function socialSignIn(provider: SocialProvider) {
+    const actions = runtime.authLinks;
+    if (!actions || submitting.current || providersLocked || !(provider === 'apple' ? appleEnabled : socialConfig.google)) return;
+    submitting.current = true;
+    setBusy(true);
+    setNotice('');
+    try {
+      if (provider === 'apple' && Platform.OS === 'ios') {
+        await actions.signInWithApple(requestAppleCredential);
+        return;
+      }
+      const flow = await actions.beginOAuth(provider, Platform.OS === 'web' ? window.location.origin : undefined);
+      const callback = await openOAuthBrowser(flow.url, flow.redirectUrl);
+      if (callback) {
+        const path = await actions.handleCallback(callback);
+        if (mounted.current) router.replace(path as Href);
+      } else if (controller?.getLinkSnapshot().pending?.id === flow.flowId) {
+        await controller.cancelLink();
+        if (mounted.current) setNotice('Sign-in was canceled. You can try again.');
+      }
+    } catch (error) {
+      if (mounted.current) setNotice(authErrorMessage(error));
+    } finally {
+      submitting.current = false;
+      if (mounted.current) setBusy(false);
+    }
+  }
 
   function update(field: keyof AuthValues, value: string) {
     setValues(current => ({ ...current, [field]: value }));
@@ -140,13 +185,23 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
                 accessibilityState={{ busy, disabled: accountLocked }} style={({ pressed }) => [styles.button, styles.primary, pressed && styles.pressed]}>
                 <Text style={styles.primaryText}>{busy ? (signup ? 'creating account…' : 'logging in…') : 'continue'}</Text>
               </Pressable>
-              <Pressable accessibilityRole="button" accessibilityLabel="Continue with Google" disabled
-                accessibilityState={{ disabled: true }}
-                accessibilityHint="Google sign-in is not available in this build."
+              <Pressable accessibilityRole="button" accessibilityLabel="Continue with Google" disabled={providersLocked || !socialConfig.google}
+                accessibilityState={{ disabled: providersLocked || !socialConfig.google }}
+                accessibilityHint={socialConfig.google ? undefined : 'Google sign-in is not enabled in this build.'}
+                onPress={() => { void socialSignIn('google'); }}
                 style={[styles.button, styles.googleButton]}>
                 <Image source={require('../../../assets/auth/google.png')} style={styles.googleLogo} />
                 <Text style={styles.googleText}>Continue with Google</Text>
               </Pressable>
+              {(Platform.OS !== 'ios' || nativeAppleAvailable) && (
+                <AppleButton disabled={providersLocked || !appleEnabled} onPress={() => { void socialSignIn('apple'); }} />
+              )}
+              {!signup && <Link href="/(auth)/forgot-password" asChild>
+                <Pressable accessibilityRole="link" disabled={busy} style={styles.switchLink}><Text style={styles.switchText}>Forgot password?</Text></Pressable>
+              </Link>}
+              {links.pending?.kind === 'oauth' && <Link href="/(auth)/social-sign-in" asChild>
+                <Pressable accessibilityRole="link" disabled={busy} style={styles.switchLink}><Text style={styles.switchText}>View sign-in request</Text></Pressable>
+              </Link>}
               {snapshot.status === 'unavailable' && <Text accessibilityRole="alert" style={styles.notice}>{snapshot.reason === 'configuration'
                 ? 'Account access is unavailable in this build.'
                 : 'Session access is unavailable. Account screens stay locked until access is restored.'}</Text>}

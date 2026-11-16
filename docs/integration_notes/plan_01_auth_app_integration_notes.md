@@ -1,6 +1,6 @@
 # Plan 01 — Auth into the actual app
 
-**Checkpoint:** INT-AUTH-C02 local checks complete. **Next:** user visual review, then INT-AUTH-C03. **Owner / reviewer:** Anisha / Ishmum. **Branch:** `integration/shared-product`. **Base:** `6167e364e605728a18556af503469dcfb6d9b217`. **C01 commit:** `0dfb490`. **C02 commit:** Pending.
+**Checkpoint:** INT-AUTH-C03 local checks complete. **Next:** INT-AUTH-C04. **Owner / reviewer:** Anisha / Ishmum. **Branch:** `integration/shared-product`. **Base:** `6167e364e605728a18556af503469dcfb6d9b217`. **C01 commit:** `0dfb490`. **C02 commit:** `4f07e6d`. **C03 commit:** Pending.
 
 ## INT-AUTH-C01 — Consolidate the application session authority
 
@@ -35,3 +35,19 @@ AUTH-C02 connects the actual Figma-derived sign-in, sign-up and public routes. R
 - Compared the browser renders with both Figma screenshots at 393 × 852. Checked the visible artwork bounds, field geometry and primary button position. At 320 × 568, verified typing, password visibility and switching back to login. The visual review server uses the actual Expo routes at localhost:8090 with dotenv disabled.
 - Typecheck, lint (four existing warnings), 606 portable tests and 40 targeted component/crypto tests passed. The fixture routes covered signed-out deep links, login validation, login to Home, unavailable API identity, sign-out and neutral signup confirmation. Web export and Android debug assembly passed. Expo autolinking registered the Android Crypto module.
 - For review use `/sign-in` and `/sign-up`. The running preview has no hosted configuration. A real verification-link return, password reset and provider sign-in are for AUTH-C03 and later acceptance.
+
+## INT-AUTH-C03 — Verified callback, password recovery and providers
+
+**Starting revision:** `4f07e6d` (AUTH-C02). **Commit:** Pending. Provider and email screen source: landing-page `b6d61df5c8a2c1eacbe28a38e06b84b5bcd368d1`.
+
+- Registered `/auth/callback` and `/auth/link-error`, plus forgot-password, reset-password and provider-pending routes. They share the existing controller. The public index resumes eligible stored recovery or provider activity. Callback errors navigate to a clean URL without exposing the code, verifier or provider error.
+- Added explicit duplicate, action and provider parameter checks while retaining exact origin/scheme/path, pending flow ID, expiry and single-use PKCE checks. Updates require the matching recovery state, and the recovery session is cleared before normal login.
+- Added the landing-page Apple native nonce bridge, browser OAuth adapters and the Apple/Google controls under the public flags. Android now registers `disconnect-dev://auth/callback` exactly and keeps the separate development-client scheme. The Expo config prepares Apple Sign In for the future RN iOS host. The existing Swift project, provisioning and Supabase settings were not edited.
+- Development redirect configuration to verify during live acceptance: localhost ports 8081 and 8090 with `/auth/callback`, and `disconnect-dev://auth/callback` on native. The existing flow correlation remains mandatory. Enable each provider only on a development build configured for that provider.
+
+### Verification and handoff
+
+- Typecheck, lint, 609 unit tests and 52 targeted component/native-mock tests passed. Coverage includes malformed/duplicate/expired callbacks, account replacement, PKCE deduplication, unauthorized reset, and Apple nonce/cancel handling.
+- Browser tests used the installed Supabase SDK and intercepted provider responses. Verified cold-reload confirmation in the same tab, replay rejection and clean URL, password update followed by local sign-out, and Apple/Google browser PKCE reaching Home. No real email or provider sign-in occurred.
+- Web export and Android debug assembly passed. Inspected the packaged APK for the exact Android callback filter. Signed native callback handling and real provider/delivery acceptance remain pending. The fixture server was stopped; localhost:8090 remains the visual preview with providers disabled.
+- Next is AUTH-C04, the shared root/account cleanup and normal-session walkthrough.

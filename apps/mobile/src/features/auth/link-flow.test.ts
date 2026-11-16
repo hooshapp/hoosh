@@ -22,6 +22,9 @@ describe('email callback context', () => {
     `http://localhost:8090/auth/callback?flow=${id}&code=a&code=b`,
     `http://localhost:8090/auth/callback?flow=${id}&flow=${id}&code=a`,
     `http://localhost:8090/auth/callback?flow=${id}&code=a&error=denied`,
+    `http://localhost:8090/auth/callback?flow=${id}&code=a&type=signup`,
+    `http://localhost:8090/auth/callback?flow=${id}&code=a&provider=apple`,
+    `http://localhost:8090/auth/callback?flow=${id}&code=a&next=one&next=two`,
     `http://localhost:8090/auth/callback?flow=${id}#access_token=synthetic`,
   ])('rejects an untrusted or ambiguous callback', url => {
     expect(() => validateCallback(url, pending())).toThrow('Request a new link');

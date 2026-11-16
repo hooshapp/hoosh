@@ -58,6 +58,8 @@ function AppNavigator({ publicOnly = false }: { publicOnly?: boolean }) {
     <>
       <StatusBar style={publicOnly ? "light" : "dark"} />
       <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: publicOnly ? colors.darkCanvas : colors.warmCanvas } }}>
+        <Stack.Screen name="auth/callback" />
+        <Stack.Screen name="auth/link-error" />
         <Stack.Protected guard={publicOnly}>
           <Stack.Screen name="index" />
           <Stack.Screen name="(auth)" />

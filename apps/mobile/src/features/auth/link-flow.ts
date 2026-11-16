@@ -46,6 +46,12 @@ export function validateCallback(urlValue: string, pending: PendingLink | null):
       url.username || url.password || url.hash || url.searchParams.getAll('flow').length !== 1 ||
       url.searchParams.get('flow') !== pending.id || url.searchParams.has('error') || url.searchParams.has('error_code') ||
       url.searchParams.getAll('code').length !== 1) throw new Error();
+    const keys = [...url.searchParams.keys()];
+    if (new Set(keys).size !== keys.length) throw new Error();
+    const provider = url.searchParams.get('provider');
+    if (provider !== null && (pending.kind !== 'oauth' || provider !== pending.provider)) throw new Error();
+    const type = url.searchParams.get('type');
+    if (type !== null && type !== pending.kind) throw new Error();
     const code = url.searchParams.get('code');
     if (!code || code.length > 2048 || !/^[A-Za-z0-9._~-]+$/.test(code)) throw new Error();
     return code;

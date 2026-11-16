@@ -18,6 +18,11 @@ import AuthLayout from '@/app/(auth)/_layout';
 import SignIn from '@/app/(auth)/sign-in';
 import SignUp from '@/app/(auth)/sign-up';
 import ConfirmEmail from '@/app/(auth)/confirm-email';
+import ForgotPassword from '@/app/(auth)/forgot-password';
+import ResetPassword from '@/app/(auth)/reset-password';
+import SocialSignIn from '@/app/(auth)/social-sign-in';
+import AuthCallback from '@/app/auth/callback';
+import AuthLinkError from '@/app/auth/link-error';
 import Welcome from '@/app/(onboarding)/welcome';
 import OnboardingLayout from '@/app/(onboarding)/_layout';
 import QuestDetail from '@/app/quest/[id]';
@@ -76,6 +81,11 @@ const routes = {
   '(auth)/sign-in': SignIn,
   '(auth)/sign-up': SignUp,
   '(auth)/confirm-email': ConfirmEmail,
+  '(auth)/forgot-password': ForgotPassword,
+  '(auth)/reset-password': ResetPassword,
+  '(auth)/social-sign-in': SocialSignIn,
+  'auth/callback': AuthCallback,
+  'auth/link-error': AuthLinkError,
   '(onboarding)/_layout': OnboardingLayout,
   '(onboarding)/welcome': Welcome,
   'quest/[id]': QuestDetail,
@@ -735,4 +745,21 @@ test('signup without a session shows confirmation guidance and never mounts priv
   await fireEvent.press(screen.getByRole('button', { name: 'Return to log in' }));
   await screen.findByRole('header', { name: 'Hoosh login' });
   expect(cancelLink).toHaveBeenCalledTimes(1);
+});
+
+test('a reset route opened directly cannot authorize a password change', async () => {
+  const f = fixture({ signedOut: true });
+  await renderRouter(routes, { initialUrl: '/reset-password' });
+  await screen.findByText('A verified recovery link is required. Request a new link on this device.');
+  expect(screen.queryByLabelText('New password')).toBeNull();
+  expect(f.request).not.toHaveBeenCalled();
+});
+
+test('forgot-password is reachable from the public sign-in form', async () => {
+  fixture({ signedOut: true });
+  await renderRouter(routes, { initialUrl: '/sign-in' });
+  const link = await screen.findByRole('link', { name: 'Forgot password?' });
+  await fireEvent.press(link);
+  await screen.findByText('Reset your password');
+  expect(screen).toHavePathname('/forgot-password');
 });

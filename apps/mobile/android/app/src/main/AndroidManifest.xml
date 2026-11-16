@@ -25,8 +25,13 @@
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
-        <data android:scheme="disconnect-dev"/>
         <data android:scheme="exp+disconnect"/>
+      </intent-filter>
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+        <data android:scheme="disconnect-dev" android:host="auth" android:path="/callback"/>
       </intent-filter>
     </activity>
   </application>

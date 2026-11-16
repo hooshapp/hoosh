@@ -45,7 +45,7 @@ export default function ConfirmEmail() {
 
   return (
     <Screen dark title="Check your email">
-      <Text style={styles.copy}>If an account can be confirmed at that address, look for an email with the next step. Check Spam too.</Text>
+      <Text style={styles.copy}>If an account can be confirmed at that address, look for a confirmation email and check Spam too. Open the latest link on this device, in this same browser tab if you are using the web app.</Text>
       {expired && <Text style={styles.copy}>This request expired. Return to log in to start again.</Text>}
       {notice && <Text style={styles.copy} accessibilityRole="alert">{notice}</Text>}
       <Button
