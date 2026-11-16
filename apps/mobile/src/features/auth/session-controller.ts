@@ -255,7 +255,7 @@ export class SessionController implements AuthSessionPort, AuthAccountActions {
   });
   readonly signUp = (email: string, password: string, name: string, webOrigin?: string) => this.exclusive(async () => {
     const runtime = this.requireRuntime();
-    if (this.session) throw new AuthUnavailableError('not_ready');
+    if (this.session || this.links.pending) throw new AuthUnavailableError('not_ready');
     const pending = this.newLink('signup', email, webOrigin, name.slice(0, 320));
     await this.savePending(pending);
     const epoch = ++this.actionEpoch;

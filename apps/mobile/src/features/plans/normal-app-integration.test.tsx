@@ -13,12 +13,22 @@ import { renderRouter } from 'expo-router/testing-library';
 import { historyFixture } from '@/features/history/__tests__/history-fixture';
 import { offered } from '@/features/recommendations/__tests__/fixture';
 import Root from '@/app/_layout';
+import Index from '@/app/index';
+import AuthLayout from '@/app/(auth)/_layout';
+import SignIn from '@/app/(auth)/sign-in';
+import SignUp from '@/app/(auth)/sign-up';
+import ConfirmEmail from '@/app/(auth)/confirm-email';
+import Welcome from '@/app/(onboarding)/welcome';
+import OnboardingLayout from '@/app/(onboarding)/_layout';
+import QuestDetail from '@/app/quest/[id]';
+import NewQuest from '@/app/quest/new';
 import Tabs from '@/app/(tabs)/_layout';
 import Home from '@/app/(tabs)/index';
 import Settings from '@/app/(tabs)/settings';
 import Quests from '@/app/(tabs)/quests';
 import History from '@/app/(tabs)/history';
 import PreferenceDetail from '@/app/settings/[field]';
+import { INITIAL_LINK_STATE, type LinkState } from '@/features/auth/link-flow';
 import { createAuthSession } from '@/infrastructure/auth/session';
 import { createAccountDataController } from '@/infrastructure/query/account-controller';
 import type { AccountApi } from '@/infrastructure/query/account-scope';
@@ -61,6 +71,15 @@ jest.mock('expo-network', () => ({
 }));
 const routes = {
   _layout: Root,
+  index: Index,
+  '(auth)/_layout': AuthLayout,
+  '(auth)/sign-in': SignIn,
+  '(auth)/sign-up': SignUp,
+  '(auth)/confirm-email': ConfirmEmail,
+  '(onboarding)/_layout': OnboardingLayout,
+  '(onboarding)/welcome': Welcome,
+  'quest/[id]': QuestDetail,
+  'quest/new': NewQuest,
   '(tabs)/_layout': Tabs,
   '(tabs)/index': Home,
   '(tabs)/settings': Settings,
@@ -74,8 +93,9 @@ function fixture({
   draft = SAVED as PlanDraft | null,
   identityPending = false,
   identityUnavailable = false,
+  signedOut = false,
 } = {}) {
-  let stored: Session | null = {
+  let stored: Session | null = signedOut ? null : {
     user: { id: A },
     access_token: 'synthetic-sdk-credential',
   } as Session;
@@ -588,7 +608,7 @@ test('normal Settings sign-out removes private routes and retains installed prot
   await renderRouter(routes, { initialUrl: '/settings' });
   await screen.findByRole('button', { name: 'Stop weekly plan' });
   await press('Sign out of this device');
-  await screen.findByText('Welcome back');
+  await screen.findByRole('header', { name: 'Hoosh login' });
   expect(screen.queryByRole('button', { name: 'Stop weekly plan' })).toBeNull();
   expect(f.port.interventionEndOwner).toHaveBeenCalledWith(
     `fixture:${A}`,
@@ -630,4 +650,89 @@ test('rejected Apply readback releases review state without replaying a failed w
     screen.getByRole('button', { name: 'Apply saved plan' }),
   ).toBeEnabled();
   expect(f.port.scheduleApply).toHaveBeenCalledTimes(1);
+});
+
+test('signed-out private deep links land at the real public login screen', async () => {
+  const f = fixture({ signedOut: true });
+  await renderRouter(routes, { initialUrl: '/settings' });
+  await screen.findByRole('header', { name: 'Hoosh login' });
+  expect(screen).toHavePathname('/sign-in');
+  expect(f.request).not.toHaveBeenCalled();
+  expect(f.port.interventionOpen).not.toHaveBeenCalled();
+  await fireEvent.press(screen.getByRole('link', { name: 'New here? Sign up' }));
+  await screen.findByRole('header', { name: 'Hoosh sign up' });
+  expect(screen).toHavePathname('/sign-up');
+  expect(screen.queryByLabelText('Age')).toBeNull();
+  await fireEvent.press(screen.getByRole('link', { name: 'Already have an account? Log in' }));
+  await screen.findByRole('header', { name: 'Hoosh login' });
+});
+
+test('public login retains password bytes and keeps validation errors in the form', async () => {
+  const f = fixture({ signedOut: true });
+  f.sdk.signInWithPassword.mockResolvedValue({ data: { session: null }, error: { code: 'invalid_credentials' } });
+  await renderRouter(routes, { initialUrl: '/sign-in' });
+  const login = await screen.findByRole('button', { name: 'Log in' });
+  await fireEvent.press(login);
+  await screen.findByText('Enter a valid email address.');
+  expect(f.sdk.signInWithPassword).not.toHaveBeenCalled();
+  await fireEvent.changeText(screen.getByLabelText('Email'), ' demo@example.test ');
+  await fireEvent.changeText(screen.getByLabelText('Password'), ' short ');
+  await fireEvent.press(screen.getByRole('button', { name: 'Show password' }));
+  expect(screen.getByLabelText('Password').props.secureTextEntry).toBe(false);
+  await fireEvent.press(screen.getByRole('button', { name: 'Log in' }));
+  await screen.findByText('Unable to complete this request. Check your connection and try again.');
+  expect(f.sdk.signInWithPassword).toHaveBeenCalledWith({ email: 'demo@example.test', password: ' short ' });
+});
+
+test('a successful login opens the shared Home and keeps auth screens out of its back stack', async () => {
+  const f = fixture({ signedOut: true });
+  f.sdk.signInWithPassword.mockImplementationOnce(async () => {
+    f.switch(A);
+    return { data: { session: { user: { id: A }, access_token: 'synthetic-test-session' } }, error: null };
+  });
+  await renderRouter(routes, { initialUrl: '/sign-in' });
+  await screen.findByRole('header', { name: 'Hoosh login' });
+  await fireEvent.changeText(screen.getByLabelText('Email'), 'demo@example.test');
+  await fireEvent.changeText(screen.getByLabelText('Password'), 'fixture-password');
+  await fireEvent.press(screen.getByRole('button', { name: 'Log in' }));
+  await screen.findByRole('tab', { name: 'Home' });
+  expect(screen.queryByRole('header', { name: 'Hoosh login' })).toBeNull();
+  expect(router.canGoBack()).toBe(false);
+});
+
+test('signup without a session shows confirmation guidance and never mounts private data', async () => {
+  const f = fixture({ signedOut: true });
+  let links: LinkState = INITIAL_LINK_STATE;
+  const signUp = jest.fn(async () => {
+    links = {
+      ...INITIAL_LINK_STATE,
+      pending: { id: 'fixture-signup-id', kind: 'signup', phase: 'requested',
+        email: 'demo@example.test', createdAt: Date.now(), lastSentAt: Date.now(),
+        redirectUrl: 'disconnect-dev://auth/callback?flow=fixture-signup-id' },
+    };
+  });
+  const cancelLink = jest.fn(async () => { links = INITIAL_LINK_STATE; });
+  mockRuntime = {
+    ...mockRuntime,
+    authForms: {
+      signUp,
+      getLinkSnapshot: () => links,
+      resendConfirmation: jest.fn(async () => undefined),
+      requestConfirmation: jest.fn(async () => undefined),
+      cancelLink,
+    },
+  };
+  await renderRouter(routes, { initialUrl: '/sign-up' });
+  await screen.findByRole('header', { name: 'Hoosh sign up' });
+  await fireEvent.changeText(screen.getByLabelText('Name'), 'Demo');
+  await fireEvent.changeText(screen.getByLabelText('Email'), 'demo@example.test');
+  await fireEvent.changeText(screen.getByLabelText('Password'), 'fixture password');
+  await fireEvent.press(screen.getByRole('button', { name: 'Create account' }));
+  await screen.findByText('Check your email');
+  expect(signUp).toHaveBeenCalledWith('demo@example.test', 'fixture password', 'Demo', undefined);
+  expect(screen.getByRole('button', { name: /^Resend in/ })).toBeDisabled();
+  expect(f.request).not.toHaveBeenCalled();
+  await fireEvent.press(screen.getByRole('button', { name: 'Return to log in' }));
+  await screen.findByRole('header', { name: 'Hoosh login' });
+  expect(cancelLink).toHaveBeenCalledTimes(1);
 });

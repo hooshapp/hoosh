@@ -2,9 +2,11 @@ import { createClient } from '@supabase/supabase-js';
 
 import { createAuthStorage } from './auth-storage';
 import { readAuthConfig } from './config';
+import { ensureAuthCrypto } from './crypto';
 
 /** Called by controller startup. Merely constructing the app runtime is safe during export. */
 export function createAuthRuntime(config: ReturnType<typeof readAuthConfig>, onStorageFailure: () => void) {
+  ensureAuthCrypto();
   const { storage, storageKey } = createAuthStorage(config.storageKey, onStorageFailure);
   const client = createClient(config.url, config.key, {
     auth: {

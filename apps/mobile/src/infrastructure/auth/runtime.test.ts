@@ -5,6 +5,7 @@ import { createAppRuntime, type AppAuthProducer } from './runtime';
 import { createAuthSession } from './session';
 
 vi.mock('@supabase/supabase-js', () => ({ createClient: vi.fn() }));
+vi.mock('./crypto', () => ({ ensureAuthCrypto: vi.fn() }));
 vi.mock('./auth-storage', () => ({
   createAuthStorage: (storageKey: string) => ({
     storageKey,

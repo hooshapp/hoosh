@@ -14,6 +14,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { colors } from '@/design/tokens';
 import { AppSessionBoundary } from '@/features/account/session-boundary';
+import { usePublicAuth } from '@/features/auth/use-public-auth';
 
 void SplashScreen.preventAutoHideAsync().catch(() => undefined);
 
@@ -40,10 +41,35 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <StatusBar style="dark" />
-      <AppSessionBoundary>
-        <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.warmCanvas } }} />
+      <AppSessionBoundary publicContent={<AppNavigator publicOnly />}>
+        <AppNavigator />
       </AppSessionBoundary>
     </SafeAreaProvider>
+  );
+}
+
+function AppNavigator({ publicOnly = false }: { publicOnly?: boolean }) {
+  const { snapshot } = usePublicAuth();
+  // Wait for session restoration before a protected deep link can be discarded.
+  if (snapshot.status === 'bootstrapping' || snapshot.status === 'signing_out') {
+    return <View style={{ flex: 1, backgroundColor: colors.darkCanvas }} />;
+  }
+  return (
+    <>
+      <StatusBar style={publicOnly ? "light" : "dark"} />
+      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: publicOnly ? colors.darkCanvas : colors.warmCanvas } }}>
+        <Stack.Protected guard={publicOnly}>
+          <Stack.Screen name="index" />
+          <Stack.Screen name="(auth)" />
+        </Stack.Protected>
+        <Stack.Protected guard={!publicOnly} redirectTo="/(auth)/sign-in">
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="settings/[field]" />
+          <Stack.Screen name="quest/new" />
+          <Stack.Screen name="quest/[id]" />
+          <Stack.Screen name="(onboarding)" />
+        </Stack.Protected>
+      </Stack>
+    </>
   );
 }

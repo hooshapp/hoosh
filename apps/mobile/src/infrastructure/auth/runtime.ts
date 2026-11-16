@@ -14,6 +14,7 @@ export type AppAuthProducer = Readonly<{
     signIn(email: string, password: string): Promise<void>;
     retryBootstrap(): Promise<void>;
   };
+  authForms?: Pick<SessionController, "signUp" | "getLinkSnapshot" | "resendConfirmation" | "cancelLink" | "requestConfirmation">;
   setForeground: (active: boolean) => void;
   canClearSession: boolean;
   nativeNamespace: string | null;
@@ -38,6 +39,7 @@ function createDefaultAuthProducer(): AppAuthProducer {
   });
   return {
     auth: controller,
+    authForms: controller,
     nativeNamespace,
     canClearSession: Boolean(config),
     getPrivateAccessHeld: controller.getPrivateAccessHeld,

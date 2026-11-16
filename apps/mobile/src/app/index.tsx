@@ -1,6 +1,8 @@
-import { Redirect } from 'expo-router';
+import ConfirmEmail from '@/app/(auth)/confirm-email';
+import { AuthScreen } from '@/features/auth/AuthScreen';
+import { usePublicAuth } from '@/features/auth/use-public-auth';
 
-/** Preview entry point only. Auth/onboarding guards belong to the auth integration. */
 export default function Index() {
-  return <Redirect href="/(tabs)" />;
+  const { links } = usePublicAuth();
+  return links.pending?.kind === 'signup' ? <ConfirmEmail /> : <AuthScreen mode="sign-in" />;
 }
