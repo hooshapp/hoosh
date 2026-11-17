@@ -10,7 +10,7 @@ import type { AccountScope } from '@/infrastructure/query/account-scope';
  * not confer native permission or represent an installed plan. */
 export type OnboardingProgress = Readonly<{
   version: 1;
-  step: 'preferences' | 'plan' | 'permission' | 'review' | 'complete';
+  step: 'preferences' | 'plan' | 'permission' | 'protection' | 'review' | 'complete';
   activities?: SettingsPatch['activities'];
   planDraft?: PlanDraft | null;
   profileRevision?: number;
@@ -19,6 +19,7 @@ export type OnboardingProgress = Readonly<{
   settingsAttempt?: SettingsPatch;
   settingsDeferred?: boolean;
   permissionDeferred?: boolean;
+  selectionRevision?: number;
 }>;
 
 export type OnboardingProgressRead =
@@ -53,7 +54,7 @@ async function boundedRead(storage: ProgressStorage, key: string) {
   }
 }
 
-const steps = new Set(['preferences', 'plan', 'permission', 'review', 'complete']);
+const steps = new Set(['preferences', 'plan', 'permission', 'protection', 'review', 'complete']);
 const revision = (value: unknown): value is number =>
   typeof value === 'number' && Number.isInteger(value) && value > 0 && value <= 2147483647;
 
@@ -98,6 +99,7 @@ function decodeProgress(raw: string | null): OnboardingProgressRead {
       (value.settingsBaseRevision !== undefined && value.settingsBaseRevision !== 0 && !revision(value.settingsBaseRevision)) ||
       (value.settingsDeferred !== undefined && typeof value.settingsDeferred !== 'boolean') ||
       (value.settingsAttempt !== undefined && (value.step !== 'review' || value.settingsRevision !== undefined)) ||
+      (value.selectionRevision !== undefined && !revision(value.selectionRevision)) ||
       (value.permissionDeferred !== undefined && typeof value.permissionDeferred !== 'boolean')) {
       return { status: 'read_failed' };
     }
@@ -113,6 +115,7 @@ function decodeProgress(raw: string | null): OnboardingProgressRead {
       ...(value.settingsBaseRevision !== undefined ? { settingsBaseRevision: value.settingsBaseRevision as number } : {}),
       ...(value.settingsAttempt !== undefined ? { settingsAttempt: decodeAttempt(value.settingsAttempt) } : {}),
       ...(value.settingsDeferred !== undefined ? { settingsDeferred: value.settingsDeferred } : {}),
+      ...(value.selectionRevision !== undefined ? { selectionRevision: value.selectionRevision as number } : {}),
       ...(value.permissionDeferred !== undefined ? { permissionDeferred: value.permissionDeferred } : {}),
     };
     return { status: 'found', progress };

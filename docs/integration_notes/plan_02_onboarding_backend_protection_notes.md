@@ -1,6 +1,6 @@
 # Plan 02 — Onboarding into the shared app
 
-**Checkpoint:** INT-ONB-C03 fixture checks passed. **Next:** INT-ONB-C04. **Branch:** `integration/shared-product`. **Starting revision:** `d241a81` (ONB-C02). **Commit:** Pending.
+**Checkpoint:** INT-ONB-C04 Android build and fixture checks passed. **Next:** INT-ONB-C05. **Branch:** `integration/shared-product`. **Starting revision:** `9b98445` (ONB-C03). **Commit:** Pending.
 
 ## INT-ONB-C01 — Introduction and scoped setup progress
 
@@ -36,3 +36,14 @@ TypeScript, 640 unit tests, 58 routed component tests, the production web export
 ### Verification
 
 TypeScript, 641 mobile unit tests, 136 targeted component tests, 682 API tests and the production web export passed. Lint reported the four existing warnings. Routed tests covered the combined PATCH, a concurrent revision conflict, preservation of unrelated fields, lost reply, restart, local receipt failure, account replacement during save and offline deferral. Chrome exercised the real app HTTP client against a fixture server, including the separate profile save, dropped settings reply, reload, reconciliation without a second PATCH and readback in Settings. The disposable PostgreSQL suite was left open because Docker and a local PostgreSQL instance were unavailable. Physical-device permissions remain C04/C06 work.
+
+## INT-ONB-C04 — Device permissions and app selection
+
+- After reviewing account preferences, Android onboarding uses the existing verified native owner and Apps editor. Picker changes remain staged until explicit Save. Returning from the editor reloads the saved native count and revision. Native reads flag apps that have been removed or are no longer eligible without exposing app identities.
+- Usage Access for measurement and Accessibility access for app protection have separate status and actions. Returning to the foreground refreshes both. The app uses Android's existing disclosure flow and device Settings for the actual grant.
+- The protection review checkpoint verifies the current authorization and saved selection again on tap. A changed revision requires another review even when the count stays the same. Local progress keeps only the advisory selection revision. Users can defer and reopen device setup from Settings. Setup does not install or change a schedule.
+- Web and builds without the owner-scoped native bridge show an unavailable state and permit deferral. The shared iPhone build has no registered Plan 04 selection bridge. Plan 04 and a signed physical iPhone test are required before iPhone device setup can be verified.
+
+### Verification
+
+TypeScript, 641 mobile unit tests, 128 targeted component tests, 117 Android JVM cases, Android debug assembly and the production web export passed. Lint reported the four existing warnings. Routed and picker tests covered staged Save, owner binding and release, foreground permission checks and revocation, same-count revision changes, removed apps, deferral and missing native support. No physical device or emulator permission flow was run at this checkpoint.

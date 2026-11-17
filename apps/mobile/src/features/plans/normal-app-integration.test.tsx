@@ -1,5 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import type { PlanDraft, SettingsResponse } from '@disconnect/contracts';
+import type { PlanDraft, ProtectionIntegration, SettingsResponse } from '@disconnect/contracts';
 import type { AuthChangeEvent, Session } from '@supabase/supabase-js';
 import {
   act,
@@ -8,7 +8,7 @@ import {
   waitFor,
 } from '@testing-library/react-native';
 import { focusManager, onlineManager } from '@tanstack/react-query';
-import { AppState } from 'react-native';
+import { AppState, type AppStateStatus } from 'react-native';
 import { router } from 'expo-router';
 import { renderRouter } from 'expo-router/testing-library';
 import { historyFixture } from '@/features/history/__tests__/history-fixture';
@@ -41,6 +41,7 @@ import { createAccountDataController } from '@/infrastructure/query/account-cont
 import type { AccountApi } from '@/infrastructure/query/account-scope';
 import { ApiError } from '@/infrastructure/api/errors';
 import type { AppRuntime } from '@/infrastructure/auth/runtime';
+import { createAndroidUsageIntegration } from '@/infrastructure/native/android-usage-adapter';
 import type { ProductNativePort } from '@/infrastructure/native/product-ports';
 
 const A = '00000000-0000-4000-8000-000000000001',
@@ -54,6 +55,10 @@ const SAVED: PlanDraft = {
   session_minutes: 1,
 };
 let mockRuntime: AppRuntime, mockPort: ProductNativePort | null;
+let mockUsageIntegration: ProtectionIntegration;
+jest.mock('@/infrastructure/native/protection-integration', () => ({
+  get deviceProtectionIntegration() { return mockUsageIntegration; },
+}));
 jest.mock('@/infrastructure/auth/runtime', () => ({
   createAppRuntime: () => mockRuntime,
 }));
@@ -269,6 +274,16 @@ function fixture({
     spec: PlanDraft | null = installed ? SAVED : null,
     savedCount = 1,
     permission = true;
+  let selectionRevision = 1;
+  let needsReselection = false;
+  let usagePermission = false;
+  const openUsageAccess = jest.fn(async () => true);
+  mockUsageIntegration = createAndroidUsageIntegration({
+    getAuthorization: async () => usagePermission ? 'authorized' : 'denied',
+    getCapabilities: jest.fn(),
+    getStatus: jest.fn(),
+    openUsageAccess,
+  });
   let ownerLocked = locked,
     loseApply = false,
     pendingSelection: Promise<void> | null = null;
@@ -336,15 +351,16 @@ function fixture({
     selectionEndOwner: jest.fn(async () => {}),
     selectionRead: jest.fn(async (owner) => ({
       owner,
-      revision: 1,
+      revision: selectionRevision,
       selectedAppCount: savedCount,
+      needsReselection,
     })),
     selectionBegin: jest.fn(async () => {
       if (pendingSelection) await pendingSelection;
       return {
         draftId: HANDLE,
         groupId: 'global',
-        baseRevision: 1,
+        baseRevision: selectionRevision,
         draftVersion: 0,
         selectedAppCount: savedCount,
         savedAppCount: savedCount,
@@ -356,7 +372,7 @@ function fixture({
     selectionRelease: jest.fn(async () => {}),
     interventionProtectionRead: jest.fn(async () => ({
       schemaVersion: 3,
-      authorization: permission ? 'authorized' : 'revoked',
+      authorization: permission ? 'authorized' : 'denied',
       capabilities: {
         platform: 'android',
         selectionUI: 'unavailable',
@@ -368,8 +384,8 @@ function fixture({
         supportsUsageSummary: false,
       },
       status: {
-        authorization: permission ? 'authorized' : 'revoked',
-        state: enabled ? 'active' : 'inactive',
+        authorization: permission ? 'authorized' : 'denied',
+        state: permission ? (enabled ? 'active' : 'inactive') : 'needs_permission',
         installedRevision: revision,
         installedReasonIds: enabled ? ['weekly_2026-11-14'] : [],
       },
@@ -394,6 +410,10 @@ function fixture({
     permission: (value: boolean) => {
       permission = value;
     },
+    usagePermission: (value: boolean) => { usagePermission = value; },
+    openUsageAccess,
+    selectionRevision: (value: number) => { selectionRevision = value; },
+    removedApps: (value: boolean) => { needsReselection = value; },
     onBeforeSettingsPatch: (fn: () => Promise<void>) => { beforeSettingsPatch = fn; },
     onAfterSettingsPatch: (fn: () => Promise<void>) => { afterSettingsPatch = fn; },
     delayAccountASettings: (work: Promise<void>) => { pendingAccountASettings = work; },
@@ -425,6 +445,7 @@ afterEach(() => {
   onlineManager.setOnline(true);
   focusManager.setFocused(true);
   mockPort = null;
+  jest.restoreAllMocks();
 });
 
 test('normal Root verifies ownership, exposes the saved plan in Settings and reuses one native controller across tabs', async () => {
@@ -1108,6 +1129,140 @@ test('offline setup can finish for now and later reopen its unsynced draft', asy
     expect(settingsWrites(f)).toHaveLength(0);
   } finally {
     onlineManager.setOnline(true);
+    await AsyncStorage.clear();
+  }
+});
+
+async function openDeviceSetup() {
+  await AsyncStorage.setItem(setupKey, JSON.stringify({
+    version: 1, step: 'permission', settingsRevision: 1, planDraft: SAVED,
+  }));
+  await renderRouter(routes, { initialUrl: '/welcome' });
+  await screen.findByRole('header', { name: 'Preferences reviewed' });
+}
+
+test('onboarding uses the verified native picker and rereads after explicit Save', async () => {
+  const f = fixture();
+  f.selectionCount(0);
+  const draft = {
+    draftId: HANDLE, groupId: 'global', baseRevision: 1, draftVersion: 1,
+    selectedAppCount: 2, savedAppCount: 0, dirty: true,
+  };
+  f.port.selectionPick.mockResolvedValue(draft);
+  f.port.selectionCommit.mockImplementation(async () => {
+    f.selectionCount(2);
+    f.selectionRevision(2);
+    return { ...draft, baseRevision: 2, savedAppCount: 2, dirty: false };
+  });
+  try {
+    await openDeviceSetup();
+    await screen.findByText('No apps saved.');
+    expect(screen.getByRole('button', { name: 'Continue to protection review' })).toBeDisabled();
+    await press('Choose apps on this device');
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Choose apps' })).toBeEnabled());
+    await press('Choose apps');
+    await screen.findByText('2 apps selected');
+    expect(f.port.selectionCommit).not.toHaveBeenCalled();
+    await press('Save selected apps');
+    await screen.findByText('App selection saved on this device. Protection has not changed.');
+    expect(f.port.selectionCommit).toHaveBeenCalledWith(`fixture:${A}`, HANDLE, 1);
+    await press('Back');
+    await screen.findByText('2 apps saved on this device.');
+    await press('Continue to protection review');
+    await screen.findByRole('header', { name: 'Review device setup' });
+    expect(f.port.selectionRelease).toHaveBeenCalledWith(`fixture:${A}`, HANDLE);
+    expect(JSON.parse((await AsyncStorage.getItem(setupKey))!)).toMatchObject({
+      step: 'protection', selectionRevision: 2,
+    });
+    expect(settingsWrites(f)).toHaveLength(0);
+    expect(f.port.scheduleApply).not.toHaveBeenCalled();
+  } finally {
+    await AsyncStorage.clear();
+  }
+});
+
+test('foreground return rechecks two independent permissions and detects revocation', async () => {
+  const f = fixture();
+  f.permission(false);
+  const listeners = new Set<(state: AppStateStatus) => void>();
+  const original = AppState.addEventListener.bind(AppState);
+  jest.spyOn(AppState, 'addEventListener').mockImplementation((event, listener) => {
+    if (event !== 'change') return original(event, listener);
+    const changed = listener as (state: AppStateStatus) => void;
+    listeners.add(changed);
+    return { remove: () => listeners.delete(changed) };
+  });
+  async function foreground() {
+    for (const state of ['background', 'active'] as const) {
+      await act(() => {
+        AppState.currentState = state;
+        listeners.forEach(listener => listener(state));
+      });
+    }
+  }
+  try {
+    await openDeviceSetup();
+    await screen.findByText(/Usage Access is off/);
+    await press('Review Usage Access');
+    expect(f.openUsageAccess).toHaveBeenCalledTimes(1);
+    expect(f.port.interventionReviewAccess).not.toHaveBeenCalled();
+    f.usagePermission(true);
+    await foreground();
+    await screen.findByText('Usage Access allowed.');
+    expect(screen.getByRole('button', { name: 'Continue to protection review' })).toBeDisabled();
+    await press('Review Accessibility access');
+    expect(f.port.interventionReviewAccess).toHaveBeenCalledTimes(1);
+    f.permission(true);
+    await foreground();
+    await screen.findByText('Accessibility access allowed for app protection.');
+    expect(screen.getByRole('button', { name: 'Continue to protection review' })).toBeEnabled();
+    f.permission(false);
+    await foreground();
+    await screen.findByText(/Accessibility access is off/);
+    expect(screen.getByRole('button', { name: 'Continue to protection review' })).toBeDisabled();
+    await press('Finish for now');
+    await waitFor(() => expect(screen).toHavePathname('/'));
+    await act(() => router.push('/(onboarding)/welcome'));
+    await press('Resume device setup');
+    await screen.findByRole('header', { name: 'Preferences reviewed' });
+    expect(f.port.scheduleApply).not.toHaveBeenCalled();
+  } finally {
+    await AsyncStorage.clear();
+  }
+});
+
+test('onboarding invalidates a same-count changed selection and flags removed apps', async () => {
+  const f = fixture();
+  try {
+    await openDeviceSetup();
+    await screen.findByText('1 app saved on this device.');
+    f.selectionRevision(2);
+    await press('Continue to protection review');
+    await screen.findByText('Device access or app selection changed. Review the latest values.');
+    expect(JSON.parse((await AsyncStorage.getItem(setupKey))!).step).toBe('permission');
+    f.removedApps(true);
+    await press('Check device access again');
+    await screen.findByText('Some saved apps are no longer available. Choose your apps again.');
+    expect(screen.getByRole('button', { name: 'Continue to protection review' })).toBeDisabled();
+  } finally {
+    await AsyncStorage.clear();
+  }
+});
+
+test('onboarding without a supported bridge lets the user defer without a synthetic selection', async () => {
+  const f = fixture();
+  mockPort = null;
+  try {
+    await openDeviceSetup();
+    await screen.findByText(/unavailable in this .*build/);
+    expect(screen.queryByRole('button', { name: 'Choose apps on this device' })).toBeNull();
+    await press('Finish for now');
+    await waitFor(() => expect(screen).toHavePathname('/'));
+    expect(f.port.selectionBegin).not.toHaveBeenCalled();
+    expect(JSON.parse((await AsyncStorage.getItem(setupKey))!)).toMatchObject({
+      step: 'complete', permissionDeferred: true,
+    });
+  } finally {
     await AsyncStorage.clear();
   }
 });

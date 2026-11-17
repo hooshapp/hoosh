@@ -13,6 +13,7 @@ import { useSettingsQuery } from '@/features/settings/settings-query';
 import { useAccountData } from '@/infrastructure/query/account-data-provider';
 
 import type { OnboardingProgress, OnboardingProgressRead } from './progress-repository';
+import { SetupDevice } from './setup-device';
 import { PlanSummary, SetupDraft } from './setup-draft';
 import { reviewSavedSettings } from './setup-model';
 import { activityPayload, activitySummary } from '../preferences/activity-model';
@@ -129,20 +130,20 @@ export function SetupScreen() {
     );
   }
 
-  if (verified && progress?.step === 'permission') {
+  if (verified && (progress?.step === 'permission' || progress?.step === 'protection')) {
     return (
-      <Screen title="Preferences reviewed">
-        <Text style={{ color: theme.foreground }}>
-          {progress.settingsRevision === undefined
-            ? 'No account settings changes were needed.'
-            : 'Your preferences are saved to your account.'}
-        </Text>
-        <Text style={{ color: theme.foreground }}>Screen Time setup can be finished later.</Text>
-        {failed && <Text accessibilityRole="alert" style={{ color: theme.error }}>Setup progress could not be recorded. Try again.</Text>}
-        <Button label="Finish for now" busy={busy} onPress={() => {
+      <SetupDevice
+        reviewedRevision={progress.step === 'protection' ? progress.selectionRevision : undefined}
+        preferencesSaved={progress.settingsRevision !== undefined}
+        busy={busy}
+        failed={failed}
+        onReview={selectionRevision => update({
+          ...progress, step: 'protection', selectionRevision, permissionDeferred: undefined,
+        })}
+        onFinish={() => {
           void update({ ...progress, step: 'complete', permissionDeferred: true });
-        }} />
-      </Screen>
+        }}
+      />
     );
   }
 
@@ -185,6 +186,13 @@ export function SetupScreen() {
             : { version: 1, step: 'preferences', settingsBaseRevision: 0 });
         }} />
       )}
+      {status === 'completed' && progress?.permissionDeferred && (
+        <Button label="Resume device setup" busy={busy} onPress={() => {
+          void update({
+            ...progress, step: 'permission', permissionDeferred: undefined, selectionRevision: undefined,
+          });
+        }} />
+      )}
       {status === 'completed' && progress?.settingsDeferred && (
         <Button label="Resume my draft" busy={busy} onPress={() => {
           void update({ ...progress, step: 'review', settingsDeferred: undefined });
@@ -192,7 +200,14 @@ export function SetupScreen() {
       )}
       {existing && status === 'ready_to_finish' && (
         <Button label="Keep my settings" busy={busy} onPress={() => {
-          void update({ version: 1, step: 'complete', settingsRevision: existing.revision });
+          void update({
+            version: 1, step: 'complete', settingsRevision: existing.revision, permissionDeferred: true,
+          });
+        }} />
+      )}
+      {existing && status === 'ready_to_finish' && (
+        <Button label="Keep settings and review device access" variant="secondary" busy={busy} onPress={() => {
+          void update({ version: 1, step: 'permission', settingsRevision: existing.revision });
         }} />
       )}
       {(status === 'read_failed' || status === 'incompatible' || status === 'unavailable') && (

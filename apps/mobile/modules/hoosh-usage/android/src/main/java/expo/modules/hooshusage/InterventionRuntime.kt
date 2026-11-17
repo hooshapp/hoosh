@@ -201,7 +201,9 @@ class InterventionRuntime private constructor(val context: Context) {
   fun selectionRead(owner: String, promise: Promise) = call(promise) {
     InterventionValidation.require(unlocked(), "ERR_SELECTION_UNAVAILABLE")
     val value = AtomicSelectionPersistence(File(context.noBackupFilesDir, "selection-editor-debug-v1")).read(owner)
-    mapOf("owner" to owner, "revision" to value.revision, "selectedAppCount" to value.apps.size)
+    val needsReselection = value.apps.isNotEmpty() && !LauncherAppCatalog(context).eligibleKeys().containsAll(value.apps)
+    mapOf("owner" to owner, "revision" to value.revision, "selectedAppCount" to value.apps.size,
+      "needsReselection" to needsReselection)
   }
   fun questApply(owner: String, token: String, expected: Int, spec: Map<String, Any?>, promise: Promise) = call(promise, true) {
     leases.check(owner, token)
