@@ -3,6 +3,8 @@ import type { PlanDraft, SettingsPatch } from '@disconnect/contracts';
 import { ApiError, isRecord } from '../../infrastructure/api/errors';
 import { decodePlanDraft } from '../settings/settings-api';
 import { isActivityId } from '../preferences/activity-model';
+import { completeSchedule } from '../plans/weekly-schedule';
+import type { ReviewedWeeklyPlan } from '../plans/use-weekly-plan';
 import { setupActivities } from './setup-model';
 import type { AccountScope } from '@/infrastructure/query/account-scope';
 
@@ -20,6 +22,7 @@ export type OnboardingProgress = Readonly<{
   settingsDeferred?: boolean;
   permissionDeferred?: boolean;
   selectionRevision?: number;
+  protectionAttempt?: ReviewedWeeklyPlan;
 }>;
 
 export type OnboardingProgressRead =
@@ -87,6 +90,17 @@ function decodeAttempt(value: unknown): SettingsPatch {
   return { expected_revision, plan_draft: decodePlanDraft(value.plan_draft) };
 }
 
+function decodeProtectionAttempt(value: unknown): ReviewedWeeklyPlan {
+  if (!isRecord(value) || !revision(value.revision) || !revision(value.selectionRevision)) {
+    throw new ApiError('invalid_response');
+  }
+  return {
+    revision: value.revision,
+    selectionRevision: value.selectionRevision,
+    spec: completeSchedule(value.spec),
+  };
+}
+
 function decodeProgress(raw: string | null): OnboardingProgressRead {
   if (raw === null) return { status: 'not_started' };
   try {
@@ -99,6 +113,7 @@ function decodeProgress(raw: string | null): OnboardingProgressRead {
       (value.settingsBaseRevision !== undefined && value.settingsBaseRevision !== 0 && !revision(value.settingsBaseRevision)) ||
       (value.settingsDeferred !== undefined && typeof value.settingsDeferred !== 'boolean') ||
       (value.settingsAttempt !== undefined && (value.step !== 'review' || value.settingsRevision !== undefined)) ||
+      (value.protectionAttempt !== undefined && value.step !== 'protection' && value.step !== 'complete') ||
       (value.selectionRevision !== undefined && !revision(value.selectionRevision)) ||
       (value.permissionDeferred !== undefined && typeof value.permissionDeferred !== 'boolean')) {
       return { status: 'read_failed' };
@@ -115,6 +130,7 @@ function decodeProgress(raw: string | null): OnboardingProgressRead {
       ...(value.settingsBaseRevision !== undefined ? { settingsBaseRevision: value.settingsBaseRevision as number } : {}),
       ...(value.settingsAttempt !== undefined ? { settingsAttempt: decodeAttempt(value.settingsAttempt) } : {}),
       ...(value.settingsDeferred !== undefined ? { settingsDeferred: value.settingsDeferred } : {}),
+      ...(value.protectionAttempt !== undefined ? { protectionAttempt: decodeProtectionAttempt(value.protectionAttempt) } : {}),
       ...(value.selectionRevision !== undefined ? { selectionRevision: value.selectionRevision as number } : {}),
       ...(value.permissionDeferred !== undefined ? { permissionDeferred: value.permissionDeferred } : {}),
     };

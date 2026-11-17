@@ -87,13 +87,15 @@ export function createWeeklyScheduleClient(owner: string, port: WeeklySchedulePo
       const spec = completeSchedule(draft);
       return invoke(() => port.schedulePreview(spec), (v) => object(v) ? decodeScheduleWindows(v.windows) : invalid());
     },
-    apply: (draft: PlanDraft, expected: number) => {
+    apply: (draft: PlanDraft, expected: number, reviewedSelectionRevision?: number) => {
       const spec = completeSchedule(draft);
       if (!Number.isInteger(expected) || expected < 0 || expected >= 2147483647) return Promise.reject(new ScheduleError('invalid'));
       return withWrite(async (token) => {
         const selection = decodeSelectionDraft(await port.selectionBegin(owner));
         try {
-          live(); if (selection.baseRevision < 1 || selection.savedAppCount < 1) return invalid();
+          live();
+          if (selection.baseRevision < 1 || selection.savedAppCount < 1 ||
+            (reviewedSelectionRevision !== undefined && selection.baseRevision !== reviewedSelectionRevision)) return invalid();
           const next = decodeScheduleInstallation(await port.scheduleApply(owner, token, expected, expected + 1, selection.baseRevision, spec)); live();
           const confirmed = await read();
           if (!next.enabled || !confirmed.enabled || next.native.installedRevision !== expected + 1 || confirmed.native.installedRevision !== expected + 1 ||

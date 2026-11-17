@@ -15,7 +15,6 @@ import { deviceProtectionIntegration } from '@/infrastructure/native/protection-
 import { decodeSavedSelection, type SavedSelectionSummary } from '@/infrastructure/native/selection-editor';
 
 type Props = {
-  reviewedRevision?: number;
   preferencesSaved: boolean;
   busy: boolean;
   failed: boolean;
@@ -63,11 +62,11 @@ export function SetupDevice(props: Props) {
   );
 }
 
-function DeviceScreen({ reviewedRevision, preferencesSaved, busy, failed, onFinish, children }: Props & {
+function DeviceScreen({ preferencesSaved, busy, failed, onFinish, children }: Props & {
   children: ReactNode;
 }) {
   return (
-    <Screen title={reviewedRevision !== undefined ? 'Review device setup' : 'Preferences reviewed'}>
+    <Screen title="Preferences reviewed">
       <Text style={{ color: colors.warmForeground }}>{preferencesSaved ? 'Your preferences are saved to your account.' : 'No account settings changes were needed.'}</Text>
       {children}
       {failed && <InlineStatus state="error" message="Setup progress could not be recorded. Try again." />}
@@ -178,8 +177,6 @@ function ConnectedDevice({ owner, ...props }: Props & { owner: NativeOwner }) {
 
   const selection = visible ? read?.selection : null;
   const busy = props.busy || checking || opening || usageAction.busy;
-  const reviewed = props.reviewedRevision !== undefined;
-  const revisionChanged = reviewed && !!selection && selection.revision !== props.reviewedRevision;
   return (
     <DeviceScreen {...props} onFinish={() => { if (!advancing.current) props.onFinish(); }}>
       <Text accessibilityRole="header">Device access</Text>
@@ -213,11 +210,8 @@ function ConnectedDevice({ owner, ...props }: Props & { owner: NativeOwner }) {
       <Button label="Check device access again" variant="secondary" disabled={!visible || props.busy || opening}
         onPress={() => { if (!advancing.current) void refresh(); }} />
       {changed && <InlineStatus state="unavailable" message="Device access or app selection changed. Review the latest values." />}
-      {(!reviewed || revisionChanged) && (
-        <Button label={reviewed ? 'Review updated device setup' : 'Continue to protection review'} disabled={!visible || !!busy || !ready(read)}
-          onPress={() => { void continueToReview(); }} />
-      )}
-      {reviewed && ready(read) && !revisionChanged && <Text>Applying your protection plan is the next setup step.</Text>}
+      <Button label="Continue to protection review" disabled={!visible || !!busy || !ready(read)}
+        onPress={() => { void continueToReview(); }} />
     </DeviceScreen>
   );
 }

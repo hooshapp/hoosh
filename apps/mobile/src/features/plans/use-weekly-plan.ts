@@ -40,10 +40,16 @@ export type SavedPlanSource = Readonly<{
   available: boolean;
   getCurrentDraft: () => PlanDraft | null;
 }>;
+export type ReviewedWeeklyPlan = Readonly<{
+  spec: PlanDraft;
+  revision: number;
+  selectionRevision: number;
+}>;
 type Intent = {
   kind: 'apply' | 'stop';
   revision: number;
   spec: PlanDraft | null;
+  selectionRevision?: number;
 };
 /** One owner/controller shared across product views. No Auth, default identity or backend mutation. */
 export function useWeeklyPlan(
@@ -92,7 +98,7 @@ export function useWeeklyPlan(
     seeded: boolean;
     refreshRequested: boolean;
   } | null>(null);
-  const refreshRef = useRef<(quiet?: boolean) => Promise<void>>(async () => {});
+  const refreshRef = useRef<(quiet?: boolean) => Promise<WeeklyPlanRead | undefined>>(async () => undefined);
   const refresh = useCallback(
     async (quiet = false) => {
       const s = scope.current;
@@ -119,6 +125,7 @@ export function useWeeklyPlan(
               await port.selectionRead(owner),
               owner,
             );
+            selectionAvailable = !saved.needsReselection;
             selectionRevision = saved.revision;
             selectedAppCount = saved.selectedAppCount;
           } else {
@@ -152,7 +159,9 @@ export function useWeeklyPlan(
             const matches =
               installation.native.installedRevision === desired.revision &&
               installation.enabled === (desired.kind === 'apply') &&
-              sameSchedule(installation.spec, desired.spec);
+              sameSchedule(installation.spec, desired.spec) &&
+              (desired.selectionRevision === undefined ||
+                installation.native.selectionRevision === desired.selectionRevision);
             intentRef.current = null;
             setIntent(null);
             setNotice(
@@ -172,6 +181,7 @@ export function useWeeklyPlan(
           s.timer = setTimeout(() => {
             void refreshRef.current(!boundary);
           }, delay);
+          return read;
         } finally {
           if (selection) await port.selectionRelease(owner, selection.draftId);
         }
@@ -243,7 +253,11 @@ export function useWeeklyPlan(
     setDraft(next);
     setNotice('Draft updated. Apply it to change this device schedule.');
   };
-  const run = async (kind: 'apply' | 'stop' | 'access') => {
+  const run = async (
+    kind: 'apply' | 'stop' | 'access',
+    reviewed?: ReviewedWeeklyPlan,
+    recordAttempt?: (attempt: ReviewedWeeklyPlan) => Promise<boolean>,
+  ) => {
     const s = scope.current;
     if (
       !s?.active ||
@@ -257,6 +271,7 @@ export function useWeeklyPlan(
     s.lock = true;
     clearTimeout(s.timer);
     s.epoch++;
+    let refreshAfter = false;
     setBusy(true);
     try {
       const before = current.installation,
@@ -271,12 +286,30 @@ export function useWeeklyPlan(
                   : draftRef.current,
               )
             : before.spec;
-        const nextIntent: Intent = { kind, revision: revision + 1, spec };
+        if (kind === 'apply' && reviewed) {
+          if (revision !== reviewed.revision || current.selectionAvailable === false ||
+            current.selectionRevision !== reviewed.selectionRevision || !current.selectedAppCount ||
+            before.otherInstallation || before.native.state === 'failed' ||
+            before.native.state === 'needs_permission' || !sameSchedule(spec, reviewed.spec)) {
+            setNotice('The saved plan or device setup changed. Review the latest values before applying.');
+            refreshAfter = true;
+            return;
+          }
+          if (!recordAttempt || !(await recordAttempt({ ...reviewed, revision: revision + 1 }))) return;
+          if (!s.active || !allowedRef.current) return;
+          // Local persistence can outlast a connectivity change or a newer Settings save.
+          if (sourceRef.current && !sameSchedule(sourceRef.current.getCurrentDraft(), spec)) {
+            throw new Error('Saved plan changed');
+          }
+        }
+        const nextIntent: Intent = {
+          kind, revision: revision + 1, spec, selectionRevision: reviewed?.selectionRevision,
+        };
         intentRef.current = nextIntent;
         setIntent(nextIntent);
         const result =
           kind === 'apply'
-            ? await s.client.apply(spec!, revision)
+            ? await s.client.apply(spec!, revision, reviewed?.selectionRevision)
             : await s.client.stop(revision);
         if (!s.active) return;
         if (result.native.installedRevision !== nextIntent.revision)
@@ -289,6 +322,7 @@ export function useWeeklyPlan(
             : 'Plan applied to this device.',
         );
       }
+      refreshAfter = true;
     } catch {
       if (s.active) {
         setTicket({ key, read: { phase: 'error' } });
@@ -298,9 +332,11 @@ export function useWeeklyPlan(
       return; // Uncertain writes require an explicit refresh; never replay automatically.
     } finally {
       s.lock = false;
-      if (s.active) setBusy(false);
+      if (s.active) {
+        setBusy(false);
+        if (refreshAfter) await refreshRef.current();
+      }
     }
-    if (s.active) await refresh();
   };
   const [preview, setPreview] = useState<{
     spec: string;
@@ -360,6 +396,8 @@ export function useWeeklyPlan(
     previewWindows,
     preview: showPreview,
     apply: () => run('apply'),
+    applyReviewed: (reviewed: ReviewedWeeklyPlan, record: (attempt: ReviewedWeeklyPlan) => Promise<boolean>) =>
+      run('apply', reviewed, record),
     stop: () => run('stop'),
     reviewAccess: () => run('access'),
   };

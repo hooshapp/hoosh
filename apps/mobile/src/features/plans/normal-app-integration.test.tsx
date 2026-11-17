@@ -275,6 +275,8 @@ function fixture({
     savedCount = 1,
     permission = true;
   let selectionRevision = 1;
+  let installedSelectionRevision = 1;
+  let afterScheduleApply: (() => Promise<void>) | undefined;
   let needsReselection = false;
   let usagePermission = false;
   const openUsageAccess = jest.fn(async () => true);
@@ -290,7 +292,7 @@ function fixture({
   const native = () => ({
     state: permission ? (enabled ? 'armed' : 'inactive') : 'needs_permission',
     installedRevision: revision,
-    selectionRevision: revision === null ? null : 1,
+    selectionRevision: revision === null ? null : installedSelectionRevision,
     selectedAppCount: revision === null ? 0 : 1,
     reasonCount: enabled ? 1 : 0,
     pendingEventCount: 0,
@@ -324,7 +326,9 @@ function fixture({
         if (revision !== null && expected !== revision) throw Error('conflict');
         revision = next;
         spec = value;
+        installedSelectionRevision = _selected;
         enabled = true;
+        await afterScheduleApply?.();
         if (loseApply) {
           loseApply = false;
           throw Error('lost acknowledgement');
@@ -412,6 +416,7 @@ function fixture({
     },
     usagePermission: (value: boolean) => { usagePermission = value; },
     openUsageAccess,
+    onAfterScheduleApply: (fn: () => Promise<void>) => { afterScheduleApply = fn; },
     selectionRevision: (value: number) => { selectionRevision = value; },
     removedApps: (value: boolean) => { needsReselection = value; },
     onBeforeSettingsPatch: (fn: () => Promise<void>) => { beforeSettingsPatch = fn; },
@@ -1263,6 +1268,142 @@ test('onboarding without a supported bridge lets the user defer without a synthe
       step: 'complete', permissionDeferred: true,
     });
   } finally {
+    await AsyncStorage.clear();
+  }
+});
+
+const reviewedProtection = {
+  version: 1, step: 'protection', settingsRevision: 1, selectionRevision: 1, planDraft: SAVED,
+};
+
+async function openProtectionReview(progress: object = reviewedProtection) {
+  await AsyncStorage.setItem(setupKey, JSON.stringify(progress));
+  await renderRouter(routes, { initialUrl: '/welcome' });
+  await screen.findByRole('header', { name: 'Review device setup' });
+}
+
+test('onboarding saves and then explicitly applies the canonical account plan through the shared controller', async () => {
+  const f = fixture({ settingsMissing: true });
+  try {
+    await openSetupReview();
+    await press('Save to my account');
+    await screen.findByText('Accessibility access allowed for app protection.');
+    await press('Continue to protection review');
+    await screen.findByRole('header', { name: 'Review device setup' });
+    expect(f.port.scheduleApply).not.toHaveBeenCalled();
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Preview schedule' })).toBeEnabled());
+    await press('Preview schedule');
+    await screen.findByRole('header', { name: 'Upcoming times on this device' });
+    expect(f.port.scheduleApply).not.toHaveBeenCalled();
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Apply protection' })).toBeEnabled());
+    await press('Apply protection');
+    await screen.findByText('This device confirmed the applied schedule.');
+    expect(f.port.scheduleApply).toHaveBeenCalledTimes(1);
+    expect(f.port.scheduleApply).toHaveBeenCalledWith(`fixture:${A}`, HANDLE, 0, 1, 1, SAVED);
+    await press('Finish setup');
+    await waitFor(() => expect(screen).toHavePathname('/'));
+    await screen.findByText('App interventions active');
+    expect(settingsWrites(f)).toHaveLength(1);
+    expect(JSON.parse((await AsyncStorage.getItem(setupKey))!)).toMatchObject({
+      step: 'complete', permissionDeferred: false,
+    });
+  } finally {
+    await AsyncStorage.clear();
+  }
+});
+
+test('a selection revision change during Apply requires readback and a new review', async () => {
+  const f = fixture();
+  try {
+    await openProtectionReview();
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Apply protection' })).toBeEnabled());
+    f.selectionRevision(2);
+    await press('Apply protection');
+    await screen.findByRole('button', { name: 'Check device after Apply' });
+    expect(f.port.scheduleApply).not.toHaveBeenCalled();
+    await press('Check device after Apply');
+    await pressWhenReady('Review latest device setup');
+    expect(screen.getByRole('button', { name: 'Apply protection' })).toBeDisabled();
+    await press('Review device access again');
+    await screen.findByRole('header', { name: 'Preferences reviewed' });
+    expect(f.port.scheduleApply).not.toHaveBeenCalled();
+  } finally {
+    await AsyncStorage.clear();
+  }
+});
+
+test('a lost Apply reply reconciles exact native schedule and selection without replay', async () => {
+  const f = fixture();
+  f.loseApply();
+  try {
+    await openProtectionReview();
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Apply protection' })).toBeEnabled());
+    await press('Apply protection');
+    await screen.findByText('Plan change not confirmed');
+    expect(screen.queryByRole('button', { name: 'Apply protection' })).toBeNull();
+    await press('Check device after Apply');
+    await screen.findByText('This device confirmed the applied schedule.');
+    await press('Finish setup');
+    await waitFor(() => expect(screen).toHavePathname('/'));
+    expect(f.port.scheduleApply).toHaveBeenCalledTimes(1);
+    expect(settingsWrites(f)).toHaveLength(0);
+  } finally {
+    await AsyncStorage.clear();
+  }
+});
+
+test('a restart at the attempted native revision confirms without another apply', async () => {
+  const f = fixture({ installed: true });
+  try {
+    await openProtectionReview({
+      ...reviewedProtection,
+      protectionAttempt: { revision: 3, selectionRevision: 1, spec: SAVED },
+    });
+    await screen.findByText('This device confirmed the applied schedule.');
+    await press('Finish setup');
+    await waitFor(() => expect(screen).toHavePathname('/'));
+    expect(f.port.scheduleApply).not.toHaveBeenCalled();
+  } finally {
+    await AsyncStorage.clear();
+  }
+});
+
+test('offline protection setup can defer without clearing a saved account plan', async () => {
+  const f = fixture();
+  try {
+    await openProtectionReview();
+    await act(() => onlineManager.setOnline(false));
+    await screen.findByText('Connect to verify the latest saved plan before applying.');
+    expect(screen.getByRole('button', { name: 'Apply protection' })).toBeDisabled();
+    await press('Finish for now');
+    await waitFor(() => expect(screen).toHavePathname('/'));
+    expect(f.port.scheduleApply).not.toHaveBeenCalled();
+    expect(f.settings.get(A)?.settings?.plan_draft).toEqual(SAVED);
+  } finally {
+    await AsyncStorage.clear();
+  }
+});
+
+test('replacement account does not receive a late native installation receipt', async () => {
+  const f = fixture();
+  let release!: () => void;
+  const hold = new Promise<void>(resolve => { release = resolve; });
+  f.onAfterScheduleApply(() => hold);
+  try {
+    await openProtectionReview();
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Apply protection' })).toBeEnabled());
+    await press('Apply protection');
+    await waitFor(() => expect(f.port.scheduleApply).toHaveBeenCalledTimes(1));
+    await act(() => { f.switch(); });
+    await waitFor(() => expect(screen).toHavePathname('/'));
+    await act(release);
+    expect(screen.queryByText('This device confirmed the applied schedule.')).toBeNull();
+    expect(JSON.parse((await AsyncStorage.getItem(setupKey))!)).toMatchObject({
+      step: 'protection', protectionAttempt: { revision: 1, selectionRevision: 1 },
+    });
+    expect(await AsyncStorage.getItem(`hoosh.setup.fixture.${B}`)).toBeNull();
+  } finally {
+    release();
     await AsyncStorage.clear();
   }
 });

@@ -1,6 +1,6 @@
 # Plan 02 — Onboarding into the shared app
 
-**Checkpoint:** INT-ONB-C04 Android build and fixture checks passed. **Next:** INT-ONB-C05. **Branch:** `integration/shared-product`. **Starting revision:** `9b98445` (ONB-C03). **Commit:** Pending.
+**Checkpoint:** INT-ONB-C05 fixture checks passed. **Next:** INT-ONB-C06. **Branch:** `integration/shared-product`. **Starting revision:** `bd32f74` (ONB-C04). **Commit:** Pending.
 
 ## INT-ONB-C01 — Introduction and scoped setup progress
 
@@ -47,3 +47,14 @@ TypeScript, 641 mobile unit tests, 136 targeted component tests, 682 API tests a
 ### Verification
 
 TypeScript, 641 mobile unit tests, 128 targeted component tests, 117 Android JVM cases, Android debug assembly and the production web export passed. Lint reported the four existing warnings. Routed and picker tests covered staged Save, owner binding and release, foreground permission checks and revocation, same-count revision changes, removed apps, deferral and missing native support. No physical device or emulator permission flow was run at this checkpoint.
+
+## INT-ONB-C05 — Explicit Apply and recovery
+
+- Onboarding uses the existing account-level weekly controller for the saved schedule, preview, prerequisites, installation and native readback. Native access, selected app count and installed periods are shown before Apply. Applying is a separate user action. Existing device ownership recovery remains in Settings with its explicit confirmation.
+- Apply compares the reviewed schedule with the latest confirmed account draft at tap time and after recording the local attempt. The account draft, installed revision and saved app revision are checked. The shared client rejects mismatched selection revisions before calling the native writer. The native writer retains its authorization and revision checks, current deadlines and quest behavior.
+- The local attempt preserves the schedule and revisions needed for recovery after an interrupted write. A matching enabled native installation can be confirmed after restart without another Apply. For a different result, an explicit device refresh and review are required before another attempt. Finishing for now keeps the saved account settings and any unresolved attempt. Home reads fresh native status.
+- Builds without the supported weekly port show an unavailable status. The shared iPhone Screen Time bridge and physical Android/iPhone verification remain open.
+
+### Verification
+
+TypeScript, 641 mobile unit tests, 120 targeted component tests, 117 Android JVM cases and the production web export passed. Lint reported four existing warnings. The normal-route fixture covered saving then previewing and applying, same-count selection revision changes, lost native acknowledgment, restart readback, offline deferral and account replacement mid-Apply. No physical device or disposable database acceptance ran in this checkpoint.

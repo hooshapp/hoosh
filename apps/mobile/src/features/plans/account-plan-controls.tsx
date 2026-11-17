@@ -39,6 +39,7 @@ export function AccountPlanControls() {
     !draftAvailable ||
     !complete ||
     !ready?.selectedAppCount ||
+    ready.selectionAvailable === false ||
     installed?.otherInstallation ||
     installed?.native.state === 'needs_permission' ||
     installed?.native.state === 'failed';

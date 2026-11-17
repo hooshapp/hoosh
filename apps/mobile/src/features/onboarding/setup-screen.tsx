@@ -13,6 +13,7 @@ import { useSettingsQuery } from '@/features/settings/settings-query';
 import { useAccountData } from '@/infrastructure/query/account-data-provider';
 
 import type { OnboardingProgress, OnboardingProgressRead } from './progress-repository';
+import { SetupProtection } from './setup-protection';
 import { SetupDevice } from './setup-device';
 import { PlanSummary, SetupDraft } from './setup-draft';
 import { reviewSavedSettings } from './setup-model';
@@ -130,10 +131,14 @@ export function SetupScreen() {
     );
   }
 
-  if (verified && (progress?.step === 'permission' || progress?.step === 'protection')) {
+  if (verified && progress?.step === 'protection') {
+    return <SetupProtection progress={progress} busy={busy} failed={failed} record={update}
+      onManage={() => router.push('/(tabs)/settings')} />;
+  }
+
+  if (verified && progress?.step === 'permission') {
     return (
       <SetupDevice
-        reviewedRevision={progress.step === 'protection' ? progress.selectionRevision : undefined}
         preferencesSaved={progress.settingsRevision !== undefined}
         busy={busy}
         failed={failed}
@@ -189,7 +194,9 @@ export function SetupScreen() {
       {status === 'completed' && progress?.permissionDeferred && (
         <Button label="Resume device setup" busy={busy} onPress={() => {
           void update({
-            ...progress, step: 'permission', permissionDeferred: undefined, selectionRevision: undefined,
+            ...progress, step: progress.protectionAttempt ? 'protection' : 'permission',
+            permissionDeferred: undefined,
+            selectionRevision: progress.protectionAttempt ? progress.selectionRevision : undefined,
           });
         }} />
       )}
