@@ -234,7 +234,14 @@ export class SessionController implements AuthSessionPort, AuthAccountActions {
     await this.savePending(pending);
     // Failed attempts remain gated until cancellation removes the SDK verifier.
     if (!this.active || run !== this.run || epoch !== this.actionEpoch || this.suspended) throw new AuthUnavailableError('not_ready');
-    const { data, error } = await runtime.client.auth.signInWithOAuth({ provider, options: { redirectTo: pending.redirectUrl, skipBrowserRedirect: true } });
+    const { data, error } = await runtime.client.auth.signInWithOAuth({
+      provider,
+      options: {
+        redirectTo: pending.redirectUrl,
+        skipBrowserRedirect: true,
+        ...(provider === 'google' ? { queryParams: { prompt: 'select_account' } } : {}),
+      },
+    });
     if (!this.active || run !== this.run || epoch !== this.actionEpoch || this.suspended) throw new AuthUnavailableError('not_ready');
     if (error) throw error;
     const target = new URL(data.url ?? '');

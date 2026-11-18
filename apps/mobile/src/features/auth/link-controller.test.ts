@@ -108,6 +108,11 @@ it.each(['apple', 'google'] as const)('exchanges %s once across reordered Router
   const flow = await f.controller.beginOAuth(provider, 'http://localhost:8090');
   expect(f.controller.getSnapshot().status).toBe('signed_out');
   expect(f.controller.getLinkSnapshot().pending).toMatchObject({ kind: 'oauth', provider, email: '' });
+  expect(f.auth.signInWithOAuth.mock.calls[0]?.[0].options).toEqual({
+    redirectTo: flow.redirectUrl,
+    skipBrowserRedirect: true,
+    ...(provider === 'google' ? { queryParams: { prompt: 'select_account' } } : {}),
+  });
   const callback = flow.redirectUrl + '&code=synthetic-oauth-code';
   const reordered = new URL(callback); reordered.search = `code=synthetic-oauth-code&flow=${flow.flowId}`;
   const a = f.controller.handleCallback(callback); const b = f.controller.handleCallback(reordered.toString());
