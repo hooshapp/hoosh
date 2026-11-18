@@ -34,3 +34,23 @@ The App Group in source is `group.com.AnishaDasgupta.DisconnectApp`. The project
 | History and rewards | Pilot report and event stores | Shared coverage/event contracts and boundaries. Pilot data stays out of shared acceptance. |
 
 No iOS app was installed, no entitlements or bundle IDs changed, and no device permission was requested in this audit.
+
+### Shared host wiring
+
+- The existing `DisconnectApp` target now has an Expo app delegate and scene delegate, a host-only Podfile and a Release bundle phase. Debug uses Metro. The scene delegate uses Expo's initial and warm URL forwarding for the existing `disconnect-dev` callback. The shared host display name is Hoosh. Host deployment is 16.4, matching the generated Expo reference. Extension targets retain their source deployment and signing settings.
+- Preserved the host and extension bundle IDs and existing embedding phases. Added Sign in with Apple to the host entitlements. The SwiftUI pilot entry and its Firebase and private Supabase configuration files are excluded from the shared host target. The old pilot remains in source. The shared host starts Expo Router and uses the same session code as Android.
+- Ported the authorization-only Swift module from `origin/landing-page` as an Apple-only local Expo module. Autolinking resolves it alongside Apple Authentication and Expo Linking. No iPhone app picker, installation or protection status was registered.
+- Passed Swift parsing, plist and shell syntax checks, TypeScript, Xcode target listing, Expo iOS Hermes export and the Release embed export with the resolved Router entry. The native workspace has not been built. CocoaPods 1.16.2 installation under the system Ruby 2.6 hit incompatible gem releases and then failed compiling the `nkf` extension because the system Ruby headers are absent from the selected SDK.
+
+### Remaining native verification
+
+Use a modern Ruby toolchain and the pinned Gemfile from `apps/mobile/ios`:
+
+```sh
+bundle install
+bundle exec pod install
+xcodebuild -workspace DisconnectApp.xcworkspace -scheme DisconnectApp \
+  -configuration Debug -sdk iphonesimulator CODE_SIGNING_ALLOWED=NO build
+```
+
+After the simulator Auth gate loads, verify embedded-JS Release and signing on a physical device. Inspect the built app and all four embedded extensions before the permission and feasibility checks. Do not use the authorization-only module to pass selection or protection acceptance.

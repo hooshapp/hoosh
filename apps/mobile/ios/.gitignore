@@ -1,0 +1,7 @@
+/Pods/
+/build/
+/DerivedData/
+/DisconnectApp.xcworkspace/
+/DisconnectApp.xcodeproj/project.xcworkspace/
+/.xcode.env.local
+*.jsbundle

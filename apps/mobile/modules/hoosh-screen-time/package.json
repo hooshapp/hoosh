@@ -1,0 +1,6 @@
+{
+  "name": "hoosh-screen-time",
+  "version": "0.1.0",
+  "description": "Local Screen Time authorization bridge for Hoosh",
+  "license": "UNLICENSED"
+}
