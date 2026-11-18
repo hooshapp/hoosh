@@ -1,6 +1,6 @@
 # Plan 02 — Onboarding into the shared app
 
-**Checkpoint:** INT-ONB-C05 fixture checks passed. **Next:** INT-ONB-C06. **Branch:** `integration/shared-product`. **Starting revision:** `bd32f74` (ONB-C04). **Commit:** Pending.
+**Checkpoint:** INT-ONB-C06 routed fixture checks passed. **Next:** isolated PostgreSQL 17 and physical device acceptance in Plan 05. **Branch:** `integration/shared-product`. **Starting revision:** `df04680` (ONB-C05). **Commit:** Pending.
 
 ## INT-ONB-C01 — Introduction and scoped setup progress
 
@@ -58,3 +58,23 @@ TypeScript, 641 mobile unit tests, 128 targeted component tests, 117 Android JVM
 ### Verification
 
 TypeScript, 641 mobile unit tests, 120 targeted component tests, 117 Android JVM cases and the production web export passed. Lint reported four existing warnings. The normal-route fixture covered saving then previewing and applying, same-count selection revision changes, lost native acknowledgment, restart readback, offline deferral and account replacement mid-Apply. No physical device or disposable database acceptance ran in this checkpoint.
+
+## INT-ONB-C06 — End-to-end verification
+
+- The new route cases start signed out and use normal Log in and Settings → Set up Hoosh. Both cases fill the questionnaire, save the plan, stage and explicitly save a native selection, preview, Apply and reach Home. The manual case changes the selected days. Both inject a failed final progress write and verify that retrying records completion without another account PATCH, app-selection Save or Apply.
+- The journey caught a stale selection count/revision when moving directly from the picker to protection review. Entering the review now refreshes the shared schedule controller instead of waiting for the next idle poll.
+- Native behavior in these cases comes from a test port. The available desktop PostgreSQL installation is version 18. The guarded disposable suite requires version 17 and its isolation marker. No approved fixture was listening on its reserved port. No Android device was attached. A paired iPhone was visible, but the shared iPhone Screen Time bridge is still pending in Plan 04. This checkpoint did not change any physical permission, hosted account or deployed database.
+
+### Verification results
+
+- `npm run check` passed: 641 mobile unit tests, 925 component tests, 682 API tests and generated contract checks. Two pre-existing component cases were skipped and 287 database cases were outside the default API suite. The production web export and design asset checks passed.
+- Chrome at 320 × 568 with 125% page scaling passed the fixture signup and confirmation callback, keyboard selection and navigation, manual plan, profile save, dropped settings reply, reload recovery, web deferral and saved values in Settings. This checked compact web layout and keyboard reachability. Native font scaling, real confirmation email delivery and OS permission dialogs remain in the physical acceptance scope.
+
+### Physical walkthrough for Plan 05
+
+Run V06–V09 with the guarded database and developer Auth project, and V10–V12 on supported devices under VERIFY-C04 (Android) and VERIFY-C05 (iPhone). Record the build revision, OS and result for each run.
+
+1. Create and confirm a fresh test account through the normal app. From Home open **Settings → Set up Hoosh → Start setup**. Pick activities and save a starter plan. Repeat with a separate account and **Set up on my own**, changing a day or session value. After saving, reopen Settings and confirm it shows the same choices.
+2. Choose apps, cancel once, reopen and save a selection. Check the saved count after returning and reopening the app. On Android, verify Usage Access and Accessibility separately. On iPhone, exercise Screen Time authorization and select individual apps once the shared bridge is signed in the build.
+3. Set a short window that covers the current time on a test device. Preview, then explicitly choose **Apply protection**. Wait for device confirmation and open a selected test app during the window. Confirm the intervention, then go to Home and check the device status.
+4. Revoke and restore permission, leave and reopen setup, and repeat with **Finish for now**. Verify there is no automatic Apply. Exercise Stop and the remaining quest overlap and allowance cases under the platform verification plan.

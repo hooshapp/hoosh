@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
 import { Button } from '@/components/ui/button';
 import { InlineStatus } from '@/components/ui/inline-status';
@@ -33,6 +33,10 @@ function matchesInstallation(
 export function SetupProtection({ progress, busy, failed, record, onManage }: Props) {
   const account = useAccountWeeklyPlan();
   const plan = account?.plan;
+  const refresh = plan?.refresh;
+  useEffect(() => {
+    void refresh?.();
+  }, [refresh]);
   const read = plan?.read;
   const ready = read?.phase === 'ready' ? read : null;
   const install = ready?.installation;

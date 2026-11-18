@@ -52,6 +52,8 @@ Request current test-resource availability only when the relevant implementation
 and independent preparation are ready. No account creation/reset/deletion or
 native permission grant occurs merely because this plan is written.
 
+The ONB-C06 [fixture evidence and physical walkthrough](../integration_notes/plan_02_onboarding_backend_protection_notes.md#int-onb-c06--end-to-end-verification) feed VERIFY-C03 through C05. The normal-route suite covers both plan choices and interrupted completion. Real-account settings acceptance and physical intervention verification remain open. iPhone acceptance depends on the signed Plan 04 Screen Time bridge.
+
 ## Mandatory journey matrix
 
 Use IDs below in notes/evidence so each scenario has an owner, build/SHA, environment,

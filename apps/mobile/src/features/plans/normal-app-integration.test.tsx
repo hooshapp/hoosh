@@ -293,7 +293,7 @@ function fixture({
     state: permission ? (enabled ? 'armed' : 'inactive') : 'needs_permission',
     installedRevision: revision,
     selectionRevision: revision === null ? null : installedSelectionRevision,
-    selectedAppCount: revision === null ? 0 : 1,
+    selectedAppCount: revision === null ? 0 : savedCount,
     reasonCount: enabled ? 1 : 0,
     pendingEventCount: 0,
     overlayVisible: false,
@@ -441,6 +441,7 @@ const press = async (label: string | RegExp) => {
 const originalAppState = AppState.currentState;
 beforeEach(() => {
   AppState.currentState = 'active';
+  jest.spyOn(AppState, 'addEventListener').mockReturnValue({ remove: () => {} });
   focusManager.setFocused(true);
   onlineManager.setOnline(true);
 });
@@ -1190,9 +1191,8 @@ test('foreground return rechecks two independent permissions and detects revocat
   const f = fixture();
   f.permission(false);
   const listeners = new Set<(state: AppStateStatus) => void>();
-  const original = AppState.addEventListener.bind(AppState);
-  jest.spyOn(AppState, 'addEventListener').mockImplementation((event, listener) => {
-    if (event !== 'change') return original(event, listener);
+  jest.mocked(AppState.addEventListener).mockImplementation((event, listener) => {
+    if (event !== 'change') return { remove: () => {} };
     const changed = listener as (state: AppStateStatus) => void;
     listeners.add(changed);
     return { remove: () => listeners.delete(changed) };
@@ -1282,12 +1282,52 @@ async function openProtectionReview(progress: object = reviewedProtection) {
   await screen.findByRole('header', { name: 'Review device setup' });
 }
 
-test('onboarding saves and then explicitly applies the canonical account plan through the shared controller', async () => {
-  const f = fixture({ settingsMissing: true });
+test.each([false, true])('normal sign-in through setup and Apply (manual path: %s)', async manual => {
+  const f = fixture({ signedOut: true, settingsMissing: true });
+  f.sdk.signInWithPassword.mockImplementationOnce(async () => ({
+    data: { session: f.switch(A) }, error: null,
+  }));
   try {
-    await openSetupReview();
-    await press('Save to my account');
+    await renderRouter(routes, { initialUrl: '/sign-in' });
+    await screen.findByRole('header', { name: 'Hoosh login' });
+    await fireEvent.changeText(screen.getByLabelText('Email'), 'demo@example.test');
+    await fireEvent.changeText(screen.getByLabelText('Password'), 'fixture-password');
+    await press('Log in');
+    await fireEvent.press(await screen.findByRole('tab', { name: 'Settings' }));
+    await fireEvent.press(await screen.findByRole('link', { name: 'Set up Hoosh' }));
+    await pressWhenReady('Start setup');
+    await fireEvent.press(await screen.findByRole('checkbox', { name: 'Gym' }));
+    await press('Next →');
+    await screen.findByRole('header', { name: 'We created a plan for you' });
+    if (manual) {
+      await press('Set up on my own');
+      await press('Active Days');
+      await fireEvent.press(screen.getByRole('checkbox', { name: 'Sunday' }));
+      await press('Review days');
+    }
+    await press(manual ? 'Review my plan' : 'Go with suggestion');
+    await pressWhenReady('Save to my account');
     await screen.findByText('Accessibility access allowed for app protection.');
+    const saved = f.settings.get(A)?.settings?.plan_draft;
+    expect(saved?.weekdays).toEqual(manual ? [0, 1, 2, 3, 4, 6] : [0, 1, 2, 3, 4]);
+    const staged = {
+      draftId: HANDLE, groupId: 'global', baseRevision: 1, draftVersion: 1,
+      selectedAppCount: 2, savedAppCount: 1, dirty: true,
+    };
+    f.port.selectionPick.mockResolvedValue(staged);
+    f.port.selectionCommit.mockImplementationOnce(async () => {
+      f.selectionCount(2);
+      f.selectionRevision(2);
+      return { ...staged, baseRevision: 2, savedAppCount: 2, dirty: false };
+    });
+    await press('Choose apps on this device');
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Choose apps' })).toBeEnabled());
+    await press('Choose apps');
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Save selected apps' })).toBeEnabled());
+    await press('Save selected apps');
+    await screen.findByText('App selection saved on this device. Protection has not changed.');
+    await press('Back');
+    await screen.findByText('2 apps saved on this device.');
     await press('Continue to protection review');
     await screen.findByRole('header', { name: 'Review device setup' });
     expect(f.port.scheduleApply).not.toHaveBeenCalled();
@@ -1299,18 +1339,25 @@ test('onboarding saves and then explicitly applies the canonical account plan th
     await press('Apply protection');
     await screen.findByText('This device confirmed the applied schedule.');
     expect(f.port.scheduleApply).toHaveBeenCalledTimes(1);
-    expect(f.port.scheduleApply).toHaveBeenCalledWith(`fixture:${A}`, HANDLE, 0, 1, 1, SAVED);
+    expect(f.port.scheduleApply).toHaveBeenCalledWith(`fixture:${A}`, HANDLE, 0, 1, 2, saved);
+
+    // The install remains confirmed if writing the completion marker fails.
+    jest.mocked(AsyncStorage.setItem).mockRejectedValueOnce(new Error('fixture disk failure'));
+    await press('Finish setup');
+    await screen.findByText('Setup progress could not be recorded. Try again.');
     await press('Finish setup');
     await waitFor(() => expect(screen).toHavePathname('/'));
     await screen.findByText('App interventions active');
     expect(settingsWrites(f)).toHaveLength(1);
+    expect(f.port.selectionCommit).toHaveBeenCalledTimes(1);
+    expect(f.port.scheduleApply).toHaveBeenCalledTimes(1);
     expect(JSON.parse((await AsyncStorage.getItem(setupKey))!)).toMatchObject({
       step: 'complete', permissionDeferred: false,
     });
   } finally {
     await AsyncStorage.clear();
   }
-});
+}, 15000);
 
 test('a selection revision change during Apply requires readback and a new review', async () => {
   const f = fixture();

@@ -71,8 +71,8 @@ normalizer as a destructive request sanitizer.
 | INT-ONB-C02 | `feat(onboarding): map reviewed choices to product contracts` | Committed as `d241a81`. [C02 evidence](../integration_notes/plan_02_onboarding_backend_protection_notes.md#int-onb-c02--questionnaire-and-plan-review) |
 | INT-ONB-C03 | `feat(onboarding): save preferences with revision recovery` | Committed as `9b98445`. Disposable database acceptance open. [C03 evidence](../integration_notes/plan_02_onboarding_backend_protection_notes.md#int-onb-c03--account-save-and-recovery) |
 | INT-ONB-C04 | `feat(onboarding): connect real app selection and permission` | Committed as `bd32f74`. Physical Android check and iOS bridge open. [C04 evidence](../integration_notes/plan_02_onboarding_backend_protection_notes.md#int-onb-c04--device-permissions-and-app-selection) |
-| INT-ONB-C05 | `feat(onboarding): reconcile explicit protection activation` | Fixture checks passed with the shared Android-compatible controller. [C05 evidence](../integration_notes/plan_02_onboarding_backend_protection_notes.md#int-onb-c05--explicit-apply-and-recovery) |
-| INT-ONB-C06 | `test(onboarding): verify complete and interrupted setup` | Next; physical verification depends on the available native builds |
+| INT-ONB-C05 | `feat(onboarding): reconcile explicit protection activation` | Committed as `df04680`. [C05 evidence](../integration_notes/plan_02_onboarding_backend_protection_notes.md#int-onb-c05--explicit-apply-and-recovery) |
+| INT-ONB-C06 | `test(onboarding): verify complete and interrupted setup` | Routed fixtures passed. Device and guarded database acceptance remain open. [C06 evidence and walkthrough](../integration_notes/plan_02_onboarding_backend_protection_notes.md#int-onb-c06--end-to-end-verification) |
 
 ### INT-ONB-C01 — Scoped progress and root routing
 
