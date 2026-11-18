@@ -26,6 +26,8 @@
 	</array>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Hoosh can connect to the development server on your local network.</string>
+	<key>RCTNewArchEnabled</key>
+	<true/>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

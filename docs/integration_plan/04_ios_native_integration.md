@@ -1,6 +1,6 @@
 # Integration 04 — Swift protection in the shared React Native iOS application
 
-**Lead:** Anisha. **Contract/backend/Android reviewer:** Ishmum. **Status:** C01 shared host wired. Native build and signing verification open.
+**Lead:** Anisha. **Contract/backend/Android reviewer:** Ishmum. **Status:** C01 shared host builds and launches in the simulator. Release and physical signing/feasibility remain open.
 **Prerequisites:** BASE-C04 interfaces for initial audit; BASE-C06 before landing
 host integration. AUTH and ONB handoffs are needed for the final normal journey.
 **Notes:** `docs/integration_notes/plan_04_ios_native_integration_notes.md`.
@@ -62,7 +62,7 @@ declare a different behavior equivalent to finish the plan.
 
 | Part | Intended commit | State / prerequisite |
 |---|---|---|
-| INT-IOS-C01 | `build(ios): establish audited React Native host and targets` | [Source audit and Expo reference](../integration_notes/plan_04_ios_native_integration_notes.md) recorded. Expo host wiring and iOS JS export checked. CocoaPods build and signed proof open. |
+| INT-IOS-C01 | `build(ios): establish audited React Native host and targets` | [Source audit and Expo reference](../integration_notes/plan_04_ios_native_integration_notes.md) recorded. Locked CocoaPods workspace, Debug build and simulator Auth screen passed. Internal Release and physical proof open. |
 | INT-IOS-C02 | `feat(ios): add owner-scoped versioned protection storage` | Planned; C01 |
 | INT-IOS-C03 | `feat(ios): bridge native selection and protection status` | Planned; C02 |
 | INT-IOS-C04 | `feat(ios): integrate scheduled protection and quest lifecycle` | Planned; C02/C03, policy feasibility |

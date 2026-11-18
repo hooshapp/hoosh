@@ -23,6 +23,11 @@ target 'DisconnectApp' do
     :privacy_file_aggregation_enabled => true
   )
   post_install do |installer|
+    # These native extensions do not run React Native.
+    extension_plists = Dir.glob(File.join(__dir__, '*', 'Info.plist')).to_h do |path|
+      [path, File.binread(path)]
+    end
     react_native_post_install(installer, config[:reactNativePath], :mac_catalyst_enabled => false)
+    extension_plists.each { |path, contents| File.binwrite(path, contents) }
   end
 end

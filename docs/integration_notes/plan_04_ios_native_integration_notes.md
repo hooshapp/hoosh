@@ -2,7 +2,7 @@
 
 ## INT-IOS-C01 — Source audit and Expo reference host
 
-**Status:** Source audit started. Shared host build, signing verification and physical feasibility are open. Branch `integration/shared-product`, starting revision `93d9c3b`.
+**Status:** Shared host Debug build and simulator launch passed. Internal Release, physical signing and feasibility are open. Branch `integration/shared-product`, host wiring revision `dc1e143`.
 
 ### Inspected targets
 
@@ -42,7 +42,7 @@ No iOS app was installed, no entitlements or bundle IDs changed, and no device p
 - Ported the authorization-only Swift module from `origin/landing-page` as an Apple-only local Expo module. Autolinking resolves it alongside Apple Authentication and Expo Linking. No iPhone app picker, installation or protection status was registered.
 - Passed Swift parsing, plist and shell syntax checks, TypeScript, Xcode target listing, Expo iOS Hermes export and the Release embed export with the resolved Router entry. The native workspace has not been built. CocoaPods 1.16.2 installation under the system Ruby 2.6 hit incompatible gem releases and then failed compiling the `nkf` extension because the system Ruby headers are absent from the selected SDK.
 
-### Remaining native verification
+### Build commands and remaining native verification
 
 Use a modern Ruby toolchain and the pinned Gemfile from `apps/mobile/ios`:
 
@@ -53,4 +53,35 @@ xcodebuild -workspace DisconnectApp.xcworkspace -scheme DisconnectApp \
   -configuration Debug -sdk iphonesimulator CODE_SIGNING_ALLOWED=NO build
 ```
 
-After the simulator Auth gate loads, verify embedded-JS Release and signing on a physical device. Inspect the built app and all four embedded extensions before the permission and feasibility checks. Do not use the authorization-only module to pass selection or protection acceptance.
+The simulator Auth gate has now loaded under the simulator signing configuration. Verify embedded-JS Release and signing on a physical device next. Inspect the built app and all four embedded extensions before the permission and feasibility checks. Do not use the authorization-only module to pass selection or protection acceptance.
+
+### CocoaPods workspace checkpoint
+
+- Built an installation-local Ruby 3.4.8 toolchain with OpenSSL and YAML under the ignored `.native-dev/toolchains` folder. The selected Xcode SDK exposes `pipe2` and `dup3` before the host macOS provides them. The private Ruby build uses its existing pipe and descriptor fallbacks for those calls. The toolchain remains local to this checkout.
+- Bundler 2.6.9 installed the pinned CocoaPods 1.16.2 successfully. Added the Gemfile and Podfile lockfiles and the generated workspace references. Swift package resolution uses the existing audit snapshot, including Firebase 12.13.0, through the workspace's `Package.resolved`.
+- CocoaPods installed 128 pods, including the local Screen Time authorization module. React Native's generated privacy manifest is bundled by the host. The Podfile preserves the extension plists across React Native's post-install hook and keeps its New Architecture flag in `SharedHost-Info.plist`.
+
+
+### Simulator build and launch results
+
+- Both unsigned compilation and ad-hoc simulator-signed Debug compilation passed on Xcode 27.2. The selected iPhone 17 simulator runs iOS 27.2. The built app contains the report, monitor, shield configuration and shield action extensions. The generated Expo provider includes `SecureStoreModule` and `HooshScreenTimeModule`.
+- The unsigned simulator binary produced an Auth storage error. Rebuilding with simulator signing generated the simulated application identifier and Keychain entitlement context. The signed simulator run displayed the shared Hoosh login screen without the earlier storage error. This is a launch and Auth bootstrap check. A provider sign-in and actual Screen Time grant were not performed.
+- Expo's `--initialUrl http://localhost:8081?disableOnboarding=1` launch argument opened the development project. A synthetic invalid callback through the custom URL scheme reached the system's “Open in Hoosh?” confirmation. Simulator UI controls were unavailable through the computer connection, so callback acceptance remains unverified.
+- The simulator booted for this check is named `Hoosh Shared Host C01`. It is separate from the pilot simulators. The physical iPhone was not used. Internal Release and physical allowance/extension behavior remain open C01 acceptance items.
+
+The successful simulator build uses ordinary simulator signing, which is needed for Auth's device storage:
+
+```sh
+export PATH="$PWD/.native-dev/toolchains/ruby/bin:$PATH"
+cd apps/mobile/ios
+BUNDLE_PATH=../../../.native-dev/toolchains/ios-gems bundle exec pod install --deployment
+cd ../../..
+xcodebuild -workspace apps/mobile/ios/DisconnectApp.xcworkspace \
+  -scheme DisconnectApp -configuration Debug -sdk iphonesimulator \
+  -destination 'platform=iOS Simulator,name=Hoosh Shared Host C01' \
+  -derivedDataPath .native-dev/ios-shared-derived \
+  -disableAutomaticPackageResolution -onlyUsePackageVersionsFromResolvedFile \
+  CODE_SIGN_IDENTITY=- CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=YES build
+```
+
+Run these commands from the repository root. Another developer can supply a compatible modern Ruby through PATH before running the pinned Gemfile. The local private toolchain is ignored by Git.

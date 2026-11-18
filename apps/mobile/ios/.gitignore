@@ -1,7 +1,13 @@
 /Pods/
 /build/
 /DerivedData/
-/DisconnectApp.xcworkspace/
+/DisconnectApp.xcworkspace/*
+!/DisconnectApp.xcworkspace/contents.xcworkspacedata
+!/DisconnectApp.xcworkspace/xcshareddata/
+/DisconnectApp.xcworkspace/xcshareddata/*
+!/DisconnectApp.xcworkspace/xcshareddata/swiftpm/
+/DisconnectApp.xcworkspace/xcshareddata/swiftpm/*
+!/DisconnectApp.xcworkspace/xcshareddata/swiftpm/Package.resolved
 /DisconnectApp.xcodeproj/project.xcworkspace/
 /.xcode.env.local
 *.jsbundle
