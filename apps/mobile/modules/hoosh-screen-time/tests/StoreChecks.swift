@@ -129,6 +129,53 @@ import Darwin
            "previous v1 fixture reads without inventing migration acknowledgment")
     let own = try installation.read(owner: b, token: ownerToken, legacyPresent: { true })
     expect(own["status"] == "owned", "retained legacy files do not trigger repeated migration")
+    let selections = SelectionTransactions(store: store, leases: leases, empty: Set<String>()) { $0.count }
+    let initialDraft = try selections.begin(owner: b, token: ownerToken)
+    let draftID = UUID(uuidString: initialDraft["draftId"] as! String)!
+    let changed = try selections.replace(owner: b, token: ownerToken, id: draftID, version: 0, value: ["native-token-a"])
+    expect(changed["dirty"] as? Bool == true, "picker updates only draft")
+    let beforeSave = try selections.read(owner: b, token: ownerToken, authorized: true)
+    expect(beforeSave["selectedAppCount"] as? Int == 0, "Done is not Save")
+    let saved = try selections.commit(owner: b, token: ownerToken, id: draftID, version: 1)
+    expect(saved["baseRevision"] as? UInt64 == 1 && saved["dirty"] as? Bool == false, "save/readback acknowledges revision")
+    let duplicate = try selections.commit(owner: b, token: ownerToken, id: draftID, version: 1)
+    expect(duplicate["baseRevision"] as? UInt64 == 1, "same draft save retry does not advance revision")
+    let equalCount = try selections.replace(owner: b, token: ownerToken, id: draftID, version: 1, value: ["native-token-b"])
+    expect(equalCount["dirty"] as? Bool == true && equalCount["selectedAppCount"] as? Int == 1,
+           "same count different tokens remains dirty")
+    try selections.release(owner: b, token: ownerToken, id: draftID)
+    let cancelRead = try selections.read(owner: b, token: ownerToken, authorized: true)
+    expect(cancelRead["revision"] as? UInt64 == 1, "release/cancel preserves saved selection")
+    let next = try selections.begin(owner: b, token: ownerToken)
+    let nextID = UUID(uuidString: next["draftId"] as! String)!
+    _ = try selections.begin(owner: b, token: ownerToken)
+    do {
+      _ = try selections.snapshot(owner: b, token: ownerToken, id: nextID, version: 0)
+      fatalError("competing editor retained old handle")
+    } catch SelectionFailure.expired {}
+    let revoked = try selections.read(owner: b, token: ownerToken, authorized: false)
+    expect(revoked["needsReselection"] as? Bool == true, "revocation preserves saved bytes but marks review required")
+    let stale = try selections.begin(owner: b, token: ownerToken)
+    let staleID = UUID(uuidString: stale["draftId"] as! String)!
+    let stored = try store.read()!
+    try store.update(expectedRevision: stored.revision) { state in
+      let index = state.owners.firstIndex(where: { $0.owner == b })!
+      state.owners[index].selection = ProtectionSelection(revision: 2, encodedTokens: try JSONEncoder().encode(Set(["native-token-c"])))
+    }
+    do {
+      _ = try selections.commit(owner: b, token: ownerToken, id: staleID, version: 0)
+      fatalError("stale editor overwrote external selection")
+    } catch SelectionFailure.conflict {}
+    var clock = Date()
+    let expiring = SelectionTransactions(store: store, leases: leases, empty: Set<String>(), now: { clock }) { $0.count }
+    let expiringDraft = try expiring.begin(owner: b, token: ownerToken)
+    let expiringID = UUID(uuidString: expiringDraft["draftId"] as! String)!
+    clock = clock.addingTimeInterval(901)
+    do {
+      _ = try expiring.snapshot(owner: b, token: ownerToken, id: expiringID, version: 0)
+      fatalError("expired draft remained usable")
+    } catch SelectionFailure.expired {}
+    print("PASS: selection draft/Save separation, idempotent readback, token equality, cancel, competing editors, revoked-access summary and stale-revision refusal")
     leases.end(ownerToken)
     try fails(.staleLease) {
       try installation.claim(owner: b, token: ownerToken, revision: own["revision"]!, confirmed: true) { fatalError("stale session stopped settings") }

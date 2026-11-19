@@ -13,6 +13,9 @@ enum ProtectionDeviceTransition {
      ManagedSettingsStore(named: .init("disconnect.dailyCap.v1")),
      ManagedSettingsStore(named: .init("hoosh.shared.protection.v1"))]
   }
+  static var protectionPresent: Bool {
+    !DeviceActivityCenter().activities.isEmpty || settings.contains(where: { !empty($0) })
+  }
   static func legacyPresent() throws -> Bool {
     guard let defaults = UserDefaults(suiteName: SharedProtectionStore.group),
           FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: SharedProtectionStore.group) != nil else {
@@ -21,8 +24,7 @@ enum ProtectionDeviceTransition {
     // Presence is enough; corrupt pilot bytes must not look like an empty setup.
     return defaults.object(forKey: "familyActivitySelection") != nil
       || UserDefaults.standard.object(forKey: "familyActivitySelection") != nil
-      || !DeviceActivityCenter().activities.isEmpty
-      || settings.contains(where: { !empty($0) })
+      || protectionPresent
   }
   static func stopAndVerify() throws {
     // The user's confirmation explicitly stops all Hoosh monitoring on this device.

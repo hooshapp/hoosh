@@ -1,3 +1,4 @@
+import type { IOSSelectionDevice } from '@/infrastructure/native/ios-selection-device';
 import { createContext, type ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 import { useAccountData } from '@/infrastructure/query/account-data-provider';
 import { productNativePort, type ProductNativePort } from '@/infrastructure/native/product-ports';
@@ -10,6 +11,8 @@ type InstallationSession = {
   read(): Promise<InstallationReview>;
   claim(revision: string): Promise<void>;
 };
+export const IOSSelectionContext = createContext<IOSSelectionDevice | null>(null);
+export const useIOSSelectionDevice = () => useContext(IOSSelectionContext);
 export const NativeInstallationContext = createContext<InstallationSession | null>(null);
 export const useNativeInstallation = () => useContext(NativeInstallationContext);
 export const NativeOwnerContext = createContext<NativeOwner | null>(null);
@@ -61,7 +64,13 @@ function VerifiedNativeOwner({ namespace, port, children }: { namespace: string;
       claim: (revision: string) => lifecycle.claim(namespace, session.userID, session.token, revision),
     };
   }, [session, scopeID, verifiedUserID, namespace]);
+  const iosDevice = useMemo(() => {
+    if (!session || !nativeOwnerSession?.device || session.scopeID !== scopeID || session.userID !== verifiedUserID) return null;
+    return nativeOwnerSession.device(namespace, session.userID, session.token, scopeID!);
+  }, [session, scopeID, verifiedUserID, namespace]);
   return <NativeOwnerContext.Provider value={binding}>
+    <IOSSelectionContext.Provider value={iosDevice}>
     <NativeInstallationContext.Provider value={installation}>{children}</NativeInstallationContext.Provider>
+    </IOSSelectionContext.Provider>
   </NativeOwnerContext.Provider>;
 }

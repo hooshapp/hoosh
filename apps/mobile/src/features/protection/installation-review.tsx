@@ -43,7 +43,7 @@ function ConnectedReview({ session }: { session: NonNullable<ReturnType<typeof u
   }
   return <>
     {review && <InlineStatus state="unavailable" message="This device has an existing Hoosh Screen Time setup. Review it before configuring protection for this account." />}
-    {value?.status === 'owned' && <Text>Device setup is assigned to this account. App selection and protection still need to be configured.</Text>}
+    {value?.status === 'owned' && <Text>Device setup is assigned to this account. Review Screen Time access and saved apps below.</Text>}
     {error && <InlineStatus state="error" message="Screen Time setup could not be verified. Existing data has been kept. Try again." />}
     {(review || value?.status === 'unclaimed') && <Button label={review ? 'Review existing setup' : 'Prepare device setup'} busy={busy} onPress={confirm} />}
     {error && !value && <Button label="Retry device review" onPress={async () => {

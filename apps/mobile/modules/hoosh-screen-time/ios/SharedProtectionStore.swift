@@ -75,6 +75,7 @@ struct ProtectionState: Codable, Equatable {
             record.reasons.count <= 256, record.allowances.count <= 256,
             record.receipts.count <= 512, record.events.count <= 2048,
             record.selection?.encodedTokens.count ?? 0 <= 262144,
+            record.selection == nil || (record.selection!.revision > 0 && record.selection!.revision <= 2147483647),
             ["unknown", "partial", "observed", "unavailable"].contains(record.coverage),
             Set(record.reasons.map(\.id)).count == record.reasons.count,
             Set(record.receipts.map(\.requestID)).count == record.receipts.count,
@@ -82,7 +83,7 @@ struct ProtectionState: Codable, Equatable {
       for reason in record.reasons {
         guard !reason.id.isEmpty, reason.id.utf8.count <= 256, reason.policyRevision.utf8.count <= 256,
               !reason.scheduleName.isEmpty, reason.scheduleName.utf8.count <= 256,
-              reason.selectionRevision == record.selection?.revision else { throw ProtectionStoreError.invalidRecord }
+              reason.selectionRevision > 0, reason.selectionRevision <= (record.selection?.revision ?? 0) else { throw ProtectionStoreError.invalidRecord }
       }
       for allowance in record.allowances {
         guard record.reasons.contains(where: { $0.id == allowance.reasonID }),

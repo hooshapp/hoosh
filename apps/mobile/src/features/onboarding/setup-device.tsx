@@ -7,9 +7,10 @@ import { Button } from '@/components/ui/button';
 import { colors } from '@/design/tokens';
 import { Screen } from '@/components/ui/screen';
 import { InlineStatus } from '@/components/ui/inline-status';
+import { IOSDeviceSetup } from './ios-device-setup';
 import { InstallationReviewPanel } from '@/features/protection/installation-review';
 import { NativeAppsEditor } from '@/features/preferences/native-apps-editor';
-import { useNativeOwner, type NativeOwner } from '@/features/protection/native-owner-boundary';
+import { useIOSSelectionDevice, useNativeOwner, type NativeOwner } from '@/features/protection/native-owner-boundary';
 import { useUsagePermissionAction } from '@/features/protection/use-usage-permission-action';
 import { decodeInterventionProtectionRead } from '@/infrastructure/native/intervention-protection-reader';
 import { deviceProtectionIntegration } from '@/infrastructure/native/protection-integration';
@@ -51,6 +52,10 @@ function ready(read: DeviceRead | null): read is DeviceRead & { selection: Saved
 
 export function SetupDevice(props: Props) {
   const owner = useNativeOwner();
+  const iosDevice = useIOSSelectionDevice();
+  if (Platform.OS === 'ios' && iosDevice) return <DeviceScreen {...props}>
+    <IOSDeviceSetup key={`${iosDevice.owner}:${iosDevice.generation}`} device={iosDevice} />
+  </DeviceScreen>;
   if (owner) {
     return <ConnectedDevice key={`${owner.owner}:${owner.generation}`} owner={owner} {...props} />;
   }
