@@ -6,6 +6,11 @@ import { NativeOwnerBoundary, useNativeOwner } from './native-owner-boundary';
 const A = '00000000-0000-4000-8000-000000000001', B = '00000000-0000-4000-8000-000000000002';
 let mockIdentity: { user_id: string; email: null } | undefined;
 let mockScope = { id: 1, account: { user_id: A, sessionGeneration: 1 } };
+let mockLifecycleEnabled = false;
+const mockBeginSession = jest.fn(), mockEndSession = jest.fn(async (_token: string) => undefined);
+jest.mock('@/infrastructure/native/native-owner-session', () => ({
+  get nativeOwnerSession() { return mockLifecycleEnabled ? { begin: mockBeginSession, end: mockEndSession } : null; },
+}));
 const mockEnd = jest.fn(async (..._args: unknown[]) => undefined), mockSelectionEnd = jest.fn(async (..._args: unknown[]) => undefined);
 jest.mock('@/infrastructure/native/product-ports', () => ({ productNativePort: {
   interventionEndOwner: (...args: unknown[]) => mockEnd(...args),
@@ -17,7 +22,7 @@ function Consumer() { const binding = useNativeOwner(); return <Text>{binding?.o
 function Host() {
   return <AppRuntimeContext.Provider value={{ nativeNamespace: 'fixture' } as AppRuntime}><NativeOwnerBoundary><Consumer /></NativeOwnerBoundary></AppRuntimeContext.Provider>;
 }
-beforeEach(() => { mockIdentity = undefined; mockScope = { id: 1, account: { user_id: A, sessionGeneration: 1 } }; });
+beforeEach(() => { mockLifecycleEnabled = false; mockIdentity = undefined; mockScope = { id: 1, account: { user_id: A, sessionGeneration: 1 } }; });
 it('never binds native state from SDK subject alone or a mismatched API identity', async () => {
   const view = await render(<Host />);
   expect(screen.getByText('No verified device owner')).toBeTruthy();
@@ -53,4 +58,27 @@ it('fences same-account session replacement and retires on unmount', async () =>
   expect(mockEnd).toHaveBeenCalledWith(`fixture:${A}`, false);
   await view.unmount();
   expect(mockEnd).toHaveBeenCalledTimes(2);
+});
+
+it('begins iOS lifecycle only after verified identity and ends the exact lease', async () => {
+  mockLifecycleEnabled = true;
+  mockBeginSession.mockResolvedValue('lease-a');
+  const view = await render(<Host />);
+  expect(mockBeginSession).not.toHaveBeenCalled();
+  mockIdentity = { user_id: A, email: null };
+  await view.rerender(<Host />);
+  await act(async () => {});
+  expect(mockBeginSession).toHaveBeenCalledWith('fixture', A);
+  await view.unmount();
+  expect(mockEndSession).toHaveBeenCalledWith('lease-a');
+});
+it('retires a lease that resolves after its account boundary unmounts', async () => {
+  mockLifecycleEnabled = true;
+  mockIdentity = { user_id: A, email: null };
+  let resolve!: (token: string) => void;
+  mockBeginSession.mockImplementation(() => new Promise<string>(done => { resolve = done; }));
+  const view = await render(<Host />);
+  await view.unmount();
+  await act(async () => { resolve('late-lease'); });
+  expect(mockEndSession).toHaveBeenCalledWith('late-lease');
 });

@@ -63,7 +63,7 @@ declare a different behavior equivalent to finish the plan.
 | Part | Intended commit | State / prerequisite |
 |---|---|---|
 | INT-IOS-C01 | `build(ios): establish audited React Native host and targets` | [Source audit and Expo reference](../integration_notes/plan_04_ios_native_integration_notes.md) recorded. Locked CocoaPods workspace, Debug build and simulator Auth screen passed. Internal Release and physical proof open. |
-| INT-IOS-C02 | `feat(ios): add owner-scoped versioned protection storage` | Planned; C01 |
+| INT-IOS-C02 | `feat(ios): add owner-scoped versioned protection storage` | In progress: versioned store, atomic persistence and bridge-lifetime owner leases implemented; focused isolation/crash/contention tests passed. Confirmed claim, legacy review, extension wiring and physical locked-device checks remain. |
 | INT-IOS-C03 | `feat(ios): bridge native selection and protection status` | Planned; C02 |
 | INT-IOS-C04 | `feat(ios): integrate scheduled protection and quest lifecycle` | Planned; C02/C03, policy feasibility |
 | INT-IOS-C05 | `feat(ios): reconcile native events and product measurements` | Planned; C04 |
