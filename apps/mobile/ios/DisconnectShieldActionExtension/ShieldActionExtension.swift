@@ -23,6 +23,13 @@ final class ShieldActionExtension: ShieldActionDelegate {
     }
 
     private func handle(action: ShieldAction, completionHandler: @escaping (ShieldActionResponse) -> Void) {
+        let handled = SharedProtectionExtensionFence.withLegacyAccess {
+            handleLegacy(action: action, completionHandler: completionHandler)
+        }
+        if !handled { completionHandler(.close) }
+    }
+
+    private func handleLegacy(action: ShieldAction, completionHandler: @escaping (ShieldActionResponse) -> Void) {
         switch action {
         case .primaryButtonPressed:
             logger.notice("Primary shield action pressed; closing app and keeping shields active")
@@ -45,11 +52,11 @@ final class ShieldActionExtension: ShieldActionDelegate {
             removeShieldsForBypass()
 
             DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + 0.2) {
-                SharedShieldWriter.removeAllShields()
+                _ = SharedProtectionExtensionFence.withLegacyAccess { SharedShieldWriter.removeAllShields() }
             }
 
             DispatchQueue.global(qos: .utility).asyncAfter(deadline: .now() + 0.6) {
-                SharedShieldWriter.removeAllShields()
+                _ = SharedProtectionExtensionFence.withLegacyAccess { SharedShieldWriter.removeAllShields() }
             }
 
             completionHandler(.defer)

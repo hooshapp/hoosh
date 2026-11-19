@@ -12,6 +12,11 @@ import Darwin
         try store.update(expectedRevision: old.revision) { $0.owners[0].coverage = "observed" }
         fatalError("did not crash")
       }
+      if args[1] == "legacy" {
+        let store = SharedProtectionStore(directory: root)
+        let allowed = try store.withSnapshot { $0?.permitsLegacyCallbacks ?? true }
+        _exit(allowed ? 12 : 0)
+      }
       if args[1] == "increment" {
         let store = SharedProtectionStore(directory: root)
         for _ in 0..<40 {
@@ -81,6 +86,54 @@ import Darwin
       try store.update(expectedRevision: current.revision) { $0.owners.append($0.owners[0]) }
     }
     try expect(try store.read() == current, "invalid edit preserves state")
+    let installation = ProtectionInstallation(store: store, leases: leases)
+    let ownerToken = leases.begin(b)
+    let review = try installation.read(owner: b, token: ownerToken, legacyPresent: { false })
+    expect(review["status"] == "other_owner", "other account gets neutral status")
+    expect(!review.values.contains(a.userID.uuidString), "no previous-owner identity in bridge status")
+    var stopped = false
+    do {
+      try installation.claim(owner: b, token: ownerToken, revision: review["revision"]!, confirmed: false) { stopped = true }
+      fatalError("unconfirmed claim succeeded")
+    } catch InstallationError.confirmationRequired {}
+    expect(!stopped, "cancel never stops protection")
+    do {
+      try installation.claim(owner: b, token: ownerToken, revision: "missing", confirmed: true) { stopped = true }
+      fatalError("stale revision succeeded")
+    } catch InstallationError.changed {}
+    try fails(.unavailable) {
+      try installation.claim(owner: b, token: ownerToken, revision: review["revision"]!, confirmed: true) {
+        throw ProtectionStoreError.unavailable
+      }
+    }
+    let interrupted = try store.read()!
+    expect(interrupted.installedOwner == a && interrupted.pendingClaim?.nextOwner == b, "failed stop retains attribution and pending claim")
+    let pendingReview = try installation.read(owner: b, token: ownerToken, legacyPresent: { true })
+    expect(pendingReview["status"] == "claim_pending", "interrupted claim has explicit retry state")
+    let lateCallback = process("legacy", root)
+    try installation.claim(owner: b, token: ownerToken, revision: pendingReview["revision"]!, confirmed: true) {
+      stopped = true
+      try lateCallback.run()
+    }
+    lateCallback.waitUntilExit()
+    expect(lateCallback.terminationStatus == 0, "extension callback after Stop cannot restore previous shields")
+    let claimed = try store.read()!
+    expect(stopped && claimed.installedOwner == b && claimed.pendingClaim == nil, "only verified Stop completes claim")
+    expect(claimed.owners.contains(where: { $0.owner == a }), "prior owner data retained")
+    expect(claimed.legacyStopped == true && !claimed.permitsLegacyCallbacks, "legacy tombstone fences future callbacks")
+    let oldFixture = root.appendingPathComponent("old-store")
+    try FileManager.default.createDirectory(at: oldFixture, withIntermediateDirectories: true)
+    try Data("{\"version\":1,\"revision\":1,\"owners\":[]}".utf8).write(to: oldFixture.appendingPathComponent("state-v1.json"))
+    let upgraded = try SharedProtectionStore(directory: oldFixture).read()!
+    expect(upgraded.revision == 1 && upgraded.legacyStopped == nil && upgraded.permitsLegacyCallbacks,
+           "previous v1 fixture reads without inventing migration acknowledgment")
+    let own = try installation.read(owner: b, token: ownerToken, legacyPresent: { true })
+    expect(own["status"] == "owned", "retained legacy files do not trigger repeated migration")
+    leases.end(ownerToken)
+    try fails(.staleLease) {
+      try installation.claim(owner: b, token: ownerToken, revision: own["revision"]!, confirmed: true) { fatalError("stale session stopped settings") }
+    }
+    print("PASS: confirmed claim, cancel, stale revision, failed-stop recovery, previous-owner retention, legacy tombstone, expired-session rejection")
     print("PASS: missing/readback, CAS, A/B leases, retention, failed/crashed writes, 4-process contention, newer/corrupt/oversize rejection, invalid edits")
   }
   static func process(_ mode: String, _ directory: URL) -> Process {

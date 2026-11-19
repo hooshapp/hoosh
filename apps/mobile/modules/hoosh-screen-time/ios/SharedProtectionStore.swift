@@ -58,15 +58,18 @@ struct ProtectionClaim: Codable, Equatable {
 struct ProtectionState: Codable, Equatable {
   var version: Int = 1
   var revision: UInt64 = 0
+  var legacyStopped: Bool?
   var installedOwner: ProtectionOwner?
   var pendingClaim: ProtectionClaim?
   var owners: [ProtectionOwnerRecord] = []
+
+  var permitsLegacyCallbacks: Bool { pendingClaim == nil && legacyStopped != true && installedOwner == nil }
 
   func validated() throws {
     guard version == 1 else { throw version > 1 ? ProtectionStoreError.newerVersion : .corrupt }
     guard owners.count <= 16, Set(owners.map { "\($0.owner.namespace):\($0.owner.userID)" }).count == owners.count,
           installedOwner == nil || owners.contains(where: { $0.owner == installedOwner }),
-          pendingClaim == nil || pendingClaim?.previousOwner == installedOwner else { throw ProtectionStoreError.invalidRecord }
+          pendingClaim == nil || (pendingClaim?.previousOwner == installedOwner && pendingClaim?.phase == "awaiting_stop") else { throw ProtectionStoreError.invalidRecord }
     for record in owners {
       guard !record.owner.namespace.isEmpty, record.owner.namespace.utf8.count <= 256,
             record.reasons.count <= 256, record.allowances.count <= 256,
@@ -116,6 +119,9 @@ final class SharedProtectionStore {
   }
   #endif
   func read() throws -> ProtectionState? { try locked { try readLocked() } }
+  func withSnapshot<T>(_ action: (ProtectionState?) throws -> T) throws -> T {
+    try locked { try action(try readLocked()) }
+  }
   @discardableResult
   func update(expectedRevision: UInt64?, _ edit: (inout ProtectionState) throws -> Void) throws -> ProtectionState {
     try locked {
@@ -220,6 +226,11 @@ final class ProtectionOwnerLeases {
     active = (owner, token)
     return token
   }
+  func withLease<T>(_ owner: ProtectionOwner, token: UUID, _ action: () throws -> T) throws -> T {
+    lock.lock(); defer { lock.unlock() }
+    guard active?.owner == owner, active?.token == token else { throw ProtectionStoreError.staleLease }
+    return try action()
+  }
   func require(_ owner: ProtectionOwner, token: UUID) throws {
     lock.lock(); defer { lock.unlock() }
     guard active?.owner == owner, active?.token == token else { throw ProtectionStoreError.staleLease }
@@ -233,3 +244,20 @@ final class ProtectionOwnerLeases {
     active = nil
   }
 }
+
+#if os(iOS)
+/// Called while the store lock is held, including delayed extension callbacks.
+/// Unreadable/newer state fails closed: preserve restrictions, do not use pilot data.
+enum SharedProtectionExtensionFence {
+  static func withLegacyAccess(_ action: () -> Void) -> Bool {
+    do {
+      let store = try SharedProtectionStore.appGroup()
+      return try store.withSnapshot { state in
+        guard state?.permitsLegacyCallbacks ?? true else { return false }
+        action()
+        return true
+      }
+    } catch { return false }
+  }
+}
+#endif

@@ -1,11 +1,17 @@
-import { createContext, type ReactNode, useContext, useEffect, useMemo } from 'react';
+import { createContext, type ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 import { useAccountData } from '@/infrastructure/query/account-data-provider';
 import { productNativePort, type ProductNativePort } from '@/infrastructure/native/product-ports';
 import { useIdentityQuery } from '@/features/account/identity-query';
 import { useAppRuntime } from '@/features/account/app-runtime-context';
-import { nativeOwnerSession } from '@/infrastructure/native/native-owner-session';
+import { nativeOwnerSession, type InstallationReview } from '@/infrastructure/native/native-owner-session';
 
 export type NativeOwner = Readonly<{ owner: string; generation: number; port: ProductNativePort }>;
+type InstallationSession = {
+  read(): Promise<InstallationReview>;
+  claim(revision: string): Promise<void>;
+};
+export const NativeInstallationContext = createContext<InstallationSession | null>(null);
+export const useNativeInstallation = () => useContext(NativeInstallationContext);
 export const NativeOwnerContext = createContext<NativeOwner | null>(null);
 export const useNativeOwner = () => useContext(NativeOwnerContext);
 /** SDK subject alone does not bind native writes: verify same-account /v1/me first. */
@@ -19,7 +25,9 @@ function VerifiedNativeOwner({ namespace, port, children }: { namespace: string;
   const { scope } = useAccountData();
   const identity = useIdentityQuery();
   const owner = scope && identity.data?.user_id === scope.account.user_id ? `${namespace}:${scope.account.user_id}` : null;
+  const scopeID = scope?.id;
   const verifiedUserID = owner ? scope?.account.user_id : undefined;
+  const [session, setSession] = useState<{ scopeID: number; userID: string; token: string }>();
   useEffect(() => {
     if (!verifiedUserID || !nativeOwnerSession) return;
     const lifecycle = nativeOwnerSession;
@@ -27,13 +35,16 @@ function VerifiedNativeOwner({ namespace, port, children }: { namespace: string;
     let token: string | undefined;
     void lifecycle.begin(namespace, verifiedUserID).then(value => {
       if (disposed) void lifecycle.end(value).catch(() => undefined);
-      else token = value;
+      else {
+        token = value;
+        setSession({ scopeID: scopeID!, userID: verifiedUserID, token: value });
+      }
     }).catch(() => undefined); // No lease means future native writes fail closed.
     return () => {
       disposed = true;
       if (token) void lifecycle.end(token).catch(() => undefined);
     };
-  }, [verifiedUserID, namespace, scope?.id]);
+  }, [verifiedUserID, namespace, scopeID]);
   useEffect(() => {
     if (!owner || !port) return;
     return () => {
@@ -42,5 +53,15 @@ function VerifiedNativeOwner({ namespace, port, children }: { namespace: string;
     };
   }, [owner, port, scope?.id]);
   const binding = useMemo(() => owner && scope && port ? { owner, generation: scope.account.sessionGeneration, port } : null, [owner, port, scope]);
-  return <NativeOwnerContext.Provider value={binding}>{children}</NativeOwnerContext.Provider>;
+  const installation = useMemo(() => {
+    const lifecycle = nativeOwnerSession;
+    if (!lifecycle || !session || session.scopeID !== scopeID || session.userID !== verifiedUserID) return null;
+    return {
+      read: () => lifecycle.read(namespace, session.userID, session.token),
+      claim: (revision: string) => lifecycle.claim(namespace, session.userID, session.token, revision),
+    };
+  }, [session, scopeID, verifiedUserID, namespace]);
+  return <NativeOwnerContext.Provider value={binding}>
+    <NativeInstallationContext.Provider value={installation}>{children}</NativeInstallationContext.Provider>
+  </NativeOwnerContext.Provider>;
 }

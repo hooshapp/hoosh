@@ -11,47 +11,50 @@ final class DeviceActivityMonitorExtension: DeviceActivityMonitor {
 
     override func intervalDidStart(for activity: DeviceActivityName) {
         super.intervalDidStart(for: activity)
-
-        guard activity == .disconnectShieldBypass else { return }
-        logger.notice("Bypass interval started; reapplying shields")
-        endBypassAndReapplyShields()
-        DeviceActivityCenter().stopMonitoring([.disconnectShieldBypass, .disconnectBypassUsage])
+        _ = SharedProtectionExtensionFence.withLegacyAccess {
+            guard activity == .disconnectShieldBypass else { return }
+            logger.notice("Bypass interval started; reapplying shields")
+            endBypassAndReapplyShields()
+            DeviceActivityCenter().stopMonitoring([.disconnectShieldBypass, .disconnectBypassUsage])
+        }
     }
 
     override func intervalDidEnd(for activity: DeviceActivityName) {
         super.intervalDidEnd(for: activity)
-
-        if activity == .disconnectShieldBypass {
-            logger.notice("Bypass interval ended; reapplying shields")
-            endBypassAndReapplyShields()
-        } else if activity == .disconnectBypassUsage {
-            logger.notice("Bypass usage interval ended; clearing reminder notifications")
-            SharedMonitorReminder.cancelBreakReminders()
+        _ = SharedProtectionExtensionFence.withLegacyAccess {
+            if activity == .disconnectShieldBypass {
+                logger.notice("Bypass interval ended; reapplying shields")
+                endBypassAndReapplyShields()
+            } else if activity == .disconnectBypassUsage {
+                logger.notice("Bypass usage interval ended; clearing reminder notifications")
+                SharedMonitorReminder.cancelBreakReminders()
+            }
         }
     }
 
     override func eventDidReachThreshold(_ event: DeviceActivityEvent.Name, activity: DeviceActivityName) {
         super.eventDidReachThreshold(event, activity: activity)
+        _ = SharedProtectionExtensionFence.withLegacyAccess {
+            if activity == .disconnectShieldBypass, event == .disconnectShieldBypassLimit {
+                logger.notice("Bypass usage threshold reached; reapplying shields")
+                endBypassAndReapplyShields()
+                return
+            }
 
-        if activity == .disconnectShieldBypass, event == .disconnectShieldBypassLimit {
-            logger.notice("Bypass usage threshold reached; reapplying shields")
-            endBypassAndReapplyShields()
-            return
-        }
+            guard activity == .disconnectBypassUsage,
+                  let minute = event.disconnectBypassUsageMinute else {
+                return
+            }
 
-        guard activity == .disconnectBypassUsage,
-              let minute = event.disconnectBypassUsageMinute else {
-            return
-        }
+            let totalMinutes = SharedMonitorBypass.bypassMinutes()
+            logger.notice("Bypass usage reminder threshold reached for minute \(minute, privacy: .public)")
+            SharedMonitorReminder.postUsageReminder(minute: minute, totalMinutes: totalMinutes)
 
-        let totalMinutes = SharedMonitorBypass.bypassMinutes()
-        logger.notice("Bypass usage reminder threshold reached for minute \(minute, privacy: .public)")
-        SharedMonitorReminder.postUsageReminder(minute: minute, totalMinutes: totalMinutes)
-
-        if minute >= totalMinutes {
-            SharedMonitorBypass.clearBypass()
-            reapplyShields()
-            DeviceActivityCenter().stopMonitoring([.disconnectShieldBypass, .disconnectBypassUsage])
+            if minute >= totalMinutes {
+                SharedMonitorBypass.clearBypass()
+                reapplyShields()
+                DeviceActivityCenter().stopMonitoring([.disconnectShieldBypass, .disconnectBypassUsage])
+            }
         }
     }
 

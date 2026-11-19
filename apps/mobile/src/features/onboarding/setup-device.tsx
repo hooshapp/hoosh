@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { colors } from '@/design/tokens';
 import { Screen } from '@/components/ui/screen';
 import { InlineStatus } from '@/components/ui/inline-status';
+import { InstallationReviewPanel } from '@/features/protection/installation-review';
 import { NativeAppsEditor } from '@/features/preferences/native-apps-editor';
 import { useNativeOwner, type NativeOwner } from '@/features/protection/native-owner-boundary';
 import { useUsagePermissionAction } from '@/features/protection/use-usage-permission-action';
@@ -68,6 +69,7 @@ function DeviceScreen({ preferencesSaved, busy, failed, onFinish, children }: Pr
   return (
     <Screen title="Preferences reviewed">
       <Text style={{ color: colors.warmForeground }}>{preferencesSaved ? 'Your preferences are saved to your account.' : 'No account settings changes were needed.'}</Text>
+      <InstallationReviewPanel />
       {children}
       {failed && <InlineStatus state="error" message="Setup progress could not be recorded. Try again." />}
       <Button label="Finish for now" variant="secondary" busy={busy} onPress={onFinish} />

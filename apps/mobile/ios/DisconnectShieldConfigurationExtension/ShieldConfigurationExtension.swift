@@ -29,6 +29,19 @@ final class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     }
 
     private func makeConfiguration(appName: String) -> ShieldConfiguration {
+        var configuration: ShieldConfiguration?
+        _ = SharedProtectionExtensionFence.withLegacyAccess {
+            configuration = makeLegacyConfiguration(appName: appName)
+        }
+        return configuration ?? ShieldConfiguration(
+            backgroundBlurStyle: .systemMaterialDark,
+            title: .init(text: "Hoosh protection", color: .white),
+            subtitle: .init(text: "Open Hoosh to review Screen Time setup.", color: .white),
+            primaryButtonLabel: .init(text: "Close app", color: .white)
+        )
+    }
+
+    private func makeLegacyConfiguration(appName: String) -> ShieldConfiguration {
         SharedShieldContext.setPendingAppName(appName)
         let responses = SharedOnboardingResponses.load()
         let productivityContext = SharedProductivityContext.load()

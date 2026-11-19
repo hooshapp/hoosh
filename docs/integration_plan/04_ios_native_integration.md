@@ -1,6 +1,6 @@
 # Integration 04 — Swift protection in the shared React Native iOS application
 
-**Lead:** Anisha. **Contract/backend/Android reviewer:** Ishmum. **Status:** C01 shared host builds and launches in the simulator. Release and physical signing/feasibility remain open.
+**Lead:** Anisha. **Contract/backend/Android reviewer:** Ishmum. **Status:** C01 simulator host passed; C02 storage/confirmed-transition source and automated checks implemented. Release, physical signing/feasibility and C02 signed-device acceptance remain open.
 **Prerequisites:** BASE-C04 interfaces for initial audit; BASE-C06 before landing
 host integration. AUTH and ONB handoffs are needed for the final normal journey.
 **Notes:** `docs/integration_notes/plan_04_ios_native_integration_notes.md`.
@@ -63,7 +63,7 @@ declare a different behavior equivalent to finish the plan.
 | Part | Intended commit | State / prerequisite |
 |---|---|---|
 | INT-IOS-C01 | `build(ios): establish audited React Native host and targets` | [Source audit and Expo reference](../integration_notes/plan_04_ios_native_integration_notes.md) recorded. Locked CocoaPods workspace, Debug build and simulator Auth screen passed. Internal Release and physical proof open. |
-| INT-IOS-C02 | `feat(ios): add owner-scoped versioned protection storage` | In progress: versioned store, atomic persistence and bridge-lifetime owner leases implemented; focused isolation/crash/contention tests passed. Confirmed claim, legacy review, extension wiring and physical locked-device checks remain. |
+| INT-IOS-C02 | `feat(ios): add owner-scoped versioned protection storage` | Implemented in source: versioned store/leases, explicit Stop/readback/claim with retry, neutral legacy review and shared extension fencing. Automated isolation/crash/contention/claim checks passed. Signed-device Stop, permission and locked-device acceptance remain open. |
 | INT-IOS-C03 | `feat(ios): bridge native selection and protection status` | Planned; C02 |
 | INT-IOS-C04 | `feat(ios): integrate scheduled protection and quest lifecycle` | Planned; C02/C03, policy feasibility |
 | INT-IOS-C05 | `feat(ios): reconcile native events and product measurements` | Planned; C04 |

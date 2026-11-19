@@ -15,6 +15,17 @@ public class HooshScreenTimeModule: Module {
       guard let token = UUID(uuidString: raw) else { throw ProtectionStoreError.invalidRecord }
       self.leases.end(token)
     }
+    AsyncFunction("readInstallation") { (namespace: String, userID: String, rawToken: String) throws -> [String: String] in
+      let (owner, token) = try self.owner(namespace, userID, rawToken)
+      return try ProtectionInstallation(store: .appGroup(), leases: self.leases)
+        .read(owner: owner, token: token, legacyPresent: ProtectionDeviceTransition.legacyPresent)
+    }
+    AsyncFunction("claimInstallation") { (namespace: String, userID: String, rawToken: String, revision: String, confirmed: Bool) throws in
+      let (owner, token) = try self.owner(namespace, userID, rawToken)
+      try ProtectionInstallation(store: .appGroup(), leases: self.leases)
+        .claim(owner: owner, token: token, revision: revision, confirmed: confirmed,
+               stopAndVerify: ProtectionDeviceTransition.stopAndVerify)
+    }
     OnDestroy { self.leases.destroy() }
     AsyncFunction("getAuthorization") { () -> String in
       await MainActor.run { self.authorization() }
@@ -22,6 +33,14 @@ public class HooshScreenTimeModule: Module {
     AsyncFunction("requestAuthorization") { () async throws -> String in
       try await self.request()
     }
+  }
+
+  private func owner(_ namespace: String, _ userID: String, _ rawToken: String) throws -> (ProtectionOwner, UUID) {
+    guard !namespace.isEmpty, namespace.utf8.count <= 256,
+          let user = UUID(uuidString: userID), let token = UUID(uuidString: rawToken) else {
+      throw ProtectionStoreError.invalidRecord
+    }
+    return (ProtectionOwner(namespace: namespace, userID: user), token)
   }
 
   @MainActor private func request() async throws -> String {
