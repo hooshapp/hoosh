@@ -132,3 +132,24 @@ C03 **source and automated checks are implemented; signed-device acceptance is o
 - Final native review also checks SDK-visible DeviceActivity registrations and the audited ManagedSettings stores before reporting inactive. Stray restrictions yield degraded status with Stop available. A Swift type-inference limit in the token equality initializer was resolved with explicit generic types and a typed equality helper; subsequent simulator compilation passed (`/tmp/hoosh-ios-c03-verified-build.log`).
 
 - Final-source build including SDK-visible restriction readback passed (`/tmp/hoosh-ios-c03-complete-build.log`). No physical app was installed or production account data changed.
+
+
+### November 19 — C04 compiler checkpoint; activation remains gated
+
+- Added `ProtectionSchedules.swift`, a native Foundation-only weekly/quest compiler following the existing backend/Android policies: Monday-based weekdays, saved time zone, overnight ownership, half-open windows, first-date/repeat/version-effective bounds and stable per-occurrence reason IDs. It preserves a matching active occurrence's old native selection snapshot and leaves unrelated reasons intact when one occurrence is canceled. Preview dictionaries contain only reason IDs and times.
+- Boundary tests found Foundation's repeated-time matching alone did not resolve Lord Howe's half-hour fold as required. The compiler now derives candidate instants from the zone's actual offsets and round-trips wall components, choosing earliest start/latest end and clamping a gap to the first valid minute. New York gaps/folds/collapsed windows and Lord Howe's half-hour transition pass.
+- Added read-only native `schedulePreview`. Its response explicitly says preview-only, activation unavailable, and elapsed-session expiry unverified. Candidate padded monitoring envelopes retain the true business start and expiry while meeting the documented minimum interval. This is a scheduling candidate for a physical spike, not proof of callback delivery or installed restrictions. No normal-app Apply action or complete iOS protection port was enabled.
+- Added [the method-level C04 feasibility matrix](ios_c04_feasibility.md), including primary Apple references and the remaining native installation, recurrence, receipts, session, bypass and recovery work. The physical iPhone is currently unavailable to tooling. Its required timing spike remains open; the approved elapsed policy has not been replaced with pilot active-use accounting or a different session duration.
+
+C04 is **in progress**. Compiler/model checks passed; actual DeviceActivity/ManagedSettings installation, durable session budgets/deadlines, recurrence callbacks, typed weekly/quest readback, uncertain-install recovery and signed-device timing remain to implement/verify. Do not treat a bounded preview as indefinite recurrence or move this checkpoint to completed enforcement.
+
+
+### C04 continuation — session policy model; phone test deferred by user
+
+- User explicitly chose to keep activation gated and test on an iPhone later. Continued independent native model work; that decision is not a successful timing test and does not enable the iOS product port.
+- Added `ProtectionSessions.swift`: bounded, serializable native-only per-app sessions, reason-scoped grants and saved-zone day counters. A running session keeps its deadline when another reason begins, without another charge. Separate apps keep separate clocks. Midnight does not extend a session; policy duration/count edits and scoped Stop preserve history. Extra sessions remain available and are marked exhausted only at their start. Wall rollback/reboot invalidate exemptions; counters cannot move to an earlier day. Policy timezone migration is explicitly refused when history exists. Decoder bounds reject corrupt durations before arithmetic.
+- Native model checks passed these behaviors, serialization and corrupt-duration rejection. The model currently has no independent disk path and is not yet wired into the owner store or OS callback driver. A real boot/continuous-clock adapter, atomic installation/receipts/recovery, actual recurring monitors and elapsed bypass callbacks remain C04 work. C05 rewards/History are not implemented by these models.
+
+- Native verification: pinned CocoaPods deployment and simulator-signed Debug compilation including the compiler and session models passed (`/tmp/hoosh-ios-c04-model-build.log`). No iPhone was installed or changed. Activation remains gated per the user's decision.
+
+- Final-source incremental simulator build passed as well (`/tmp/hoosh-ios-c04-model-final.log`). This checkpoint is compiler/session model work, not completed C04 enforcement.

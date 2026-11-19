@@ -44,6 +44,20 @@ public class HooshScreenTimeModule: Module {
         Task { @MainActor in self.picker.cancel() }
       }
     }
+    // Read-only compiler. Preview is not monitor installation or elapsed expiry proof.
+    AsyncFunction("schedulePreview") { (input: [String: Any]) throws -> [String: Any] in
+      guard JSONSerialization.isValidJSONObject(input) else { throw ScheduleFailure.invalid }
+      let data = try JSONSerialization.data(withJSONObject: input)
+      guard data.count <= 8192 else { throw ScheduleFailure.capacity }
+      let spec = try JSONDecoder().decode(WeeklyProtectionSpec.self, from: data)
+      let now = Int64(Date().timeIntervalSince1970 * 1000)
+      let windows = try ProtectionSchedules.weekly(spec, now: now)
+      let envelopes = try ProtectionSchedules.monitoringEnvelopes(windows)
+      return ["windows": windows.map(\.preview), "availability": "preview_only",
+              "requiresTimingVerification": true,
+              "usesPaddedMonitoringIntervals": envelopes.contains(where: { $0.startsAt < $0.businessStartsAt }),
+              "activationAvailable": false, "blocker": "elapsed_session_expiry_unverified"]
+    }
     AsyncFunction("deviceStatus") { (namespace: String, userID: String, raw: String) throws -> [String: Any] in
       let (owner, token) = try self.owner(namespace, userID, raw)
       return try self.leases.withLease(owner, token: token) {
