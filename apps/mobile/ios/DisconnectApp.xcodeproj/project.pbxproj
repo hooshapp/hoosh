@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0687926556E6943B0758B098 /* ProtectionDeviceClock.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBDB6A0A5ABF2530848EC472 /* ProtectionDeviceClock.swift */; };
+		0894CE890D1AA3A722EEF025 /* ProtectionRuntimePlanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0DE6EDA97FE26D5FCD49B07 /* ProtectionRuntimePlanner.swift */; };
 		0C08605B2FBFABD9001B9C60 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 0C08605A2FBFABD9001B9C60 /* FirebaseAnalytics */; };
 		0C08605D2FBFABD9001B9C60 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 0C08605C2FBFABD9001B9C60 /* FirebaseAuth */; };
 		0C08605F2FBFABD9001B9C60 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 0C08605E2FBFABD9001B9C60 /* FirebaseFirestore */; };
@@ -18,6 +19,7 @@
 		1DD2A2AC47DC5B28FBCD3608 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06B398C2BEDEECDCC263C49 /* ExpoModulesProvider.swift */; };
 		27E1288EFA27EC2277538836 /* ProtectionSessions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C39033201A4ED68E5A550340 /* ProtectionSessions.swift */; };
 		2C86A9FA2E2453A8F9BC8D61 /* ProtectionOSAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E835DB32CA93799B6AAF631D /* ProtectionOSAdapter.swift */; };
+		3F5B2EAA4804A322CAD292B9 /* ProtectionNativeDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC6F4D17326CADACB09C926 /* ProtectionNativeDriver.swift */; };
 		46E2C4879A45592E7819C690 /* ProtectionOSAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E835DB32CA93799B6AAF631D /* ProtectionOSAdapter.swift */; };
 		4C0ABB143D986F4AC4DBC7C1 /* SharedProtectionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BFAE8A4A548DCB79A82CCB4 /* SharedProtectionStore.swift */; };
 		55CF4D6B30C9733AFCF0B52D /* ProtectionSchedules.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA59518CA0637B15B8F81518 /* ProtectionSchedules.swift */; };
@@ -29,13 +31,17 @@
 		829245BE498D2CD75A6099D0 /* ProtectionTransactions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46F149E04541D8BE72AD78D /* ProtectionTransactions.swift */; };
 		97ACD39F97C79AD29B7B19E7 /* libPods-DisconnectApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C6193C041AEF6C103BE4DB69 /* libPods-DisconnectApp.a */; };
 		9EFFF08DAD523614CA5085A0 /* ProtectionTransactions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46F149E04541D8BE72AD78D /* ProtectionTransactions.swift */; };
+		A48A7229C1F82E5890B2309E /* ProtectionNativeDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC6F4D17326CADACB09C926 /* ProtectionNativeDriver.swift */; };
 		A5A5D98A17FA814AD2245B36 /* ProtectionTransactions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46F149E04541D8BE72AD78D /* ProtectionTransactions.swift */; };
 		AA0000130000000000000013 /* DisconnectShieldConfigurationExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = AA0000030000000000000003 /* DisconnectShieldConfigurationExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		AA0000140000000000000014 /* DisconnectShieldActionExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = AA0000040000000000000004 /* DisconnectShieldActionExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BB0000100000000000000010 /* DisconnectDeviceActivityMonitorExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = BB0000020000000000000002 /* DisconnectDeviceActivityMonitorExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		C4DFA5DC4BB5F910CB16655B /* ProtectionRuntimePlanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0DE6EDA97FE26D5FCD49B07 /* ProtectionRuntimePlanner.swift */; };
 		E0B8933CD876913A754887C5 /* SharedProtectionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BFAE8A4A548DCB79A82CCB4 /* SharedProtectionStore.swift */; };
+		E23DD88B29DFBF2E84B2759D /* ProtectionNativeDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC6F4D17326CADACB09C926 /* ProtectionNativeDriver.swift */; };
 		E31F685C7811E9A44E32CE5B /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 6C01F82EAB6F7C0494062376 /* PrivacyInfo.xcprivacy */; };
 		FC6B1EB13ABE5709059E1828 /* ProtectionSessions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C39033201A4ED68E5A550340 /* ProtectionSessions.swift */; };
+		FDE7ABDCEBB222EEA2E8C917 /* ProtectionRuntimePlanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0DE6EDA97FE26D5FCD49B07 /* ProtectionRuntimePlanner.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -123,12 +129,14 @@
 		AA0000040000000000000004 /* DisconnectShieldActionExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = DisconnectShieldActionExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B46F149E04541D8BE72AD78D /* ProtectionTransactions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProtectionTransactions.swift; path = "../modules/hoosh-screen-time/ios/ProtectionTransactions.swift"; sourceTree = SOURCE_ROOT; };
 		BB0000020000000000000002 /* DisconnectDeviceActivityMonitorExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = DisconnectDeviceActivityMonitorExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		BDC6F4D17326CADACB09C926 /* ProtectionNativeDriver.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProtectionNativeDriver.swift; path = "../modules/hoosh-screen-time/ios/ProtectionNativeDriver.swift"; sourceTree = SOURCE_ROOT; };
 		C06B398C2BEDEECDCC263C49 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-DisconnectApp/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		C39033201A4ED68E5A550340 /* ProtectionSessions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProtectionSessions.swift; path = "../modules/hoosh-screen-time/ios/ProtectionSessions.swift"; sourceTree = SOURCE_ROOT; };
 		C6193C041AEF6C103BE4DB69 /* libPods-DisconnectApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DisconnectApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E835DB32CA93799B6AAF631D /* ProtectionOSAdapter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProtectionOSAdapter.swift; path = "../modules/hoosh-screen-time/ios/ProtectionOSAdapter.swift"; sourceTree = SOURCE_ROOT; };
 		EA59518CA0637B15B8F81518 /* ProtectionSchedules.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProtectionSchedules.swift; path = "../modules/hoosh-screen-time/ios/ProtectionSchedules.swift"; sourceTree = SOURCE_ROOT; };
 		EBDB6A0A5ABF2530848EC472 /* ProtectionDeviceClock.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProtectionDeviceClock.swift; path = "../modules/hoosh-screen-time/ios/ProtectionDeviceClock.swift"; sourceTree = SOURCE_ROOT; };
+		F0DE6EDA97FE26D5FCD49B07 /* ProtectionRuntimePlanner.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProtectionRuntimePlanner.swift; path = "../modules/hoosh-screen-time/ios/ProtectionRuntimePlanner.swift"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -362,6 +370,8 @@
 				B46F149E04541D8BE72AD78D /* ProtectionTransactions.swift */,
 				EBDB6A0A5ABF2530848EC472 /* ProtectionDeviceClock.swift */,
 				E835DB32CA93799B6AAF631D /* ProtectionOSAdapter.swift */,
+				F0DE6EDA97FE26D5FCD49B07 /* ProtectionRuntimePlanner.swift */,
+				BDC6F4D17326CADACB09C926 /* ProtectionNativeDriver.swift */,
 			);
 			name = SharedProductProtection;
 			sourceTree = "<group>";
@@ -780,6 +790,8 @@
 				A5A5D98A17FA814AD2245B36 /* ProtectionTransactions.swift in Sources */,
 				0687926556E6943B0758B098 /* ProtectionDeviceClock.swift in Sources */,
 				46E2C4879A45592E7819C690 /* ProtectionOSAdapter.swift in Sources */,
+				FDE7ABDCEBB222EEA2E8C917 /* ProtectionRuntimePlanner.swift in Sources */,
+				3F5B2EAA4804A322CAD292B9 /* ProtectionNativeDriver.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -793,6 +805,8 @@
 				829245BE498D2CD75A6099D0 /* ProtectionTransactions.swift in Sources */,
 				7F339E737139E099A9378BEC /* ProtectionDeviceClock.swift in Sources */,
 				158F0A282F1495E4526F924D /* ProtectionOSAdapter.swift in Sources */,
+				C4DFA5DC4BB5F910CB16655B /* ProtectionRuntimePlanner.swift in Sources */,
+				A48A7229C1F82E5890B2309E /* ProtectionNativeDriver.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -806,6 +820,8 @@
 				9EFFF08DAD523614CA5085A0 /* ProtectionTransactions.swift in Sources */,
 				59AA9E6836EADD320A996F1E /* ProtectionDeviceClock.swift in Sources */,
 				2C86A9FA2E2453A8F9BC8D61 /* ProtectionOSAdapter.swift in Sources */,
+				0894CE890D1AA3A722EEF025 /* ProtectionRuntimePlanner.swift in Sources */,
+				E23DD88B29DFBF2E84B2759D /* ProtectionNativeDriver.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

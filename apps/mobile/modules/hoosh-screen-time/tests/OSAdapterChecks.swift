@@ -17,6 +17,8 @@ import FamilyControls
     catch ProtectionTransactionError.activationGated {}
     do { try ProtectionOSAdapter.writeBlockedApps([]); fatalError("shield write bypassed gate") }
     catch ProtectionTransactionError.activationGated {}
+    let driver = ProtectionNativeDriver(owner: .init(namespace: "test", userID: UUID()))
+    guard !driver.activationAvailable else { fatalError("native driver unexpectedly active") }
     let invalid = ProtectionOSMonitor(name: "other.app", envelope: envelope)
     do { _ = try invalid.schedule(); fatalError("unscoped name accepted") }
     catch ProtectionTransactionError.invalid {}

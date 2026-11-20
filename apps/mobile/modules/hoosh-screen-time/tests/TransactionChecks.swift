@@ -7,9 +7,11 @@ final class ModelInstallationDriver: ProtectionInstallationDriver {
   var installed: ProtectionRuntimeRecord?
   var installs = 0
   var verify = true
+  var resolution: ((ProtectionRuntimeRecord) throws -> ProtectionRuntimeRecord)?
+  func resolved(_ target: ProtectionRuntimeRecord) throws -> ProtectionRuntimeRecord { try resolution?(target) ?? target }
   func preflight(_ target: ProtectionRuntimeRecord) throws { try target.validated() }
-  func matches(_ target: ProtectionRuntimeRecord) throws -> Bool { verify && installed == target }
-  func install(_ target: ProtectionRuntimeRecord, replacing previous: ProtectionRuntimeRecord?) throws {
+  func matches(_ target: ProtectionRuntimeRecord, ledger: ProtectionSessionLedger?) throws -> Bool { verify && installed == target }
+  func install(_ target: ProtectionRuntimeRecord, replacing previous: ProtectionRuntimeRecord?, ledger: ProtectionSessionLedger?) throws {
     installs += 1; installed = target
   }
 }
@@ -95,10 +97,17 @@ final class ModelInstallationDriver: ProtectionInstallationDriver {
         clock: .init(wall: 1000000, elapsed: 100000, boot: "model"))
     }
     driver.verify = true
+    driver.resolution = { target in
+      var current = target
+      current.monitors = [.init(name: "hoosh.shared.next-occurrence", reasonID: "weekly_next")]
+      return current
+    }
     _ = try engine.recover(owner: owner, token: token, requestID: secondID, driver: driver)
     let after = try store.read()!.owners[0]
     check(after.installation?.revision == 2 && after.pendingInstallation == nil && after.sessionLedger?.daily[0].count == 1,
       "recovery preserves latest counters rather than replacing a stale ledger snapshot")
+    check(after.installation?.monitors.first?.reasonID == "weekly_next", "recovery resolves current occurrence rather than replaying stale dates")
+    driver.resolution = nil
     let otherOwner = ProtectionOwner(namespace: "project", userID: UUID())
     let otherToken = leases.begin(otherOwner)
     do {

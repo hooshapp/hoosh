@@ -116,6 +116,7 @@ swiftc apps/mobile/modules/hoosh-screen-time/ios/SharedProtectionStore.swift \
   apps/mobile/modules/hoosh-screen-time/ios/ProtectionSchedules.swift \
   apps/mobile/modules/hoosh-screen-time/ios/ProtectionSessions.swift \
   apps/mobile/modules/hoosh-screen-time/ios/ProtectionTransactions.swift \
+  apps/mobile/modules/hoosh-screen-time/ios/ProtectionRuntimePlanner.swift \
   apps/mobile/modules/hoosh-screen-time/ios/ProtectionInstallation.swift \
   apps/mobile/modules/hoosh-screen-time/tests/TransactionChecks.swift \
   -o /tmp/hoosh-transaction-checks
@@ -143,3 +144,14 @@ active-snapshot/grant union, action callbacks and typed weekly/quest bridge wiri
 Absolute monitor endpoints must be second-aligned. A later driver must explicitly
 account for SDK granularity while retaining the exact private session deadline;
 the adapter refuses to silently round it. Raw boot/time signals must stay on-device.
+
+
+## November 20 — Gated driver checkpoint
+
+The native schedule/shield driver now exists, with recurrence rematerialization and
+exact SDK readback. It remains disabled by the compile-time gate. This does **not**
+complete the elapsed-expiry feasibility gate: expiry alarm creation and extension
+callback/action wiring are still outstanding. The full product port is unregistered.
+Run the expanded `scripts/check-ios-adapter.sh BOOTED_SIMULATOR_UUID` for model and
+SDK checks. Native device allow/deny/revoke, sleep/reboot, foreground expiry,
+monitor capacity and signed release checks remain deferred. No physical install.

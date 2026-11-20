@@ -83,13 +83,18 @@ struct ProtectionPendingInstallation: Codable, Equatable {
   let target: ProtectionRuntimeRecord
 }
 /// The real iOS adapter must prove capabilities, preflight capacity/permission,
-/// reconcile stable monitor names, and verify SDK state. No production success
-/// implementation is supplied while activation is gated.
+/// reconcile stable monitor names, and verify SDK state. The native checkpoint
+/// remains activation-gated until callbacks and physical acceptance are complete.
 protocol ProtectionInstallationDriver {
   var activationAvailable: Bool { get }
+  func resolved(_ target: ProtectionRuntimeRecord) throws -> ProtectionRuntimeRecord
   func preflight(_ target: ProtectionRuntimeRecord) throws
-  func matches(_ target: ProtectionRuntimeRecord) throws -> Bool
-  func install(_ target: ProtectionRuntimeRecord, replacing previous: ProtectionRuntimeRecord?) throws
+  func matches(_ target: ProtectionRuntimeRecord, ledger: ProtectionSessionLedger?) throws -> Bool
+  func install(_ target: ProtectionRuntimeRecord, replacing previous: ProtectionRuntimeRecord?, ledger: ProtectionSessionLedger?) throws
+}
+
+extension ProtectionInstallationDriver {
+  func resolved(_ target: ProtectionRuntimeRecord) throws -> ProtectionRuntimeRecord { target }
 }
 
 struct ProtectionTransactionStatus {
@@ -113,7 +118,7 @@ final class ProtectionTransactions {
       if record.pendingInstallation != nil { phase = "pending" }
       else if !driver.activationAvailable { phase = "gated" }
       else if let installed = record.installation {
-        do { phase = try driver.matches(installed) ? "verified" : "degraded" }
+        do { phase = try driver.matches(installed, ledger: record.sessionLedger) ? "verified" : "degraded" }
         catch { phase = "degraded" }
       } else { phase = "unconfigured" }
       return ProtectionTransactionStatus(phase: phase, installedRevision: record.installation?.revision,
@@ -135,7 +140,7 @@ final class ProtectionTransactions {
       if let receipt = record.receipts.first(where: { $0.requestID == requestID }) {
         guard receipt.fingerprint == fingerprint, let installed = record.installation else { throw ProtectionTransactionError.requestMismatch }
         guard record.pendingInstallation == nil else { throw ProtectionTransactionError.recoveryRequired }
-        guard try driver.matches(installed) else { throw ProtectionTransactionError.unconfirmed }
+        guard try driver.matches(installed, ledger: record.sessionLedger) else { throw ProtectionTransactionError.unconfirmed }
         return installed // Actual current state; never an old fabricated acknowledgment.
       }
       if let pending = record.pendingInstallation {
@@ -145,7 +150,9 @@ final class ProtectionTransactions {
       guard (record.installation?.revision ?? 0) == expected,
             let selection = record.selection, selection.revision == selectionRevision,
             record.receipts.count < 512 else { throw ProtectionTransactionError.conflict }
-      let target = try build(record.installation, selection)
+      let intent = try build(record.installation, selection)
+      let target = try driver.resolved(intent)
+      guard ProtectionRuntimePlanner.sameIntent(intent, target) else { throw ProtectionTransactionError.invalid }
       try target.validated()
       guard target.revision == expected + 1, target.selectionRevision == selectionRevision else { throw ProtectionTransactionError.invalid }
       try validatePolicy(target.policy, ledger: record.sessionLedger)
@@ -176,18 +183,20 @@ final class ProtectionTransactions {
       var record = next.owners[index]
       guard record.pendingInstallation == pending else { throw ProtectionTransactionError.conflict }
       guard record.receipts.count < 512 else { throw ProtectionStoreError.oversized }
-      try validatePolicy(pending.target.policy, ledger: record.sessionLedger)
-      try driver.preflight(pending.target)
-      if try !driver.matches(pending.target) {
-        try driver.install(pending.target, replacing: record.installation)
+      let effective = try driver.resolved(pending.target)
+      guard ProtectionRuntimePlanner.sameIntent(effective, pending.target) else { throw ProtectionTransactionError.invalid }
+      try effective.validated()
+      // Resolve policy against the latest ledger before touching SDK state.
+      var ledger = try record.sessionLedger ?? ProtectionSessionLedger(policy: effective.policy)
+      try ledger.updatePolicy(effective.policy)
+      try ledger.reconcile(revision: effective.revision,
+        remainingReasons: Set(effective.activeSnapshots.map(\.reasonID)))
+      try driver.preflight(effective)
+      if try !driver.matches(effective, ledger: ledger) {
+        try driver.install(effective, replacing: record.installation, ledger: ledger)
       }
-      guard try driver.matches(pending.target) else { throw ProtectionTransactionError.unconfirmed }
-      // Copy the latest ledger under this same lock, not a pre-install snapshot.
-      var ledger = try record.sessionLedger ?? ProtectionSessionLedger(policy: pending.target.policy)
-      try ledger.updatePolicy(pending.target.policy)
-      try ledger.reconcile(revision: pending.target.revision,
-        remainingReasons: Set(pending.target.activeSnapshots.map(\.reasonID)))
-      record.installation = pending.target
+      guard try driver.matches(effective, ledger: ledger) else { throw ProtectionTransactionError.unconfirmed }
+      record.installation = effective
       record.sessionLedger = ledger
       record.pendingInstallation = nil
       record.receipts.append(ProtectionReceipt(requestID: pending.requestID,

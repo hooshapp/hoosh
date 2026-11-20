@@ -48,6 +48,15 @@ enum ProtectionOSAdapter {
   private static var center: DeviceActivityCenter { DeviceActivityCenter() }
   private static var settings: ManagedSettingsStore { ManagedSettingsStore(named: .init("hoosh.shared.protection.v1")) }
   static var scopedMonitorCount: Int { center.activities.filter { $0.rawValue.hasPrefix("hoosh.shared.") }.count }
+  static func monitorNames(prefix: String) -> Set<String> {
+    guard prefix.hasPrefix("hoosh.shared.") else { return [] }
+    return Set(center.activities.map(\.rawValue).filter { $0.hasPrefix(prefix) })
+  }
+  static func matchesBlockedApps(_ applications: Set<ApplicationToken>) -> Bool {
+    let store = settings
+    return (store.shield.applications ?? []) == applications && store.shield.applicationCategories == nil
+      && (store.shield.webDomains?.isEmpty ?? true) && store.shield.webDomainCategories == nil
+  }
   static func matches(_ monitor: ProtectionOSMonitor) throws -> Bool {
     let expected = try monitor.schedule()
     guard let schedule = center.schedule(for: DeviceActivityName(monitor.name)) else { return false }
@@ -65,7 +74,14 @@ enum ProtectionOSAdapter {
     do {
       for (monitor, schedule) in plans {
         if registered.contains(monitor.name) {
-          guard try matches(monitor) else { throw ProtectionTransactionError.conflict }
+          if try !matches(monitor) {
+            guard !previous.contains(monitor.name) else { throw ProtectionTransactionError.conflict }
+            let name = DeviceActivityName(monitor.name)
+            center.stopMonitoring([name])
+            guard !center.activities.contains(name) else { throw ProtectionTransactionError.unconfirmed }
+            started.append(name)
+            try center.startMonitoring(name, during: schedule, events: [:])
+          }
         } else {
           guard !previous.contains(monitor.name) else { throw ProtectionTransactionError.unconfirmed }
           let name = DeviceActivityName(monitor.name)
