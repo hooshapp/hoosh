@@ -12,15 +12,24 @@
 		0C08605F2FBFABD9001B9C60 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 0C08605E2FBFABD9001B9C60 /* FirebaseFirestore */; };
 		0C08606B2FBFAF98001B9C60 /* OpenAI in Frameworks */ = {isa = PBXBuildFile; productRef = 0C08606A2FBFAF98001B9C60 /* OpenAI */; };
 		0C85A4082FE0DE450097BC0D /* Disconnect.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = 0C85A3FC2FE0DE450097BC0D /* Disconnect.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		1BA69D779B5A3C00EC227F71 /* ProtectionSchedules.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA59518CA0637B15B8F81518 /* ProtectionSchedules.swift */; };
 		1DD2A2AC47DC5B28FBCD3608 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06B398C2BEDEECDCC263C49 /* ExpoModulesProvider.swift */; };
+		27E1288EFA27EC2277538836 /* ProtectionSessions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C39033201A4ED68E5A550340 /* ProtectionSessions.swift */; };
 		4C0ABB143D986F4AC4DBC7C1 /* SharedProtectionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BFAE8A4A548DCB79A82CCB4 /* SharedProtectionStore.swift */; };
+		55CF4D6B30C9733AFCF0B52D /* ProtectionSchedules.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA59518CA0637B15B8F81518 /* ProtectionSchedules.swift */; };
+		592652D8C0833F8B98402CED /* ProtectionSessions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C39033201A4ED68E5A550340 /* ProtectionSessions.swift */; };
 		5A2A7BCD4AC4546CA4253E7F /* SharedProtectionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BFAE8A4A548DCB79A82CCB4 /* SharedProtectionStore.swift */; };
+		7FE16228C152FFC950BBA24A /* ProtectionSchedules.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA59518CA0637B15B8F81518 /* ProtectionSchedules.swift */; };
+		829245BE498D2CD75A6099D0 /* ProtectionTransactions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46F149E04541D8BE72AD78D /* ProtectionTransactions.swift */; };
 		97ACD39F97C79AD29B7B19E7 /* libPods-DisconnectApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C6193C041AEF6C103BE4DB69 /* libPods-DisconnectApp.a */; };
+		9EFFF08DAD523614CA5085A0 /* ProtectionTransactions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46F149E04541D8BE72AD78D /* ProtectionTransactions.swift */; };
+		A5A5D98A17FA814AD2245B36 /* ProtectionTransactions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46F149E04541D8BE72AD78D /* ProtectionTransactions.swift */; };
 		AA0000130000000000000013 /* DisconnectShieldConfigurationExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = AA0000030000000000000003 /* DisconnectShieldConfigurationExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		AA0000140000000000000014 /* DisconnectShieldActionExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = AA0000040000000000000004 /* DisconnectShieldActionExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BB0000100000000000000010 /* DisconnectDeviceActivityMonitorExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = BB0000020000000000000002 /* DisconnectDeviceActivityMonitorExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		E0B8933CD876913A754887C5 /* SharedProtectionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BFAE8A4A548DCB79A82CCB4 /* SharedProtectionStore.swift */; };
 		E31F685C7811E9A44E32CE5B /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 6C01F82EAB6F7C0494062376 /* PrivacyInfo.xcprivacy */; };
+		FC6B1EB13ABE5709059E1828 /* ProtectionSessions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C39033201A4ED68E5A550340 /* ProtectionSessions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -106,9 +115,12 @@
 		8BD594DD23C53FF58EBEF3BF /* Pods-DisconnectApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DisconnectApp.release.xcconfig"; path = "Target Support Files/Pods-DisconnectApp/Pods-DisconnectApp.release.xcconfig"; sourceTree = "<group>"; };
 		AA0000030000000000000003 /* DisconnectShieldConfigurationExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = DisconnectShieldConfigurationExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA0000040000000000000004 /* DisconnectShieldActionExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = DisconnectShieldActionExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		B46F149E04541D8BE72AD78D /* ProtectionTransactions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProtectionTransactions.swift; path = "../modules/hoosh-screen-time/ios/ProtectionTransactions.swift"; sourceTree = SOURCE_ROOT; };
 		BB0000020000000000000002 /* DisconnectDeviceActivityMonitorExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = DisconnectDeviceActivityMonitorExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		C06B398C2BEDEECDCC263C49 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-DisconnectApp/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		C39033201A4ED68E5A550340 /* ProtectionSessions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProtectionSessions.swift; path = "../modules/hoosh-screen-time/ios/ProtectionSessions.swift"; sourceTree = SOURCE_ROOT; };
 		C6193C041AEF6C103BE4DB69 /* libPods-DisconnectApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DisconnectApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		EA59518CA0637B15B8F81518 /* ProtectionSchedules.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProtectionSchedules.swift; path = "../modules/hoosh-screen-time/ios/ProtectionSchedules.swift"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -337,6 +349,9 @@
 			isa = PBXGroup;
 			children = (
 				7BFAE8A4A548DCB79A82CCB4 /* SharedProtectionStore.swift */,
+				EA59518CA0637B15B8F81518 /* ProtectionSchedules.swift */,
+				C39033201A4ED68E5A550340 /* ProtectionSessions.swift */,
+				B46F149E04541D8BE72AD78D /* ProtectionTransactions.swift */,
 			);
 			name = SharedProductProtection;
 			sourceTree = "<group>";
@@ -750,6 +765,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				5A2A7BCD4AC4546CA4253E7F /* SharedProtectionStore.swift in Sources */,
+				7FE16228C152FFC950BBA24A /* ProtectionSchedules.swift in Sources */,
+				27E1288EFA27EC2277538836 /* ProtectionSessions.swift in Sources */,
+				A5A5D98A17FA814AD2245B36 /* ProtectionTransactions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -758,6 +776,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				E0B8933CD876913A754887C5 /* SharedProtectionStore.swift in Sources */,
+				55CF4D6B30C9733AFCF0B52D /* ProtectionSchedules.swift in Sources */,
+				FC6B1EB13ABE5709059E1828 /* ProtectionSessions.swift in Sources */,
+				829245BE498D2CD75A6099D0 /* ProtectionTransactions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -766,6 +787,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				4C0ABB143D986F4AC4DBC7C1 /* SharedProtectionStore.swift in Sources */,
+				1BA69D779B5A3C00EC227F71 /* ProtectionSchedules.swift in Sources */,
+				592652D8C0833F8B98402CED /* ProtectionSessions.swift in Sources */,
+				9EFFF08DAD523614CA5085A0 /* ProtectionTransactions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

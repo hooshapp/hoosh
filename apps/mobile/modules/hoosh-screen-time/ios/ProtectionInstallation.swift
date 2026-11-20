@@ -17,7 +17,9 @@ final class ProtectionInstallation {
       let status = state?.pendingClaim != nil ? "claim_pending"
         : legacy ? "legacy_review"
         : state?.installedOwner == nil ? "unclaimed"
-        : state?.installedOwner == owner ? "owned" : "other_owner"
+        : state?.installedOwner == owner
+          ? (state?.owners.first(where: { $0.owner == owner })?.pendingInstallation != nil ? "installation_pending" : "owned")
+          : "other_owner"
       // No other owner's ID, selection, plan or events leave this boundary.
       return ["status": status, "revision": state.map { String($0.revision) } ?? "missing"]
     }
@@ -45,6 +47,15 @@ final class ProtectionInstallation {
            let index = state.owners.firstIndex(where: { $0.owner == old }) {
           state.owners[index].reasons = []
           state.owners[index].allowances = []
+          state.owners[index].pendingInstallation = nil
+          if var installed = state.owners[index].installation {
+            if installed.revision < 2147483647 { installed.revision += 1 }
+            installed.enabled = false
+            installed.activeSnapshots = []
+            installed.monitors = []
+            state.owners[index].installation = installed
+            try state.owners[index].sessionLedger?.reconcile(revision: installed.revision, remainingReasons: [])
+          }
           state.owners[index].coverage = "unavailable"
         }
         if !state.owners.contains(where: { $0.owner == owner }) {

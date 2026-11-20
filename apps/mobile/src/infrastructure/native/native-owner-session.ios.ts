@@ -61,7 +61,7 @@ export const nativeOwnerSession: NativeOwnerSessionPort | null =
       const raw = await module.readInstallation(namespace, userID, token);
       if (!raw || typeof raw !== 'object') throw new Error('Invalid installation response');
       const value = raw as Record<string, unknown>;
-      if (typeof value.status !== 'string' || !['unclaimed', 'owned', 'legacy_review', 'other_owner', 'claim_pending'].includes(value.status) ||
+      if (typeof value.status !== 'string' || !['unclaimed', 'owned', 'legacy_review', 'other_owner', 'claim_pending', 'installation_pending'].includes(value.status) ||
           typeof value.revision !== 'string' || !/^(missing|[0-9]{1,20})$/.test(value.revision)) {
         throw new Error('Invalid installation response');
       }

@@ -42,3 +42,10 @@ it('does not offer device takeover without a verified native session', async () 
   expect(mockRead).not.toHaveBeenCalled();
   expect(screen.queryByText('Review existing setup')).toBeNull();
 });
+
+it('offers explicit review for an uncertain installation without acknowledging it', async () => {
+  mockRead.mockResolvedValue({ status: 'installation_pending', revision: '8' });
+  await render(<InstallationReviewPanel />);
+  expect(await screen.findByText('Review existing setup')).toBeTruthy();
+  expect(mockClaim).not.toHaveBeenCalled();
+});

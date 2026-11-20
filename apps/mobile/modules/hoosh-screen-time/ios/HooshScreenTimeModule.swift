@@ -72,10 +72,14 @@ public class HooshScreenTimeModule: Module {
         @unknown default: authorization = "unavailable"
         }
         // C04 has not registered the schedule engine. No active claim can be made.
+        let uncertain = record.pendingInstallation != nil || record.installation?.enabled == true
+          || ProtectionDeviceTransition.protectionPresent
+        let deviceState = authorization != "authorized" ? "needs_permission"
+          : (record.reasons.isEmpty && !uncertain ? "inactive" : "degraded")
         return ["schemaVersion": 1, "owner": "\(namespace):\(userID.lowercased())",
           "platform": "ios", "mode": "system_shield", "selectionUI": "native_picker",
           "authorization": authorization,
-          "state": authorization != "authorized" ? "needs_permission" : (record.reasons.isEmpty && !ProtectionDeviceTransition.protectionPresent) ? "inactive" : "degraded",
+          "state": deviceState,
           "installedRevision": NSNull(), "installedReasonIds": [] as [String],
           "supportsScheduledRestriction": false, "supportsTemporaryAllowance": false,
           "supportsUsageThreshold": false, "supportsAdvanceWarning": false, "supportsUsageSummary": false]

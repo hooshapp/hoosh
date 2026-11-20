@@ -31,6 +31,7 @@ struct ProtectionReceipt: Codable, Equatable {
   let requestID: UUID
   let revision: UInt64
   let cancelled: Bool
+  var fingerprint: Data? = nil
 }
 struct ProtectionBusinessEvent: Codable, Equatable {
   let id: UUID
@@ -46,6 +47,9 @@ struct ProtectionOwnerRecord: Codable, Equatable {
   var allowances: [ProtectionAllowance] = []
   var receipts: [ProtectionReceipt] = []
   var events: [ProtectionBusinessEvent] = []
+  var installation: ProtectionRuntimeRecord?
+  var pendingInstallation: ProtectionPendingInstallation?
+  var sessionLedger: ProtectionSessionLedger?
   var coverage: String = "unknown"
 }
 struct ProtectionClaim: Codable, Equatable {
@@ -56,7 +60,7 @@ struct ProtectionClaim: Codable, Equatable {
   var phase: String = "awaiting_stop"
 }
 struct ProtectionState: Codable, Equatable {
-  var version: Int = 1
+  var version: Int = 2
   var revision: UInt64 = 0
   var legacyStopped: Bool?
   var installedOwner: ProtectionOwner?
@@ -66,11 +70,21 @@ struct ProtectionState: Codable, Equatable {
   var permitsLegacyCallbacks: Bool { pendingClaim == nil && legacyStopped != true && installedOwner == nil }
 
   func validated() throws {
-    guard version == 1 else { throw version > 1 ? ProtectionStoreError.newerVersion : .corrupt }
+    guard (1...2).contains(version) else { throw version > 2 ? ProtectionStoreError.newerVersion : .corrupt }
     guard owners.count <= 16, Set(owners.map { "\($0.owner.namespace):\($0.owner.userID)" }).count == owners.count,
           installedOwner == nil || owners.contains(where: { $0.owner == installedOwner }),
           pendingClaim == nil || (pendingClaim?.previousOwner == installedOwner && pendingClaim?.phase == "awaiting_stop") else { throw ProtectionStoreError.invalidRecord }
     for record in owners {
+      if version == 1 && (record.installation != nil || record.pendingInstallation != nil || record.sessionLedger != nil || record.receipts.contains(where: { $0.fingerprint != nil })) {
+        throw ProtectionStoreError.invalidRecord
+      }
+      if let installed = record.installation { try installed.validated() }
+      if let pending = record.pendingInstallation {
+        try pending.target.validated()
+        guard pending.fingerprint.count == 32, !record.receipts.contains(where: { $0.requestID == pending.requestID }),
+              pending.target.revision == (record.installation?.revision ?? 0) + 1 else { throw ProtectionStoreError.invalidRecord }
+      }
+      guard record.receipts.allSatisfy({ $0.fingerprint == nil || $0.fingerprint?.count == 32 }) else { throw ProtectionStoreError.invalidRecord }
       guard !record.owner.namespace.isEmpty, record.owner.namespace.utf8.count <= 256,
             record.reasons.count <= 256, record.allowances.count <= 256,
             record.receipts.count <= 512, record.events.count <= 2048,
@@ -130,9 +144,10 @@ final class SharedProtectionStore {
       guard previous?.revision == expectedRevision else { throw ProtectionStoreError.conflict }
       var next = previous ?? ProtectionState()
       try edit(&next)
-      guard next.version == 1, next.revision == (previous?.revision ?? 0),
+      guard next.version == (previous?.version ?? 2), next.revision == (previous?.revision ?? 0),
             next.revision < UInt64.max else { throw ProtectionStoreError.invalidRecord }
       next.revision += 1
+      next.version = 2 // Upgrade only as part of an atomic successful write.
       try next.validated()
       let encoder = JSONEncoder()
       encoder.outputFormatting = [.sortedKeys]
@@ -158,6 +173,8 @@ final class SharedProtectionStore {
       return next
     }
   }
+  // Keep one path across schemas: an older reader must see a newer header,
+  // not a missing file that could be mistaken for an empty installation.
   private var stateURL: URL { directory.appendingPathComponent("state-v1.json") }
   private func readLocked() throws -> ProtectionState? {
     do {
@@ -167,7 +184,7 @@ final class SharedProtectionStore {
       guard data.count <= Self.maximumBytes else { throw ProtectionStoreError.oversized }
       struct Header: Decodable { let version: Int }
       guard let header = try? JSONDecoder().decode(Header.self, from: data) else { throw ProtectionStoreError.corrupt }
-      guard header.version == 1 else { throw header.version > 1 ? ProtectionStoreError.newerVersion : .corrupt }
+      guard (1...2).contains(header.version) else { throw header.version > 2 ? ProtectionStoreError.newerVersion : .corrupt }
       guard let state = try? JSONDecoder().decode(ProtectionState.self, from: data) else { throw ProtectionStoreError.corrupt }
       try state.validated()
       return state

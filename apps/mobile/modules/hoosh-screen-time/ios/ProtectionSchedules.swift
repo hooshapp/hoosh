@@ -45,7 +45,7 @@ struct QuestProtectionVersion: Codable, Equatable {
   }
 }
 /// Native-only token snapshot: never encoded into preview/bridge dictionaries.
-struct ProtectionOccurrence: Equatable {
+struct ProtectionOccurrence: Codable, Equatable {
   let reasonID: String
   let startsAt: Int64
   let endsAt: Int64

@@ -12,10 +12,10 @@ compiler/session-model work continues without treating that deferral as evidence
 | Shared behavior/method | Current evidence | Remaining before registration |
 |---|---|---|
 | `schedulePreview` | Native saved-zone compiler; yesterday through seven days ahead; summary-only window output | Native bridge runtime check; metadata is explicitly preview-only |
-| Weekly `scheduleRead`/`scheduleApply`/reason-scoped Stop | Weekly window compilation and cancellation/overlap model checks | Durable installed definition, CAS/request receipts, OS registration/readback and indefinite recurrence; not implemented by this checkpoint |
-| Quest `questRead`/`questApply`/`questCancel` | Version bounds, first dates, recurrence, stable reason IDs and cancellation compiler checks | Durable versions/cancellation ledger, OS registration and typed readback; not implemented by this checkpoint |
+| Weekly `scheduleRead`/`scheduleApply`/reason-scoped Stop | Weekly window compilation and cancellation/overlap model checks | Typed runtime persistence, CAS, stable receipts and recovery now exist; method-specific native bridge, OS driver/readback and indefinite recurrence remain |
+| Quest `questRead`/`questApply`/`questCancel` | Version bounds, first dates, recurrence, stable reason IDs and cancellation compiler checks | Typed quest versions/cancellation records and transaction storage now exist; method-specific mutation builders, OS registration and typed readback remain |
 | Saved selection snapshots | Model preserves a matching active occurrence's previous token snapshot; future occurrences use the newly applied snapshot | Persist snapshots and connect them to enforcement, not just a preview array |
-| Per-app session count, reentry, concurrent apps, policy edits | Serializable native model checks pass for saved-zone buckets, reused deadlines, scoped grants, extra sessions, policy edits and rollback/reboot invalidation | Wire model to owner-scoped atomic storage and a real boot/continuous-clock adapter; no usage-minute substitution |
+| Per-app session count, reentry, concurrent apps, policy edits | Serializable native model checks pass for saved-zone buckets, reused deadlines, scoped grants, extra sessions, policy edits and rollback/reboot invalidation | Owner-scoped v2 storage/transaction commits retain the ledger; actual action callbacks and real boot/continuous-clock adapter remain; no usage-minute substitution |
 | Native elapsed expiry while target stays foreground | Candidate padded DeviceActivity interval; no physical evidence | Signed-device probe, measured callback/shield outcome and explicit unsupported result if the required behavior cannot be demonstrated |
 | Bypass under overlapping reasons | Model cancels one reason while retaining others | Bind actual application token to reasons active at that action; enforce new reasons independently and preserve running deadlines/counts |
 | Offline/JS-absent operation | Shared App Group and extension fencing exist from C02 | New schedule engine and callbacks, uncertain-install recovery, process termination and offline device checks |
@@ -101,4 +101,29 @@ session to its starting day, retains counters/deadlines on edits and scoped Stop
 invalidates exemptions on rollback/reboot, and marks an extra session exhausted only
 when it starts. A timezone change with retained history requires migration. Corrupt
 serialized durations are rejected. It has **no independent disk path, no OS timer,
-no current owner-store wiring, no reward producer and no installation acknowledgment**.
+owner-store wiring through the transaction core only (action callbacks pending), no reward producer and no installation acknowledgment**.
+
+
+## Transaction and migration checks
+
+The shared store now reads v1/v2 and writes v2 atomically on its existing path.
+Older shared-host v1 readers reject header v2. This does not claim that the separate
+Swift pilot understands this store or that a downgrade over retained data is safe.
+No physical app was installed in this checkpoint.
+
+```sh
+swiftc apps/mobile/modules/hoosh-screen-time/ios/SharedProtectionStore.swift \
+  apps/mobile/modules/hoosh-screen-time/ios/ProtectionSchedules.swift \
+  apps/mobile/modules/hoosh-screen-time/ios/ProtectionSessions.swift \
+  apps/mobile/modules/hoosh-screen-time/ios/ProtectionTransactions.swift \
+  apps/mobile/modules/hoosh-screen-time/ios/ProtectionInstallation.swift \
+  apps/mobile/modules/hoosh-screen-time/tests/TransactionChecks.swift \
+  -o /tmp/hoosh-transaction-checks
+/tmp/hoosh-transaction-checks
+```
+
+The test driver is a model used to inject partial SDK state and lost acknowledgments.
+It is not registered in the app. A real driver must verify exact scoped schedules,
+settings and permission, preserve unrelated reasons, and reconcile stable names.
+Activation capability is checked before any write. The transaction core does not
+invent a working expiry adapter or acknowledge production installation on its own.

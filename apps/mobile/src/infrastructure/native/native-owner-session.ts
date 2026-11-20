@@ -1,6 +1,6 @@
 import type { IOSSelectionDevice } from './ios-selection-device';
 export type InstallationReview = {
-  status: 'unclaimed' | 'owned' | 'legacy_review' | 'other_owner' | 'claim_pending';
+  status: 'unclaimed' | 'owned' | 'legacy_review' | 'other_owner' | 'claim_pending' | 'installation_pending';
   revision: string;
 };
 /** Lifecycle support is separate from the full selection/protection product port. */

@@ -71,7 +71,7 @@ import Darwin
     try expect(try store.read()?.revision == 161, "four processes lose no successful writes")
     let path = root.appendingPathComponent("state-v1.json")
     let valid = try Data(contentsOf: path)
-    try Data("{\"version\":2}".utf8).write(to: path)
+    try Data("{\"version\":3}".utf8).write(to: path)
     try fails(.newerVersion) { try store.read() }
     try fails(.newerVersion) { try store.update(expectedRevision: nil) { _ in } }
     try Data("broken".utf8).write(to: path)
