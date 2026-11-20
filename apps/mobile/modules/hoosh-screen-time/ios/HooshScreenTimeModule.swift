@@ -58,6 +58,17 @@ public class HooshScreenTimeModule: Module {
               "usesPaddedMonitoringIntervals": envelopes.contains(where: { $0.startsAt < $0.businessStartsAt }),
               "activationAvailable": false, "blocker": "elapsed_session_expiry_unverified"]
     }
+    AsyncFunction("deviceDiagnostics") { (namespace: String, userID: String, raw: String) throws -> [String: Any] in
+      let (owner, token) = try self.owner(namespace, userID, raw)
+      return try self.leases.withLease(owner, token: token) {
+        let state = try SharedProtectionStore.appGroup().read()
+        guard state?.installedOwner == owner, state?.pendingClaim == nil else { throw ProtectionStoreError.staleLease }
+        // Never export ticks or boot identity. Availability is a read-only diagnostic.
+        return ["schemaVersion": 1, "platform": "ios", "activationAvailable": ProtectionActivationGate.enabled,
+          "clockAvailable": (try? ProtectionDeviceClock.sample()) != nil,
+          "scopedMonitorCount": ProtectionOSAdapter.scopedMonitorCount, "enforcementVerified": false]
+      }
+    }
     AsyncFunction("deviceStatus") { (namespace: String, userID: String, raw: String) throws -> [String: Any] in
       let (owner, token) = try self.owner(namespace, userID, raw)
       return try self.leases.withLease(owner, token: token) {

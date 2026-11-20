@@ -15,8 +15,8 @@ compiler/session-model work continues without treating that deferral as evidence
 | Weekly `scheduleRead`/`scheduleApply`/reason-scoped Stop | Weekly window compilation and cancellation/overlap model checks | Typed runtime persistence, CAS, stable receipts and recovery now exist; method-specific native bridge, OS driver/readback and indefinite recurrence remain |
 | Quest `questRead`/`questApply`/`questCancel` | Version bounds, first dates, recurrence, stable reason IDs and cancellation compiler checks | Typed quest versions/cancellation records and transaction storage now exist; method-specific mutation builders, OS registration and typed readback remain |
 | Saved selection snapshots | Model preserves a matching active occurrence's previous token snapshot; future occurrences use the newly applied snapshot | Persist snapshots and connect them to enforcement, not just a preview array |
-| Per-app session count, reentry, concurrent apps, policy edits | Serializable native model checks pass for saved-zone buckets, reused deadlines, scoped grants, extra sessions, policy edits and rollback/reboot invalidation | Owner-scoped v2 storage/transaction commits retain the ledger; actual action callbacks and real boot/continuous-clock adapter remain; no usage-minute substitution |
-| Native elapsed expiry while target stays foreground | Candidate padded DeviceActivity interval; no physical evidence | Signed-device probe, measured callback/shield outcome and explicit unsupported result if the required behavior cannot be demonstrated |
+| Per-app session count, reentry, concurrent apps, policy edits | Serializable native model checks pass for saved-zone buckets, reused deadlines, scoped grants, extra sessions, policy edits and rollback/reboot invalidation | Owner-scoped v2 storage/transaction commits retain the ledger; native continuous-clock/boot helper now exists and passes host sampling; iPhone access and actual action callbacks remain; no usage-minute substitution |
+| Native elapsed expiry while target stays foreground | Candidate padded DeviceActivity interval plus gated SDK construction/staging/readback primitives; no physical evidence | Signed-device probe, measured callback/shield outcome and explicit unsupported result if the required behavior cannot be demonstrated |
 | Bypass under overlapping reasons | Model cancels one reason while retaining others | Bind actual application token to reasons active at that action; enforce new reasons independently and preserve running deadlines/counts |
 | Offline/JS-absent operation | Shared App Group and extension fencing exist from C02 | New schedule engine and callbacks, uncertain-install recovery, process termination and offline device checks |
 | Full `ProductNativePort` / scheduling capability | Unregistered on iOS; weekly/quest acknowledgments currently use Android-oriented intervention fields | Add a truthful iOS projection/contract where needed and register only after required methods/semantics are real; no success stub, synthetic service connection or Android label |
@@ -127,3 +127,19 @@ It is not registered in the app. A real driver must verify exact scoped schedule
 settings and permission, preserve unrelated reasons, and reconcile stable names.
 Activation capability is checked before any write. The transaction core does not
 invent a working expiry adapter or acknowledge production installation on its own.
+
+
+## November 20 — SDK and clock smoke checks
+
+Run `scripts/check-ios-adapter.sh BOOTED_SIMULATOR_UUID` on a Mac with Xcode and a
+booted simulator. It builds temporary executables and removes them afterward. The
+checks construct real SDK schedules and verify every mutation gate rejects before
+SDK writes. No app installation, authorization prompt, monitor registration or
+shield change occurs. Continuous-clock/boot sampling is host proof only.
+
+The adapter deliberately has no production activation override. It is not yet the
+`ProtectionInstallationDriver`: the owner runtime still needs recurrence refresh,
+active-snapshot/grant union, action callbacks and typed weekly/quest bridge wiring.
+Absolute monitor endpoints must be second-aligned. A later driver must explicitly
+account for SDK granularity while retaining the exact private session deadline;
+the adapter refuses to silently round it. Raw boot/time signals must stay on-device.
