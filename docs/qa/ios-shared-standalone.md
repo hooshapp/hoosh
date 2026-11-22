@@ -24,6 +24,29 @@ The existing host bundle ID is intentionally preserved; the display name is Hoos
 - Review actual target signing and profiles before any device build/install. Never
   change bundle IDs/App Groups or overwrite the installed pilot as a shortcut.
 
+## C06 closeout checklist
+
+Current checkpoint: November22, source `08b3766`. **C06 is not complete.**
+The iOS plan has C01–C06; it has no C07. Its next named handoff is VERIFY-C05,
+within combined-app verification. Do not label the simulator package or the
+compiled-off protection path as accepted native enforcement.
+
+| C06 requirement | Current evidence | Still required |
+|---|---|---|
+| 1. Signed normal-app protection journey | Real RN host, real-authenticated simulator/local API save; device Release provisioning inspected | Spare iPhone: picker Save, authorization, Apply, intervention, temporary-access expiry, Stop/readback |
+| 2. Embedded build and lifecycle | Embedded Hermes startup without Metro; simulator terminate/relaunch and API service outage/recovery | Native foreground/background/host termination, lock/unlock, revoke/regrant, offline/reconnect, reboot and schedule/day boundaries |
+| 3. Account/device ownership | Observed A→distinct B account/setup separation, A local draft retained | B writes and return-to-A; explicit native device claim, stale callbacks, retained rules and events across transition |
+| 4. Product inspection | Simulator package and device development signing inspected; current simulator JS/source hashes matched | Reinspect the exact final phone product after reachable API configuration and any later source changes; distribution approval remains separate |
+| 5. Size/text/keyboard/accessibility | Large-text navigation repair verified; standard Home overflow repaired; compact SE public-auth validation/navigation/keyboard pass | Compact authenticated pages/native picker, full scrolling/footer reachability, intro swipes and basic accessibility journey |
+| 6. Evidence and handoff | Sanitized receipts, source hashes and simulator notes recorded | Physical results, capability/core gates reconciled and exact-build VERIFY-C05 handoff |
+
+No need to repeat already-passed package checks for every documentation commit.
+Use the existing isolated QA simulators; preserve the signed-in Release QA account.
+The new **Hoosh C06 Compact QA** is signed out at login with default text restored.
+No hosted account was created, password/reset email sent or physical phone changed
+in the compact continuation. Manual provider/confirmation checks require private
+user interaction; do not read stored credentials or fabricate a session.
+
 ## Produce a simulator Release product
 
 From the repository root, with installed Pods and pinned packages:

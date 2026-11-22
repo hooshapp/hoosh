@@ -645,3 +645,29 @@ Gesture delivery/intro swipes, compact/all-page layouts, screen-reader acceptanc
 packaged provider signup/confirmation and B→A/native takeover remain open. Physical
 Screen Time acceptance deferred and `ProtectionActivationGate.enabled` stays false.
 Local API/DB unchanged; no secrets staged, no commit/push.
+
+
+### November 22 — C06 compact simulator and explicit closeout
+
+Current source `08b3766`; no runtime changes. Added an isolated iPhone SE3/iOS18.6
+simulator, preserving the original signed-in Release QA device. Fresh embedded
+startup/Skip, signup name/email validation and keyboard avoidance, login/recovery
+navigation, empty recovery validation and intro-not-repeated cold restart observed.
+Only synthetic name/invalid email entered; no account/password/email action.
+Maximum-text recovery requires scrolling; CUA gesture delivery remains inconclusive,
+so full footer/intro gesture acceptance is still open. Restored default text and
+left compact simulator at login. Current embedded JS/runtime source hashes match
+the committed simulator receipt. Physical phone untouched; activation remains false.
+
+Changed only:
+- `docs/qa/ios-c06-simulator.md`: compact-device evidence and explicit limits.
+- `docs/qa/ios-shared-standalone.md`: six-requirement C06 closeout checklist,
+  identifying simulator, signed-product and still-missing physical proof.
+- `docs/integration_plan/04_ios_native_integration.md`: corrected stale top status
+  and added compact public-auth evidence to C06 ledger.
+- This notes entry: scope and validation record.
+
+C06 is not complete and no iOS C07 exists. Next named handoff is VERIFY-C05 after
+required acceptance; do not move the gate or mark native enforcement passed to
+advance numbering. Docs/source-receipt checks passed; no redundant runtime suite
+run for evidence-only edits. Staged for owner commit/push, neither performed.

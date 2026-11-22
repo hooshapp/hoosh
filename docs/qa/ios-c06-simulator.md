@@ -235,3 +235,35 @@ native owner/journal takeover are not passed by this continuation. Actual Screen
 Time authorization, enforcement, foreground expiry and lifecycle still require a
 spare physical iPhone; activation remains compiled false. No phone queried or
 installed; no credentials read; local API/DB configuration unchanged. No commit/push.
+
+
+### November 22 — compact-device continuation and C06 closeout
+
+Source `08b37669ee1f414961fe51430a0735e67e39c545`. Created an isolated
+**Hoosh C06 Compact QA**, iPhone SE(3rd generation)/iOS18.6, UUID
+`2AB64AEC-C582-4987-8A88-5BE6340BA8B7`. Installed the same standalone Release
+package. Its embedded JS SHA and recorded runtime source hashes match the current
+simulator receipt/current checkout. No runtime source changed in this continuation.
+
+Observed: fresh intro startup, Skip→signup, empty signup→name error with focused
+field/keyboard above the obstruction, synthetic name/invalid email editing→email
+validation, signup→login→forgot password, and empty recovery→invalid-email message.
+No password entered, no signup submitted with valid credentials, no account/reset
+email requested. Provider buttons are present but no provider acceptance inferred.
+
+At maximum accessibility text, recovery title/body wrap and require scrolling.
+Device Hub drag/scroll did not establish gesture delivery on this simulator either;
+therefore intro advancement and full footer reachability remain inconclusive.
+Default `large` text was restored and verified via simctl, then a cold restart
+returned to default-size login without repeating intro. The simulator remains
+signed out at login. The original Release QA simulator retains B; no account,
+selection or plan data was changed there. No physical phone queried/installed.
+
+Local ignored screenshots: `compact-signup-validation.jpg`,
+`compact-login-default.jpg`. No additional automated suites were run for this
+pure evidence/docs checkpoint; existing package source hashes were checked and
+Git whitespace checks passed. Current complete/pending requirements are now
+centralized in [C06 closeout checklist](ios-shared-standalone.md#c06-closeout-checklist).
+C06 remains open; iOS has no C07. Mandatory physical enforcement/owner/lifecycle
+acceptance cannot be substituted by simulator checks. No activation-gate change,
+commit or push.
