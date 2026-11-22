@@ -23,7 +23,7 @@ installed over, erased or queried during this simulator pass.
 | Root/layout integration regression | 94 tests passed across Android and iOS projects; typecheck and focused lint passed. |
 | Real account/settings/onboarding save | Passed for one real-authenticated account against the isolated local DB; see signed-in continuation. Profile writes and hosted DB remain untested. |
 | Real Google/Apple login and callback | Not performed in this pass; visible buttons are not provider acceptance. |
-| Small/large text, all native authenticated pages | Not completed by this pass. |
+| Large-text navigation and standard Home width | November22 continuation: repaired and verified on Release simulator; all-page/compact-device/VoiceOver acceptance remains open. |
 | Actual Screen Time access, blocking, continuous foreground expiry, revoke, reboot | Physical-device acceptance remains deferred. Activation remains false. |
 
 The status-bar change is limited to native Stack options in the root, auth and
@@ -192,3 +192,46 @@ new Auth fixture inserted for B and no native permission changed. Screenshot
 receipt and these two notes; no runtime change, documentation diff checks passed.
 Everything stays staged/uncommitted. B remains signed in on Home; local services
 remain running. Physical C06 acceptance remains deferred.
+
+
+### November 22 — native layout continuation
+
+Source parent: `e3a94e4` plus this layout delta. Continued on the same isolated
+Hoosh C06 Release QA simulator with B still signed in. Maximum Dynamic Type
+(`accessibility-extra-extra-extra-large`) exposed tab labels wrapping into single
+letters and a navigation bar covering most of the viewport. Definite item widths
+replace percentage flex bases; moderate accessibility text uses two columns and
+font scales above1.8 use full-width rows. Native font scaling remains enabled.
+The rebuilt standalone Release displayed complete labels at maximum text size;
+Home→History activation worked. `accessibility-medium` displayed a readable
+2-by-2 bar. Restored the original `large` text setting and returned to Home.
+
+Standard Home then exposed horizontal overflow of the overview cards. Explicit
+zero flex bases and shrink with the existing193:149 growth ratio now keep both
+columns inside the content width. A second Release build/install visibly showed
+both right card edges and the Credits value inside the viewport. No product data
+or protection policy changed; B remains signed in without saved plan edits.
+
+Validation:88 focused navigation/Home tests across the Android and iOS Jest
+projects passed, including clearance/draft retention at font scales1.5/2/3.1.
+Mobile TypeScript and focused lint passed. Full mobile lint had no errors and four
+pre-existing warnings in usage-probe/use-usage-permission-action. Both Release
+builds succeeded; final product inspection passed embedded Hermes, registration,
+extensions/signatures and preview/pilot isolation checks. Updated simulator receipt
+contains current source hashes. Signed-device receipt remains older native-signing
+evidence, not proof of these UI changes on a phone.
+
+Local ignored evidence: `large-text-navigation-before.jpg`,
+`large-text-navigation-fixed.jpg`, `moderate-text-navigation-fixed.jpg`,
+`home-width-before.jpg`, `home-width-fixed.jpg`. Final build log:
+`/tmp/hoosh-c06-layout-build.log`; inspector log:
+`/tmp/hoosh-c06-layout-inspection.log`.
+
+Limits: automated Device Hub scrolling still did not establish gesture delivery,
+so intro swipe and complete large-text scroll-to-footer acceptance remain open.
+Compact hardware size, all-screen layouts, VoiceOver/TalkBack, provider signup/email
+confirmation in this packaged build, B writes/return-to-A, hosted persistence and
+native owner/journal takeover are not passed by this continuation. Actual Screen
+Time authorization, enforcement, foreground expiry and lifecycle still require a
+spare physical iPhone; activation remains compiled false. No phone queried or
+installed; no credentials read; local API/DB configuration unchanged. No commit/push.

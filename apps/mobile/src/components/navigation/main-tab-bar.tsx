@@ -102,6 +102,14 @@ export function MainTabBar({
   const { width, fontScale } = useWindowDimensions();
   const bottom = floatingBarBottom(insets.bottom);
   const expanded = fontScale > 1.3 || width - insets.left - insets.right - 40 < 280;
+  // Give Yoga a definite item width: percentage flex bases can collapse inside
+  // this absolutely positioned, wrapping bar on iOS. At the largest text sizes,
+  // use one destination per row so labels retain their full accessible size.
+  const barContentWidth = Math.max(
+    0,
+    width - insets.left - insets.right - floatingBarGeometry.sideGap * 2 - 24,
+  );
+  const expandedWidth = fontScale > 1.8 ? barContentWidth : (barContentWidth - 4) / 2;
   const activeName = state.routes[state.index]?.name;
   return (
     <View
@@ -132,7 +140,7 @@ export function MainTabBar({
           // Router can replace route keys during activation; the four tab names are
           // stable. Keep the focused control mounted instead of dropping focus to body.
           <Fragment key={route.name}>
-            <View style={expanded && styles.expandedTarget}>
+            <View style={expanded && { width: expandedWidth }}>
               <TabItem
                 name={name}
                 label={labels[name]}
@@ -190,7 +198,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 24,
   },
-  expandedTarget: { flexBasis: '48%', flexGrow: 1, minWidth: 0 },
   expandedControl: { alignSelf: 'stretch' },
   expandedPill: {
     alignSelf: 'stretch',

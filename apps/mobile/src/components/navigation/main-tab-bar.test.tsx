@@ -149,7 +149,7 @@ describe('Main navigation', () => {
     expect(onLongPress).toHaveBeenCalledTimes(1);
   });
 
-  it('uses the measured large-text bar height with the safe inset exactly once', async () => {
+  it.each([1.5, 2, 3.1])('uses measured clearance at font scale %s without losing a draft', async (fontScale) => {
     await renderRouter({
       ...actualRoutes,
       '(tabs)/index': function DraftContent() {
@@ -164,7 +164,7 @@ describe('Main navigation', () => {
     await fireEvent.changeText(screen.getByLabelText('Viewport draft'), 'Keep this draft');
     expect(screen.queryByText('Quests')).not.toBeOnTheScreen();
     await act(() =>
-      Dimensions.set({ window: { width: 320, height: 568, scale: 3, fontScale: 2 } }),
+      Dimensions.set({ window: { width: 320, height: 568, scale: 3, fontScale } }),
     );
     for (const tab of ['Home', 'Quests', 'History', 'Settings'])
       expect(screen.getByText(tab)).toBeVisible();

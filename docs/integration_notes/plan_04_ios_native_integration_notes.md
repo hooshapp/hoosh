@@ -611,3 +611,37 @@ new Auth fixture inserted for B and no native permission changed. Screenshot
 receipt and these two notes; no runtime change, documentation diff checks passed.
 Everything stays staged/uncommitted. B remains signed in on Home; local services
 remain running. Physical C06 acceptance remains deferred.
+
+
+### November 22 — C06 simulator layout repairs
+
+Continued packaged simulator acceptance; not a full C06/device sign-off. Fixed
+collapsed tab labels at maximum Dynamic Type using definite adaptive row widths,
+without capping font scaling or changing the standard navigation design. Native
+maximum-size labels and Home→History navigation verified; moderate accessibility
+text used2columns. Restored simulator text setting to its original `large`.
+Standard Home overview overflow was then fixed with explicit zero flex bases and
+shrink while retaining193:149 card growth; rebuilt Release visibly fits both cards.
+B remains on Home; no plan edits, sign-out or physical-device operation.
+
+Changed implementation:
+- `apps/mobile/src/components/navigation/main-tab-bar.tsx` lines104–112,142 and
+  expanded styles near198: definite available-width allocation replaces collapsed
+  percentage flex basis, with one row per destination at the largest scales.
+- `apps/mobile/src/components/navigation/main-tab-bar.test.tsx` lines152–201:
+  existing measured-clearance/draft-retention case now runs at1.5/2/3.1 font scales.
+- `apps/mobile/src/features/home/home-overview.tsx` lines193,282: explicit basis,
+  grow and shrink keep the existing overview proportions within the native viewport.
+- `docs/integration_notes/artifacts/ios-c06-simulator-product.json`: rebuilt final
+  package receipt and exact working-tree source hashes.
+- `docs/qa/ios-c06-simulator.md`: current matrix and detailed continuation evidence.
+- `docs/integration_plan/04_ios_native_integration.md` C06 row: partial acceptance
+  update. This notes entry records scope and boundaries.
+
+88 focused Android/iOS component checks, mobile typecheck and focused lint passed;
+full mobile lint0errors/4pre-existing warnings. Release builds and final product
+inspection passed. Screenshots/build logs remain ignored locally; see QA note.
+Gesture delivery/intro swipes, compact/all-page layouts, screen-reader acceptance,
+packaged provider signup/confirmation and B→A/native takeover remain open. Physical
+Screen Time acceptance deferred and `ProtectionActivationGate.enabled` stays false.
+Local API/DB unchanged; no secrets staged, no commit/push.

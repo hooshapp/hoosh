@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
   },
   stacked: { flexDirection: 'column' },
   // Flex distributes the content width; the left card also owns its 3 px border.
-  dinoColumn: { flex: 193 },
+  dinoColumn: { flexBasis: 0, flexGrow: 193, flexShrink: 1 },
   dinoCard: {
     minWidth: 0,
     minHeight: 210,
@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
     color: colors.white,
   },
   statsColumn: { minWidth: 0, gap: 12 },
-  statsFlex: { flex: 149 },
+  statsFlex: { flexBasis: 0, flexGrow: 149, flexShrink: 1 },
   credits: {
     minHeight: 40,
     paddingVertical: 10,
