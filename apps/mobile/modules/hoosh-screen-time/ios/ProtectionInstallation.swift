@@ -51,6 +51,11 @@ final class ProtectionInstallation {
           if var installed = state.owners[index].installation {
             if installed.revision < 2147483647 { installed.revision += 1 }
             installed.enabled = false
+            installed.weeklyEnabled = false
+            installed.quests = installed.quests.map { quest in
+              ProtectionQuestRecord(questID: quest.questID, remoteRevision: quest.remoteRevision,
+                enabled: false, versions: [], cancelled: quest.cancelled, selection: quest.selection, requestID: quest.requestID)
+            }
             installed.activeSnapshots = []
             installed.monitors = []
             state.owners[index].installation = installed

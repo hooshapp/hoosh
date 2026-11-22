@@ -1,9 +1,12 @@
+import { uuid } from 'expo';
+import { createIOSProductPort, type IOSRuntimeModule } from './ios-product-port';
 import { decodeSavedSelection } from './selection-editor';
 import { decodeIOSDeviceStatus } from './ios-device-status';
 import { requireOptionalNativeModule } from 'expo-modules-core';
 import type { InstallationReview, NativeOwnerSessionPort } from './native-owner-session';
 
-type OwnerModule = {
+type OwnerModule = IOSRuntimeModule & {
+  schedulePreview(spec: unknown): Promise<unknown>;
   selectionRead(namespace: string, userID: string, token: string): Promise<unknown>;
   selectionBegin(namespace: string, userID: string, token: string): Promise<unknown>;
   selectionPick(namespace: string, userID: string, token: string, draft: string, version: number): Promise<unknown>;
@@ -36,8 +39,24 @@ export const nativeOwnerSession: NativeOwnerSessionPort | null =
       ? (namespace, userID, token, generation) => {
         const owner = `${namespace}:${userID}`;
         const check = (provided: string) => { if (provided !== owner) throw new Error('Owner changed'); };
+        const selection = {
+          selectionBegin: (provided: string) => { check(provided); return module.selectionBegin(namespace, userID, token); },
+          selectionPick: (provided: string, draft: string, version: number) => { check(provided); return module.selectionPick(namespace, userID, token, draft, version); },
+          selectionCommit: (provided: string, draft: string, version: number) => { check(provided); return module.selectionCommit(namespace, userID, token, draft, version); },
+          selectionRelease: (provided: string, draft: string) => { check(provided); return module.selectionRelease(namespace, userID, token, draft); },
+          selectionRead: (provided: string) => { check(provided); return module.selectionRead(namespace, userID, token); },
+        };
+        const port = typeof module.runtimeRead === 'function' && typeof module.runtimeApply === 'function' && typeof module.runtimeRecover === 'function' && typeof module.schedulePreview === 'function'
+          ? createIOSProductPort({ namespace, userID, token, module, selection, requestID: () => uuid.v4(),
+            preview: spec => module.schedulePreview(spec), review: () => module.requestDeviceAuthorization(namespace, userID, token),
+            end: () => module.endOwnerSession(token), protectionRead: () => module.deviceStatus(namespace, userID, token),
+            claim: async () => {
+              const current = await module.readInstallation(namespace, userID, token) as { revision: string };
+              await module.claimInstallation(namespace, userID, token, current.revision, true);
+            },
+          }) : undefined;
         return {
-          owner, generation,
+          owner, generation, productPort: port, recover: port?.recover,
           selection: {
             selectionBegin: provided => { check(provided); return module.selectionBegin(namespace, userID, token); },
             selectionPick: (provided, draft, version) => { check(provided); return module.selectionPick(namespace, userID, token, draft, version); },
@@ -49,7 +68,7 @@ export const nativeOwnerSession: NativeOwnerSessionPort | null =
           requestAuthorization: async () => { await module.requestDeviceAuthorization(namespace, userID, token); },
           stop: async () => {
             const read = await module.readInstallation(namespace, userID, token) as { status: string; revision: string };
-            if (read.status !== 'owned') throw new Error('Device owner changed');
+            if (!['owned', 'installation_pending'].includes(read.status)) throw new Error('Device owner changed');
             await module.claimInstallation(namespace, userID, token, read.revision, true);
           },
           subscribe: listener => { const subscription = module.addListener('onDeviceStatusChanged', listener); return () => subscription.remove(); },

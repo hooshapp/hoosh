@@ -55,7 +55,6 @@ function VerifiedNativeOwner({ namespace, port, children }: { namespace: string;
       void Promise.allSettled([port.interventionEndOwner(owner, false), port.selectionEndOwner(owner, false)]);
     };
   }, [owner, port, scope?.id]);
-  const binding = useMemo(() => owner && scope && port ? { owner, generation: scope.account.sessionGeneration, port } : null, [owner, port, scope]);
   const installation = useMemo(() => {
     const lifecycle = nativeOwnerSession;
     if (!lifecycle || !session || session.scopeID !== scopeID || session.userID !== verifiedUserID) return null;
@@ -68,6 +67,15 @@ function VerifiedNativeOwner({ namespace, port, children }: { namespace: string;
     if (!session || !nativeOwnerSession?.device || session.scopeID !== scopeID || session.userID !== verifiedUserID) return null;
     return nativeOwnerSession.device(namespace, session.userID, session.token, scopeID!);
   }, [session, scopeID, verifiedUserID, namespace]);
+  useEffect(() => {
+    const scoped = iosDevice?.productPort;
+    if (!scoped || !iosDevice) return;
+    return () => {
+      void Promise.allSettled([scoped.interventionEndOwner(iosDevice.owner, false), scoped.selectionEndOwner(iosDevice.owner, false)]);
+    };
+  }, [iosDevice]);
+  const scopedPort = port ?? iosDevice?.productPort ?? null;
+  const binding = useMemo(() => owner && scope && scopedPort ? { owner, generation: scope.account.sessionGeneration, port: scopedPort } : null, [owner, scopedPort, scope]);
   return <NativeOwnerContext.Provider value={binding}>
     <IOSSelectionContext.Provider value={iosDevice}>
     <NativeInstallationContext.Provider value={installation}>{children}</NativeInstallationContext.Provider>

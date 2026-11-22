@@ -289,7 +289,7 @@ export function useWeeklyPlan(
         if (kind === 'apply' && reviewed) {
           if (revision !== reviewed.revision || current.selectionAvailable === false ||
             current.selectionRevision !== reviewed.selectionRevision || !current.selectedAppCount ||
-            before.otherInstallation || before.native.state === 'failed' ||
+            before.otherInstallation || (before.native.platform === 'ios' && !before.native.activationAvailable) || before.native.state === 'failed' ||
             before.native.state === 'needs_permission' || !sameSchedule(spec, reviewed.spec)) {
             setNotice('The saved plan or device setup changed. Review the latest values before applying.');
             refreshAfter = true;

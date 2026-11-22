@@ -57,6 +57,8 @@ export function weeklyPlanStatus(
       message: 'Refresh to confirm the schedule before relying on it.',
     };
   const { installation: i } = read;
+  if (i.native.platform === 'ios' && !i.native.activationAvailable)
+    return { kind: 'unavailable', title: 'iPhone testing pending', message: 'Your plan can be reviewed. Screen Time activation is paused until physical iPhone testing is complete.' };
   if (i.native.state === 'failed')
     return {
       kind: 'failed',

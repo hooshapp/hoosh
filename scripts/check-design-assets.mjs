@@ -66,3 +66,12 @@ console.log(
   `Design assets passed: ${manifest.assets.length} original local SVGs${process.argv.includes('--export') ? ', including all navigation assets in the app export' : ''}${process.argv.includes('--pack') ? `; ${packCopies} exact original-pack copies` : ''}.`,
 );
 console.log(`Integration artwork passed: ${integrationAssets.length} files match the landing-page snapshot.`);
+
+const currentPlanRoot = join(assetsRoot, 'onboarding/plan/current');
+const currentPlan = JSON.parse(await readFile(join(currentPlanRoot, 'manifest.json'), 'utf8'));
+for (const asset of currentPlan.assets) {
+  const bytes = await readFile(join(currentPlanRoot, asset.file));
+  if (!bytes.length || digest(bytes) !== asset.sha256)
+    throw new Error(`Current Figma plan asset changed: ${asset.file}`);
+}
+console.log(`Current Figma plan artwork passed: ${currentPlan.assets.length} unchanged local SVGs.`);

@@ -3,9 +3,8 @@ import Foundation
 import FamilyControls
 import ManagedSettings
 
-/// Gated schedule/shield driver checkpoint. Session-expiry alarms and extension
-/// dispatch are not connected yet. Caller holds the shared store lock and supplies
-/// its latest ledger; this type must not be advertised as active enforcement.
+/// Gated schedule/shield/expiry driver. Caller holds the shared store lock and
+/// supplies its latest ledger. Physical timing acceptance is still outstanding.
 final class ProtectionNativeDriver: ProtectionInstallationDriver {
   let owner: ProtectionOwner
   init(owner: ProtectionOwner) { self.owner = owner }
@@ -28,7 +27,7 @@ final class ProtectionNativeDriver: ProtectionInstallationDriver {
     let clock = try ProtectionDeviceClock.sample()
     let plan = try ProtectionRuntimePlanner.resolve(target, owner: owner, now: clock.wall)
     guard plan.runtime.monitors == target.monitors, plan.runtime.activeSnapshots == target.activeSnapshots else { return false }
-    let monitors = sdkMonitors(plan)
+    let monitors = try sdkMonitors(plan, ledger: ledger, clock: clock)
     guard ProtectionOSAdapter.monitorNames(prefix: ProtectionRuntimePlanner.prefix(owner)) == Set(monitors.map(\.name)) else { return false }
     for monitor in monitors { guard try ProtectionOSAdapter.matches(monitor) else { return false } }
     return ProtectionOSAdapter.matchesBlockedApps(try Self.blocked(plan.runtime, ledger: ledger, clock: clock))
@@ -38,7 +37,7 @@ final class ProtectionNativeDriver: ProtectionInstallationDriver {
     let clock = try ProtectionDeviceClock.sample()
     let plan = try ProtectionRuntimePlanner.resolve(target, owner: owner, now: clock.wall)
     guard plan.runtime.monitors == target.monitors, plan.runtime.activeSnapshots == target.activeSnapshots else { throw ProtectionTransactionError.unconfirmed }
-    let monitors = sdkMonitors(plan)
+    let monitors = try sdkMonitors(plan, ledger: ledger, clock: clock)
     // Preserve the confirmed generation while staging the candidate. Unconfirmed
     // attempts under this same owner namespace are retired after exact readback.
     try ProtectionOSAdapter.stage(monitors, preserving: Set(previous?.monitors.map(\.name) ?? []))
@@ -82,6 +81,12 @@ final class ProtectionNativeDriver: ProtectionInstallationDriver {
   }
   private func sdkMonitors(_ plan: ProtectionRuntimePlan) -> [ProtectionOSMonitor] {
     plan.monitors.map { ProtectionOSMonitor(name: $0.name, envelope: $0.envelope) }
+  }
+  private func sdkMonitors(_ plan: ProtectionRuntimePlan, ledger: ProtectionSessionLedger?, clock: ProtectionClock) throws -> [ProtectionOSMonitor] {
+    let expiry = try ProtectionExpiryPlanner.monitors(runtime: plan.runtime, owner: owner, ledger: ledger, clock: clock)
+    let monitors = sdkMonitors(plan) + expiry.map { ProtectionOSMonitor(name: $0.name, envelope: $0.envelope) }
+    guard monitors.count <= 512 else { throw SessionFailure.capacity }
+    return monitors
   }
   private func requireActivation() throws {
     guard activationAvailable else { throw ProtectionTransactionError.activationGated }

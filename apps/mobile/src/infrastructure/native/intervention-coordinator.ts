@@ -1,3 +1,4 @@
+import { decodeIOSRuntimeStatus } from './ios-runtime-status';
 /** Debug coordinator: finite native windows, explicit session policy and native-only app identities. */
 export type InterventionWindow = Readonly<{ reasonId: string; startsAt: number; endsAt: number }>;
 export type InterventionPolicy = Readonly<{ timezoneId: string; sessionsPerDay: number; sessionSeconds: number }>;
@@ -13,6 +14,7 @@ export interface InterventionCoordinatorPort {
   interventionEndOwner(owner: string, erase: boolean): Promise<unknown>;
 }
 export type InterventionStatus = Readonly<{
+  platform?: 'ios'; activationAvailable?: boolean; pendingRequestID?: string | null;
   state: 'needs_permission' | 'inactive' | 'armed' | 'failed';
   installedRevision: number | null; selectionRevision: number | null;
   selectedAppCount: number; reasonCount: number; pendingEventCount: number;
@@ -22,6 +24,7 @@ export type InterventionStatus = Readonly<{
 export function decodeInterventionStatus(value: unknown): InterventionStatus {
   if (!value || typeof value !== 'object') throw new Error('Invalid intervention status');
   const v = value as Record<string, unknown>;
+  if (v.platform === 'ios') return decodeIOSRuntimeStatus(v);
   const integer = (n: unknown, max = 2147483647) => Number.isSafeInteger(n) && (n as number) >= 0 && (n as number) <= max;
   if (!['needs_permission', 'inactive', 'armed', 'failed'].includes(v.state as string) ||
     ![v.installedRevision, v.selectionRevision].every((n) => n === null || (integer(n) && (n as number) > 0)) ||

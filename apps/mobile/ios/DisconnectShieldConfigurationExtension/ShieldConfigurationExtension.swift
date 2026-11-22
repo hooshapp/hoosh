@@ -10,6 +10,15 @@ final class ShieldConfigurationExtension: ShieldConfigurationDataSource {
 
     override func configuration(shielding application: Application) -> ShieldConfiguration {
         logger.notice("Requested app shield configuration for \(application.localizedDisplayName ?? "unknown app", privacy: .public)")
+        if let token = application.token, let seconds = ProtectionNativeEngine.remainingSeconds(token) {
+            return ShieldConfiguration(
+                backgroundBlurStyle: .systemMaterialDark,
+                title: .init(text: "Hoosh protection", color: .white),
+                subtitle: .init(text: "Take a moment before continuing. Up to \(seconds) seconds remain in this session.", color: .white),
+                primaryButtonLabel: .init(text: "Close app", color: .white),
+                secondaryButtonLabel: .init(text: "Continue", color: .white)
+            )
+        }
         return makeConfiguration(appName: application.localizedDisplayName ?? "this app")
     }
 

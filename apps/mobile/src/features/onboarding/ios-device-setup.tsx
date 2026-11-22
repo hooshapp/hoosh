@@ -57,7 +57,7 @@ export function IOSDeviceSetup({ device }: { device: IOSSelectionDevice }) {
       {snapshot.selection.needsReselection && <Text>Review your saved apps after restoring access.</Text>}
       <Text>{snapshot.status.status.state === 'degraded'
         ? 'Existing protection could not be reconciled. Review or stop the device setup.'
-        : 'Saving apps does not enable protection. Scheduling is not connected yet.'}</Text>
+        : 'Saving apps does not enable protection. Review your plan in Settings; activation awaits physical iPhone testing.'}</Text>
     </>}
     {(error || actionError) && <InlineStatus state="error" message="Device access or saved apps could not be verified. Review the device setup above, then check again." />}
     {!error && !snapshot && <InlineStatus state="loading" message="Checking Screen Time access and saved apps…" />}

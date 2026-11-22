@@ -11,6 +11,10 @@ final class DeviceActivityMonitorExtension: DeviceActivityMonitor {
 
     override func intervalDidStart(for activity: DeviceActivityName) {
         super.intervalDidStart(for: activity)
+        if activity.rawValue.hasPrefix("hoosh.shared.") {
+            ProtectionNativeEngine.monitor(activity.rawValue)
+            return
+        }
         _ = SharedProtectionExtensionFence.withLegacyAccess {
             guard activity == .disconnectShieldBypass else { return }
             logger.notice("Bypass interval started; reapplying shields")
@@ -21,6 +25,10 @@ final class DeviceActivityMonitorExtension: DeviceActivityMonitor {
 
     override func intervalDidEnd(for activity: DeviceActivityName) {
         super.intervalDidEnd(for: activity)
+        if activity.rawValue.hasPrefix("hoosh.shared.") {
+            ProtectionNativeEngine.monitor(activity.rawValue)
+            return
+        }
         _ = SharedProtectionExtensionFence.withLegacyAccess {
             if activity == .disconnectShieldBypass {
                 logger.notice("Bypass interval ended; reapplying shields")
@@ -34,6 +42,10 @@ final class DeviceActivityMonitorExtension: DeviceActivityMonitor {
 
     override func eventDidReachThreshold(_ event: DeviceActivityEvent.Name, activity: DeviceActivityName) {
         super.eventDidReachThreshold(event, activity: activity)
+        if activity.rawValue.hasPrefix("hoosh.shared.") {
+            ProtectionNativeEngine.monitor(activity.rawValue)
+            return
+        }
         _ = SharedProtectionExtensionFence.withLegacyAccess {
             if activity == .disconnectShieldBypass, event == .disconnectShieldBypassLimit {
                 logger.notice("Bypass usage threshold reached; reapplying shields")
@@ -55,6 +67,13 @@ final class DeviceActivityMonitorExtension: DeviceActivityMonitor {
                 reapplyShields()
                 DeviceActivityCenter().stopMonitoring([.disconnectShieldBypass, .disconnectBypassUsage])
             }
+        }
+    }
+
+    override func intervalWillEndWarning(for activity: DeviceActivityName) {
+        super.intervalWillEndWarning(for: activity)
+        if activity.rawValue.hasPrefix("hoosh.shared.") {
+            ProtectionNativeEngine.monitor(activity.rawValue)
         }
     }
 

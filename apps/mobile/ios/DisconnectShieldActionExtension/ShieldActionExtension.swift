@@ -11,7 +11,15 @@ final class ShieldActionExtension: ShieldActionDelegate {
     private let logger = Logger(subsystem: "com.AnishaDasgupta.DisconnectApp", category: "ShieldAction")
 
     override func handle(action: ShieldAction, for application: ApplicationToken, completionHandler: @escaping (ShieldActionResponse) -> Void) {
-        handle(action: action, completionHandler: completionHandler)
+        let handled = SharedProtectionExtensionFence.withLegacyAccess {
+            handleLegacy(action: action, completionHandler: completionHandler)
+        }
+        guard !handled else { return }
+        if action == .secondaryButtonPressed, ProtectionNativeEngine.allow(application) {
+            completionHandler(.defer)
+        } else {
+            completionHandler(.close)
+        }
     }
 
     override func handle(action: ShieldAction, for webDomain: WebDomainToken, completionHandler: @escaping (ShieldActionResponse) -> Void) {

@@ -50,6 +50,11 @@ function requireDeviceSetup(
     throw new QuestSetupRequired(
       'Choose and save distracting apps on this device before applying this quest.',
     );
+  if (device.native.platform === 'ios') {
+    if (!device.native.activationAvailable) throw new QuestSetupRequired('iPhone activation is paused until physical Screen Time testing is complete. Your account schedule is separate.');
+    if (device.native.state === 'needs_permission' || device.native.state === 'failed') throw new QuestSetupRequired('Review Screen Time access and device setup before applying this quest.');
+    return;
+  }
   if (!device.native.serviceConnected || !device.native.disclosureAccepted)
     throw new QuestSetupRequired(
       'Review app protection access and return here when the service is connected. Account and device status remain separate.',

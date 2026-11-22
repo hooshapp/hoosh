@@ -1,6 +1,8 @@
 import type { SelectionEditorPort, SavedSelectionSummary } from './selection-editor';
 import type { ProtectionRead } from '@/features/protection/status-model';
 export type IOSSelectionDevice = {
+  productPort?: import('./product-ports').ProductNativePort;
+  recover?(requestID: string): Promise<void>;
   owner: string;
   generation: number;
   selection: SelectionEditorPort;

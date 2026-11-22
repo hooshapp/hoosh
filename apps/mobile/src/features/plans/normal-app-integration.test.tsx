@@ -919,6 +919,7 @@ test('setup reviews existing settings without replacing them and records local c
     await screen.findByText('Reading');
     await screen.findByText('Active Hours');
     await press('Keep my settings');
+    await fireEvent.press(await screen.findByRole('button', { name: 'Let’s start →' }));
     await waitFor(() => expect(screen).toHavePathname('/'));
     expect(f.request.mock.calls.some(([, options]) => options.method === 'PATCH')).toBe(false);
     expect(f.port.scheduleApply).not.toHaveBeenCalled();
@@ -961,9 +962,9 @@ test.each([false, true])('setup reviews a local plan via the manual path (%s)', 
       await press('Set up on my own');
       await press('Active Days');
       await fireEvent.press(screen.getByRole('checkbox', { name: 'Sunday' }));
-      await press('Review days');
+      await press('Active Days');
     }
-    await press(manual ? 'Review my plan' : 'Go with suggestion');
+    await press(manual ? 'Save my plan' : 'Go with suggestion');
     await screen.findByRole('header', { name: 'Review your draft' });
     expect(JSON.parse((await AsyncStorage.getItem(key))!)).toMatchObject({
       step: 'review',
@@ -1008,6 +1009,7 @@ test('setup saves the reviewed activities and plan together and records the revi
     expect(f.settings.get(A)?.settings?.activities.custom_text).toBe('Sketching 🦖');
     expect(JSON.parse((await AsyncStorage.getItem(setupKey))!)).toMatchObject({ step: 'permission', settingsRevision: 1 });
     await press('Finish for now');
+    await fireEvent.press(await screen.findByRole('button', { name: 'Let’s start →' }));
     await waitFor(() => expect(screen).toHavePathname('/'));
     expect(f.port.scheduleApply).not.toHaveBeenCalled();
   } finally {
@@ -1123,6 +1125,7 @@ test('offline setup can finish for now and later reopen its unsynced draft', asy
     await act(() => onlineManager.setOnline(false));
     expect(screen.getByRole('button', { name: 'Save to my account' })).toBeDisabled();
     await press('Finish setup for now');
+    await fireEvent.press(await screen.findByRole('button', { name: 'Let’s start →' }));
     await waitFor(() => expect(screen).toHavePathname('/'));
     expect(JSON.parse((await AsyncStorage.getItem(setupKey))!)).toMatchObject({
       step: 'complete', settingsDeferred: true, activities: reviewedSetup.activities, planDraft: SAVED,
@@ -1226,6 +1229,7 @@ test('foreground return rechecks two independent permissions and detects revocat
     await screen.findByText(/Accessibility access is off/);
     expect(screen.getByRole('button', { name: 'Continue to protection review' })).toBeDisabled();
     await press('Finish for now');
+    await fireEvent.press(await screen.findByRole('button', { name: 'Let’s start →' }));
     await waitFor(() => expect(screen).toHavePathname('/'));
     await act(() => router.push('/(onboarding)/welcome'));
     await press('Resume device setup');
@@ -1262,6 +1266,7 @@ test('onboarding without a supported bridge lets the user defer without a synthe
     await screen.findByText(/unavailable in this .*build/);
     expect(screen.queryByRole('button', { name: 'Choose apps on this device' })).toBeNull();
     await press('Finish for now');
+    await fireEvent.press(await screen.findByRole('button', { name: 'Let’s start →' }));
     await waitFor(() => expect(screen).toHavePathname('/'));
     expect(f.port.selectionBegin).not.toHaveBeenCalled();
     expect(JSON.parse((await AsyncStorage.getItem(setupKey))!)).toMatchObject({
@@ -1303,9 +1308,9 @@ test.each([false, true])('normal sign-in through setup and Apply (manual path: %
       await press('Set up on my own');
       await press('Active Days');
       await fireEvent.press(screen.getByRole('checkbox', { name: 'Sunday' }));
-      await press('Review days');
+      await press('Active Days');
     }
-    await press(manual ? 'Review my plan' : 'Go with suggestion');
+    await press(manual ? 'Save my plan' : 'Go with suggestion');
     await pressWhenReady('Save to my account');
     await screen.findByText('Accessibility access allowed for app protection.');
     const saved = f.settings.get(A)?.settings?.plan_draft;
@@ -1346,6 +1351,7 @@ test.each([false, true])('normal sign-in through setup and Apply (manual path: %
     await press('Finish setup');
     await screen.findByText('Setup progress could not be recorded. Try again.');
     await press('Finish setup');
+    await fireEvent.press(await screen.findByRole('button', { name: 'Let’s start →' }));
     await waitFor(() => expect(screen).toHavePathname('/'));
     await screen.findByText('App interventions active');
     expect(settingsWrites(f)).toHaveLength(1);
@@ -1391,6 +1397,7 @@ test('a lost Apply reply reconciles exact native schedule and selection without 
     await press('Check device after Apply');
     await screen.findByText('This device confirmed the applied schedule.');
     await press('Finish setup');
+    await fireEvent.press(await screen.findByRole('button', { name: 'Let’s start →' }));
     await waitFor(() => expect(screen).toHavePathname('/'));
     expect(f.port.scheduleApply).toHaveBeenCalledTimes(1);
     expect(settingsWrites(f)).toHaveLength(0);
@@ -1408,6 +1415,7 @@ test('a restart at the attempted native revision confirms without another apply'
     });
     await screen.findByText('This device confirmed the applied schedule.');
     await press('Finish setup');
+    await fireEvent.press(await screen.findByRole('button', { name: 'Let’s start →' }));
     await waitFor(() => expect(screen).toHavePathname('/'));
     expect(f.port.scheduleApply).not.toHaveBeenCalled();
   } finally {
@@ -1423,6 +1431,7 @@ test('offline protection setup can defer without clearing a saved account plan',
     await screen.findByText('Connect to verify the latest saved plan before applying.');
     expect(screen.getByRole('button', { name: 'Apply protection' })).toBeDisabled();
     await press('Finish for now');
+    await fireEvent.press(await screen.findByRole('button', { name: 'Let’s start →' }));
     await waitFor(() => expect(screen).toHavePathname('/'));
     expect(f.port.scheduleApply).not.toHaveBeenCalled();
     expect(f.settings.get(A)?.settings?.plan_draft).toEqual(SAVED);

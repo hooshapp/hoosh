@@ -133,7 +133,7 @@ final class ModelInstallationDriver: ProtectionInstallationDriver {
     catch ProtectionStoreError.unavailable {}
     try check(try Data(contentsOf: oldFile) == oldBytes, "failed migration preserves old bytes")
     let upgraded = try oldStore.update(expectedRevision: 1) { _ in }
-    check(upgraded.version == 2, "atomic write upgrades schema; old binaries reject newer header")
+    check(upgraded.version == 3, "atomic write upgrades schema; old binaries reject newer header")
     print("PASS: activation gate, pending-before-SDK, lost-ack recovery, stable receipts/payload fence, exact readback, partial failure, latest-ledger retention, A/B isolation and v1 migration")
   }
 }

@@ -43,7 +43,8 @@ export function QuestExecutionPanel({
       : null);
   const ready = !state.busy && !state.reviewRequired && !!state.remote;
   const device = state.device;
-  const deviceLabel = !owner
+  const gated = device?.native.platform === 'ios' && !device.native.activationAvailable;
+  const deviceLabel = gated ? 'iPhone activation is paused until physical Screen Time testing is complete. You can still review and save quest details.' : !owner
     ? 'Device installation unavailable on this platform.'
     : !device
       ? 'Device schedule unconfirmed. Check access before relying on protection.'
@@ -180,8 +181,8 @@ export function QuestExecutionPanel({
           !policy ||
           !isQuestDate(firstDate) ||
           !state.selection?.selectedAppCount ||
-          !device?.native.serviceConnected ||
-          !device.native.disclosureAccepted
+          gated ||
+          (device?.native.platform === 'ios' ? device.native.state === 'needs_permission' || device.native.state === 'failed' : !device?.native.serviceConnected || !device.native.disclosureAccepted)
         }
         onPress={() => {
           void controller
@@ -194,7 +195,7 @@ export function QuestExecutionPanel({
       {state.remote?.enabled ? (
         <Button
           label="Apply saved schedule to this device"
-          disabled={!ready || !owner || !policy}
+          disabled={!ready || !owner || !policy || gated}
           onPress={() => {
             void controller.applySaved(policy);
           }}
@@ -252,7 +253,7 @@ export function QuestExecutionPanel({
               label={`Cancel occurrence ${occurrence.local_date}`}
               title="Cancel only this occurrence? Future repeats and other quests stay unchanged."
               confirmLabel="Confirm cancellation"
-              disabled={!ready || !owner}
+              disabled={!ready || !owner || gated}
               onConfirm={() => {
                 void controller.outcome(
                   occurrence.schedule_revision,

@@ -1,5 +1,5 @@
 import type { ProtectionIntegration } from '@disconnect/contracts';
-/** Native selection/authorization exists; full policy enforcement is a C04 gate. */
+/** Scoped C04 review/mutations exist; policy activation stays gated for device acceptance. */
 export const deviceProtectionIntegration: ProtectionIntegration = {
   availability: 'not_connected', platform: 'ios', reason: 'adapter_not_registered',
 };

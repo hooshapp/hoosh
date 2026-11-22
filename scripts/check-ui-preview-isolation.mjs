@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 
 const exportRoot = fileURLToPath(new URL('../apps/mobile/dist/', import.meta.url));
 const forbiddenMarkers = [
+  'HOOSH_PLAN_DESIGN_REVIEW_ONLY',
   'disconnect-ui-specimens',
   'RN-01 component specimen',
   'RN05_ACCOUNT_SPECIMEN_ONLY',

@@ -10,6 +10,8 @@ import { InlineStatus } from '@/components/ui/inline-status';
 import { Screen } from '@/components/ui/screen';
 
 import './styles.css';
+import { PlanDesignReview } from './plan-design-review';
+import { C04BrowserReview } from './c04-browser-review';
 import { ProtectionSpecimen } from './protection-specimen';
 import { HomeSpecimen } from './home-specimen';
 import { HistoryDetailSpecimen } from './history-detail-specimen';
@@ -108,8 +110,9 @@ const width = new URLSearchParams(window.location.search).get('width') === '320'
 const largeText = new URLSearchParams(window.location.search).get('largeText') === '1';
 const root = document.getElementById('root');
 if (!root) throw new Error('Missing specimen root');
+if (new URLSearchParams(window.location.search).get('view') === 'plan') document.title = 'Hoosh — Plan screens';
 createRoot(root).render(
-  <main data-testid="disconnect-ui-specimens" className={largeText ? 'large-text' : undefined}>
+  new URLSearchParams(window.location.search).get('view') === 'plan' ? <PlanDesignReview width={width} /> : new URLSearchParams(window.location.search).get('review') === 'c04' ? <C04BrowserReview /> : <main data-testid="disconnect-ui-specimens" className={largeText ? 'large-text' : undefined}>
     <h1>Disconnect — shared UI specimens</h1>
     <p>
       Developer-only entry. Use <a href="?width=393">393 px</a>, <a href="?width=320">320 px</a>, or{' '}

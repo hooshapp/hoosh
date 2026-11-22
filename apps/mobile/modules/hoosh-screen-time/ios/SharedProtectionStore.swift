@@ -60,7 +60,7 @@ struct ProtectionClaim: Codable, Equatable {
   var phase: String = "awaiting_stop"
 }
 struct ProtectionState: Codable, Equatable {
-  var version: Int = 2
+  var version: Int = 3
   var revision: UInt64 = 0
   var legacyStopped: Bool?
   var installedOwner: ProtectionOwner?
@@ -70,12 +70,15 @@ struct ProtectionState: Codable, Equatable {
   var permitsLegacyCallbacks: Bool { pendingClaim == nil && legacyStopped != true && installedOwner == nil }
 
   func validated() throws {
-    guard (1...2).contains(version) else { throw version > 2 ? ProtectionStoreError.newerVersion : .corrupt }
+    guard (1...3).contains(version) else { throw version > 3 ? ProtectionStoreError.newerVersion : .corrupt }
     guard owners.count <= 16, Set(owners.map { "\($0.owner.namespace):\($0.owner.userID)" }).count == owners.count,
           installedOwner == nil || owners.contains(where: { $0.owner == installedOwner }),
           pendingClaim == nil || (pendingClaim?.previousOwner == installedOwner && pendingClaim?.phase == "awaiting_stop") else { throw ProtectionStoreError.invalidRecord }
     for record in owners {
       if version == 1 && (record.installation != nil || record.pendingInstallation != nil || record.sessionLedger != nil || record.receipts.contains(where: { $0.fingerprint != nil })) {
+        throw ProtectionStoreError.invalidRecord
+      }
+      if version < 3 && (record.installation?.weeklyEnabled != nil || record.pendingInstallation?.target.weeklyEnabled != nil || record.installation?.quests.contains(where: { $0.requestID != nil }) == true) {
         throw ProtectionStoreError.invalidRecord
       }
       if let installed = record.installation { try installed.validated() }
@@ -144,10 +147,10 @@ final class SharedProtectionStore {
       guard previous?.revision == expectedRevision else { throw ProtectionStoreError.conflict }
       var next = previous ?? ProtectionState()
       try edit(&next)
-      guard next.version == (previous?.version ?? 2), next.revision == (previous?.revision ?? 0),
+      guard next.version == (previous?.version ?? 3), next.revision == (previous?.revision ?? 0),
             next.revision < UInt64.max else { throw ProtectionStoreError.invalidRecord }
       next.revision += 1
-      next.version = 2 // Upgrade only as part of an atomic successful write.
+      next.version = 3 // Upgrade only as part of an atomic successful write.
       try next.validated()
       let encoder = JSONEncoder()
       encoder.outputFormatting = [.sortedKeys]
@@ -184,7 +187,7 @@ final class SharedProtectionStore {
       guard data.count <= Self.maximumBytes else { throw ProtectionStoreError.oversized }
       struct Header: Decodable { let version: Int }
       guard let header = try? JSONDecoder().decode(Header.self, from: data) else { throw ProtectionStoreError.corrupt }
-      guard (1...2).contains(header.version) else { throw header.version > 2 ? ProtectionStoreError.newerVersion : .corrupt }
+      guard (1...3).contains(header.version) else { throw header.version > 3 ? ProtectionStoreError.newerVersion : .corrupt }
       guard let state = try? JSONDecoder().decode(ProtectionState.self, from: data) else { throw ProtectionStoreError.corrupt }
       try state.validated()
       return state

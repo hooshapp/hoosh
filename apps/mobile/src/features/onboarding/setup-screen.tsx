@@ -1,3 +1,4 @@
+import { PlanCompletionScreen } from './figma-plan-screens';
 import type { SettingsPatch } from '@disconnect/contracts';
 import { useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
@@ -33,6 +34,7 @@ export function SetupScreen() {
   const [result, setResult] = useState<OnboardingProgressRead | null>(null);
   const [attempt, setAttempt] = useState(0);
   const [busy, setBusy] = useState(false);
+  const [completionScope, setCompletionScope] = useState<number>();
   const [failed, setFailed] = useState(false);
   const writing = useRef(false);
   const [reviewProfile, setReviewProfile] = useState(false);
@@ -67,7 +69,7 @@ export function SetupScreen() {
       else await repo.discard(scope);
       if (!scope.isCurrent()) return false;
       setResult(progress ? { status: 'found', progress } : { status: 'not_started' });
-      if (progress?.step === 'complete') router.replace('/(tabs)');
+      if (progress?.step === 'complete') setCompletionScope(scope.id);
       return true;
     } catch {
       if (scope.isCurrent()) setFailed(true);
@@ -85,6 +87,16 @@ export function SetupScreen() {
     void settings.refetch();
   };
   const progress = result?.status === 'found' ? result.progress : null;
+  if (verified && scope && completionScope === scope.id && progress?.step === 'complete') {
+    const hobbies = progress.activities?.selected_activity_ids.map(id => ({ gym: 'Gym', reading: 'Reading', arts_and_crafts: 'Arts and crafts', walking: 'Walking', music: 'Music', cooking: 'Cooking' }[id])) ?? [];
+    if (progress.activities?.custom_text) hobbies.push(progress.activities.custom_text);
+    return <PlanCompletionScreen hobbies={hobbies} message={progress.settingsDeferred
+      ? 'Your draft is saved on this device. Finish account and device setup from Settings.'
+      : progress.permissionDeferred
+      ? 'Your choices are saved. Screen Time setup is still pending. You can continue from Settings.'
+      : 'Your preferences are saved. You can adjust them anytime in Settings.'}
+      onFinish={() => router.replace('/(tabs)')} />;
+  }
   if (verified && reviewProfile && progress?.step === 'review' && !progress.settingsAttempt) {
     return (
       <Screen title="Review your profile">

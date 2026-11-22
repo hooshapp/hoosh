@@ -12,14 +12,14 @@ compiler/session-model work continues without treating that deferral as evidence
 | Shared behavior/method | Current evidence | Remaining before registration |
 |---|---|---|
 | `schedulePreview` | Native saved-zone compiler; yesterday through seven days ahead; summary-only window output | Native bridge runtime check; metadata is explicitly preview-only |
-| Weekly `scheduleRead`/`scheduleApply`/reason-scoped Stop | Weekly window compilation and cancellation/overlap model checks | Typed runtime persistence, CAS, stable receipts and recovery now exist; method-specific native bridge, OS driver/readback and indefinite recurrence remain |
-| Quest `questRead`/`questApply`/`questCancel` | Version bounds, first dates, recurrence, stable reason IDs and cancellation compiler checks | Typed quest versions/cancellation records and transaction storage now exist; method-specific mutation builders, OS registration and typed readback remain |
-| Saved selection snapshots | Model preserves a matching active occurrence's previous token snapshot; future occurrences use the newly applied snapshot | Persist snapshots and connect them to enforcement, not just a preview array |
-| Per-app session count, reentry, concurrent apps, policy edits | Serializable native model checks pass for saved-zone buckets, reused deadlines, scoped grants, extra sessions, policy edits and rollback/reboot invalidation | Owner-scoped v2 storage/transaction commits retain the ledger; native continuous-clock/boot helper now exists and passes host sampling; iPhone access and actual action callbacks remain; no usage-minute substitution |
-| Native elapsed expiry while target stays foreground | Candidate padded DeviceActivity interval plus gated SDK construction/staging/readback primitives; no physical evidence | Signed-device probe, measured callback/shield outcome and explicit unsupported result if the required behavior cannot be demonstrated |
-| Bypass under overlapping reasons | Model cancels one reason while retaining others | Bind actual application token to reasons active at that action; enforce new reasons independently and preserve running deadlines/counts |
-| Offline/JS-absent operation | Shared App Group and extension fencing exist from C02 | New schedule engine and callbacks, uncertain-install recovery, process termination and offline device checks |
-| Full `ProductNativePort` / scheduling capability | Unregistered on iOS; weekly/quest acknowledgments currently use Android-oriented intervention fields | Add a truthful iOS projection/contract where needed and register only after required methods/semantics are real; no success stub, synthetic service connection or Android label |
+| Weekly `scheduleRead`/`scheduleApply`/reason-scoped Stop | Weekly window compilation and cancellation/overlap model checks | Typed runtime persistence, CAS, stable receipts and recovery now exist; gated OS driver/readback and callback recurrence now exist; method-specific bridge is wired; signed physical recurrence verification remains |
+| Quest `questRead`/`questApply`/`questCancel` | Version bounds, first dates, recurrence, stable reason IDs and cancellation compiler checks | Typed quest versions/cancellation records and transaction storage now exist; gated OS registration exists; mutation builders and typed bridge readback are wired; signed physical verification remains |
+| Saved selection snapshots | Model preserves a matching active occurrence's previous token snapshot; future occurrences use the newly applied snapshot | Persisted snapshots feed the gated shield union; physical selection-change/overlap verification remains |
+| Per-app session count, reentry, concurrent apps, policy edits | Serializable native model checks pass for saved-zone buckets, reused deadlines, scoped grants, extra sessions, policy edits and rollback/reboot invalidation | Owner-scoped v2 storage/transaction commits retain the ledger; native continuous-clock/boot helper now exists and passes host sampling; action callbacks are wired behind the gate; iPhone access and real action/expiry verification remain; no usage-minute substitution |
+| Native elapsed expiry while target stays foreground | Candidate padded expiry alarms and gated SDK/callback wiring; no physical timing evidence | Signed-device probe, measured callback/shield outcome and explicit unsupported result if the required behavior cannot be demonstrated |
+| Bypass under overlapping reasons | Model cancels one reason while retaining others | Token-specific action wiring and durable grants implemented behind the gate; physical overlap/reentry verification remains |
+| Offline/JS-absent operation | Shared App Group and extension fencing exist from C02 | Gated schedule/action callbacks and allowance recovery implemented; process termination/offline/device checks remain |
+| Full `ProductNativePort` / scheduling capability | C04 core/quest port is registered per verified owner lease; iOS schema-4 projection is decoded separately, with no invented Android service/overlay access | Activation remains compiled off pending signed-device acceptance; C05 measurement/event capabilities remain absent |
 
 ## Apple constraints and candidate approach
 
@@ -155,3 +155,51 @@ callback/action wiring are still outstanding. The full product port is unregiste
 Run the expanded `scripts/check-ios-adapter.sh BOOTED_SIMULATOR_UUID` for model and
 SDK checks. Native device allow/deny/revoke, sleep/reboot, foreground expiry,
 monitor capacity and signed release checks remain deferred. No physical install.
+
+
+## November 20 — Candidate expiry and extension dispatch
+
+Native monitor start/end/business-start warning callbacks now dispatch shared-owner
+names to the current persisted generation. Expiry alarms are derived from live
+per-app grants; equal deadlines share one alarm. Candidate alarm endpoints round
+up to the next SDK second (at most 999 ms), while private wall/continuous deadlines
+remain exact and unchanged. This **does not prove** exact shield reapplication:
+OS callback delay, clock changes, sleep, reboot, termination and foreground delivery
+remain physical acceptance items. Activation is still compiled off.
+
+The native action coordinator persists the allowance before any shield removal,
+then installs and reads back shields and alarms under the shared store lock. A
+failed SDK operation or lost acknowledgment leaves recoverable desired state;
+retries within the live grant reuse its count/deadline. A failed operation can
+consume the allowance without opening the app until recovery; no refund/reset is
+invented. Pending installation/claim, wrong owner or stale generation rejects the
+action. Rendering a shared shield reads remaining time without recording a quit,
+reward or session. This is neutral native fallback copy, not final Figma/nudge UI.
+
+The full iOS product port and method-specific weekly/quest bridge remain unfinished.
+The new path is gated; unclaimed installations retain the fenced legacy path.
+
+
+## November 20 — C04 bridge implementation complete; device acceptance open
+
+`runtimeRead`, `runtimeApply` and explicit `runtimeRecover` are connected through
+the verified owner boundary's existing lease. Weekly and generated quest metadata
+use native command builders, expected installation/selection revisions, canonical
+request IDs, exact SDK readback and pending recovery. The iOS schema-4 status
+projection is distinct from Android; unsupported overlay/service fields normalize
+to false and are never used as iOS authorization evidence. Settings, onboarding
+review and quest lifecycle use the scoped port. Read/preview never installs.
+
+The state header is now **v3**, at the same locked `state-v1.json` path. Reads of
+v1/v2 do not migrate; the next successful atomic write upgrades. An explicit
+weekly-enabled flag prevents weekly Stop from stopping quests or being mistaken
+for a still-active weekly plan by a downgraded shared binary. Older shared binaries
+reject the newer header. Quest-specific request receipts remain scoped; account
+Stop/reconfigure retires rule flags without resetting counts or silently resuming
+old quests on reclaim. Account schedules remain canonical on the server.
+
+The source implementation does not close physical C01/C04 acceptance. The gate is
+still false, protection capabilities are not advertised as verified, and no physical
+app has been installed. Browser review verifies draft inputs and honest gated UI;
+it does not emulate FamilyControls, OS shielding or successful device activation.
+See [localhost and later-device checks](ios_c04_localhost_verification.md).

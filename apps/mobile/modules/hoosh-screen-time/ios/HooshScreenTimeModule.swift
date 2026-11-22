@@ -58,6 +58,32 @@ public class HooshScreenTimeModule: Module {
               "usesPaddedMonitoringIntervals": envelopes.contains(where: { $0.startsAt < $0.businessStartsAt }),
               "activationAvailable": false, "blocker": "elapsed_session_expiry_unverified"]
     }
+    AsyncFunction("runtimeRead") { (namespace: String, userID: String, raw: String, quest: String?) throws -> [String: Any] in
+      let (owner, token) = try self.owner(namespace, userID, raw)
+      return try self.leases.withLease(owner, token: token) {
+        let id = quest.flatMap(UUID.init(uuidString:))
+        guard quest == nil || id != nil else { throw ProtectionTransactionError.invalid }
+        return try ProtectionBridge.read(store: .appGroup(), owner: owner, questID: id)
+      }
+    }
+    AsyncFunction("runtimeApply") { (namespace: String, userID: String, raw: String, json: String) throws -> [String: Any] in
+      let (owner, token) = try self.owner(namespace, userID, raw)
+      let (command, canonical) = try ProtectionBridge.command(json)
+      _ = try ProtectionTransactions(store: .appGroup(), leases: self.leases).apply(owner: owner, token: token,
+        requestID: command.requestID, expected: command.expectedRevision, selectionRevision: command.selectionRevision,
+        canonicalCommand: canonical, driver: ProtectionNativeDriver(owner: owner), build: command.build)
+      self.sendEvent("onDeviceStatusChanged", ["reason": "installation"])
+      return try self.leases.withLease(owner, token: token) {
+        try ProtectionBridge.read(store: .appGroup(), owner: owner, questID: command.quest?.questID ?? command.questID)
+      }
+    }
+    AsyncFunction("runtimeRecover") { (namespace: String, userID: String, raw: String, request: String) throws in
+      let (owner, token) = try self.owner(namespace, userID, raw)
+      guard let id = UUID(uuidString: request) else { throw ProtectionTransactionError.invalid }
+      _ = try ProtectionTransactions(store: .appGroup(), leases: self.leases).recover(owner: owner, token: token,
+        requestID: id, driver: ProtectionNativeDriver(owner: owner))
+      self.sendEvent("onDeviceStatusChanged", ["reason": "installation"])
+    }
     AsyncFunction("deviceDiagnostics") { (namespace: String, userID: String, raw: String) throws -> [String: Any] in
       let (owner, token) = try self.owner(namespace, userID, raw)
       return try self.leases.withLease(owner, token: token) {

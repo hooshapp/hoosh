@@ -11,6 +11,7 @@ struct ProtectionQuestRecord: Codable, Equatable {
   let versions: [QuestProtectionVersion]
   let cancelled: [String]
   let selection: ProtectionSelection
+  var requestID: UUID? = nil
 }
 struct ProtectionMonitorBinding: Codable, Equatable {
   let name: String
@@ -22,11 +23,13 @@ struct ProtectionMonitorBinding: Codable, Equatable {
 struct ProtectionRuntimeRecord: Codable, Equatable {
   var revision: Int
   var enabled: Bool
-  let selectionRevision: UInt64
-  let policy: ProtectionSessionPolicy
-  let weekly: WeeklyProtectionSpec?
-  let weeklySelection: ProtectionSelection?
-  let quests: [ProtectionQuestRecord]
+  var selectionRevision: UInt64
+  var policy: ProtectionSessionPolicy
+  var weekly: WeeklyProtectionSpec?
+  var weeklySelection: ProtectionSelection?
+  var quests: [ProtectionQuestRecord]
+  var weeklyEnabled: Bool? = nil
+  var weeklyIsEnabled: Bool { enabled && weekly != nil && (weeklyEnabled ?? enabled) }
   var activeSnapshots: [ProtectionOccurrence]
   var monitors: [ProtectionMonitorBinding]
   func validated() throws {
@@ -38,6 +41,7 @@ struct ProtectionRuntimeRecord: Codable, Equatable {
           Set(monitors.map(\.name)).count == monitors.count,
           (weekly == nil) == (weeklySelection == nil),
           enabled || (monitors.isEmpty && activeSnapshots.isEmpty) else { throw ProtectionTransactionError.invalid }
+    guard weeklyEnabled != true || weekly != nil else { throw ProtectionTransactionError.invalid }
     if let weekly {
       try weekly.validate()
       guard weekly.timezone_id == policy.timezoneId, weekly.session_count == policy.sessionsPerDay,

@@ -7,22 +7,27 @@ const A = '00000000-0000-4000-8000-000000000001', B = '00000000-0000-4000-8000-0
 let mockIdentity: { user_id: string; email: null } | undefined;
 let mockScope = { id: 1, account: { user_id: A, sessionGeneration: 1 } };
 let mockLifecycleEnabled = false;
+let mockGlobalPortEnabled = true;
+const mockDevice = jest.fn();
 const mockBeginSession = jest.fn(), mockEndSession = jest.fn(async (_token: string) => undefined);
 jest.mock('@/infrastructure/native/native-owner-session', () => ({
-  get nativeOwnerSession() { return mockLifecycleEnabled ? { begin: mockBeginSession, end: mockEndSession } : null; },
+  get nativeOwnerSession() { return mockLifecycleEnabled ? { begin: mockBeginSession, end: mockEndSession, device: mockDevice } : null; },
 }));
 const mockEnd = jest.fn(async (..._args: unknown[]) => undefined), mockSelectionEnd = jest.fn(async (..._args: unknown[]) => undefined);
-jest.mock('@/infrastructure/native/product-ports', () => ({ productNativePort: {
+const mockProductPort = {
   interventionEndOwner: (...args: unknown[]) => mockEnd(...args),
   selectionEndOwner: (...args: unknown[]) => mockSelectionEnd(...args),
-} }));
+};
+jest.mock('@/infrastructure/native/product-ports', () => ({
+  get productNativePort() { return mockGlobalPortEnabled ? mockProductPort : null; },
+}));
 jest.mock('@/infrastructure/query/account-data-provider', () => ({ useAccountData: () => ({ scope: mockScope }) }));
 jest.mock('@/features/account/identity-query', () => ({ useIdentityQuery: () => ({ data: mockIdentity }) }));
 function Consumer() { const binding = useNativeOwner(); return <Text>{binding?.owner ?? 'No verified device owner'}</Text>; }
 function Host() {
   return <AppRuntimeContext.Provider value={{ nativeNamespace: 'fixture' } as AppRuntime}><NativeOwnerBoundary><Consumer /></NativeOwnerBoundary></AppRuntimeContext.Provider>;
 }
-beforeEach(() => { mockLifecycleEnabled = false; mockIdentity = undefined; mockScope = { id: 1, account: { user_id: A, sessionGeneration: 1 } }; });
+beforeEach(() => { mockGlobalPortEnabled = true; mockDevice.mockReturnValue(null); mockLifecycleEnabled = false; mockIdentity = undefined; mockScope = { id: 1, account: { user_id: A, sessionGeneration: 1 } }; });
 it('never binds native state from SDK subject alone or a mismatched API identity', async () => {
   const view = await render(<Host />);
   expect(screen.getByText('No verified device owner')).toBeTruthy();
@@ -81,4 +86,15 @@ it('retires a lease that resolves after its account boundary unmounts', async ()
   await view.unmount();
   await act(async () => { resolve('late-lease'); });
   expect(mockEndSession).toHaveBeenCalledWith('late-lease');
+});
+
+it('binds the scoped iOS C04 port only after the existing verified lease resolves', async () => {
+  mockGlobalPortEnabled = false; mockLifecycleEnabled = true;
+  mockIdentity = { user_id: A, email: null };
+  mockBeginSession.mockResolvedValue('ios-lease');
+  mockDevice.mockReturnValue({ owner: `fixture:${A}`, generation: 1, productPort: { interventionEndOwner: jest.fn().mockResolvedValue(undefined), selectionEndOwner: jest.fn().mockResolvedValue(undefined) } });
+  await render(<Host />);
+  await act(async () => {});
+  expect(mockDevice).toHaveBeenCalledWith('fixture', A, 'ios-lease', 1);
+  expect(screen.getByText(`fixture:${A}`)).toBeTruthy();
 });

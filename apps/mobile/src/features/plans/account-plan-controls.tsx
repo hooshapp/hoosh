@@ -1,3 +1,4 @@
+import { useIOSSelectionDevice } from '@/features/protection/native-owner-boundary';
 import { useRef, useState, type ComponentRef } from 'react';
 import { Text, View } from 'react-native';
 import { Button } from '@/components/ui/button';
@@ -10,6 +11,9 @@ import { WeeklyPlanCard } from './weekly-plan-card';
 /** Normal Settings consumes the saved account draft; reads/Preview never install it. */
 export function AccountPlanControls() {
   const account = useAccountWeeklyPlan();
+  const iosDevice = useIOSSelectionDevice();
+  const [recovering, setRecovering] = useState(false);
+  const [recoveryMessage, setRecoveryMessage] = useState('');
   const [confirm, setConfirm] = useState(false);
   const claimButton = useRef<ComponentRef<typeof Button>>(null);
   const restore = useDialogFocusReturn(claimButton);
@@ -34,7 +38,9 @@ export function AccountPlanControls() {
   } catch {
     /* Incomplete drafts stay editable, never installable. */
   }
+  const gated = installed?.native.platform === 'ios' && !installed.native.activationAvailable;
   const applyDisabled =
+    gated ||
     blocked ||
     !draftAvailable ||
     !complete ||
@@ -50,6 +56,17 @@ export function AccountPlanControls() {
     ready.selectionRevision !== installed.native.selectionRevision;
   return (
     <View style={{ gap: 12 }}>
+      {installed?.native.pendingRequestID && iosDevice?.recover ? <>
+        <Text>A device change is pending. Recover that request or use device setup to stop existing protection.</Text>
+        <Button label="Recover device change" disabled={recovering || gated} onPress={() => {
+          setRecovering(true);
+          void iosDevice.recover!(installed.native.pendingRequestID!).then(() => plan.refresh())
+            .then(() => setRecoveryMessage('Device change checked.'))
+            .catch(() => setRecoveryMessage('Recovery could not be confirmed. Review device setup before trying again.'))
+            .finally(() => setRecovering(false));
+        }} />
+        <Text accessibilityLiveRegion="polite">{recoveryMessage}</Text>
+      </> : null}
       <WeeklyPlanCard
         read={plan.read}
         busy={plan.busy || claiming}

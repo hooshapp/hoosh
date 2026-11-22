@@ -1,42 +1,59 @@
+import planAsset0 from '../../../assets/onboarding/hobby-gym.svg';
+import planAsset1 from '../../../assets/onboarding/hobby-book.svg';
+import planAsset2 from '../../../assets/onboarding/hobby-arts.svg';
+import planAsset3 from '../../../assets/onboarding/hobby-walk.svg';
+import planAsset4 from '../../../assets/onboarding/hobby-music.svg';
+import planAsset5 from '../../../assets/onboarding/hobby-cooking.svg';
+import planAsset6 from '../../../assets/icons/setup/calendar.svg';
+import planAsset7 from '../../../assets/icons/setup/clock.svg';
+import planAsset8 from '../../../assets/icons/setup/timer.svg';
+import planAsset9 from '../../../assets/icons/setup/back.svg';
+import planAsset10 from '../../../assets/onboarding/arrow-left.svg';
+import planAsset11 from '../../../assets/onboarding/check.svg';
+import planAsset12 from '../../../assets/onboarding/plus.svg';
+import planAsset13 from '../../../assets/icons/setup/chevron.svg';
+import { completeSchedule } from '@/features/plans/weekly-schedule';
+import { FigmaManualPlan } from './figma-manual-plan';
+import { PlanLoadingScreen, PlanSuggestionScreen } from './figma-plan-screens';
+import { useIOSSelectionDevice, useNativeOwner } from '@/features/protection/native-owner-boundary';
+import { NativeAppsEditor } from '@/features/preferences/native-apps-editor';
+import { decodeSavedSelection } from '@/infrastructure/native/selection-editor';
 import type { PlanDraft } from '@disconnect/contracts';
-import { useState, type ReactNode } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
 import { DesignArtwork } from '@/components/ui/design-artwork';
-import { Field } from '@/components/ui/field';
 import { Screen } from '@/components/ui/screen';
 import { colors, fonts } from '@/design/tokens';
 import { formatTime, toggleItem, weekdays } from '@/features/editors/draft-utils';
 import { planDraftInput, planSummary, type PlanField } from '@/features/plans/plan-draft-model';
-import { DaysEditor, HoursEditor, SessionsEditor } from '@/features/plans/plan-editors';
 import { ACTIVITY_LABELS, activityDraft, activityIds, activitySummary } from '@/features/preferences/activity-model';
 
 import type { OnboardingProgress } from './progress-repository';
 import { setupActivities, setupPlan, starterPlan } from './setup-model';
 
 const icons = {
-  gym: require('../../../assets/onboarding/hobby-gym.svg'),
-  reading: require('../../../assets/onboarding/hobby-book.svg'),
-  arts_and_crafts: require('../../../assets/onboarding/hobby-arts.svg'),
-  walking: require('../../../assets/onboarding/hobby-walk.svg'),
-  music: require('../../../assets/onboarding/hobby-music.svg'),
-  cooking: require('../../../assets/onboarding/hobby-cooking.svg'),
+  gym: planAsset0,
+  reading: planAsset1,
+  arts_and_crafts: planAsset2,
+  walking: planAsset3,
+  music: planAsset4,
+  cooking: planAsset5,
 };
 const planIcons = {
-  days: require('../../../assets/icons/setup/calendar.svg'),
-  hours: require('../../../assets/icons/setup/clock.svg'),
-  sessions: require('../../../assets/icons/setup/timer.svg'),
+  days: planAsset6,
+  hours: planAsset7,
+  sessions: planAsset8,
 };
 const fields = { days: 'Active Days', hours: 'Active Hours', sessions: 'App Sessions' } as const;
-const bounds = { count: { min: 1, max: 1000, step: 1 }, minutes: { min: 1, max: 1440, step: 1 } };
 
-function Art({ source, size = 20 }: { source: number; size?: number }) {
+function Art({ source, size = 20 }: { source: import('@/components/ui/design-artwork').DesignAsset['source']; size?: number }) {
   return <DesignArtwork asset={{ source, width: size, height: size }} />;
 }
 
 export function SetupDraft({
-  progress, busy, failed, onSave, onLeave, onDiscard, reviewActions,
+  progress, busy, failed, onSave, onLeave, onDiscard, reviewActions, suggestion,
 }: {
   progress: OnboardingProgress;
   busy: boolean;
@@ -45,6 +62,7 @@ export function SetupDraft({
   onLeave: () => void;
   onDiscard: () => void;
   reviewActions?: ReactNode;
+  suggestion?: { planDraft: PlanDraft; apps: import('./figma-plan-screens').PlanAppCard[]; description: string; estimate: { label: string; detail: string } };
 }) {
   const [activities, setActivities] = useState(() => activityDraft(progress.activities ?? null));
   const [input, setInput] = useState(() =>
@@ -53,8 +71,26 @@ export function SetupDraft({
       : planDraftInput(progress.planDraft),
   );
   const [manual, setManual] = useState(false);
-  const [field, setField] = useState<PlanField | null>(null);
   const [error, setError] = useState<string>();
+  const iosDevice = useIOSSelectionDevice();
+  const native = useNativeOwner();
+  const binding = iosDevice ? { owner: iosDevice.owner, port: iosDevice.selection, read: iosDevice.readSelection } : native ? {
+    owner: native.owner, port: native.port,
+    read: async () => decodeSavedSelection(await native.port.selectionRead(native.owner), native.owner),
+  } : null;
+  const [choosingApps, setChoosingApps] = useState(false);
+  const [selection, setSelection] = useState<{ owner: string; count: number }>();
+  const readSelection = iosDevice?.readSelection, nativePort = native?.port, nativeOwner = native?.owner;
+  useEffect(() => {
+    let active = true;
+    const owner = iosDevice?.owner ?? nativeOwner;
+    if (owner) void (readSelection ? readSelection() : nativePort ? Promise.resolve(nativePort.selectionRead(owner)).then(raw => decodeSavedSelection(raw, owner)) : Promise.reject())
+      .then(value => { if (active) setSelection({ owner, count: value.selectedAppCount }); }).catch(() => undefined);
+    return () => { active = false; };
+  }, [readSelection, nativeOwner, nativePort, iosDevice?.owner, choosingApps]);
+  const appCount = binding && selection?.owner === binding.owner ? selection.count : 0;
+  const appSummary = appCount ? `${appCount} ${appCount === 1 ? 'app' : 'apps'} saved on this device` : 'Choose apps in device setup';
+  const hobbyLabels = progress.activities ? activitySummary(progress.activities)?.replaceAll('Custom: ', '') ?? '' : '';
   const step = progress.step;
   const preferences = step === 'preferences';
   const review = step === 'review';
@@ -75,18 +111,42 @@ export function SetupDraft({
   }
   function back() {
     setError(undefined);
-    if (field) setField(null);
-    else if (manual) setManual(false);
+    if (manual) setManual(false);
     else if (preferences) onLeave();
     else onSave({ ...progress, step: review ? 'plan' : 'preferences' });
   }
 
+  if (step === 'plan') {
+    if (choosingApps && binding) return <NativeAppsEditor owner={binding.owner} port={binding.port} onBack={() => setChoosingApps(false)} />;
+    if (manual) return <FigmaManualPlan input={input} onChange={setInput} onSave={nextFromPlan} onBack={() => setManual(false)}
+      busy={busy} error={error ?? (failed ? 'Setup could not be saved. Try again.' : undefined)} appSummary={appSummary}
+      onChooseApps={binding ? () => setChoosingApps(true) : undefined} />;
+    if (busy) return <PlanLoadingScreen busy apps={appCount ? appSummary : ''} hobbies={hobbyLabels} onSkip={onLeave} />;
+    const count = visiblePlan?.session_count, minutes = visiblePlan?.session_minutes;
+    const weeklyMinutes = count != null && minutes != null ? count * minutes * (visiblePlan?.weekdays.length ?? 0) : null;
+    const weeklyLabel = weeklyMinutes === null ? 'DRAFT' : `${Math.floor(weeklyMinutes / 60)}h ${weeklyMinutes % 60}m`;
+    if (suggestion) return <PlanSuggestionScreen {...suggestion} onAccept={() => {
+      try {
+        completeSchedule(suggestion.planDraft);
+        setError(undefined);
+        onSave({ ...progress, step: 'review', planDraft: suggestion.planDraft });
+      } catch { setError('The suggested schedule needs review. Set up on your own.'); }
+    }}
+      onManual={() => { setError(undefined); setManual(true); }} onSkip={onLeave} busy={busy}
+      error={error ?? (failed ? 'Setup could not be saved. Try again.' : undefined)} />;
+    return <PlanSuggestionScreen description={`A starting schedule for your selected apps. Make room for ${hobbyLabels || 'what you love'}.`}
+      apps={[{ name: appCount ? 'Your selected apps' : 'Choose your apps', minutes: appCount ? minutes ?? null : null, caption: appCount && minutes != null ? `${minutes} min per session` : 'Choose apps in device setup',
+        detail: count != null && minutes != null ? `${count} sessions per app each day, ${minutes} minutes each. App selection and protection are reviewed separately.` : 'Set your days, hours and sessions before applying protection.' }]}
+      estimate={{ label: weeklyLabel, detail: 'Planned weekly access per selected app across your chosen days. This is a draft budget, not measured time saved.' }}
+      onAccept={nextFromPlan} onManual={() => { setError(undefined); setManual(true); }} onSkip={onLeave}
+      error={error ?? (failed ? 'Setup could not be saved. Try again.' : undefined)} />;
+  }
   return (
     <Screen dark title={title} contentStyle={styles.content} header={
       <View style={styles.heading}>
         <Pressable accessibilityRole="button" disabled={busy || !!progress.settingsAttempt} onPress={back} style={styles.back}>
-          {manual ? <Art source={require('../../../assets/icons/setup/back.svg')} size={16} />
-            : <Art source={require('../../../assets/onboarding/arrow-left.svg')} size={18} />}
+          {manual ? <Art source={planAsset9} size={16} />
+            : <Art source={planAsset10} size={18} />}
           <Text style={styles.body}>{preferences ? 'Back to Home' : 'Back'}</Text>
         </Pressable>
         {!manual && (
@@ -111,13 +171,13 @@ export function SetupDraft({
                   onPress={() => setActivities({ ...activities, selected: toggleItem(activities.selected, id) })}>
                   <View style={styles.hobbyIcon}><Art source={icons[id]} /></View>
                   <Text style={styles.label}>{ACTIVITY_LABELS[id]}</Text>
-                  {checked && <View style={styles.check}><Art source={require('../../../assets/onboarding/check.svg')} size={12} /></View>}
+                  {checked && <View style={styles.check}><Art source={planAsset11} size={12} /></View>}
                 </Pressable>
               );
             })}
           </View>
           <View style={styles.custom}>
-            <Art source={require('../../../assets/onboarding/plus.svg')} size={18} />
+            <Art source={planAsset12} size={18} />
             <TextInput accessibilityLabel="Custom activity" placeholder="e.g. gardening, drawing, yoga"
               placeholderTextColor={colors.darkMuted} style={styles.customInput} value={activities.custom}
               editable={!busy} onChangeText={custom => setActivities({ ...activities, custom })} />
@@ -130,44 +190,7 @@ export function SetupDraft({
       ) : (
         <>
           {review && <Text style={styles.body}>{progress.activities ? activitySummary(progress.activities) ?? 'No activities chosen' : 'No activities chosen'}</Text>}
-          {field === null && <PlanSummary plan={visiblePlan} onEdit={manual && !review ? setField : undefined} />}
-          {field === 'days' && <DaysEditor draftOnly dirty saveLabel="Review days" days={input.weekdays}
-            onChange={weekdays => setInput({ ...input, weekdays })} onSave={() => setField(null)} />}
-          {field === 'hours' && <>
-            <Field label="Timezone (IANA)" autoCapitalize="none" autoCorrect={false} value={input.timezone}
-              onChangeText={timezone => setInput({ ...input, timezone })} />
-            <HoursEditor draftOnly dirty saveLabel="Review hours"
-              draft={input.hours ?? { start: '', end: '', nextDay: false }}
-              onChange={hours => setInput({ ...input, hours })} onSave={() => setField(null)} />
-          </>}
-          {field === 'sessions' && <SessionsEditor draftOnly dirty saveLabel="Review sessions" bounds={bounds}
-            draft={input.sessions} onChange={sessions => setInput({ ...input, sessions })} onSave={() => setField(null)} />}
-          {!review && field === null && draft.error && error !== draft.error &&
-            <Text accessibilityRole="alert" style={styles.error}>{draft.error}</Text>}
-          {!review && field === null && !draft.error && (!visiblePlan?.timezone_id || !visiblePlan.weekdays.length ||
-            !visiblePlan.hours?.start_local || !visiblePlan.hours.end_local ||
-            visiblePlan.session_count === null || visiblePlan.session_minutes === null) &&
-            <Text style={styles.body}>Fill in the missing schedule details before applying protection.</Text>}
-          {field === null && manual && (
-            <View style={styles.info}>
-              <Art source={require('../../../assets/icons/setup/info.svg')} size={14} />
-              <Text style={[styles.body, styles.detail]}>These are your planned times to use distracting apps.</Text>
-            </View>
-          )}
-          {field === null && (
-            <View style={styles.card}>
-              <View style={styles.icon}><Art source={require('../../../assets/icons/setup/apps.svg')} size={18} /></View>
-              <View style={styles.detail}>
-                <Text style={styles.label}>Select Apps</Text>
-                <Text style={styles.body}>App selection is unavailable in this setup step.</Text>
-              </View>
-            </View>
-          )}
-          {!review && field === null && <>
-            <Button label={manual ? 'Review my plan' : 'Go with suggestion'} busy={busy} onPress={nextFromPlan} />
-            {!manual && <Button label="Set up on my own" variant="secondary" disabled={busy}
-              onPress={() => { setError(undefined); setManual(true); }} />}
-          </>}
+          <PlanSummary plan={visiblePlan} />
           {review && reviewActions}
           {review && <Button label="Continue to Home" variant="secondary" disabled={busy} onPress={onLeave} />}
         </>
@@ -201,7 +224,7 @@ export function PlanSummary({ plan, onEdit }: { plan: PlanDraft | null; onEdit?:
             <Text style={styles.label}>{fields[field]}</Text>
             <Text style={styles.body}>{summary(field, plan)}</Text>
           </View>
-          {onEdit && <Art source={require('../../../assets/icons/setup/chevron.svg')} size={16} />}
+          {onEdit && <Art source={planAsset13} size={16} />}
         </>;
         return onEdit ? (
           <Pressable key={field} accessibilityRole="button" accessibilityLabel={fields[field]} style={styles.card} onPress={() => onEdit(field)}>

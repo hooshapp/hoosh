@@ -1,3 +1,4 @@
+import { decodeIOSDeviceStatus } from './ios-device-status';
 import type { AuthorizationState, NativeProtectionStatus, ProtectionCapabilities } from '@disconnect/contracts';
 import type { ProtectionRead } from '../../features/protection/status-model';
 
@@ -15,7 +16,11 @@ const invalid = (): never => { throw new InterventionReadError('invalid_response
 const record = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v);
 
 /** Strict shared-contract projection. Never retains app inventory or native exception details. */
-export function decodeInterventionProtectionRead(value: unknown): Extract<ProtectionRead, { phase: 'ready' }> {
+export function decodeInterventionProtectionRead(value: unknown, expectedOwner?: string): Extract<ProtectionRead, { phase: 'ready' }> {
+  if (record(value) && value.platform === 'ios') {
+    if (!expectedOwner) return invalid();
+    return decodeIOSDeviceStatus(value, expectedOwner);
+  }
   if (!record(value) || !record(value.capabilities) || !record(value.status)) return invalid();
   const c = value.capabilities, s = value.status;
   const features = { supportsUsageThreshold: false, supportsScheduledRestriction: true,
@@ -50,7 +55,7 @@ export function createInterventionProtectionReader(owner: string, port: Interven
       try {
         const value = await port.interventionProtectionRead(owner);
         if (closed) throw new InterventionReadError('scope_closed');
-        return decodeInterventionProtectionRead(value);
+        return decodeInterventionProtectionRead(value, owner);
       } catch (error) {
         if (closed) throw new InterventionReadError('scope_closed');
         throw error instanceof InterventionReadError ? error : new InterventionReadError('unavailable');

@@ -14,9 +14,13 @@ hoosh_core=(
   apps/mobile/modules/hoosh-screen-time/ios/ProtectionSessions.swift
   apps/mobile/modules/hoosh-screen-time/ios/ProtectionTransactions.swift
   apps/mobile/modules/hoosh-screen-time/ios/ProtectionRuntimePlanner.swift
+  apps/mobile/modules/hoosh-screen-time/ios/ProtectionExpiryPlanner.swift
+  apps/mobile/modules/hoosh-screen-time/ios/ProtectionRuntimeCoordinator.swift
+  apps/mobile/modules/hoosh-screen-time/ios/ProtectionCommands.swift
 )
-for hoosh_check in RuntimePlannerChecks TransactionChecks; do
+for hoosh_check in RuntimePlannerChecks TransactionChecks RuntimeCoordinatorChecks CommandChecks StoreChecks; do
   swiftc "${hoosh_core[@]}" apps/mobile/modules/hoosh-screen-time/ios/ProtectionInstallation.swift \
+    apps/mobile/modules/hoosh-screen-time/ios/SelectionTransactions.swift \
     "apps/mobile/modules/hoosh-screen-time/tests/$hoosh_check.swift" -o "$hoosh_probe_dir/$hoosh_check"
   "$hoosh_probe_dir/$hoosh_check"
 done
@@ -32,6 +36,8 @@ xcrun swiftc -sdk "$hoosh_sim_sdk" -target "$hoosh_sim_arch-apple-ios16.4-simula
   apps/mobile/modules/hoosh-screen-time/ios/ProtectionOSAdapter.swift \
   apps/mobile/modules/hoosh-screen-time/ios/ProtectionDeviceClock.swift \
   apps/mobile/modules/hoosh-screen-time/ios/ProtectionNativeDriver.swift \
+  apps/mobile/modules/hoosh-screen-time/ios/ProtectionNativeEngine.swift \
+  apps/mobile/modules/hoosh-screen-time/ios/ProtectionBridge.swift \
   apps/mobile/modules/hoosh-screen-time/tests/OSAdapterChecks.swift \
   -o "$hoosh_probe_dir/adapter-checks"
 xcrun simctl spawn "$1" "$hoosh_probe_dir/adapter-checks"

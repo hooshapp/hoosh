@@ -23,7 +23,7 @@ enum ProtectionRuntimePlanner {
     guard (record.weekly == nil ? 0 : 1) + record.quests.filter({ $0.enabled }).reduce(0, { $0 + $1.versions.count }) <= 512 else { throw ScheduleFailure.capacity }
     var windows: [ProtectionOccurrence] = []
     var upcoming: [ProtectionOccurrence] = []
-    if let weekly = record.weekly, let selection = record.weeklySelection {
+    if record.weeklyIsEnabled, let weekly = record.weekly, let selection = record.weeklySelection {
       let values = try ProtectionSchedules.weekly(weekly, now: now, selectionRevision: selection.revision, selection: selection.encodedTokens)
       windows += values
       if let next = values.first { upcoming.append(next) }
@@ -52,6 +52,6 @@ enum ProtectionRuntimePlanner {
   /// reviewed policy, definitions, selected revisions or installation generation.
   static func sameIntent(_ lhs: ProtectionRuntimeRecord, _ rhs: ProtectionRuntimeRecord) -> Bool {
     lhs.revision == rhs.revision && lhs.enabled == rhs.enabled && lhs.selectionRevision == rhs.selectionRevision
-      && lhs.policy == rhs.policy && lhs.weekly == rhs.weekly && lhs.weeklySelection == rhs.weeklySelection && lhs.quests == rhs.quests
+      && lhs.policy == rhs.policy && lhs.weeklyEnabled == rhs.weeklyEnabled && lhs.weekly == rhs.weekly && lhs.weeklySelection == rhs.weeklySelection && lhs.quests == rhs.quests
   }
 }

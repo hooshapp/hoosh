@@ -1,0 +1,191 @@
+{
+  "figmaFile": "ukmD2ZidJ9UR2XxUkvdPoJ",
+  "assets": [
+    {
+      "key": "suggestion_imgInstagram",
+      "file": "suggestion-imgInstagram.svg",
+      "node": "50:87",
+      "sha256": "f5fa33ea1c19c941c487b5db042193b830f870150a138c825694cc099a78bc8c"
+    },
+    {
+      "key": "suggestion_imgGhost",
+      "file": "suggestion-imgGhost.svg",
+      "node": "50:87",
+      "sha256": "adbea6be784bb0f069b4cd02312973bab26a9aab0d3b4fd0346063b114ad2ef6"
+    },
+    {
+      "key": "loading_imgStar",
+      "file": "loading-imgStar.svg",
+      "node": "52:690",
+      "sha256": "75d00e3b4dde9eedf378d0aa386ea1d15018c787b8ecedaa38b10d4b32d15a93"
+    },
+    {
+      "key": "loading_imgDisconnectDinosaur",
+      "file": "loading-imgDisconnectDinosaur.svg",
+      "node": "52:690",
+      "sha256": "c2bc1c1573de63602ccf56748364405f20d6432c864a2ddf39ccaff119af26d7"
+    },
+    {
+      "key": "loading_imgSparkle",
+      "file": "loading-imgSparkle.svg",
+      "node": "52:690",
+      "sha256": "a19108d492a40c8095eedd9e7f4f819e2f1c6d75596ea0dc6254c07e1cb926bc"
+    },
+    {
+      "key": "loading_imgProgressTip",
+      "file": "loading-imgProgressTip.svg",
+      "node": "52:690",
+      "sha256": "5fb8bc189856093fdd84474400a7520cb60582a0baa72eab48d32a074b302c81"
+    },
+    {
+      "key": "loading_imgLoadingProgress",
+      "file": "loading-imgLoadingProgress.svg",
+      "node": "52:690",
+      "sha256": "7765c1aae8e886378b5c8523dace0a87d6123a26ffdd99f46c878318516fef77"
+    },
+    {
+      "key": "loading_imgLoadingTrack",
+      "file": "loading-imgLoadingTrack.svg",
+      "node": "52:690",
+      "sha256": "7371a28ec14a5d7eb3ea54a973ae142f447dc972f6b1a14afe6af724935e11c1"
+    },
+    {
+      "key": "loading_imgGlow",
+      "file": "loading-imgGlow.svg",
+      "node": "52:690",
+      "sha256": "db7adfb8e6b68d6944f06d22ca57b83ecedc7606e63adc0d89b85425057ed949"
+    },
+    {
+      "key": "loading_imgLoadingDots",
+      "file": "loading-imgLoadingDots.svg",
+      "node": "52:690",
+      "sha256": "16a859bf4a4b26dea197ce3bbcd2c3ba60159862b0b87ed296154ea39b54ad79"
+    },
+    {
+      "key": "loading_imgStageIndicator",
+      "file": "loading-imgStageIndicator.svg",
+      "node": "52:690",
+      "sha256": "3c5e941c40c6c5d5b327c2effb569cba79ddae315920e533b8436266dedeef00"
+    },
+    {
+      "key": "loading_imgStageIndicator1",
+      "file": "loading-imgStageIndicator1.svg",
+      "node": "52:690",
+      "sha256": "658c678cd03e014b21eb996e50c4bb6087c07b58758caceaea5816cad4e6b71a"
+    },
+    {
+      "key": "complete_imgEllipse",
+      "file": "complete-imgEllipse.svg",
+      "node": "50:89",
+      "sha256": "2dc2e331bdfe63ce2b13f32c17fcaf2ca1bc36386269fb901e20980ef791f4a8"
+    },
+    {
+      "key": "complete_imgSparkle",
+      "file": "complete-imgSparkle.svg",
+      "node": "50:89",
+      "sha256": "4f757e343501e31d7ced4224fc28405401fec0792365948fc9b64423dcc4ec52"
+    },
+    {
+      "key": "complete_imgDisconnectDinosaur",
+      "file": "complete-imgDisconnectDinosaur.svg",
+      "node": "50:89",
+      "sha256": "dd5f93461834936aa2d631c38d9651a18abd325f20ee1f75a26143148c3f5cf9"
+    },
+    {
+      "key": "complete_imgEllipse1",
+      "file": "complete-imgEllipse1.svg",
+      "node": "50:89",
+      "sha256": "ba9ffc0360f6689a15f1fba4889816b0c72cc1a950099c04c4a710e748a42b17"
+    },
+    {
+      "key": "complete_imgEllipse2",
+      "file": "complete-imgEllipse2.svg",
+      "node": "50:89",
+      "sha256": "f04299360dca72abec857af3de64b270d82ccd2f6d6b8236bc4bd842435a426e"
+    },
+    {
+      "key": "complete_imgEllipse3",
+      "file": "complete-imgEllipse3.svg",
+      "node": "50:89",
+      "sha256": "60e92cd6166fbca588a212f0f4b342360f8148eae3d30e653c57099a225dd69a"
+    },
+    {
+      "key": "complete_imgEllipse4",
+      "file": "complete-imgEllipse4.svg",
+      "node": "50:89",
+      "sha256": "a77d041436dc1bfd909be44b880a7d3efbeff6269c590aee07885a329456e8e0"
+    },
+    {
+      "key": "complete_imgEllipse5",
+      "file": "complete-imgEllipse5.svg",
+      "node": "50:89",
+      "sha256": "12062d74322fc79b1e65778695169bcf886176a34d4cb2395fcd71a46cc46140"
+    },
+    {
+      "key": "complete_imgEllipse6",
+      "file": "complete-imgEllipse6.svg",
+      "node": "50:89",
+      "sha256": "258e996dd4f68f3cbea7da8b12bb9e69358d0d88e1e7ec165f4d90ce1f425b82"
+    },
+    {
+      "key": "complete_imgStar",
+      "file": "complete-imgStar.svg",
+      "node": "50:89",
+      "sha256": "97d9cacdfa229dfd4e08021f50d7808c7de8fd3792e21eaf77a3b59c7194a431"
+    },
+    {
+      "key": "complete_imgSparkleLeft",
+      "file": "complete-imgSparkleLeft.svg",
+      "node": "50:89",
+      "sha256": "3f5d1d9317d2555f2678fe9d96805f75d82f8244bba4c002d01bc34c22367e85"
+    },
+    {
+      "key": "manual_imgFrame",
+      "file": "manual-imgFrame.svg",
+      "node": "10556:120",
+      "sha256": "87a2d10492d4b9945a99569f76fb85f95a745a53e56e66007ba533f4feaa26e9"
+    },
+    {
+      "key": "manual_imgDisconnectSettingsIconActiveDays",
+      "file": "manual-imgDisconnectSettingsIconActiveDays.svg",
+      "node": "10556:120",
+      "sha256": "281b1f8d6d0240b2d7dd082d0f33804b95d5d9b0fbac09ef42d2f5789f3ceea9"
+    },
+    {
+      "key": "manual_imgFrame1",
+      "file": "manual-imgFrame1.svg",
+      "node": "10556:120",
+      "sha256": "f5c8a560e12341b7836c3427092b69748d9f240eb6b7430a969616469a14cd55"
+    },
+    {
+      "key": "manual_imgDisconnectSettingsIconActiveHours",
+      "file": "manual-imgDisconnectSettingsIconActiveHours.svg",
+      "node": "10556:120",
+      "sha256": "52aeaf0286d531262733cb01df03eef46ab37ddb7a2cc81a9c7c9ec78e1446a7"
+    },
+    {
+      "key": "manual_imgTimer",
+      "file": "manual-imgTimer.svg",
+      "node": "10556:120",
+      "sha256": "2fd131f7cebc3bd3b20517486086243cccbf4e55d47b9025c4582cf4fe203ac4"
+    },
+    {
+      "key": "manual_imgInfo",
+      "file": "manual-imgInfo.svg",
+      "node": "10556:120",
+      "sha256": "65bd138dc88e96eddadf3d95c6c70bbf935c7e830abd1b42fa017861da617c77"
+    },
+    {
+      "key": "manual_imgDisconnectSettingsIconDistractingApps",
+      "file": "manual-imgDisconnectSettingsIconDistractingApps.svg",
+      "node": "10556:120",
+      "sha256": "1babfdb4c9fe68c61996ea40f2f1700f179be50595d11126f2276a29db3bae6c"
+    },
+    {
+      "key": "manual_range_handle",
+      "file": "manual-range-handle.svg",
+      "node": "10608:241",
+      "sha256": "c368d5f32ff99a9f30ce78623478259dd62110462ca898b9f8ef2cb868be46b3"
+    }
+  ]
+}

@@ -16,7 +16,7 @@ export function decodeIOSDeviceStatus(raw: unknown, owner: string): Extract<Prot
   const authorization = v.authorization as 'authorized' | 'denied' | 'not_requested' | 'unavailable';
   return { phase: 'ready', authorization, capabilities: {
     platform: 'ios', mode: 'system_shield', selectionUI: 'native_picker', ...flags,
-    notes: ['App selection and permission review are connected. Protection scheduling is not registered yet.'],
+    notes: ['App selection and permission review are connected. Scheduling review is connected. Activation awaits physical iPhone testing.'],
   }, status: { authorization, state: v.state as 'inactive' | 'needs_permission' | 'degraded',
     installedRevision: null, installedReasonIds: [] } };
 }

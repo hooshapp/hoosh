@@ -49,6 +49,7 @@ export function SetupProtection({ progress, busy, failed, record, onManage }: Pr
   if (account?.draftAvailable && plan && ready?.selectedAppCount &&
     ready.selectionAvailable !== false && install && !install.otherInstallation &&
     (install.native.installedRevision ?? 0) < 2147483647 &&
+    !(install.native.platform === 'ios' && !install.native.activationAvailable) &&
     install.native.state !== 'failed' && install.native.state !== 'needs_permission') {
     try {
       review = {

@@ -15,6 +15,8 @@ export const colors = {
   divider: '#E8DCC8',
   muted: '#625D54',
   darkMuted: '#ADADAD',
+  // Exact current onboarding Figma text over the dark canvas.
+  darkOnboardingMuted: 'rgba(255,255,255,0.68)',
   white: '#FFFFFF',
   onAction: '#0B3320',
   actionLabel: '#111111',

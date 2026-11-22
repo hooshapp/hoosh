@@ -1,3 +1,4 @@
+import onboardingHandle from '../../../assets/onboarding/plan/current/manual-range-handle.svg';
 import { useEffect, useState } from 'react';
 import { PanResponder, Platform, StyleSheet, View } from 'react-native';
 import { DesignArtwork } from '@/components/ui/design-artwork';
@@ -10,15 +11,18 @@ export function TimeRangeControl({
   start,
   end,
   disabled = false,
+  appearance = 'default',
   onChange,
 }: {
   start: number;
   end: number;
   disabled?: boolean;
+  appearance?: 'default' | 'onboarding';
   onChange: (start: number, end: number) => void;
 }) {
   const [width, setWidth] = useState(0);
-  const source = start === 540 && end === 1320 && width >= 319;
+  const onboarding = appearance === 'onboarding';
+  const source = !onboarding && start === 540 && end === 1320 && width >= 319;
   return (
     <View onLayout={(e) => setWidth(e.nativeEvent.layout.width)} style={styles.root}>
       {source ? (
@@ -27,13 +31,15 @@ export function TimeRangeControl({
         </View>
       ) : (
         <>
-          <View style={styles.track} />
+          <View style={[styles.track, onboarding && { left: 12, right: 12, height: 8, backgroundColor: '#8C948F' }]} />
           <View
             style={[
               styles.fill,
               {
-                left: `${(Math.min(start, end) / 1439) * 100}%`,
-                width: `${(Math.abs(end - start) / 1439) * 100}%`,
+                left: onboarding ? 12 + (Math.min(start, end) / 1439) * Math.max(0, width - 24) : `${(Math.min(start, end) / 1439) * 100}%`,
+                width: onboarding ? (Math.abs(end - start) / 1439) * Math.max(0, width - 24) : `${(Math.abs(end - start) / 1439) * 100}%`,
+                height: onboarding ? 8 : 6,
+                backgroundColor: onboarding ? '#33C759' : colors.action,
               },
             ]}
           />
@@ -45,6 +51,7 @@ export function TimeRangeControl({
         width={width}
         disabled={disabled}
         source={source}
+        onboarding={onboarding}
         onChange={(value) => onChange(value, end)}
       />
       <Handle
@@ -53,6 +60,7 @@ export function TimeRangeControl({
         width={width}
         disabled={disabled}
         source={source}
+        onboarding={onboarding}
         onChange={(value) => onChange(start, value)}
       />
     </View>
@@ -64,6 +72,7 @@ function Handle({
   width,
   disabled,
   source,
+  onboarding,
   onChange,
 }: {
   label: string;
@@ -71,10 +80,11 @@ function Handle({
   width: number;
   disabled: boolean;
   source: boolean;
+  onboarding: boolean;
   onChange: (value: number) => void;
 }) {
   const [gesture] = useState(() => createRangeGesture());
-  useEffect(() => { gesture.update({ value, width, disabled, onChange }); }, [gesture, value, width, disabled, onChange]);
+  useEffect(() => { gesture.update({ value, width: onboarding ? width + 20 : width, disabled, onChange }); }, [gesture, value, width, disabled, onChange, onboarding]);
   const [focused, setFocused] = useState(false);
   const change = (next: number) => {
     if (!disabled) onChange(Math.max(0, Math.min(1439, Math.round(next))));
@@ -118,7 +128,7 @@ function Handle({
         : {})}
       style={[
         styles.handle,
-        { left: (value / 1439) * Math.max(0, width - 44) },
+        { left: onboarding ? 12 + (value / 1439) * Math.max(0, width - 24) - 22 : (value / 1439) * Math.max(0, width - 44) },
         focused && {
           outlineWidth: 2,
           outlineStyle: 'solid',
@@ -126,7 +136,7 @@ function Handle({
           outlineOffset: 2,
         },
       ]}>
-      {!source ? <View style={styles.thumb} /> : null}
+      {onboarding ? <DesignArtwork asset={{ source: onboardingHandle, width: 24, height: 24 }} /> : !source ? <View style={styles.thumb} /> : null}
     </View>
   );
 }
