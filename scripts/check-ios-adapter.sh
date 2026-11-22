@@ -18,7 +18,7 @@ hoosh_core=(
   apps/mobile/modules/hoosh-screen-time/ios/ProtectionRuntimeCoordinator.swift
   apps/mobile/modules/hoosh-screen-time/ios/ProtectionCommands.swift
 )
-for hoosh_check in RuntimePlannerChecks TransactionChecks RuntimeCoordinatorChecks CommandChecks StoreChecks; do
+for hoosh_check in RuntimePlannerChecks TransactionChecks RuntimeCoordinatorChecks CommandChecks StoreChecks RewardJournalChecks; do
   swiftc "${hoosh_core[@]}" apps/mobile/modules/hoosh-screen-time/ios/ProtectionInstallation.swift \
     apps/mobile/modules/hoosh-screen-time/ios/SelectionTransactions.swift \
     "apps/mobile/modules/hoosh-screen-time/tests/$hoosh_check.swift" -o "$hoosh_probe_dir/$hoosh_check"

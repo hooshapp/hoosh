@@ -58,6 +58,20 @@ public class HooshScreenTimeModule: Module {
               "usesPaddedMonitoringIntervals": envelopes.contains(where: { $0.startsAt < $0.businessStartsAt }),
               "activationAvailable": false, "blocker": "elapsed_session_expiry_unverified"]
     }
+    AsyncFunction("rewardsRead") { (namespace: String, userID: String, raw: String) throws -> [String: Any]? in
+      let (owner, token) = try self.owner(namespace, userID, raw)
+      return try self.leases.withLease(owner, token: token) {
+        try SharedProtectionStore.appGroup().rewardsRead(owner: owner)
+      }
+    }
+    AsyncFunction("rewardsAck") { (namespace: String, userID: String, raw: String, installation: String, sequence: Double) throws in
+      let (owner, token) = try self.owner(namespace, userID, raw)
+      guard let id = UUID(uuidString: installation), sequence.isFinite, sequence.rounded() == sequence,
+        sequence > 0, sequence <= Double(ProtectionRewardJournal.maximum) else { throw ProtectionStoreError.invalidRecord }
+      try self.leases.withLease(owner, token: token) {
+        try SharedProtectionStore.appGroup().rewardsAck(owner: owner, installation: id, sequence: UInt64(sequence))
+      }
+    }
     AsyncFunction("runtimeRead") { (namespace: String, userID: String, raw: String, quest: String?) throws -> [String: Any] in
       let (owner, token) = try self.owner(namespace, userID, raw)
       return try self.leases.withLease(owner, token: token) {

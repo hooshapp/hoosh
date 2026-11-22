@@ -13,7 +13,7 @@ import {
 } from '@testing-library/react-native';
 import { onlineManager } from '@tanstack/react-query';
 import { renderRouter } from 'expo-router/testing-library';
-import { Text } from 'react-native';
+import { Platform, Text } from 'react-native';
 import { ApiError } from '@/infrastructure/api/errors';
 import { createAccountDataController } from '@/infrastructure/query/account-controller';
 import { AccountDataProvider } from '@/infrastructure/query/account-data-provider';
@@ -145,7 +145,8 @@ function setup(value: HistoryView = historyFixture) {
 }
 const press = async (name: string) =>
   act(async () => fireEvent.press(screen.getByRole('button', { name })));
-afterEach(() => onlineManager.setOnline(true));
+beforeEach(() => { jest.replaceProperty(Platform, 'OS', 'android'); });
+afterEach(() => { onlineManager.setOnline(true); jest.restoreAllMocks(); });
 test('actual account History shows measured comparison, receipt types and shared week/month navigation', async () => {
   const s = setup();
   await render(s.ui());
@@ -378,4 +379,17 @@ test('a pending native read cannot reactivate collection presentation after Stop
     ).toBeNull(),
   );
   expect(screen.queryByText('7')).toBeNull();
+});
+
+ test('iPhone never imports a stored Android series or enables Android collection', async () => {
+  jest.replaceProperty(Platform, 'OS', 'ios');
+  const s = setup();
+  await render(s.ui());
+  await waitFor(() => expect(screen.getByText(/iPhone usage measurement is unavailable/)).toBeTruthy());
+  expect(s.port.historyRead).not.toHaveBeenCalled();
+  expect(screen.queryByText('Source: Android selected-app usage estimate.')).toBeNull();
+  expect(screen.queryByRole('button', { name: 'Start History' })).toBeNull();
+  expect(screen.queryByLabelText('50% less screen time')).toBeNull();
+  await press('Next history page');
+  expect(screen.queryByText('50')).toBeNull();
 });

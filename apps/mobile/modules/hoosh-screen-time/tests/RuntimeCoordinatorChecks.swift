@@ -44,6 +44,9 @@ final class CoordinatorDriver: ProtectionInstallationDriver {
     } catch ProtectionTransactionError.unconfirmed {}
     let pending = try store.read()!.owners[0]
     guard pending.coverage == "partial", pending.sessionLedger?.daily.first?.count == 1 else { fatalError("grant was not durable before SDK") }
+    guard pending.rewardJournal?.events.count == 1,
+      pending.rewardJournal?.events.first?.evidence == "allowance_consumed",
+      pending.rewardJournal?.events.first?.exhausted == false else { fatalError("durable consumption evidence missing") }
     let alarms = try ProtectionExpiryPlanner.monitors(runtime: runtime, owner: owner, ledger: pending.sessionLedger, clock: clock)
     guard alarms.count == 1, alarms[0].envelope.endsAt == now + 300877,
       pending.sessionLedger?.sessions.first?.wallEnd == now + 300000 else { fatalError("alarm rounding extended private deadline") }
@@ -53,6 +56,7 @@ final class CoordinatorDriver: ProtectionInstallationDriver {
     try engine.allow(owner: owner, revision: 1, driver: driver, clock: clock) { _, _ in (Data([9]), [reason]) }
     let confirmed = try store.read()!.owners[0]
     guard confirmed.sessionLedger?.daily.first?.count == 1, confirmed.coverage == "unknown", driver.ledger == confirmed.sessionLedger else { fatalError("retry double charged or ignored SDK readback") }
+    guard confirmed.rewardJournal == pending.rewardJournal else { fatalError("retry duplicated consumption evidence") }
     do { try engine.refresh(owner: owner, revision: 2, driver: driver); fatalError("stale generation accepted") }
     catch ProtectionStoreError.staleLease {}
     var writes = 0

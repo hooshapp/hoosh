@@ -51,6 +51,7 @@ struct ProtectionOwnerRecord: Codable, Equatable {
   var pendingInstallation: ProtectionPendingInstallation?
   var sessionLedger: ProtectionSessionLedger?
   var coverage: String = "unknown"
+  var rewardJournal: ProtectionRewardJournal?
 }
 struct ProtectionClaim: Codable, Equatable {
   let id: UUID
@@ -60,7 +61,7 @@ struct ProtectionClaim: Codable, Equatable {
   var phase: String = "awaiting_stop"
 }
 struct ProtectionState: Codable, Equatable {
-  var version: Int = 3
+  var version: Int = 4
   var revision: UInt64 = 0
   var legacyStopped: Bool?
   var installedOwner: ProtectionOwner?
@@ -70,11 +71,13 @@ struct ProtectionState: Codable, Equatable {
   var permitsLegacyCallbacks: Bool { pendingClaim == nil && legacyStopped != true && installedOwner == nil }
 
   func validated() throws {
-    guard (1...3).contains(version) else { throw version > 3 ? ProtectionStoreError.newerVersion : .corrupt }
+    guard (1...4).contains(version) else { throw version > 4 ? ProtectionStoreError.newerVersion : .corrupt }
     guard owners.count <= 16, Set(owners.map { "\($0.owner.namespace):\($0.owner.userID)" }).count == owners.count,
           installedOwner == nil || owners.contains(where: { $0.owner == installedOwner }),
           pendingClaim == nil || (pendingClaim?.previousOwner == installedOwner && pendingClaim?.phase == "awaiting_stop") else { throw ProtectionStoreError.invalidRecord }
     for record in owners {
+      if version < 4 && record.rewardJournal != nil { throw ProtectionStoreError.invalidRecord }
+      try record.rewardJournal?.validated()
       if version == 1 && (record.installation != nil || record.pendingInstallation != nil || record.sessionLedger != nil || record.receipts.contains(where: { $0.fingerprint != nil })) {
         throw ProtectionStoreError.invalidRecord
       }
@@ -147,10 +150,10 @@ final class SharedProtectionStore {
       guard previous?.revision == expectedRevision else { throw ProtectionStoreError.conflict }
       var next = previous ?? ProtectionState()
       try edit(&next)
-      guard next.version == (previous?.version ?? 3), next.revision == (previous?.revision ?? 0),
+      guard next.version == (previous?.version ?? 4), next.revision == (previous?.revision ?? 0),
             next.revision < UInt64.max else { throw ProtectionStoreError.invalidRecord }
       next.revision += 1
-      next.version = 3 // Upgrade only as part of an atomic successful write.
+      next.version = 4 // Upgrade only as part of an atomic successful write.
       try next.validated()
       let encoder = JSONEncoder()
       encoder.outputFormatting = [.sortedKeys]
@@ -187,7 +190,7 @@ final class SharedProtectionStore {
       guard data.count <= Self.maximumBytes else { throw ProtectionStoreError.oversized }
       struct Header: Decodable { let version: Int }
       guard let header = try? JSONDecoder().decode(Header.self, from: data) else { throw ProtectionStoreError.corrupt }
-      guard (1...3).contains(header.version) else { throw header.version > 3 ? ProtectionStoreError.newerVersion : .corrupt }
+      guard (1...4).contains(header.version) else { throw header.version > 4 ? ProtectionStoreError.newerVersion : .corrupt }
       guard let state = try? JSONDecoder().decode(ProtectionState.self, from: data) else { throw ProtectionStoreError.corrupt }
       try state.validated()
       return state
@@ -282,3 +285,110 @@ enum SharedProtectionExtensionFence {
   }
 }
 #endif
+
+/// Content-free, owner-local evidence. A consumed allowance is not a confirmed
+/// quit, complete day, Screen Time measurement or proof the SDK installed it.
+struct ProtectionRewardEvidence: Codable, Equatable {
+  let id: UUID
+  let sequence: UInt64
+  let occurredAt: Int64
+  let day: String
+  let exhausted: Bool
+  let revision: Int
+  let evidence: String
+}
+struct ProtectionRewardJournal: Codable, Equatable {
+  static let maximum: UInt64 = 9007199254740991
+  let installationID: UUID
+  let timezone: String
+  var nextSequence: UInt64 = 1
+  var acknowledged: UInt64 = 0
+  var issued: UInt64 = 0
+  var discarded: UInt64 = 0
+  var lastTimestamp: Int64 = 0
+  var events: [ProtectionRewardEvidence] = []
+  init(timezone: String) { self.installationID = UUID(); self.timezone = timezone }
+  func validated() throws {
+    guard TimeZone(identifier: timezone) != nil, timezone.utf8.count <= 128,
+      nextSequence > 0, nextSequence <= Self.maximum,
+      acknowledged <= issued, issued < nextSequence, discarded <= Self.maximum,
+      lastTimestamp >= 0, lastTimestamp <= 4102444800000,
+      events.count <= 256, Set(events.map(\.id)).count == events.count else { throw ProtectionStoreError.invalidRecord }
+    var last = acknowledged, timestamp: Int64 = 0
+    for event in events {
+      guard event.sequence > last, event.sequence < nextSequence, event.occurredAt >= timestamp,
+        event.occurredAt <= lastTimestamp, event.occurredAt >= 0,
+        event.day == Self.day(event.occurredAt, timezone: timezone),
+        (1...2147483647).contains(event.revision), event.evidence == "allowance_consumed" else { throw ProtectionStoreError.invalidRecord }
+      last = event.sequence; timestamp = event.occurredAt
+    }
+  }
+  static func day(_ at: Int64, timezone: String) -> String {
+    let formatter = DateFormatter(); formatter.calendar = Calendar(identifier: .gregorian)
+    formatter.locale = Locale(identifier: "en_US_POSIX"); formatter.timeZone = TimeZone(identifier: timezone)
+    formatter.dateFormat = "yyyy-MM-dd"
+    return formatter.string(from: Date(timeIntervalSince1970: Double(at) / 1000))
+  }
+  mutating func append(grant: ProtectionGrantResult, revision: Int, clock: ProtectionClock, timezone: String) throws {
+    guard grant.startedNewSession, let exhausted = grant.exhausted else { return }
+    try clock.validate()
+    guard nextSequence < Self.maximum, discarded < Self.maximum else { throw ProtectionStoreError.oversized }
+    let sequence = nextSequence; nextSequence += 1
+    // Clock rollback or a changed policy zone is an explicit evidence gap, never
+    // a shifted date, new installation identity or fabricated healthy day.
+    guard clock.wall >= lastTimestamp, timezone == self.timezone else { discarded += 1; return }
+    if events.count == 256 { events.removeFirst(); discarded += 1 }
+    events.append(.init(id: grant.session.id, sequence: sequence, occurredAt: clock.wall,
+      day: Self.day(clock.wall, timezone: timezone), exhausted: exhausted,
+      revision: revision, evidence: "allowance_consumed"))
+    lastTimestamp = clock.wall
+    try validated()
+  }
+  mutating func batch() throws -> [String: Any] {
+    try validated()
+    let prefix = Array(events.prefix(32))
+    if let last = prefix.last { issued = max(issued, last.sequence) }
+    let formatter = ISO8601DateFormatter(); formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+    return ["installation_id": installationID.uuidString.lowercased(), "timezone_id": timezone,
+      "discarded": discarded, "events": prefix.map { event -> [String: Any] in
+        ["event_id": event.id.uuidString.lowercased(), "sequence": event.sequence,
+         "occurred_at": formatter.string(from: Date(timeIntervalSince1970: Double(event.occurredAt) / 1000)),
+         "kind": "allowance", "day": event.day, "encounter_id": NSNull(), "context": NSNull(),
+         "exhausted": event.exhausted, "covered": NSNull()]
+      }]
+  }
+  mutating func ack(installation: UUID, sequence: UInt64) throws {
+    guard installation == installationID, sequence > 0, sequence <= issued else { throw ProtectionStoreError.conflict }
+    if sequence <= acknowledged { return }
+    // Only acknowledge a prefix actually offered to the host, never future data.
+    guard events.contains(where: { $0.sequence == sequence }) else { throw ProtectionStoreError.conflict }
+    events.removeAll { $0.sequence <= sequence }; acknowledged = sequence
+    try validated()
+  }
+}
+
+extension SharedProtectionStore {
+  func rewardsRead(owner: ProtectionOwner) throws -> [String: Any]? {
+    guard let snapshot = try read() else { return nil }
+    guard snapshot.pendingClaim == nil, snapshot.installedOwner == owner,
+      let record = snapshot.owners.first(where: { $0.owner == owner }) else { throw ProtectionStoreError.staleLease }
+    guard record.rewardJournal != nil else { return nil }
+    var result: [String: Any]?
+    try update(expectedRevision: snapshot.revision) { state in
+      guard state.pendingClaim == nil, state.installedOwner == owner,
+        let i = state.owners.firstIndex(where: { $0.owner == owner }) else { throw ProtectionStoreError.staleLease }
+      guard var journal = state.owners[i].rewardJournal else { return }
+      result = try journal.batch(); state.owners[i].rewardJournal = journal
+    }
+    return result
+  }
+  func rewardsAck(owner: ProtectionOwner, installation: UUID, sequence: UInt64) throws {
+    try update(expectedRevision: read()?.revision) { state in
+      guard state.pendingClaim == nil, state.installedOwner == owner,
+        let i = state.owners.firstIndex(where: { $0.owner == owner }),
+        var journal = state.owners[i].rewardJournal else { throw ProtectionStoreError.staleLease }
+      try journal.ack(installation: installation, sequence: sequence)
+      state.owners[i].rewardJournal = journal
+    }
+  }
+}

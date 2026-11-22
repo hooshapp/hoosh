@@ -52,7 +52,10 @@ final class ProtectionRuntimeCoordinator {
         throw ProtectionTransactionError.invalid
       }
       if try !ledger.needed(app: app, revision: revision, reasons: reasons, clock: clock).isEmpty {
-        _ = try ledger.allow(app: app, revision: revision, reasons: reasons, clock: clock)
+        let grant = try ledger.allow(app: app, revision: revision, reasons: reasons, clock: clock)
+        var journal = record.rewardJournal ?? ProtectionRewardJournal(timezone: runtime.policy.timezoneId)
+        try journal.append(grant: grant, revision: revision, clock: clock, timezone: runtime.policy.timezoneId)
+        record.rewardJournal = journal
       }
       record.installation = runtime; record.sessionLedger = ledger
       record.coverage = "partial"

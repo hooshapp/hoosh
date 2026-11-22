@@ -1,5 +1,30 @@
 # Plan 04 — Shared iOS host and Screen Time
 
+## Current resume checkpoint — November 21, 2026
+
+- Plan: [04](../integration_plan/04_ios_native_integration.md), **INT-IOS-C05**.
+  Owner / reviewer: Anisha / Ishmum. Branch `integration/shared-product`.
+  Starting HEAD `60008c2c09ad2d64396a3a28805be8ccb7f6ac74` (C04 + Figma UI).
+  This checkpoint is an uncommitted source delta; user retains commit/push control.
+- No source branch port in C05. Existing base `cee632c2c4c4230d6da240d6de574391bea0c996`
+  and recorded landing-page provenance remain unchanged; local source refs inspected,
+  not fetched or merged. Current local landing ref is `b6d61df5c8a2c1eacbe28a38e06b84b5bcd368d1`.
+- Implemented: durable native allowance evidence, scoped bounded read/ack through
+  the existing FastAPI reward transport, stable retries/overflow gaps and explicit
+  iPhone History unavailability. Activation remains compiled off.
+- Passed: 662 unit, 40 focused component (Android/iOS), 13 API schema tests;
+  TypeScript/lint, native adapter/model checks and shared iOS Debug simulator build.
+  **Not passed:** signed physical lifecycle, confirmed quit/day coverage producers,
+  hosted event upload/retry or real aggregate iPhone History collection.
+- Next: retain unsupported evidence boundaries; C06 signed normal-app acceptance
+  when a physical iPhone becomes available. Do not enable activation or mark C04–C06
+  accepted from these results. C05 verified quit producers remain unresolved rather
+  than inferred from a shield action/render or pilot telemetry.
+- Build used the existing `Hoosh Shared Host C01` simulator and ignored derived
+  directory. No app installed/launched, account/provider configuration changed,
+  new simulator started or physical-device permission requested. Existing localhost
+  preview remains separate. Private local configuration remains unstaged.
+
 ## INT-IOS-C01 — Source audit and Expo reference host
 
 **Status:** Shared host Debug build and simulator launch passed. Internal Release, physical signing and feasibility are open. Branch `integration/shared-product`, host wiring revision `dc1e143`.
@@ -213,3 +238,105 @@ Activation remains gated per the user's decision. C04 remains in progress: assem
 - **C04 implementation is complete behind the gate; physical acceptance remains open.** No phone installation, entitlement change, device activation, commit or push was performed.
 
 - Final verification: TypeScript passed; 661 unit tests passed; 64 focused iOS/Android component checks passed. The native check script passed command/recurrence/session/transaction/storage/owner-isolation checks, schema migration/rejection, real-SDK bridge metadata reads and mutation gates. Host continuous-clock availability passed; physical availability remains unverified. Full host/extension simulator build passed on final native source (`/tmp/hoosh-ios-c04-bridge-current-build.log`); isolated browser preview build passed. Full lint passed with four pre-existing warnings in unrelated files; focused changed-file lint passed cleanly. The known simulator CLI sysroot warning remains, with successful execution.
+
+
+## INT-IOS-C05 — Durable evidence transport and honest iPhone History
+
+Date: 2026-11-21
+Owner / reviewer: Anisha / Ishmum
+Branch: `integration/shared-product`
+Commit message: `INT-IOS-C05: add scoped event sync and guard iPhone History`
+Commit: Pending; parent `60008c2c09ad2d64396a3a28805be8ccb7f6ac74`.
+Source provenance: new implementation over C04; existing shared reward API/transport
+and owner lease are reused, no pilot-event or source-branch import.
+Plan: [C05](../integration_plan/04_ios_native_integration.md#int-ios-c05--event-attribution-rewardhistory-boundaries-and-recovery).
+
+### Changes and file inventory
+
+Line ranges refer to this working source snapshot; resolve against its eventual commit.
+
+| File and lines | Change and reason |
+|---|---|
+| `apps/mobile/modules/hoosh-screen-time/ios/SharedProtectionStore.swift`: 54–80, 153–156, 193 | Optional per-owner journal and schema v4 atomic migration. Old binaries reject v4 instead of silently erasing evidence; v1–v3 remain readable until a successful write. |
+| Same file: 288–394 | Content-free allowance evidence retains native originating revision/evidence kind, stable installation/session UUIDs, strictly increasing sequence and timestamp, fixed stream timezone, max256 queue and max32 drain. Persist offered prefix before returning it; ACK only issued data after host server acknowledgment. Countered overflow/clock rollback/timezone mismatch is missing evidence. CAS + existing store lock, retention and owner checks protect concurrent host/extension access. |
+| `apps/mobile/modules/hoosh-screen-time/ios/ProtectionRuntimeCoordinator.swift`: 55–58 | Atomically journal a newly consumed allowance with its existing ledger transaction. Retry/live overlap grants do not create another event. Consumption is retained even if later SDK installation/readback fails; it is not an enforcement or quit receipt. |
+| `apps/mobile/modules/hoosh-screen-time/ios/HooshScreenTimeModule.swift`: 61–74 | Lease-verified read and ACK methods with bounded integer/UUID validation; native has no API credentials or REST sender. |
+| `apps/mobile/src/infrastructure/native/ios-product-port.ts`: 4–5, 50–59 | Register optional transport only when both native methods exist. Validate current owner/token before and after async calls. Existing Home/History reward sync uses scoped FastAPI, validates batches and ACKs only after confirmed server response. No second sync loop. |
+| `apps/mobile/src/infrastructure/native/ios-product-port.test.ts`: 72–92 | Missing capability, lease argument mapping, wrong owner/handle and late-result disposal regressions. |
+| `apps/mobile/src/features/history/use-history.ts`: 1, 70–85, 133, 185, 236–245, 273 | iOS never reads/uploads Android series, matches it as local usage or exposes Android start/stop/access controls. Account-level explicit receipts remain available. |
+| `apps/mobile/src/features/history/connected-history-screen.tsx`: 2, 23–27, 57 | Explicit unavailable iPhone usage explanation; suppress Android measurement metadata on iOS. Shared account receipts are labeled as such. Existing design unchanged. |
+| `apps/mobile/src/features/history/connected-history-screen.test.tsx`: 16, 148–149, 383–395 | Existing Android collector scenarios explicitly use Android; added iPhone regression with an otherwise ready stored Android series and port. No collector call or local measured comparison is accepted. Runs in both platform projects. |
+| `apps/mobile/modules/hoosh-screen-time/tests/RewardJournalChecks.swift`: 1–51 | Stable retry/restart, bounded overflow/drain/ACK, wrong installation/owner, future ACK, failed atomic writes, malformed cursor, clock/zone gaps and no private inventory/quit/day export checks. |
+| `apps/mobile/modules/hoosh-screen-time/tests/RuntimeCoordinatorChecks.swift`: 47–49, 59 | Failed SDK installation still has one consumed-allowance receipt; retry cannot duplicate it. |
+| `apps/mobile/modules/hoosh-screen-time/tests/StoreChecks.swift`: 74; `TransactionChecks.swift`: 136 | Update future-version rejection and atomic migration assertions for schema v4. |
+| `scripts/check-ios-adapter.sh`: 21 | Include reward journal checks in existing native verification command. |
+| `docs/integration_plan/04_ios_native_integration.md`: C05 ledger row | Record implemented scope and open acceptance, not full native completion. |
+| This notes file: current checkpoint and C05 entry | Preserve source identity, decisions, every-file inventory, test evidence and remaining handoff. |
+
+### Evidence and privacy decisions
+
+Only allowance consumption has a supported producer in this increment. No shield
+render, monitor callback, notification request or absent journal becomes a quit,
+complete day or +30 credit. Unknown opening/session-end/mid-session context remains
+unsupported; no positive quit reward is fabricated. No `day_closed` is emitted
+without a verified full-day coverage source, so missing evidence cannot earn a
+successful-day streak. Per-app allowance policy is unchanged.
+
+Native revision and evidence kind remain local provenance; only the existing
+approved `RewardBatch` shape crosses the bridge. No raw app token, selection bytes,
+app inventory, owner identity or native report internals are in that batch. The
+verified scope supplies account identity to existing FastAPI. Sign-out/takeover
+retains each owner's queue; a different account cannot drain/ACK the previous one.
+Overflow discards oldest evidence and increments the existing server gap counter.
+Clock rollback and policy timezone changes skip unverifiable dated events and
+record gaps rather than rotating installation IDs or resetting counters. Gaps
+reach the server with the next nonempty batch; an all-gap/empty queue is not a
+successful covered day. The existing API requires nonempty batches.
+
+Apple's [DeviceActivityReport documentation](https://developer.apple.com/documentation/deviceactivity/deviceactivityreport)
+explains the report extension sandbox and restrictions on moving sensitive
+content outside it. No approved producer meeting this app's fixed-baseline/export
+contract was established. Therefore History stays unavailable on iPhone rather
+than exporting report internals or submitting as `android_usage_events_v1`.
+The pilot's report and telemetry are not reused as account measurements.
+No server schema, generated contract, migration or Android baseline changed.
+
+### Validation
+
+All commands below ran on this uncommitted C05 delta over the parent above:
+
+- `npm run test:unit --workspace @disconnect/mobile`: **662 passed**, including
+  existing scoped upload/no-ACK-on-failure, late-account ACK suppression and batch
+  validation tests. Log `/tmp/hoosh-ios-c05-unit.log`.
+- `npm run test:components --workspace @disconnect/mobile -- --runTestsByPath src/features/history/connected-history-screen.test.tsx src/features/rewards/rewards-home.test.tsx`:
+  **40 passed / 4 suites**, Android and iOS projects. Log `/tmp/hoosh-ios-c05-components.log`.
+- `services/api/.venv/bin/python -m pytest services/api/tests/api/test_rewards.py -q`:
+  **13 passed**. Schema validation only; no hosted/database upload claim.
+- Mobile TypeScript and focused ESLint passed (`/tmp/hoosh-ios-c05-types.log`,
+  `/tmp/hoosh-ios-c05-lint.log`).
+- `scripts/check-ios-adapter.sh 29D9D520-2FEF-4AC5-9262-91D90E548282`:
+  model/store/transaction/command/selection/claim/clock/journal checks passed;
+  real simulator SDK construction and mutation gates passed. No OS protection
+  installed. Log `/tmp/hoosh-ios-c05-native.log`.
+- Existing shared workspace Debug build passed with simulator ad-hoc signing,
+  `Hoosh Shared Host C01`, `.native-dev/ios-shared-derived`, pinned packages and
+  `CODE_SIGN_IDENTITY=- CODE_SIGNING_REQUIRED=NO ONLY_ACTIVE_ARCH=YES`.
+  Log `/tmp/hoosh-ios-c05-build.log`. This is compilation, not an installed journey.
+
+An initial check caught a test missing its router focus context; the iPhone History
+fixture now tests History without unnecessarily mounting Home outside a router.
+An initial native probe caught a missing CAS expected revision; corrected and the
+full affected native checks rerun successfully. An overlapping edit invalidated
+one intermediate compile; final native checks and build passed on settled sources.
+
+### Remaining / handoff
+
+C05's safe transport and unsupported-History path are implemented. C05 acceptance
+remains open for verified quit/complete-day producers and physical permission,
+offline, reboot and retry evidence. Existing foreground/native status readers
+continue rereading installed truth; no missing journal is a verified protection day.
+Host upload still needs the normal signed account/device flow with real server
+acknowledgments. Gate stays off; no C04/C06/device/release acceptance is claimed.
+
+Do not roll back to a pre-v4 writer against a v4 store; those binaries deliberately
+fail closed. No data cleanup/reset is authorized. User handles commit and push.

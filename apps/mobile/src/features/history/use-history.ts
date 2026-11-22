@@ -1,3 +1,4 @@
+import { Platform } from 'react-native';
 import { focusManager, onlineManager } from '@tanstack/react-query';
 import {
   useCallback,
@@ -66,7 +67,7 @@ export function useHistory() {
           notice =
             'Recent turn-offs may still be waiting to sync on this device.';
         }
-        if (binding.port.historyRead)
+        if (Platform.OS !== 'ios' && binding.port.historyRead)
           try {
             native = decodeNativeHistory(
               await binding.port.historyRead(binding.owner),
@@ -80,6 +81,7 @@ export function useHistory() {
       let view = await readHistory(op);
       current();
       const matching =
+        Platform.OS !== 'ios' &&
         native?.state === 'ready' &&
         native.series.series_id === view.series_id &&
         native.series.timezone_id === view.timezone_id &&
@@ -128,7 +130,7 @@ export function useHistory() {
   const start = useAccountMutation({
     execute: async (_: void, op) => {
       current();
-      if (!binding?.port.historyStart)
+      if (Platform.OS === 'ios' || !binding?.port.historyStart)
         throw new Error('History collector unavailable');
       const previous = await readHistory(op);
       current();
@@ -180,7 +182,7 @@ export function useHistory() {
   const stop = useAccountAction(controller, async () => {
     try {
       current();
-      if (!binding?.port.historyStop)
+      if (Platform.OS === 'ios' || !binding?.port.historyStop)
         throw new Error('History stop unavailable');
       await scope.client.cancelQueries({
         queryKey: scope.key('history'),
@@ -231,11 +233,13 @@ export function useHistory() {
     refresh,
     busy: start.isPending || stop.busy,
     canStart:
+      Platform.OS !== 'ios' &&
       !!binding?.port.historyStart &&
       availability === 'ready' &&
       online &&
       !start.isPending,
     canStop:
+      Platform.OS !== 'ios' &&
       !!binding?.port.historyStop &&
       query.data?.native !== 'not_started' &&
       query.data?.native !== 'unsupported' &&
@@ -266,6 +270,6 @@ export function useHistory() {
         refresh();
       }
     },
-    canReview: !!binding?.port.openUsageAccess,
+    canReview: Platform.OS !== 'ios' && !!binding?.port.openUsageAccess,
   };
 }

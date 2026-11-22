@@ -69,4 +69,24 @@ describe('scoped iOS C04 bridge', () => {
     expect(() => decodeInterventionStatus({ ...status, phase: 'verified' })).toThrow();
     expect(() => decodeInterventionStatus({ ...status, selectedAppCount: -1 })).toThrow();
   });
+  it('registers evidence transport only when both native methods exist and fences late responses', async () => {
+    const s = setup();
+    expect(s.port.rewardsRead).toBeUndefined();
+    const rewardsRead = vi.fn().mockResolvedValue(null), rewardsAck = vi.fn().mockResolvedValue(undefined);
+    const port = createIOSProductPort({ namespace: 'project', userID, token, module: { ...s.module, rewardsRead, rewardsAck },
+      selection: s.selection, requestID: () => request, preview: vi.fn(), review: vi.fn(), end: s.end,
+      protectionRead: vi.fn(), claim: vi.fn() });
+    await port.rewardsRead!(owner);
+    expect(rewardsRead).toHaveBeenCalledWith('project', userID, token);
+    await port.rewardsAck!(owner, token, request, 32);
+    expect(rewardsAck).toHaveBeenCalledWith('project', userID, token, request, 32);
+    await expect(port.rewardsRead!(`other:${userID}`)).rejects.toThrow('owner changed');
+    await expect(port.rewardsAck!(owner, request, request, 32)).rejects.toThrow('owner changed');
+    let release!: (value: unknown) => void;
+    rewardsRead.mockImplementationOnce(() => new Promise(resolve => { release = resolve; }));
+    const reading = port.rewardsRead!(owner);
+    await port.interventionEndOwner(owner, false); release(null);
+    await expect(reading).rejects.toThrow('owner changed');
+  });
+
 });

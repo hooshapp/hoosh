@@ -1,6 +1,8 @@
 import type { ProductNativePort } from './product-ports';
 import { decodeSavedSelection } from './selection-editor';
 export type IOSRuntimeModule = {
+  rewardsRead?(namespace: string, userID: string, token: string): Promise<unknown>;
+  rewardsAck?(namespace: string, userID: string, token: string, installation: string, sequence: number): Promise<unknown>;
   runtimeRead(namespace: string, userID: string, token: string, quest: string | null): Promise<unknown>;
   runtimeApply(namespace: string, userID: string, token: string, command: string): Promise<unknown>;
   runtimeRecover(namespace: string, userID: string, token: string, requestID: string): Promise<void>;
@@ -45,6 +47,16 @@ export function createIOSProductPort(args: {
   const selectedRevision = async () => decodeSavedSelection(await args.selection.selectionRead(owner), owner).revision;
   return {
     ...args.selection,
+    ...(module.rewardsRead && module.rewardsAck ? {
+      rewardsRead: async (value: string) => {
+        check(value); const result = await module.rewardsRead!(namespace, userID, token); check(value); return result;
+      },
+      rewardsAck: async (value: string, handle: string, installation: string, sequence: number) => {
+        check(value, handle);
+        const result = await module.rewardsAck!(namespace, userID, token, installation, sequence);
+        check(value, handle); return result;
+      },
+    } : {}),
     interventionOpen: async value => { check(value); return token.toLowerCase(); },
     // Release only this operation handle; the verified boundary owns the lease.
     interventionRelease: async (value, handle) => { check(value, handle); },

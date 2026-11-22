@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 import { Button } from '@/components/ui/button';
 import { InlineStatus } from '@/components/ui/inline-status';
 import { colors, fonts } from '@/design/tokens';
@@ -20,7 +20,9 @@ export function ConnectedHistoryScreen() {
     : !snapshot
       ? 'History is temporarily unavailable.'
       : native === 'unsupported'
-        ? 'Usage measurement is unavailable on this build. Synced turn-off receipts remain available.'
+        ? Platform.OS === 'ios'
+          ? 'iPhone usage measurement is unavailable. Android account summaries are not this iPhone’s Screen Time. Synced account turn-off receipts remain available.'
+          : 'Usage measurement is unavailable on this build. Synced turn-off receipts remain available.'
         : native === 'error'
           ? 'Device History could not be verified. Check latest History before changing collection.'
           : native === 'needs_permission'
@@ -52,7 +54,7 @@ export function ConnectedHistoryScreen() {
             state={history.loading ? 'loading' : 'unavailable'}
             message={history.loading ? 'Loading account History…' : status}
           />
-          {snapshot ? (
+          {snapshot && Platform.OS !== 'ios' ? (
             <Text style={styles.text}>
               Source: Android selected-app usage estimate. Last checked{' '}
               {new Date(snapshot.view.observed_at).toLocaleString()}. Month
