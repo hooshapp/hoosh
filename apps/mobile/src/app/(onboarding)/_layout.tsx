@@ -5,7 +5,7 @@ export default function OnboardingLayout() {
   return (
     <>
       <StatusBar style="light" />
-      <Stack screenOptions={{ headerShown: false }} />
+      <Stack screenOptions={{ headerShown: false, statusBarStyle: 'light' }} />
     </>
   );
 }

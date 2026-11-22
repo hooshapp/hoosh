@@ -19,7 +19,7 @@ compiler/session-model work continues without treating that deferral as evidence
 | Native elapsed expiry while target stays foreground | Candidate padded expiry alarms and gated SDK/callback wiring; no physical timing evidence | Signed-device probe, measured callback/shield outcome and explicit unsupported result if the required behavior cannot be demonstrated |
 | Bypass under overlapping reasons | Model cancels one reason while retaining others | Token-specific action wiring and durable grants implemented behind the gate; physical overlap/reentry verification remains |
 | Offline/JS-absent operation | Shared App Group and extension fencing exist from C02 | Gated schedule/action callbacks and allowance recovery implemented; process termination/offline/device checks remain |
-| Full `ProductNativePort` / scheduling capability | C04 core/quest port is registered per verified owner lease; iOS schema-4 projection is decoded separately, with no invented Android service/overlay access | Activation remains compiled off pending signed-device acceptance; C05 measurement/event capabilities remain absent |
+| Full `ProductNativePort` / scheduling capability | C04 core/quest port is registered per verified owner lease; iOS schema-4 projection is decoded separately, with no invented Android service/overlay access | Activation remains compiled off pending signed-device acceptance; C05 owner-scoped allowance event transport is now available; confirmed quit/day-coverage producers and aggregate iPhone measurements remain unavailable |
 
 ## Apple constraints and candidate approach
 

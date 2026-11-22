@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "platform": "iphoneos",
+  "acceptance": "packaging_only_not_device_behavior",
+  "physical_journey_verified": false,
+  "embedded_js_sha256": "eb70fa0d0c7ad05f97f5201054c1df45fc3ac0bd807efe1a334298202c04aca5",
+  "hermes_bytecode": true,
+  "product_tree_sha256": "2dda92a03b117511f352c1a173cb78562419f2b61004ed4b164f4843ca90124c",
+  "file_count": 399,
+  "callback_scheme_present": true,
+  "native_module_registration_present": true,
+  "developer_preview_markers_absent": true,
+  "pilot_configuration_absent": true,
+  "signing": [
+    {
+      "bundle_id": "com.AnishaDasgupta.DisconnectApp",
+      "signature_valid": true,
+      "family_controls": true,
+      "app_group": true,
+      "apple_sign_in": true,
+      "provisioning_verified": true
+    },
+    {
+      "bundle_id": "com.AnishaDasgupta.DisconnectApp.DisconnectShieldActionExtension",
+      "signature_valid": true,
+      "family_controls": true,
+      "app_group": true,
+      "apple_sign_in": false,
+      "provisioning_verified": true
+    },
+    {
+      "bundle_id": "com.AnishaDasgupta.DisconnectApp.DisconnectDeviceActivityMonitorExtension",
+      "signature_valid": true,
+      "family_controls": true,
+      "app_group": true,
+      "apple_sign_in": false,
+      "provisioning_verified": true
+    },
+    {
+      "bundle_id": "com.AnishaDasgupta.DisconnectApp.DisconnectShieldConfigurationExtension",
+      "signature_valid": true,
+      "family_controls": true,
+      "app_group": true,
+      "apple_sign_in": false,
+      "provisioning_verified": true
+    },
+    {
+      "bundle_id": "com.AnishaDasgupta.DisconnectApp.Disconnect",
+      "signature_valid": true,
+      "family_controls": false,
+      "app_group": false,
+      "apple_sign_in": false,
+      "provisioning_verified": true
+    }
+  ],
+  "source_head": "4f26c995ff102c623de59a9cd9718910d4e0cf22"
+}

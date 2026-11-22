@@ -41,3 +41,7 @@ services/api/.local/
 .DS_Store
 *.log
 .idea/
+
+# Local native toolchains, simulator evidence and private development backend
+.native-dev/
+apps/mobile/ios/DisconnectApp/NativeSupabaseConfig.plist

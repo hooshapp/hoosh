@@ -86,7 +86,7 @@ function AppNavigator({ publicOnly = false, previousPrivateGenerationRef }: {
   return (
     <>
       <StatusBar style={publicOnly ? "light" : "dark"} />
-      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: publicOnly ? colors.darkCanvas : colors.warmCanvas } }}>
+      <Stack screenOptions={{ headerShown: false, statusBarStyle: publicOnly ? 'light' : 'dark', contentStyle: { backgroundColor: publicOnly ? colors.darkCanvas : colors.warmCanvas } }}>
         <Stack.Screen name="auth/callback" />
         <Stack.Screen name="auth/link-error" />
         <Stack.Protected guard={publicOnly}>
@@ -98,7 +98,7 @@ function AppNavigator({ publicOnly = false, previousPrivateGenerationRef }: {
           <Stack.Screen name="settings/[field]" />
           <Stack.Screen name="quest/new" />
           <Stack.Screen name="quest/[id]" />
-          <Stack.Screen name="(onboarding)" />
+          <Stack.Screen name="(onboarding)" options={{ statusBarStyle: 'light' }} />
         </Stack.Protected>
       </Stack>
       {!publicOnly && <SetupResume />}

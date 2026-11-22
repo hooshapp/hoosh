@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "platform": "iphonesimulator",
+  "acceptance": "packaging_only_not_device_behavior",
+  "physical_journey_verified": false,
+  "embedded_js_sha256": "8b5f928f072764e82460c34abfa7de78a267dd1baa931c1889e4d7824a4df1c9",
+  "hermes_bytecode": true,
+  "product_tree_sha256": "4948cb9a95fd24efefc0a7edd54c191231504b81e4a1ff518956eb4a61ee7805",
+  "file_count": 505,
+  "callback_scheme_present": true,
+  "native_module_registration_present": true,
+  "developer_preview_markers_absent": true,
+  "pilot_configuration_absent": true,
+  "signing": [
+    {
+      "bundle_id": "com.AnishaDasgupta.DisconnectApp",
+      "signature_valid": true,
+      "family_controls": false,
+      "app_group": false,
+      "apple_sign_in": false,
+      "provisioning_verified": false
+    },
+    {
+      "bundle_id": "com.AnishaDasgupta.DisconnectApp.DisconnectShieldActionExtension",
+      "signature_valid": true,
+      "family_controls": false,
+      "app_group": false,
+      "apple_sign_in": false,
+      "provisioning_verified": false
+    },
+    {
+      "bundle_id": "com.AnishaDasgupta.DisconnectApp.DisconnectDeviceActivityMonitorExtension",
+      "signature_valid": true,
+      "family_controls": false,
+      "app_group": false,
+      "apple_sign_in": false,
+      "provisioning_verified": false
+    },
+    {
+      "bundle_id": "com.AnishaDasgupta.DisconnectApp.DisconnectShieldConfigurationExtension",
+      "signature_valid": true,
+      "family_controls": false,
+      "app_group": false,
+      "apple_sign_in": false,
+      "provisioning_verified": false
+    },
+    {
+      "bundle_id": "com.AnishaDasgupta.DisconnectApp.Disconnect",
+      "signature_valid": true,
+      "family_controls": false,
+      "app_group": false,
+      "apple_sign_in": false,
+      "provisioning_verified": false
+    }
+  ],
+  "source_head": "4f26c995ff102c623de59a9cd9718910d4e0cf22",
+  "working_tree_source_sha256": {
+    "apps/mobile/src/app/_layout.tsx": "2a07c0bbc8744183c08b00eed6c77f64e09a00f88a107d146232e1b0988d683a",
+    "apps/mobile/src/app/(auth)/_layout.tsx": "e8c31a1edeaa56b6c7a14cc69e998821d11b2bc4cdfbef2c307473653894fcf0",
+    "apps/mobile/src/app/(onboarding)/_layout.tsx": "99bc0f66bd5da90a2af4ffb3891daba4e530738e8d9f5c3c1be95de313cf00e4"
+  }
+}

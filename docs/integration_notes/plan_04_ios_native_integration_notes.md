@@ -2,28 +2,41 @@
 
 ## Current resume checkpoint — November 21, 2026
 
-- Plan: [04](../integration_plan/04_ios_native_integration.md), **INT-IOS-C05**.
+- Plan: [04](../integration_plan/04_ios_native_integration.md), **INT-IOS-C06 packaging preparation**.
   Owner / reviewer: Anisha / Ishmum. Branch `integration/shared-product`.
-  Starting HEAD `60008c2c09ad2d64396a3a28805be8ccb7f6ac74` (C04 + Figma UI).
-  This checkpoint is an uncommitted source delta; user retains commit/push control.
-- No source branch port in C05. Existing base `cee632c2c4c4230d6da240d6de574391bea0c996`
-  and recorded landing-page provenance remain unchanged; local source refs inspected,
-  not fetched or merged. Current local landing ref is `b6d61df5c8a2c1eacbe28a38e06b84b5bcd368d1`.
-- Implemented: durable native allowance evidence, scoped bounded read/ack through
-  the existing FastAPI reward transport, stable retries/overflow gaps and explicit
-  iPhone History unavailability. Activation remains compiled off.
-- Passed: 662 unit, 40 focused component (Android/iOS), 13 API schema tests;
-  TypeScript/lint, native adapter/model checks and shared iOS Debug simulator build.
-  **Not passed:** signed physical lifecycle, confirmed quit/day coverage producers,
-  hosted event upload/retry or real aggregate iPhone History collection.
-- Next: retain unsupported evidence boundaries; C06 signed normal-app acceptance
-  when a physical iPhone becomes available. Do not enable activation or mark C04–C06
-  accepted from these results. C05 verified quit producers remain unresolved rather
-  than inferred from a shield action/render or pilot telemetry.
-- Build used the existing `Hoosh Shared Host C01` simulator and ignored derived
-  directory. No app installed/launched, account/provider configuration changed,
-  new simulator started or physical-device permission requested. Existing localhost
-  preview remains separate. Private local configuration remains unstaged.
+  Starting HEAD `4f26c995ff102c623de59a9cd9718910d4e0cf22` (C05, now committed by owner).
+  C06 is an uncommitted delta; user retains commit/push control.
+- No source branch port, fetch, merge or native/runtime configuration change.
+  Existing integration base and landing-page provenance remain unchanged.
+- Added a redacted actual-product inspector and seven fault tests, plus the
+  [standalone/device runbook](../qa/ios-shared-standalone.md).
+  Release simulator build and actual-product inspection passed; seven fault tests and Ruff passed. See the C06 entry below.
+- Physical iPhone remains deferred, reconfirmed by the owner during C06 continuation.
+  After the owner signed into Xcode, the signed device Release build and actual
+  device-product inspection passed. Profile refresh resolved the missing host
+  Apple-sign-in entitlement. Host and enforcing extensions have provisioned Family
+  Controls/App Group entitlements; all five signatures/profiles passed inspection.
+  No hosted account upload, device install or permission change. Activation remains
+  compiled off.
+  C04/C05/C06 physical acceptance and confirmed quit/day evidence remain open.
+- The owner selected a spare physical iPhone later and authorized simulator testing.
+  Isolated **Hoosh C06 Release QA** now runs the packaged app. Startup, Skip,
+  signup/recovery validation, return-launch and signed-out deep-link checks passed;
+  drag/swipe delivery remains inconclusive. Fixed dark-screen system-text contrast
+  using native Stack styles; 94 routed tests, typecheck/lint and Release rebuild passed.
+- At the owner's request, existing FastAPI is running locally on 127.0.0.1:8000
+  against a newly initialized PostgreSQL17.11 isolated test cluster on 55432.
+  Existing migrations/RLS passed and 287 database cases passed. Normal public
+  Supabase JWT trust is configured; no hosted database was modified. One real-account simulator sign-in/save/recovery/relaunch journey now passed after
+  adding its ID-only local Auth FK prerequisite. See [simulator/backend checkpoint](../qa/ios-c06-simulator.md).
+- Next: finish live account simulator checks with the owner; no credentials in chat.
+  Then complete deferred signed physical journeys / VERIFY-C05 on the spare phone,
+  using a trusted reachable API and the owner's installation decision first.
+  The earlier signed-device artifact predates the JS-only status-bar fix; it proves
+  unchanged native provisioning, not that the new UI has run on a phone.
+- Simulator and local API/DB are intentionally left running for the handoff.
+  Other simulators, Metro processes, physical phone and pilot remain untouched.
+  No commit/push; all intended C06 changes are staged when the checkpoint is handed off.
 
 ## INT-IOS-C01 — Source audit and Expo reference host
 
@@ -340,3 +353,261 @@ acknowledgments. Gate stays off; no C04/C06/device/release acceptance is claimed
 
 Do not roll back to a pre-v4 writer against a v4 store; those binaries deliberately
 fail closed. No data cleanup/reset is authorized. User handles commit and push.
+
+
+## INT-IOS-C06 — Standalone packaging preparation; physical acceptance deferred
+
+Date: 2026-11-21
+
+Owner / reviewer: Anisha / Ishmum. Branch `integration/shared-product`.
+Commit: Pending; parent `4f26c995ff102c623de59a9cd9718910d4e0cf22`.
+Commit message: `INT-IOS-C06: prepare standalone package inspection and device acceptance`.
+Source provenance: new verification tooling over the integrated C05 source; no
+pilot feature port, provider configuration, identity/entitlement or runtime change.
+Plan: [C06](../integration_plan/04_ios_native_integration.md#int-ios-c06--signed-normal-app-and-packaged-device-acceptance).
+
+### Changes and file inventory
+
+| File and lines at working snapshot | Change and reason |
+|---|---|
+| `scripts/inspect-ios-product.py`: 1–233 | Inspect actual .app identity/Hoosh title, normal Expo scene/callback, embedded JS and Hermes format, module registration, four extension identities/points, absent preview/pilot configuration and Apple signatures. Device mode requires matching, unexpired provisioning, signing teams and provisioned enforcement/App Group/Apple-sign-in entitlements. Output is redacted hashes/booleans; no profile contents, device IDs or credentials. Never installs a product or reports physical behavior accepted. Compatible with the local Python 3.9. |
+| `scripts/test_inspect_ios_product.py`: 1–186 | Seven fault tests: simulator cannot masquerade as device acceptance, missing/preview JS, pilot config/root, callback/extension mismatch, invalid signature, valid device fixture and expired/foreign/missing-entitlement profiles. Mocked Apple commands prove validation behavior only. |
+| `docs/qa/ios-shared-standalone.md`: 1–98 | Reproducible Release and inspector commands; device-only profile check, loopback limitation, owner installation decision before replacing pilot, private-account and full lifecycle/permission/expiry/owner handoff matrix. |
+| `docs/integration_notes/ios_c04_feasibility.md`: capability table | Correct stale C05-absent wording: scoped allowance transport now exists; confirmed quits/day coverage and aggregate measurements remain unavailable. |
+| `docs/integration_plan/04_ios_native_integration.md`: C06 ledger | Record packaging preparation and explicitly pending physical acceptance. |
+| `docs/integration_notes/artifacts/ios-c06-simulator-product.json`: whole file | Sanitized actual artifact hashes, platform, signature/entitlement results and source SHA; no profile or credentials. |
+| This notes file: current checkpoint and C06 entry | Record C05 owner commit, C06 source identity, implemented tooling, environment limits, actual evidence and next resource-dependent work. |
+
+### Decisions and scope
+
+The owner deferred physical iPhone testing, so no device installation is attempted.
+The same bundle ID may replace the pilot; installation requires identifying the
+build and obtaining the owner's decision first. Source activation remains false.
+No new entitlement/profile, public exposure, hosted account mutation, App Store
+submission, API endpoint change or simulated successful native action was added.
+
+Release uses the existing normal Router entry and `export:embed` bundle phase;
+Debug intentionally skips bundling. Presence-only checks found all three required
+public environment names, but the API URL is loopback. That is a physical-device
+connectivity blocker, not a reason to embed a guessed endpoint. Local values are
+not copied into notes. The inspector does not claim API connectivity/provider
+success, native expiry or account acceptance from a valid package.
+
+### Validation and handoff
+
+- Seven `unittest` fault checks passed using the local Python 3.9; Ruff check
+  with `--target-version py39` passed on both new scripts.
+- The existing Debug simulator product was actually inspected and rejected:
+  embedded JavaScript is missing. This verifies the checker does not accept a
+  Metro-dependent package as standalone.
+- Release simulator build **passed** using the runbook command, Xcode 27.2,
+  simulator SDK 27.2, pinned packages and existing derived directory.
+  Log `/tmp/hoosh-ios-c06-release.log`. Embedded Hermes JS is present; this is
+  not a Debug/Metro-dependent product.
+- Actual `.app` inspector **passed**: expected Hoosh host, callback and shared
+  scene, native registration, all four extension identities/points and valid
+  ad-hoc signatures; no pilot private config/entry or known preview markers.
+  The inspected tree contains 505 files. Sanitized receipt:
+  [simulator product](artifacts/ios-c06-simulator-product.json).
+- Embedded JS SHA256: `282885f6b22f6255b1f0696beaec437c4e437380d1a62f332cde77d76dbaa07f`.
+  Product tree SHA256: `1221db4b5a33854b4ef28411434ae0bd7e39ac5c595846207f892523b2c3090a`.
+- Actual simulator signature inspection does **not** contain device Family Controls,
+  App Group or Apple-sign-in entitlements/profiles. These are explicitly false in
+  the receipt, not inferred from source. This ad-hoc simulator product is not
+  accepted as a provisioned phone build. No installation/launch was performed.
+
+Physical signed normal-root login/callback/picker/permission/Apply/expiry/Stop,
+Metro-absent launch, foreground/background/termination/lock/offline/reboot and A/B
+owner/event journeys remain pending. C05 unsupported producers remain unsupported.
+The runbook is the VERIFY-C05 handoff; no parent plan or release acceptance closes
+from packaging inspection. No commit or push was performed by this increment.
+
+
+### C06 continuation — device signing attempted; no account in Xcode
+
+Date: 2026-11-21. Source/runtime remains the C05 parent plus the staged C06
+inspection/runbook changes. User explicitly requested no commit/push until C06
+is finished, and reconfirmed **continue without phone testing**.
+
+- Read-only discovery showed a paired physical phone, but the installed-app query
+  failed because it was locked and the developer disk image could not be mounted.
+  **No installed-app inventory was obtained**; an empty result is not evidence that
+  the pilot is absent. Device identifiers and private query output stay out of docs.
+  After the owner deferred phone testing again, no further device queries were run.
+- Attempted a normal signed **Release / iphoneos / generic iOS destination** build
+  using the existing workspace, scheme, pinned packages and ignored derived folder.
+  This does not install/launch on a phone. It failed before producing an accepted
+  device artifact: host provisioning lacks the Sign in with Apple capability and
+  `com.apple.developer.applesignin` entitlement already required by source.
+- Retried the same build with Xcode's `-allowProvisioningUpdates` to refresh the
+  existing approved capability/profile. Xcode reports **No Accounts: Add a new
+  account in Accounts settings** and cannot refresh the stale host profile.
+  Local log: `/tmp/hoosh-ios-c06-device-build.log`. No successful signing/profile
+  update, new capability, identity change or physical installation is claimed.
+- Required owner action: Xcode → Settings → Accounts → sign into the existing
+  Apple Developer account privately. Do not send passwords/codes in chat. Then
+  retry the device Release build and `inspect-ios-product.py --require-device`
+  before any installation discussion. Do not remove Apple sign-in to bypass it.
+- Signing is now a named C06 blocker in addition to physical acceptance and the
+  loopback API endpoint. A successful refresh/device build would still not close
+  permission/expiry/offline/reboot/A–B acceptance. Activation stays compiled off.
+
+Only the checkpoint, this continuation entry, C06 ledger and runbook gate changed
+in this continuation. No runtime source changed; earlier simulator/checker test
+results remain applicable. Documentation diff checks rerun. All work stays staged,
+uncommitted and unpushed; no additional test credentials or phone actions requested.
+
+
+### C06 continuation — signed device Release and provisioning verified
+
+Date: 2026-11-21. The owner completed Xcode sign-in. The same C05 runtime parent
+and staged C06 verification delta were used; no runtime source or activation gate
+changed. Prior no-account/profile failures above are historical and resolved.
+
+- Retried the runbook's normal Release / iphoneos / generic iOS build with
+  `-allowProvisioningUpdates` and pinned packages. **BUILD SUCCEEDED**.
+  Log: `/tmp/hoosh-ios-c06-device-build.log`. No simulator ad-hoc signing overrides
+  were used. Xcode refreshed provisioning for the already-approved capabilities.
+- Ran `python3 scripts/inspect-ios-product.py .native-dev/ios-shared-derived/Build/Products/Release-iphoneos/DisconnectApp.app --require-device --output .native-dev/qa/ios-c06/device-product.json`.
+  **Passed actual artifact inspection**: embedded Hermes JS, Hoosh identity/normal
+  shared scene/callback/module registration, known preview and pilot isolation scan,
+  four expected extension identities/points and all five valid signatures/profiles.
+- Host signed/provisioned Apple sign-in, Family Controls and App Group are true.
+  Monitor, shield-action and shield-configuration signed/provisioned Family Controls
+  and App Group are true. The unused report extension has a valid profile/signature
+  but no Family Controls/App Group entitlement; it remains unsupported as a shared
+  aggregate History producer. No report-export or measurement capability is inferred.
+- Sanitized [device artifact receipt](artifacts/ios-c06-device-product.json) records
+  platform, source SHA, hashes and booleans only. JS SHA256:
+  `eb70fa0d0c7ad05f97f5201054c1df45fc3ac0bd807efe1a334298202c04aca5`.
+  Product tree SHA256:
+  `2dda92a03b117511f352c1a173cb78562419f2b61004ed4b164f4843ca90124c`.
+  399 files. Profiles, certificate/private-key material and device IDs are not recorded.
+- No phone query after renewed deferral, installation, launch, app replacement,
+  selected-app access, authorization prompt, provider login or API endpoint change.
+  A provisioned package is not a device behavior, network, store entitlement or
+  distribution approval claim. The current loopback API still needs replacement
+  with a trusted reachable development endpoint before actual phone account tests.
+
+File inventory for this continuation: new
+`docs/integration_notes/artifacts/ios-c06-device-product.json` (whole file, sanitized
+artifact evidence); `docs/qa/ios-shared-standalone.md` (current signing result and
+reproducible normal device build command); C06 ledger in
+`docs/integration_plan/04_ios_native_integration.md` (signing blocker resolved);
+this notes file (current checkpoint and evidence/handoff). No code changed, so the
+existing seven inspector fault tests and lint results remain applicable; actual
+product inspection and documentation diff checks were run for this checkpoint.
+
+Physical C04/C05/C06 and VERIFY-C05 acceptance remains deferred, as requested.
+Activation stays false. All work remains staged, uncommitted and unpushed until
+the owner chooses to commit; C06 is not marked fully accepted.
+
+
+### C06 continuation — simulator UI and local backend
+
+Date: 2026-11-21. Owner requested an isolated simulated phone, then confirmed no
+running API was available and authorized creating a local development backend.
+No physical test or pilot replacement is authorized by this continuation.
+
+Implementation and exact evidence are in the
+[simulator/backend runbook](../qa/ios-c06-simulator.md). This is independent
+preparation and simulator evidence, not completed physical C06 acceptance.
+
+| Changed file | Logical change / evidence |
+|---|---|
+| `apps/mobile/src/app/_layout.tsx`: 89, 101 | Native navigation owns system-text style: public dark screens use light; warm private screens retain dark; onboarding explicitly light. Fix observed simulator black-on-dark status bar. |
+| `apps/mobile/src/app/(auth)/_layout.tsx`: 8 | Light system-text style for the native auth stack, matching its dark canvas. |
+| `apps/mobile/src/app/(onboarding)/_layout.tsx`: 8 | Light system-text style for the dark onboarding stack. No questionnaire or protection policy changed. |
+| `.gitignore`: 44–47 | Explicitly exclude `.native-dev/` toolchains/credentials/evidence and the private native Supabase plist. Earlier paths were untracked but not fully ignored; no existing data removed. |
+| `docs/qa/ios-c06-simulator.md`: 1–106 | Actual simulator case matrix, input limitation, backend scope, isolated database setup, source/test evidence and safe start/stop handoff. |
+| `docs/integration_notes/artifacts/ios-c06-simulator-product.json`: updated receipt | Reinspect rebuilt package and record three working layout source hashes; current UI evidence supersedes the earlier simulator JS receipt. |
+| `docs/integration_notes/artifacts/ios-c06-backend-readiness.json`: 1–15 | Sanitized actual health/unauthenticated HTTP outcomes, PG17.11/migration/287-test result; live account save explicitly false. |
+| This notes file and C06 ledger | Update checkpoint, ownership/request, staging and open physical/live-account acceptance. |
+
+Validation: mobile TypeScript/focused lint; **94 routed component tests** across
+Android/iOS; updated simulator Release build and actual product inspection; native
+Device Hub observation showing corrected white system text; **287 PostgreSQL17
+acceptance cases**, migrations/role/forced-RLS check; HTTP health200 and unauthenticated
+identity/profile/settings401. All are current working-delta checks over C05 parent;
+real account/native Screen Time/phone acceptance remains separately pending.
+
+Initial Expo module scanning timed out at five seconds while compiling local
+tooling; a retry succeeded without changing dependencies or bypassing the scan.
+PostgreSQL source was verified against the official archive checksum. The local
+cluster/config and logs remain ignored; credentials, Auth IDs and binaries are not
+in the committed evidence. No new API implementation, cloud project, provider,
+JWT shortcut, managed database migration or native activation was added.
+
+Runtime at handoff: the fresh simulator is on login, API localhost8000 and PG
+loopback55432 are running. Requested owner private test-account sign-in; do not
+operate the simulator during that credential handoff. Live persistence must
+respect the local test Auth FK prerequisite; no successful account save is claimed
+from database fixtures. User retains commit and push control; no commit made.
+
+
+### C06 — real-account simulator save/recovery/relaunch verified
+
+The owner signed in privately, and authorized continued testing. Normal setup
+activity selection, manual time editing, review and Save were exercised. Initial
+403 correctly identified the isolated database's missing Auth FK prerequisite;
+registered only the single simulator setup-key UUID in the guarded local fixture.
+No credentials/session tokens read, no hosted writes, JWT bypass or RLS change.
+Recovery via Check latest settings/Keep my edits succeeded; one settings row at
+revision1 confirmed. Screen Time unavailable/deferred completion was truthful.
+Home/Settings restored saved draft and session after process termination/relaunch.
+History explicitly disclosed unavailable iPhone measurements; native Apply stayed
+disabled. Details/limits: `docs/qa/ios-c06-simulator.md` signed-in continuation.
+
+Changed files: that runbook (new observed sequence and local-FK scope),
+`artifacts/ios-c06-backend-readiness.json` (real-save/revision/relaunch booleans),
+this checkpoint/entry and C06 ledger (one-account acceptance only). No runtime
+source changed; no repeat automated suite required for evidence-only updates.
+Second-account/native/physical/provider/remaining layout acceptance stays open.
+All intended changes staged; no commit/push. Local services and simulator Home
+remain available for review; no physical-device actions performed.
+
+
+### C06 — Settings edit and API service recovery
+
+Observed local API outage without a claimed successful write or native activation;
+restarted only the owned API. Normal simulator session editor saved a changed
+count and restored it via a second successful Save. DB revision1→3 confirmed;
+original test values restored. This is one-account live local persistence, not
+physical/offline/lost-ACK or A/B acceptance. Second-account availability question
+is pending with the owner; simulator remains signed in, local services running.
+
+Changed: `docs/qa/ios-c06-simulator.md` (current save status and outage/edit evidence),
+`artifacts/ios-c06-backend-readiness.json` (latest revision and editor recovery),
+and this notes entry. No code changed, no additional automated suite required.
+Diff check passed; all work staged and uncommitted. Local screenshot remains ignored.
+
+
+### C06 — account-switch identity unresolved (November 22)
+
+Real sign-out hid private routes; Google chooser opened. Owner reported another
+Google account, but Settings still presented A identity/data. B identity not
+confirmed: no pass or leakage claim. Dashboard browser access unavailable;66
+focused callback/controller/account-scope unit checks passed. No runtime changes
+or identity unlink/delete. Detailed follow-up in `docs/qa/ios-c06-simulator.md`.
+Changed only these two evidence notes; staged, diff checks passed, no commit/push.
+
+
+### November 22 — distinct-account simulator isolation verified
+
+The earlier repeated identity was resolved when the owner confirmed the entered
+email belonged to A. No session-switch or account-linking defect was established.
+The owner then signed into a genuinely different account B privately. Settings
+showed the different email; Home/Settings showed no saved activities, days, hours
+or session draft from A. Setup offered Start setup rather than A's completed
+progress. Returned B to Home without creating/editing its plan. Read-only local
+DB check confirmed A's sole settings row remains at revision3 unchanged.
+
+This passes observed A sign-out→B login UI/data/setup separation on the packaged
+simulator with real Supabase Auth and the local API. It does not prove native
+installation/journal takeover, B writes, a return-to-A login, hosted persistence
+or physical protection. No credentials read, no identity deletion/unlinking, no
+new Auth fixture inserted for B and no native permission changed. Screenshot
+`second-account-empty-home.jpg` remains ignored locally. Updated sanitized backend
+receipt and these two notes; no runtime change, documentation diff checks passed.
+Everything stays staged/uncommitted. B remains signed in on Home; local services
+remain running. Physical C06 acceptance remains deferred.
