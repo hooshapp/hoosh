@@ -119,6 +119,15 @@ internal object InterventionChecks {
         check(e.read(A) == original)
         store.claim(other, true, now + 2)
         check(e.read(other) == null)
+        // B has not installed anything. A must not silently start over at revision0.
+        failure("ERR_INTERVENTION_OWNER") { e.read(A) }
+        failure("ERR_INTERVENTION_OWNER") {
+          e.install(A, 0, 1, SavedSelection(1, setOf(APP)), emptyList(), SessionPolicy("UTC", 2, 60), now)
+        }
+        store.claim(A, true, now + 3)
+        check(e.read(A)!!.daily == original.daily && e.read(A)!!.sessions == original.sessions)
+        check(WeeklySchedules.windows(e.read(A)!!.plan, now).isEmpty())
+        store.claim(other, true, now + 4)
         e.install(other, 0, 1, SavedSelection(1, setOf(APP)), listOf(InterventionWindow("account_b", now, now + 600000)), SessionPolicy("UTC", 2, 60), now)
         check(e.read(other)!!.daily.isEmpty())
         store.claim(A, true, now + 3)

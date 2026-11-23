@@ -1,6 +1,35 @@
 # Plan05 — Combined normal-app verification
 
-## Current checkpoint — INT-VERIFY-C03, November22
+## Current checkpoint — INT-VERIFY-C04 continuation, November22
+
+- Parent `5fe021a`; owner committed the initial C04 packaging slice. Physical
+  Android/iPhone acceptance is explicitly deferred by the owner.
+- Current focused connected regression pass:124 component cases across Android
+  and iOS renderers,139 portable API/adapter cases; receipt
+  `artifacts/verify-c04-connected-checks.json`. Controlled ports are not native proof.
+- Fixed remaining native user-facing Disconnect branding in disclosure, History
+  disclosure, service label and overlay/pane/window title. Identifiers, permissions,
+  consent version and native policy/storage formats remain unchanged.
+- Exact rebuilt internal APK passed six optimized read-only native checks and117
+  pure JVM cases. First JVM invocation lacked GRADLE_USER_HOME and refused before
+  compilation; rerun with the existing local toolchain passed.
+- Owner signed in privately on emulator5560. Normal picker saved only the separate
+  test target. Not-now disclosure preserved missing access; normal disclosure and
+  Android Settings grant succeeded. No initializer seeded native rules/consent.
+- Initial settings PATCH403 exposed missing local Auth FK prerequisite, not a
+  hosted sign-in failure. Normal setup created the account-scoped progress key.
+  Queried only SQLite key names (no values/secure session), checked local PG17,
+  test database/marker/head0007 and inserted one ID-only Auth reference locally.
+  Normal account Save then succeeded. No hosted Auth/schema/security change.
+- Normal plan Preview left installation unchanged; explicit Apply confirmed active
+  weekly protection. Target entry showed actual Hoosh pause. Return home and Open
+  anyway worked; five-minute allowance/count1 survived offline native process kill
+  and target reentry with unchanged deadlines. Within-window one-minute halfway/Keep-going/expiry passed after separately
+  recording interrupted and midnight-boundary runs. Full C04 remains partial.
+- Private artifacts and local Auth prerequisite are retained for manual QA; no
+  token/password was extracted, no phone accessed, no commit/push performed.
+
+## Historical checkpoint — INT-VERIFY-C03, November22
 
 - Branch `integration/shared-product`, parent `0a512e2`; owner committed C02.
   C03 changes only evidence/docs; no production source, dependency or schema change.
@@ -146,3 +175,92 @@ overlap/Stop and connected reward/recommendation/History journeys. Historical
 synthetic lifecycle checks remain historical supporting evidence. Physical Android
 and signed iPhone tests remain deferred; iOS activation stays gated. C04 is not
 fully accepted, and this Android rebuild does not refresh iOS build evidence.
+
+
+### C04 actual normal-root continuation, November23
+
+Final APK `817db3d...49183d`, exact hashes in normal receipt. Normal account
+Save/Apply/pause and one-minute in-window expiry passed, with no clock edits.
+A separate five-minute interrupted run and23:59/midnight run are not isolated
+expiry passes. Midnight daily count correctly reset. Controlled117 engine/124
+component/139 portable cases and six exact-APK read-only native cases passed.
+
+Connected native reward sync acknowledged its outbox; wallet25, one Feed20
+produced balance5/health70 and refresh retained those values. Recommendation
+Accept saved a quest and cooldown, with no award on acceptance. Future scheduled
+one-minute quest installed alongside weekly; actual pause showed two reasons.
+Weekly Stop revision4 retained the quest; its window ended before a subsequent
+target observation, so quest-only live pause after Stop is not claimed. Synthetic
+self-report confirmation earned exactly one completion/50 credits and removed
+the confirmation action. Confirmed quest Stop removed its native rule only.
+Stale weekly resume failed closed, explicit Refresh then Resume restored revision6.
+Logout removed private screens while revision6/week/session history persisted.
+
+Normal Usage Access grant plus History disclosure/Start produced0/7 baseline
+days with unavailable comparisons; no fabricated seven-day measurements.
+Second-account identity and explicit claim now passed on emulator5560. B had its
+own cloud preferences, no saved quests or A History receipts. Before claim, A
+revision6 remained unchanged; cancelling preserved it. Confirming archived/stopped
+A at revision7 with daily count1/session retained, left B with no selected apps or
+installed weekly plan, and target opened without a pause. B profile save succeeded;
+sign-out hid private screens. Initial selection/schedule errors were the expected
+cross-owner gate and cleared after explicit claim. Return to A and the two-quest
+concurrent live matrix remain open. Emulator is at login awaiting A; no rules
+resume automatically. API8000
+reverse is present; network/font defaults restored, Usage/Accessibility enabled.
+No physical phone, Metro, remote backend, schema migration or hosted Auth change.
+Raw screenshots/private identifiers/scratch scripts remain ignored.
+
+### C04 return-account regression
+
+Normal return to A restored its own identity, saved all-seven-day/00:00–23:59/
+one-minute draft and saved quest, wallet55/health70; B profile name did not leak.
+Login did not reactivate protection. A subsequent explicit Apply exposed an
+archive gap: when B had claimed without installing, the empty active slot was
+treated as new and reset active allowance counters. A stopped revision7 archive
+remained intact. Fixed owner-aware reads to require explicit restoration before
+Apply when that account has archived history. Service reads remain non-mutating.
+Android controller/persistence146 passed, including actual AtomicFile coverage of
+this exact no-B-install path, rejected A read/Apply, explicit restore preserving
+daily/session history, and no automatic activation. Pure JVM117 passed. Rebuilt
+normal roundtrip and concurrent live matrix remain pending; no completion claim.
+
+Corrected standalone APK `f11a8dd...867d53` built and installed; exact APK/mapping
+and source hashes are in the normal receipt regression section. Six optimized
+read-only checks passed; normal signed-in A Home loaded with wallet55/health70
+and cooldown intact. API-only8000 reverse restored; no Metro. A new manual A/B
+roundtrip on this artifact remains pending, alongside the concurrent quest matrix.
+
+
+### Corrected APK live matrix — November23
+
+On corrected standalone `f11a8dd...867d53`, normal production UI installed two
+07:05–08:00 quests alongside the weekly plan (revision4). Offline elapsed expiry
+with the separate target open showed three pause reasons. Weekly Stop left two
+quest reasons (revision5); stopping one quest left one (revision6); stopping the
+last removed the pause (revision7). Daily count2 stayed unchanged. Explicit weekly
+Resume restored revision8 with that count and no quests. Permission revoke/Deny/
+Allow recovery and 1.5 font-scale profile keyboard/Discard were exercised; draft
+was discarded and font1.0/network restored. First interrupted allowance is not an
+isolated expiry pass; the second actual elapsed expiry is. Software graphics
+restart preserved app data. Normal-root controlled component checks:94 passed.
+Rebuilt real-account roundtrip still needs private A/B login; physical checks
+remain deferred. Exact source/build and limits are in the normal journey receipt.
+
+
+### Final rebuilt account roundtrip — November23
+
+Corrected APK normal A→B(no installation)→A roundtrip passed. Distinct B profile,
+preferences and zero-credit wallet stayed separate. Explicit B claim archived
+stopped A revision9/count2/session1; B installed no rules and target was unpaused.
+Returning A restored Home75/health70 and its own blank profile. Normal owner gate
+required explicit claim: stopped revision10 retained count2 and exact session
+deadline; explicit Resume revision11 preserved both and target pause returned.
+A deliberate subsequent Open anyway created count3 with exhausted=true: voluntary
+override remains possible by design; this is not a hard blocking-cap claim.
+
+Core packaged Android emulator journey is accepted within the local API/internal
+signing scope. Physical/OEM/TalkBack and field distribution stay deferred. Installed
+Android provider consent/callbacks were not repeated; prior auth evidence does not
+claim that platform-specific run. Earlier pending roundtrip/live-matrix statements
+above describe historical checkpoints and are superseded by these final results.

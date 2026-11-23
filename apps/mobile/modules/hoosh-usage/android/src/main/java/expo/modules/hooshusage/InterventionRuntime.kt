@@ -88,7 +88,7 @@ class InterventionRuntime private constructor(val context: Context) {
     }
     reviewOwner = bridge
     review = AlertDialog.Builder(activity).setTitle("Android app protection access")
-      .setMessage("Disconnect uses Android Accessibility access to receive app-window changes and show a visible pause over apps you select during your schedules. It does not read screen contents, typed text, messages or passwords. App identities stay on this device. With your signed-in account, we sync content-free Return home choices, allowance exhaustion and daily protection coverage to calculate credits and streaks. These records include times and dates, not app identities or screen contents. Saved quest details and explicit completion choices also belong to your account. You can always return home, open the app anyway, stop a schedule, or disable this service in Android Settings. Disconnect is not a disability accessibility tool. Enable only Disconnect protection on the next screen.")
+      .setMessage("Hoosh uses Android Accessibility access to receive app-window changes and show a visible pause over apps you select during your schedules. It does not read screen contents, typed text, messages or passwords. App identities stay on this device. With your signed-in account, we sync content-free Return home choices, allowance exhaustion and daily protection coverage to calculate credits and streaks. These records include times and dates, not app identities or screen contents. Saved quest details and explicit completion choices also belong to your account. You can always return home, open the app anyway, stop a schedule, or disable this service in Android Settings. Hoosh is not a disability accessibility tool. Enable only Hoosh protection on the next screen.")
       .setNegativeButton("Not now") { _, _ -> promise.resolve(false) }
       .setPositiveButton("I agree — review Settings") { _, _ ->
         execute {
@@ -275,7 +275,7 @@ class InterventionRuntime private constructor(val context: Context) {
     }
     reviewOwner = bridge
     review = AlertDialog.Builder(activity).setTitle("Start selected-app History?")
-      .setMessage("Disconnect will read Android's retained foreground usage for the apps you saved on this device. Only daily durations, dates, selected-app count and coverage are synced to your account. App names, package identities and raw events stay on this device. The first seven complete days become a fixed baseline. Missing data stays unavailable. Restarting replaces this account's current baseline; it does not change app protection. Usage access is separate and can be disabled in Android Settings.")
+      .setMessage("Hoosh will read Android's retained foreground usage for the apps you saved on this device. Only daily durations, dates, selected-app count and coverage are synced to your account. App names, package identities and raw events stay on this device. The first seven complete days become a fixed baseline. Missing data stays unavailable. Restarting replaces this account's current baseline; it does not change app protection. Usage access is separate and can be disabled in Android Settings.")
       .setNegativeButton("Not now") { _, _ -> promise.resolve(null) }
       .setPositiveButton("Start History") { _, _ -> call(promise) {
         leases.check(owner,token); history.begin(owner,java.time.ZoneId.systemDefault().id)

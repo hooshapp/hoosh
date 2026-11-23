@@ -96,10 +96,10 @@ class InterventionAccessibilityService : AccessibilityService() {
         val safe = insets.getInsets(android.view.WindowInsets.Type.systemBars() or android.view.WindowInsets.Type.displayCutout())
         view.setPadding(pad + safe.left, pad + safe.top, pad + safe.right, pad + safe.bottom); insets
       } else fitsSystemWindows = true
-      if (Build.VERSION.SDK_INT >= 28) accessibilityPaneTitle = "Disconnect pause"
+      if (Build.VERSION.SDK_INT >= 28) accessibilityPaneTitle = "Hoosh pause"
     }
     fun text(value: String, size: Float, heading: Boolean = false) { body.addView(TextView(this).apply { text = value; textSize = size; if (Build.VERSION.SDK_INT >= 28) isAccessibilityHeading = heading; setTextColor(0xff222222.toInt()); setPadding(0, 16, 0, 24) }) }
-    text("Disconnect", 20f)
+    text("Hoosh", 20f)
     text(if (mid) "Ready to return?" else "Take a moment", 32f, heading = true)
     text(if (mid) "You are halfway through this allowance. Return home to finish this session, or keep going until your time ends. The choice is yours."
       else "You chose a pause for this app. ${reasons.size} schedule reason(s) apply. You can return home or open the app anyway. Finishing an activity is your choice; this pause does not confirm quest completion.", 18f)
@@ -134,7 +134,7 @@ class InterventionAccessibilityService : AccessibilityService() {
       }
     }.apply { addView(body); isFocusableInTouchMode = true }
     val params = WindowManager.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT,
-      WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY, WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN, PixelFormat.OPAQUE).apply { gravity = Gravity.TOP; title = "Disconnect pause" }
+      WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY, WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN, PixelFormat.OPAQUE).apply { gravity = Gravity.TOP; title = "Hoosh pause" }
     try {
       getSystemService(WindowManager::class.java).addView(content, params); overlay = content; overlayKey = key; safe.requestFocus()
       runtime.execute {

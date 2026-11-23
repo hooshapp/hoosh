@@ -11,12 +11,12 @@ class InterventionEngine(private val disk: InterventionPersistence) {
   internal fun readInstalled(): InterventionRecord? = disk.read()
   private fun record(owner: String): InterventionRecord {
     InterventionValidation.owner(owner)
-    return disk.read()?.also { InterventionValidation.require(it.plan.owner == owner, "ERR_INTERVENTION_OWNER") }
+    return disk.readForOwner(owner)?.also { InterventionValidation.require(it.plan.owner == owner, "ERR_INTERVENTION_OWNER") }
       ?: throw InterventionFailure("ERR_INTERVENTION_ABSENT")
   }
   fun read(owner: String): InterventionRecord? {
     InterventionValidation.owner(owner)
-    return disk.read()?.also { InterventionValidation.require(it.plan.owner == owner, "ERR_INTERVENTION_OWNER") }
+    return disk.readForOwner(owner)?.also { InterventionValidation.require(it.plan.owner == owner, "ERR_INTERVENTION_OWNER") }
   }
   private fun event(kind: String, reason: String?, revision: Int, now: Long) = InterventionEvent(UUID.randomUUID().toString(), now, kind, reason, revision)
   private fun persist(value: InterventionRecord): InterventionRecord {

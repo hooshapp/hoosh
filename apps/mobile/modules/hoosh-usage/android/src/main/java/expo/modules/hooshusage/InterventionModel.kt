@@ -13,6 +13,8 @@ data class InterventionRecord(val plan: InterventionPlan, val allowances: List<A
 class InterventionFailure(val code: String) : RuntimeException(code)
 interface InterventionPersistence {
   fun read(): InterventionRecord?
+  /** Account reads must not mistake archived history for a brand-new installation. */
+  fun readForOwner(owner: String): InterventionRecord? = read()
   fun write(value: InterventionRecord)
   fun erase()
 }

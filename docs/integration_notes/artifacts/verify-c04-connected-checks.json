@@ -1,0 +1,47 @@
+{
+  "increment": "INT-VERIFY-C04",
+  "parent": "5fe021ac69ecf6dc302a3bb3cf50b5186eb6e4d2",
+  "scope": "controlled connected component and portable API/native-adapter tests, not installed platform acceptance",
+  "components": {
+    "passed": 124,
+    "projects": [
+      "ios",
+      "android"
+    ],
+    "test_files": 10,
+    "project_suites": 20
+  },
+  "unit": {
+    "passed": 139,
+    "files": 8
+  },
+  "source_sha256": {
+    "apps/mobile/src/features/protection/native-owner-boundary.test.tsx": "b652ad40a1fc114d3c6167dffb0b6ee5f213ddf9224bd8b6e03a14305b67abcf",
+    "apps/mobile/src/features/protection/device-protection.test.tsx": "9cf5c224385412f931d8fcc2d448bcda7597d03e2f87f650aaaf0f0b5ce3d757",
+    "apps/mobile/src/features/protection/installed-device-protection.test.tsx": "5cd66b55873c780929acba8b422c4755032a87c8cb818f3816f226e0a8b2625d",
+    "apps/mobile/src/features/protection/installation-review.test.tsx": "e94221cf8747809779f096be1003bc288c653ec322aed75a6ef0475e7cf82033",
+    "apps/mobile/src/features/protection/selection-lifecycle-qa.test.tsx": "b1b4cb8522229d04d36bae7ffd7699262aebdcd4d9374fe6603be35bc1c86214",
+    "apps/mobile/src/features/quests/managed-quest-lifecycle.test.tsx": "259ee00d7b01ea96bd9cea3b92589629768c4fecf1a02c336f10a89f9ea9770e",
+    "apps/mobile/src/features/quests/quest-execution-panel.test.tsx": "a70b1384cac5b299f15024d64bc2e52d98eec03b6215cc0bc71cb55991090313",
+    "apps/mobile/src/features/recommendations/recommendations-home.test.tsx": "839046d71e2f3f870097ab0405c1b940951e99355e57358eb2d427e29bbc3253",
+    "apps/mobile/src/features/rewards/rewards-home.test.tsx": "5b2a7b0d273c19b9a6ac86c25aa781bf99becf35c8da37ac1733319cf372b882",
+    "apps/mobile/src/features/history/connected-history-screen.test.tsx": "82df78babdca22afd3dd254e2061c432504e35cf39ae6d22e4896518284490d5",
+    "apps/mobile/src/infrastructure/native/intervention-protection-reader.test.ts": "a4ffe565fb1506130c72574c30510378db5b470ee1b224bf0073565f510af869",
+    "apps/mobile/src/infrastructure/native/quest-device.test.ts": "2a81c327dcf483e4ae9a51e17c4444d0169a9223c9c4994d3ef90829979db2f8",
+    "apps/mobile/src/features/protection/status-model.test.ts": "c168b691b6652f89dc294bbce23d723c28f5cf39fa6dd473afc686d859ef0887",
+    "apps/mobile/src/features/quests/quest-lifecycle.test.ts": "fd499da874079bd269087e762bb9d5c09f710d0546de2c44450a6b624e77f362",
+    "apps/mobile/src/features/quests/quest-execution-api.test.ts": "180488de597602a5284e33368b29615aac5995189dde60c78897a050d9f80a9b",
+    "apps/mobile/src/features/recommendations/recommendations-api.test.ts": "1e096a72fdfa09e02b8605820016fae0ad4620442c423feac30d62ecfda3cc7e",
+    "apps/mobile/src/features/rewards/rewards-api.test.ts": "7d4f3a2778d09a236ec0e5f678c027af16a6b447124b85161da79dd12da40ad4",
+    "apps/mobile/src/features/history/history-api.test.ts": "2278191a7f0225d5cc024a3bc1654b6a27c727820c6f88a319cf0befff902261"
+  },
+  "fixture_boundary": "selection-lifecycle-qa uses a development component; other selected suites exercise production components with controlled service/native ports",
+  "production_logic_changed": false,
+  "normal_app_integration": {
+    "passed": 94,
+    "project_suites": 2,
+    "file": "apps/mobile/src/features/plans/normal-app-integration.test.tsx",
+    "sha256": "ed79ba482cdf2e0acf50a7356d1807736928d6d9ec36c095036886373ff9f87e",
+    "boundary": "Production root with controlled service/native ports, not a substitute for live installed overlap/claim checks."
+  }
+}

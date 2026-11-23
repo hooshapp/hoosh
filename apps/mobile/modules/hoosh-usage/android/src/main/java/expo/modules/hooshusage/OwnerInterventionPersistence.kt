@@ -8,6 +8,16 @@ import java.util.UUID
 class OwnerInterventionPersistence(private val directory: File) : InterventionPersistence {
   private val active = AtomicInterventionPersistence(File(directory, "intervention-debug-v1/state.json"))
   override fun read() = active.read()
+  override fun readForOwner(owner: String): InterventionRecord? {
+    InterventionValidation.owner(owner)
+    val current = active.read()
+    if (current == null && archive(owner).read() != null) {
+      // A different account may claim without installing any rules. Returning owners
+      // must still explicitly restore their stopped record before Apply can proceed.
+      throw InterventionFailure("ERR_INTERVENTION_OWNER")
+    }
+    return current
+  }
   override fun write(value: InterventionRecord) = active.write(value)
   override fun erase() = active.erase()
   fun eraseOwner(owner: String) {

@@ -1,0 +1,494 @@
+{
+  "increment": "INT-VERIFY-C04",
+  "status": "emulator_core_journey_passed_physical_and_distribution_deferred",
+  "build": {
+    "built_at": "2026-11-23T03:44:54.131Z",
+    "distribution": "INTERNAL ONLY; local Android debug certificate; not store signing",
+    "package_id": "com.hoosh.disconnect.dev",
+    "app_label": "Hoosh",
+    "min_sdk": 24,
+    "target_sdk": 36,
+    "debuggable": false,
+    "hermes_bytecode": true,
+    "embedded_bundle_bytes": 3649056,
+    "packaged_font_count": 6,
+    "native_abis": [
+      "arm64-v8a"
+    ],
+    "native_protection_manifest": true,
+    "signature_verified": true,
+    "alignment_16k_verified": true,
+    "mapping_sha256": "56aab4b54e5dd3c29a8fe61d2dd251091b324b784c5145708dcacd44bc6f0d28",
+    "apk_sha256": "817db3d4614c79f2d50d5d39427ff16ce743e05d86dc1133285559e53249183d",
+    "api_transport": "internal_loopback_http",
+    "public_provider_switches": {
+      "EXPO_PUBLIC_APPLE_NATIVE_ENABLED": true,
+      "EXPO_PUBLIC_APPLE_OAUTH_ENABLED": true,
+      "EXPO_PUBLIC_GOOGLE_ENABLED": true
+    },
+    "managed_account_acceptance": "pending",
+    "native_runtime_acceptance": "not established by packaging",
+    "source_commit": "5fe021ac69ecf6dc302a3bb3cf50b5186eb6e4d2",
+    "source_worktree_dirty": true
+  },
+  "native_source_sha256": {
+    "apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/InterventionRuntime.kt": "dbf15614e7c9d747cc94d7c9e362521688ec0e147c37f16494e455436bd79159",
+    "apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/InterventionAccessibilityService.kt": "cebdb18e6a6fc2a6b51e00ebe47d7e63b9801d4b3ea79847710182841a991078",
+    "apps/mobile/modules/hoosh-usage/android/src/main/res/values/strings.xml": "e09bd4b5e0ac37b87b16ec0fa592009326c42e48b37e4bd976b260bd6de804c7"
+  },
+  "checks": {
+    "optimized_read_only_native": 6,
+    "pure_jvm": 117,
+    "components": 124,
+    "portable": 139
+  },
+  "actual_normal_app_passes": [
+    "Owner signed in privately",
+    "Local test Auth FK prerequisite added without credentials or hosted mutation",
+    "Native app picker selected and saved separate test target",
+    "Not-now disclosure leaves access unavailable",
+    "Disclosure Settings handoff and OS grant",
+    "Account plan Save and Preview with no automatic activation",
+    "Explicit Apply and installed readback",
+    "Real target pause, Return home, Open anyway",
+    "Offline process kill and reentry preserve allowance deadlines and daily count",
+    "Cold emulator reboot preserves installed plan and authenticated setup review",
+    "Settings edit/save labels draft change unapplied until explicit Apply",
+    "Settings hours/session changes saved through real API; installed plan stayed unchanged until explicit Apply",
+    "Actual halfway nudge appeared on the normal one-minute allowance",
+    "Within-window one-minute allowance: halfway nudge, Keep going, actual pause at expiry with target remaining open and no clock edits",
+    "Real midnight reset: first allowance of new date counted1",
+    "Native reward outbox delivered and acknowledged; wallet25, Feed20 changed wallet5 and health50 to70; refresh retained result",
+    "Recommendation Accept persisted one quest, opened editor and cooldown; no automatic completion credit",
+    "Normal quest edit and future Schedule installed one quest alongside weekly revision3",
+    "Actual target pause showed two reasons during weekly plus quest overlap",
+    "Weekly Stop advanced revision4 and preserved the quest record; its window ended before subsequent target observation",
+    "Self-reported synthetic quest completion confirmed once: completed_count1 and credits50; button removed",
+    "Confirmed quest Stop advanced revision5 and removed only quest; settings retained",
+    "Stale native revision rejected weekly resume, explicit Refresh/readback then deliberate Resume succeeded at revision6",
+    "Logout hid private root, retained weekly enabled revision6 and daily/session history unchanged",
+    "Normal History Usage Access grant and disclosure Start produced0/7 reported days and unavailable comparison",
+    "Different second-account identity confirmed in normal Settings; own weekday09:00-17:00/15-minute draft and Gym/Reading preferences differ from A",
+    "Before explicit claim, A revision6 enabled plan/session/count remained unchanged; B could not read app selection or manage native schedule",
+    "Cancel device-account confirmation preserved A revision6 and allowance history",
+    "Confirm device account stopped and archived A at revision7, retained daily count1 and one session; B had no applied weekly plan and zero selected apps, no automatic resume",
+    "After explicit claim, separate target opened without pause; A old rules no longer active",
+    "B normal Quests empty and History zero turn-off receipts with no inherited A collector; comparison remains unavailable",
+    "B profile display-name save succeeded through normal API and updated account header; sign-out hid private root",
+    "First-account login restored its own identity, blank profile (not B synthetic name), all7days/00:00-23:59/one-minute draft, saved recommendation quest, wallet55 and health70",
+    "Returning login did not automatically reactivate protection"
+  ],
+  "limitations": [
+    "Original five-minute uninterrupted expiry interrupted by emulator shutdown; not a pass",
+    "API37 System UI startup stalls resolved with Wait",
+    "After APK replacement service required explicit off/on recovery",
+    "Physical devices deferred by owner",
+    "No initializer seeded production rules or consent; target app itself is synthetic"
+  ],
+  "emulator_resume": "Cold boot retained native revision1 and daily count; initial System UI stall recovered with Wait. Session remained signed in.",
+  "observed_native_snapshots": {
+    "allowance-before-kill": {
+      "at": 1795405774,
+      "revision": 1,
+      "weekly_enabled": true,
+      "quest_count": 0,
+      "selected_app_count": 1,
+      "sessions": [
+        {
+          "wall": 1795406049390,
+          "elapsed": 2864193,
+          "boot": 1,
+          "seconds": 300,
+          "nudged": false
+        }
+      ],
+      "daily_counts": [
+        1
+      ],
+      "event_kinds": [
+        "override_selected",
+        "quit_selected",
+        "rule_activated",
+        "shield_presented"
+      ],
+      "event_count": 5
+    },
+    "allowance-after-kill": {
+      "at": 1795405795,
+      "revision": 1,
+      "weekly_enabled": true,
+      "quest_count": 0,
+      "selected_app_count": 1,
+      "sessions": [
+        {
+          "wall": 1795406049390,
+          "elapsed": 2864193,
+          "boot": 1,
+          "seconds": 300,
+          "nudged": false
+        }
+      ],
+      "daily_counts": [
+        1
+      ],
+      "event_kinds": [
+        "override_selected",
+        "quit_selected",
+        "rule_activated",
+        "shield_presented"
+      ],
+      "event_count": 5
+    },
+    "allowance-after-reentry": {
+      "at": 1795405812,
+      "revision": 1,
+      "weekly_enabled": true,
+      "quest_count": 0,
+      "selected_app_count": 1,
+      "sessions": [
+        {
+          "wall": 1795406049390,
+          "elapsed": 2864193,
+          "boot": 1,
+          "seconds": 300,
+          "nudged": false
+        }
+      ],
+      "daily_counts": [
+        1
+      ],
+      "event_kinds": [
+        "override_selected",
+        "quit_selected",
+        "rule_activated",
+        "shield_presented"
+      ],
+      "event_count": 5
+    },
+    "resumed-after-emulator-reboot": {
+      "at": 1795409812,
+      "revision": 1,
+      "weekly_enabled": true,
+      "quest_count": 0,
+      "selected_app_count": 1,
+      "sessions": [
+        {
+          "wall": 1795406049390,
+          "elapsed": 2864193,
+          "boot": 1,
+          "seconds": 300,
+          "nudged": false
+        }
+      ],
+      "daily_counts": [
+        1
+      ],
+      "event_kinds": [
+        "override_selected",
+        "quit_selected",
+        "rule_activated",
+        "shield_presented"
+      ],
+      "event_count": 7
+    },
+    "after-midnight-allowance": {
+      "at": 1795410014,
+      "revision": 2,
+      "weekly_enabled": true,
+      "quest_count": 0,
+      "selected_app_count": 1,
+      "sessions": [
+        {
+          "wall": 1795410070138,
+          "elapsed": 314761,
+          "boot": 2,
+          "seconds": 60,
+          "nudged": false
+        }
+      ],
+      "daily_counts": [
+        1
+      ],
+      "event_kinds": [
+        "override_selected",
+        "quit_selected",
+        "rule_activated",
+        "shield_presented"
+      ],
+      "event_count": 13
+    },
+    "actual-expiry": {
+      "at": 1795410088,
+      "revision": 2,
+      "weekly_enabled": true,
+      "quest_count": 0,
+      "selected_app_count": 1,
+      "sessions": [
+        {
+          "wall": 1795410070138,
+          "elapsed": 314761,
+          "boot": 2,
+          "seconds": 60,
+          "nudged": true
+        }
+      ],
+      "daily_counts": [
+        1
+      ],
+      "event_kinds": [
+        "override_selected",
+        "quit_selected",
+        "rule_activated",
+        "shield_presented"
+      ],
+      "event_count": 15
+    },
+    "quest-scheduled-final": {
+      "at": 1795410283,
+      "revision": 3,
+      "weekly_enabled": true,
+      "quest_count": 1,
+      "selected_app_count": 1,
+      "sessions": [
+        {
+          "wall": 1795410070138,
+          "elapsed": 314761,
+          "boot": 2,
+          "seconds": 60,
+          "nudged": true
+        }
+      ],
+      "daily_counts": [
+        1
+      ],
+      "event_kinds": [
+        "override_selected",
+        "quit_selected",
+        "rule_activated",
+        "shield_presented"
+      ],
+      "event_count": 17
+    },
+    "scoped-weekly-stop": {
+      "at": 1795410421,
+      "revision": 4,
+      "weekly_enabled": false,
+      "quest_count": 1,
+      "selected_app_count": 1,
+      "sessions": [
+        {
+          "wall": 1795410070138,
+          "elapsed": 314761,
+          "boot": 2,
+          "seconds": 60,
+          "nudged": true
+        }
+      ],
+      "daily_counts": [
+        1
+      ],
+      "event_kinds": [
+        "override_selected",
+        "quit_selected",
+        "rule_activated",
+        "rule_deactivated",
+        "shield_presented"
+      ],
+      "event_count": 23
+    },
+    "quest-stopped": {
+      "at": 1795410486,
+      "revision": 5,
+      "weekly_enabled": false,
+      "quest_count": 0,
+      "selected_app_count": 1,
+      "sessions": [
+        {
+          "wall": 1795410070138,
+          "elapsed": 314761,
+          "boot": 2,
+          "seconds": 60,
+          "nudged": true
+        }
+      ],
+      "daily_counts": [
+        1
+      ],
+      "event_kinds": [
+        "override_selected",
+        "quit_selected",
+        "rule_activated",
+        "rule_deactivated",
+        "shield_presented"
+      ],
+      "event_count": 24
+    },
+    "before-logout": {
+      "at": 1795410536,
+      "revision": 6,
+      "weekly_enabled": true,
+      "quest_count": 0,
+      "selected_app_count": 1,
+      "sessions": [
+        {
+          "wall": 1795410070138,
+          "elapsed": 314761,
+          "boot": 2,
+          "seconds": 60,
+          "nudged": true
+        }
+      ],
+      "daily_counts": [
+        1
+      ],
+      "event_kinds": [
+        "override_selected",
+        "quit_selected",
+        "rule_activated",
+        "rule_deactivated",
+        "shield_presented"
+      ],
+      "event_count": 25
+    },
+    "after-logout": {
+      "at": 1795410542,
+      "revision": 6,
+      "weekly_enabled": true,
+      "quest_count": 0,
+      "selected_app_count": 1,
+      "sessions": [
+        {
+          "wall": 1795410070138,
+          "elapsed": 314761,
+          "boot": 2,
+          "seconds": 60,
+          "nudged": true
+        }
+      ],
+      "daily_counts": [
+        1
+      ],
+      "event_kinds": [
+        "override_selected",
+        "quit_selected",
+        "rule_activated",
+        "rule_deactivated",
+        "shield_presented"
+      ],
+      "event_count": 25
+    },
+    "b-before-claim": {
+      "at": 1795410848,
+      "revision": 6,
+      "weekly_enabled": true,
+      "quest_count": 0,
+      "selected_app_count": 1,
+      "sessions": [
+        {
+          "wall": 1795410070138,
+          "elapsed": 314761,
+          "boot": 2,
+          "seconds": 60,
+          "nudged": true
+        }
+      ],
+      "daily_counts": [
+        1
+      ],
+      "event_kinds": [
+        "override_selected",
+        "quit_selected",
+        "rule_activated",
+        "rule_deactivated",
+        "shield_presented"
+      ],
+      "event_count": 25
+    },
+    "b-claim-cancelled": {
+      "at": 1795410881,
+      "revision": 6,
+      "weekly_enabled": true,
+      "quest_count": 0,
+      "selected_app_count": 1,
+      "sessions": [
+        {
+          "wall": 1795410070138,
+          "elapsed": 314761,
+          "boot": 2,
+          "seconds": 60,
+          "nudged": true
+        }
+      ],
+      "daily_counts": [
+        1
+      ],
+      "event_kinds": [
+        "override_selected",
+        "quit_selected",
+        "rule_activated",
+        "rule_deactivated",
+        "shield_presented"
+      ],
+      "event_count": 25
+    },
+    "a-archived-after-b-claim": {
+      "archived_record_count": 1,
+      "records": [
+        {
+          "revision": 7,
+          "weekly_enabled": false,
+          "quest_count": 0,
+          "daily_counts": [
+            1
+          ],
+          "session_count": 1,
+          "last_event_kind": "rule_deactivated"
+        }
+      ]
+    }
+  },
+  "remaining": [
+    "Provider consent/callbacks on installed Android not repeated",
+    "Physical Android/OEM, TalkBack and field distribution deferred; signed iPhone separate"
+  ],
+  "test_data": "One approved account local ID-only FK prerequisite, saved Reading activity/plan, one accepted synthetic recommendation quest/completion and Feed receipt retained for QA. No hosted users created or modified. Second approved account used existing local data, saved synthetic profile name C04AccountB, and explicitly claimed emulator; no credentials read.",
+  "cleanup_current": "Corrected standalone APK on emulator5560, first account signed in, weekly revision11 enabled, no quests installed. Count3 after deliberate post-restore override test (count2 survived restoration/resume). Font1.0/network restored; API-only8000 reverse/no Metro. Cloud balance75/health70 observed before final override. Physical/OEM/TalkBack/field distribution and installed-Android provider callback retest remain separate, unverified claims.",
+  "return_account_regression": {
+    "found_in_apk": "817db3d4614c79f2d50d5d39427ff16ce743e05d86dc1133285559e53249183d",
+    "observed": "B claimed without installing rules, leaving no active record. Returning A Apply treated the empty active slot as new and reset active daily/session counters; archived A revision7 remained on disk. Cloud data unaffected.",
+    "fix": "Owner-aware persistence reads reject an empty active slot when that owner has archived history. Normal UI requires explicit claim to restore stopped history before Apply. Raw service reads remain non-mutating.",
+    "android_debug_controller_and_persistence_cases": 146,
+    "pure_jvm_cases": 117,
+    "regression": "Actual Android AtomicFile owner test now covers B claim/no install, A read/Apply rejected, explicit A restore preserves daily/session history and does not activate, then B install and return-A restore.",
+    "normal_rebuilt_roundtrip": "Passed on corrected exact APK: A Home75/health70 and own blank profile returned; B profile did not leak. Owner gate blocked normal Apply until explicit claim restored stopped revision10/count2/same session deadline. Explicit Resume revision11 retained count2/session. Target pause returned. Subsequent explicit Open anyway produced count3 and exhausted=true, consistent with voluntary override policy; no hard-cap claim.",
+    "private_history_note": "The old APK reset affected active local allowance state during this QA run. The archived pre-reset record was observed intact; no claim of automatic retroactive repair is made.",
+    "corrected_build": {
+      "apk_sha256": "f11a8dd095b437a86b9c52248c20fef56575251e3f32a1ff37e879519a867d53",
+      "mapping_sha256": "0d78589b2ecf2412b81146aa656dd096ba4ce0b588708e155b00b0d19f334487",
+      "built_at": "2026-11-23T05:25:19.303Z",
+      "app_label": "Hoosh",
+      "debuggable": false,
+      "hermes_bytecode": true,
+      "source_commit": "5fe021ac69ecf6dc302a3bb3cf50b5186eb6e4d2",
+      "source_worktree_dirty": true,
+      "optimized_read_only_native_cases": 6,
+      "normal_startup": "First-account signed-in Home loaded after reinstall; wallet55/health70 and quest cooldown retained. API-only8000 reverse restored; no Metro."
+    },
+    "corrected_source_sha256": {
+      "apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/InterventionModel.kt": "52b14ee6ca67e021a84910212ed5cf87fdd6d7643282e337d1d342d605327dc4",
+      "apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/InterventionEngine.kt": "d68ef86bd3e4b2f32c36492ad496ba0a235454a8eb21f4bbf1e81ad956a5a49c",
+      "apps/mobile/modules/hoosh-usage/android/src/main/java/expo/modules/hooshusage/OwnerInterventionPersistence.kt": "395e91034b318dca0af94330fcab188eabdd9236337bd82e16d3322e90768de4"
+    },
+    "normal_rebuilt_second_account": "Passed: distinct B identity/profile, own weekday/09\u201317/15-minute preferences and zero-credit Home; A revision8/count2/session retained before claim. Explicit B claim archived stopped A revision9/count2/session1, no B installation or automatic resume, target opened unpaused. B signout initiated; returning A login/restore still pending."
+  },
+  "corrected_apk_live_followup": {
+    "build": "f11a8dd095b437a86b9c52248c20fef56575251e3f32a1ff37e879519a867d53",
+    "permissions": "Normal disclosure and OS Accessibility revoke, Deny, then Allow; saved weekly rule retained, scheduling unavailable while revoked and recovered after grant.",
+    "overlap": "Two normal-UI quests saved for November23 07:05\u201308:00 alongside weekly rule; revision4 held both quests. Real target pause showed three reasons after elapsed allowance expiry.",
+    "offline_lifecycle": "First one-minute allowance retained revision/count/deadline after offline app-process kill and service respawn. Halfway nudge observed. A later tap arrived after expiry and explicitly opened a second allowance; first expiry visual is not claimed. Second allowance elapsed offline with target open, then actual three-reason pause observed, no clock edits.",
+    "scoped_stop": "Weekly Stop revision5 retained both quests and actual two-reason pause. First quest Stop revision6 retained the second and actual one-reason pause. Last quest Stop revision7 removed pause; daily count2 remained unchanged throughout. Explicit Resume saved weekly plan produced revision8 with count2 and no quests.",
+    "layout": "Font scale1.5 normal Home/Settings/profile keyboard inspected; Save and Discard reachable, four destinations visible in two-row navigation. Synthetic unsaved profile draft discarded; font scale restored1.0.",
+    "normal_root_controlled_component_cases": 94,
+    "limits": "Owned API37 emulator, local API-only reverse, internal local-debug signing. Software graphics restart followed emulator graphics failure without wiping app data. Physical/OEM/TalkBack/store or field backend acceptance not inferred."
+  }
+}
