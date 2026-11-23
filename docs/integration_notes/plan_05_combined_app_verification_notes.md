@@ -381,3 +381,15 @@ login/verification; acceptance remains pending. No claim of iOS native/physical
 provider coverage, direct native signup confirmation, or full callback replay/expiry
 matrix. Commit suggestion after review: `fix(auth): preserve Android OAuth callbacks
 on browser return`. No commit or push performed.
+
+### Apple Android OAuth acceptance — 2026-11-23
+
+Owner completed the fresh Apple prompts privately and reported dashboard return.
+Verified normal Home dashboard and Apple private-relay identity in Settings at
+17:24 Eastern; the previous Google identity was not shown. Latest Google and Apple
+Android OAuth happy paths now pass on the rebuilt standalone APK. No relay address,
+credentials or callback link recorded. Settings still reports some unavailable
+settings on the emulator owned by another account; no ownership claim performed.
+This does not certify native iOS sign-in, physical-device behavior, or the full
+provider cancel/expiry/replay matrix. Follow-up commit suggestion:
+`docs(auth): record successful Android Apple sign-in verification`.

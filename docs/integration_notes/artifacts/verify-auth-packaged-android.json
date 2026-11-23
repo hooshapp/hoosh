@@ -4,7 +4,7 @@
   "source_head": "d384a740ec8fe31bba18bd218139c6962bf493e8",
   "apk_sha256": "f11a8dd095b437a86b9c52248c20fef56575251e3f32a1ff37e879519a867d53",
   "environment": "Owned API37 emulator5560, existing standalone normal app, local API8000 reverse, no physical device",
-  "status": "email_signup_password_login_recovery_and_latest_google_happy_path_passed_apple_retest_pending",
+  "status": "email_signup_password_login_recovery_google_and_apple_latest_android_happy_paths_passed",
   "google": {
     "launch": "Passed: normal login Continue with Google opened accounts.google.com sign-in for configured Supabase project",
     "browser": "AOSP WebView Browser Tester145; no Chrome package present. Browser-specific reliability not inferred.",
@@ -16,9 +16,9 @@
   "apple": {
     "launch": "Passed: Apple hosted sign-in page displayed Hoosh application name",
     "user_observation": "Completed Apple prompts, returned to Hoosh sign-in instead of dashboard",
-    "current_observation": "Normal signed-out screen, no visible error after scrolling; no matching custom-scheme callback found in current activity metadata",
-    "acceptance": "failed_or_incomplete; no authenticated dashboard/session acceptance",
-    "cause": "Unconfirmed: callback delivery/browser lifecycle versus provider/server exchange. No claim of same bad_oauth_state as Google."
+    "current_observation": "2026-11-23 17:24 Eastern: signed-in Home and Apple private-relay identity in Settings observed. Some settings unavailable on emulator previously managed by another account; no device ownership claim performed.",
+    "acceptance": "Passed latest rebuilt Android OAuth happy path: owner completed Apple prompts, normal Home dashboard observed, Settings displayed Apple private-relay account rather than the previous Google account.",
+    "cause": "Historical failure retained above. Latest rerun passed after Android pending-flow cancellation fix. Native iOS and physical-device checks remain separate."
   },
   "fresh_signup_confirmation": {
     "signup": "Normal Check your email screen observed after user submission",
@@ -70,7 +70,7 @@
       "diff_check": "passed"
     },
     "google_live": "Passed account chooser to normal Home dashboard, expected existing account verified in Settings, 2026-11-23 17:20 Eastern. Source fix and successful rerun support race diagnosis; no provider secrets or allowlist changes.",
-    "apple_live": "Fresh Apple page opened; user private credential/verification step pending.",
+    "apple_live": "Passed: owner completed fresh Apple login privately; normal Home dashboard and Apple private-relay account in Settings observed 2026-11-23 17:24 Eastern. No credentials or relay address recorded.",
     "build": {
       "built_at": "2026-11-23T22:08:57.497Z",
       "debuggable": false,
