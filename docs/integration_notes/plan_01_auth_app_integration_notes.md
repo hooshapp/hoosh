@@ -114,3 +114,14 @@ client, and deliberate later login works. No hosted user/password/provider opera
 passed; see Plan05 C02 notes/receipt for exact scope. Live provider/confirmation,
 real B writes/return-to-A and OS-storage/native acceptance remain open. No runtime
 fix, bypass, rebuild or deployment required; owner retains commit/push control.
+
+
+## VERIFY-C04 — Android provider packaging supplement
+
+Standalone filtering previously dropped the three reviewed provider switches.
+They now survive with strict boolean validation/default-off behavior; two new
+regressions pass (eight total guards). Final internal APK visibly enables Google
+and Apple actions on signup/login. Credentials/provider configuration unchanged;
+provider consent, callbacks and real A/B authentication were not retested here.
+Expo/Android display name now Hoosh; package/callback identifiers unchanged.
+See Plan05 C04 receipt for exact build hashes and pending acceptance.

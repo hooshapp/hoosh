@@ -12,10 +12,15 @@ npm run mobile:android:standalone -- --check-config
 JAVA_HOME=/path/to/jdk17 ANDROID_HOME=/path/to/sdk npm run mobile:android:standalone
 ```
 
-The ignored `apps/mobile/.env` supplies only the existing three public fields:
+The ignored `apps/mobile/.env` supplies the three required public fields:
 `EXPO_PUBLIC_API_BASE_URL`, `EXPO_PUBLIC_SUPABASE_URL` and
 `EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY`. Explicit environment fields take precedence;
 `--env-file PATH` selects another local file. No key values appear in output/report.
+The reviewed `EXPO_PUBLIC_APPLE_NATIVE_ENABLED`, `EXPO_PUBLIC_APPLE_OAUTH_ENABLED`
+and `EXPO_PUBLIC_GOOGLE_ENABLED` switches are also preserved. They require exact
+`true`/`false` values and default to `false` when absent. All other public fields
+remain filtered. The report records these booleans, and APK inspection requires
+the launcher label `Hoosh`.
 Never use database/service-role/access/refresh credentials as public configuration.
 Validation checks format and role, not live key/account validity.
 
@@ -133,3 +138,37 @@ It uses a separate test-APK initializer; it does not add a normal app bypass or
 accept product disclosure/selection/Apply/SDK flows. Force stop remains an observed
 interruption requiring explicit recovery, not continuous enforcement. True LMK,
 OEM/wider/store/iOS/TalkBack and managed-account gates retain their original scope.
+
+
+## INT-VERIFY-C04 — November 22 packaged Android continuation
+
+Independent packaging/public-UI slice passed; full C04 remains partial. See
+[the sanitized receipt](../integration_notes/artifacts/verify-c04-android.json)
+for exact parent, source/APK/mapping hashes and scope. Fixed the standalone filter
+dropping reviewed Google/Apple switches, and changed Expo/Android display name to
+Hoosh without changing package IDs or callback scheme. Rebuilt the final optimized
+embedded-Hermes APK; eight config guards,117 pure JVM engine checks, six optimized
+read-only native checks and mobile TypeScript passed. Local debug signing is
+internal only; ZIP alignment does not certify a16KiB kernel or store release.
+
+Fresh API37/Android17 emulator5560 showed the normal intro (five short swipes per
+transition), signup validation/native keyboard, reachable login footer and enabled
+Google/Apple actions on both forms. No credentials or provider consent were used.
+At font scale2.0 provider actions remained reachable with scrolling. Signed-out
+offline cold launch retained login without repeating intro. Font/network settings
+were restored; no account, owner, native permission or protection rules changed.
+An initial System UI stall resolved by choosing Wait; subsequent launches worked.
+
+Temporary API-only `adb -s emulator-5560 reverse tcp:8000 tcp:8000` let the guest
+browser display local `/healthz` success. Shell nc probes returned empty output
+and were inconclusive. Reverse mappings were removed afterward; future local
+signed-in API testing must deliberately restore this tunnel first. This does not
+prove authenticated API operations, hosted availability or provider callbacks.
+Emulator remains at Hoosh login. No Metro launch was required. Private screenshots,
+AVD, APK, mapping and scratch scripts remain ignored, not staged.
+
+Next: managed A/B normal-root permission/selection/Apply/intervention/expiry,
+overlap/Stop and connected reward/recommendation/History journeys. Historical
+synthetic lifecycle checks remain historical supporting evidence. Physical Android
+and signed iPhone tests remain deferred; iOS activation stays gated. C04 is not
+fully accepted, and this Android rebuild does not refresh iOS build evidence.

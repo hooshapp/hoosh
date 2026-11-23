@@ -18,10 +18,16 @@ import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const mobile = join(root, 'apps/mobile');
+const providerNames = [
+  'EXPO_PUBLIC_APPLE_NATIVE_ENABLED',
+  'EXPO_PUBLIC_APPLE_OAUTH_ENABLED',
+  'EXPO_PUBLIC_GOOGLE_ENABLED',
+];
 const publicNames = [
   'EXPO_PUBLIC_API_BASE_URL',
   'EXPO_PUBLIC_SUPABASE_URL',
   'EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY',
+  ...providerNames,
 ];
 const PACKAGE = 'com.hoosh.disconnect.dev';
 function stop(message) {
@@ -29,8 +35,12 @@ function stop(message) {
 }
 export function validatePublicConfig(values) {
   const result = Object.fromEntries(
-    publicNames.map((key) => [key, values[key] ?? '']),
+    publicNames.map((key) => [key, values[key] ?? (providerNames.includes(key) ? 'false' : '')]),
   );
+  for (const key of providerNames) {
+    if (!['true', 'false'].includes(result[key]))
+      stop('Use true or false for public provider switches.');
+  }
   const origin = (value) => {
     if (!value || /[\s\u0000-\u001f\u007f]/.test(value))
       stop('Invalid public configuration; use plain origins.');
@@ -137,6 +147,8 @@ export function inspectApk(apk, tools, env) {
     badging.includes('application-debuggable')
   )
     stop('Unexpected package or debuggable standalone app.');
+  const label = /application-label:'([^']+)'/.exec(badging)?.[1];
+  if (label !== 'Hoosh') stop('Unexpected Android app display name.');
   const files = run('/usr/bin/unzip', ['-Z1', apk], env, true)
     .toString()
     .split('\n');
@@ -190,6 +202,7 @@ export function inspectApk(apk, tools, env) {
     stop('Installed Android SDK metadata could not be confirmed.');
   return {
     package_id: PACKAGE,
+    app_label: label,
     min_sdk: minimum,
     target_sdk: target,
     debuggable: false,
@@ -318,6 +331,9 @@ export function main(args = process.argv.slice(2)) {
       api_transport: config.EXPO_PUBLIC_API_BASE_URL.startsWith('https:')
         ? 'https'
         : 'internal_loopback_http',
+      public_provider_switches: Object.fromEntries(
+        providerNames.map(key => [key, config[key] === 'true']),
+      ),
       managed_account_acceptance: 'pending',
       native_runtime_acceptance: 'not established by packaging',
       source_commit: run('git', ['rev-parse', 'HEAD'], env, true)

@@ -1,7 +1,7 @@
 import type { ExpoConfig } from 'expo/config';
 
 const config: ExpoConfig = {
-  name: 'Disconnect',
+  name: 'Hoosh',
   slug: 'disconnect',
   version: '0.0.0',
   orientation: 'portrait',

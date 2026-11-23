@@ -112,3 +112,37 @@ C01 runtime hashes, JSON/scope/count/fixture paths and Git whitespace checks pas
 Existing original API health/private401 gate checks passed after restoration.
 All intended files staged; user commits/pushes. No source reset, hosted mutation,
 physical device operation or native activation change.
+
+
+## INT-VERIFY-C04 — November 22 packaged Android continuation
+
+Independent packaging/public-UI slice passed; full C04 remains partial. See
+[the sanitized receipt](../integration_notes/artifacts/verify-c04-android.json)
+for exact parent, source/APK/mapping hashes and scope. Fixed the standalone filter
+dropping reviewed Google/Apple switches, and changed Expo/Android display name to
+Hoosh without changing package IDs or callback scheme. Rebuilt the final optimized
+embedded-Hermes APK; eight config guards,117 pure JVM engine checks, six optimized
+read-only native checks and mobile TypeScript passed. Local debug signing is
+internal only; ZIP alignment does not certify a16KiB kernel or store release.
+
+Fresh API37/Android17 emulator5560 showed the normal intro (five short swipes per
+transition), signup validation/native keyboard, reachable login footer and enabled
+Google/Apple actions on both forms. No credentials or provider consent were used.
+At font scale2.0 provider actions remained reachable with scrolling. Signed-out
+offline cold launch retained login without repeating intro. Font/network settings
+were restored; no account, owner, native permission or protection rules changed.
+An initial System UI stall resolved by choosing Wait; subsequent launches worked.
+
+Temporary API-only `adb -s emulator-5560 reverse tcp:8000 tcp:8000` let the guest
+browser display local `/healthz` success. Shell nc probes returned empty output
+and were inconclusive. Reverse mappings were removed afterward; future local
+signed-in API testing must deliberately restore this tunnel first. This does not
+prove authenticated API operations, hosted availability or provider callbacks.
+Emulator remains at Hoosh login. No Metro launch was required. Private screenshots,
+AVD, APK, mapping and scratch scripts remain ignored, not staged.
+
+Next: managed A/B normal-root permission/selection/Apply/intervention/expiry,
+overlap/Stop and connected reward/recommendation/History journeys. Historical
+synthetic lifecycle checks remain historical supporting evidence. Physical Android
+and signed iPhone tests remain deferred; iOS activation stays gated. C04 is not
+fully accepted, and this Android rebuild does not refresh iOS build evidence.

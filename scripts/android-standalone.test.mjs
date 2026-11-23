@@ -107,3 +107,27 @@ test('validation errors never echo an input credential or origin', () => {
     (error) => !error.message.includes(secret),
   );
 });
+
+test('keeps reviewed provider switches in packaged builds and defaults missing switches off', () => {
+  const flags = [
+    'EXPO_PUBLIC_APPLE_NATIVE_ENABLED',
+    'EXPO_PUBLIC_APPLE_OAUTH_ENABLED',
+    'EXPO_PUBLIC_GOOGLE_ENABLED',
+  ];
+  for (const flag of flags) assert.equal(validatePublicConfig(config)[flag], 'false');
+  const env = buildEnvironment({ EXPO_PUBLIC_GOOGLE_ENABLED: 'false' }, {
+    ...config,
+    EXPO_PUBLIC_APPLE_OAUTH_ENABLED: 'true',
+    EXPO_PUBLIC_GOOGLE_ENABLED: 'true',
+  });
+  assert.equal(env.EXPO_PUBLIC_GOOGLE_ENABLED, 'true');
+  assert.equal(env.EXPO_PUBLIC_APPLE_OAUTH_ENABLED, 'true');
+  assert.equal(env.EXPO_PUBLIC_APPLE_NATIVE_ENABLED, 'false');
+});
+
+test('rejects ambiguous provider switches without echoing their contents', () => {
+  for (const value of ['', '1', 'TRUE', ' true ', 'private_input']) {
+    assert.throws(() => validatePublicConfig({ ...config, EXPO_PUBLIC_GOOGLE_ENABLED: value }),
+      error => error.message === 'Use true or false for public provider switches.');
+  }
+});

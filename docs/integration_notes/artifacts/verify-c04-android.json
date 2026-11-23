@@ -1,0 +1,98 @@
+{
+  "increment": "INT-VERIFY-C04",
+  "status": "partial",
+  "date": "2026-11-22 America/New_York",
+  "build": {
+    "built_at": "2026-11-23T03:11:11.947Z",
+    "distribution": "INTERNAL ONLY; local Android debug certificate; not store signing",
+    "package_id": "com.hoosh.disconnect.dev",
+    "app_label": "Hoosh",
+    "min_sdk": 24,
+    "target_sdk": 36,
+    "debuggable": false,
+    "hermes_bytecode": true,
+    "embedded_bundle_bytes": 3649056,
+    "packaged_font_count": 6,
+    "native_abis": [
+      "arm64-v8a"
+    ],
+    "native_protection_manifest": true,
+    "signature_verified": true,
+    "alignment_16k_verified": true,
+    "mapping_sha256": "56aab4b54e5dd3c29a8fe61d2dd251091b324b784c5145708dcacd44bc6f0d28",
+    "apk_sha256": "e2d33c855d50cdcba2670e8c4234deb7c6ad8861a8351b724f7b80111b767b6f",
+    "api_transport": "internal_loopback_http",
+    "public_provider_switches": {
+      "EXPO_PUBLIC_APPLE_NATIVE_ENABLED": true,
+      "EXPO_PUBLIC_APPLE_OAUTH_ENABLED": true,
+      "EXPO_PUBLIC_GOOGLE_ENABLED": true
+    },
+    "managed_account_acceptance": "pending",
+    "native_runtime_acceptance": "not established by packaging",
+    "source_commit": "14a279b749c00a95a81b132d7a70cfb608d14a08",
+    "source_worktree_dirty": true
+  },
+  "changed_source_sha256": {
+    "apps/mobile/app.config.ts": "b7aabba1dec6eec63830d8e7ac39715799ea5abdee67386cc7f5a16c349f4fc9",
+    "apps/mobile/android/app/src/main/res/values/strings.xml": "b395d752b6769e837ab00b3a2647dceaec6894c045425b88872f09e5154f56c9",
+    "scripts/android-standalone.mjs": "62e8071ea947784a9a413874dfeb7d72c1493789212d5869bf578228f5daff0e",
+    "scripts/android-standalone.test.mjs": "34a6b292572bd77cd1c99c3d85105fbeca0e8bc0d4c330e2ee93450dd9c29239"
+  },
+  "emulator": {
+    "avd": "Hoosh_Verify_C04",
+    "serial": "emulator-5560",
+    "api": 37,
+    "android_release": "17",
+    "viewport": "1080x2400",
+    "density": 420
+  },
+  "checks": {
+    "standalone_guards": 8,
+    "pure_engine_jvm": 117,
+    "optimized_native_read_only": 6,
+    "mobile_types": "passed"
+  },
+  "public_ui": {
+    "intro": "middle after five short swipes, welcome after five more",
+    "signup_required_errors_and_keyboard": "passed",
+    "signup_login_footer": "reachable after one scroll",
+    "google_apple_actions": "enabled on signup and login; consent not exercised",
+    "large_text_and_offline": {
+      "original_settings": {
+        "font_scale": "1.0",
+        "airplane_mode_on": "0",
+        "wifi_on": "1"
+      },
+      "large_text_provider_actions_reachable": true,
+      "offline_cold_login": true,
+      "intro_not_repeated": true,
+      "settings_restored": true,
+      "restored_settings": {
+        "font_scale": "1.0",
+        "airplane_mode_on": "0",
+        "wifi_on": "1"
+      }
+    },
+    "api_connectivity": {
+      "transport": "temporary API-only ADB reverse",
+      "guest_browser_health_verified": true,
+      "shell_nc_probe": "inconclusive_empty_response",
+      "reverse_mappings_restored_empty": true
+    },
+    "startup_caveat": "Initial System UI not responding alert resolved with Wait; subsequent app launches worked."
+  },
+  "pending": [
+    "Managed A/B sign-in and provider consent",
+    "Normal product permissions, selection, explicit Apply, intervention and expiry",
+    "Overlap, Stop, native account ownership and connected rewards/recommendations/History",
+    "Physical Android/OEM and signed iPhone acceptance"
+  ],
+  "limits": [
+    "Internal local debug certificate, not store signing",
+    "ZIP 16KiB alignment is not actual 16KiB kernel acceptance",
+    "Browser health via temporary API-only reverse is not signed-in API acceptance",
+    "Shell nc probe was inconclusive",
+    "No physical phone accessed; iOS activation gate unchanged",
+    "Emulator retained at signed-out Hoosh login; settings restored and reverse empty"
+  ]
+}
