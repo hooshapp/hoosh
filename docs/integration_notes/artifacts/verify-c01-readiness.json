@@ -1,0 +1,269 @@
+{
+  "schema_version": 1,
+  "increment": "INT-VERIFY-C01",
+  "status": "passed",
+  "acceptance_scope": "fixture_and_evidence_readiness_only",
+  "observed_date": "2026-11-22",
+  "branch": "integration/shared-product",
+  "source_head": "ed263cc89f4b2819865a6b180810b357027bce66",
+  "runtime_working_tree_delta": true,
+  "full_app_accepted": false,
+  "ios_c06_complete": false,
+  "physical_ios_testing": "explicitly deferred",
+  "runtime_source_sha256": {
+    "apps/mobile/src/app/_layout.tsx": "2a07c0bbc8744183c08b00eed6c77f64e09a00f88a107d146232e1b0988d683a",
+    "apps/mobile/src/app/(auth)/_layout.tsx": "e8c31a1edeaa56b6c7a14cc69e998821d11b2bc4cdfbef2c307473653894fcf0",
+    "apps/mobile/src/app/(onboarding)/_layout.tsx": "99bc0f66bd5da90a2af4ffb3891daba4e530738e8d9f5c3c1be95de313cf00e4",
+    "apps/mobile/src/components/navigation/main-tab-bar.tsx": "6038bb0eb497d6620308d547c67537dd077a864830702a1f0acdc5c194f0e29c",
+    "apps/mobile/src/features/home/home-overview.tsx": "9a23fb232cda1f3780f57558faa49af1797a8c894f1dc95a17e6690812662b16",
+    "apps/mobile/src/features/intro/IntroSurface.tsx": "03b8787131aa290941a5bcf79f53aa68c7845d56ab00d1dd8ae07432f44e8da1"
+  },
+  "environment": {
+    "api_scope": "isolated_loopback_development_fixture",
+    "api_origin": "http://127.0.0.1:8000",
+    "database_listener": "127.0.0.1:55432",
+    "loopback_listeners_observed": true,
+    "migration_head_previously_verified": "20261114_0007",
+    "database_suite_rerun": false,
+    "reason": "Preserve active manual API/DB fixture; no DB/schema changes",
+    "mobile_and_api_preflight": {
+      "http_checks": {
+        "/healthz": 200,
+        "/v1/me": 401,
+        "/v1/profile": 401,
+        "/v1/settings": 401
+      },
+      "mobile_public_field_presence": {
+        "EXPO_PUBLIC_API_BASE_URL": true,
+        "EXPO_PUBLIC_SUPABASE_URL": true,
+        "EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY": true
+      },
+      "mobile_project_matches_expected": true,
+      "api_base_is_expected_loopback": true
+    },
+    "installed_ios_package": {
+      "app_version": "1.0.1",
+      "app_build": "6",
+      "minimum_ios": "16.4",
+      "compact_installed_js_matches_receipt": true,
+      "runtime_source_matches_receipt": true,
+      "public_jwks_https_verified": true,
+      "public_jwks_algorithms": [
+        "ES256"
+      ]
+    },
+    "simulator_js_sha256": "5267dba2143a5525d4c50ca43931d0db026c1eb8d50fe29a8109e47564d2262e",
+    "native_activation_enabled": false,
+    "backend_trust_alignment": {
+      "project_matches_mobile": true,
+      "issuer_matches_project": true,
+      "audience_is_authenticated": true,
+      "algorithm_is_es256": true
+    }
+  },
+  "current_automated_checks": [
+    {
+      "runner": "Jest iOS and Android",
+      "passed": 118,
+      "suites": 6,
+      "scope": "Actual normal routes with injected SDK/API/native edges; provider and iOS setup components",
+      "command": "npm run test:components --workspace @disconnect/mobile -- normal-app-integration.test.tsx account-data-provider.test.tsx ios-device-setup.test.tsx"
+    },
+    {
+      "runner": "Vitest",
+      "passed": 88,
+      "files": 4,
+      "scope": "Auth callbacks/session and account/client recovery controllers",
+      "command": "npm run test:unit --workspace @disconnect/mobile -- src/features/auth/session-controller.test.ts src/features/auth/link-controller.test.ts src/infrastructure/query/account-controller.test.ts src/infrastructure/api/client-recovery.test.ts"
+    }
+  ],
+  "fixture_inventory": [
+    {
+      "path": "apps/mobile/src/features/plans/normal-app-integration.test.tsx",
+      "scope": "Synthetic in-memory SDK/API/native edges; real Router/root/screens",
+      "accounts": "Distinct A/B constants; A saved plan/reading and50credits, B missing settings/zero credits; no real credentials",
+      "cleanup": "Jest teardown/in-memory reset only; does not touch installed simulator account"
+    },
+    {
+      "path": "apps/mobile/src/infrastructure/query/account-data-provider.test.tsx",
+      "scope": "Synthetic distinct owners/generations and delayed callbacks",
+      "cleanup": "Component teardown; no network or persisted user data"
+    },
+    {
+      "path": "services/api/tests/db/conftest.py",
+      "scope": "Existing guarded PG17 profile_accounts: A named profile/B null-name profile and third isolated identity",
+      "cleanup": "Fixture removes only generated disposable identities; NOT run while current manual API uses this fixture"
+    },
+    {
+      "path": "apps/mobile/dev/profile/acceptance/settings-http.acceptance.ts",
+      "scope": "Existing Python-launched verified ephemeral-JWT TCP fixture; distinct A/B activity values and delayed writes",
+      "cleanup": "Private temporary subprocess reports/identities owned by guarded parent harness"
+    },
+    {
+      "path": "apps/mobile/dev/profile/acceptance/quests-http.acceptance.ts",
+      "scope": "Existing Python-launched own/foreign quest fixture and account switch",
+      "cleanup": "Private temporary subprocess reports/identities owned by guarded parent harness"
+    }
+  ],
+  "manual_intro": {
+    "status": "passed",
+    "evidence_kind": "owner_report",
+    "physical_feel_recheck_pending": true,
+    "not_a_screen_time_or_social_app_test": true
+  },
+  "scenarios": {
+    "V01": {
+      "title": "Fresh signup, confirmation and sign-in",
+      "status": "running",
+      "evidence": "Auth callback/controller regressions; prior real sign-in evidence",
+      "remaining": "Fresh packaged signup/email confirmation remains pending"
+    },
+    "V02": {
+      "title": "Invalid, offline and rate-limited login",
+      "status": "running",
+      "evidence": "Auth/client recovery regressions",
+      "remaining": "Live offline/rate-limit matrix not accepted"
+    },
+    "V03": {
+      "title": "Recovery warm/cold/cancel/expired/reused",
+      "status": "running",
+      "evidence": "Controller/callback regressions and prior recovery validation",
+      "remaining": "Full real-email callback/password journey pending"
+    },
+    "V04": {
+      "title": "Enabled providers success/cancel/restart",
+      "status": "running",
+      "evidence": "Callback fencing regressions; prior normal Google sign-in",
+      "remaining": "Exact packaged Apple and complete provider lifecycle pending"
+    },
+    "V05": {
+      "title": "Restore, refresh, storage and logout",
+      "status": "running",
+      "evidence": "Current controller/provider/root isolation tests; prior real relaunch",
+      "remaining": "Actual secure-storage/OS interruption still pending"
+    },
+    "V06": {
+      "title": "New/returning setup, manual/suggestion/defer",
+      "status": "running",
+      "evidence": "Current normal-root setup cases; prior real local-save journey",
+      "remaining": "Complete live new/returning matrix pending"
+    },
+    "V07": {
+      "title": "Profile Save/clear/conflict/lost reply",
+      "status": "planned",
+      "evidence": "Existing guarded DB/profile harness inventoried, not rerun",
+      "remaining": "Real profile lifecycle and isolated DB acceptance not newly run"
+    },
+    "V08": {
+      "title": "Settings Save/reopen/restart",
+      "status": "running",
+      "evidence": "Prior real local save/readback/relaunch and editor restore; root cases rerun",
+      "remaining": "Hosted persistence and B writes/return-to-A remain pending"
+    },
+    "V09": {
+      "title": "Native picker stage/cancel/Save/restart",
+      "status": "running",
+      "evidence": "Current root and iOS setup cases use injected native ports",
+      "remaining": "Actual iPhone picker/selection Save needs signed phone"
+    },
+    "V10": {
+      "title": "Permission loss and missing bridge",
+      "status": "running",
+      "evidence": "Current absent/denied/revoked native-port presentation tests",
+      "remaining": "Actual iPhone authorization/revoke/regrant deferred to phone"
+    },
+    "V11": {
+      "title": "Apply/intervention/temporary-access expiry",
+      "status": "running",
+      "evidence": "Root native-protocol cases pass; physical iOS activation remains false",
+      "remaining": "Real iPhone enforcement/foreground expiry deferred"
+    },
+    "V12": {
+      "title": "Weekly/quest overlap and scoped Stop",
+      "status": "planned",
+      "evidence": "Existing native/quest runbooks and harnesses inventoried",
+      "remaining": "Current combined actual-native acceptance not performed"
+    },
+    "V13": {
+      "title": "Rewards/Feed lost reply and restart",
+      "status": "planned",
+      "evidence": "Existing reward TCP/PG/native harness inventoried",
+      "remaining": "No new reward mutation or full current journey run"
+    },
+    "V14": {
+      "title": "History baseline/coverage/unavailable",
+      "status": "running",
+      "evidence": "Prior simulator truthful iPhone-unavailable presentation; root rendering",
+      "remaining": "No iPhone aggregate measurement acceptance; Android series is not iPhone usage"
+    },
+    "V15": {
+      "title": "Recommendation Accept/Skip/reopen",
+      "status": "planned",
+      "evidence": "Existing recommendation TCP/PG/consumer harness inventoried",
+      "remaining": "Current combined real-account journey not rerun"
+    },
+    "V16": {
+      "title": "A/B delayed-response isolation",
+      "status": "running",
+      "evidence": "Current account/root/controller delayed-result tests; prior real A-to-B separation",
+      "remaining": "B writes/return-to-A and native takeover still pending"
+    },
+    "V17": {
+      "title": "Retained A rules and explicit B claim",
+      "status": "running",
+      "evidence": "Current normal-root explicit-claim protocol tests",
+      "remaining": "Real installed native owner/rules transition deferred to phone"
+    },
+    "V18": {
+      "title": "Offline/reconnect and process/permission loss",
+      "status": "running",
+      "evidence": "Current root/client recovery tests; prior API outage/restart",
+      "remaining": "Actual iOS lock/reboot/native lifecycle remains phone-only"
+    },
+    "V19": {
+      "title": "Packaged normal app without Metro",
+      "status": "running",
+      "evidence": "Current Compact installed JS/source hashes match inspected Release receipt",
+      "remaining": "Signed-device protection journey not accepted; Android newer package not rebuilt"
+    },
+    "V20": {
+      "title": "Upgrade from actually used source versions",
+      "status": "planned",
+      "evidence": "Existing session upgrade regression inventory retained",
+      "remaining": "Real installed upgrade matrix not accepted"
+    },
+    "V21": {
+      "title": "Small screen, large text, keyboard/navigation",
+      "status": "running",
+      "evidence": "Prior compact validation/keyboard, large-text navigation and Home repairs; owner reports intro works",
+      "remaining": "Full footer reachability/accessibility and physical feel remain pending"
+    },
+    "V22": {
+      "title": "Hosted disposable-C deletion",
+      "status": "explicitly deferred",
+      "evidence": "Original deletion deferral retained",
+      "remaining": "No hosted deletion, no reuse of A/B"
+    },
+    "V23": {
+      "title": "Further TalkBack pass",
+      "status": "explicitly deferred",
+      "evidence": "Original scope retained",
+      "remaining": "No TalkBack setting changed"
+    },
+    "V24": {
+      "title": "Product/release/OEM/AI/calendar wider work",
+      "status": "explicitly deferred",
+      "evidence": "Original product boundaries retained",
+      "remaining": "Not silently added to verification scope"
+    }
+  },
+  "cleanup": {
+    "hosted_data_changed": false,
+    "physical_devices_changed": false,
+    "accounts_created_or_deleted": false,
+    "native_permissions_changed": false,
+    "api_db_preserved_running": true,
+    "credentials_in_artifact": false,
+    "recovery_plan": "Keep current A/B and local DB intact; only standalone generated test process reports may be removed. Never run schema/reset suites concurrently with manual API fixture."
+  }
+}

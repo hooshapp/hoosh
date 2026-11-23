@@ -1,42 +1,35 @@
 # Plan 04 — Shared iOS host and Screen Time
 
-## Current resume checkpoint — November 21, 2026
+## Current resume checkpoint — November 22, 2026
 
-- Plan: [04](../integration_plan/04_ios_native_integration.md), **INT-IOS-C06 packaging preparation**.
-  Owner / reviewer: Anisha / Ishmum. Branch `integration/shared-product`.
-  Starting HEAD `4f26c995ff102c623de59a9cd9718910d4e0cf22` (C05, now committed by owner).
-  C06 is an uncommitted delta; user retains commit/push control.
-- No source branch port, fetch, merge or native/runtime configuration change.
-  Existing integration base and landing-page provenance remain unchanged.
-- Added a redacted actual-product inspector and seven fault tests, plus the
-  [standalone/device runbook](../qa/ios-shared-standalone.md).
-  Release simulator build and actual-product inspection passed; seven fault tests and Ruff passed. See the C06 entry below.
-- Physical iPhone remains deferred, reconfirmed by the owner during C06 continuation.
-  After the owner signed into Xcode, the signed device Release build and actual
-  device-product inspection passed. Profile refresh resolved the missing host
-  Apple-sign-in entitlement. Host and enforcing extensions have provisioned Family
-  Controls/App Group entitlements; all five signatures/profiles passed inspection.
-  No hosted account upload, device install or permission change. Activation remains
-  compiled off.
-  C04/C05/C06 physical acceptance and confirmed quit/day evidence remain open.
-- The owner selected a spare physical iPhone later and authorized simulator testing.
-  Isolated **Hoosh C06 Release QA** now runs the packaged app. Startup, Skip,
-  signup/recovery validation, return-launch and signed-out deep-link checks passed;
-  drag/swipe delivery remains inconclusive. Fixed dark-screen system-text contrast
-  using native Stack styles; 94 routed tests, typecheck/lint and Release rebuild passed.
-- At the owner's request, existing FastAPI is running locally on 127.0.0.1:8000
-  against a newly initialized PostgreSQL17.11 isolated test cluster on 55432.
-  Existing migrations/RLS passed and 287 database cases passed. Normal public
-  Supabase JWT trust is configured; no hosted database was modified. One real-account simulator sign-in/save/recovery/relaunch journey now passed after
-  adding its ID-only local Auth FK prerequisite. See [simulator/backend checkpoint](../qa/ios-c06-simulator.md).
-- Next: finish live account simulator checks with the owner; no credentials in chat.
-  Then complete deferred signed physical journeys / VERIFY-C05 on the spare phone,
-  using a trusted reachable API and the owner's installation decision first.
-  The earlier signed-device artifact predates the JS-only status-bar fix; it proves
-  unchanged native provisioning, not that the new UI has run on a phone.
-- Simulator and local API/DB are intentionally left running for the handoff.
-  Other simulators, Metro processes, physical phone and pilot remain untouched.
-  No commit/push; all intended C06 changes are staged when the checkpoint is handed off.
+- Branch `integration/shared-product`; current parent `ed263cc`. The owner has
+  committed the earlier C06 checkpoints. This delta repairs short intro gestures;
+  owner retains commit/push control. No merge/fetch or source-branch port.
+- **C06 is partial.** Development device Release signing/provisioning and simulator
+  packaging evidence passed. Physical C04/C05/C06 enforcement, native ownership,
+  confirmed quit/day and lifecycle acceptance remain deferred. Activation is false.
+  See [closeout checklist](../qa/ios-shared-standalone.md#c06-closeout-checklist).
+- Prior observed simulator evidence includes local API save/recovery/relaunch,
+  Settings edits, A→distinct B separation, native dark status-bar correction,
+  maximum-text navigation repair and standard Home overflow repair. Compact SE3/
+  iOS18.6 public auth validation/navigation and restart were also observed.
+- Latest repair preserves the initial movement RN discards at pan-responder grant,
+  so short upward gestures count toward the five-swipe fallback. Real RN responder
+  boundary regression tests fail on old code and pass on the fix.28 intro component
+  and15 unit tests, TypeScript and focused lint passed. Final Release build/product
+  inspection passed; sanitized simulator receipt has current runtime source hashes.
+- Only **Hoosh C06 Compact QA** has the new gesture package. Its signed-out synthetic
+  state was reset by app reinstall; the owner subsequently reported that intro swipes progressed.
+  The original **Hoosh C06 Release QA** keeps B signed in on the prior layout build.
+  Full scroll reachability, provider/confirmation and remaining live
+  account/native-owner checks stay pending; no credentials in chat/source.
+- Existing isolated local FastAPI/PG17 fixture setup is unchanged. No hosted DB or
+  physical phone accessed. The older device receipt proves native provisioning,
+  not that the latest JS changes ran on a phone. Next physical journey requires a
+  spare phone, reachable trusted API and the owner's installation decision.
+- iOS plan ends at C06; next named handoff is VERIFY-C05. No C07 invented and no
+  physical acceptance substituted by handler tests. Intended files staged when
+  handed off, no commit/push performed.
 
 ## INT-IOS-C01 — Source audit and Expo reference host
 
@@ -671,3 +664,45 @@ C06 is not complete and no iOS C07 exists. Next named handoff is VERIFY-C05 afte
 required acceptance; do not move the gate or mark native enforcement passed to
 advance numbering. Docs/source-receipt checks passed; no redundant runtime suite
 run for evidence-only edits. Staged for owner commit/push, neither performed.
+
+
+### November 22 — C06 native intro responder-grant repair
+
+Found a gap beneath the prior mocked gesture tests: installed RN PanResponder
+zeros movement at grant. Short upward gestures could be claimed but contribute
+zero on release. Retain the initial displacement per responder, add post-grant
+movement once, validate final direction and discard cancelled input. Existing
+visual design, thresholds and routing remain intact.
+
+Changed files and evidence:
+- `apps/mobile/src/features/intro/IntroSurface.tsx` lines6–29: real responder fix
+  and stable testID; no test callback/override or activation change.
+- `apps/mobile/src/features/intro/Introduction-gestures.test.tsx` lines1–103: actual
+  Introduction + installed RN responder handler traces for five short swipes per
+  section, complete distance, final signup, finished-state disable, rejected axes,
+  reversal and cancellation. No IntroSurface/PanResponder mock.
+- `docs/integration_notes/artifacts/ios-c06-simulator-product.json`: new Release
+  package/JS hashes and current IntroSurface/source hashes.
+- `docs/qa/ios-c06-simulator.md`: before/after witness, tests, package and manual
+  test handoff; `docs/qa/ios-shared-standalone.md`: current closeout state.
+- `docs/integration_plan/04_ios_native_integration.md`: C06 ledger repair evidence.
+- This notes file: replaced stale resume header and added this continuation.
+
+New6platform regression cases failed against old code and pass after repair;
+28 component/15 unit checks, TypeScript, focused lint and final Release build/
+inspection passed. Installed on Compact QA only, observed normal login, then
+reinstalled that signed-out disposable app to expose a fresh intro for the owner's
+manual swipe check (pending). Original B simulator/physical phone/hosted DB untouched.
+JS handler traces do not establish OS gesture delivery or native protection.
+C06 remains partial; all intended files staged, no commit/push.
+
+
+### Owner-reported intro result / independent verification handoff
+
+Owner reports that scrolling progressed in the compact simulator, with laptop input
+feeling unusual; requested a physical-device feel recheck. Record simulator intro
+as owner-reported passed, not independently automated OS touch delivery. This is
+Hoosh's intro, not a social-app intervention or Screen Time test. User then asked
+to do simulator-capable work and move into other integration while phone checks
+wait. VERIFY-C01 readiness is now recorded in the Plan05 notes/manifest; IOS-C06
+physical protection/owner/lifecycle gates remain open and activation stays false.

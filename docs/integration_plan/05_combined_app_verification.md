@@ -1,7 +1,7 @@
 # Integration 05 — Combined normal-app verification and handoff
 
 **Leads:** Ishmum (Android/backend), Anisha (Auth/iOS), joint acceptance.
-**Status:** planned. **Notes:**
+**Status:** C01 readiness prepared with current independent checks; C02–C06 journey acceptance remains open. Physical iPhone acceptance remains deferred. **Notes:**
 `docs/integration_notes/plan_05_combined_app_verification_notes.md`.
 
 ## Outcome and limits
@@ -25,6 +25,8 @@ Read current QA runbooks: `normal-account-app.md`, `profile-cascade-acceptance.m
 pinned `docs/qa/auth-foundation.md` on the source branch and the current core
 Plan 03/04 notes. New integration reports supplement these; a proposed future
 test/script path is not an existing runnable tool.
+
+Current repeat steps and evidence boundaries: [combined verification runbook](../qa/combined-app-verification.md).
 
 ## Environments and account prerequisites
 
@@ -96,7 +98,7 @@ must reflect it before distribution rather than claiming this scope covered it.
 
 | Part | Intended commit | State / prerequisite |
 |---|---|---|
-| INT-VERIFY-C01 | `test(integration): establish normal-app acceptance fixtures` | Planned; BASE-C04 |
+| INT-VERIFY-C01 | `test(integration): establish normal-app acceptance fixtures` | Readiness passed: reused A/B/fault harnesses, current118 component/88 unit checks, public config/API/package preflight and [V01–V24 manifest](../integration_notes/artifacts/verify-c01-readiness.json). BASE-C04 already passed; not full-app/device acceptance. |
 | INT-VERIFY-C02 | `test(integration): verify account and session isolation` | Planned; AUTH implementation |
 | INT-VERIFY-C03 | `test(integration): verify onboarding and persistence recovery` | Planned; ONB implementation |
 | INT-VERIFY-C04 | `test(android): accept integrated packaged app journeys` | Planned; C02/C03, Android native integration |

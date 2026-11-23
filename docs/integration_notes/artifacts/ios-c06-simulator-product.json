@@ -3,9 +3,9 @@
   "platform": "iphonesimulator",
   "acceptance": "packaging_only_not_device_behavior",
   "physical_journey_verified": false,
-  "embedded_js_sha256": "408fb4d892d9c9baa33a54c66399165f786e53ee10c911346ba66fc6a316d28e",
+  "embedded_js_sha256": "5267dba2143a5525d4c50ca43931d0db026c1eb8d50fe29a8109e47564d2262e",
   "hermes_bytecode": true,
-  "product_tree_sha256": "a35e6f5231aa9415ae0c13bd4e173fb361d4b6add0b50309c54d2c42fe586c94",
+  "product_tree_sha256": "26e3d6c798f118620084f03c17086fdeb0c89d9969ff44fedd4d666eb0d8b2f8",
   "file_count": 505,
   "callback_scheme_present": true,
   "native_module_registration_present": true,
@@ -53,12 +53,13 @@
       "provisioning_verified": false
     }
   ],
-  "source_head": "e3a94e49fba6694dc8034852f86a6df9e38c95d9",
+  "source_head": "ed263cc89f4b2819865a6b180810b357027bce66",
   "working_tree_source_sha256": {
     "apps/mobile/src/app/_layout.tsx": "2a07c0bbc8744183c08b00eed6c77f64e09a00f88a107d146232e1b0988d683a",
     "apps/mobile/src/app/(auth)/_layout.tsx": "e8c31a1edeaa56b6c7a14cc69e998821d11b2bc4cdfbef2c307473653894fcf0",
     "apps/mobile/src/app/(onboarding)/_layout.tsx": "99bc0f66bd5da90a2af4ffb3891daba4e530738e8d9f5c3c1be95de313cf00e4",
     "apps/mobile/src/components/navigation/main-tab-bar.tsx": "6038bb0eb497d6620308d547c67537dd077a864830702a1f0acdc5c194f0e29c",
-    "apps/mobile/src/features/home/home-overview.tsx": "9a23fb232cda1f3780f57558faa49af1797a8c894f1dc95a17e6690812662b16"
+    "apps/mobile/src/features/home/home-overview.tsx": "9a23fb232cda1f3780f57558faa49af1797a8c894f1dc95a17e6690812662b16",
+    "apps/mobile/src/features/intro/IntroSurface.tsx": "03b8787131aa290941a5bcf79f53aa68c7845d56ab00d1dd8ae07432f44e8da1"
   }
 }

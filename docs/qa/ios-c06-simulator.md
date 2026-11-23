@@ -12,7 +12,7 @@ installed over, erased or queried during this simulator pass.
 |---|---|
 | Normal Release startup, Metro absent | Passed: introduction rendered from embedded Hermes JS; no listener on port 8081. |
 | Intro Skip | Passed: opened real signup screen. |
-| Intro upward swipes | Inconclusive: Device Hub drag/scroll automation did not establish delivery of the native gesture. Do not mark the five-swipe behavior passed from this run. |
+| Intro upward swipes | Responder-grant distance loss reproduced and repaired with real RN responder tests. Actual simulator touch delivery remains a manual check; do not infer it from injected event tests. |
 | Empty signup | Passed: required name/email errors, focus and native software keyboard appeared. |
 | Native text editing | Passed: synthetic name and invalid email could be entered; invalid-email feedback appeared. No account was submitted or created. |
 | Signup → login → recovery → login | Passed in the normal app using accessible controls. |
@@ -267,3 +267,53 @@ centralized in [C06 closeout checklist](ios-shared-standalone.md#c06-closeout-ch
 C06 remains open; iOS has no C07. Mandatory physical enforcement/owner/lifecycle
 acceptance cannot be substituted by simulator checks. No activation-gate change,
 commit or push.
+
+
+### November 22 — real responder short-swipe repair
+
+Source parent `ed263cc` plus this delta. The previous Introduction integration test
+mocked IntroSurface and called the progress callback directly. Added a separate
+suite that renders the actual Introduction/IntroSurface and drives the installed
+React Native PanResponder's capture→claim→grant→move→release/terminate handlers
+with synthetic touch history. No PanResponder/IntroSurface mock and no Auth session
+injection. These are JS responder-boundary tests, not real OS touch events.
+
+Reproduced a concrete source bug: RN resets dx/dy at responder grant, so the
+movement that earned the grant was lost. A short8point upward swipe followed by
+release contributed zero and could not satisfy the intended five-gesture fallback.
+The corrected responder retains that initial movement, adds later movement once,
+clears it on release/cancel and checks the complete final direction. It does not
+change the Figma presentation,160point section threshold or five-gesture limit.
+
+The new6platform cases failed against the original responder (with only a testID
+added), then passed with the fix. Combined existing/new intro component tests
+passed28 across iOS/Android; progress/storage unit tests passed15. TypeScript and
+focused lint passed. The final settled source was rebuilt in Release, actual-product
+inspection passed, and the receipt now includes IntroSurface's source hash. Logs:
+`/tmp/hoosh-c06-native-gestures-confirmed-before.log`,
+`/tmp/hoosh-c06-native-gestures-final.log`, `/tmp/hoosh-c06-gesture-unit.log`,
+`/tmp/hoosh-c06-gesture-final-build.log`, `/tmp/hoosh-c06-gesture-inspection.log`.
+
+Installed/started the new package only on disposable Compact QA and observed login.
+Then reinstalled only that signed-out simulator app to reset its synthetic local
+intro/form test state; observed the fresh introduction ready for a manual swipe
+check. The owner was asked to verify both sections in at most five swipes each;
+result is pending. No test identity/password was supplied or read, no hosted data
+changed, and the original signed-in Release QA simulator retains its previous
+layout package/B session. That older installed simulator package is not the new
+receipt. No physical phone queried/installed and activation remains false.
+
+C06 remains partial: real-touch scrolling, remaining account/owner checks and
+physical protection/lifecycle acceptance are not passed by these automated tests.
+All intended changes staged for owner review/commit/push; none committed or pushed.
+
+
+### Owner-reported intro result / independent verification handoff
+
+Owner reports that scrolling progressed in the compact simulator, with laptop input
+feeling unusual; requested a physical-device feel recheck. Record simulator intro
+as owner-reported passed, not independently automated OS touch delivery. This is
+Hoosh's intro, not a social-app intervention or Screen Time test. User then asked
+to do simulator-capable work and move into other integration while phone checks
+wait. VERIFY-C01 readiness is now recorded in the Plan05 notes/manifest; IOS-C06
+physical protection/owner/lifecycle gates remain open and activation stays false.
