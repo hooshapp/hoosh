@@ -101,3 +101,33 @@ provider consent and email links; do independent tests before requesting it.
 VERIFY-C04 is the integrated Android packaged journey. VERIFY-C05 remains gated by
 physical IOS-C06; VERIFY-C06 records exact accepted scope and cannot claim both
 platforms complete while mandatory native behavior remains unaccepted.
+
+
+## VERIFY-C02 — current automated Auth/isolation continuation
+
+Source parent `212d386`, test-only delta. [C02 receipt](../integration_notes/artifacts/verify-c02-auth-isolation.json)
+records119 portable and180 component checks (299total), current commands and explicit
+live boundaries. TypeScript and focused lint passed. No production runtime changed,
+so its hashes still match C01 and no native rebuild/install was required.
+
+The new SDK regression uses the actual pinned Supabase client with controlled fetch
+and serialized in-memory storage. Refresh is held while local sign-out closes access;
+its stale result is rejected, failed server logout still clears local credentials,
+and a new SDK/controller on the same storage restores signed out. Deliberate login
+continues to work. This is actual SDK behavior against synthetic HTTP, not hosted
+sign-in, physical SecureStore or full process-death acceptance.
+
+Existing normal routes/provider/session-boundary/native-storage tests and profile/
+quest consumers were rerun. Late A profile/settings/quest/native results cannot
+populate B at the tested seams; same-user new-session replacement clears drafts,
+ordinary refresh retains the correct generation, and failed storage/recovery keeps
+private access closed. Native modules/SDK responses remain fixture edges in these
+component tests. No new production injection or permission bypass was added.
+
+C02 stays partially verified. Still needed: exact packaged fresh-email confirmation/
+recovery, enabled-provider consent/cancel/restart, private real-account B writes and
+return-to-A, and actual unavailable/locked storage/background/upgrade behavior.
+Phone-only native owner/rule enforcement stays deferred with IOS-C06. Prior real
+simulator journeys remain supporting evidence; the new tests do not upgrade them
+into a full current-build provider/OS pass. C03 independent setup/persistence checks
+can proceed without manufacturing any of those successes.

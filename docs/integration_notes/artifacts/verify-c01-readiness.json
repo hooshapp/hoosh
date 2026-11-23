@@ -265,5 +265,8 @@
     "api_db_preserved_running": true,
     "credentials_in_artifact": false,
     "recovery_plan": "Keep current A/B and local DB intact; only standalone generated test process reports may be removed. Never run schema/reset suites concurrently with manual API fixture."
+  },
+  "subsequent_evidence": {
+    "INT-VERIFY-C02": "docs/integration_notes/artifacts/verify-c02-auth-isolation.json"
   }
 }

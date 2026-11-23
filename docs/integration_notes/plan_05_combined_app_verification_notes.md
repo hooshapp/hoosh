@@ -1,29 +1,25 @@
 # Plan05 — Combined normal-app verification
 
-## Current checkpoint — INT-VERIFY-C01, November22
+## Current checkpoint — INT-VERIFY-C02, November22
 
-- Branch `integration/shared-product`, parent `ed263cc`. Earlier C06 short-swipe
-  repair remains staged/uncommitted; preserve it. User retains commits/pushes.
-- User authorized doing simulator-capable checks and moving into other integration
-  while physical tests wait. BASE-C04 composition seams already passed (`b4db69a`);
-  Plan05 permits C01 independently. **C01 readiness passed; whole app not accepted.**
-- Current rerun:118 component cases (47root+9provider+3setup on each preset) and88
-  portable Auth/account/client recovery cases passed. Reused existing fixtures and
-  interruption points. No runtime dependency, native source or backend change.
-- Public config guard, current local health/private401 gates and loopback listeners
-  passed. Mobile/backend development project/issuer/audience/ES256 alignment checked
-  without printing values; public JWKS HTTPS certificate validation passed.
-- Compact installed JS/source matches current sanitized simulator receipt. Original
-  signed-in B simulator unchanged. User reports intro scrolling worked; physical
-  feel/reliability still pending. No phone queried/modified.
-- Preserve the active manual API/PG17 fixture. No schema/reset suite, hosted mutation,
-  credential extraction, test identity creation/deletion or native permission action.
-- V01–V24 now have a shared evidence/status manifest. Partial rows are `running`,
-  absent live checks stay pending, V22–V24 deferrals remain explicit. C06/physical
-  acceptance is not relabeled complete to advance integration numbering.
-- Next: VERIFY-C02/C03 independent Auth/setup work and available simulator checks;
-  exact Android packaged journey separately; iOS signed journey waits for spare
-  phone and reachable API. Full VERIFY-C06 cannot pass before required platform work.
+- Branch `integration/shared-product`, parent `212d386`; owner committed the earlier
+  C06/C01 checkpoint. This delta adds a test/evidence only; no production runtime,
+  dependency, native or database change. User retains commit/push control.
+- C01 readiness remains passed. **C02 automated slice passed; full C02 remains open**
+  for real-account/provider/OS-storage acceptance. No phone operation or new login.
+-119 portable/180 component checks (299total), mobile TypeScript and focused lint
+  passed. The new real pinned SDK race test confirms local logout across in-flight
+  refresh, server503 and a new-client restore, using synthetic fetch/storage.
+- Existing normal routes, account providers, profile/quest mutation fences and
+  storage adapters retain isolation under the tested delayed-response/session cases.
+  Native permission and live Supabase provider acceptance are not inferred.
+- Runtime source hashes match C01; no redundant package build/install or manual
+  API/DB fixture mutation. The physical iPhone, original B session and compact
+  simulator are untouched in this continuation. Native activation remains false.
+- Next: C03 independent setup/profile/settings verification. Exact packaged private
+  account/provider checks need owner interaction later; IOS-C06 native lifecycle
+  and actual enforcement remain deferred. No whole-app or release acceptance.
+- Intended files staged for owner review/commit; no commit/push performed.
 
 ## INT-VERIFY-C01 — Readiness and fixture inventory
 
@@ -58,3 +54,30 @@ Validation: both commands passed; public config guard passed; JSON/24-ID/status,
 source-hash and path-reference checks plus Git whitespace checks passed. Local
 logs/reports under `/tmp/hoosh-verify-c01-*`; committed manifest is redacted. All
 intended files staged for owner review; no commit/push or remote branch operation.
+
+
+## INT-VERIFY-C02 — Auth/isolation automated continuation
+
+Changed:
+- `apps/mobile/src/infrastructure/auth/sdk.test.ts` lines46–121: real pinned SDK
+  refresh/logout/new-client restore regression, controlled HTTP and persistent
+  in-memory adapter, cleanup in finally. No SDK/mock implementation replaces the
+  actual library; no live URL/credentials or production behavior changed.
+- `docs/integration_notes/artifacts/verify-c02-auth-isolation.json`: exact parent/
+  test hash,299-case results, V01–V05/V16 evidence and pending live boundaries.
+- C01 receipt: only a pointer to newer evidence; dated C01 outcomes preserved.
+- `docs/qa/combined-app-verification.md`: repeat/evidence and remaining C02 scope.
+- Plan05 C02 ledger and this checkpoint: independent pass vs full increment open.
+- Plan01 Auth notes: source-owner verification supplement, not a new Auth feature.
+
+119 unit cases:109 auth/link/session/storage/controller/recovery and10 identity
+validation.180 component cases:134 root/provider/session/storage and46 profile/quest
+consumer cases, each selected native renderer. All pass with TypeScript/focused
+lint. New SDK race test passed without a production fix. Current commands/ignored
+logs are in the receipt. Existing callback URL/state guards and identity gates
+were not weakened. No runtime build needed: C01 runtime hashes still match.
+
+Full C02 requires real SDK+verified backend identity and managed A/B/provider journeys;
+controlled-fetch SDK tests are narrower evidence. No credential/session extraction,
+hosted mutation, new account, database suite or physical device interaction. All
+intended files staged; user commits/pushes.

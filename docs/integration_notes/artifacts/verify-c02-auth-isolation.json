@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "increment": "INT-VERIFY-C02",
+  "status": "running",
+  "automated_slice": "passed",
+  "full_increment_accepted": false,
+  "date": "2026-11-22",
+  "branch": "integration/shared-product",
+  "source_head": "212d386802fcf04b46315dce3eff81f5ffb4ab02",
+  "production_runtime_changed": false,
+  "runtime_source_hashes_match_c01": true,
+  "release_rebuild_required": false,
+  "test_source_sha256": {
+    "apps/mobile/src/infrastructure/auth/sdk.test.ts": "f1e63aba24ff846a52ac86ab90bdc3cf26619ac5152d7b148ea35f0dccff0e87"
+  },
+  "tests": [
+    {
+      "kind": "portable_unit",
+      "passed": 109,
+      "files": 8,
+      "command": "npm run test:unit --workspace @disconnect/mobile -- src/features/auth src/infrastructure/auth/sdk.test.ts src/infrastructure/auth/serialized-storage.test.ts src/infrastructure/auth/storage-web.test.ts src/infrastructure/api/client-recovery.test.ts src/infrastructure/query/account-controller.test.ts"
+    },
+    {
+      "kind": "identity_decoder_unit",
+      "passed": 10,
+      "files": 1,
+      "command": "npm run test:unit --workspace @disconnect/mobile -- src/features/account/api.test.ts"
+    },
+    {
+      "kind": "native_renderer_component",
+      "passed": 134,
+      "suites": 8,
+      "command": "npm run test:components --workspace @disconnect/mobile -- normal-app-integration.test.tsx account-data-provider.test.tsx session-boundary.test.tsx storage.native.test.ts"
+    },
+    {
+      "kind": "profile_quest_consumer_component",
+      "passed": 46,
+      "suites": 4,
+      "command": "npm run test:components --workspace @disconnect/mobile -- profile-surface.test.tsx managed-quests.test.tsx"
+    }
+  ],
+  "total_passed": 299,
+  "typecheck": "passed",
+  "focused_lint": "passed",
+  "new_regression": {
+    "sdk": "actual pinned Supabase SDK",
+    "network": "controlled in-process fetch; no external requests",
+    "storage": "serialized in-memory adapter retained across two actual SDK clients",
+    "steps": [
+      "Start signed out and explicitly sign in with synthetic credentials",
+      "Hold refresh response and initiate local sign-out",
+      "Assert private access closes before I/O settles",
+      "Release refresh; reject its stale controller result",
+      "Fail server logout with503; confirm local credentials absent",
+      "Create a new SDK/controller on same adapter; restore signed out",
+      "Allow deliberate new login after the retired refresh settles"
+    ],
+    "result": "passed",
+    "hosted_auth_acceptance": false
+  },
+  "coverage": {
+    "V01": {
+      "automated": "Normal signup/confirmation guidance and no private data before settled session passed",
+      "live": "Fresh packaged signup/confirmation still pending"
+    },
+    "V02": {
+      "automated": "Invalid credentials, API-identity outage, bounded retry/expired-token recovery guards passed",
+      "live": "Complete live offline/rate-limit matrix pending"
+    },
+    "V03": {
+      "automated": "Correlated recovery, expired/cancel/reused callbacks, held private access and exact synthetic password handling passed",
+      "live": "Actual email recovery/update/provider callback journey remains pending"
+    },
+    "V04": {
+      "automated": "Google/Apple callback/state/nonce/cancellation/stale-result protocol passed using fixture edges",
+      "live": "Exact packaged provider consent/restart matrix remains pending"
+    },
+    "V05": {
+      "automated": "Real SDK refresh/logout/new-client restore, storage mocks, foreground/canonical session/legacy-key cleanup passed",
+      "live": "Real locked/unavailable device storage and full OS background/upgrade matrix pending"
+    },
+    "V16": {
+      "automated": "Delayed identity/settings/profile/quest/native acknowledgments, account/generation replacement and no private draft/toast resurrection passed at tested component/controller seams",
+      "live": "Prior real A-to-B separation retained; B writes/return-to-A/native owner takeover still pending"
+    }
+  },
+  "boundaries": {
+    "private_credentials_read": false,
+    "real_accounts_created_or_changed": false,
+    "hosted_database_changed": false,
+    "manual_local_api_db_changed": false,
+    "physical_devices_touched": false,
+    "native_activation_enabled": false,
+    "actual_device_permission_proved": false,
+    "sdk_network_fixture_is_live_supabase": false
+  },
+  "logs": [
+    "/tmp/hoosh-verify-c02-sdk.log",
+    "/tmp/hoosh-verify-c02-unit.log",
+    "/tmp/hoosh-verify-c02-components.log",
+    "/tmp/hoosh-verify-c02-consumers.log",
+    "/tmp/hoosh-verify-c02-identity.log"
+  ]
+}

@@ -101,3 +101,16 @@ The final `npm run check` passed with 613 unit tests, 859 component tests (two s
 ### Handoff
 
 Plan 02 consumes the existing `AppAuthProducer` and account scope, the link hold in `AppSessionBoundary`, `SignupNameHandoff` for verified review and save, and the account generation/teardown boundary. Add onboarding routing only after the auth flow is settled. Keep the existing private app available until setup has an account-scoped result. VERIFY-C02 should record the real-account walkthrough, managed API/profile evidence, and installed-device callback behavior separately from browser fixtures.
+
+
+## VERIFY-C02 — independent Auth validation supplement, November22
+
+Parent `212d386`; production Auth unchanged. Added real pinned Supabase SDK
+refresh/logout/new-client restore regression in `src/infrastructure/auth/sdk.test.ts`
+lines46–121. Controlled HTTP/storage only: logout remains authoritative when refresh
+settles late and server revocation returns503, stored session is absent on a new
+client, and deliberate later login works. No hosted user/password/provider operation.
+299 combined Auth/account/root/profile/quest checks, TypeScript and focused lint
+passed; see Plan05 C02 notes/receipt for exact scope. Live provider/confirmation,
+real B writes/return-to-A and OS-storage/native acceptance remain open. No runtime
+fix, bypass, rebuild or deployment required; owner retains commit/push control.
