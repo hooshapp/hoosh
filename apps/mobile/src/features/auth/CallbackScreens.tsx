@@ -12,7 +12,9 @@ import { usePublicAuth } from './use-public-auth';
 export function AuthCallback() {
   const { runtime } = usePublicAuth();
   const router = useRouter();
-  const nativeUrl = Linking.useURL();
+  // Read the current native intent synchronously; an async launch-URL lookup
+  // can overwrite a newer warm callback with the previous launch URL.
+  const nativeUrl = Linking.useLinkingURL();
   const started = useRef(false);
   useEffect(() => {
     if (started.current) return;

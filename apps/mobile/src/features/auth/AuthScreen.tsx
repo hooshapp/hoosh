@@ -66,6 +66,11 @@ export function AuthScreen({ mode }: { mode: AuthMode }) {
       if (callback) {
         const path = await actions.handleCallback(callback);
         if (mounted.current) router.replace(path as Href);
+      } else if (Platform.OS === 'android') {
+        // Android's browser session can report dismissal before Router receives
+        // the return intent. Keep the verifier/pending flow for that callback;
+        // the user can explicitly cancel an interrupted request from the form.
+        if (mounted.current) setNotice('Finish signing in in the browser, or cancel this request and try again.');
       } else if (controller?.getLinkSnapshot().pending?.id === flow.flowId) {
         await controller.cancelLink();
         if (mounted.current) setNotice('Sign-in was canceled. You can try again.');

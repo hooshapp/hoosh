@@ -1,0 +1,83 @@
+{
+  "increment": "INT-VERIFY-C02/C04 follow-up",
+  "date": "2026-11-23",
+  "source_head": "d384a740ec8fe31bba18bd218139c6962bf493e8",
+  "apk_sha256": "f11a8dd095b437a86b9c52248c20fef56575251e3f32a1ff37e879519a867d53",
+  "environment": "Owned API37 emulator5560, existing standalone normal app, local API8000 reverse, no physical device",
+  "status": "email_signup_password_login_recovery_and_latest_google_happy_path_passed_apple_retest_pending",
+  "google": {
+    "launch": "Passed: normal login Continue with Google opened accounts.google.com sign-in for configured Supabase project",
+    "browser": "AOSP WebView Browser Tester145; no Chrome package present. Browser-specific reliability not inferred.",
+    "success_callback": "Passed latest standalone rerun after Android dismissal fix: account chooser then normal Home dashboard and expected account in Settings.",
+    "cancel_restart": "Back to normal login succeeded with no private data shown; fresh Google request opened for recheck.",
+    "first_result": "Failed: browser showed invalid_request/bad_oauth_state, then fallback localhost8090 connection refused. API8000 healthy; callback not accepted. No success claimed.",
+    "diagnosis": "Supabase dashboard access available in native Chrome. Enabled Google and Apple; native/web callback allowlist unchanged and matches generated flow URLs. Earlier 08:07/08:09 Auth logs show 400 OAuth state has expired. Fresh pre-fix Google callback logged login/provider google with 302 but app returned to signed-out form; no dashboard. SDK Android browser polyfill races AppState dismissal against URL delivery; form previously canceled pending request on dismissal."
+  },
+  "apple": {
+    "launch": "Passed: Apple hosted sign-in page displayed Hoosh application name",
+    "user_observation": "Completed Apple prompts, returned to Hoosh sign-in instead of dashboard",
+    "current_observation": "Normal signed-out screen, no visible error after scrolling; no matching custom-scheme callback found in current activity metadata",
+    "acceptance": "failed_or_incomplete; no authenticated dashboard/session acceptance",
+    "cause": "Unconfirmed: callback delivery/browser lifecycle versus provider/server exchange. No claim of same bad_oauth_state as Google."
+  },
+  "fresh_signup_confirmation": {
+    "signup": "Normal Check your email screen observed after user submission",
+    "delivery": "User received confirmation email; Inbox/Spam unspecified",
+    "confirmation": "User opened link outside planned emulator test and reported success",
+    "password_login": "Passed: exact new test alias displayed in normal Settings, Home zero credits/50health",
+    "native_confirmation_callback": "not verified; opening externally is not emulator callback proof",
+    "native_owner_gate": "Some settings unavailable before explicit claim of previously managed emulator; no device claim performed for fresh account"
+  },
+  "password_recovery": {
+    "request": "Normal Forgot password submitted once; neutral sent guidance observed",
+    "delivery": "User confirmed receiving reset email",
+    "handoff": "User privately pasted recovery URL into local hidden-input helper; helper validates expected project/recovery endpoint and opens emulator without printing or saving link",
+    "result": "Failed: Hoosh displayed Unable to use this link instead of new-password form",
+    "password_changed": false,
+    "cause": "Not established: callback validation, pending-flow matching, provider exchange or link state. No expired/reused-link cause assumed. Dashboard Auth logs currently unavailable to owner.",
+    "rebuilt_live_result": "Passed latest happy path: fresh email link returned to Choose a new password; owner privately completed password update/returned to login and reported using new password; normal Home dashboard observed09:35. No password read. Earlier failed run retained as historical; expired/reused/cold-start/replay live matrix not claimed."
+  },
+  "privacy": "No credentials/tokens/callback URLs read or recorded. Screenshots remain ignored. Existing native QA rules retained after signout.",
+  "callback_freshness_followup": {
+    "change": "AuthCallback uses synchronous current Linking.useLinkingURL rather than asynchronous useURL launch lookup",
+    "scope": "Harden warm intent freshness; observed failure root cause not proven",
+    "checks": {
+      "renderer_and_normal_root": 102,
+      "controller_and_link": 29,
+      "typescript": "passed",
+      "focused_lint": "passed",
+      "standalone_build": "passed"
+    },
+    "build": {
+      "built_at": "2026-11-23T14:04:42.311Z",
+      "apk_sha256": "7fd89853c5ced6ae46ddd4155488b06a8cb8d7d0ba8f8abf07e9937c57f11ab7",
+      "mapping_sha256": "0d78589b2ecf2412b81146aa656dd096ba4ce0b588708e155b00b0d19f334487",
+      "source_commit": "d384a740ec8fe31bba18bd218139c6962bf493e8",
+      "source_worktree_dirty": true,
+      "debuggable": false,
+      "hermes_bytecode": true
+    },
+    "installed": "emulator5560 non-destructive replacement, normal login startup observed",
+    "live_retest": "Fresh09:28 recovery link reached actual new-password form09:30. Owner privately updated password and logged in; dashboard observed09:35. Happy path passed on rebuilt APK; prior root cause remains unproven."
+  },
+  "android_browser_return_followup": {
+    "change": "Android null browser result preserves pending OAuth request and verifier for Router callback; explicit user cancellation remains available. iOS cancellation unchanged.",
+    "checks": {
+      "focused_component_cases": 4,
+      "typescript": "passed",
+      "focused_lint": "passed",
+      "standalone_build": "passed",
+      "diff_check": "passed"
+    },
+    "google_live": "Passed account chooser to normal Home dashboard, expected existing account verified in Settings, 2026-11-23 17:20 Eastern. Source fix and successful rerun support race diagnosis; no provider secrets or allowlist changes.",
+    "apple_live": "Fresh Apple page opened; user private credential/verification step pending.",
+    "build": {
+      "built_at": "2026-11-23T22:08:57.497Z",
+      "debuggable": false,
+      "hermes_bytecode": true,
+      "apk_sha256": "236ad64e24b0aec944c94b79a9d6981e2e4326438f45c1fa72753da0059d4a79",
+      "source_commit": "d384a740ec8fe31bba18bd218139c6962bf493e8",
+      "source_worktree_dirty": true
+    }
+  }
+}

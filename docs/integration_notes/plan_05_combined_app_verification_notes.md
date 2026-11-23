@@ -313,3 +313,71 @@ API/database jobs passed on 6bf8b29. Current documentation commit CI must be che
 once owner pushes. No runtime/schema/signing/provider changes, phone work or secrets
 introduced. DB original data and API restoration verified. C05 and remaining matrix
 rows stay as listed in handoff; rollback is a tested forward fix, not silent store reset.
+
+
+## INT-VERIFY-C02/C04 follow-up — Native callback freshness investigation
+
+Date: 2026-11-23. Owner/reviewer: Anisha / Ishmum. Branch: integration/shared-product.
+Parent `d384a74`; commit Pending. Intended subject: `fix(auth): use current native callback on warm return`.
+
+Live exact C04 APK: fresh signup email delivery and subsequent confirmed-account
+password login passed (normal Home and exact test identity in Settings). The owner
+opened signup confirmation outside the intended emulator flow, so direct native
+confirmation return remains unverified. Google twice returned bad_oauth_state
+then fallback localhost8090. Apple prompts returned to signed-out Hoosh without
+dashboard; error cause not established. Recovery email arrived; private same-device
+link handoff opened Unable to use this link, with no password change. Dashboard
+Auth logs unavailable while owner awaits teammate verification. Never relabel these
+failures as success or presume an expired link/cookie/allow-list cause.
+
+### Changes and validation
+
+- `apps/mobile/src/features/auth/CallbackScreens.tsx:15–17`: use current synchronous
+  Expo Linking URL rather than asynchronous initial-URL hook. Installed hook source
+  showed launch-URL resolution can overwrite a newer warm event. This hardens a
+  concrete race; it is not proof of the observed hosted failures' root cause.
+- `apps/mobile/src/features/auth/CallbackScreens.test.tsx` (new): current native
+  recovery/OAuth routing, wait for link, rejection without detail leak, timeout and
+  one exchange per mounted screen. Controlled edges, no hosted provider proof.
+- `apps/mobile/src/features/auth/link-controller.test.ts` (new final test): actual
+  installed Supabase SDK recovery/PKCE exchange and private-access hold through
+  reset step with controlled HTTP; no real credentials/network.
+- `docs/integration_notes/artifacts/verify-auth-packaged-android.json`: sanitized
+  live observations and follow-up check/build status. Raw screenshots/local helper
+  remain ignored; no links, passwords, token/secure-storage reads committed.
+- This entry retains source, failures, checks and next action; no new plan ID.
+
+102 focused renderer/root cases and29 controller/link cases passed. TypeScript and
+focused lint passed (first lint invoked from repository root lacked the mobile
+config; correct workspace invocation passed). Initial new component tests used
+synchronous render with the installed async testing API; awaited render/rerender
+corrected the harness and all cases passed. Standalone rebuild/install passed (APK `7fd89853...7f11ab7`); normal login loaded, fresh recovery requested;
+fresh actual email/provider return still required. No auth/redirect validation or
+permission policy weakened. Do not install over an active pending password update;
+current failed recovery will be explicitly cancelled before fresh retry.
+
+Latest live rerun on rebuilt APK: fresh09:28 recovery email privately handed to emulator opened Choose a new password09:30. Owner completed password update privately and subsequent login; Home dashboard observed09:35. Latest recovery happy path passed; previous failure retained and causal attribution unproven. Google/Apple and full live expiry/replay/cold-start matrices remain unverified.
+
+### Supabase/provider and Android browser-return follow-up — 2026-11-23
+
+Native Chrome dashboard access is available; no teammate verification needed for
+this session. Google and Apple enabled. Apple service/native IDs and both providers
+callback endpoint match existing setup; three development redirect patterns and
+Site URL unchanged. No secret revealed, no security settings weakened. Earlier
+08:07/08:09 OAuth log errors say “OAuth state has expired.” A fresh Google attempt
+logged successful provider login and 302 return, while Hoosh remained signed out.
+
+The installed Expo Android browser polyfill races foreground dismissal against
+URL delivery. AuthScreen previously canceled the matching pending request on a
+null browser result, allowing dismissal to erase a valid callback request. Android
+now retains the request/verifier for Router; users can explicitly cancel an
+interrupted request. iOS cancellation behavior unchanged. Four focused component
+cases across both platforms, workspace TypeScript, focused lint, standalone build
+and diff check passed. Rebuilt APK installed without clearing app data.
+
+Latest live Google rerun reached the normal dashboard; expected existing account
+verified in Settings (17:20 Eastern). Apple fresh page opened for owner private
+login/verification; acceptance remains pending. No claim of iOS native/physical
+provider coverage, direct native signup confirmation, or full callback replay/expiry
+matrix. Commit suggestion after review: `fix(auth): preserve Android OAuth callbacks
+on browser return`. No commit or push performed.

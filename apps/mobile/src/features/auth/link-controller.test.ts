@@ -172,3 +172,33 @@ it('accepts the pinned SDK PKCE URL and removes its actual verifier on cancel', 
     expect(store.has('sdk-oauth-code-verifier')).toBe(false);
   } finally { controller.stop(); client.auth.dispose(); }
 });
+
+it('exchanges native recovery through the real SDK and keeps private access held for password update', async () => {
+  const memory = new Map<string, string>();
+  const storage = { getItem: async (k: string) => memory.get(k) ?? null,
+    setItem: async (k: string, v: string) => { memory.set(k, v); },
+    removeItem: async (k: string) => { memory.delete(k); } };
+  const id = '00000000-0000-4000-8000-000000000008';
+  const payload = { access_token: `${btoa('{}')}.${btoa(JSON.stringify({ sub: id, session_id: id, exp: Math.floor(Date.now() / 1000) + 3600 }))}.fixture`,
+    refresh_token: 'synthetic-refresh', token_type: 'bearer', expires_in: 3600,
+    user: { id, email: 'fixture@example.test', aud: 'authenticated', created_at: '2026-11-23T00:00:00Z' } };
+  const calls: string[] = [];
+  const client = createClient('https://synthetic.supabase.co', 'sb_publishable_synthetic', {
+    auth: { storage, storageKey: 'native-recovery-sdk', persistSession: true, autoRefreshToken: false, detectSessionInUrl: false, flowType: 'pkce' },
+    global: { fetch: async input => {
+      const path = new URL(String(input)).pathname; calls.push(path);
+      return new Response(JSON.stringify(path.endsWith('/recover') ? {} : payload), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    } },
+  });
+  const controller = new SessionController(() => ({ client, storage, config: { url: 'https://synthetic.supabase.co', key: 'sb_publishable_synthetic', storageKey: 'native-recovery-sdk' } }));
+  try {
+    await controller.start();
+    await controller.requestRecovery('fixture@example.test');
+    const pending = controller.getLinkSnapshot().pending!;
+    expect(pending.redirectUrl.startsWith('disconnect-dev://auth/callback?flow=')).toBe(true);
+    expect(await controller.handleCallback(pending.redirectUrl + '&code=synthetic-recovery-code')).toBe('/(auth)/reset-password');
+    expect(controller.canResetPassword()).toBe(true);
+    expect(controller.getPrivateAccessHeld()).toBe(true);
+    expect(calls.filter(path => path.endsWith('/token'))).toHaveLength(1);
+  } finally { controller.dispose(); client.auth.dispose(); }
+});
