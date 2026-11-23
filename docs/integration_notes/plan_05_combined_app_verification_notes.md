@@ -1,24 +1,27 @@
 # Plan05 — Combined normal-app verification
 
-## Current checkpoint — INT-VERIFY-C02, November22
+## Current checkpoint — INT-VERIFY-C03, November22
 
-- Branch `integration/shared-product`, parent `212d386`; owner committed the earlier
-  C06/C01 checkpoint. This delta adds a test/evidence only; no production runtime,
-  dependency, native or database change. User retains commit/push control.
-- C01 readiness remains passed. **C02 automated slice passed; full C02 remains open**
-  for real-account/provider/OS-storage acceptance. No phone operation or new login.
--119 portable/180 component checks (299total), mobile TypeScript and focused lint
-  passed. The new real pinned SDK race test confirms local logout across in-flight
-  refresh, server503 and a new-client restore, using synthetic fetch/storage.
-- Existing normal routes, account providers, profile/quest mutation fences and
-  storage adapters retain isolation under the tested delayed-response/session cases.
-  Native permission and live Supabase provider acceptance are not inferred.
-- Runtime source hashes match C01; no redundant package build/install or manual
-  API/DB fixture mutation. The physical iPhone, original B session and compact
-  simulator are untouched in this continuation. Native activation remains false.
-- Next: C03 independent setup/profile/settings verification. Exact packaged private
-  account/provider checks need owner interaction later; IOS-C06 native lifecycle
-  and actual enforcement remain deferred. No whole-app or release acceptance.
+- Branch `integration/shared-product`, parent `0a512e2`; owner committed C02.
+  C03 changes only evidence/docs; no production source, dependency or schema change.
+- **C03 independent slice passed:**228 component +68 portable +144 actual PG17/API
+  tests =440. Existing mobile TCP settings parent also passed its7 write cases and
+  1 new-client/API-process restart case; not counted twice. Full real managed-
+  account/platform/native acceptance remains open, as do C02's live rows.
+- Reused normal routes/fixtures and guarded profile/settings harnesses. Existing
+  port55432 guard unchanged. Fresh separate PG17cluster ran only after owned manual
+  API and original cluster paused; original storage was never the suite target.
+- Test cluster stopped with0fixture Auth users. Original PG/API restored; all12
+  public/Auth table content digests match before/after. Health200/private401 gates
+  rechecked. Test env file/hosted DB/native accounts/phones/simulators unchanged.
+- Manual/suggested setup, conflicts, lost replies, dirty navigation, local progress
+  failures and account separation passed at current automated/UI or TCP/PG layers.
+  Native ports are fixtures in routed tests; actual Screen Time remains deferred.
+- Runtime hashes match C01; no new app build/install needed. Exact source, commands,
+  environment, cleanup and remaining boundaries are in C03 receipt/runbook.
+- Next: VERIFY-C04 integrated Android packaged journey. iPhone native lifecycle/
+  ownership/enforcement and physical input stay in deferred IOS-C06/VERIFY-C05.
+  No whole-app/release acceptance and no claim that every C02/C03 live row passed.
 - Intended files staged for owner review/commit; no commit/push performed.
 
 ## INT-VERIFY-C01 — Readiness and fixture inventory
@@ -81,3 +84,31 @@ Full C02 requires real SDK+verified backend identity and managed A/B/provider jo
 controlled-fetch SDK tests are narrower evidence. No credential/session extraction,
 hosted mutation, new account, database suite or physical device interaction. All
 intended files staged; user commits/pushes.
+
+
+## INT-VERIFY-C03 — independent setup/profile/settings acceptance
+
+Changed:
+- `docs/integration_notes/artifacts/verify-c03-persistence.json`:440checks, exact
+  parent, separate PG17isolation/restoration, current head0007, zero fixture users,
+  V06–V09/V21 coverage and explicit live/native limits.
+- `docs/qa/combined-app-verification.md`: current results, test-layer boundaries,
+  reproduction prerequisites and strict manual-DB protection/restoration procedure.
+- Plan05 C03 ledger and this notes file: current status/next integration, not full
+  platform acceptance. Plan02 notes receive the setup-owner verification supplement.
+
+No implementation defect was found; no production/test-source changes needed.
+Reused profile reads/writes/isolation, settings storage/HTTP/restart and production
+mobile-client TCP parent. Guard validates both URLs, reserved port/role/database,
+marker and actual PG17 before schema/cleanup. Only a fresh cluster was the suite
+subject. Original owned API/PG were temporarily paused and safely restored; whole
+original table content digests match. Temporary cluster remains stopped; no Auth
+fixture rows remain. Exact test command/paths/counts and private log locations in
+receipt; no private values, tokens or DB URLs committed.
+
+Current routed failures/recovery paths and TCP/PG writes/readbacks/restarts passed;
+normal SDK/provider/fresh-account and OS/native touch acceptance is narrower/pending.
+C01 runtime hashes, JSON/scope/count/fixture paths and Git whitespace checks passed.
+Existing original API health/private401 gate checks passed after restoration.
+All intended files staged; user commits/pushes. No source reset, hosted mutation,
+physical device operation or native activation change.

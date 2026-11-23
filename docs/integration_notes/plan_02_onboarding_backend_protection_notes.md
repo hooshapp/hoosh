@@ -78,3 +78,21 @@ Run V06–V09 with the guarded database and developer Auth project, and V10–V1
 2. Choose apps, cancel once, reopen and save a selection. Check the saved count after returning and reopening the app. On Android, verify Usage Access and Accessibility separately. On iPhone, exercise Screen Time authorization and select individual apps once the shared bridge is signed in the build.
 3. Set a short window that covers the current time on a test device. Preview, then explicitly choose **Apply protection**. Wait for device confirmation and open a selected test app during the window. Confirm the intervention, then go to Home and check the device status.
 4. Revoke and restore permission, leave and reopen setup, and repeat with **Finish for now**. Verify there is no automatic Apply. Exercise Stop and the remaining quest overlap and allowance cases under the platform verification plan.
+
+
+## VERIFY-C03 — independent persistence supplement, November22
+
+Parent `0a512e2`; no onboarding production change. Existing normal routed manual/
+suggested setup, interruption/final-receipt/conflict/lost-reply/dirty-exit cases and
+profile/settings consumers passed228component checks;68portable progress/settings/
+identity cases passed. Separate guarded PostgreSQL17/API suite passed144checks,
+including real production-mobile-client TCP writes/readback and a fresh client/API
+process restart. These are independent UI/DB layers, not full hosted SDK/native
+acceptance. See Plan05 C03 receipt/runbook for scope, exact files and cleanup.
+
+Strict55432guard was preserved: a fresh cluster ran after pausing the owned manual
+API/PG, then stopped; original services and all12 table content digests restored/
+matched, health200/private401 rechecked. No original manual data, managed account,
+phone, permission or native selection changed. Prior PG18/toolchain-blocked entries
+remain historical; actual isolated PG17evidence now exists. Full new managed-account
+and physical picker/Apply/lifecycle/input acceptance remains open. No commit/push.

@@ -131,3 +131,60 @@ Phone-only native owner/rule enforcement stays deferred with IOS-C06. Prior real
 simulator journeys remain supporting evidence; the new tests do not upgrade them
 into a full current-build provider/OS pass. C03 independent setup/persistence checks
 can proceed without manufacturing any of those successes.
+
+
+## VERIFY-C03 — independent setup/persistence continuation
+
+Parent `0a512e2`; no production changes. [C03 receipt](../integration_notes/artifacts/verify-c03-persistence.json)
+records228 component,68 portable and144 actual PostgreSQL/API tests (440total).
+The existing production mobile-client settings harness runs7 write/validation/
+isolation cases and1 fresh-client/process restart case inside its passing pytest
+parent; those nested cases are not added again to the144count.
+
+Routed tests mount actual setup/profile/settings screens with synthetic SDK/API/
+native edges. Both suggested/manual paths, reviewed canonical settings, conflict
+Keep edits/Use latest, dirty exit, dropped reply readback, missing/pending progress,
+failed final local receipt and account replacement pass. Failed receipt retry does
+not repeat the API PATCH, native selection Save or Apply. Profile/settings native
+renderer and real TCP/PG tests are distinct evidence layers, not one fully hosted
+SDK/touch journey. Supported v1 progress reload and incompatible/corrupt recovery
+pass; no automatic arbitrary legacy/project/account import was added.
+
+### Separate PG17 run and restoration
+
+The existing test guard fixes loopback port55432/database/roles/marker/major17.
+**That guard was not changed.** A fresh cluster `pg17-verify-c03` was initialized
+using the already-installed local PG17toolchain and existing fixture bootstrap,
+roles and runtime SQL. The owned manual uvicorn/API was stopped, original manual
+cluster `pg17-c06` content was digested and that cluster was stopped without edits.
+Only then did the separate cluster bind55432. Test env overrides were process-local;
+`services/api/tests/.env` and managed configuration were not modified.
+
+Existing pytest parents ran against the new guarded cluster, with normal ephemeral
+JWT verification, actual loopback HTTP and production portable mobile client. They
+verified profile/settings RLS/ownership, revisions, section replace/omit/null,
+Unicode, deliberate conflict retry, transaction failure and lost committed reply,
+plus actual API/client process restart/readback. Temporary head was0007 and no
+fixture Auth users remained. Test-only local Auth rows are not managed accounts.
+
+Temporary PG stopped after the tests. Original PG and API restarted with their
+original cluster/config. Before/after digests match for all12 original public/Auth
+tables. Health200 and unauthenticated private401 gates pass after restoration.
+Manual simulator A/B data was preserved; no raw account rows/identities are committed.
+Only private scratch logs/report/digests remain ignored. No native permission,
+phone, hosted project, real Auth account or app installation changed.
+
+To reproduce on an appropriately isolated disposable target, use the seven pytest
+file paths from the receipt with `-o addopts= -m database -q`. Do not aim those tests
+at the currently restored manual fixture. On this Mac, a new run needs a reviewed
+fresh cluster path and the same owned-service pause/restore sequence; the private
+one-shot helper refuses reuse of an existing cluster. On Docker-equipped systems,
+the existing named disposable fixture commands remain the supported alternative.
+Never weaken the guard or run schema suites concurrently with manual API activity.
+
+C03 remains partial for full managed-account/platform acceptance. Native iPhone
+picker/permissions/Apply, real OS interruptions and full physical input/accessibility
+still belong to IOS-C06/VERIFY-C05; exact Android journey belongs to VERIFY-C04.
+Prior one-account real simulator save/relaunch remains valid supporting evidence,
+not completion of every fresh managed-account signup/setup combination. The source
+runtime hashes still match C01, so no redundant native rebuild was required.

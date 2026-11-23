@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "increment": "INT-VERIFY-C03",
+  "date": "2026-11-22",
+  "status": "running",
+  "independent_ui_and_database_slice": "passed",
+  "full_increment_accepted": false,
+  "branch": "integration/shared-product",
+  "source_head": "0a512e2d253780ca6e65505c85bcb0c6fe28e0da",
+  "production_code_changed": false,
+  "runtime_hashes_match_c01": true,
+  "native_rebuild_performed": false,
+  "checks": [
+    {
+      "layer": "native-renderer components with synthetic SDK/API/native edges",
+      "passed": 228,
+      "suites": 12,
+      "command": "npm run test:components --workspace @disconnect/mobile -- normal-app-integration.test.tsx profile-surface.test.tsx profile-form.test.tsx settings-navigation.test.tsx plan-draft-screen.test.tsx activity-preferences-screen.test.tsx"
+    },
+    {
+      "layer": "portable setup/progress/settings/identity",
+      "passed": 68,
+      "files": 5,
+      "command": "npm run test:unit --workspace @disconnect/mobile -- src/features/onboarding/progress-repository.test.ts src/features/onboarding/setup-model.test.ts src/features/settings/settings-api.test.ts src/features/settings/settings-summary-model.test.ts src/features/account/api.test.ts"
+    },
+    {
+      "layer": "real PostgreSQL17 and verified ephemeral-JWT API/production-mobile-client HTTP",
+      "passed": 144,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "files": [
+        "services/api/tests/db/test_profile_reads.py",
+        "services/api/tests/db/test_profile_writes.py",
+        "services/api/tests/db/test_profile_isolation.py",
+        "services/api/tests/db/test_settings_http.py",
+        "services/api/tests/db/test_settings_storage.py",
+        "services/api/tests/db/test_settings_restart.py",
+        "services/api/tests/db/test_mobile_settings_acceptance.py"
+      ],
+      "command_prefix": "services/api/.venv/bin/python -m pytest",
+      "command_suffix": "-o addopts= -m database -q",
+      "requires_inactive_manual_fixture_and_fresh_guarded_pg17": true
+    }
+  ],
+  "total_passed": 440,
+  "database_isolation": {
+    "scope": "separate_pg17_cluster_with_unchanged_loopback_guard",
+    "test_exit": 0,
+    "original_data_preserved": true,
+    "original_services_restored": true,
+    "hosted_database_changed": false,
+    "guard_changed": false,
+    "actual_database_major": 17,
+    "pytest": {
+      "tests": 144,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "schema_head": "20261114_0007",
+    "test_auth_users_remaining": 0,
+    "original_tables_content_compared": 12,
+    "original_http_health_after_restore": 200,
+    "original_unauthenticated_private_routes_after_restore": 401,
+    "manual_cluster_data_directory_unchanged": true,
+    "temporary_cluster_stopped": true,
+    "existing_test_env_file_modified": false,
+    "original_test_cluster_name": "pg17-c06",
+    "temporary_test_cluster_name": "pg17-verify-c03",
+    "native_accounts_or_credentials_read": false
+  },
+  "nested_production_mobile_settings_harness": {
+    "parent_test_passed": true,
+    "write_cases": 7,
+    "fresh_process_restart_cases": 1,
+    "cases_not_added_to_parent_pytest_total": true,
+    "transport": "real loopback TCP",
+    "identity": "synthetic ephemeral JWTs through normal verifier",
+    "storage": "actual isolated PostgreSQL17"
+  },
+  "coverage": {
+    "V06": {
+      "passed": "Normal routed new-login/manual/suggested setup, existing settings review, offline/deferred completion and interruption cases with fixture edges",
+      "remaining": "Full fresh managed-account signup/confirmation-to-setup matrix and device interruption acceptance"
+    },
+    "V07": {
+      "passed": "Real profile reads/writes, Unicode/null/omission, revisions/conflicts/RLS/ownership; UI Keep edits/Use latest and late result fencing checked separately",
+      "remaining": "Full managed SDK+packaged profile lifecycle under actual device interruptions"
+    },
+    "V08": {
+      "passed": "Real mobile client TCP/PG persistence, concurrent conflicts, committed-response-loss readback, API+client process restart; routed Settings canonical cache/navigation",
+      "remaining": "Complete real-account platform matrix; prior real local A save/readback retained as supporting evidence"
+    },
+    "V09": {
+      "passed": "Routed injected-native stage/cancel/Save/revision/late-ack tests, without reconstructing native selections from labels",
+      "remaining": "Actual iPhone picker/Save/restart and supported-platform native permissions remain device acceptance"
+    },
+    "V21": {
+      "passed": "Routed dirty navigation/edit preservation; prior compact simulator keyboard and intro evidence retained, not rerun",
+      "remaining": "Full physical keyboard/back/scroll/accessibility and actual native picker layouts"
+    }
+  },
+  "progress_format_boundary": {
+    "supported_version1_reload": "passed",
+    "other_project_or_account_not_imported": "passed",
+    "corrupt_or_incompatible_explicit_recovery": "passed",
+    "arbitrary_legacy_draft_auto_migration_added": false
+  },
+  "remaining_phone_only": [
+    "native picker/permission lifecycle",
+    "installed protection and owner transitions",
+    "actual foreground/lock/reboot/native expiry behavior"
+  ],
+  "cleanup": {
+    "manual_api_db_restored": true,
+    "manual_data_unchanged": true,
+    "test_users_remaining": 0,
+    "hosted_data_or_auth_changed": false,
+    "phone_or_simulator_changed": false
+  },
+  "private_local_logs": [
+    "/tmp/hoosh-verify-c03-components.log",
+    "/tmp/hoosh-verify-c03-unit.log",
+    ".native-dev/qa/verify-c03-db/pytest.log",
+    ".native-dev/qa/verify-c03-db/junit.xml",
+    ".native-dev/qa/verify-c03-db/original-before.json",
+    ".native-dev/qa/verify-c03-db/original-after.json"
+  ]
+}

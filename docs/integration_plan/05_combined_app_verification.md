@@ -100,7 +100,7 @@ must reflect it before distribution rather than claiming this scope covered it.
 |---|---|---|
 | INT-VERIFY-C01 | `test(integration): establish normal-app acceptance fixtures` | Readiness passed: reused A/B/fault harnesses, current118 component/88 unit checks, public config/API/package preflight and [V01–V24 manifest](../integration_notes/artifacts/verify-c01-readiness.json). BASE-C04 already passed; not full-app/device acceptance. |
 | INT-VERIFY-C02 | `test(integration): verify account and session isolation` | Independent automated slice passed:299 checks, including new real-SDK refresh/logout/new-client restore race; [evidence](../integration_notes/artifacts/verify-c02-auth-isolation.json). Real-account/provider/OS-storage acceptance remains open. |
-| INT-VERIFY-C03 | `test(integration): verify onboarding and persistence recovery` | Planned; ONB implementation |
+| INT-VERIFY-C03 | `test(integration): verify onboarding and persistence recovery` | Independent slice passed:228 component,68 portable and144 real PG17/API tests; [evidence](../integration_notes/artifacts/verify-c03-persistence.json). Manual DB data preserved/restored. Real managed-account/device/native acceptance remains open. |
 | INT-VERIFY-C04 | `test(android): accept integrated packaged app journeys` | Planned; C02/C03, Android native integration |
 | INT-VERIFY-C05 | `test(ios): accept integrated signed app journeys` | Planned; IOS-C06 and C02/C03 |
 | INT-VERIFY-C06 | `chore(integration): record exact-build acceptance and handoff` | Planned; results from prior increments, explicit missing gates |
