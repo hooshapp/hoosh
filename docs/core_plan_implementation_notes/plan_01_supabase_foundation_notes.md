@@ -1,5 +1,7 @@
 # Plan 01 — Supabase Foundation Implementation Notes
 
+**Integration evidence, 2026-11-23:** [C06 handoff](../qa/integration-handoff.md) records current SDK/account/persistence and 287 isolated PG17 checks, preserved manual QA data and exact-head CI. SB-06 parent completion is not inferred: hosted deletion, packaged Auth platform matrix, signed iPhone and release gates remain explicit. Original entries below are historical.
+
 **RN09-D03 recommendation handoff,2026-11-14:** Plan04 adds a bounded private
 recommendation decision row and own current/decision API; accepted one-time quests
 reuse existing scheduling/native/outcome/reward contracts. Development0006→0007

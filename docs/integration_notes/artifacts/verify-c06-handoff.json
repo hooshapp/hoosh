@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "increment": "INT-VERIFY-C06",
+  "date": "2026-11-23",
+  "branch": "integration/shared-product",
+  "source_head": "6bf8b299e6970891c211fe019ff501dd2408f608",
+  "scope": "local exact C04 source checks and evidence handoff; integration remains partial",
+  "production_source_changed": false,
+  "checks": {
+    "mobile_typecheck": "passed",
+    "mobile_lint": {
+      "result": "passed",
+      "warnings": 4,
+      "errors": 0
+    },
+    "design_assets": "passed:71 original,59 integration,31 plan SVGs",
+    "standalone_packaging_guards": {
+      "passed": 8
+    },
+    "portable_tests": {
+      "passed": 663,
+      "files": 42
+    },
+    "component_tests": {
+      "passed": 967,
+      "skipped": 2,
+      "suites": 117
+    },
+    "api_lint": "passed",
+    "api_tests": {
+      "passed": 682,
+      "database_group_deselected": 287
+    },
+    "openapi_and_generated_types": "passed",
+    "ui_specimen_build": "passed",
+    "production_web_export": "passed",
+    "database": {
+      "scope": "separate_pg17_cluster_with_unchanged_loopback_guard",
+      "test_exit": 0,
+      "original_data_preserved": true,
+      "original_services_restored": true,
+      "hosted_database_changed": false,
+      "guard_changed": false,
+      "actual_database_major": 17,
+      "pytest": {
+        "tests": 287,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "schema_head": "20261114_0007",
+      "test_auth_users_remaining": 0
+    },
+    "ios_inspector_unit": {
+      "passed": 7
+    },
+    "ios_adapter": "passed model/storage/transaction/reward/clock plus simulator SDK mutation gates; no enforcement proof"
+  },
+  "command_caveat": "npm run check passed through mobile tests, then exited127 because uv is absent from PATH. Remaining configured Ruff, pytest, OpenAPI and codegen commands passed using existing services/api/.venv executables; aggregate command itself is not reported as exit0. No dependency installation or source bypass.",
+  "ci": {
+    "head_sha": "6bf8b299e6970891c211fe019ff501dd2408f608",
+    "url": "https://github.com/hooshapp/hoosh/actions/runs/45177285771",
+    "jobs": {
+      "mobile": "success",
+      "api": "success",
+      "database": "success"
+    },
+    "scope": "Committed C04 source only; forthcoming documentation commit not yet checked by CI."
+  },
+  "android_apk_sha256": "f11a8dd095b437a86b9c52248c20fef56575251e3f32a1ff37e879519a867d53",
+  "ios_native_source_unchanged_since_signed_packaging": "4f26c995ff102c623de59a9cd9718910d4e0cf22",
+  "ios_build_claim": "Historical packaging retained; not a fresh exact-head signed iOS build or physical acceptance. Native files unchanged, JS/product-tree hashes from earlier receipts remain historical.",
+  "deferred": [
+    "VERIFY-C05 physical signed iPhone journey and Screen Time elapsed enforcement",
+    "Physical Android/OEM/force-stop/reliability and V23 TalkBack",
+    "Packaged provider consent/recovery/fresh email/platform callback matrix",
+    "V22 hosted account deletion/cascade/other-device cleanup",
+    "V24 unresolved product/release features and deployed HTTPS/store distribution"
+  ],
+  "logs": {
+    "mobile": {
+      "sha256": "564c235da35161094d3dc83c42cad8691b31dc57565b4c59ae49b0fe3cb49b34",
+      "retention": "private local log; sanitized results only committed"
+    },
+    "api": {
+      "sha256": "5718e64b02d9bed48832ce0d54cc49d834a8282465d00743e044f17559d6fe96",
+      "retention": "private local log; sanitized results only committed"
+    },
+    "database": {
+      "sha256": "7f3b3d3cce3e4cd8c1a16719a0ce61559b2a6dd6670b128750aee174c241e27b",
+      "retention": "private local log; sanitized results only committed"
+    },
+    "ui": {
+      "sha256": "12a5dd9df7f5672c2da8e999d3bfac00ef4c335736109ad23532de1e5b3f1fb8",
+      "retention": "private local log; sanitized results only committed"
+    },
+    "export": {
+      "sha256": "28a918b0f4c69ec40a8b727787d94b793408e9cc4c3befd65b9f612687f17111",
+      "retention": "private local log; sanitized results only committed"
+    },
+    "ios_adapter": {
+      "sha256": "93a4f8b65ac459002bbca48b72f3c2ad821a034a8dda932a31e5c081dce9b019",
+      "retention": "private local log; sanitized results only committed"
+    },
+    "ios_inspector": {
+      "sha256": "1f45d3ee01d7633fc7f3932792ce6d267204918bb4958039903edc72060eb182",
+      "retention": "private local log; sanitized results only committed"
+    }
+  }
+}

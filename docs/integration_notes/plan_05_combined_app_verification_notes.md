@@ -1,6 +1,23 @@
 # Plan05 — Combined normal-app verification
 
-## Current checkpoint — INT-VERIFY-C04 continuation, November22
+## Current checkpoint — INT-VERIFY-C06 handoff, November23
+
+- Owner/reviewer: Anisha / Ishmum. Branch `integration/shared-product`; verified
+  source `6bf8b299e6970891c211fe019ff501dd2408f608` (owner committed C04).
+- C04 core emulator journey passed including corrected real A/B/no-install/A return;
+  C05 physical signed iPhone explicitly deferred. Overall integration remains partial.
+- Final local/CI results, V01–V24 limitations, rollback and reproduction are in
+  [handoff](../qa/integration-handoff.md) and [receipt](artifacts/verify-c06-handoff.json).
+- No runtime changes in C06; historical source provenance from integration index
+  retained. No fresh iOS product build claimed: native source unchanged since prior
+  signed packaging, current SDK/model probes passed, physical enforcement unverified.
+- API8000 and manual PG17/55432 restored with identical data digests; disposable
+  test cluster stopped. Emulator QA account/rules retained; font/network defaults.
+- Next: owner commits/pushes C06, verify that documentation head CI; arrange signed
+  spare iPhone C05, Android physical/OEM/accessibility and remaining packaged Auth
+  cases before their respective acceptance/release claims. No merge/deploy authorized.
+
+## Historical checkpoint — INT-VERIFY-C04 continuation, November22
 
 - Parent `5fe021a`; owner committed the initial C04 packaging slice. Physical
   Android/iPhone acceptance is explicitly deferred by the owner.
@@ -264,3 +281,35 @@ signing scope. Physical/OEM/TalkBack and field distribution stay deferred. Insta
 Android provider consent/callbacks were not repeated; prior auth evidence does not
 claim that platform-specific run. Earlier pending roundtrip/live-matrix statements
 above describe historical checkpoints and are superseded by these final results.
+
+
+## INT-VERIFY-C06 — Exact-source checks and scoped handoff
+
+Date: 2026-11-23. Owner / reviewer: Anisha / Ishmum. Branch: `integration/shared-product`.
+Commit message: `INT-VERIFY-C06: record final checks and integration handoff`.
+Commit: Pending. Source: `6bf8b29`; existing integration index preserves both parent
+source SHAs. Plan: [C06](../integration_plan/05_combined_app_verification.md#int-verify-c06--exact-head-checks-readiness-report-and-maintainable-handoff).
+
+### Changes
+
+| File | Change and reason |
+|---|---|
+| `docs/qa/integration-handoff.md` (entire new file) | Exact-source results, V01–V24 evidence/remaining owners, reproducibility, privacy and rollback; no false both-platform completion. |
+| `docs/integration_notes/artifacts/verify-c06-handoff.json` (entire new file) | Sanitized result counts, log digests, exact CI SHA/job results and known environment limitations. |
+| `docs/integration_plan/05_combined_app_verification.md` (commit ledger) | C05 owner-deferred and C06 scoped reporting recorded without closing physical/release gates. |
+| `docs/integration_plan/README.md` (opening checkpoint) | Route readers directly to current handoff instead of old foundation-start instruction. |
+| `docs/integration_notes/plan_05_combined_app_verification_notes.md` (opening checkpoint and this entry) | Current state and next actions; former checkpoint explicitly historical. |
+| `docs/core_plan_implementation_notes/plan_01_supabase_foundation_notes.md` (opening cross-plan pointer) | Link current isolated DB/real-account evidence; keep SB-06 hosted deletion and platform gates open. |
+| `docs/core_plan_implementation_notes/plan_02_auth_onboarding_notes.md` (opening cross-plan pointer) | Link current Auth/persistence/account integration; do not bulk-complete original AUTH IDs. |
+
+### Validation and handoff
+
+663 portable /967 component (two conditional skips),682 deterministic API,287 real
+isolated PG17 tests passed; mobile types/lint/assets/eight packaging guards, UI/web
+builds, API contracts, iOS SDK/model gates and seven inspector cases passed. Four
+ESLint warnings retained. `npm run check` itself exited127 at missing `uv`; remaining
+exact configured checks passed via existing venv. Actual GitHub Foundation mobile/
+API/database jobs passed on 6bf8b29. Current documentation commit CI must be checked
+once owner pushes. No runtime/schema/signing/provider changes, phone work or secrets
+introduced. DB original data and API restoration verified. C05 and remaining matrix
+rows stay as listed in handoff; rollback is a tested forward fix, not silent store reset.

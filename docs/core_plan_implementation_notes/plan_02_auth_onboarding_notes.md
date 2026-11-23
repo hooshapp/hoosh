@@ -1,5 +1,7 @@
 # Plan 02 — Auth/onboarding implementation notes
 
+**Integration evidence, 2026-11-23:** [C06 handoff](../qa/integration-handoff.md) records current SDK/account/persistence and 287 isolated PG17 checks, preserved manual QA data and exact-head CI. AUTH parent completion is not inferred: hosted deletion, packaged Auth platform matrix, signed iPhone and release gates remain explicit. Original entries below are historical.
+
 Owner: Anisha for Auth/onboarding/iOS. This shared interface producer is implemented
 by Ishmum at his explicit 2026-11-11 request for RN09B-D02–D04. Branch
 `task/react-native/rn-09b-lifecycle-integration`, base `b9bf936`.

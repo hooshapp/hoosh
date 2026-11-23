@@ -1,5 +1,7 @@
 # Shared-product integration execution index
 
+**Current checkpoint (2026-11-23):** C04 Android core emulator acceptance passed; C05 physical iPhone remains owner-deferred. See the [C06 checks and handoff](../qa/integration-handoff.md) before continuing. Overall integration is partial; historical foundation instructions below remain provenance.
+
 **Prepared:** 2026-11-15. **Status:** the foundation handoff is recorded on
 `integration/shared-product`. Start with
 [AUTH-C01](01_auth_app_integration.md#int-auth-c01--one-sdkcontroller-and-compatible-session-behavior)
