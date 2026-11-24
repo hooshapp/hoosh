@@ -3,4 +3,5 @@ export type IntroSurfaceProps = {
   children: ReactNode;
   enabled: boolean;
   onScrollGesture(distance: number): void;
+  onScrollProgress?(fraction: number): void;
 };

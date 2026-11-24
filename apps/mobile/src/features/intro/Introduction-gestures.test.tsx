@@ -1,3 +1,4 @@
+import { AccessibilityInfo } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { act, fireEvent, render, screen } from '@testing-library/react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -54,8 +55,8 @@ async function swipe(dx: number, dy: number, options: { finishY?: number; cancel
   await act(() => {
     surface.props.onStartShouldSetResponderCapture(touch(100, 300, 100, 300));
     const first = touch(100 + dx, 300 + dy, 100, 300);
-    surface.props.onMoveShouldSetResponderCapture(first);
-    claimed = surface.props.onMoveShouldSetResponder(first);
+    claimed = surface.props.onMoveShouldSetResponderCapture(first);
+    if (!claimed) claimed = surface.props.onMoveShouldSetResponder(first);
     if (!claimed) return;
     surface.props.onResponderGrant(first);
     if (options.finishY !== undefined) {
@@ -68,36 +69,40 @@ async function swipe(dx: number, dy: number, options: { finishY?: number; cancel
   return claimed;
 }
 
-it('counts five short native upward gestures per section, including the movement before grant', async () => {
+it('captures three native upward drags and then requires Continue', async () => {
   await open();
-  for (let section = 0; section < 2; section++) {
-    for (let i = 0; i < 4; i++) expect(await swipe(0, -8)).toBe(true);
-    expect(screen.getByText(section === 0 ? 'scroll rapidly to unlock app' : 'keep scrolling!')).toBeVisible();
-    expect(await swipe(0, -8)).toBe(true);
-    expect(screen.getByText(section === 0 ? 'keep scrolling!' : 'welcome!')).toBeVisible();
-  }
-  expect(await swipe(0, -8)).toBe(false);
+  expect(await swipe(0, -8, { finishY: -100 })).toBe(true);
+  expect(await swipe(0, -8, { finishY: -100 })).toBe(true);
+  expect(screen.queryByRole('button', { name: 'Continue' })).toBeNull();
+  expect(await swipe(0, -8, { finishY: -100 })).toBe(true);
+  await fireEvent.press(await screen.findByRole('button', { name: 'Continue' }));
+  expect(screen.getByText('welcome!')).toBeVisible();
   await fireEvent.press(screen.getByRole('button', { name: 'Sign up' }));
   expect(mockReplace).toHaveBeenCalledWith('/(auth)/sign-up');
 });
-
-it('keeps total native swipe distance through grant without spilling into another section', async () => {
-  await open();
-  expect(await swipe(0, -8, { finishY: -160 })).toBe(true);
-  expect(screen.getByText('keep scrolling!')).toBeVisible();
-  expect(await swipe(0, -8, { finishY: -1000 })).toBe(true);
-  expect(screen.getByText('welcome!')).toBeVisible();
-});
-
-it('ignores horizontal/downward gestures, cancellation and a swipe reversed before release', async () => {
+it('captures vertical drags before children but ignores horizontal, downward and canceled input', async () => {
   await open();
   expect(await swipe(100, -20)).toBe(false);
-  expect(await swipe(0, 160)).toBe(false);
-  for (let i = 0; i < 5; i++) {
-    await swipe(0, -8, { cancel: true });
-    await swipe(0, -8, { finishY: 20 });
-  }
+  expect(await swipe(0, 100)).toBe(false);
+  await swipe(0, -8, { cancel: true });
   expect(screen.getByText('scroll rapidly to unlock app')).toBeVisible();
-  for (let i = 0; i < 5; i++) await swipe(0, -8);
-  expect(screen.getByText('keep scrolling!')).toBeVisible();
+  await swipe(0, -8); await swipe(0, -8);
+  expect(screen.queryByRole('button', { name: 'Continue' })).toBeNull();
+  await swipe(0, -8);
+  expect(await screen.findByRole('button', { name: 'Continue' })).toBeVisible();
+});
+
+it('still accepts upward swipes when Reduce Motion is enabled on the phone', async () => {
+  const reduce = jest.spyOn(AccessibilityInfo, 'isReduceMotionEnabled').mockResolvedValue(true);
+  try {
+    await open();
+    expect(screen.queryByRole('button', { name: 'Continue' })).toBeNull();
+    expect(await swipe(0, -8, { finishY: -100 })).toBe(true);
+    expect(screen.getByText('keep scrolling!')).toBeVisible();
+    expect(screen.getByRole('progressbar').props.accessibilityValue.now).toBe(33);
+    await swipe(0, -8); await swipe(0, -8);
+    expect(screen.getByRole('progressbar').props.accessibilityValue.now).toBe(100);
+    await fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
+    expect(screen.getByText('welcome!')).toBeVisible();
+  } finally { reduce.mockRestore(); }
 });

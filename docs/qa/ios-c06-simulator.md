@@ -317,3 +317,22 @@ Hoosh's intro, not a social-app intervention or Screen Time test. User then aske
 to do simulator-capable work and move into other integration while phone checks
 wait. VERIFY-C01 readiness is now recorded in the Plan05 notes/manifest; IOS-C06
 physical protection/owner/lifecycle gates remain open and activation stays false.
+
+### November 23 — Android checklist mapped to iOS
+
+See `docs/qa/ios-android-parity.md` and the sanitized
+`docs/integration_notes/artifacts/verify-ios-android-parity.json`. Latest normal
+iOS Release rebuilt, inspected and installed on existing Release QA without
+clearing data. Restored real session/draft; pre-rebuild normal session-count
+2→3→2 save/restore succeeded through local API. Fresh latest Google system-browser
+chooser and return reached Home; expected identity verified in Settings. Logout
+hid private screens. Native Apple sheet opened, but simulator Settings requires an
+Apple Account login; closing returned to login, no success exchange claimed.
+
+60 iOS component suites passed:486 cases,2 Android-only skips. Focused53 auth/root
+cases are included, not additive. Native model/store/owner/reward/clock and actual
+simulator SDK construction/mutation-gate probes passed with no OS changes. No
+physical enforcement, iOS live email-link matrix, full accessibility or native
+Apple acceptance inferred. Settings/device-status warning remains open.
+No production source, hosted secrets, activation gate, phone or pilot changed.
+Suggested commit: `docs(qa): record iOS simulator parity checks`.

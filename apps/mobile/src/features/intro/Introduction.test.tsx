@@ -30,10 +30,10 @@ beforeEach(() => {
 async function open() {
   await render(<SafeAreaProvider initialMetrics={{ frame: { x: 0, y: 0, width: 393, height: 852 }, insets: { top: 0, left: 0, right: 0, bottom: 0 } }}><Introduction /></SafeAreaProvider>);
 }
-it('shows the first launch and remembers it even if the user later closes mid-story', async () => {
+it('does not mark an unfinished first-launch introduction complete', async () => {
   await open();
   await screen.findByText('scroll rapidly to unlock app');
-  await waitFor(() => expect(AsyncStorage.setItem).toHaveBeenCalledWith(INTRO_SEEN_KEY, 'seen'));
+  expect(AsyncStorage.setItem).not.toHaveBeenCalled();
   expect(mockReplace).not.toHaveBeenCalled();
 });
 it('sends returning launches to signup without flashing the intro or Home', async () => {
@@ -48,6 +48,7 @@ it('lets a first-time user skip directly to the existing signup route', async ()
   await fireEvent.press(screen.getByRole('button', { name: 'Skip introduction' }));
   await waitFor(() => expect(mockReplace).toHaveBeenCalledTimes(1));
   expect(mockReplace).toHaveBeenCalledWith('/(auth)/sign-up');
+  expect(AsyncStorage.setItem).toHaveBeenCalledWith(INTRO_SEEN_KEY, 'seen');
 });
 it('recovers from blocked storage without trapping the user or claiming a saved flag', async () => {
   jest.mocked(AsyncStorage.getItem).mockRejectedValue(new Error('unavailable'));
@@ -57,11 +58,17 @@ it('recovers from blocked storage without trapping the user or claiming a saved 
   await fireEvent.press(screen.getByRole('button', { name: 'Continue without saving' }));
   expect(mockReplace).toHaveBeenCalledWith('/(auth)/sign-up');
 });
-it('counts all five intentional gestures in each section, even immediately after a transition', async () => {
+it('plays three scrolls, waits for explicit Continue, then shows welcome', async () => {
   await open();
   await screen.findByText('scroll rapidly to unlock app');
-  for (let i = 0; i < 5; i++) await fireEvent(screen.getByTestId('intro-gesture-input'), 'touchEnd');
+  expect(screen.queryByRole('button', { name: 'Continue' })).toBeNull();
+  for (let i = 0; i < 3; i++) await fireEvent(screen.getByTestId('intro-gesture-input'), 'touchEnd');
   expect(screen.getByText('keep scrolling!')).toBeTruthy();
-  for (let i = 0; i < 5; i++) await fireEvent(screen.getByTestId('intro-gesture-input'), 'touchEnd');
+  expect(screen.queryByText('welcome!')).toBeNull();
+  await fireEvent.press(await screen.findByRole('button', { name: 'Continue' }));
   expect(screen.getByText('welcome!')).toBeTruthy();
+  expect(AsyncStorage.setItem).not.toHaveBeenCalled();
+  await fireEvent.press(screen.getByRole('button', { name: 'Sign up' }));
+  await waitFor(() => expect(mockReplace).toHaveBeenCalledWith('/(auth)/sign-up'));
+  expect(AsyncStorage.setItem).toHaveBeenCalledWith(INTRO_SEEN_KEY, 'seen');
 });

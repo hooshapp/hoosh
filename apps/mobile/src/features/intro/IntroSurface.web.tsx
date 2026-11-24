@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import type { IntroSurfaceProps } from './IntroSurface.types';
 
-export function IntroSurface({ children, enabled, onScrollGesture }: IntroSurfaceProps) {
+export function IntroSurface({ children, enabled, onScrollGesture, onScrollProgress }: IntroSurfaceProps) {
   const element = useRef<HTMLDivElement>(null);
   const touch = useRef<{ x: number; y: number } | null>(null);
   useEffect(() => {
@@ -13,20 +13,23 @@ export function IntroSurface({ children, enabled, onScrollGesture }: IntroSurfac
       event.preventDefault();
       // A wheel burst is one gesture, including its momentum events.
       distance = Math.max(0, distance + event.deltaY * (event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? node?.clientHeight ?? 600 : 1));
+      onScrollProgress?.(Math.min(1, distance / 100));
       clearTimeout(timer);
-      timer = setTimeout(() => { onScrollGesture(distance); distance = 0; }, 180);
+      timer = setTimeout(() => { onScrollProgress?.(0); onScrollGesture(distance); distance = 0; }, 180);
     }
     node?.addEventListener('wheel', wheel, { passive: false });
     return () => { node?.removeEventListener('wheel', wheel); clearTimeout(timer); };
-  }, [enabled, onScrollGesture]);
+  }, [enabled, onScrollGesture, onScrollProgress]);
   return (
     <div ref={element} role="region" aria-label="Introduction" tabIndex={0}
       style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 0, touchAction: enabled ? 'none' : 'auto' }}
       onTouchStart={(event) => { const point = event.touches[0]; touch.current = point ? { x: point.clientX, y: point.clientY } : null; }}
-      onTouchCancel={() => { touch.current = null; }}
+      onTouchMove={event => { const point = event.touches[0], from = touch.current; if (enabled && point && from) onScrollProgress?.(Math.min(1, Math.max(0, (from.y - point.clientY) / 100))); }}
+      onTouchCancel={() => { touch.current = null; onScrollProgress?.(0); }}
       onTouchEnd={(event) => {
         const start = touch.current;
         touch.current = null;
+        onScrollProgress?.(0);
         const end = event.changedTouches[0];
         if (enabled && start && end && Math.abs(end.clientY - start.y) > Math.abs(end.clientX - start.x)) onScrollGesture(start.y - end.clientY);
       }}

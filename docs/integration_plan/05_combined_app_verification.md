@@ -1,5 +1,7 @@
 # Integration 05 — Combined normal-app verification and handoff
 
+**Physical execution companion:** [shared readiness and sign-off](../qa/physical-device/README.md), [Android step-by-step](../qa/physical-device/android.md), [iPhone step-by-step](../qa/physical-device/iphone.md), [run-record template](../qa/physical-device/run-record-template.md), and [progress ledger](../integration_notes/physical_device_verification_notes.md). Follow these under the existing V IDs/C04–C06; simulator results do not mark the phone cases passed.
+
 **Leads:** Ishmum (Android/backend), Anisha (Auth/iOS), joint acceptance.
 **Status:** C01 readiness prepared with current independent checks; C02–C06 journey acceptance remains open. Physical iPhone acceptance remains deferred. **Notes:**
 `docs/integration_notes/plan_05_combined_app_verification_notes.md`.

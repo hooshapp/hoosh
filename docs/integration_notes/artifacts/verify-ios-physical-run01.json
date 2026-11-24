@@ -1,0 +1,146 @@
+{
+  "schema_version": 1,
+  "platform": "iphoneos",
+  "acceptance": "signed_packaging_install_launch_only_not_physical_functional_acceptance",
+  "physical_journey_verified": false,
+  "embedded_js_sha256": "aa065377f6eab2b158e81971869c5a817d934b2400d9631bdbd1fa9c09b23cda",
+  "hermes_bytecode": true,
+  "product_tree_sha256": "75a3b13c54ec6197c003b81bbbec4fcca2aa656181bc18753b11a0a793695dc4",
+  "file_count": 399,
+  "callback_scheme_present": true,
+  "native_module_registration_present": true,
+  "developer_preview_markers_absent": true,
+  "pilot_configuration_absent": true,
+  "signing": [
+    {
+      "bundle_id": "com.AnishaDasgupta.DisconnectApp",
+      "signature_valid": true,
+      "family_controls": true,
+      "app_group": true,
+      "apple_sign_in": true,
+      "provisioning_verified": true
+    },
+    {
+      "bundle_id": "com.AnishaDasgupta.DisconnectApp.DisconnectShieldActionExtension",
+      "signature_valid": true,
+      "family_controls": true,
+      "app_group": true,
+      "apple_sign_in": false,
+      "provisioning_verified": true
+    },
+    {
+      "bundle_id": "com.AnishaDasgupta.DisconnectApp.DisconnectDeviceActivityMonitorExtension",
+      "signature_valid": true,
+      "family_controls": true,
+      "app_group": true,
+      "apple_sign_in": false,
+      "provisioning_verified": true
+    },
+    {
+      "bundle_id": "com.AnishaDasgupta.DisconnectApp.DisconnectShieldConfigurationExtension",
+      "signature_valid": true,
+      "family_controls": true,
+      "app_group": true,
+      "apple_sign_in": false,
+      "provisioning_verified": true
+    },
+    {
+      "bundle_id": "com.AnishaDasgupta.DisconnectApp.Disconnect",
+      "signature_valid": true,
+      "family_controls": false,
+      "app_group": false,
+      "apple_sign_in": false,
+      "provisioning_verified": true
+    }
+  ],
+  "date": "2026-11-23",
+  "source_head": "5586148ad12b4394f46be1a33188814e670a77c9",
+  "source_dirty_scope": "documentation only at build start",
+  "device_model": "iPhone 16 Pro",
+  "device_os": "26.6.1",
+  "app_version": "1.0.1",
+  "app_build": "6",
+  "install": "passed; replacement approved by owner; no uninstall/data-clear command",
+  "launch": "devicectl reported launched; initial screen awaiting observation",
+  "api_transport": "owner-approved temporary Cloudflare HTTPS to local API8000; no hostname/credentials in receipt",
+  "api_checks": {
+    "external_health": 200,
+    "unauthenticated_me": 401,
+    "unauthenticated_profile": 401,
+    "unauthenticated_settings": 401,
+    "phone_authenticated_read_write": "not yet tested"
+  },
+  "https_api_embedded": true,
+  "activation_gate_enabled": false,
+  "cleanup": "Keep tunnel for active owner testing; stop owned cloudflared process afterward. Mac must stay awake.",
+  "screen_control": "Device Hub reports screen sharing unavailable: phone must run iOS27+ for this Mac. Current phone iOS26.6.1. Continue owner-observed phone UI; no screen-control acceptance.",
+  "intro_followup": {
+    "embedded_js_sha256": "dc2c993d5cac0e9e26cab77353045bf79207354030b4393d486d6dc68d9f7876",
+    "build_inspection": "passed device signing/provisioning and HTTPS embedded",
+    "install": "succeeded; no uninstall or app data clear",
+    "intro_flag": "only disconnect.intro-seen.v1 removed while app process absent; other AsyncStorage entries preserved; no credentials read or recorded",
+    "launch": "devicectl launch succeeded",
+    "checks": {
+      "component": 124,
+      "unit": 13,
+      "typescript": "passed",
+      "focused_lint": "passed",
+      "assets": "passed"
+    },
+    "simulator": "three actual CUA upward drags:28/56/84 percent; Continue then welcome100 percent; signup opens",
+    "physical_retest": "pending owner observation"
+  },
+  "intro_green_fill_followup": {
+    "embedded_js_sha256": "60b78dff8744044afd45f2b591bb71d1ea3db4ed526da9d6547431cfa72652bd",
+    "figma": "live frames1:2/6:34 inspected; motion inventory empty; interactive green fill per owner instruction",
+    "checks": "32 component tests, types, lint and signed device inspection passed",
+    "install_launch": "passed; only intro seen flag reset",
+    "physical_green_fill_smoothness": "awaiting owner test"
+  },
+  "intro_capture_followup": {
+    "embedded_js_sha256": "6623c950f0d7e35f784003b357df3b7762346fc808b10c72109036ab2d23224b",
+    "previous_physical_result": "FAIL: owner says nothing changes",
+    "change": "stable PanResponder capture phase with pre-grant motion and live fill",
+    "checks": "28 intro component cases; types/lint/build/device inspection passed",
+    "install_launch": "succeeded; intro-only flag reset",
+    "physical_result": "pending owner retest"
+  },
+  "intro_accessibility_followup": {
+    "diagnosis": "recording shows initial Continue, identifying accessibility/reduced-motion branch; code explicitly disabled gestures in that branch",
+    "fix": "allow swipe input in reduced-motion mode and update fill immediately; accessible Continue retained; OS settings unchanged",
+    "embedded_js_sha256": "205c1b976c46bc4b8fd61321c4934c755c7a4fa71016f8278eb09fd162e6ad8c",
+    "checks": "32 intro cases including actual reduced-motion responder regression, types/lint/device build/inspection passed",
+    "install_launch": "succeeded, intro-only flag reset",
+    "physical_result": "pending owner retest"
+  },
+  "intro_vector_render_followup": {
+    "prior_result": "physical FAIL: opaque green square and incomplete bar, three swipes detected",
+    "change": "original52px SVG transparent overlay via expo-image, native-driver inverse clipping, no precommit reset, bar100 percent on third swipe",
+    "embedded_js_sha256": "4edd49c0c6641aa6a8f3b71120f4429bc4fa8600971173471596ecb4d296f932",
+    "checks": "32 intro cases, types, focused lint, signed build/inspection passed",
+    "installed": "installation succeeded; intro flag reset; launch blocked because phone locked",
+    "physical_visual_result": "pending"
+  },
+  "intro_alignment_followup": {
+    "change": "same original SVG and -90deg transform for base and fill",
+    "embedded_js_sha256": "5876e9999d1ffdc0635d219f9a970cdf3db2b88a35499bf00a80430413d7112d",
+    "checks": "34 intro cases, signed build/inspection passed",
+    "installed": "yes; intro-only flag reset",
+    "physical_result": "pending"
+  },
+  "intro_continue_followup": {
+    "owner_prior_result": "arrow alignment approved",
+    "change": "Continue hidden until three swipes complete; instruction hidden when Continue visible; reduced motion still accepts gestures",
+    "embedded_js_sha256": "cff090a1eb07c1abe4dc75f29ec924a14f0164c7f816a6409a2d0dadecaf9718",
+    "checks": "34 intro tests, types/lint/build/inspection passed",
+    "installed_launched": true,
+    "physical_result": "PASS: owner reported perfect and reached sign-in; intro only, later physical checks pending"
+  },
+  "android_intro_parity": {
+    "result": "PASS shared source, 17 Android component tests and standalone packaging",
+    "built_at": "2026-11-24T03:32:37.796Z",
+    "apk_sha256": "adbfb5b3b79f74537587448259f962f971fe48ff669059adf4992a36094674c6",
+    "device_visual_result": "NOT RUN: no Android device connected",
+    "scope": "Three swipes, matching upward arrow layers, full progress, Continue only at completion, completed instruction hidden"
+  }
+}

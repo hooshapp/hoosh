@@ -1,5 +1,7 @@
 # Shared-product integration execution index
 
+**Physical-device testing:** Ishmum can follow the [Android guide](../qa/physical-device/android.md) while Anisha follows the [iPhone guide](../qa/physical-device/iphone.md). Read the [shared readiness/stage order](../qa/physical-device/README.md) first and update the [execution ledger](../integration_notes/physical_device_verification_notes.md) after each stage. These are physical acceptance companions to the existing plans; all phone cases start unverified.
+
 **Current checkpoint (2026-11-23):** C04 Android core emulator acceptance passed; C05 physical iPhone remains owner-deferred. See the [C06 checks and handoff](../qa/integration-handoff.md) before continuing. Overall integration is partial; historical foundation instructions below remain provenance.
 
 **Prepared:** 2026-11-15. **Status:** the foundation handoff is recorded on

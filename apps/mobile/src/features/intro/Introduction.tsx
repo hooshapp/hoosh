@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { AccessibilityInfo, ActivityIndicator, Platform, StyleSheet, Text, View } from 'react-native';
 import { colors, fonts } from '@/design/tokens';
 import { IntroScreen } from './IntroScreen';
-import { INITIAL_PROGRESS, SECTION_DISTANCE, scrollIntro, type IntroProgress } from './progress';
+import { INITIAL_PROGRESS, continueIntro, scrollIntro, type IntroProgress } from './progress';
 import { hasSeenIntro, rememberIntro } from './storage';
 
 export function Introduction({ returningTo = '/(auth)/sign-up' }: {
@@ -53,8 +53,8 @@ export function Introduction({ returningTo = '/(auth)/sign-up' }: {
       } catch { if (!cancelled) setStorageError(true); }
       if (!cancelled) {
         setLoading(false);
-        // First launch only, even if the app is closed midway through the story.
-        void saveSeen();
+        // Remember only explicit Skip/Sign up, so an interrupted intro can resume
+        // on the next launch rather than being mistaken for completion.
       }
     })();
     return () => { cancelled = true; mounted.current = false; };
@@ -94,7 +94,11 @@ export function Introduction({ returningTo = '/(auth)/sign-up' }: {
 
   if (loading) return <View style={styles.loading}><StatusBar style="light" /><ActivityIndicator color={colors.action} /><Text style={styles.loadingText}>Opening Hoosh…</Text></View>;
   return <><StatusBar style="light" /><IntroScreen progress={progress} reducedMotion={reducedMotion} busy={busy} storageError={storageError}
-    onScrollGesture={scroll} onContinue={() => scroll(SECTION_DISTANCE)} onExit={() => { void exit(); }}
+    onScrollGesture={scroll} onContinue={() => {
+      const next = continueIntro(current.current);
+      current.current = next;
+      setProgress(next);
+    }} onExit={() => { void exit(); }}
     onRetry={() => {
       if (exiting.current) return;
       setBusy(true);

@@ -1,13 +1,13 @@
+import { Image as VectorImage } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useState } from 'react';
-import { ActivityIndicator, Image, Platform, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
+import { ActivityIndicator, Animated, Easing, Image, Pressable, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, fonts } from '@/design/tokens';
 import { IntroSurface } from './IntroSurface';
-import { introFraction, type IntroProgress } from './progress';
+import { introFraction, REQUIRED_GESTURES, type IntroProgress } from './progress';
 
-const arrowWhite = require('../../../assets/intro/arrow-white.png');
-const arrowMuted = require('../../../assets/intro/arrow-muted.png');
+const arrowVector = require('../../../assets/intro/originals/arrow-white.svg');
 const dinosaur = require('../../../assets/intro/dinosaur.png');
 
 export type IntroScreenProps = {
@@ -23,7 +23,26 @@ export type IntroScreenProps = {
 };
 
 export function IntroScreen(props: IntroScreenProps) {
-  const [continueFocused, setContinueFocused] = useState(false);
+  const [animation] = useState(() => new Animated.Value(0));
+  const [animatedGestures, setAnimatedGestures] = useState(0);
+  const trackSwipe = useCallback((fraction: number) => {
+    animation.stopAnimation();
+    // Follow the finger directly; only settle to the completed third on release.
+    if (fraction > 0) animation.setValue(props.progress.gestures + fraction);
+    else Animated.timing(animation, { toValue: props.progress.gestures,
+      duration: 120, easing: Easing.out(Easing.quad), useNativeDriver: true }).start();
+  }, [animation, props.progress.gestures]);
+  useEffect(() => {
+    if (props.reducedMotion) { animation.setValue(props.progress.gestures); return; }
+    const motion = Animated.timing(animation, {
+      toValue: props.progress.gestures, duration: 160, easing: Easing.out(Easing.quad), useNativeDriver: true,
+    });
+    motion.start(({ finished: done }) => { if (done) setAnimatedGestures(props.progress.gestures); });
+    return () => motion.stop();
+  }, [animation, props.progress.gestures, props.reducedMotion]);
+  const ready = props.progress.gestures >= REQUIRED_GESTURES && (props.reducedMotion || animatedGestures >= REQUIRED_GESTURES);
+  const fillOffset = animation.interpolate({ inputRange: [0, 3], outputRange: [52, 0], extrapolate: 'clamp' });
+  const inverseOffset = Animated.multiply(fillOffset, -1);
   const { height, fontScale } = useWindowDimensions();
   const insets = useSafeAreaInsets();
   const finished = props.progress.section === 2;
@@ -37,7 +56,7 @@ export function IntroScreen(props: IntroScreenProps) {
     </View>
   );
   return (
-    <IntroSurface enabled={!finished && !props.reducedMotion} onScrollGesture={props.onScrollGesture}>
+    <IntroSurface enabled={!finished && props.progress.gestures < REQUIRED_GESTURES && !props.busy} onScrollGesture={props.onScrollGesture} onScrollProgress={trackSwipe}>
       <View style={styles.screen}>
         {!finished && (
           <Pressable accessibilityRole="button" accessibilityLabel="Skip introduction" disabled={props.busy}
@@ -65,28 +84,35 @@ export function IntroScreen(props: IntroScreenProps) {
         ) : (
           <>
             <View pointerEvents="none" style={styles.arrowContainer}>
-              <Image source={props.progress.section === 0 ? arrowWhite : arrowMuted} style={styles.arrow} resizeMode="contain" accessible={false} />
+              <View testID="intro-scroll-animation" style={styles.arrow}>
+                <VectorImage testID="intro-arrow-base" source={arrowVector} style={[styles.arrow, styles.upwardArrow]}
+                  tintColor={props.progress.section === 0 ? colors.white : colors.darkMuted} contentFit="contain" accessible={false} />
+                <View style={[StyleSheet.absoluteFill, { overflow: 'hidden' }]}>
+                  <Animated.View testID="intro-arrow-green-fill" style={[styles.arrow, { overflow: 'hidden', transform: [{ translateY: fillOffset }] }]}>
+                    <Animated.View style={{ transform: [{ translateY: inverseOffset }] }}>
+                      <VectorImage testID="intro-arrow-fill-shape" source={arrowVector} style={[styles.arrow, styles.upwardArrow]}
+                        tintColor={colors.action} contentFit="contain" accessible={false} />
+                    </Animated.View>
+                  </Animated.View>
+                </View>
+              </View>
             </View>
             <View style={[styles.instruction, { bottom }]}>
-              <Text accessibilityRole="header" accessibilityLiveRegion="polite" style={styles.caption}>
+              {!ready && <Text accessibilityRole="header" accessibilityLiveRegion="polite" style={styles.caption}>
                 {props.progress.section === 0 ? 'scroll rapidly to unlock app' : 'keep scrolling!'}
-              </Text>
-              {props.reducedMotion && <Pressable accessibilityRole="button" onPress={props.onContinue} style={styles.continue}><Text style={styles.continueText}>Continue</Text></Pressable>}
+              </Text>}
+              {ready && <Pressable accessibilityRole="button" disabled={props.busy} onPress={props.onContinue} style={styles.continue}><Text style={styles.continueText}>Continue</Text></Pressable>}
             </View>
-            {Platform.OS === 'web' && !props.reducedMotion && (
-              <Pressable accessibilityRole="button" onPress={props.onContinue}
-                onFocus={() => setContinueFocused(true)} onBlur={() => setContinueFocused(false)}
-                style={[styles.continue, { position: 'absolute', alignSelf: 'center', bottom: Math.max(18, bottom - 44),
-                  opacity: continueFocused ? 1 : 0, pointerEvents: continueFocused ? 'auto' : 'none' }]}>
-                <Text style={styles.continueText}>Continue</Text>
-              </Pressable>
-            )}
+
           </>
         )}
         {props.progress.section > 0 && <View style={styles.progressTrack} accessible accessibilityRole="progressbar"
           accessibilityLabel="Introduction progress" accessibilityValue={{ min: 0, max: 100, now: Math.round(introFraction(props.progress) * 100) }}>
-          <LinearGradient colors={[colors.action, colors.success]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
-            style={[styles.progressFill, { width: `${introFraction(props.progress) * 100}%` }]} />
+          <Animated.View style={{ height: 17, width: '100%', transformOrigin: 'left center',
+            transform: [{ scaleX: finished ? 1 : animation.interpolate({ inputRange: [0, 3], outputRange: [0, 1], extrapolate: 'clamp' }) }] }}>
+            <LinearGradient colors={[colors.action, colors.success]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}
+              style={[styles.progressFill, { width: '100%' }]} />
+          </Animated.View>
         </View>}
       </View>
     </IntroSurface>
@@ -99,6 +125,7 @@ const styles = StyleSheet.create({
   skipText: { color: colors.darkMuted, fontFamily: fonts.regular, fontSize: 14 },
   arrowContainer: { position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, alignItems: 'center', justifyContent: 'center' },
   arrow: { width: 52, height: 52 },
+  upwardArrow: { transform: [{ rotate: '-90deg' }] },
   instruction: { position: 'absolute', left: 20, right: 20, alignItems: 'center', gap: 12 },
   caption: { fontFamily: fonts.regular, color: colors.white, fontSize: 18, textAlign: 'center', flexShrink: 1 },
   story: { alignItems: 'center', paddingHorizontal: 24 },

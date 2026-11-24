@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "platform": "iphonesimulator",
+  "acceptance": "packaging_and_scoped_simulator_checks_not_physical_enforcement",
+  "physical_journey_verified": false,
+  "embedded_js_sha256": "26329215fd0d4ab424a0e869467e888f0b3648bcd9f5665f3a4fa22ca1c9afe6",
+  "hermes_bytecode": true,
+  "product_tree_sha256": "30c19a95b6a998a2ba6d5b5f5dbff96f88b55fd5dca8de03cedb643777d87813",
+  "file_count": 505,
+  "callback_scheme_present": true,
+  "native_module_registration_present": true,
+  "developer_preview_markers_absent": true,
+  "pilot_configuration_absent": true,
+  "signing": [
+    {
+      "bundle_id": "com.AnishaDasgupta.DisconnectApp",
+      "signature_valid": true,
+      "family_controls": false,
+      "app_group": false,
+      "apple_sign_in": false,
+      "provisioning_verified": false
+    },
+    {
+      "bundle_id": "com.AnishaDasgupta.DisconnectApp.DisconnectShieldActionExtension",
+      "signature_valid": true,
+      "family_controls": false,
+      "app_group": false,
+      "apple_sign_in": false,
+      "provisioning_verified": false
+    },
+    {
+      "bundle_id": "com.AnishaDasgupta.DisconnectApp.DisconnectDeviceActivityMonitorExtension",
+      "signature_valid": true,
+      "family_controls": false,
+      "app_group": false,
+      "apple_sign_in": false,
+      "provisioning_verified": false
+    },
+    {
+      "bundle_id": "com.AnishaDasgupta.DisconnectApp.DisconnectShieldConfigurationExtension",
+      "signature_valid": true,
+      "family_controls": false,
+      "app_group": false,
+      "apple_sign_in": false,
+      "provisioning_verified": false
+    },
+    {
+      "bundle_id": "com.AnishaDasgupta.DisconnectApp.Disconnect",
+      "signature_valid": true,
+      "family_controls": false,
+      "app_group": false,
+      "apple_sign_in": false,
+      "provisioning_verified": false
+    }
+  ],
+  "source_head": "5586148ad12b4394f46be1a33188814e670a77c9",
+  "verification_date": "2026-11-23",
+  "checks": {
+    "ios_component_suites": 60,
+    "ios_component_passed": 486,
+    "ios_component_skipped": 2,
+    "focused_auth_root_cases_included": 53,
+    "native_model_and_simulator_sdk": "passed; no OS monitors or shields changed",
+    "release_build": "passed",
+    "physical_journey_verified": false
+  },
+  "normal_app": {
+    "session_restore": "passed after non-destructive installation and restart",
+    "draft_persistence": "real signed-in count 2 to 3 save then restore to 2 save passed against local API before rebuild; original draft retained after rebuild",
+    "navigation": "Home, Settings, Quests/editor and History period views inspected",
+    "google_oauth": "fresh native browser consent, Google chooser and normal Home return passed on rebuilt product; expected account verified in Settings",
+    "apple_native": "native sheet opened; simulator requires Apple Account sign-in in Settings. Closed safely; successful token exchange not verified After closing the system account-required sheet, app showed a generic connection/retry notice; no authenticated Apple session claimed.",
+    "settings_warning": "Some settings could not be loaded remains visible; local device schedule unknown and distracting app selection unavailable. Do not claim this resolved or certify activation.",
+    "history": "explicit iPhone measurement unavailable, account receipts separate; 7/28-day selection inspected",
+    "remaining": "fresh iOS email signup/confirmation/recovery and native Apple success require private owner interaction; Screen Time lifecycle/enforcement requires physical device"
+  }
+}
