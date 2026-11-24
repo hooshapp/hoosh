@@ -169,6 +169,22 @@ internal object InterventionEngineChecks {
       check(caps["mode"] == "overlay" && caps["supportsUsageThreshold"] == false)
       check(caps["selectionUI"] == "unavailable" && caps["supportsAdvanceWarning"] == false)
     }
+    case {
+      val (d, e) = fixture(policy = SessionPolicy("UTC", 1, 10, true))
+      val first = e.allow(A, 1, APP, 2000, 1000, 1)
+      val switched = e.allow(A, 1, OTHER, 5000, 4000, 1)
+      check(switched.sessions.first { it.app == OTHER }.elapsedEnd == first.sessions.single().elapsedEnd)
+      check(switched.daily.first { it.app == "__hoosh_shared_budget_v1__" }.count == 1)
+      val restored = InterventionEngine(d)
+      failure("ERR_INTERVENTION_EXHAUSTED") { restored.allow(A, 1, OTHER, 12000, 11000, 1) }
+      check(restored.read(A)!!.daily.first { it.app == "__hoosh_shared_budget_v1__" }.count == 1)
+    }
+    case {
+      val (_, e) = fixture(policy = SessionPolicy("UTC", 1, 10))
+      e.allow(A, 1, APP, 2000, 1000, 1)
+      e.install(A, 1, 2, SavedSelection(1, setOf(APP, OTHER)), listOf(InterventionWindow("one",1000,900000)), SessionPolicy("UTC",1,10,true), 13000)
+      failure("ERR_INTERVENTION_EXHAUSTED") { e.allow(A, 2, OTHER, 13000, 12000, 1) }
+    }
     return count
   }
 }

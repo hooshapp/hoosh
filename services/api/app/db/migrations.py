@@ -13,7 +13,7 @@ from alembic import command
 from app.models.profile import STRIP_CHARACTERS
 
 API_ROOT = Path(__file__).resolve().parents[2]
-HEAD = "20261114_0007"
+HEAD = "20261124_0008"
 LOCK_ID = 7529304120701
 
 

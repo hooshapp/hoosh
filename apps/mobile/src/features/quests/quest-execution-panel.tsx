@@ -36,6 +36,7 @@ export function QuestExecutionPanel({
     state.device?.policy ??
     (plan?.session_count && plan.session_minutes
       ? {
+          ...(plan.budget_scope ? { budgetScope: plan.budget_scope } : {}),
           sessionsPerDay: plan.session_count,
           sessionSeconds: plan.session_minutes * 60,
           timezoneId: plan.timezone_id ?? quest.definition.timezone_id,

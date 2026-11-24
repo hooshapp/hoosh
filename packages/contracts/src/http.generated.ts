@@ -560,6 +560,8 @@ export interface components {
         };
         /** PlanDraft */
         PlanDraft: {
+            /** Budget Scope */
+            budget_scope?: "all_selected_apps" | null;
             hours: components["schemas"]["DraftHours"] | null;
             /** Session Count */
             session_count: number | null;

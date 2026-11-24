@@ -20,7 +20,7 @@ const invalid = (): never => { throw new ScheduleError('invalid'); };
 const object = (v: unknown): v is Record<string, unknown> => v !== null && typeof v === 'object' && !Array.isArray(v);
 /** Incomplete storage drafts are valid to save; only complete, explicit values are installable. Zone membership is checked natively. */
 export function completeSchedule(value: unknown): PlanDraft {
-  if (!object(value) || !Array.isArray(value.weekdays) || !value.weekdays.length || value.weekdays.length > 7 ||
+  if (!object(value) || (value.budget_scope !== undefined && value.budget_scope !== null && value.budget_scope !== 'all_selected_apps') || !Array.isArray(value.weekdays) || !value.weekdays.length || value.weekdays.length > 7 ||
     new Set(value.weekdays).size !== value.weekdays.length || !value.weekdays.every((d) => Number.isInteger(d) && d >= 0 && d <= 6) ||
     !object(value.hours) || typeof value.hours.start_local !== 'string' || typeof value.hours.end_local !== 'string' || typeof value.hours.next_day !== 'boolean' ||
     typeof value.timezone_id !== 'string' || !/^[A-Za-z0-9_+/-]{1,128}$/.test(value.timezone_id) ||
@@ -28,7 +28,7 @@ export function completeSchedule(value: unknown): PlanDraft {
     !Number.isInteger(value.session_minutes) || (value.session_minutes as number) < 1 || (value.session_minutes as number) > 1440) return invalid();
   const start = parseTime(value.hours.start_local), end = parseTime(value.hours.end_local);
   if (start === null || end === null || !(value.hours.next_day ? end < start : end > start)) return invalid();
-  return { weekdays: [...value.weekdays].sort((a, b) => a - b), hours: { start_local: value.hours.start_local,
+  return { ...(value.budget_scope === 'all_selected_apps' ? { budget_scope: value.budget_scope } : {}), weekdays: [...value.weekdays].sort((a, b) => a - b), hours: { start_local: value.hours.start_local,
     end_local: value.hours.end_local, next_day: value.hours.next_day }, timezone_id: value.timezone_id,
     session_count: value.session_count as number, session_minutes: value.session_minutes as number };
 }

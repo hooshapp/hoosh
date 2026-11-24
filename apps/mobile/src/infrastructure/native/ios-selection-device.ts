@@ -8,6 +8,8 @@ export type IOSSelectionDevice = {
   selection: SelectionEditorPort;
   readSelection(): Promise<SavedSelectionSummary>;
   readStatus(): Promise<Extract<ProtectionRead, { phase: 'ready' }>>;
+  reviewUsageBaseline?(): Promise<unknown>;
+  budgetCapabilities?(): Promise<unknown>;
   requestAuthorization(): Promise<void>;
   stop(): Promise<void>;
   subscribe(listener: () => void): () => void;

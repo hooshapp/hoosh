@@ -44,7 +44,7 @@ export function FigmaManualPlan({ input, onChange, onSave, onBack, onChooseApps,
   const start = parseTime(hours.start), end = parseTime(hours.end);
   const days = input.weekdays.join(',') === '0,1,2,3,4' ? 'Mon – Fri' : input.weekdays.map(day => weekdays[day]?.slice(0, 3)).join(', ') || 'Choose days';
   const hoursLabel = start !== null && end !== null ? `${formatTime(hours.start)} – ${formatTime(hours.end)}${hours.nextDay ? ' next day' : ''}` : 'Choose hours';
-  const sessionLabel = `${input.sessions.count ?? '—'} ${input.sessions.count === 1 ? 'session' : 'sessions'}/day · ${input.sessions.minutes ?? '—'} min each`;
+  const sessionLabel = `${input.sessions.count ?? '—'} ${input.sessions.count === 1 ? 'session' : 'sessions'}/day · ${input.sessions.minutes ?? '—'} min each · ${input.budgetScope === 'all_selected_apps' ? 'shared across apps' : 'per app'}`;
   const patchHours = (change: Partial<typeof hours>) => onChange({ ...input, hours: { ...hours, ...change } });
   return <PlanFrame manual onBack={onBack} busy={busy}>
     <Text accessibilityRole="header" style={s.title}>Set up on your own</Text>

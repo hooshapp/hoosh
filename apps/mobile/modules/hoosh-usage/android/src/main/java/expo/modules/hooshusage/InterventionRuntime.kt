@@ -131,7 +131,8 @@ class InterventionRuntime private constructor(val context: Context) {
     engine.install(owner, expected, revision, selection, parsed, sessionPolicy, System.currentTimeMillis()); summary(owner)
   }
   private fun scheduleSpec(spec: Map<String, Any>): Pair<WeeklySchedule, SessionPolicy> {
-    InterventionValidation.require(spec.keys == setOf("weekdays", "hours", "timezone_id", "session_count", "session_minutes"))
+    InterventionValidation.require(spec.keys - "budget_scope" == setOf("weekdays", "hours", "timezone_id", "session_count", "session_minutes"))
+    InterventionValidation.require(spec["budget_scope"] == null || spec["budget_scope"] == "all_selected_apps")
     val hours = spec["hours"] as? Map<*, *> ?: throw InterventionFailure("ERR_SCHEDULE_INCOMPLETE")
     InterventionValidation.require(hours.keys == setOf("start_local", "end_local", "next_day"))
     fun int(value: Any?): Int {
@@ -145,12 +146,12 @@ class InterventionRuntime private constructor(val context: Context) {
       spec["timezone_id"] as? String ?: throw InterventionFailure("ERR_SCHEDULE_INCOMPLETE"))
     WeeklySchedules.validate(schedule)
     val minutes = int(spec["session_minutes"]); InterventionValidation.require(minutes in 1..1440)
-    val policy = SessionPolicy(schedule.timezone, int(spec["session_count"]), minutes * 60); InterventionValidation.policy(policy)
+    val policy = SessionPolicy(schedule.timezone, int(spec["session_count"]), minutes * 60, spec["budget_scope"] == "all_selected_apps"); InterventionValidation.policy(policy)
     return schedule to policy
   }
   private fun scheduleWire(value: WeeklyInstallation, policy: SessionPolicy): Map<String, Any> = mapOf(
     "weekdays" to value.schedule.weekdays, "hours" to mapOf("start_local" to value.schedule.start, "end_local" to value.schedule.end, "next_day" to value.schedule.nextDay),
-    "timezone_id" to value.schedule.timezone, "session_count" to policy.sessionsPerDay, "session_minutes" to policy.sessionSeconds / 60)
+    "timezone_id" to value.schedule.timezone, "session_count" to policy.sessionsPerDay, "session_minutes" to policy.sessionSeconds / 60) + (if (policy.sharedBudget) mapOf("budget_scope" to "all_selected_apps") else emptyMap())
   private fun previewWindows(windows: List<InterventionWindow>) = windows.map { mapOf("reasonId" to it.reasonId, "startsAt" to it.startsAt, "endsAt" to it.endsAt) }
   private fun scheduleSummary(owner: String): Map<String, Any?> {
     val value = engine.read(owner); val weekly = value?.plan?.weekly; val now = System.currentTimeMillis(); val allowed = authorized()
@@ -192,7 +193,7 @@ class InterventionRuntime private constructor(val context: Context) {
     return mapOf("owner" to owner, "questId" to questId, "observedAt" to now,
       "remoteRevision" to (receipt?.revision ?: 0), "requestId" to receipt?.requestId,
       "enabled" to (receipt?.enabled == true), "native" to summary(record, now, authorized()),
-      "policy" to record?.plan?.policy?.let { mapOf("timezoneId" to it.timezoneId, "sessionsPerDay" to it.sessionsPerDay, "sessionSeconds" to it.sessionSeconds) },
+      "policy" to record?.plan?.policy?.let { mapOf("timezoneId" to it.timezoneId, "sessionsPerDay" to it.sessionsPerDay, "sessionSeconds" to it.sessionSeconds) + (if (it.sharedBudget) mapOf("budgetScope" to "all_selected_apps") else emptyMap()) },
       "versions" to record?.plan?.quests.orEmpty().filter { it.questId == questId }.map { questWire(it) },
       "cancelled" to record?.plan?.cancelledQuestReasons.orEmpty().filter { it.startsWith("q_${questId.replace("-", "")}_") }.sorted(),
       "windows" to previewWindows(windows))
@@ -248,7 +249,8 @@ class InterventionRuntime private constructor(val context: Context) {
     val policy = if (!enabled) previous!!.plan.policy else {
       val p = spec["policy"] as? Map<*, *> ?: throw InterventionFailure("ERR_INTERVENTION_INVALID")
       InterventionValidation.require(p.keys == setOf("timezoneId", "sessionsPerDay", "sessionSeconds"))
-      SessionPolicy(string(p["timezoneId"]), whole(p["sessionsPerDay"], 1000).toInt(), whole(p["sessionSeconds"], 86400).toInt())
+      check(p["budgetScope"] == null || p["budgetScope"] == "all_selected_apps")
+      SessionPolicy(string(p["timezoneId"]), whole(p["sessionsPerDay"], 1000).toInt(), whole(p["sessionSeconds"], 86400).toInt(), p["budgetScope"] == "all_selected_apps")
     }
     engine.applyQuest(owner, expected, selection, questId, remote, requestId, enabled, versions, cancelled.map { string(it) }.toSet(), policy, System.currentTimeMillis())
     questSummary(owner, questId)

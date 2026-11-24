@@ -12,14 +12,15 @@ import planAsset10 from '../../../assets/onboarding/arrow-left.svg';
 import planAsset11 from '../../../assets/onboarding/check.svg';
 import planAsset12 from '../../../assets/onboarding/plus.svg';
 import planAsset13 from '../../../assets/icons/setup/chevron.svg';
+import { suggestFromNative, SUGGESTED_BUDGET_POLICY, type SuggestedBudget } from './suggested-budget-policy';
 import { completeSchedule } from '@/features/plans/weekly-schedule';
 import { FigmaManualPlan } from './figma-manual-plan';
-import { PlanLoadingScreen, PlanSuggestionScreen } from './figma-plan-screens';
+import { PlanFrame, PlanAction, PlanLoadingScreen, PlanSuggestionScreen } from './figma-plan-screens';
 import { useIOSSelectionDevice, useNativeOwner } from '@/features/protection/native-owner-boundary';
 import { NativeAppsEditor } from '@/features/preferences/native-apps-editor';
 import { decodeSavedSelection } from '@/infrastructure/native/selection-editor';
 import type { PlanDraft } from '@disconnect/contracts';
-import { useCallback, useEffect, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
@@ -81,15 +82,59 @@ export function SetupDraft({
     read: async () => decodeSavedSelection(await native.port.selectionRead(native.owner), native.owner),
   } : null;
   const [choosingApps, setChoosingApps] = useState(false);
-  const [selection, setSelection] = useState<{ owner: string; count: number }>();
+  const [selection, setSelection] = useState<{ owner: string; count: number; revision: number }>();
   const readSelection = iosDevice?.readSelection, nativePort = native?.port, nativeOwner = native?.owner;
   useEffect(() => {
     let active = true;
     const owner = iosDevice?.owner ?? nativeOwner;
     if (owner) void (readSelection ? readSelection() : nativePort ? Promise.resolve(nativePort.selectionRead(owner)).then(raw => decodeSavedSelection(raw, owner)) : Promise.reject())
-      .then(value => { if (active) setSelection({ owner, count: value.selectedAppCount }); }).catch(() => undefined);
+      .then(value => { if (active) setSelection({ owner, count: value.selectedAppCount, revision: value.revision }); }).catch(() => undefined);
     return () => { active = false; };
   }, [readSelection, nativeOwner, nativePort, iosDevice?.owner, choosingApps]);
+  const chartFlow = !!progress.questionsCompleted && !!progress.questions?.nativeTargetCount && !suggestion;
+  const [budget, setBudget] = useState<SuggestedBudget>();
+  const acceptingBudget = useRef(false);
+  const [baselineBusy, setBaselineBusy] = useState(false);
+  const [baselineError, setBaselineError] = useState<string>();
+  const liveBaselineOwner = useRef(binding?.owner);
+  liveBaselineOwner.current = binding?.owner;
+  useEffect(() => () => { liveBaselineOwner.current = undefined; }, []);
+  const [baselineAttempt, setBaselineAttempt] = useState(0);
+  function expectedBaseline() {
+    if (!binding || !selection || selection.owner !== binding.owner) throw new Error('selection');
+    const now = new Date();
+    const endsBefore = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    return { owner: binding.owner, selectionRevision: selection.revision, selectedAppCount: selection.count, endsBefore };
+  }
+  useEffect(() => {
+    if (!chartFlow || iosDevice || !nativeOwner || !nativePort || !selection || selection.owner !== nativeOwner || choosingApps) return;
+    let active = true;
+    setBudget(undefined); setBaselineBusy(true); setBaselineError(undefined);
+    void (async () => {
+      const capability = await nativePort.budgetCapabilities?.() as { scope?: string; policy?: string } | undefined;
+      if (capability?.scope !== 'all_selected_apps' || capability.policy !== SUGGESTED_BUDGET_POLICY) throw new Error('capability');
+      const result = suggestFromNative(await nativePort.onboardingBaselineRead?.(nativeOwner), expectedBaseline());
+      if (result.state !== 'ready') throw new Error('baseline');
+      if (active) setBudget(result.budget);
+    })().catch(() => { if (active) setBaselineError('A complete usage baseline is unavailable. Try again or set up your own plan.'); })
+      .finally(() => { if (active) setBaselineBusy(false); });
+    return () => { active = false; };
+  }, [chartFlow, iosDevice, nativeOwner, nativePort, selection, choosingApps, baselineAttempt]);
+  async function reviewBaseline() {
+    if (!iosDevice?.reviewUsageBaseline || baselineBusy) return;
+    const device = iosDevice;
+    setBaselineBusy(true); setBaselineError(undefined); setBudget(undefined);
+    try {
+      const expected = expectedBaseline();
+      const capability = await device.budgetCapabilities?.() as { scope?: string; policy?: string } | undefined;
+      if (capability?.scope !== 'all_selected_apps' || capability.policy !== SUGGESTED_BUDGET_POLICY) throw new Error('capability');
+      const result = suggestFromNative(await device.reviewUsageBaseline!(), expected);
+      const current = await device.readSelection();
+      if (current.revision !== expected.selectionRevision || current.selectedAppCount !== expected.selectedAppCount || result.state !== 'ready') throw new Error('baseline');
+      if (liveBaselineOwner.current === device.owner) setBudget(result.budget);
+    } catch { setBaselineError('Usage was not confirmed. Review the report again or set up your own plan.'); }
+    finally { setBaselineBusy(false); }
+  }
   const appCount = binding && selection?.owner === binding.owner ? selection.count : 0;
   const appSummary = appCount ? `${appCount} ${appCount === 1 ? 'app' : 'apps'} saved on this device` : 'Choose apps in device setup';
   const hobbyLabels = progress.activities ? activitySummary(progress.activities)?.replaceAll('Custom: ', '') ?? '' : '';
@@ -125,6 +170,32 @@ export function SetupDraft({
       busy={busy} error={error ?? (failed ? 'Setup could not be saved. Try again.' : undefined)} appSummary={appSummary}
       onChooseApps={binding ? () => setChoosingApps(true) : undefined} />;
     if (busy) return <PlanLoadingScreen busy apps={appCount ? appSummary : ''} hobbies={hobbyLabels} onSkip={onLeave} />;
+    if (chartFlow) {
+      const currentBudget = budget && selection && budget.owner === binding?.owner && budget.selectionRevision === selection.revision && budget.selectedAppCount === selection.count ? budget : undefined;
+      if (!currentBudget) return <PlanFrame onSkip={onLeave}>
+        <Text style={styles.title}>Your usage, your plan</Text>
+        <Text style={styles.body}>{iosDevice ? 'Review the selected apps’ usage report and confirm its total to create a shared daily budget.' : baselineBusy ? 'Checking complete usage days for your selected apps…' : 'We need a complete usage baseline to suggest your plan.'}</Text>
+        {baselineError && <Text accessibilityRole="alert" style={styles.error}>{baselineError}</Text>}
+        <PlanAction label={iosDevice ? 'Review usage report' : 'Check usage again'} disabled={baselineBusy} onPress={iosDevice ? reviewBaseline : () => setBaselineAttempt(v => v + 1)} />
+        <PlanAction label="Set up on your own" secondary onPress={() => { setError(undefined); setManual(true); }} />
+      </PlanFrame>;
+      const basis = `${currentBudget.windowDays === 7 ? 'seven complete days' : 'yesterday'}${currentBudget.source === 'user_confirmed_report' ? ', confirmed by you from Apple’s report' : ', measured on this device'}`;
+      const proposed = setupPlan({ ...starterPlan(Intl.DateTimeFormat().resolvedOptions().timeZone ?? ''), budgetScope: 'all_selected_apps', sessions: { count: currentBudget.sessionsPerDay, minutes: currentBudget.minutesPerSession } });
+      return <PlanSuggestionScreen description={`Based on ${basis}: an average of ${Math.round(currentBudget.baselineAverageMinutes)} minutes per day across your selected apps.`}
+        apps={[{ name: 'Your selected apps', minutes: currentBudget.minutesPerSession, caption: `${currentBudget.sessionsPerDay} shared sessions per day`, detail: `One ${currentBudget.dailyMinutes}-minute daily budget across all ${currentBudget.selectedAppCount} selected apps. Switching apps does not restart a session.` }]}
+        estimate={{ label: `${currentBudget.dailyMinutes} min/day`, detail: `Shared planned access on your chosen days. Review days and hours before applying.${currentBudget.exceedsBaseline ? ' This chart allowance exceeds your recent usage; consider a smaller manual plan.' : ''}` }}
+        onAccept={async () => {
+          if (acceptingBudget.current) return;
+          acceptingBudget.current = true;
+          try {
+            const current = await binding?.read();
+            if (!current || current.revision !== currentBudget.selectionRevision || current.selectedAppCount !== currentBudget.selectedAppCount || expectedBaseline().endsBefore !== currentBudget.baselineEndsBefore || !proposed.value) throw new Error('changed');
+            if (liveBaselineOwner.current !== currentBudget.owner) return;
+            onSave({ ...progress, step: 'review', planDraft: proposed.value });
+          } catch { setBudget(undefined); setBaselineError('Your selection or usage period changed. Check usage again.'); }
+          finally { acceptingBudget.current = false; }
+        }} onManual={() => { if (proposed.value) setInput(planDraftInput(proposed.value)); setError(undefined); setManual(true); }} onSkip={onLeave} error={error ?? (failed ? 'Setup could not be saved. Try again.' : undefined)} />;
+    }
     const count = visiblePlan?.session_count, minutes = visiblePlan?.session_minutes;
     const weeklyMinutes = count != null && minutes != null ? count * minutes * (visiblePlan?.weekdays.length ?? 0) : null;
     const weeklyLabel = weeklyMinutes === null ? 'DRAFT' : `${Math.floor(weeklyMinutes / 60)}h ${weeklyMinutes % 60}m`;
@@ -212,7 +283,7 @@ function summary(field: PlanField, plan: PlanDraft | null): string {
   if (plan && field === 'days' && plan.weekdays.join(',') === '0,1,2,3,4') return 'Mon – Fri';
   if (plan && field === 'days' && plan.weekdays.length) return plan.weekdays.map(day => weekdays[day]).join(', ');
   if (plan && field === 'sessions' && plan.session_count !== null && plan.session_minutes !== null) {
-    return `${plan.session_count} per day · ${plan.session_minutes} min each per app`;
+    return `${plan.session_count} per day · ${plan.session_minutes} min each ${plan.budget_scope === 'all_selected_apps' ? 'across selected apps' : 'per app'}`;
   }
   if (plan && field === 'hours' && plan.hours?.start_local && plan.hours.end_local) {
     const { start_local, end_local, next_day } = plan.hours;

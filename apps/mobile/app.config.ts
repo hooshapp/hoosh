@@ -3,6 +3,7 @@ import type { ExpoConfig } from 'expo/config';
 const config: ExpoConfig = {
   name: 'Hoosh',
   slug: 'disconnect',
+  icon: './assets/branding/app-icon.png',
   version: '0.0.0',
   orientation: 'portrait',
   userInterfaceStyle: 'light',
@@ -15,6 +16,7 @@ const config: ExpoConfig = {
   // Isolated Android development identity; production/store identity remains unassigned.
   android: {
     package: 'com.hoosh.disconnect.dev',
+    adaptiveIcon: { foregroundImage: './assets/branding/app-icon.png', backgroundColor: '#292929' },
     blockedPermissions: [
       'android.permission.SYSTEM_ALERT_WINDOW',
       'android.permission.READ_EXTERNAL_STORAGE',

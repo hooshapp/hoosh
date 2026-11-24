@@ -7,6 +7,7 @@ export type PlanField = 'days' | 'hours' | 'sessions';
 export const isPlanField = (value: unknown): value is PlanField =>
   value === 'days' || value === 'hours' || value === 'sessions';
 export type PlanDraftInput = {
+  budgetScope?: 'all_selected_apps';
   weekdays: readonly number[];
   hours: HoursDraft | null;
   timezone: string;
@@ -21,6 +22,7 @@ export const emptyPlanDraft = (): PlanDraft => ({
 });
 export function planDraftInput(plan: PlanDraft | null): Exclude<PlanDraftInput, null> {
   return {
+    ...(plan?.budget_scope ? { budgetScope: plan.budget_scope } : {}),
     weekdays: plan?.weekdays ?? [],
     hours: plan?.hours
       ? {
@@ -47,7 +49,7 @@ export function samePlanInput(field: PlanField, a: PlanDraftInput, b: PlanDraftI
   if (a === null || b === null) return a === b;
   if (field === 'days') return sortedDays(a.weekdays) === sortedDays(b.weekdays);
   if (field === 'sessions')
-    return a.sessions.count === b.sessions.count && a.sessions.minutes === b.sessions.minutes;
+    return a.budgetScope === b.budgetScope && a.sessions.count === b.sessions.count && a.sessions.minutes === b.sessions.minutes;
   return (
     a.timezone === b.timezone &&
     (a.hours === null || b.hours === null
@@ -71,7 +73,7 @@ export function planDraftPatch(
 /** The same section validation/merge for local staging; no invented HTTP revision or account. */
 export function planDraftSection(field: PlanField, draft: PlanDraftInput, base: PlanDraft | null): PlanDraft | null {
   if (draft === null) return null;
-  const plan = { ...(base ?? emptyPlanDraft()) };
+  const plan = { ...(base ?? emptyPlanDraft()), ...(draft.budgetScope ? { budget_scope: draft.budgetScope } : {}) };
   if (field === 'days') {
     if (
       draft.weekdays.length > 7 ||

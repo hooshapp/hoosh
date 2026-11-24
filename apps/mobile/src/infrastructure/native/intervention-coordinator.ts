@@ -1,7 +1,7 @@
 import { decodeIOSRuntimeStatus } from './ios-runtime-status';
 /** Debug coordinator: finite native windows, explicit session policy and native-only app identities. */
 export type InterventionWindow = Readonly<{ reasonId: string; startsAt: number; endsAt: number }>;
-export type InterventionPolicy = Readonly<{ timezoneId: string; sessionsPerDay: number; sessionSeconds: number }>;
+export type InterventionPolicy = Readonly<{ timezoneId: string; budgetScope?: 'all_selected_apps'; sessionsPerDay: number; sessionSeconds: number }>;
 export interface InterventionCoordinatorPort {
   interventionOpen(owner: string): Promise<unknown>;
   interventionRelease(owner: string, token: string): Promise<unknown>;

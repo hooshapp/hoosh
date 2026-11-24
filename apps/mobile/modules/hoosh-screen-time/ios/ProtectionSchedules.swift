@@ -12,7 +12,9 @@ struct WeeklyProtectionSpec: Codable, Equatable {
   let timezone_id: String
   let session_count: Int
   let session_minutes: Int
+  var budget_scope: String? = nil
   func validate() throws {
+    guard budget_scope == nil || budget_scope == "all_selected_apps" else { throw ScheduleFailure.invalid }
     try ScheduleCalendar.validate(hours, timezone: timezone_id)
     guard !weekdays.isEmpty, weekdays.count <= 7, Set(weekdays).count == weekdays.count,
           weekdays.allSatisfy({ (0...6).contains($0) }), (1...1000).contains(session_count),

@@ -1,11 +1,14 @@
 import Foundation
 
-enum SessionFailure: Error { case invalid, capacity, timezoneMigrationRequired }
+enum SessionFailure: Error { case invalid, capacity, timezoneMigrationRequired, exhausted }
 struct ProtectionSessionPolicy: Codable, Equatable {
   var timezoneId: String
   var sessionsPerDay: Int
   var sessionSeconds: Int
+  var budgetScope: String? = nil
+  var sharedBudget: Bool { budgetScope == "all_selected_apps" }
   func validate() throws {
+    guard budgetScope == nil || budgetScope == "all_selected_apps" else { throw SessionFailure.invalid }
     guard timezoneId.utf8.count <= 128, (TimeZone.knownTimeZoneIdentifiers.contains(timezoneId) || timezoneId == "UTC"),
           (1...1000).contains(sessionsPerDay),
           (1...86400).contains(sessionSeconds) else { throw SessionFailure.invalid }
@@ -77,7 +80,7 @@ struct ProtectionSessionLedger: Codable, Equatable {
     grants = try c.decode([ProtectionSessionGrant].self, forKey: .grants)
     daily = try c.decode([ProtectionDayCount].self, forKey: .daily)
     try policy.validate()
-    guard sessions.count <= 512, grants.count <= 2048, daily.count <= 512,
+    guard sessions.count <= 512, grants.count <= 2048, daily.count <= 513,
           Set(sessions.map(\.app)).count == sessions.count, Set(sessions.map(\.id)).count == sessions.count,
           Set(daily.map(\.app)).count == daily.count else { throw SessionFailure.capacity }
     for session in sessions {
@@ -129,15 +132,22 @@ struct ProtectionSessionLedger: Codable, Equatable {
     }
     let pending = try needed(app: app, revision: revision, reasons: reasons, clock: clock)
     guard !pending.isEmpty else { throw SessionFailure.invalid }
-    let running = sessions.first(where: { $0.app == app && $0.live(clock) })
+    let running = sessions.filter { (policy.sharedBudget || $0.app == app) && $0.live(clock) }.min { $0.elapsedEnd < $1.elapsedEnd }
     let today = try day(clock.wall)
-    let prior = daily.first(where: { $0.app == app })
-    let bucket = max(today, prior?.day ?? today) // A rollback cannot reset yesterday's counter.
-    let previous = prior?.day == bucket ? prior!.count : 0
-    guard previous < 2147483647 else { throw SessionFailure.capacity }
+    let sharedKey = Data("__hoosh_shared_budget_v1__".utf8)
+    let bucket = max(today, daily.map(\.day).max() ?? today)
+    let prior = daily.first(where: { $0.app == app && $0.day == bucket })
+    let shared = daily.first(where: { $0.app == sharedKey && $0.day == bucket })?.count
+      ?? daily.filter { $0.day == bucket && $0.app != sharedKey }.reduce(0) { $0 + $1.count }
+    let previous = policy.sharedBudget ? shared : (prior?.count ?? 0)
+    guard previous < 2147483647, shared < 2147483647 else { throw SessionFailure.capacity }
+    guard !policy.sharedBudget || running != nil || previous < policy.sessionsPerDay else { throw SessionFailure.exhausted }
     let index = previous + 1
     let duration = Int64(policy.sessionSeconds) * 1000
-    let session = running ?? ElapsedProtectionSession(id: UUID(), app: app, wallEnd: clock.wall + duration,
+    let session = running.map { existing in
+      existing.app == app ? existing : ElapsedProtectionSession(id: UUID(), app: app, wallEnd: existing.wallEnd,
+        elapsedEnd: existing.elapsedEnd, boot: existing.boot, seconds: existing.seconds)
+    } ?? ElapsedProtectionSession(id: UUID(), app: app, wallEnd: clock.wall + duration,
       elapsedEnd: clock.elapsed + duration, boot: clock.boot, seconds: policy.sessionSeconds)
     let kept = grants.filter { $0.wallEnd > clock.wall && $0.elapsedEnd > clock.elapsed && $0.boot == clock.boot }
     let newGrants = pending.map { reason in
@@ -145,8 +155,11 @@ struct ProtectionSessionLedger: Codable, Equatable {
         wallEnd: min(reason.endsAt, session.wallEnd), elapsedEnd: session.elapsedEnd, boot: clock.boot)
     }
     let nextSessions = sessions.filter { $0.app != app && $0.live(clock) } + [session]
-    let nextDaily = running != nil ? daily : daily.filter { $0.app != app } + [ProtectionDayCount(app: app, day: bucket, count: index)]
-    guard kept.count + newGrants.count <= 2048, nextSessions.count <= 512, nextDaily.count <= 512 else { throw SessionFailure.capacity }
+    let sharedBucket = policy.sharedBudget || daily.contains(where: { $0.app == sharedKey })
+      ? [ProtectionDayCount(app: sharedKey, day: bucket, count: shared + 1)] : []
+    let nextDaily = running != nil ? daily : daily.filter { $0.app != app && $0.app != sharedKey }
+      + [ProtectionDayCount(app: app, day: bucket, count: (prior?.count ?? 0) + 1)] + sharedBucket
+    guard kept.count + newGrants.count <= 2048, nextSessions.count <= 512, nextDaily.count <= 513 else { throw SessionFailure.capacity }
     grants = kept + newGrants
     sessions = nextSessions
     daily = nextDaily

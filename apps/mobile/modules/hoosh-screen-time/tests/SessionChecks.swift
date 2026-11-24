@@ -51,6 +51,24 @@ import Foundation
       _ = try JSONDecoder().decode(ProtectionSessionLedger.self, from: JSONSerialization.data(withJSONObject: corrupt))
       fatalError("corrupt duration decoded into arithmetic")
     } catch SessionFailure.invalid {}
+    var shared = try ProtectionSessionLedger(policy: .init(timezoneId: "UTC", sessionsPerDay: 1, sessionSeconds: 10, budgetScope: "all_selected_apps"))
+    let sharedClock = ProtectionClock(wall: wall, elapsed: 1000000, boot: "boot-a")
+    let sharedFirst = try shared.allow(app: app, revision: 1, reasons: [weekly], clock: sharedClock)
+    let sharedOther = try shared.allow(app: other, revision: 1, reasons: [weekly], clock: .init(wall: wall + 3000, elapsed: 1003000, boot: "boot-a"))
+    check(!sharedOther.startedNewSession && sharedOther.session.elapsedEnd == sharedFirst.session.elapsedEnd, "switching target apps reuses shared deadline without charge")
+    let encodedShared = try JSONEncoder().encode(shared)
+    var restoredShared = try JSONDecoder().decode(ProtectionSessionLedger.self, from: encodedShared)
+    do { _ = try restoredShared.allow(app: other, revision: 1, reasons: [weekly], clock: .init(wall: wall + 10000, elapsed: 1010000, boot: "boot-a")); fatalError("shared budget should be exhausted") }
+    catch SessionFailure.exhausted { }
+    // Reboot/clock rollback cannot replenish an exhausted shared day; next day can.
+    do { _ = try restoredShared.allow(app: app, revision: 1, reasons: [weekly], clock: .init(wall: wall + 20000, elapsed: 100, boot: "boot-b")); fatalError("reboot reset shared budget") }
+    catch SessionFailure.exhausted { }
+    let rollbackReason = ProtectionSessionReason(id: "rollback", startsAt: wall - 2 * 86400000, endsAt: wall + 86400000)
+    do { _ = try restoredShared.allow(app: app, revision: 1, reasons: [rollbackReason], clock: .init(wall: wall - 86400000, elapsed: 200, boot: "boot-b")); fatalError("rollback reset shared budget") }
+    catch SessionFailure.exhausted { }
+    let tomorrowReason = ProtectionSessionReason(id: "weekly", startsAt: wall, endsAt: wall + 2 * 86400000)
+    let tomorrowShared = try restoredShared.allow(app: app, revision: 1, reasons: [tomorrowReason], clock: .init(wall: wall + 86400000, elapsed: 300, boot: "boot-b"))
+    check(tomorrowShared.startedNewSession && tomorrowShared.sessionIndex == 1, "next local day has one new shared allowance")
     print("PASS: per-app clocks, reentry/new reasons, midnight, reason caps/Stop, preserved policy history, rollback/reboot/expiry, extra sessions and serialization")
   }
 }

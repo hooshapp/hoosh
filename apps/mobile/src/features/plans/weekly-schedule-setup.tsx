@@ -9,10 +9,10 @@ import type { SelectionEditorPort } from '@/infrastructure/native/selection-edit
 import { completeSchedule, createWeeklyScheduleClient, type ScheduleInstallation, type WeeklySchedulePort } from './weekly-schedule';
 
 type Props = { owner: string; port: (WeeklySchedulePort & SelectionEditorPort) | null; initialPlan?: PlanDraft | null };
-type Input = { days: number[]; start: string; end: string; nextDay: boolean; zone: string; count: string; minutes: string };
-const input = (p?: PlanDraft | null): Input => ({ days: [...p?.weekdays ?? []], start: p?.hours?.start_local ?? '', end: p?.hours?.end_local ?? '',
+type Input = { budgetScope?: 'all_selected_apps'; days: number[]; start: string; end: string; nextDay: boolean; zone: string; count: string; minutes: string };
+const input = (p?: PlanDraft | null): Input => ({ ...(p?.budget_scope ? { budgetScope: p.budget_scope } : {}), days: [...p?.weekdays ?? []], start: p?.hours?.start_local ?? '', end: p?.hours?.end_local ?? '',
   nextDay: p?.hours?.next_day ?? false, zone: p?.timezone_id ?? '', count: p?.session_count?.toString() ?? '', minutes: p?.session_minutes?.toString() ?? '' });
-const plan = (v: Input): PlanDraft => ({ weekdays: v.days, hours: { start_local: v.start || null, end_local: v.end || null, next_day: v.nextDay },
+const plan = (v: Input): PlanDraft => ({ ...(v.budgetScope ? { budget_scope: v.budgetScope } : {}), weekdays: v.days, hours: { start_local: v.start || null, end_local: v.end || null, next_day: v.nextDay },
   timezone_id: v.zone || null, session_count: /^\d+$/.test(v.count) ? Number(v.count) : null, session_minutes: /^\d+$/.test(v.minutes) ? Number(v.minutes) : null });
 /** Explicit caller scope. A verified future account consumer can supply its saved PlanDraft unchanged. */
 export function WeeklyScheduleSetup(props: Props) {
@@ -84,9 +84,9 @@ function ScopedWeeklyScheduleSetup({ owner, port, initialPlan }: Props) {
     <Field label="Schedule end (HH:mm)" value={draft.end} editable={!blocked} autoCapitalize="none" onChangeText={(end) => edit({ end })} />
     <Choice label="Ends the next day" checked={draft.nextDay} disabled={blocked} onPress={() => edit({ nextDay: !draft.nextDay })} />
     <Field label="Schedule time zone" hint="Saved IANA zone, for example America/New_York. Travel does not change it." value={draft.zone} editable={!blocked} autoCapitalize="none" autoCorrect={false} onChangeText={(zone) => edit({ zone })} />
-    <Field label="Sessions per app per day" value={draft.count} keyboardType="number-pad" editable={!blocked} onChangeText={(count) => edit({ count })} />
+    <Field label={draft.budgetScope ? 'Shared sessions per day' : 'Sessions per app per day'} value={draft.count} keyboardType="number-pad" editable={!blocked} onChangeText={(count) => edit({ count })} />
     <Field label="Minutes per session" value={draft.minutes} keyboardType="number-pad" editable={!blocked} onChangeText={(minutes) => edit({ minutes })} />
-    <Text>Outside the chosen hours apps are unrestricted. Overnight belongs to its start day. DST gaps use the first valid time; repeated hours form one continuous window. An extra session remains available after the daily allowance.</Text>
+    <Text>Outside the chosen hours apps are unrestricted. Overnight belongs to its start day. DST gaps use the first valid time; repeated hours form one continuous window. {draft.budgetScope ? 'The daily allowance is shared across selected apps; no extra session is granted after it is exhausted.' : 'An extra session remains available after the daily allowance.'}</Text>
     {!valid ? <Text>Choose at least one day, complete valid hours and time zone, 1–1000 sessions and 1–1440 minutes.</Text> : null}
     <Button label="Preview schedule" disabled={blocked || !valid} onPress={() => { void action('preview'); }} />
     <Button label={installed?.enabled ? 'Update weekly plan' : installed?.spec ? 'Resume weekly plan' : 'Apply weekly plan'} disabled={blocked || !valid || !canWrite || installed?.otherInstallation || installed?.native.state === 'needs_permission' || installed?.native.state === 'failed'} onPress={() => { void action('apply'); }} />

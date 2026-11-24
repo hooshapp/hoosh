@@ -20,7 +20,7 @@ class InterventionEngine(private val disk: InterventionPersistence) {
   }
   private fun event(kind: String, reason: String?, revision: Int, now: Long) = InterventionEvent(UUID.randomUUID().toString(), now, kind, reason, revision)
   private fun persist(value: InterventionRecord): InterventionRecord {
-    InterventionValidation.require(value.allowances.size <= 512 && value.sessions.size <= 512 && value.daily.size <= 512, "ERR_INTERVENTION_LIMIT")
+    InterventionValidation.require(value.allowances.size <= 512 && value.sessions.size <= 512 && value.daily.size <= 513, "ERR_INTERVENTION_LIMIT")
     // Diagnostics must not disable protection/Open anyway when JS/network stays away.
     // A durable gap counter prevents future reward consumers from treating this as complete evidence.
     val dropped = maxOf(0, value.events.size - 256)
@@ -133,19 +133,23 @@ class InterventionEngine(private val disk: InterventionPersistence) {
   fun allow(owner: String, revision: Int, app: String, wall: Long, elapsed: Long, boot: Int): InterventionRecord {
     val old = record(owner); InterventionValidation.require(old.plan.revision == revision, "ERR_INTERVENTION_CONFLICT")
     val reasons = needed(old, app, wall, elapsed, boot); InterventionValidation.require(reasons.isNotEmpty())
-    val running = old.sessions.find { it.app == app && live(it, wall, elapsed, boot) }
+    val running = old.sessions.filter { (old.plan.policy.sharedBudget || it.app == app) && live(it, wall, elapsed, boot) }.minByOrNull { it.elapsedEnd }
     val today = SimpleDateFormat("yyyy-MM-dd", Locale.US).apply { timeZone = TimeZone.getTimeZone(old.plan.policy.timezoneId) }.format(Date(wall))
-    val prior = old.daily.find { it.app == app }
-    // Do not create a new allowance bucket when the wall date moves backwards.
-    val day = if (prior != null && prior.day > today) prior.day else today
-    val previousCount = if (prior?.day == day) prior.count else 0
-    InterventionValidation.require(previousCount < Int.MAX_VALUE, "ERR_INTERVENTION_LIMIT")
-    val index = previousCount + 1
+    val sharedKey = "__hoosh_shared_budget_v1__"
+    val latestDay = old.daily.maxOfOrNull { it.day } ?: today
+    val day = maxOf(today, latestDay)
+    val prior = old.daily.find { it.app == app && it.day == day }
+    val shared = old.daily.find { it.app == sharedKey && it.day == day }?.count?.toLong()
+      ?: old.daily.filter { it.day == day && it.app != sharedKey }.sumOf { it.count.toLong() }
+    val previousCount = if (old.plan.policy.sharedBudget) shared else (prior?.count ?: 0).toLong()
+    InterventionValidation.require(previousCount < Int.MAX_VALUE && shared < Int.MAX_VALUE, "ERR_INTERVENTION_LIMIT")
+    InterventionValidation.require(!old.plan.policy.sharedBudget || running != null || previousCount < old.plan.policy.sessionsPerDay, "ERR_INTERVENTION_EXHAUSTED")
+    val index = previousCount.toInt() + 1
     val seconds = old.plan.policy.sessionSeconds
-    val session = running ?: AppSession(app, wall + seconds * 1000L, elapsed + seconds * 1000L, boot, seconds)
+    val session = if (running == null) AppSession(app, wall + seconds * 1000L, elapsed + seconds * 1000L, boot, seconds) else if (running.app == app) running else running.copy(app = app, id = UUID.randomUUID().toString())
     val keep = old.allowances.filter { it.wallEnd > wall && it.elapsedEnd > elapsed && it.boot == boot }
     val grants = reasons.map { AppAllowance(app, it.reasonId, revision, minOf(it.endsAt, session.wallEnd), session.elapsedEnd, boot) }
-    val daily = if (running != null) old.daily else old.daily.filter { it.app != app } + DailySessions(app, day, index)
+    val daily = if (running != null) old.daily else old.daily.filter { it.app != app && it.app != sharedKey } + DailySessions(app, day, (prior?.count ?: 0) + 1) + (if (old.plan.policy.sharedBudget || old.daily.any { it.app == sharedKey }) listOf(DailySessions(sharedKey, day, shared.toInt() + 1)) else emptyList())
     val sessions = old.sessions.filter { it.app != app && live(it, wall, elapsed, boot) } + session
     val signals = listOf(event("override_selected", null, revision, wall).copy(sessionIndex = if (running == null) index else null, exhausted = if (running == null) index > old.plan.policy.sessionsPerDay else null))
     var rewards = RewardSignals.pulse(old.rewards, wall, elapsed, boot, old.plan.policy.timezoneId)

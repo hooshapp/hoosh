@@ -96,3 +96,12 @@ describe('complete weekly plan and explicit installation client', () => {
   });
 
 });
+
+it('preserves a shared budget through native Apply and installed readback', async () => {
+  const { port, client } = fixture();
+  const shared = { ...spec, budget_scope: 'all_selected_apps' as const };
+  const installed = await client.apply(shared, 0);
+  expect(installed.spec?.budget_scope).toBe('all_selected_apps');
+  expect(port.scheduleApply.mock.calls[0][5]).toEqual(shared);
+  client.dispose();
+});

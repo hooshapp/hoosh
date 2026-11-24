@@ -62,7 +62,7 @@ class AtomicInterventionPersistence(private val path: File) : InterventionPersis
           check(list.toSet().size == list.size && list.all { it.matches(Regex("q_[0-9a-f]{32}_v[1-9][0-9]{0,9}_d[0-9]{8}")) })
         }.toSet()
       }
-      val plan = InterventionPlan(p.strictString("owner"), p.strictInt("revision"), p.strictInt("selectionRevision"), keys.toSet(), windows, p.getJSONObject("policy").let { SessionPolicy(it.strictString("timezone"), it.strictInt("count"), it.strictInt("seconds")) }, weekly, quests, receipts, cancelled)
+      val plan = InterventionPlan(p.strictString("owner"), p.strictInt("revision"), p.strictInt("selectionRevision"), keys.toSet(), windows, p.getJSONObject("policy").let { SessionPolicy(it.strictString("timezone"), it.strictInt("count"), it.strictInt("seconds"), if (it.has("sharedBudget")) it.strictBoolean("sharedBudget") else false) }, weekly, quests, receipts, cancelled)
       InterventionValidation.policy(plan.policy); check(weekly == null || weekly.schedule.timezone == plan.policy.timezoneId); check(windows.all { it.apps.isNotEmpty() && plan.apps.containsAll(it.apps) }); InterventionValidation.owner(plan.owner); check(plan.revision > 0 && plan.selectionRevision > 0 && plan.apps.isNotEmpty())
       val allowances = numbers(root.getJSONArray("allowances")).map { AppAllowance(it.strictString("app"), it.strictString("reason"), it.strictInt("revision"), it.strictLong("wall"), it.strictLong("elapsed"), it.strictInt("boot")) }
       check(allowances.size <= 512 && allowances.all { a -> a.app in plan.apps && a.revision == plan.revision && WeeklySchedules.windows(plan, maxOf(0, a.wallEnd - 1)).any { it.reasonId == a.reasonId && a.app in it.apps } && a.wallEnd >= 0 && a.elapsedEnd >= 0 } && allowances.map { it.app to it.reasonId }.toSet().size == allowances.size)
@@ -71,8 +71,8 @@ class AtomicInterventionPersistence(private val path: File) : InterventionPersis
       check(events.all { it.id.matches(Regex("[0-9a-f-]{36}")) && it.at >= 0 && it.revision > 0 && it.kind in setOf("rule_activated", "rule_deactivated", "shield_presented", "override_selected", "quit_selected") })
       val sessions = numbers(root.getJSONArray("sessions")).map { AppSession(it.strictString("app"), it.strictLong("wall"), it.strictLong("elapsed"), it.strictInt("boot"), it.strictInt("seconds"), if (version >= 4) it.strictString("sessionId").also { id -> QuestSchedules.id(id) } else java.util.UUID.randomUUID().toString(), if (version >= 4) it.strictBoolean("nudged") else false) }
       val daily = numbers(root.getJSONArray("daily")).map { DailySessions(it.strictString("app"), it.strictString("day"), it.strictInt("count")) }
-      check(sessions.size <= 512 && daily.size <= 512 && sessions.map { it.app }.toSet().size == sessions.size && daily.map { it.app }.toSet().size == daily.size)
-      SelectionDrafts.validateApps((sessions.map { it.app } + daily.map { it.app }).toSet())
+      check(sessions.size <= 512 && daily.size <= 513 && sessions.map { it.app }.toSet().size == sessions.size && daily.map { it.app }.toSet().size == daily.size)
+      SelectionDrafts.validateApps((sessions.map { it.app } + daily.filter { it.app != "__hoosh_shared_budget_v1__" }.map { it.app }).toSet())
       check(sessions.all { it.wallEnd >= 0 && it.elapsedEnd >= 0 && it.seconds in 1..86400 } && daily.all { it.day.matches(Regex("[0-9]{4}-[0-9]{2}-[0-9]{2}")) && it.count > 0 })
       val discarded = if (version < 3) 0 else root.strictInt("discardedEventCount").also { check(it >= 0) }
       return InterventionRecord(plan, allowances, events, sessions, daily, discarded, if (version >= 4) RewardPersistence.decode(root.getJSONObject("rewards")) else RewardState())
@@ -93,7 +93,7 @@ class AtomicInterventionPersistence(private val path: File) : InterventionPersis
       .put("effectiveFrom", q.effectiveFrom).put("effectiveUntil", q.effectiveUntil ?: JSONObject.NULL).put("apps", JSONArray(q.apps.sorted())) })
     val root = JSONObject().put("version", 4).put("rewards", RewardPersistence.encode(value.rewards)).put("plan", JSONObject().put("owner", p.owner).put("revision", p.revision).put("selectionRevision", p.selectionRevision).put("apps", JSONArray(p.apps.sorted())).put("windows", windows).put("weekly", weekly)
       .put("quests", quests).put("questReceipts", JSONObject(p.questReceipts.mapValues { (_, r) -> JSONObject().put("revision", r.revision).put("requestId", r.requestId).put("enabled", r.enabled) })).put("questCancelled", JSONArray(p.cancelledQuestReasons.sorted()))
-      .put("policy", JSONObject().put("timezone", p.policy.timezoneId).put("count", p.policy.sessionsPerDay).put("seconds", p.policy.sessionSeconds))).put("allowances", allowances).put("events", events)
+      .put("policy", JSONObject().put("timezone", p.policy.timezoneId).put("count", p.policy.sessionsPerDay).put("seconds", p.policy.sessionSeconds).put("sharedBudget", p.policy.sharedBudget))).put("allowances", allowances).put("events", events)
       .put("sessions", JSONArray(value.sessions.map { JSONObject().put("app", it.app).put("wall", it.wallEnd).put("elapsed", it.elapsedEnd).put("boot", it.boot).put("seconds", it.seconds).put("sessionId", it.id).put("nudged", it.nudged) }))
       .put("discardedEventCount", value.discardedEventCount)
       .put("daily", JSONArray(value.daily.map { JSONObject().put("app", it.app).put("day", it.day).put("count", it.count) }))

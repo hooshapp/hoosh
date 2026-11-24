@@ -3,7 +3,7 @@ package expo.modules.hooshusage
 /** Finite windows plus an optional explicitly applied weekly plan; quest/reward policies are separate. All identities remain native. */
 data class InterventionWindow(val reasonId: String, val startsAt: Long, val endsAt: Long, val apps: Set<String> = emptySet())
 data class AppAllowance(val app: String, val reasonId: String, val revision: Int, val wallEnd: Long, val elapsedEnd: Long, val boot: Int)
-data class SessionPolicy(val timezoneId: String, val sessionsPerDay: Int, val sessionSeconds: Int)
+data class SessionPolicy(val timezoneId: String, val sessionsPerDay: Int, val sessionSeconds: Int, val sharedBudget: Boolean = false)
 data class AppSession(val app: String, val wallEnd: Long, val elapsedEnd: Long, val boot: Int, val seconds: Int, val id: String = java.util.UUID.randomUUID().toString(), val nudged: Boolean = false)
 data class DailySessions(val app: String, val day: String, val count: Int)
 data class InterventionEvent(val id: String, val at: Long, val kind: String, val reasonId: String?, val revision: Int, val sessionIndex: Int? = null, val exhausted: Boolean? = null)

@@ -45,7 +45,7 @@ struct ProtectionRuntimeRecord: Codable, Equatable {
     if let weekly {
       try weekly.validate()
       guard weekly.timezone_id == policy.timezoneId, weekly.session_count == policy.sessionsPerDay,
-            weekly.session_minutes * 60 == policy.sessionSeconds else { throw ProtectionTransactionError.invalid }
+            weekly.session_minutes * 60 == policy.sessionSeconds, weekly.budget_scope == policy.budgetScope else { throw ProtectionTransactionError.invalid }
     }
     guard !enabled || weekly != nil || quests.contains(where: { $0.enabled }) else { throw ProtectionTransactionError.invalid }
     if let selection = weeklySelection { try validate(selection) }

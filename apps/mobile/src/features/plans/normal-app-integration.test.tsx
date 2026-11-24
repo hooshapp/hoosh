@@ -1296,6 +1296,16 @@ test.each([false, true])('normal sign-in through setup and Apply (manual path: %
   jest.replaceProperty(Platform, 'OS', 'android');
   const f = fixture({ signedOut: true, settingsMissing: true });
   f.usagePermission(true);
+  Object.assign(f.port, {
+    budgetCapabilities: jest.fn(async () => ({ scope: 'all_selected_apps', policy: 'selected_apps_shared_v1' })),
+    onboardingBaselineRead: jest.fn(async (owner: string) => {
+      const now = new Date();
+      const endsBefore = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+      const end = Date.parse(`${endsBefore}T00:00:00Z`);
+      return { state: 'ready', source: 'android_usage_events_v1', owner, selectionRevision: 2, selectedAppCount: 2, endsBefore,
+        days: Array.from({ length: 7 }, (_, i) => ({ date: new Date(end-(7-i)*86400000).toISOString().slice(0,10), usageMs: 5*3600000, coverage: 'reported' })) };
+    }),
+  });
   const staged = { draftId: HANDLE, groupId: 'global', baseRevision: 1, draftVersion: 1,
     selectedAppCount: 2, savedAppCount: 1, dirty: true };
   f.port.selectionPick.mockResolvedValue(staged);
@@ -1333,6 +1343,7 @@ test.each([false, true])('normal sign-in through setup and Apply (manual path: %
 
     await screen.findByText('Accessibility access allowed for app protection.');
     const saved = f.settings.get(A)?.settings?.plan_draft;
+    expect(saved).toMatchObject({ budget_scope: 'all_selected_apps', session_count: 8, session_minutes: 15 });
     expect(saved?.weekdays).toEqual(manual ? [0, 1, 2, 3, 4, 6] : [0, 1, 2, 3, 4]);
     await screen.findByText('2 apps saved on this device.');
     expect(screen.queryByRole('button', { name: 'Review Usage Access' })).toBeNull();

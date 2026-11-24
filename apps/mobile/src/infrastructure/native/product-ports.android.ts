@@ -38,6 +38,8 @@ function connectedPort(): ProductNativePort | null {
   if (!hasProductMethods(nativeModule)) return null;
   const bridge = nativeModule;
   return {
+    onboardingBaselineRead: bridge.onboardingBaselineRead?.bind(bridge),
+    budgetCapabilities: bridge.budgetCapabilities?.bind(bridge),
     questRead: bridge.questRead.bind(bridge),
     questCancel: bridge.questCancel.bind(bridge),
     interventionOpen: bridge.interventionOpen.bind(bridge),

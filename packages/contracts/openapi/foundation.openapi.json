@@ -700,6 +700,18 @@
       "PlanDraft": {
         "additionalProperties": false,
         "properties": {
+          "budget_scope": {
+            "anyOf": [
+              {
+                "const": "all_selected_apps",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Budget Scope"
+          },
           "hours": {
             "anyOf": [
               {

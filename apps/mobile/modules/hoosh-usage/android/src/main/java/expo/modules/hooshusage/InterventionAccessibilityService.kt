@@ -121,7 +121,12 @@ class InterventionAccessibilityService : AccessibilityService() {
           else if (homeSucceeded) runtime.engine.quit(record.plan.owner, record.plan.revision, app, encounter, context, System.currentTimeMillis())
           runtime.epoch.incrementAndGet()
           main.post { if (token == generation) { hide(); if (!allow) { foreground = null; generation++; performGlobalAction(GLOBAL_ACTION_HOME) } } }
-        } catch (_: Exception) { runtime.failure = "ERR_INTERVENTION_ACTION"; main.post { if (token == generation) { hide(); foreground = null; generation++; if (allow) { android.widget.Toast.makeText(this, "App protection disabled: your choice could not be saved.", android.widget.Toast.LENGTH_LONG).show(); disableSelf() } else performGlobalAction(GLOBAL_ACTION_HOME) } } }
+        } catch (error: Exception) {
+          if (error is InterventionFailure && error.code == "ERR_INTERVENTION_EXHAUSTED") {
+            main.post { if (token == generation) { actions.forEach { it.isEnabled = true }; android.widget.Toast.makeText(this, "Your shared daily allowance is complete. Return home or review your plan in Hoosh.", android.widget.Toast.LENGTH_LONG).show() } }
+            return@execute
+          }
+          runtime.failure = "ERR_INTERVENTION_ACTION"; main.post { if (token == generation) { hide(); foreground = null; generation++; if (allow) { android.widget.Toast.makeText(this, "App protection disabled: your choice could not be saved.", android.widget.Toast.LENGTH_LONG).show(); disableSelf() } else performGlobalAction(GLOBAL_ACTION_HOME) } } }
       }
     }
     val safe = action("Return home") { perform(false) }

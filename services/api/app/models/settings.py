@@ -38,8 +38,8 @@ SETTINGS_CHECKS = {
     f"activities->>'custom_text' = btrim(activities->>'custom_text', {_strip_sql}))",
     "plan_draft_shape": "plan_draft IS NULL OR (jsonb_typeof(plan_draft) = 'object' AND "
     "plan_draft ?& ARRAY['weekdays','hours','timezone_id','session_count','session_minutes'] "
-    "AND plan_draft - ARRAY['weekdays','hours','timezone_id','session_count','session_minutes'] "
-    "= '{}'::jsonb)",
+    "AND plan_draft - ARRAY['weekdays','hours','timezone_id','session_count','session_minutes','budget_scope'] "
+    "= '{}'::jsonb AND (NOT plan_draft ? 'budget_scope' OR (jsonb_typeof(plan_draft->'budget_scope') = 'string' AND plan_draft->>'budget_scope' = 'all_selected_apps')))",
     "weekdays_valid": "plan_draft IS NULL OR CASE WHEN "
     "jsonb_typeof(plan_draft->'weekdays') = 'array' THEN "
     "jsonb_array_length(plan_draft->'weekdays') <= 7 AND "

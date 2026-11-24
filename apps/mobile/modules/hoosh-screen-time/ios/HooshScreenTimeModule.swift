@@ -7,6 +7,7 @@ public class HooshScreenTimeModule: Module {
   private let leases = ProtectionOwnerLeases()
   private var permissionObserver: AnyCancellable?
   private let picker = NativeSelectionPicker()
+  private let usageReport = UsageBaselinePresenter()
   private var transactions: SelectionTransactions<FamilyActivitySelection>?
   private let transactionLock = NSLock()
   private func selections() throws -> SelectionTransactions<FamilyActivitySelection> {
@@ -36,12 +37,38 @@ public class HooshScreenTimeModule: Module {
   }
   public func definition() -> ModuleDefinition {
     Name("HooshScreenTime")
+    AsyncFunction("budgetCapabilities") { ["scope": "all_selected_apps", "policy": "selected_apps_shared_v1"] }
+    AsyncFunction("reviewUsageBaseline") { (namespace: String, userID: String, raw: String) async throws -> [String: Any] in
+      let (owner, token) = try self.owner(namespace, userID, raw)
+      let store = try SharedProtectionStore.appGroup()
+      let saved = try self.leases.withLease(owner, token: token) {
+        try store.withSnapshot { state -> ProtectionSelection in
+          guard let state, state.installedOwner == owner, state.pendingClaim == nil,
+            let selection = state.owners.first(where: { $0.owner == owner })?.selection,
+            AuthorizationCenter.shared.authorizationStatus == .approved else { throw SelectionFailure.unavailable }
+          return selection
+        }
+      }
+      let selection = try JSONDecoder().decode(FamilyActivitySelection.self, from: saved.encodedTokens)
+      let result = try await self.usageReport.present(selection: selection) {
+        (try? self.leases.withLease(owner, token: token) {
+          try store.withSnapshot { state in
+            state?.installedOwner == owner && state?.pendingClaim == nil &&
+            state?.owners.first(where: { $0.owner == owner })?.selection?.revision == saved.revision &&
+            AuthorizationCenter.shared.authorizationStatus == .approved
+          }
+        }) == true
+      }
+      return ["state": "confirmed", "source": "user_confirmed_report", "owner": "\(namespace):\(userID.lowercased())",
+        "selectionRevision": saved.revision, "selectedAppCount": selection.applicationTokens.count,
+        "windowDays": result.days, "totalMinutes": result.totalMinutes, "endsBefore": result.endsBefore, "timezone": result.timezone]
+    }
     Events("onDeviceStatusChanged")
     OnCreate {
       self.permissionObserver = AuthorizationCenter.shared.$authorizationStatus.dropFirst().sink { [weak self] _ in
         guard let self else { return }
         self.sendEvent("onDeviceStatusChanged", ["reason": "authorization"])
-        Task { @MainActor in self.picker.cancel() }
+        Task { @MainActor in self.picker.cancel(); self.usageReport.cancel() }
       }
     }
     // Read-only compiler. Preview is not monitor installation or elapsed expiry proof.
@@ -145,7 +172,7 @@ public class HooshScreenTimeModule: Module {
     AsyncFunction("endOwnerSession") { (raw: String) throws in
       guard let token = UUID(uuidString: raw) else { throw ProtectionStoreError.invalidRecord }
       self.leases.end(token)
-      Task { @MainActor in self.picker.cancel(lease: token) }
+      Task { @MainActor in self.picker.cancel(lease: token); self.usageReport.cancel() }
     }
     AsyncFunction("readInstallation") { (namespace: String, userID: String, rawToken: String) throws -> [String: String] in
       let (owner, token) = try self.owner(namespace, userID, rawToken)
@@ -159,7 +186,7 @@ public class HooshScreenTimeModule: Module {
                stopAndVerify: ProtectionDeviceTransition.stopAndVerify)
       self.invalidateSelections()
       self.sendEvent("onDeviceStatusChanged", ["reason": "installation"])
-      Task { @MainActor in self.picker.cancel(lease: token) }
+      Task { @MainActor in self.picker.cancel(lease: token); self.usageReport.cancel() }
     }
     AsyncFunction("requestDeviceAuthorization") { (namespace: String, userID: String, raw: String) async throws -> String in
       let (owner, token) = try self.owner(namespace, userID, raw)
@@ -211,7 +238,7 @@ public class HooshScreenTimeModule: Module {
       self.permissionObserver?.cancel()
       self.leases.destroy()
       self.invalidateSelections()
-      Task { @MainActor in self.picker.cancel() }
+      Task { @MainActor in self.picker.cancel(); self.usageReport.cancel() }
     }
     AsyncFunction("getAuthorization") { () -> String in
       await MainActor.run { self.authorization() }

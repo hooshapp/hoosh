@@ -26,7 +26,7 @@ struct ProtectionCommand: Codable {
     if let previous { result = previous }
     else {
       guard let chosen = weekly.map({ ProtectionSessionPolicy(timezoneId: $0.timezone_id,
-        sessionsPerDay: $0.session_count, sessionSeconds: $0.session_minutes * 60) }) ?? policy else { throw ProtectionTransactionError.invalid }
+        sessionsPerDay: $0.session_count, sessionSeconds: $0.session_minutes * 60, budgetScope: $0.budget_scope) }) ?? policy else { throw ProtectionTransactionError.invalid }
       result = ProtectionRuntimeRecord(revision: 1, enabled: false, selectionRevision: selectionRevision,
         policy: chosen, weekly: nil, weeklySelection: nil, quests: [], activeSnapshots: [], monitors: [])
     }
@@ -47,7 +47,7 @@ struct ProtectionCommand: Codable {
       guard let weekly, quest == nil, questID == nil, reasonID == nil, policy == nil else { throw ProtectionTransactionError.invalid }
       try weekly.validate()
       result.weekly = weekly; result.weeklySelection = selection; result.weeklyEnabled = true
-      result.policy = .init(timezoneId: weekly.timezone_id, sessionsPerDay: weekly.session_count, sessionSeconds: weekly.session_minutes * 60)
+      result.policy = .init(timezoneId: weekly.timezone_id, sessionsPerDay: weekly.session_count, sessionSeconds: weekly.session_minutes * 60, budgetScope: weekly.budget_scope)
     case "weekly_stop":
       guard previous?.weekly != nil, weekly == nil, quest == nil, questID == nil, reasonID == nil, policy == nil else { throw ProtectionTransactionError.invalid }
       result.weeklyEnabled = false

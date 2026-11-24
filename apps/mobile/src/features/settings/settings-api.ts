@@ -58,6 +58,7 @@ export function decodePlanDraft(value: unknown): PlanDraft | null {
     !Array.isArray(value.weekdays) ||
     value.weekdays.length > 7 ||
     !value.weekdays.every((d, i, days) => integer(d, 0, 6) && (!i || d > days[i - 1])) ||
+    (value.budget_scope !== undefined && value.budget_scope !== null && value.budget_scope !== 'all_selected_apps') ||
     !nullableInteger(value.session_count, 1000) ||
     !nullableInteger(value.session_minutes, 1440)
   )
@@ -98,6 +99,7 @@ export function decodePlanDraft(value: unknown): PlanDraft | null {
     timezone_id: zone as string | null,
     session_count: value.session_count,
     session_minutes: value.session_minutes,
+    ...(value.budget_scope === 'all_selected_apps' ? { budget_scope: value.budget_scope } : {}),
   };
 }
 export function decodeSettingsResponse(

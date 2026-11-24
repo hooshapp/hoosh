@@ -71,9 +71,9 @@ export function decodeDeviceQuest(value: unknown, owner: string, questId: string
   let policy: InterventionPolicy | null = null;
   if (value.policy !== null) {
     const p = value.policy;
-    if (!record(p) || typeof p.timezoneId !== 'string' || !/^[A-Za-z0-9_+/-]{1,128}$/.test(p.timezoneId) ||
+    if (!record(p) || (p.budgetScope !== undefined && p.budgetScope !== 'all_selected_apps') || typeof p.timezoneId !== 'string' || !/^[A-Za-z0-9_+/-]{1,128}$/.test(p.timezoneId) ||
         !integer(p.sessionsPerDay, 1000) || p.sessionsPerDay < 1 || !integer(p.sessionSeconds, 86400) || p.sessionSeconds < 1) return invalid();
-    policy = { timezoneId: p.timezoneId, sessionsPerDay: p.sessionsPerDay, sessionSeconds: p.sessionSeconds };
+    policy = { ...(p.budgetScope === 'all_selected_apps' ? { budgetScope: p.budgetScope } : {}), timezoneId: p.timezoneId, sessionsPerDay: p.sessionsPerDay, sessionSeconds: p.sessionSeconds };
   }
   if (native.installedRevision !== null && !policy) return invalid();
   const versions = value.versions.map(nativeVersion);

@@ -103,7 +103,7 @@ class HistoryCollector(private val context: Context) {
     return mapOf("state" to "ready", "series" to mapOf("series_id" to value.getString("series_id"), "timezone_id" to zone.id,
       "selected_count" to selected.apps.size, "started_on" to value.getString("started_on"), "source" to "android_usage_events_v1", "days" to days))
   }
-  private fun query(day: LocalDate, zone: ZoneId, now: Long, apps: Set<String>): HistoryUsageDay {
+  internal fun query(day: LocalDate, zone: ZoneId, now: Long, apps: Set<String>): HistoryUsageDay {
     val start = day.atStartOfDay(zone).toInstant().toEpochMilli()
     val end = day.plusDays(1).atStartOfDay(zone).toInstant().toEpochMilli()
     val manager = context.getSystemService(UsageStatsManager::class.java) ?: return HistoryUsageDay(day.toString(),null,"missing")

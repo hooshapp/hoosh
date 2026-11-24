@@ -84,7 +84,7 @@ function ScopedWeeklyPlanJourney({ owner, port, initialPlan, visible = true, onE
       apps: ready ? { state: 'ready', text: `${ready.selectedAppCount} apps selected` } : { state: plan.read.phase === 'error' ? 'error' : 'unavailable' },
       days: { state: 'ready', text: plan.draft.weekdays.map((d) => weekdays[d]).join(', ') || null },
       hours: { state: 'ready', text: plan.draft.hours ? `${formatTime(plan.draft.hours.start_local ?? '')}–${formatTime(plan.draft.hours.end_local ?? '')}${plan.draft.hours.next_day ? ' (next day)' : ''}; ${plan.draft.timezone_id ?? 'zone not set'}` : null },
-      sessions: { state: 'ready', text: `${plan.draft.session_count ?? '—'} per app per day · ${plan.draft.session_minutes ?? '—'} min` },
+      sessions: { state: 'ready', text: `${plan.draft.session_count ?? '—'} ${plan.draft.budget_scope ? 'shared' : 'per app'} per day · ${plan.draft.session_minutes ?? '—'} min` },
     }} planDraftOnly onEdit={blocked ? {} : { apps: port && !blocked && !editing ? () => setChoosing(true) : undefined, days: () => open('days'), hours: () => open('hours'), sessions: () => open('sessions') }}
       inlineEditor={editing && inline ? { field: editing.field, content: inline } : undefined}
       onRetry={() => { void plan.refresh(); }} planContent={<View style={{ gap: 12 }}>

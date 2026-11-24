@@ -1,3 +1,5 @@
+import { NativeOwnerContext } from '@/features/protection/native-owner-boundary';
+import type { ProductNativePort } from '@/infrastructure/native/product-ports';
 import { SetupDraft } from './setup-draft';
 import { useState } from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
@@ -71,7 +73,7 @@ it('accepts the displayed suggestion after returning from an edited manual alter
   expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ step: 'review', planDraft }));
 });
 
-it('shows the Figma loading transition before the suggestion for native-target questionnaires', async () => {
+it('shows loading then requires usage rather than inventing a personalized suggestion', async () => {
   await render(<SetupDraft progress={{ version: 1, step: 'plan', questionsCompleted: true, selectionRevision: 7,
     questions: { index: 4, gender: 'Other', age: 25, apps: [], nativeTargetCount: 2, hobbies: ['Reading'] },
     activities: { selected_activity_ids: ['reading'], custom_text: null } }} busy={false} failed={false}
@@ -79,6 +81,29 @@ it('shows the Figma loading transition before the suggestion for native-target q
   expect(screen.getByRole('header', { name: 'We are setting up your plan' })).toBeTruthy();
   expect(screen.getByText('5 of 7')).toBeTruthy();
   expect(screen.getByText('2 target apps selected on this device')).toBeTruthy();
+  await waitFor(() => expect(screen.getByText('Your usage, your plan')).toBeTruthy(), { timeout: 9000 });
+  expect(screen.queryByRole('button', { name: 'Go with suggestion' })).toBeNull();
+  expect(screen.getByRole('button', { name: 'Set up on your own' })).toBeTruthy();
+}, 12000);
+
+
+it('saves the measured chart allowance as one shared plan after selection readback', async () => {
+  const now = new Date();
+  const endsBefore = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+  const owner = 'test:account';
+  const end = Date.parse(`${endsBefore}T00:00:00Z`);
+  const port = {
+    selectionRead: jest.fn(async () => ({ owner, revision: 7, selectedAppCount: 2 })),
+    budgetCapabilities: jest.fn(async () => ({ scope: 'all_selected_apps', policy: 'selected_apps_shared_v1' })),
+    onboardingBaselineRead: jest.fn(async () => ({ state: 'ready', source: 'android_usage_events_v1', owner, selectionRevision: 7, selectedAppCount: 2, endsBefore,
+      days: Array.from({ length: 7 }, (_, i) => ({ date: new Date(end - (7-i)*86400000).toISOString().slice(0,10), usageMs: 5*3600000, coverage: 'reported' })) })),
+  } as unknown as ProductNativePort;
+  const onSave = jest.fn();
+  await render(<NativeOwnerContext.Provider value={{ owner, generation: 1, port }}><SetupDraft
+    progress={{ version: 1, step: 'plan', questionsCompleted: true, questions: { index: 4, gender: 'Other', age: 25, apps: [], nativeTargetCount: 2, hobbies: ['Reading'] } }}
+    busy={false} failed={false} onSave={onSave} onLeave={jest.fn()} onDiscard={jest.fn()} /></NativeOwnerContext.Provider>);
   await waitFor(() => expect(screen.getByRole('button', { name: 'Go with suggestion' })).toBeTruthy(), { timeout: 9000 });
-  expect(screen.getByRole('button', { name: 'Set up on my own' })).toBeTruthy();
+  expect(screen.getByText('120 min/day')).toBeTruthy();
+  await fireEvent.press(screen.getByRole('button', { name: 'Go with suggestion' }));
+  await waitFor(() => expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ step: 'review', planDraft: expect.objectContaining({ budget_scope: 'all_selected_apps', session_count: 8, session_minutes: 15 }) })));
 }, 12000);

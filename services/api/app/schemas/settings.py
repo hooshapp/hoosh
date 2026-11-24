@@ -16,6 +16,7 @@ from pydantic import (
     StrictStr,
     field_validator,
     model_validator,
+    model_serializer,
 )
 from pydantic_core import PydanticCustomError
 
@@ -93,6 +94,14 @@ class PlanDraft(WireModel):
     # Storage ceilings, not allowance/reset/enforcement rules.
     session_count: StrictInt | None = Field(ge=1, le=1000)
     session_minutes: StrictInt | None = Field(ge=1, le=1440)
+    budget_scope: Literal["all_selected_apps"] | None = None
+
+    @model_serializer(mode="wrap")
+    def serialize_scope(self, handler):
+        value = handler(self)
+        if value.get("budget_scope") is None:
+            value.pop("budget_scope", None)
+        return value
 
     @field_validator("weekdays")
     @classmethod
