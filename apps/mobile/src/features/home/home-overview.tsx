@@ -109,6 +109,7 @@ export function HomeOverview({
           busy={feeding}
           busyLabel="Feeding…"
           onPress={() => onFeed?.()}
+          hitSlop={7}
           style={styles.feed}
           labelStyle={styles.feedLabel}
           trailingVisual={
@@ -137,7 +138,7 @@ export function HomeOverview({
             </Text>
           )}
         </View>
-        <View style={styles.weekly} testID="home-weekly-card">
+        <View style={styles.weekly} testID="home-weekly-card" accessibilityHint={weekly.state === 'ready' ? `${weekly.value.rangeLabel}. ${weekly.value.sourceLabel}. ${weekly.value.coverageLabel}` : undefined}>
           <View style={styles.ellipse}>
             <HomeArtwork asset={homeAssets.ellipse} testID="home-ellipse" />
           </View>
@@ -155,7 +156,7 @@ export function HomeOverview({
               <Text style={styles.saved}>
                 {weekly.value.hours < 0
                   ? 'increased usage'
-                  : 'saved (estimated) 🧠'}
+                  : 'est. saved 🧠'}
               </Text>
               {onOpenHistory ? (
                 <Button
@@ -190,7 +191,7 @@ const styles = StyleSheet.create({
   },
   stacked: { flexDirection: 'column' },
   // Flex distributes the content width; the left card also owns its 3 px border.
-  dinoColumn: { flexBasis: 0, flexGrow: 193, flexShrink: 1 },
+  dinoColumn: { flexBasis: 0, flexGrow: 196, flexShrink: 1 },
   dinoCard: {
     minWidth: 0,
     minHeight: 210,
@@ -257,7 +258,7 @@ const styles = StyleSheet.create({
   },
   feed: {
     marginTop: 'auto',
-    minHeight: 44,
+    minHeight: 31,
     minWidth: 130,
     borderRadius: 20,
     paddingVertical: 7,
@@ -328,7 +329,7 @@ const styles = StyleSheet.create({
     color: colors.onAction,
     opacity: 0.8,
   },
-  hours: { fontFamily: fonts.bold, fontSize: 38, color: colors.onAction },
+  hours: { fontFamily: fonts.bold, fontSize: 38, color: colors.warmCanvas },
   unit: { fontFamily: fonts.bold, fontSize: 17, color: colors.onAction },
   saved: {
     fontFamily: fonts.medium,

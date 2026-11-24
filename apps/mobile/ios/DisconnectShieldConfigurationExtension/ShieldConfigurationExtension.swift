@@ -14,7 +14,7 @@ final class ShieldConfigurationExtension: ShieldConfigurationDataSource {
             return ShieldConfiguration(
                 backgroundBlurStyle: .systemMaterialDark,
                 title: .init(text: "Hoosh protection", color: .white),
-                subtitle: .init(text: "Take a moment before continuing. Up to \(seconds) seconds remain in this session.", color: .white),
+                subtitle: .init(text: "\(ProtectionNativeEngine.nudgeLine()) Up to \(seconds) seconds remain in this session.", color: .white),
                 primaryButtonLabel: .init(text: "Close app", color: .white),
                 secondaryButtonLabel: .init(text: "Continue", color: .white)
             )

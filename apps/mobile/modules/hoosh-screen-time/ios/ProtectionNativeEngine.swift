@@ -17,6 +17,18 @@ enum ProtectionNativeEngine {
     } catch { /* No empty-state fallback, legacy mutation or fabricated success. */ }
   }
 
+  static func nudgeLine() -> String {
+    let tone = (try? SharedProtectionStore.appGroup().read()).flatMap { state in
+      state.installedOwner.flatMap { owner in state.owners.first(where: { $0.owner == owner })?.nudgeTone }
+    }
+    switch tone {
+    case "Direct": return "Pause now. Choose what you want to do next."
+    case "Playful": return "Plot twist: your next chapter is off the feed."
+    case "Intense": return "Protect the time you chose. Make your next move intentional."
+    default: return "A small pause can make room for what matters to you."
+    }
+  }
+
   static func allow(_ app: ApplicationToken) -> Bool {
     guard ProtectionActivationGate.enabled else { return false }
     do {

@@ -55,45 +55,25 @@ private struct UsageBaselineContent: View {
   let selection: FamilyActivitySelection
   let cancel: () -> Void
   let confirm: (UsageBaselineConfirmation) -> Void
-  @State private var days = 7
-  @State private var hours = ""
-  @State private var minutes = ""
   private var end: Date { Calendar.current.startOfDay(for: Date()) }
-  private var interval: DateInterval { DateInterval(start: Calendar.current.date(byAdding: .day, value: -days, to: end)!, end: end) }
-  private var total: Int? {
-    guard !hours.isEmpty || !minutes.isEmpty,
-      hours.isEmpty || hours.allSatisfy({ $0.isASCII && $0.isNumber }),
-      minutes.isEmpty || minutes.allSatisfy({ $0.isASCII && $0.isNumber }),
-      let h = Int(hours.isEmpty ? "0" : hours), let m = Int(minutes.isEmpty ? "0" : minutes),
-      h <= days * 26, (0...59).contains(m), h * 60 + m <= days * 26 * 60 else { return nil }
-    return h * 60 + m
+  private var interval: DateInterval {
+    DateInterval(start: Calendar.current.date(byAdding: .day, value: -1, to: end)!, end: end)
   }
   var body: some View {
     NavigationStack {
       ScrollView {
-        VStack(alignment: .leading, spacing: 18) {
-          Text("Review your selected apps’ usage").font(.title2.bold())
-          Text("Prefer seven complete days. If that report is unavailable, choose Yesterday. Today is excluded.").font(.subheadline).foregroundStyle(.secondary)
-          Picker("Usage period", selection: $days) { Text("Last 7 days").tag(7); Text("Yesterday").tag(1) }.pickerStyle(.segmented)
+        VStack(alignment: .leading, spacing: 20) {
+          Text("Yesterday").font(.custom("SpaceGrotesk-Bold", size: 28))
           DeviceActivityReport(.init("Total Activity"), filter: .init(segment: .daily(during: interval), users: .all,
             devices: .init([.iPhone]), applications: selection.applicationTokens))
-            .frame(minHeight: 110).id(days)
-          Text(days == 7 ? "Enter the TOTAL shown for all seven days. Hoosh will divide it by seven." : "Enter the total shown for yesterday.").font(.headline)
-          HStack {
-            TextField("Hours", text: $hours).keyboardType(.numberPad).textFieldStyle(.roundedBorder).accessibilityLabel("Usage total hours")
-            TextField("Minutes", text: $minutes).keyboardType(.numberPad).textFieldStyle(.roundedBorder).accessibilityLabel("Usage total minutes")
-          }
-          Text("Only use a complete report for the apps you selected. If the report is blank or incomplete, cancel and use manual setup. This total is user-confirmed; Hoosh does not extract protected report data.").font(.footnote).foregroundStyle(.secondary)
-          Button("Use this total") {
-            guard let total else { return }
-            let formatter = DateFormatter(); formatter.calendar = Calendar(identifier: .gregorian); formatter.locale = Locale(identifier: "en_US_POSIX"); formatter.timeZone = .current; formatter.dateFormat = "yyyy-MM-dd"
-            confirm(.init(totalMinutes: total, days: days, endsBefore: formatter.string(from: end), timezone: TimeZone.current.identifier))
-          }.buttonStyle(.borderedProminent).disabled(total == nil)
-        }.padding()
+            .frame(minHeight: 180)
+          Text("Measured usage for your selected apps. No sample values are used.")
+            .font(.custom("SpaceGrotesk-Regular", size: 14))
+        }.padding(24)
       }
-      .navigationTitle("Usage for your plan").navigationBarTitleDisplayMode(.inline)
-      .toolbar { ToolbarItem(placement: .cancellationAction) { Button("Cancel", action: cancel) } }
-      .onChange(of: days) { _ in hours = ""; minutes = "" }
-    }
+      .background(Color(red: 1, green: 0.945, blue: 0.867))
+      .navigationTitle("Your usage").navigationBarTitleDisplayMode(.inline)
+      .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done", action: cancel) } }
+    }.preferredColorScheme(.light)
   }
 }

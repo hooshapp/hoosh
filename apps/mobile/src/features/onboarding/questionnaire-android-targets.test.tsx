@@ -30,9 +30,9 @@ it('reads back Android permission after system settings return instead of assumi
   mockReadUsage.mockResolvedValue('denied'); mockRequest.mockResolvedValue(undefined);
   const next = jest.fn();
   await render(<QuestionnairePermission selectionQuestion busy={false} onContinue={next} />);
-  await fireEvent.press(await screen.findByRole('button', { name: 'Allow Usage Access' }));
+  await fireEvent.press(await screen.findByRole('button', { name: 'Choose apps to target' }));
   expect(next).not.toHaveBeenCalled(); expect(mockPick).not.toHaveBeenCalled();
-  expect(screen.queryByRole('button', { name: 'Next →' })).toBeNull();
+  expect(screen.getByRole('button', { name: 'Next →' })).toBeDisabled();
   mockReadUsage.mockResolvedValue('authorized');
   await act(async () => subscription.mock.calls.find(([event]) => event === 'change')?.[1]('active'));
   await screen.findByRole('button', { name: 'Choose apps to target' });

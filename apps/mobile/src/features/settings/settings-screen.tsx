@@ -30,6 +30,7 @@ export type SettingsScreenProps = {
   /** Account-scoped live consumer supplied by the host; previews use the neutral header. */
   accountContent?: ReactNode;
   deviceContent?: ReactNode;
+  toneContent?: ReactNode;
   accountActions?: ReactNode;
   inlineEditor?: { field: 'gender' | 'days' | 'hours' | 'sessions'; content: ReactNode };
 };
@@ -44,6 +45,7 @@ export function SettingsScreen({
   profileForm,
   accountContent,
   deviceContent,
+  toneContent,
   accountActions,
   inlineEditor,
 }: SettingsScreenProps) {
@@ -132,6 +134,7 @@ export function SettingsScreen({
             onPress={onEdit.apps} onView={onOpen.apps}
           />
           {deviceContent}
+          {toneContent}
           <SettingsRow
             label="Redirect Me To"
             value={model.activities}
@@ -142,7 +145,7 @@ export function SettingsScreen({
         </Section>
         <Section title={planContent ? "My Plan" : planDraftOnly ? "Plan draft — not active" : "My Plan"}>
           <SettingsRow
-            label={planDraftOnly ? "Draft days" : "Active Days"}
+            label="Active Days"
             value={model.days}
             icon={settingsAssets.calendar}
             iconID="settings-calendar"
@@ -150,7 +153,7 @@ export function SettingsScreen({
           inlineEditor={inlineEditor?.field === 'days' ? inlineEditor.content : undefined}
           />
           <SettingsRow
-            label={planDraftOnly ? "Draft hours" : "Active Hours"}
+            label="Active Hours"
             value={model.hours}
             icon={settingsAssets.clock}
             iconID="settings-clock"
@@ -159,7 +162,7 @@ export function SettingsScreen({
           />
           <View style={styles.sessionGroup}>
             <SettingsRow
-              label={planDraftOnly ? "Draft sessions" : "App Sessions"}
+              label="App Sessions"
               value={model.sessions}
               icon={settingsAssets.timer}
               iconID="settings-timer"

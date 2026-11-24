@@ -43,7 +43,7 @@ test('missing module never claims an active schedule or calls Auth', async () =>
 test('existing inline editors stage drafts; explicit Preview/Apply updates real Home facts; Stop retains settings', async () => {
   const f = fixture(); await render(<WeeklyPlanJourney owner={A} port={f.port} initialPlan={saved} />);
   await screen.findByText('No weekly plan applied'); await press('Manage app schedule');
-  await press(/^Draft days\./); await fireEvent.press(screen.getByRole('checkbox', { name: 'Thursday' })); await press('Use days');
+  await press(/^Active Days\./); await fireEvent.press(screen.getByRole('checkbox', { name: 'Thursday' })); await press('Use days');
   expect(f.port.scheduleApply).not.toHaveBeenCalled(); await press('Preview plan');
   await screen.findByText('Preview only. Your device schedule is unchanged.'); expect(f.port.scheduleApply).not.toHaveBeenCalled();
   await press('Apply plan'); await screen.findByText('Plan applied to this device.');
@@ -55,10 +55,10 @@ test('existing inline editors stage drafts; explicit Preview/Apply updates real 
 });
 test('unfinished editor navigation needs a discard choice; staged drafts survive Home/Settings navigation', async () => {
   const f = fixture(); await render(<WeeklyPlanJourney owner={A} port={f.port} initialPlan={saved} />); await screen.findByText('No weekly plan applied');
-  await press('Settings'); await press(/^Draft days\./); await fireEvent.press(screen.getByRole('checkbox', { name: 'Thursday' }));
+  await press('Settings'); await press(/^Active Days\./); await fireEvent.press(screen.getByRole('checkbox', { name: 'Thursday' }));
   await press('Home'); expect(screen.getByText('Discard unfinished editor changes?')).toBeVisible(); await press('Keep editing');
   await press('Use days'); await press('Home'); expect(screen.getByText('You have draft changes that are not applied.')).toBeVisible();
-  await press('Settings'); expect(screen.getByRole('button', { name: /^Draft days\. Wednesday, Thursday/ })).toBeVisible();
+  await press('Settings'); expect(screen.getByRole('button', { name: /^Active Days\. Wednesday, Thursday/ })).toBeVisible();
   expect(f.port.scheduleApply).not.toHaveBeenCalled();
 });
 test('uncertain committed Apply is never retried; explicit read recovers and Home masks old positive claims', async () => {
@@ -71,7 +71,7 @@ test('uncertain committed Apply is never retried; explicit read recovers and Hom
 });
 test('foreground revocation masks active status and restores a pending raw hours edit without overwriting', async () => {
   const f = fixture(true); await render(<WeeklyPlanJourney owner={A} port={f.port} />); await screen.findByText('App interventions active');
-  await press('Settings'); await press(/^Draft hours\./); await fireEvent.changeText(screen.getByLabelText('Plan time zone'), 'America/New_York');
+  await press('Settings'); await press(/^Active Hours\./); await fireEvent.changeText(screen.getByLabelText('Plan time zone'), 'America/New_York');
   await state('background'); expect(screen.queryByText('App interventions active')).toBeNull(); f.permission(false); await state('active');
   await screen.findByText('App access needed'); expect(screen.getByLabelText('Plan time zone')).toHaveDisplayValue('America/New_York');
   expect(f.port.scheduleApply).not.toHaveBeenCalled();
@@ -108,7 +108,7 @@ test('foreground return during an outstanding read queues a fresh read rather th
 test('Close confirms abandoning a staged draft without canceling an installed schedule', async () => {
   const f = fixture(true), exit = jest.fn();
   await render(<WeeklyPlanJourney owner={A} port={f.port} onExit={exit} />); await screen.findByText('App interventions active');
-  await press('Settings'); await press(/^Draft days\./); await fireEvent.press(screen.getByRole('checkbox', { name: 'Thursday' })); await press('Use days');
+  await press('Settings'); await press(/^Active Days\./); await fireEvent.press(screen.getByRole('checkbox', { name: 'Thursday' })); await press('Use days');
   await press('Close app preview'); expect(exit).not.toHaveBeenCalled();
   await press('Leave without applying'); expect(exit).toHaveBeenCalledTimes(1); expect(f.port.interventionCancel).not.toHaveBeenCalled();
 });

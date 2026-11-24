@@ -150,6 +150,7 @@ def test_owned_metadata_and_new_migration_preserve_the_original_profile_history(
         "user_id",
         "activities",
         "plan_draft",
+        "personalization",
         "revision",
         "created_at",
         "updated_at",
@@ -166,7 +167,15 @@ def test_owned_metadata_and_new_migration_preserve_the_original_profile_history(
     spec = importlib.util.spec_from_file_location("frozen_settings_migration", path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
-    assert {k: v for k, v in module.CHECKS.items() if k != "plan_draft_shape"} == {k: v for k, v in SETTINGS_CHECKS.items() if k != "plan_draft_shape"}
+    assert {
+        k: v
+        for k, v in module.CHECKS.items()
+        if k not in {"plan_draft_shape", "personalization_shape"}
+    } == {
+        k: v
+        for k, v in SETTINGS_CHECKS.items()
+        if k not in {"plan_draft_shape", "personalization_shape"}
+    }
     assert "budget_scope" not in module.CHECKS["plan_draft_shape"]
     assert "all_selected_apps" in SETTINGS_CHECKS["plan_draft_shape"]
     assert history.get_revision("20261124_0008").down_revision == "20261114_0007"
@@ -185,6 +194,41 @@ def test_settings_endpoints_publish_the_storage_contract_without_auth_bypass():
 def test_shared_plan_scope_roundtrips_without_changing_legacy_wire():
     legacy = dict(weekdays=[0], hours=None, timezone_id="UTC", session_count=5, session_minutes=5)
     assert "budget_scope" not in PlanDraft(**legacy).model_dump(mode="json")
-    assert PlanDraft(**legacy, budget_scope="all_selected_apps").model_dump(mode="json")["budget_scope"] == "all_selected_apps"
+    assert (
+        PlanDraft(**legacy, budget_scope="all_selected_apps").model_dump(mode="json")[
+            "budget_scope"
+        ]
+        == "all_selected_apps"
+    )
     with pytest.raises(ValidationError):
         PlanDraft(**legacy, budget_scope="per_app")
+
+
+@pytest.mark.parametrize("age", [18, 25, 80])
+def test_personalization_validates_explicit_age_gender_and_tone(age):
+    value = SettingsPatch.model_validate(
+        dict(
+            expected_revision=0, personalization=dict(age=age, gender="Other", nudge_tone="Playful")
+        )
+    )
+    assert value.personalization.age == age
+
+
+@pytest.mark.parametrize(
+    "patch",
+    [
+        dict(age=17),
+        dict(age=81),
+        dict(age=True),
+        dict(gender="Prefer not to say"),
+        dict(nudge_tone="unknown"),
+    ],
+)
+def test_personalization_rejects_ineligible_and_unknown_values(patch):
+    with pytest.raises(ValidationError):
+        SettingsPatch.model_validate(
+            dict(
+                expected_revision=0,
+                personalization=dict(age=25, gender="Other", nudge_tone="Supportive") | patch,
+            )
+        )

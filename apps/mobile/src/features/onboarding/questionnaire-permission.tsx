@@ -68,10 +68,31 @@ export function QuestionnairePermission({ busy: saving, onContinue, onBack, sele
     finally { lock.current = false; if (active.current) setBusy(false); }
   }
   async function chooseApps() {
-    if (!device || !state?.authorized || (Platform.OS === 'ios' && state.review?.status !== 'owned') || lock.current || saving) return;
+    if (!device || lock.current || saving || AppState.currentState !== 'active' || (!selectionQuestion && (!state?.authorized || (Platform.OS === 'ios' && state.review?.status !== 'owned')))) return;
     lock.current = true; setBusy(true); setSelectionError(false); setSelectionReviewed(false);
     let draftID: string | undefined;
     try {
+      if (selectionQuestion) {
+        // The explicit target-selection action prepares this account; never claim on mount.
+        if (Platform.OS === 'ios') {
+          if (!installation || !iosDevice) throw new Error('Native setup unavailable');
+          const review = await installation.read();
+          if (!active.current) return;
+          if (review.status !== 'owned') await installation.claim(review.revision);
+          if (!active.current || (await installation.read()).status !== 'owned') throw new Error('Account setup unconfirmed');
+        }
+        const before = await device.readStatus();
+        if (!active.current) return;
+        if (before.authorization !== 'authorized') {
+          if (Platform.OS === 'ios') await iosDevice!.requestAuthorization();
+          else if (deviceProtectionIntegration.availability === 'connected') await deviceProtectionIntegration.service.requestAuthorization();
+          else throw new Error('Native access unavailable');
+        }
+        if (!active.current) return;
+        const status = await device.readStatus();
+        await refresh();
+        if (!active.current || status.authorization !== 'authorized') return;
+      }
       const draft = decodeSelectionDraft(await device.selection.selectionBegin(device.owner));
       draftID = draft.draftId;
       if (!active.current) return;
@@ -116,6 +137,20 @@ export function QuestionnairePermission({ busy: saving, onContinue, onBack, sele
   const targetsReady = selectionReviewed || (reviewSavedSelection && !!state?.count);
   const supported = Platform.OS === 'ios' ? !!device && !!installation : !!device && deviceProtectionIntegration.availability === 'connected';
   const needsReview = Platform.OS === 'ios' && state?.review && state.review.status !== 'owned';
+  if (selectionQuestion) return <View style={styles.selectionStep}>
+    <Text style={styles.intro}>Allow {Platform.OS === 'ios' ? 'Screen Time' : 'Usage'} access when asked, then choose the apps you want to spend less time on.</Text>
+    {needsReview ? <Text style={styles.footnote}>Choosing apps replaces the previous Hoosh setup on this device. Account history stays private.</Text> : null}
+    <Button label={targetsReady ? 'Change targeted apps' : 'Choose apps to target'} busy={busy} disabled={saving || !supported || !state}
+      onPress={() => { void chooseApps(); }} />
+    {targetsReady ? <Text accessibilityLiveRegion="polite" style={styles.footnote}>{state?.count} apps selected to target on this device.</Text> : null}
+    {(error || selectionError) ? <Text accessibilityRole="alert" style={styles.error}>Allow access and choose at least one app to continue. Your selection has not been confirmed.</Text> : null}
+    {!supported ? <Text accessibilityRole="alert" style={styles.error}>App selection is unavailable in this build.</Text> : null}
+    <View style={styles.selectionActions}>
+      <Button label="Next →" busy={saving} disabled={busy || !state?.authorized || !targetsReady || !state.count}
+        onPress={() => onContinue(false, state?.revision, state?.count)} />
+      {onBack ? <Button label="Back" variant="secondary" disabled={saving || busy} onPress={onBack} /> : null}
+    </View>
+  </View>;
   return <>
       <Image source={require('../../../assets/onboarding/permission/glow.svg')} contentFit="contain" style={styles.glow} accessible={false} />
     <Text style={styles.intro}>{selectionQuestion ? 'Choose the apps you want to spend less time on. These will be the target apps on this device.' : 'A little awareness goes a long way. Let’s help you take back your time.'}</Text>
@@ -154,6 +189,8 @@ export function QuestionnairePermission({ busy: saving, onContinue, onBack, sele
   </>;
 }
 const styles = StyleSheet.create({
+  selectionStep: { flex: 1, gap: 24 },
+  selectionActions: { borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.08)', paddingTop: 16, gap: 16 },
   actions: { flexDirection: 'row', gap: 18 }, action: { flex: 1 },
   footer: { borderTopWidth: 1, borderTopColor: 'rgba(255,255,255,0.08)', marginTop: 26, paddingTop: 12, gap: 16 },
   card: { marginTop: 30, minHeight: 360, borderRadius: 14, borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)', backgroundColor: colors.darkCard, paddingVertical: 24, paddingHorizontal: 20, alignItems: 'center', gap: 20, overflow: 'hidden' },

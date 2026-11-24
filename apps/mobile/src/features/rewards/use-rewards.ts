@@ -54,7 +54,7 @@ export function useRewards() {
     },
     onSuccess: (result) => {
       accept(result.wallet); rememberPending(null);
-      setMessage(`Dino gained ${result.health_added} health. 20 credits used.`); busy.current = false;
+      setMessage(`Dino gained ${result.health_added} health. ${result.charged_credits} credits used.`); busy.current = false;
     },
     onError: (error) => {
       busy.current = false;
@@ -68,7 +68,7 @@ export function useRewards() {
     execute: (id: string, op) => readFeedReceipt(id, op),
     onSuccess: (result) => {
       accept(result.wallet); rememberPending(null); busy.current = false;
-      setMessage(result.recorded ? `Last Feed confirmed. Dino gained ${result.health_added} health; 20 credits used.` : 'No Feed was recorded. Review the latest balance before choosing Feed again.');
+      setMessage(result.recorded ? `Last Feed confirmed. Dino gained ${result.health_added} health.` : 'No Feed was recorded. Review the latest balance before choosing Feed again.');
     },
     onError: () => { busy.current = false; setMessage('Could not check the last Feed. Connect and try checking again.'); },
   });
@@ -84,7 +84,7 @@ export function useRewards() {
     canCheck: !!pending && !feeding && availability === 'ready' && online,
     canFeed: !!wallet && !feeding && !pending && wallet.balance >= wallet.feed_cost && wallet.health < 100 && wallet.revision < 2147483647,
     feed() {
-      if (!wallet || feeding || pending || busy.current || wallet.balance < 20 || wallet.health >= 100) return;
+      if (!wallet || feeding || pending || busy.current || wallet.balance < wallet.feed_cost || wallet.health >= 100) return;
       busy.current = true; const id = uuid.v4(); rememberPending(id); setMessage('');
       feed.submit({ id, revision: wallet.revision });
     },

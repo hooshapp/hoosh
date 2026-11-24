@@ -9,6 +9,7 @@ export type IOSSelectionDevice = {
   readSelection(): Promise<SavedSelectionSummary>;
   readStatus(): Promise<Extract<ProtectionRead, { phase: 'ready' }>>;
   reviewUsageBaseline?(): Promise<unknown>;
+  setNudgeTone?(tone: string): Promise<unknown>;
   budgetCapabilities?(): Promise<unknown>;
   requestAuthorization(): Promise<void>;
   stop(): Promise<void>;

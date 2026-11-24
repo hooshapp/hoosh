@@ -37,6 +37,19 @@ public class HooshScreenTimeModule: Module {
   }
   public func definition() -> ModuleDefinition {
     Name("HooshScreenTime")
+    AsyncFunction("setNudgeTone") { (namespace: String, userID: String, raw: String, tone: String) throws -> [String: Bool] in
+      let (owner, token) = try self.owner(namespace, userID, raw)
+      guard ["Supportive", "Direct", "Playful", "Intense"].contains(tone) else { throw ProtectionStoreError.invalidRecord }
+      try self.leases.withLease(owner, token: token) {
+        let store = try SharedProtectionStore.appGroup()
+        let state = try store.read()
+        try store.update(expectedRevision: state?.revision ?? 0) { next in
+          if let index = next.owners.firstIndex(where: { $0.owner == owner }) { next.owners[index].nudgeTone = tone }
+          else { var record = ProtectionOwnerRecord(owner: owner); record.nudgeTone = tone; next.owners.append(record) }
+        }
+      }
+      return ["saved": true]
+    }
     AsyncFunction("budgetCapabilities") { ["scope": "all_selected_apps", "policy": "selected_apps_shared_v1"] }
     AsyncFunction("reviewUsageBaseline") { (namespace: String, userID: String, raw: String) async throws -> [String: Any] in
       let (owner, token) = try self.owner(namespace, userID, raw)

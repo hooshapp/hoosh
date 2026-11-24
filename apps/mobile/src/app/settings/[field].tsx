@@ -1,3 +1,4 @@
+import { AgePreferenceScreen } from '@/features/settings/age-preference-screen';
 import {
   DaysEditor,
   HoursEditor,
@@ -28,6 +29,7 @@ export default function PreferenceDetail() {
   const account = useOptionalAccountData();
   const native = useNativeOwner();
   const weekly = useAccountWeeklyPlan();
+  if (field === 'age' && account?.scope) return <AgePreferenceScreen onBack={() => { if (router.canGoBack()) router.back(); else router.replace('/(tabs)/settings'); }} />;
   if (field === 'apps' && native)
     return (
       <NativeAppsEditor

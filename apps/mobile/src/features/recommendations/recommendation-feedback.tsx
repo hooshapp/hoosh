@@ -32,13 +32,13 @@ export function RecommendationFeedback({
           onPress={() => onOpen(r.data!.accepted_quest_id!)}
         />
       ) : null}
-      <Button
+      {r.message || r.recommendation.state === 'error' || r.notice.includes('expired') ? <Button
         label="Check latest suggestion"
         variant="secondary"
         disabled={!r.canRefresh}
         busy={r.refreshing}
         onPress={r.refresh}
-      />
+      /> : null}
     </View>
   );
 }

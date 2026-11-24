@@ -1,0 +1,63 @@
+{
+  "fileKey": "ukmD2ZidJ9UR2XxUkvdPoJ",
+  "frames": [
+    "22:4",
+    "88:96"
+  ],
+  "assets": [
+    {
+      "file": "health-needs-care.svg",
+      "node": "88:68",
+      "sha256": "945201d706e61bfbd17a95c08fcd08c1e79d392d30fa448e200c0b33f7f1b15f",
+      "sizeBytes": 1710,
+      "width": "110",
+      "height": "110",
+      "viewBox": "0 0 110 110"
+    },
+    {
+      "file": "health-feeling-low.svg",
+      "node": "88:77",
+      "sha256": "a8c33c95dea23ecb930903be09928a13abe2607cbe883e5e6b1d262e2e252135",
+      "sizeBytes": 1626,
+      "width": "110",
+      "height": "110",
+      "viewBox": "0 0 110 110"
+    },
+    {
+      "file": "health-doing-okay.svg",
+      "node": "88:86",
+      "sha256": "f8e3d8db47b359c5e53d312844c0ce58b0a11ef67c3b2ceb71ccd74293590d09",
+      "sizeBytes": 1808,
+      "width": "110",
+      "height": "110",
+      "viewBox": "0 0 110 110"
+    },
+    {
+      "file": "health-happy.svg",
+      "node": "84:77",
+      "sha256": "4be9d424f346cf80c30eec855b1bdbbff53089cc8c2562b63df1b55261231cdd",
+      "sizeBytes": 1656,
+      "width": "110",
+      "height": "110",
+      "viewBox": "0 0 110 110"
+    },
+    {
+      "file": "heart.svg",
+      "node": "84:145",
+      "sha256": "7405a9a89f1859e3843afea58c812cf496293e9aa83b9146f0e292e8689e67e9",
+      "sizeBytes": 1290,
+      "width": "12",
+      "height": "12",
+      "viewBox": "0 0 12 12"
+    },
+    {
+      "file": "streak-dots.svg",
+      "node": "84:125",
+      "sha256": "8b3ca7787538f6bbc522fa9b76d23ad26aa251f1d4254b9c98093b5e4774847c",
+      "sizeBytes": 615,
+      "width": "86",
+      "height": "8",
+      "viewBox": "0 0 86 8"
+    }
+  ]
+}

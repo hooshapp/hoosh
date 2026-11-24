@@ -15,8 +15,8 @@ from pydantic import (
     StrictInt,
     StrictStr,
     field_validator,
-    model_validator,
     model_serializer,
+    model_validator,
 )
 from pydantic_core import PydanticCustomError
 
@@ -118,6 +118,12 @@ class PlanDraft(WireModel):
         return value
 
 
+class Personalization(WireModel):
+    age: StrictInt | None = Field(ge=18, le=80)
+    gender: Literal["Male", "Female", "Other"] | None
+    nudge_tone: Literal["Supportive", "Direct", "Playful", "Intense"] = "Supportive"
+
+
 def _patch_schema(schema: dict) -> None:
     # Typed complete branches preserve at-least-one-section in JSON Schema AND
     # generated clients; required-only anyOf branches degrade to unknown in codegen.
@@ -131,7 +137,7 @@ def _patch_schema(schema: dict) -> None:
             "required": ["expected_revision", section],
             "additionalProperties": False,
         }
-        for section in ("activities", "plan_draft")
+        for section in ("activities", "plan_draft", "personalization")
     ]
 
 
@@ -144,10 +150,11 @@ class SettingsPatch(WireModel):
     # model_fields_set/exclude_unset distinguish omission from an explicit null.
     activities: ActivityPreferences | None = None
     plan_draft: PlanDraft | None = None
+    personalization: Personalization | None = None
 
     @model_validator(mode="after")
     def section_required(self):
-        if not self.model_fields_set.intersection({"activities", "plan_draft"}):
+        if not self.model_fields_set.intersection({"activities", "plan_draft", "personalization"}):
             raise PydanticCustomError("required", "Supply a settings section")
         return self
 
@@ -157,8 +164,16 @@ class SettingsView(WireModel):
     revision: StrictInt = Field(ge=1, le=MAX_REVISION)
     activities: ActivityPreferences
     plan_draft: PlanDraft | None
+    personalization: Personalization | None = None
     created_at: AwareDatetime = Field(json_schema_extra={"pattern": "Z$"})
     updated_at: AwareDatetime = Field(json_schema_extra={"pattern": "Z$"})
+
+    @model_serializer(mode="wrap")
+    def serialize_personalization(self, handler):
+        value = handler(self)
+        if value.get("personalization") is None:
+            value.pop("personalization", None)
+        return value
 
     @field_validator("created_at", "updated_at")
     @classmethod

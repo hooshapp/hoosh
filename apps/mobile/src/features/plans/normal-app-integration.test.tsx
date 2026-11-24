@@ -239,13 +239,13 @@ function fixture({
         revision: 1,
         balance: account.user_id === A ? 50 : 0,
         health: 50,
-        artwork: 'doingOkay',
-        feed_cost: 20,
+        artwork: 'feelingLow',
+        feed_cost: 10,
         feed_health: 20,
         streak_days: null,
         recent_week_complete: false,
         observed_at: new Date().toISOString(),
-        policy_version: 1,
+        policy_version: 2,
       };
     else if (path === '/v1/history')
       result = { ...historyFixture, user_id: account.user_id };
@@ -459,7 +459,7 @@ afterEach(() => {
 test('normal Root verifies ownership, exposes the saved plan in Settings and reuses one native controller across tabs', async () => {
   const f = fixture();
   await renderRouter(routes);
-  await pressWhenReady('Manage app schedule');
+  await fireEvent.press(await screen.findByRole('tab', { name: 'Settings' }));
   expect(screen).toHavePathname('/settings');
   await screen.findByRole('button', {
     name: /Distracting Apps\. 1 apps selected on this device/,
@@ -481,8 +481,9 @@ test('normal Root verifies ownership, exposes the saved plan in Settings and reu
     SAVED,
   );
   await fireEvent.press(screen.getByRole('tab', { name: 'Home' }));
-  await screen.findByText('App interventions active');
-  await press('Manage app schedule');
+  await fireEvent.press(await screen.findByRole('tab', { name: 'Settings' }));
+    await screen.findByText('App interventions active');
+  await fireEvent.press(await screen.findByRole('tab', { name: 'Settings' }));
   await press('Stop weekly plan');
   await screen.findByText(
     'Schedule stopped. Settings and allowance history retained.',
@@ -492,6 +493,7 @@ test('normal Root verifies ownership, exposes the saved plan in Settings and reu
 });
 async function pressWhenReady(label: string) {
   await screen.findByRole('button', { name: label });
+  await waitFor(() => expect(screen.getByRole('button', { name: label })).toBeEnabled());
   await press(label);
 }
 
@@ -513,7 +515,7 @@ test('an unavailable API identity keeps the signed-in app from binding native st
   await waitFor(() =>
     expect(f.request).toHaveBeenCalledWith('/v1/me', expect.anything()),
   );
-  expect(screen.getByRole('button', { name: 'Sign out of this device' })).toBeTruthy();
+  expect(await screen.findByRole('button', { name: 'Sign out of this device' })).toBeTruthy();
   expect(screen.queryByRole('button', { name: 'Preview saved plan' })).toBeNull();
   expect(screen).toHavePathname('/settings');
   expect(screen.queryByText('Welcome back')).toBeNull();
@@ -526,14 +528,13 @@ test('saved editor changes update account draft only; explicit Apply then uses t
   const f = fixture();
   await renderRouter(routes, { initialUrl: '/settings' });
   await screen.findByText('No weekly plan applied');
-  await press(/^Draft days\./);
+  await press(/^Active Days\./);
   await screen.findByRole('checkbox', { name: 'Thursday' });
   await fireEvent.press(screen.getByRole('checkbox', { name: 'Thursday' }));
   await press('Save days');
-  await screen.findByText('Draft saved.');
-  expect(f.settings.get(A)?.settings?.plan_draft?.weekdays).toEqual([0, 2, 3]);
+  await waitFor(() => expect(f.settings.get(A)?.settings?.plan_draft?.weekdays).toEqual([0, 2, 3]));
   expect(f.port.scheduleApply).not.toHaveBeenCalled();
-  await act(() => router.back());
+  expect(screen).toHavePathname('/settings');
   await screen.findByRole('button', { name: 'Apply saved plan' });
   await waitFor(() =>
     expect(
@@ -621,20 +622,15 @@ test('account replacement during an opened selection fences the prior Apply and 
   await waitFor(() => expect(f.port.selectionBegin).toHaveBeenCalledTimes(1));
   await act(() => f.switch());
   await act(release);
-  await waitFor(() => expect(screen).toHavePathname('/'));
+  await screen.findByRole('header', { name: 'What’s your gender?' });
+  expect(screen).toHavePathname('/welcome');
   expect(router.canGoBack()).toBe(false);
-  await fireEvent.press(screen.getByRole('tab', { name: 'Settings' }));
-  await screen.findByText(
-    'Save days, hours, a time zone and session allowances before applying.',
-  );
   expect(f.port.scheduleApply).not.toHaveBeenCalled();
   expect(f.port.interventionEndOwner).toHaveBeenCalledWith(
     `fixture:${A}`,
     false,
   );
-  expect(
-    screen.getByRole('button', { name: 'Apply saved plan' }),
-  ).toBeDisabled();
+  expect(screen.queryByRole('button', { name: 'Apply saved plan' })).toBeNull();
 });
 
 test('missing weekly methods preserve native quest support but disable weekly activation', async () => {
@@ -656,7 +652,7 @@ test('normal account Home composes actual reward/history/recommendation consumer
   );
   await screen.findByText('Read for a little while');
   expect(screen.getByLabelText('Dino health 50%')).toBeVisible();
-  await pressWhenReady('Manage app schedule');
+  await fireEvent.press(await screen.findByRole('tab', { name: 'Settings' }));
   await fireEvent.press(screen.getByRole('tab', { name: 'History' }));
   await screen.findByText('Your stats');
 });
@@ -900,11 +896,10 @@ test('a delayed Settings response from account A cannot populate account B', asy
   await renderRouter(routes, { initialUrl: '/settings' });
   await waitFor(() => expect(f.request).toHaveBeenCalledWith('/v1/settings', expect.anything()));
   await act(() => { f.switch(); });
-  await waitFor(() => expect(screen).toHavePathname('/'));
-  await fireEvent.press(screen.getByRole('tab', { name: 'Settings' }));
-  await screen.findByText('Save days, hours, a time zone and session allowances before applying.');
+  await screen.findByRole('header', { name: 'What’s your gender?' });
   await act(release);
-  expect(screen.getByRole('button', { name: 'Apply saved plan' })).toBeDisabled();
+  expect(screen).toHavePathname('/welcome');
+  expect(screen.queryByRole('button', { name: 'Apply saved plan' })).toBeNull();
   expect(f.port.scheduleApply).not.toHaveBeenCalled();
 });
 
@@ -915,7 +910,8 @@ test('setup reviews existing settings without replacing them and records local c
   try {
     await renderRouter(routes, { initialUrl: '/settings' });
     await screen.findByRole('button', { name: 'Stop weekly plan' });
-    await fireEvent.press(screen.getByRole('link', { name: 'Set up Hoosh' }));
+    expect(screen.queryByRole('link', { name: 'Set up Hoosh' })).toBeNull();
+    await act(() => router.push('/(onboarding)/welcome'));
     await screen.findByRole('button', { name: 'Review saved settings' });
     await press('Review saved settings');
     await screen.findByText('Reading');
@@ -1291,7 +1287,7 @@ async function openProtectionReview(progress: object = reviewedProtection) {
   await screen.findByRole('header', { name: 'Review device setup' });
 }
 
-test.each([false, true])('normal sign-in through setup and Apply (manual path: %s)', async manual => {
+test.each([false, true])('normal sign-in completes a chosen plan, then applies from Settings (manual path: %s)', async manual => {
   // This fixture supplies the Android package-selection port; native iOS picker has separate flow coverage.
   jest.replaceProperty(Platform, 'OS', 'android');
   const f = fixture({ signedOut: true, settingsMissing: true });
@@ -1341,38 +1337,23 @@ test.each([false, true])('normal sign-in through setup and Apply (manual path: %
     }
     await press(manual ? 'Save my plan' : 'Go with suggestion');
 
-    await screen.findByText('Accessibility access allowed for app protection.');
+    await screen.findByText('You’re all set!');
     const saved = f.settings.get(A)?.settings?.plan_draft;
     expect(saved).toMatchObject({ budget_scope: 'all_selected_apps', session_count: 8, session_minutes: 15 });
     expect(saved?.weekdays).toEqual(manual ? [0, 1, 2, 3, 4, 6] : [0, 1, 2, 3, 4]);
-    await screen.findByText('2 apps saved on this device.');
-    expect(screen.queryByRole('button', { name: 'Review Usage Access' })).toBeNull();
-    await press('Continue to protection review');
-    await screen.findByRole('header', { name: 'Review device setup' });
+    expect(screen.queryByText('Check latest settings')).toBeNull();
     expect(f.port.scheduleApply).not.toHaveBeenCalled();
-    await waitFor(() => expect(screen.getByRole('button', { name: 'Preview schedule' })).toBeEnabled());
-    await press('Preview schedule');
-    await screen.findByRole('header', { name: 'Upcoming times on this device' });
-    expect(f.port.scheduleApply).not.toHaveBeenCalled();
-    await waitFor(() => expect(screen.getByRole('button', { name: 'Apply protection' })).toBeEnabled());
-    await press('Apply protection');
-    await screen.findByText('This device confirmed the applied schedule.');
-    expect(f.port.scheduleApply).toHaveBeenCalledTimes(1);
+    await fireEvent.press(screen.getByRole('button', { name: 'Let’s start →' }));
+    await fireEvent.press(await screen.findByRole('tab', { name: 'Settings' }));
+    await screen.findByText('No weekly plan applied');
+    await pressWhenReady('Apply saved plan');
+    await screen.findByText('Plan applied to this device.');
     expect(f.port.scheduleApply).toHaveBeenCalledWith(`fixture:${A}`, HANDLE, 0, 1, 2, saved);
-
-    // The install remains confirmed if writing the completion marker fails.
-    jest.mocked(AsyncStorage.setItem).mockRejectedValueOnce(new Error('fixture disk failure'));
-    await press('Finish setup');
-    await screen.findByText('Setup progress could not be recorded. Try again.');
-    await press('Finish setup');
-    await fireEvent.press(await screen.findByRole('button', { name: 'Let’s start →' }));
-    await waitFor(() => expect(screen).toHavePathname('/'));
-    await screen.findByText('App interventions active');
     expect(settingsWrites(f)).toHaveLength(1);
     expect(f.port.selectionCommit).toHaveBeenCalledTimes(1);
     expect(f.port.scheduleApply).toHaveBeenCalledTimes(1);
     expect(JSON.parse((await AsyncStorage.getItem(setupKey))!)).toMatchObject({
-      step: 'complete', permissionDeferred: false,
+      step: 'complete', settingsRevision: 1,
     });
   } finally {
     await AsyncStorage.clear();

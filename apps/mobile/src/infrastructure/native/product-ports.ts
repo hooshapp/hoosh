@@ -16,6 +16,7 @@ export type ProductNativePort = Partial<
   SelectionOwnerLifecyclePort &
   InterventionProtectionReadPort & {
     onboardingBaselineRead?(owner: string): Promise<unknown>;
+    setNudgeTone?(owner: string, tone: string): Promise<unknown>;
     budgetCapabilities?(): Promise<unknown>;
     interventionEndOwner(owner: string, erase: boolean): Promise<unknown>;
     interventionClaimOwner(

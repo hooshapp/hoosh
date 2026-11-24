@@ -44,7 +44,7 @@ class RewardWallet(Base):
 class RewardEntry(Base):
     __tablename__ = "reward_entries"
     __table_args__ = (
-        CheckConstraint("amount IN (-20, 0, 5, 20, 30, 50)", name="amount_range"),
+        CheckConstraint("amount IN (-20, -10, 0, 5, 20, 30, 50)", name="amount_range"),
         CheckConstraint("kind IN ('quest', 'feed', 'native')", name="kind_choice"),
         UniqueConstraint("user_id", "installation_id", "sequence", name="uq_reward_delivery"),
         {"schema": "public"},

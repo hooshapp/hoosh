@@ -1,8 +1,8 @@
 import check from '../../assets/icons/home/check.svg';
-import heart from '../../assets/icons/home/heart.svg';
+import heart from '../../assets/dashboard/heart.svg';
 import ellipse from '../../assets/icons/home/saved-time-ellipse.svg';
-import streak from '../../assets/icons/home/streak-dots.svg';
-import happy from '../../assets/mascot/home-dino-happy.svg';
+import streak from '../../assets/dashboard/streak-dots.svg';
+import happy from '../../assets/dashboard/health-happy.svg';
 
 import { mascotAssets } from './mascot-assets';
 

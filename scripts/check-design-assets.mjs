@@ -75,3 +75,15 @@ for (const asset of currentPlan.assets) {
     throw new Error(`Current Figma plan asset changed: ${asset.file}`);
 }
 console.log(`Current Figma plan artwork passed: ${currentPlan.assets.length} unchanged local SVGs.`);
+
+const dashboardRoot = join(assetsRoot, 'dashboard');
+const dashboard = JSON.parse(await readFile(join(dashboardRoot, 'manifest.json'), 'utf8'));
+for (const asset of dashboard.assets) {
+  const bytes = await readFile(join(dashboardRoot, asset.file));
+  if (!bytes.length || bytes.length !== asset.sizeBytes || digest(bytes) !== asset.sha256)
+    throw new Error(`Dashboard Figma asset changed: ${asset.file}`);
+  const root = bytes.toString('utf8').match(/<svg\b[^>]*>/)?.[0];
+  for (const key of ['width', 'height', 'viewBox']) if (!root?.includes(`${key}="${asset[key]}"`))
+    throw new Error(`Dashboard asset bounds changed: ${asset.file}`);
+}
+console.log(`Dashboard artwork passed: ${dashboard.assets.length} exact current Figma SVGs.`);

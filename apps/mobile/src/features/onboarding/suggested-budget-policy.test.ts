@@ -42,8 +42,8 @@ describe('Figma 10769:238 shared starting-budget policy', () => {
 import { suggestFromNative } from './suggested-budget-policy';
 describe('native usage input', () => {
   const raw = { ...baseline(5), state: 'ready', source: 'android_usage_events_v1' };
-  it('uses seven complete days when available', () => {
-    expect(suggestFromNative(raw, expected)).toMatchObject({ state: 'ready', budget: { windowDays: 7, dailyMinutes: 120 } });
+  it('uses yesterday even when seven complete days are available', () => {
+    expect(suggestFromNative(raw, expected)).toMatchObject({ state: 'ready', budget: { windowDays: 1, dailyMinutes: 120 } });
   });
   it('falls back to actual yesterday without zero filling older missing days', () => {
     expect(suggestFromNative({ ...raw, days: raw.days.map((d, i) => i === 0 ? { ...d, coverage: 'missing', usageMs: null } : d) }, expected)).toMatchObject({ state: 'ready', budget: { windowDays: 1, dailyMinutes: 120 } });
@@ -51,8 +51,8 @@ describe('native usage input', () => {
   it('does not fall back to an incomplete yesterday', () => {
     expect(suggestFromNative({ ...raw, days: raw.days.map(d => ({ ...d, coverage: 'missing' })) }, expected).state).toBe('unavailable');
   });
-  it('divides a user-confirmed seven-day total rather than treating it as daily usage', () => {
-    expect(suggestFromNative({ ...expected, state: 'confirmed', source: 'user_confirmed_report', windowDays: 7, totalMinutes: 2100 }, expected)).toMatchObject({ state: 'ready', budget: { source: 'user_confirmed_report', baselineAverageMinutes: 300, dailyMinutes: 120 } });
+  it('rejects a seven-day confirmation under yesterday-only policy', () => {
+    expect(suggestFromNative({ ...expected, state: 'confirmed', source: 'user_confirmed_report', windowDays: 7, totalMinutes: 2100 }, expected)).toMatchObject({ state: 'unavailable' });
   });
   it('rejects stale selections and malformed totals', () => {
     expect(suggestFromNative({ ...raw, selectionRevision: 999 }, expected).state).toBe('unavailable');

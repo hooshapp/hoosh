@@ -30,7 +30,7 @@ test('displays explicit values, original asset bounds, measurement context and s
   expect(screen.getByLabelText('Dino health 42%')).toBeOnTheScreen();
   expect(screen.getByLabelText('Credits: 19')).toBeOnTheScreen();
   expect(screen.getByText('1.5')).toBeVisible();
-  expect(screen.getByText('Test range · Synthetic source · Synthetic coverage')).toBeVisible();
+  expect(screen.getByTestId('home-weekly-card')).toHaveProp('accessibilityHint', 'Test range. Synthetic source. Synthetic coverage');
   expect(screen.getByText('🔥 1 day')).toBeVisible();
   expect(screen.getByTestId('home-dino-artwork', { includeHiddenElements: true })).toHaveStyle({
     width: 110,

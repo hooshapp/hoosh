@@ -17,7 +17,7 @@ class OnboardingBaseline(private val context: Context) {
     val now = System.currentTimeMillis(); val zone = ZoneId.systemDefault()
     val today = Instant.ofEpochMilli(now).atZone(zone).toLocalDate()
     val collector = HistoryCollector(context)
-    val days = (7L downTo 1L).map { offset ->
+    val days = (1L downTo 1L).map { offset ->
       val result = collector.query(today.minusDays(offset), zone, now, selection.apps)
       mapOf("date" to result.day, "usageMs" to result.usage, "coverage" to if (result.coverage == "reported") "reported" else "missing")
     }

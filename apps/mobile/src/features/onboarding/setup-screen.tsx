@@ -22,6 +22,7 @@ import { PlanSummary, SetupDraft } from './setup-draft';
 import { reviewSavedSettings } from './setup-model';
 import { activityPayload, activitySummary } from '../preferences/activity-model';
 import { SetupSettingsReview } from './setup-settings-review';
+import { SetupPlanSave } from './setup-plan-save';
 import { setupRepository } from './progress-storage';
 
 export function SetupScreen() {
@@ -67,7 +68,7 @@ export function SetupScreen() {
     if (writing.current || !repo || !scope || (!verified && progress?.step !== 'questions') || !scope.isCurrent()) return false;
     // The questionnaire already reviewed iPhone permission. Saving preferences
     // completes onboarding; it never installs or activates device protection.
-    if (progress?.step === 'permission' && progress.questionsCompleted && iosDevice) {
+    if (progress?.step === 'permission' && progress.questionsCompleted && (iosDevice || nativeOwner)) {
       progress = { ...progress, step: 'complete' };
     }
     writing.current = true;
@@ -87,6 +88,11 @@ export function SetupScreen() {
       writing.current = false;
       if (scope.isCurrent()) setBusy(false);
     }
+  }
+
+  function leaveSetup() {
+    if (scope?.isCurrent()) scope.client.setQueryData(scope.key('setup-resume-dismissed'), true);
+    router.replace('/(tabs)');
   }
 
   const retry = () => {
@@ -132,7 +138,7 @@ export function SetupScreen() {
   }
 
   if (verified && progress?.step === 'review' && progress.questionsCompleted && (iosDevice || nativeOwner) && progress.settingsRevision === undefined) {
-    return <SetupSettingsReview progress={progress} busy={busy} record={update} autoSave />;
+    return <SetupPlanSave progress={progress} busy={busy} record={update} onEdit={() => { void update({ ...progress, step: 'plan', settingsAttempt: undefined }); }} />;
   }
 
   if (verified && progress && (progress.step === 'preferences' || progress.step === 'plan' ||
@@ -141,7 +147,7 @@ export function SetupScreen() {
       <SetupDraft key={progress.step} progress={progress} busy={busy} failed={failed}
         onDiscard={() => { void update(null); }}
         onSave={next => { void update(next); }}
-        onLeave={() => router.replace('/(tabs)')}
+        onLeave={leaveSetup}
         reviewActions={progress.step === 'review' && (
           <>
             {!progress.settingsAttempt && (
@@ -165,7 +171,7 @@ export function SetupScreen() {
       onManage={() => router.push('/(tabs)/settings')} />;
   }
 
-  if (verified && progress?.step === 'permission' && progress.questionsCompleted && iosDevice) {
+  if (verified && progress?.step === 'permission' && progress.questionsCompleted && (iosDevice || nativeOwner)) {
     return <PlanCompletionScreen hobbies={progress.questions?.hobbies ?? []}
       message="Your preferences are saved. App protection starts only after you apply your plan in Settings."
       onFinish={() => { void update({ ...progress, step: 'complete' }).then(saved => { if (saved) router.replace('/(tabs)'); }); }} />;
@@ -258,7 +264,7 @@ export function SetupScreen() {
       {(status === 'draft' || status === 'ready_to_finish' || status === 'read_failed' || status === 'incompatible') && (
         <Button label="Discard setup progress" variant="secondary" busy={busy} onPress={() => { void update(null); }} />
       )}
-      <Button label="Continue to Home" variant="secondary" onPress={() => router.replace('/(tabs)')} />
+      <Button label="Continue to Home" variant="secondary" onPress={leaveSetup} />
     </Screen>
   );
 }

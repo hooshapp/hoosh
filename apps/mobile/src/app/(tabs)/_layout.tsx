@@ -1,4 +1,5 @@
 import { Tabs } from 'expo-router';
+import { SetupEntryGate } from '@/features/onboarding/setup-resume';
 import { Platform } from 'react-native';
 
 import { FloatingTabBarProvider } from '@/components/navigation/floating-tab-bar-metrics';
@@ -7,7 +8,7 @@ import { MainTabPanel } from '@/components/navigation/main-tab-panel';
 
 export default function TabsLayout() {
   return (
-    <FloatingTabBarProvider>
+    <SetupEntryGate><FloatingTabBarProvider>
       <Tabs
         backBehavior="history"
         tabBar={(props) => <MainTabBar {...props} />}
@@ -25,6 +26,6 @@ export default function TabsLayout() {
         <Tabs.Screen name="history" options={{ title: 'History' }} />
         <Tabs.Screen name="settings" options={{ title: 'Settings' }} />
       </Tabs>
-    </FloatingTabBarProvider>
+    </FloatingTabBarProvider></SetupEntryGate>
   );
 }

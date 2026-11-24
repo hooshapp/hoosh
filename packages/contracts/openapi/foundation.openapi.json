@@ -244,8 +244,11 @@
         "additionalProperties": false,
         "properties": {
           "charged_credits": {
-            "const": 20,
-            "default": 20,
+            "default": 10,
+            "enum": [
+              10,
+              20
+            ],
             "title": "Charged Credits",
             "type": "integer"
           },
@@ -695,6 +698,57 @@
           "email"
         ],
         "title": "MeResponse",
+        "type": "object"
+      },
+      "Personalization": {
+        "additionalProperties": false,
+        "properties": {
+          "age": {
+            "anyOf": [
+              {
+                "maximum": 80.0,
+                "minimum": 18.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Age"
+          },
+          "gender": {
+            "anyOf": [
+              {
+                "enum": [
+                  "Male",
+                  "Female",
+                  "Other"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gender"
+          },
+          "nudge_tone": {
+            "default": "Supportive",
+            "enum": [
+              "Supportive",
+              "Direct",
+              "Playful",
+              "Intense"
+            ],
+            "title": "Nudge Tone",
+            "type": "string"
+          }
+        },
+        "required": [
+          "age",
+          "gender"
+        ],
+        "title": "Personalization",
         "type": "object"
       },
       "PlanDraft": {
@@ -1757,8 +1811,8 @@
             "type": "integer"
           },
           "feed_cost": {
-            "const": 20,
-            "default": 20,
+            "const": 10,
+            "default": 10,
             "title": "Feed Cost",
             "type": "integer"
           },
@@ -1778,8 +1832,8 @@
             "type": "string"
           },
           "policy_version": {
-            "const": 1,
-            "default": 1,
+            "const": 2,
+            "default": 2,
             "title": "Policy Version",
             "type": "integer"
           },
@@ -1842,6 +1896,16 @@
                 "title": "Expected Revision",
                 "type": "integer"
               },
+              "personalization": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/Personalization"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
               "plan_draft": {
                 "anyOf": [
                   {
@@ -1878,6 +1942,16 @@
                 "title": "Expected Revision",
                 "type": "integer"
               },
+              "personalization": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/Personalization"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
               "plan_draft": {
                 "anyOf": [
                   {
@@ -1892,6 +1966,52 @@
             "required": [
               "expected_revision",
               "plan_draft"
+            ],
+            "type": "object"
+          },
+          {
+            "additionalProperties": false,
+            "properties": {
+              "activities": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/ActivityPreferences"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "expected_revision": {
+                "maximum": 2147483646.0,
+                "minimum": 0.0,
+                "title": "Expected Revision",
+                "type": "integer"
+              },
+              "personalization": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/Personalization"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "plan_draft": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/PlanDraft"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              }
+            },
+            "required": [
+              "expected_revision",
+              "personalization"
             ],
             "type": "object"
           }
@@ -1943,6 +2063,16 @@
             "pattern": "Z$",
             "title": "Created At",
             "type": "string"
+          },
+          "personalization": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Personalization"
+              },
+              {
+                "type": "null"
+              }
+            ]
           },
           "plan_draft": {
             "anyOf": [

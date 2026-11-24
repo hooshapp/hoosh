@@ -380,10 +380,10 @@ export interface components {
         FeedResult: {
             /**
              * Charged Credits
-             * @default 20
-             * @constant
+             * @default 10
+             * @enum {integer}
              */
-            charged_credits: 20;
+            charged_credits: 10 | 20;
             /** Health Added */
             health_added: number;
             /**
@@ -557,6 +557,19 @@ export interface components {
              * Format: uuid
              */
             user_id: string;
+        };
+        /** Personalization */
+        Personalization: {
+            /** Age */
+            age: number | null;
+            /** Gender */
+            gender: ("Male" | "Female" | "Other") | null;
+            /**
+             * Nudge Tone
+             * @default Supportive
+             * @enum {string}
+             */
+            nudge_tone: "Supportive" | "Direct" | "Playful" | "Intense";
         };
         /** PlanDraft */
         PlanDraft: {
@@ -978,10 +991,10 @@ export interface components {
             balance: number;
             /**
              * Feed Cost
-             * @default 20
+             * @default 10
              * @constant
              */
-            feed_cost: 20;
+            feed_cost: 10;
             /**
              * Feed Health
              * @default 20
@@ -997,10 +1010,10 @@ export interface components {
             observed_at: string;
             /**
              * Policy Version
-             * @default 1
+             * @default 2
              * @constant
              */
-            policy_version: 1;
+            policy_version: 2;
             /** Recent Week Complete */
             recent_week_complete: boolean;
             /** Revision */
@@ -1018,12 +1031,20 @@ export interface components {
             activities: components["schemas"]["ActivityPreferences"] | null;
             /** Expected Revision */
             expected_revision: number;
+            personalization?: components["schemas"]["Personalization"] | null;
             plan_draft?: components["schemas"]["PlanDraft"] | null;
         } | {
             activities?: components["schemas"]["ActivityPreferences"] | null;
             /** Expected Revision */
             expected_revision: number;
+            personalization?: components["schemas"]["Personalization"] | null;
             plan_draft: components["schemas"]["PlanDraft"] | null;
+        } | {
+            activities?: components["schemas"]["ActivityPreferences"] | null;
+            /** Expected Revision */
+            expected_revision: number;
+            personalization: components["schemas"]["Personalization"] | null;
+            plan_draft?: components["schemas"]["PlanDraft"] | null;
         };
         /** SettingsResponse */
         SettingsResponse: {
@@ -1041,6 +1062,7 @@ export interface components {
              * Format: date-time
              */
             created_at: string;
+            personalization?: components["schemas"]["Personalization"] | null;
             plan_draft: components["schemas"]["PlanDraft"] | null;
             /** Revision */
             revision: number;

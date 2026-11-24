@@ -7,6 +7,7 @@ import type { InstallationReview, NativeOwnerSessionPort } from './native-owner-
 
 type OwnerModule = IOSRuntimeModule & {
   reviewUsageBaseline?(namespace: string, userID: string, token: string): Promise<unknown>;
+  setNudgeTone?(namespace: string, userID: string, token: string, tone: string): Promise<unknown>;
   budgetCapabilities?(): Promise<unknown>;
   schedulePreview(spec: unknown): Promise<unknown>;
   selectionRead(namespace: string, userID: string, token: string): Promise<unknown>;
@@ -68,6 +69,7 @@ export const nativeOwnerSession: NativeOwnerSessionPort | null =
           readSelection: async () => decodeSavedSelection(await module.selectionRead(namespace, userID, token), owner),
           readStatus: async () => decodeIOSDeviceStatus(await module.deviceStatus(namespace, userID, token), owner),
           reviewUsageBaseline: module.reviewUsageBaseline ? () => module.reviewUsageBaseline!(namespace, userID, token) : undefined,
+          setNudgeTone: module.setNudgeTone ? (tone: string) => module.setNudgeTone!(namespace, userID, token, tone) : undefined,
           budgetCapabilities: module.budgetCapabilities ? () => module.budgetCapabilities!() : undefined,
           requestAuthorization: async () => { await module.requestDeviceAuthorization(namespace, userID, token); },
           stop: async () => {

@@ -98,12 +98,6 @@ export function HomeScreen({
             <HomeArtwork asset={homeAssets.streak} testID="home-streak-dots" />
           ) : null}
         </View>
-        {model.weekly.state === 'ready' ? (
-          <Text style={styles.provenance} testID="home-weekly-provenance">
-            {model.weekly.value.rangeLabel} · {model.weekly.value.sourceLabel} ·{' '}
-            {model.weekly.value.coverageLabel}
-          </Text>
-        ) : null}
         {preferences}
         {protectionPlacement === 'bottom' ? protection : null}
       </View>

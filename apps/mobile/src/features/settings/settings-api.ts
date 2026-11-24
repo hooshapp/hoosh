@@ -5,6 +5,7 @@ import type {
   SettingsResponse,
   SettingsSavedResponse,
   SettingsView,
+  Personalization,
 } from '@disconnect/contracts';
 import { utcTimestamp } from '../../infrastructure/api/decoders';
 import { ApiError, isRecord, safeRequestId } from '../../infrastructure/api/errors';
@@ -102,6 +103,12 @@ export function decodePlanDraft(value: unknown): PlanDraft | null {
     ...(value.budget_scope === 'all_selected_apps' ? { budget_scope: value.budget_scope } : {}),
   };
 }
+export function decodePersonalization(value: unknown): Personalization {
+  if (!isRecord(value) || !(value.age === null || integer(value.age, 18, 80)) ||
+    !(value.gender === null || ['Male', 'Female', 'Other'].includes(value.gender as string)) ||
+    !['Supportive', 'Direct', 'Playful', 'Intense'].includes(value.nudge_tone as string)) return invalid();
+  return { age: value.age as number | null, gender: value.gender as Personalization['gender'], nudge_tone: value.nudge_tone as Personalization['nudge_tone'] };
+}
 export function decodeSettingsResponse(
   value: unknown,
   { account }: ResponseContext,
@@ -127,6 +134,7 @@ export function decodeSettingsResponse(
       updated_at: row.updated_at,
       activities: decodeActivityPreferences(row.activities),
       plan_draft: decodePlanDraft(row.plan_draft),
+      ...(row.personalization == null ? {} : { personalization: decodePersonalization(row.personalization) }),
     },
   };
 }

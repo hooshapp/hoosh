@@ -96,3 +96,45 @@ it('reviews saved targets on the later permission page without requiring another
   expect(screen.getByRole('button', { name: 'Continue to my plan' })).toBeEnabled();
   expect(mockPick).not.toHaveBeenCalled();
 });
+
+it('new signup uses one target-selection action without a setup-review page or card', async () => {
+  const alert = jest.spyOn(Alert, 'alert');
+  mockInstallation.read.mockResolvedValue({ status: 'other_owner', revision: 'old-revision' });
+  mockClaim.mockImplementationOnce(async () => {
+    mockInstallation.read.mockResolvedValue({ status: 'owned', revision: 'new-revision' });
+  });
+  mockRequest.mockImplementationOnce(async () => { mockRead.mockResolvedValue({ authorization: 'authorized' }); });
+  const next = jest.fn();
+  await render(<QuestionnairePermission selectionQuestion busy={false} onContinue={next} />);
+  const pick = await screen.findByRole('button', { name: 'Choose apps to target' });
+  expect(screen.queryByText('See app activity to help you stay on track')).toBeNull();
+  expect(screen.queryByRole('button', { name: 'Review existing setup' })).toBeNull();
+  expect(mockClaim).not.toHaveBeenCalled();
+  expect(screen.getByRole('button', { name: 'Next →' })).toBeDisabled();
+  await fireEvent.press(pick);
+  await screen.findByText('2 apps selected to target on this device.');
+  expect(mockClaim).toHaveBeenCalledWith('old-revision');
+  expect(mockRequest).toHaveBeenCalledTimes(1);
+  expect(alert).not.toHaveBeenCalled();
+  await fireEvent.press(screen.getByRole('button', { name: 'Next →' }));
+  expect(next).toHaveBeenCalledWith(false, 3, 2);
+});
+it('new signup cannot proceed if native authorization remains denied', async () => {
+  await render(<QuestionnairePermission selectionQuestion busy={false} onContinue={jest.fn()} />);
+  await fireEvent.press(await screen.findByRole('button', { name: 'Choose apps to target' }));
+  expect(mockRequest).toHaveBeenCalledTimes(1);
+  expect(mockPick).not.toHaveBeenCalled();
+  expect(mockCommit).not.toHaveBeenCalled();
+  expect(screen.getByRole('button', { name: 'Next →' })).toBeDisabled();
+  expect(screen.queryByRole('button', { name: 'Not now' })).toBeNull();
+});
+it('failed device assignment does not open the picker or grant continuation', async () => {
+  mockInstallation.read.mockResolvedValue({ status: 'other_owner', revision: '3' });
+  mockClaim.mockRejectedValueOnce(new Error('device changed'));
+  await render(<QuestionnairePermission selectionQuestion busy={false} onContinue={jest.fn()} />);
+  await fireEvent.press(await screen.findByRole('button', { name: 'Choose apps to target' }));
+  await screen.findByRole('alert');
+  expect(mockRequest).not.toHaveBeenCalled();
+  expect(mockPick).not.toHaveBeenCalled();
+  expect(screen.getByRole('button', { name: 'Next →' })).toBeDisabled();
+});

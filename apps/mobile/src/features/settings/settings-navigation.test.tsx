@@ -2,7 +2,7 @@ import type { AuthSessionPort } from '@disconnect/contracts';
 import { act, fireEvent, screen, userEvent, waitFor } from '@testing-library/react-native';
 import { router, Stack } from 'expo-router';
 import { renderRouter } from 'expo-router/testing-library';
-import HomeRoute from '@/app/(tabs)/index';
+import SettingsRoute from '@/app/(tabs)/settings';
 import PreferenceDetail from '@/app/settings/[field]';
 import { AccountDataProvider } from '@/infrastructure/query/account-data-provider';
 import { createAccountDataController } from '@/infrastructure/query/account-controller';
@@ -67,11 +67,12 @@ async function mount(app: ReturnType<typeof setup>) {
       </AccountDataProvider>
     );
   }
-  await renderRouter({ _layout: Root, index: HomeRoute, 'settings/[field]': PreferenceDetail });
-  await screen.findByRole('button', { name: 'Edit activities' });
+  await renderRouter({ _layout: Root, index: SettingsRoute, 'settings/[field]': PreferenceDetail });
+  await screen.findByRole('button', { name: /^Redirect Me To\./ });
 }
 const press = async (name: string) => {
-  await userEvent.press(screen.getByRole('button', { name }));
+  if (name === 'Edit draft days') { await act(async () => router.push('/settings/days')); return; }
+  await userEvent.press(screen.getByRole('button', { name: name === 'Edit activities' ? /^Redirect Me To\./ : name }));
 };
 
 test.each([

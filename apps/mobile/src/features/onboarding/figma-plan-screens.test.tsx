@@ -73,7 +73,7 @@ it('accepts the displayed suggestion after returning from an edited manual alter
   expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ step: 'review', planDraft }));
 });
 
-it('shows loading then requires usage rather than inventing a personalized suggestion', async () => {
+it('shows loading then the starting suggestion without a usage-report detour', async () => {
   await render(<SetupDraft progress={{ version: 1, step: 'plan', questionsCompleted: true, selectionRevision: 7,
     questions: { index: 4, gender: 'Other', age: 25, apps: [], nativeTargetCount: 2, hobbies: ['Reading'] },
     activities: { selected_activity_ids: ['reading'], custom_text: null } }} busy={false} failed={false}
@@ -81,9 +81,9 @@ it('shows loading then requires usage rather than inventing a personalized sugge
   expect(screen.getByRole('header', { name: 'We are setting up your plan' })).toBeTruthy();
   expect(screen.getByText('5 of 7')).toBeTruthy();
   expect(screen.getByText('2 target apps selected on this device')).toBeTruthy();
-  await waitFor(() => expect(screen.getByText('Your usage, your plan')).toBeTruthy(), { timeout: 9000 });
-  expect(screen.queryByRole('button', { name: 'Go with suggestion' })).toBeNull();
-  expect(screen.getByRole('button', { name: 'Set up on your own' })).toBeTruthy();
+  await waitFor(() => expect(screen.getByRole('button', { name: 'Go with suggestion' })).toBeTruthy(), { timeout: 9000 });
+  expect(screen.queryByText('Your usage, your plan')).toBeNull();
+  expect(screen.getByText(/not based on measured Screen Time/)).toBeTruthy();
 }, 12000);
 
 

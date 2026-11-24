@@ -104,11 +104,11 @@ def view(session: UserSession, now: datetime):
         health=value,
         artwork=(
             "needsCare"
-            if value < 25
+            if value <= 25
             else "feelingLow"
-            if value < 50
+            if value <= 50
             else "doingOkay"
-            if value < 75
+            if value <= 75
             else "happy"
         ),
         streak_days=None if unknown else w.streak_days,
@@ -149,6 +149,7 @@ def feed(session: UserSession, request_id: UUID, body: FeedPut, now: datetime):
             conflict(w.revision)
         return FeedResult(
             request_id=request_id,
+            charged_credits=-old.amount,
             health_added=old.payload["health_added"],
             wallet=view(session, now),
         )
@@ -157,10 +158,10 @@ def feed(session: UserSession, request_id: UUID, body: FeedPut, now: datetime):
     if body.expected_revision != w.revision:
         conflict(w.revision)
     value, ticks = health(w, now)
-    if w.balance < 20 or value == 100:
+    if w.balance < 10 or value == 100:
         conflict(w.revision)
     added = min(20, 100 - value)
-    w.balance -= 20
+    w.balance -= 10
     w.health = value + added
     w.health_at += timedelta(days=ticks)
     bump(w)
@@ -169,7 +170,7 @@ def feed(session: UserSession, request_id: UUID, body: FeedPut, now: datetime):
             user_id=owner,
             source=source,
             kind="feed",
-            amount=-20,
+            amount=-10,
             recorded_at=now,
             payload={"expected_revision": body.expected_revision, "health_added": added},
         )
@@ -253,7 +254,7 @@ def ingest(session: UserSession, body: RewardBatch, now: datetime):
                 w.last_native_at is None
                 or e.occurred_at >= w.last_native_at + timedelta(seconds=60)
             ):
-                amount = {"initial": 5, "expired": 20, "mid_session": 30}[e.context]
+                amount = {"initial": 5, "expired": 20, "mid_session": 20}[e.context]
                 if w.balance > 9007199254740991 - amount:
                     conflict(w.revision)
                 w.last_native_at = e.occurred_at

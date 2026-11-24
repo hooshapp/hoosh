@@ -38,8 +38,11 @@ SETTINGS_CHECKS = {
     f"activities->>'custom_text' = btrim(activities->>'custom_text', {_strip_sql}))",
     "plan_draft_shape": "plan_draft IS NULL OR (jsonb_typeof(plan_draft) = 'object' AND "
     "plan_draft ?& ARRAY['weekdays','hours','timezone_id','session_count','session_minutes'] "
-    "AND plan_draft - ARRAY['weekdays','hours','timezone_id','session_count','session_minutes','budget_scope'] "
-    "= '{}'::jsonb AND (NOT plan_draft ? 'budget_scope' OR (jsonb_typeof(plan_draft->'budget_scope') = 'string' AND plan_draft->>'budget_scope' = 'all_selected_apps')))",
+    "AND plan_draft - ARRAY['weekdays','hours','timezone_id','session_count',"
+    "'session_minutes','budget_scope'] "
+    "= '{}'::jsonb AND (NOT plan_draft ? 'budget_scope' OR (jsonb_typeof(plan"
+    "_draft->'budget_scope') = 'string' AND plan_draft->>'budget_scope' = 'al"
+    "l_selected_apps')))",
     "weekdays_valid": "plan_draft IS NULL OR CASE WHEN "
     "jsonb_typeof(plan_draft->'weekdays') = 'array' THEN "
     "jsonb_array_length(plan_draft->'weekdays') <= 7 AND "
@@ -75,6 +78,24 @@ for _key, _maximum in (("session_count", 1000), ("session_minutes", 1440)):
     )
 
 
+SETTINGS_CHECKS["personalization_shape"] = (
+    "personalization IS NULL OR (jsonb_typeof(personalization) = "
+    "'object' AND personalization ?& "
+    "ARRAY['age','gender','nudge_tone'] AND personalization - "
+    "ARRAY['age','gender','nudge_tone'] = '{}'::jsonb AND "
+    "(personalization->'age' = 'null'::jsonb OR (CASE WHEN "
+    "jsonb_typeof(personalization->'age') = 'number' THEN "
+    "(personalization->>'age')::numeric BETWEEN 18 AND 80 AND "
+    "(personalization->>'age')::numeric = "
+    "trunc((personalization->>'age')::numeric) ELSE false END)) AND "
+    "(personalization->'gender' = 'null'::jsonb OR "
+    "personalization->>'gender' IN ('Male','Female','Other')) AND "
+    "jsonb_typeof(personalization->'nudge_tone') = 'string' AND "
+    "personalization->>'nudge_tone' IN "
+    "('Supportive','Direct','Playful','Intense'))"
+)
+
+
 class UserSettings(Base):
     __tablename__ = "user_settings"
     __table_args__ = (
@@ -90,6 +111,7 @@ class UserSettings(Base):
         nullable=False,
         server_default=text('\'{"selected_activity_ids":[],"custom_text": null}\'::jsonb'),
     )
+    personalization: Mapped[dict | None] = mapped_column(JSONB(none_as_null=True), nullable=True)
     plan_draft: Mapped[dict | None] = mapped_column(JSONB(none_as_null=True), nullable=True)
     revision: Mapped[int] = mapped_column(server_default=text("1"), nullable=False)
     created_at: Mapped[datetime] = mapped_column(

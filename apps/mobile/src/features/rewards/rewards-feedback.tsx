@@ -8,20 +8,9 @@ import type { useRewards } from './use-rewards';
 export function RewardsFeedback({ rewards }: { rewards: ReturnType<typeof useRewards> }) {
   return (
     <>
-      {rewards.wallet ? (
-        <Text style={styles.policy}>
-          Dino starts at 50 health. After your first reward, it loses 5 per day.
-          {' '}Feed restores up to 20 for 20 credits.
-          {rewards.wallet.streak_days === null ? ' Streak coverage is not available yet.' : ''}
-        </Text>
-      ) : (
-        <InlineStatus
-          state={rewards.loading ? 'loading' : 'unavailable'}
-          message={rewards.loading ? 'Checking your rewards…' : rewards.unavailable}
-        />
-      )}
-      {rewards.message ? <Text style={styles.message}>{rewards.message}</Text> : null}
-      {rewards.syncNotice ? <InlineStatus state="unavailable" message={rewards.syncNotice} /> : null}
+      {!rewards.wallet ? <InlineStatus state={rewards.loading ? 'loading' : 'unavailable'}
+        message={rewards.loading ? 'Checking your rewards…' : rewards.unavailable} /> : null}
+      {rewards.message ? <Text accessibilityLiveRegion="polite" role="status" style={styles.message}>{rewards.message}</Text> : null}
       {rewards.pending ? (
         <Button
           label="Check last Feed"
@@ -31,7 +20,7 @@ export function RewardsFeedback({ rewards }: { rewards: ReturnType<typeof useRew
           onPress={rewards.checkFeed}
         />
       ) : null}
-      <Button label="Refresh rewards" busy={rewards.refreshing} onPress={rewards.refresh} />
+      {!rewards.wallet && !rewards.loading ? <Button label="Try rewards again" busy={rewards.refreshing} onPress={rewards.refresh} /> : null}
     </>
   );
 }

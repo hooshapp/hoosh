@@ -417,9 +417,10 @@ test('Settings summaries distinguish accepted partial drafts from missing, activ
     </AccountDataProvider>,
   );
   await screen.findByText('Plan draft — not active');
-  await screen.findByText('Draft: count not set; minutes 20');
+  await screen.findByText('App Sessions');
   expect(screen.queryByText(/min of planned app time each day/)).toBeNull();
-  expect(screen.getByText('Draft: no hours chosen; timezone not set')).toBeVisible();
+  expect(screen.getByText('Active Hours')).toBeVisible();
+  expect(screen.getAllByText('Not set').length).toBeGreaterThanOrEqual(2);
 });
 
 // Account-draft assertions are independent of the secondary disclosure's presentation.

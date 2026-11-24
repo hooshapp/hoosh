@@ -70,10 +70,10 @@ def test_atomic_feed_replay_and_request_payload_reuse(resource, profile_accounts
     with resource.transaction(a) as s:
         before = view(s, NOW)
         result = feed(s, id, FeedPut(expected_revision=before.revision), NOW)
-        assert (result.wallet.balance, result.wallet.health, result.health_added) == (30, 70, 20)
+        assert (result.wallet.balance, result.wallet.health, result.health_added) == (40, 70, 20)
     with resource.transaction(a) as s:
         replay = feed(s, id, FeedPut(expected_revision=before.revision), NOW)
-        assert (replay.wallet.balance, replay.wallet.health) == (30, 70)
+        assert (replay.wallet.balance, replay.wallet.health) == (40, 70)
     with pytest.raises(ApiError):
         with resource.transaction(a) as s:
             feed(s, id, FeedPut(expected_revision=replay.wallet.revision), NOW)
@@ -147,7 +147,7 @@ def test_competing_feed_commands_cannot_double_spend_revision(
     finally:
         concurrent.close()
     with resource.transaction(a) as s:
-        assert view(s, NOW).balance == 30
+        assert view(s, NOW).balance == 40
 
 
 def test_native_batch_replay_cooldown_and_same_encounter(resource, profile_accounts):
@@ -168,7 +168,7 @@ def test_native_batch_replay_cooldown_and_same_encounter(resource, profile_accou
     ]
     with resource.transaction(a) as s:
         result = ingest(s, batch(nexts, installation), NOW + timedelta(seconds=201))
-        assert result.accepted_sequence == 5 and result.wallet.balance == 55
+        assert result.accepted_sequence == 5 and result.wallet.balance == 45
 
 
 def test_bad_sequence_payload_or_clock_rolls_back_whole_batch(resource, profile_accounts):
@@ -300,7 +300,7 @@ def test_real_http_feed_receipt_replay_and_other_account_isolation(
         r = client.put(url, headers=ah, json=body)
         assert r.status_code == 200
         wire_validator("FeedResult").validate(r.json())
-        assert r.json()["wallet"]["balance"] == 30
+        assert r.json()["wallet"]["balance"] == 40
     receipt = client.get(url, headers=ah).json()
     wire_validator("FeedReceipt").validate(receipt)
     assert receipt["recorded"] and receipt["health_added"] == 20
@@ -313,7 +313,7 @@ def test_real_http_feed_receipt_replay_and_other_account_isolation(
         r = client.put("/v1/rewards/events", headers=ah, json=payload)
         assert r.status_code == 200
         wire_validator("RewardBatchResult").validate(r.json())
-        assert r.json()["wallet"]["balance"] == 35
+        assert r.json()["wallet"]["balance"] == 45
     assert resource.engine.pool.checkedout() == 0
 
 

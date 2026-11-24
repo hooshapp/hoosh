@@ -5,8 +5,8 @@ import type { AccountOperation, AccountScope } from '../../infrastructure/query/
 import type { ProductNativePort } from '../../infrastructure/native/product-ports';
 const A = '00000000-0000-4000-8000-000000000001', I = '00000000-0000-4000-8000-000000000002';
 const context = { account: { user_id: A, sessionGeneration: 1 } };
-const wallet = { user_id: A, revision: 3, balance: 50, health: 50, artwork: 'doingOkay', feed_cost: 20, feed_health: 20,
-  streak_days: null, recent_week_complete: false, observed_at: '2026-11-13T12:00:00Z', policy_version: 1 };
+const wallet = { user_id: A, revision: 3, balance: 50, health: 50, artwork: 'feelingLow', feed_cost: 10, feed_health: 20,
+  streak_days: null, recent_week_complete: false, observed_at: '2026-11-13T12:00:00Z', policy_version: 2 };
 const batch = { installation_id: I, timezone_id: 'UTC', discarded: 0, events: [{ event_id: A, sequence: 1, occurred_at: '2026-11-13T12:00:00Z',
   kind: 'quit', day: '2026-11-13', encounter_id: I, context: 'initial', exhausted: null, covered: null }] };
 function operation(response: unknown) {
@@ -17,7 +17,7 @@ describe('verified reward transport', () => {
   it('accepts server health bands and rejects private-account or incoherent data', () => {
     expect(decodeWallet(wallet, context)).toEqual(wallet);
     for (const patch of [{ user_id: I }, { balance: -1 }, { balance: Number.MAX_SAFE_INTEGER + 1 }, { health: 101 }, { artwork: 'happy' },
-      { feed_cost: 0 }, { streak_days: null, recent_week_complete: true }, { observed_at: 'yesterday' }, { policy_version: 2 }]) {
+      { feed_cost: 0 }, { streak_days: null, recent_week_complete: true }, { observed_at: 'yesterday' }, { policy_version: 1 }]) {
       expect(() => decodeWallet({ ...wallet, ...patch }, context)).toThrow();
     }
   });
@@ -75,4 +75,8 @@ describe('native outbox delivery and account fences', () => {
   it('leaves unsupported native builds truthful without blocking server rewards', async () => {
     const s = setupSync(); expect(await syncRewards(s.scope, null)).toBe(false); expect(s.request).not.toHaveBeenCalled();
   });
+});
+
+it.each([[0, 'needsCare'], [25, 'needsCare'], [26, 'feelingLow'], [50, 'feelingLow'], [51, 'doingOkay'], [75, 'doingOkay'], [76, 'happy'], [100, 'happy']])('matches Figma health boundary %s', (health, artwork) => {
+  expect(decodeWallet({ ...wallet, health, artwork }, context).artwork).toBe(artwork);
 });

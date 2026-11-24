@@ -10,12 +10,12 @@ const integer = (v: unknown, min = 0, max = Number.MAX_SAFE_INTEGER): v is numbe
 const keys = (v: Record<string, unknown>, names: string[]) => Object.keys(v).sort().join() === names.sort().join();
 export function decodeWallet(v: unknown, context: ResponseContext): RewardView {
   if (!isRecord(v) || !context.account || v.user_id !== context.account.user_id || !integer(v.revision, 0, 2147483647) ||
-      !integer(v.balance) || !integer(v.health, 0, 100) || v.policy_version !== 1 || v.feed_cost !== 20 || v.feed_health !== 20 ||
+      !integer(v.balance) || !integer(v.health, 0, 100) || v.policy_version !== 2 || v.feed_cost !== 10 || v.feed_health !== 20 ||
       !(v.streak_days === null || integer(v.streak_days)) || typeof v.recent_week_complete !== 'boolean' || !utcTimestamp(v.observed_at)) return invalid();
-  const artwork = v.health < 25 ? 'needsCare' : v.health < 50 ? 'feelingLow' : v.health < 75 ? 'doingOkay' : 'happy';
+  const artwork = v.health <= 25 ? 'needsCare' : v.health <= 50 ? 'feelingLow' : v.health <= 75 ? 'doingOkay' : 'happy';
   if (v.artwork !== artwork || (v.recent_week_complete && (v.streak_days === null || (v.streak_days as number) < 7))) return invalid();
   return { user_id: v.user_id as string, revision: v.revision, balance: v.balance, health: v.health, artwork,
-    policy_version: 1, feed_cost: 20, feed_health: 20, streak_days: v.streak_days as number | null,
+    policy_version: 2, feed_cost: 10, feed_health: 20, streak_days: v.streak_days as number | null,
     recent_week_complete: v.recent_week_complete, observed_at: v.observed_at };
 }
 /** Validate the complete content-free native envelope before sending any evidence. */
@@ -54,8 +54,8 @@ export function ingestRewards(body: RewardBatch, { api, signal }: AccountOperati
 export function feedDino(id: string, revision: number, { api, signal }: AccountOperation) {
   if (!isQuestId(id) || !integer(revision, 0, 2147483646)) throw new ApiError('validation');
   return api.request(`/v1/rewards/feed/${id}`, { method: 'PUT', json: { expected_revision: revision }, signal, decode: (v, c): FeedResult => {
-    if (!isRecord(v) || v.request_id !== id || v.charged_credits !== 20 || !integer(v.health_added, 1, 20)) return invalid();
-    return { request_id: id, charged_credits: 20, health_added: v.health_added, wallet: decodeWallet(v.wallet, c) };
+    if (!isRecord(v) || v.request_id !== id || ![10, 20].includes(v.charged_credits as number) || !integer(v.health_added, 1, 20)) return invalid();
+    return { request_id: id, charged_credits: v.charged_credits as 10 | 20, health_added: v.health_added, wallet: decodeWallet(v.wallet, c) };
   } });
 }
 export function readFeedReceipt(id: string, { api, signal }: AccountOperation) {

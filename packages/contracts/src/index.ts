@@ -36,6 +36,7 @@ export type ProfilePatch = components['schemas']['ProfilePatch'];
 export type ProfileSavedResponse = components['schemas']['ProfileSavedResponse'];
 export type ActivityPreferences = components['schemas']['ActivityPreferences'];
 export type PlanDraft = components['schemas']['PlanDraft'];
+export type Personalization = components['schemas']['Personalization'];
 export type SettingsView = components['schemas']['SettingsView'];
 export type SettingsResponse = components['schemas']['SettingsResponse'];
 export type SettingsPatch = components['schemas']['SettingsPatch'];

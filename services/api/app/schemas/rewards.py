@@ -73,12 +73,12 @@ class RewardView(WireModel):
     balance: int
     health: int
     artwork: Literal["needsCare", "feelingLow", "doingOkay", "happy"]
-    feed_cost: Literal[20] = 20
+    feed_cost: Literal[10] = 10
     feed_health: Literal[20] = 20
     streak_days: int | None
     recent_week_complete: bool
     observed_at: AwareDatetime
-    policy_version: Literal[1] = 1
+    policy_version: Literal[2] = 2
 
 
 class FeedPut(WireModel):
@@ -87,7 +87,7 @@ class FeedPut(WireModel):
 
 class FeedResult(WireModel):
     request_id: UUID
-    charged_credits: Literal[20] = 20
+    charged_credits: Literal[10, 20] = 10
     health_added: int
     wallet: RewardView
 

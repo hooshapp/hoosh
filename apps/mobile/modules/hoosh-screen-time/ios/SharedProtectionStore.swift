@@ -51,6 +51,7 @@ struct ProtectionOwnerRecord: Codable, Equatable {
   var pendingInstallation: ProtectionPendingInstallation?
   var sessionLedger: ProtectionSessionLedger?
   var coverage: String = "unknown"
+  var nudgeTone: String? = nil
   var rewardJournal: ProtectionRewardJournal?
 }
 struct ProtectionClaim: Codable, Equatable {
@@ -76,6 +77,7 @@ struct ProtectionState: Codable, Equatable {
           installedOwner == nil || owners.contains(where: { $0.owner == installedOwner }),
           pendingClaim == nil || (pendingClaim?.previousOwner == installedOwner && pendingClaim?.phase == "awaiting_stop") else { throw ProtectionStoreError.invalidRecord }
     for record in owners {
+      guard record.nudgeTone == nil || ["Supportive", "Direct", "Playful", "Intense"].contains(record.nudgeTone!) else { throw ProtectionStoreError.invalidRecord }
       if version < 4 && record.rewardJournal != nil { throw ProtectionStoreError.invalidRecord }
       try record.rewardJournal?.validated()
       if version == 1 && (record.installation != nil || record.pendingInstallation != nil || record.sessionLedger != nil || record.receipts.contains(where: { $0.fingerprint != nil })) {

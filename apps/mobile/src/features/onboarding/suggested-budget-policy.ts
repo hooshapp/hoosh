@@ -95,16 +95,13 @@ export function suggestFromNative(value: unknown, expected: Expected): BudgetDec
     return { state: 'unavailable', reason: 'selection_changed' };
   if (dateEpoch(expected.endsBefore) === null || v.endsBefore !== expected.endsBefore || expected.selectionRevision < 1 || expected.selectedAppCount < 1)
     return { state: 'unavailable', reason: 'invalid_baseline' };
-  if (v.source === 'user_confirmed_report' && v.state === 'confirmed' && (v.windowDays === 1 || v.windowDays === 7) &&
+  if (v.source === 'user_confirmed_report' && v.state === 'confirmed' && v.windowDays === 1 &&
       Number.isSafeInteger(v.totalMinutes) && (v.totalMinutes as number) >= 0 && (v.totalMinutes as number) <= v.windowDays * 26 * 60)
     return fromTotal((v.totalMinutes as number) * MINUTE, v.windowDays, expected, 'user_confirmed_report');
-  if (v.source !== 'android_usage_events_v1' || v.state !== 'ready' || !Array.isArray(v.days) || v.days.length !== 7 ||
+  if (v.source !== 'android_usage_events_v1' || v.state !== 'ready' || !Array.isArray(v.days) || ![1, 7].includes(v.days.length) ||
       v.days.some(d => !d || typeof d !== 'object' || typeof d.date !== 'string'))
     return { state: 'unavailable', reason: 'missing_baseline' };
   const baseline = { ...expected, days: v.days } as SelectedAppBaseline;
-  const seven = suggestSharedBudget(baseline, expected);
-  if (seven.state === 'ready') return seven;
-  if (seven.reason !== 'incomplete_baseline') return seven;
   const yesterday = new Date(dateEpoch(expected.endsBefore)! - DAY).toISOString().slice(0, 10);
   const matches = baseline.days.filter(d => d.date === yesterday);
   const day = matches[0];

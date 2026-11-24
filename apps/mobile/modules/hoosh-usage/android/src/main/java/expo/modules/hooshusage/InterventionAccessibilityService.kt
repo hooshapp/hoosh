@@ -103,6 +103,7 @@ class InterventionAccessibilityService : AccessibilityService() {
     text(if (mid) "Ready to return?" else "Take a moment", 32f, heading = true)
     text(if (mid) "You are halfway through this allowance. Return home to finish this session, or keep going until your time ends. The choice is yours."
       else "You chose a pause for this app. ${reasons.size} schedule reason(s) apply. You can return home or open the app anyway. Finishing an activity is your choice; this pause does not confirm quest completion.", 18f)
+    text(NudgeToneStore(this).line(record.plan.owner), 18f)
     val session = record.sessions.find { it.app == app }
     val context = if (mid) "mid_session" else if (session != null && session.wallEnd <= System.currentTimeMillis()) "expired" else "initial"
     val encounter = session?.id ?: java.util.UUID.randomUUID().toString()
