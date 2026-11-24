@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { Alert, AppState, Platform, Text } from 'react-native';
 import { Button } from '@/components/ui/button';
 import { InlineStatus } from '@/components/ui/inline-status';
 import type { InstallationReview } from '@/infrastructure/native/native-owner-session';
 import { useNativeInstallation } from './native-owner-boundary';
 
-export function InstallationReviewPanel() {
+export function InstallationReviewPanel({ children }: { children?: ReactNode } = {}) {
   const session = useNativeInstallation();
-  return Platform.OS === 'ios' && session ? <ConnectedReview key="installation" session={session} /> : null;
+  return Platform.OS === 'ios' && session ? <ConnectedReview key="installation" session={session}>{children}</ConnectedReview> : <>{children}</>;
 }
-function ConnectedReview({ session }: { session: NonNullable<ReturnType<typeof useNativeInstallation>> }) {
+function ConnectedReview({ session, children }: { session: NonNullable<ReturnType<typeof useNativeInstallation>>; children?: ReactNode }) {
   const [read, setRead] = useState<{ session: typeof session; value: InstallationReview }>();
   const [error, setError] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -42,10 +42,12 @@ function ConnectedReview({ session }: { session: NonNullable<ReturnType<typeof u
       ]);
   }
   return <>
+    {!value && !error && <InlineStatus state="loading" message="Checking existing Screen Time setup…" />}
     {review && <InlineStatus state="unavailable" message="This device has an existing Hoosh Screen Time setup. Review it before configuring protection for this account." />}
     {value?.status === 'owned' && <Text>Device setup is assigned to this account. Review Screen Time access and saved apps below.</Text>}
     {error && <InlineStatus state="error" message="Screen Time setup could not be verified. Existing data has been kept. Try again." />}
     {(review || value?.status === 'unclaimed') && <Button label={review ? 'Review existing setup' : 'Prepare device setup'} busy={busy} onPress={confirm} />}
+    {value?.status === 'owned' && !busy && !error ? children : null}
     {error && !value && <Button label="Retry device review" onPress={async () => {
       setError(false);
       try { setRead({ session, value: await session.read() }); } catch { setError(true); }

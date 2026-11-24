@@ -59,56 +59,6 @@ export function QuestsScreen({
         testID="quests-content"
         onLayout={({ nativeEvent }) => setWidth(Math.ceil(nativeEvent.layout.width))}
       >
-        {model.saved.state === 'ready' ? (
-          model.saved.items.length ? (
-            <View style={styles.saved}>
-              <Text accessibilityRole="header" style={styles.savedHeading}>
-                {savedHeading}
-              </Text>
-              {model.saved.items.map((item) => (
-                <View key={item.id}>
-                  <EmptyCard
-                    title={item.title}
-                    description={`${item.scheduleLabel} · ${item.statusLabel}`}
-                  />
-                  {onOpenSaved ? (
-                    <Button
-                      label={`Edit ${item.title}`}
-                      variant="secondary"
-                      disabled={busy}
-                      onPress={() => onOpenSaved(item.id)}
-                    />
-                  ) : null}
-                </View>
-              ))}
-            </View>
-          ) : showSavedEmpty ? (
-            <EmptyCard
-              title="No saved quests yet"
-              description="Create a custom quest to keep its details here."
-            />
-          ) : null
-        ) : (
-          <View style={styles.saved}>
-            <SavedStatus
-              state={
-                model.saved.state === 'loading'
-                  ? 'loading'
-                  : model.saved.state === 'error'
-                    ? 'error'
-                    : 'unavailable'
-              }
-              onRetry={model.saved.state === 'error' ? onRetry : undefined}
-              message={
-                model.saved.state === 'loading'
-                  ? 'Loading saved quests…'
-                  : model.saved.state === 'error'
-                    ? 'Saved quests couldn’t be loaded.'
-                    : 'Saved quests aren’t available yet.'
-              }
-            />
-          </View>
-        )}
         <Text style={styles.summary}>{model.interestSummary ?? 'Suggested quests'}</Text>
         <View style={styles.cards}>
           {model.suggestions.state === 'ready' ? (
@@ -151,6 +101,57 @@ export function QuestsScreen({
           style={styles.create}
           labelStyle={styles.createLabel}
         />
+        {model.saved.state === 'ready' ? (
+          model.saved.items.length ? (
+            <View style={styles.saved}>
+              <Text accessibilityRole="header" style={styles.savedHeading}>
+                {savedHeading}
+              </Text>
+              {model.saved.items.map((item) => (
+                <View key={item.id} style={styles.savedCard}>
+                  <View style={styles.savedCardHeader}><Text style={styles.savedStatus}>{item.statusLabel}</Text></View>
+                  <View style={styles.savedCardBody}>
+                  <Text accessibilityRole="header" style={styles.savedTitle}>{item.title}</Text>
+                  <Text style={styles.savedSchedule}>{item.scheduleLabel}</Text>
+                  {onOpenSaved ? (
+                    <Button
+                      label={`Edit ${item.title}`}
+                      variant="secondary"
+                      disabled={busy}
+                      onPress={() => onOpenSaved(item.id)}
+                    />
+                  ) : null}
+                  </View>
+                </View>
+              ))}
+            </View>
+          ) : showSavedEmpty ? (
+            <EmptyCard
+              title="No saved quests yet"
+              description="Create a custom quest to keep its details here."
+            />
+          ) : null
+        ) : (
+          <View style={styles.saved}>
+            <SavedStatus
+              state={
+                model.saved.state === 'loading'
+                  ? 'loading'
+                  : model.saved.state === 'error'
+                    ? 'error'
+                    : 'unavailable'
+              }
+              onRetry={model.saved.state === 'error' ? onRetry : undefined}
+              message={
+                model.saved.state === 'loading'
+                  ? 'Loading saved quests…'
+                  : model.saved.state === 'error'
+                    ? 'Saved quests couldn’t be loaded.'
+                    : 'Saved quests aren’t available yet.'
+              }
+            />
+          </View>
+        )}
         {footer}
       </View>
     </Screen>
@@ -194,6 +195,12 @@ function SuggestionStatus({
   );
 }
 const styles = StyleSheet.create({
+  savedCard: { borderWidth: 1.5, borderColor: colors.warmOutline, borderRadius: 24, overflow: 'hidden', backgroundColor: colors.warmCard },
+  savedCardHeader: { paddingHorizontal: 16, paddingVertical: 12, backgroundColor: colors.warmHeader },
+  savedStatus: { fontFamily: fonts.medium, fontSize: 12, lineHeight: 17, color: colors.warmForeground },
+  savedCardBody: { padding: 16, gap: 12 },
+  savedTitle: { fontFamily: fonts.bold, fontSize: 18, lineHeight: 24, color: colors.darkCanvas },
+  savedSchedule: { fontFamily: fonts.regular, fontSize: 13, lineHeight: 19, color: colors.muted },
   screen: { paddingHorizontal: 16, paddingTop: 2, gap: 12 },
   heading: { marginHorizontal: 8, gap: 4 },
   title: { fontFamily: fonts.bold, fontSize: 26, lineHeight: 34, color: colors.warmForeground },

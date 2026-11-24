@@ -1,5 +1,6 @@
 import { useRecommendations } from '@/features/recommendations/use-recommendations';
 import { RecommendationFeedback } from '@/features/recommendations/recommendation-feedback';
+import { DetailsPanel } from '@/components/ui/details-panel';
 import { Button } from '@/components/ui/button';
 import { DeviceProtection } from '@/features/protection/device-protection';
 import { InlineStatus } from '@/components/ui/inline-status';
@@ -126,6 +127,7 @@ export function ConnectedHomeScreen({
       preferences={
         <>
           <RewardsFeedback rewards={rewards} />
+          <DetailsPanel title="Your preferences" description="Activities and saved plan details">
           <HomePreferences
             summary={summary}
             onOpen={onOpen}
@@ -140,9 +142,10 @@ export function ConnectedHomeScreen({
             retrying={query.isFetching}
             refreshing={availability === 'ready' && online && query.isFetching}
           />
+          </DetailsPanel>
         </>
       }
-      protection={<DeviceProtection onManage={onManageProtection} />}
+      protection={<DetailsPanel title="Device protection" description="Access, status and app schedule"><DeviceProtection onManage={onManageProtection} /></DetailsPanel>}
     />
   );
 }

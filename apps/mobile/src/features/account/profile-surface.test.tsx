@@ -355,3 +355,15 @@ test('discard removes the stored suggestion without writing a profile', async ()
   expect(handoff.clear).toHaveBeenCalledWith(expect.anything(), 'fixture-name');
   expect(app.patch).not.toHaveBeenCalled();
 });
+
+test('compact Settings profile opens explicitly and cannot hide unsaved edits', async () => {
+  const app = setup();
+  await render(<AccountDataProvider controller={app.controller}><ProfileSurface compact /></AccountDataProvider>);
+  await screen.findByRole('button', { name: 'Edit profile' });
+  expect(screen.queryByLabelText('Display name')).toBeNull();
+  await fireEvent.press(screen.getByRole('button', { name: 'Edit profile' }));
+  await screen.findByLabelText('Display name');
+  await fireEvent.changeText(name(), 'A reviewed draft');
+  expect(screen.getByRole('button', { name: 'Close profile editor' })).toBeDisabled();
+  expect(name()).toHaveDisplayValue('A reviewed draft');
+});

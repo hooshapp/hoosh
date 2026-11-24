@@ -1,5 +1,6 @@
 import { router } from 'expo-router';
 import { Platform, StyleSheet, Text, View } from 'react-native';
+import { DetailsPanel } from '@/components/ui/details-panel';
 import { Button } from '@/components/ui/button';
 import { InlineStatus } from '@/components/ui/inline-status';
 import { colors, fonts } from '@/design/tokens';
@@ -54,6 +55,7 @@ export function ConnectedHistoryScreen() {
             state={history.loading ? 'loading' : 'unavailable'}
             message={history.loading ? 'Loading account History…' : status}
           />
+          <DetailsPanel title="History settings" description="Sources, selected apps and collection">
           {snapshot && Platform.OS !== 'ios' ? (
             <Text style={styles.text}>
               Source: Android selected-app usage estimate. Last checked{' '}
@@ -106,6 +108,7 @@ export function ConnectedHistoryScreen() {
               onPress={history.start}
             />
           ) : null}
+          </DetailsPanel>
         </View>
       }
     />

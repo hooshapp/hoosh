@@ -249,6 +249,8 @@ public class HooshScreenTimeModule: Module {
   }
 
   @MainActor private func request() async throws -> String {
+    // Already-approved access must not reopen the system authorization flow.
+    if AuthorizationCenter.shared.authorizationStatus == .approved { return authorization() }
     try await AuthorizationCenter.shared.requestAuthorization(for: .individual)
     return authorization()
   }

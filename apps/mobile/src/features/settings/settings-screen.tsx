@@ -29,6 +29,8 @@ export type SettingsScreenProps = {
   profileForm?: ProfileFormProps;
   /** Account-scoped live consumer supplied by the host; previews use the neutral header. */
   accountContent?: ReactNode;
+  deviceContent?: ReactNode;
+  accountActions?: ReactNode;
   inlineEditor?: { field: 'gender' | 'days' | 'hours' | 'sessions'; content: ReactNode };
 };
 export function SettingsScreen({
@@ -41,6 +43,8 @@ export function SettingsScreen({
   onRetry,
   profileForm,
   accountContent,
+  deviceContent,
+  accountActions,
   inlineEditor,
 }: SettingsScreenProps) {
   const values = [
@@ -127,6 +131,7 @@ export function SettingsScreen({
             iconID="settings-apps"
             onPress={onEdit.apps} onView={onOpen.apps}
           />
+          {deviceContent}
           <SettingsRow
             label="Redirect Me To"
             value={model.activities}
@@ -193,6 +198,7 @@ export function SettingsScreen({
             />
           </Section>
         ) : null}
+        {accountActions ? <Section title="Account">{accountActions}</Section> : null}
       </View>
     </Screen>
   );

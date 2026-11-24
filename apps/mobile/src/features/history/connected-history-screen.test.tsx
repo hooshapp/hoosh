@@ -393,3 +393,9 @@ test('a pending native read cannot reactivate collection presentation after Stop
   await press('Next history page');
   expect(screen.queryByText('50')).toBeNull();
 });
+
+// These existing suites exercise account/native business contracts. Disclosure behavior,
+// draft retention and native access entry are covered separately with the real container.
+jest.mock('@/components/ui/details-panel', () => ({
+  DetailsPanel: ({ children }: { children: import('react').ReactNode }) => children,
+}));

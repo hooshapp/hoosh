@@ -1,3 +1,4 @@
+import { PlanLoadingRing } from './plan-loading-ring';
 import planAsset0 from '../../../assets/onboarding/plan/current/suggestion-imgInstagram.svg';
 import planAsset1 from '../../../assets/onboarding/plan/current/suggestion-imgGhost.svg';
 import planAsset2 from '../../../assets/onboarding/plan/current/manual-imgDisconnectSettingsIconDistractingApps.svg';
@@ -70,8 +71,8 @@ export function PlanAction({ label, onPress, disabled = false, secondary = false
     <Text style={[s.actionText, secondary && s.white]}>{busy ? 'Saving…' : label}</Text>
   </Pressable>;
 }
-export function PlanFrame({ children, complete = false, manual = false, onSkip, onBack, busy = false }: {
-  children: ReactNode; complete?: boolean; manual?: boolean; onSkip?: () => void; onBack?: () => void; busy?: boolean;
+export function PlanFrame({ children, complete = false, manual = false, onSkip, onBack, busy = false, step = 6 }: {
+  children: ReactNode; step?: number; complete?: boolean; manual?: boolean; onSkip?: () => void; onBack?: () => void; busy?: boolean;
 }) {
   const insets = useSafeAreaInsets();
   return <UiThemeProvider theme="dark"><KeyboardAvoidingView style={s.screen} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
@@ -82,11 +83,11 @@ export function PlanFrame({ children, complete = false, manual = false, onSkip, 
       </Pressable> : <>
         <View style={s.topAction}>{onSkip && !complete && <Pressable accessibilityRole="button" disabled={busy}
           onPress={onSkip} style={s.skip}><Text style={s.backText}>Skip</Text></Pressable>}</View>
-        <View accessibilityRole="progressbar" accessibilityLabel={`Onboarding step ${complete ? 7 : 6} of 7`}
-          accessibilityValue={{ min: 1, max: 7, now: complete ? 7 : 6 }} style={s.progress}>
-          {Array.from({ length: 7 }, (_, i) => <View key={i} style={[s.segment, (complete || i < 6) && s.green]} />)}
+        <View accessibilityRole="progressbar" accessibilityLabel={`Onboarding step ${complete ? 7 : step} of 7`}
+          accessibilityValue={{ min: 1, max: 7, now: complete ? 7 : step }} style={s.progress}>
+          {Array.from({ length: 7 }, (_, i) => <View key={i} style={[s.segment, (complete || i < step) && s.green]} />)}
         </View>
-        <Text style={s.count}>{complete ? 7 : 6} of 7</Text>
+        <Text style={s.count}>{complete ? 7 : step} of 7</Text>
       </>}
       {children}
     </ScrollView>
@@ -118,18 +119,18 @@ export function PlanSuggestionScreen({ apps, description, estimate, onAccept, on
 function PositionedArt({ name, x, y, size, height = size }: { name: AssetName; x: number; y: number; size: number; height?: number }) {
   return <View style={{ position: 'absolute', left: x, top: y }}><PlanArt name={name} width={size} height={height} /></View>;
 }
-export function PlanLoadingScreen({ apps, hobbies, onSkip, busy = false }: { apps: string; hobbies: string; onSkip(): void; busy?: boolean }) {
-  return <PlanFrame onSkip={onSkip} busy={busy}>
+export function PlanLoadingScreen({ apps, hobbies, onSkip, busy = false, step = 6, onComplete }: { onComplete?: () => void; step?: number; apps: string; hobbies: string; onSkip(): void; busy?: boolean }) {
+  return <PlanFrame step={step} onSkip={onSkip} busy={busy}>
     <Text accessibilityRole="header" style={s.title}>We are setting up your plan</Text>
     <Text style={s.description}>A little less scrolling. A little more time for what you love.</Text>
     <View style={s.loadingArea}><View style={s.mascot}>
       <PositionedArt name="loadingGlow" x={-16} y={-16} size={208} />
       <PositionedArt name="loadingTrack" x={8} y={8} size={160} />
-      <PositionedArt name="loadingProgress" x={18.72} y={8} size={149.28} height={160} />
+      <PlanLoadingRing onComplete={onComplete} />
       <View style={s.loadingDino}><PlanArt name="loadingDino" width={84} /></View>
       <PositionedArt name="loadingStar" x={149} y={20} size={14} />
       <PositionedArt name="loadingSparkle" x={36} y={41} size={10} />
-      <PositionedArt name="loadingTip" x={16} y={123} size={8} />
+
     </View><View style={s.loadingMessage}><Text style={s.loadingLabel}>Putting your plan together</Text><PlanArt name="dots" width={15} height={3} /></View></View>
     <View style={s.stages}>{[
       [apps ? 'Your apps are chosen' : 'App selection is next', apps || 'Choose apps in device setup'],

@@ -1,5 +1,5 @@
 import { act, fireEvent, render, screen } from '@testing-library/react-native';
-import { Alert, AppState, Platform } from 'react-native';
+import { Alert, AppState, Platform, Text } from 'react-native';
 import { InstallationReviewPanel } from './installation-review';
 const mockRead = jest.fn(), mockClaim = jest.fn();
 let mockSession: { read: typeof mockRead; claim: typeof mockClaim } | null;
@@ -48,4 +48,18 @@ it('offers explicit review for an uncertain installation without acknowledging i
   await render(<InstallationReviewPanel />);
   expect(await screen.findByText('Review existing setup')).toBeTruthy();
   expect(mockClaim).not.toHaveBeenCalled();
+});
+
+it('mounts access controls only after an explicit claim and owned readback', async () => {
+  const mounted = jest.fn();
+  function Access() { mounted(); return <Text>Permission controls</Text>; }
+  await render(<InstallationReviewPanel><Access /></InstallationReviewPanel>);
+  await screen.findByText('Review existing setup');
+  expect(mounted).not.toHaveBeenCalled();
+  await fireEvent.press(screen.getByText('Review existing setup'));
+  expect(mounted).not.toHaveBeenCalled();
+  mockRead.mockResolvedValue({ status: 'owned', revision: '7' });
+  await act(async () => { jest.mocked(Alert.alert).mock.calls[0][2]![1].onPress?.(); });
+  await screen.findByText('Permission controls');
+  expect(mockClaim).toHaveBeenCalledWith('5');
 });

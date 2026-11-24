@@ -8,7 +8,7 @@ import {
   waitFor,
 } from '@testing-library/react-native';
 import { focusManager, onlineManager } from '@tanstack/react-query';
-import { AppState, type AppStateStatus } from 'react-native';
+import { AppState, Platform, type AppStateStatus } from 'react-native';
 import { router } from 'expo-router';
 import { renderRouter } from 'expo-router/testing-library';
 import { historyFixture } from '@/features/history/__tests__/history-fixture';
@@ -34,6 +34,7 @@ import Settings from '@/app/(tabs)/settings';
 import Quests from '@/app/(tabs)/quests';
 import History from '@/app/(tabs)/history';
 import PreferenceDetail from '@/app/settings/[field]';
+import DeviceAccess from '@/app/settings/device';
 import { INITIAL_LINK_STATE, type LinkState } from '@/features/auth/link-flow';
 import { SessionController } from '@/features/auth/session-controller';
 import type { AuthRuntime } from '@/infrastructure/auth/supabase';
@@ -103,6 +104,7 @@ const routes = {
   '(tabs)/quests': Quests,
   '(tabs)/history': History,
   'settings/[field]': PreferenceDetail,
+  'settings/device': DeviceAccess,
 };
 function fixture({
   installed = false,
@@ -948,6 +950,8 @@ test('an incomplete local setup resumes once on Home and can be left without a l
 });
 
 test.each([false, true])('setup reviews a local plan via the manual path (%s)', async manual => {
+  // This fixture supplies the Android package-selection port; native iOS picker has separate flow coverage.
+  jest.replaceProperty(Platform, 'OS', 'android');
   const f = fixture();
   const key = `hoosh.setup.fixture.${A}`;
   await AsyncStorage.setItem(key, JSON.stringify({ version: 1, step: 'preferences' }));
@@ -1288,7 +1292,17 @@ async function openProtectionReview(progress: object = reviewedProtection) {
 }
 
 test.each([false, true])('normal sign-in through setup and Apply (manual path: %s)', async manual => {
+  // This fixture supplies the Android package-selection port; native iOS picker has separate flow coverage.
+  jest.replaceProperty(Platform, 'OS', 'android');
   const f = fixture({ signedOut: true, settingsMissing: true });
+  f.usagePermission(true);
+  const staged = { draftId: HANDLE, groupId: 'global', baseRevision: 1, draftVersion: 1,
+    selectedAppCount: 2, savedAppCount: 1, dirty: true };
+  f.port.selectionPick.mockResolvedValue(staged);
+  f.port.selectionCommit.mockImplementationOnce(async () => {
+    f.selectionCount(2); f.selectionRevision(2);
+    return { ...staged, baseRevision: 2, savedAppCount: 2, dirty: false };
+  });
   f.sdk.signInWithPassword.mockImplementationOnce(async () => ({
     data: { session: f.switch(A) }, error: null,
   }));
@@ -1298,12 +1312,17 @@ test.each([false, true])('normal sign-in through setup and Apply (manual path: %
     await fireEvent.changeText(screen.getByLabelText('Email'), 'demo@example.test');
     await fireEvent.changeText(screen.getByLabelText('Password'), 'fixture-password');
     await press('Log in');
-    await fireEvent.press(await screen.findByRole('tab', { name: 'Settings' }));
-    await fireEvent.press(await screen.findByRole('link', { name: 'Set up Hoosh' }));
-    await pressWhenReady('Start setup');
-    await fireEvent.press(await screen.findByRole('checkbox', { name: 'Gym' }));
+    await screen.findByRole('header', { name: 'What’s your gender?' });
+    await fireEvent.press(screen.getByText('Other'));
     await press('Next →');
-    await screen.findByRole('header', { name: 'We created a plan for you' });
+    await fireEvent.press(await screen.findByRole('button', { name: 'Age 25' }));
+    await press('Next →');
+    await pressWhenReady('Choose apps to target');
+    await screen.findByText('2 apps selected to target on this device.');
+    await press('Next →');
+    await fireEvent.press(screen.getByText('Gym'));
+    await press('Continue');
+    await screen.findByRole('header', { name: 'We created a plan for you' }, { timeout: 10000 });
     if (manual) {
       await press('Set up on my own');
       await press('Active Days');
@@ -1311,28 +1330,12 @@ test.each([false, true])('normal sign-in through setup and Apply (manual path: %
       await press('Active Days');
     }
     await press(manual ? 'Save my plan' : 'Go with suggestion');
-    await pressWhenReady('Save to my account');
+
     await screen.findByText('Accessibility access allowed for app protection.');
     const saved = f.settings.get(A)?.settings?.plan_draft;
     expect(saved?.weekdays).toEqual(manual ? [0, 1, 2, 3, 4, 6] : [0, 1, 2, 3, 4]);
-    const staged = {
-      draftId: HANDLE, groupId: 'global', baseRevision: 1, draftVersion: 1,
-      selectedAppCount: 2, savedAppCount: 1, dirty: true,
-    };
-    f.port.selectionPick.mockResolvedValue(staged);
-    f.port.selectionCommit.mockImplementationOnce(async () => {
-      f.selectionCount(2);
-      f.selectionRevision(2);
-      return { ...staged, baseRevision: 2, savedAppCount: 2, dirty: false };
-    });
-    await press('Choose apps on this device');
-    await waitFor(() => expect(screen.getByRole('button', { name: 'Choose apps' })).toBeEnabled());
-    await press('Choose apps');
-    await waitFor(() => expect(screen.getByRole('button', { name: 'Save selected apps' })).toBeEnabled());
-    await press('Save selected apps');
-    await screen.findByText('App selection saved on this device. Protection has not changed.');
-    await press('Back');
     await screen.findByText('2 apps saved on this device.');
+    expect(screen.queryByRole('button', { name: 'Review Usage Access' })).toBeNull();
     await press('Continue to protection review');
     await screen.findByRole('header', { name: 'Review device setup' });
     expect(f.port.scheduleApply).not.toHaveBeenCalled();
@@ -1363,7 +1366,7 @@ test.each([false, true])('normal sign-in through setup and Apply (manual path: %
   } finally {
     await AsyncStorage.clear();
   }
-}, 15000);
+}, 25000);
 
 test('a selection revision change during Apply requires readback and a new review', async () => {
   const f = fixture();
@@ -1462,4 +1465,20 @@ test('replacement account does not receive a late native installation receipt', 
     release();
     await AsyncStorage.clear();
   }
+});
+
+// These existing suites exercise account/native business contracts. Disclosure behavior,
+// draft retention and native access entry are covered separately with the real container.
+jest.mock('@/components/ui/details-panel', () => ({
+  DetailsPanel: ({ children }: { children: import('react').ReactNode }) => children,
+}));
+
+test('normal Settings opens device access directly and returns without applying or replaying onboarding', async () => {
+  const f = fixture();
+  await renderRouter(routes, { initialUrl: '/settings' });
+  await fireEvent.press(await screen.findByRole('button', { name: /^(Screen Time|App usage) access\. Permissions and selected apps/ }));
+  expect(screen).toHavePathname('/settings/device');
+  expect(f.port.scheduleApply).not.toHaveBeenCalled();
+  await press('Back to Settings');
+  expect(screen).toHavePathname('/settings');
 });

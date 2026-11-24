@@ -415,3 +415,9 @@ test('the actual route mounts the consumer only inside the provider and passes s
   }
   expect(screen.queryByRole('button', { name: 'Review protection setup' })).toBeNull();
 });
+
+// These existing suites exercise account/native business contracts. Disclosure behavior,
+// draft retention and native access entry are covered separately with the real container.
+jest.mock('@/components/ui/details-panel', () => ({
+  DetailsPanel: ({ children }: { children: import('react').ReactNode }) => children,
+}));

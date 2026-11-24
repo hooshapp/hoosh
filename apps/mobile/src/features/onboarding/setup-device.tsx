@@ -203,12 +203,12 @@ function ConnectedDevice({ owner, ...props }: Props & { owner: NativeOwner }) {
             : 'Saved apps could not be verified. Unlock your device and check again.'}</Text>
         </>
       )}
-      {integration.availability === 'connected' && integration.platform === 'android' && (
+      {integration.availability === 'connected' && integration.platform === 'android' && read?.usage !== 'authorized' && (
         <Button label="Review Usage Access" variant="secondary" disabled={!visible || !!busy}
           onPress={usageAction.run} />
       )}
-      <Button label="Review Accessibility access" variant="secondary" disabled={!visible || !!busy}
-        onPress={() => { void openAccessibility(); }} />
+      {read?.accessibility !== 'authorized' && <Button label="Review Accessibility access" variant="secondary" disabled={!visible || !!busy}
+        onPress={() => { void openAccessibility(); }} />}
       {(accessError || usageAction.failed) && (
         <InlineStatus state="error" message="Device settings could not be opened. Try again." />
       )}

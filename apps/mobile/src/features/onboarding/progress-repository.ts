@@ -10,9 +10,19 @@ import type { AccountScope } from '@/infrastructure/query/account-scope';
 
 /** Setup progress is local to this installation and verified account. It does
  * not confer native permission or represent an installed plan. */
+export type QuestionnaireAnswers = Readonly<{
+  index: number;
+  gender?: 'Male' | 'Female' | 'Other';
+  age?: number;
+  apps: string[];
+  nativeTargetCount?: number;
+  hobbies: string[];
+}>;
 export type OnboardingProgress = Readonly<{
   version: 1;
-  step: 'preferences' | 'plan' | 'permission' | 'protection' | 'review' | 'complete';
+  step: 'questions' | 'preferences' | 'plan' | 'permission' | 'protection' | 'review' | 'complete';
+  questions?: QuestionnaireAnswers;
+  questionsCompleted?: boolean;
   activities?: SettingsPatch['activities'];
   planDraft?: PlanDraft | null;
   profileRevision?: number;
@@ -57,7 +67,7 @@ async function boundedRead(storage: ProgressStorage, key: string) {
   }
 }
 
-const steps = new Set(['preferences', 'plan', 'permission', 'protection', 'review', 'complete']);
+const steps = new Set(['questions', 'preferences', 'plan', 'permission', 'protection', 'review', 'complete']);
 const revision = (value: unknown): value is number =>
   typeof value === 'number' && Number.isInteger(value) && value > 0 && value <= 2147483647;
 
@@ -101,6 +111,18 @@ function decodeProtectionAttempt(value: unknown): ReviewedWeeklyPlan {
   };
 }
 
+function decodeQuestions(value: unknown): QuestionnaireAnswers {
+  if (!isRecord(value) || !Number.isInteger(value.index) || (value.index as number) < 0 || (value.index as number) > 4 ||
+    (value.gender !== undefined && !['Male', 'Female', 'Other'].includes(value.gender as string)) ||
+    (value.age !== undefined && (!Number.isInteger(value.age) || (value.age as number) < 18 || (value.age as number) > 80)) ||
+    !Array.isArray(value.apps) || value.apps.length > 4 || !value.apps.every(v => ['Instagram', 'Snapchat', 'TikTok', 'YouTube', 'Reddit', 'X'].includes(v)) ||
+    !Array.isArray(value.hobbies) || value.hobbies.length > 12 || !value.hobbies.every(v => typeof v === 'string' && v.trim().length > 0 && v.length <= 60) ||
+    new Set(value.apps).size !== value.apps.length || new Set(value.hobbies).size !== value.hobbies.length) throw new Error('Invalid questionnaire');
+  if (value.nativeTargetCount !== undefined && (!Number.isSafeInteger(value.nativeTargetCount) || (value.nativeTargetCount as number) < 1 || (value.nativeTargetCount as number) > 512 || value.apps.length !== 0)) throw new Error('Invalid native target summary');
+  return { ...(value.nativeTargetCount === undefined ? {} : { nativeTargetCount: value.nativeTargetCount as number }), index: value.index as number, gender: value.gender as QuestionnaireAnswers['gender'], age: value.age as number | undefined,
+    apps: value.apps as string[], hobbies: value.hobbies as string[] };
+}
+
 function decodeProgress(raw: string | null): OnboardingProgressRead {
   if (raw === null) return { status: 'not_started' };
   try {
@@ -115,11 +137,14 @@ function decodeProgress(raw: string | null): OnboardingProgressRead {
       (value.settingsAttempt !== undefined && (value.step !== 'review' || value.settingsRevision !== undefined)) ||
       (value.protectionAttempt !== undefined && value.step !== 'protection' && value.step !== 'complete') ||
       (value.selectionRevision !== undefined && !revision(value.selectionRevision)) ||
-      (value.permissionDeferred !== undefined && typeof value.permissionDeferred !== 'boolean')) {
+      (value.permissionDeferred !== undefined && typeof value.permissionDeferred !== 'boolean') ||
+      (value.questionsCompleted !== undefined && typeof value.questionsCompleted !== 'boolean')) {
       return { status: 'read_failed' };
     }
     const progress: OnboardingProgress = {
       version: 1,
+      ...(value.questions !== undefined ? { questions: decodeQuestions(value.questions) } : {}),
+      ...(value.questionsCompleted !== undefined ? { questionsCompleted: value.questionsCompleted === true } : {}),
       step: value.step as OnboardingProgress['step'],
       ...(value.activities !== undefined ? {
         activities: decodeLocalActivities(value.activities),
@@ -134,6 +159,8 @@ function decodeProgress(raw: string | null): OnboardingProgressRead {
       ...(value.selectionRevision !== undefined ? { selectionRevision: value.selectionRevision as number } : {}),
       ...(value.permissionDeferred !== undefined ? { permissionDeferred: value.permissionDeferred } : {}),
     };
+    if (progress.questions?.nativeTargetCount && !progress.selectionRevision) return { status: 'read_failed' };
+    if (progress.questionsCompleted && (!progress.questions?.gender || !progress.questions.age || (!progress.questions.nativeTargetCount && progress.questions.apps.length < 2) || !progress.questions.hobbies.length)) return { status: 'read_failed' };
     return { status: 'found', progress };
   } catch {
     return { status: 'read_failed' };

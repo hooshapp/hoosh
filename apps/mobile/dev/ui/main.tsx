@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { DashboardReview } from './dashboard-review';
 import { createRoot } from 'react-dom/client';
 import { View } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -112,7 +113,7 @@ const root = document.getElementById('root');
 if (!root) throw new Error('Missing specimen root');
 if (new URLSearchParams(window.location.search).get('view') === 'plan') document.title = 'Hoosh — Plan screens';
 createRoot(root).render(
-  new URLSearchParams(window.location.search).get('view') === 'plan' ? <PlanDesignReview width={width} /> : new URLSearchParams(window.location.search).get('review') === 'c04' ? <C04BrowserReview /> : <main data-testid="disconnect-ui-specimens" className={largeText ? 'large-text' : undefined}>
+  new URLSearchParams(window.location.search).get('review') === 'dashboard' ? <DashboardReview width={width} /> : new URLSearchParams(window.location.search).get('view') === 'plan' ? <PlanDesignReview width={width} /> : new URLSearchParams(window.location.search).get('review') === 'c04' ? <C04BrowserReview /> : <main data-testid="disconnect-ui-specimens" className={largeText ? 'large-text' : undefined}>
     <h1>Disconnect — shared UI specimens</h1>
     <p>
       Developer-only entry. Use <a href="?width=393">393 px</a>, <a href="?width=320">320 px</a>, or{' '}

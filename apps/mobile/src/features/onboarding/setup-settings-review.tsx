@@ -1,8 +1,9 @@
 import type { SettingsPatch, SettingsView } from '@disconnect/contracts';
 import { onlineManager } from '@tanstack/react-query';
-import { useRef, useState, useSyncExternalStore } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { Text } from 'react-native';
 
+import { PlanLoadingScreen } from './figma-plan-screens';
 import { Button } from '@/components/ui/button';
 import { InlineStatus } from '@/components/ui/inline-status';
 import { useUiTheme } from '@/components/ui/theme';
@@ -32,8 +33,9 @@ function savedProgress(progress: OnboardingProgress, settings: SettingsView | nu
 }
 
 export function SetupSettingsReview({
-  progress, busy, record,
+  progress, busy, record, autoSave = false,
 }: {
+  autoSave?: boolean;
   progress: OnboardingProgress;
   busy: boolean;
   record: (next: OnboardingProgress, expectedAttempt?: SettingsPatch) => Promise<boolean>;
@@ -109,6 +111,18 @@ export function SetupSettingsReview({
     } finally {
       starting.current = false;
     }
+  }
+
+  // The user has already accepted the suggestion or saved their manual plan.
+  // Initiate once; a failed/uncertain write must use the existing explicit recovery flow.
+  const autoStarted = useRef(false);
+  useEffect(() => {
+    if (!autoSave || autoStarted.current || !ready || locked || needsComparison || receipt) return;
+    autoStarted.current = true;
+    void save();
+  });
+  if (autoSave && !receipt && (mutation.isPending || busy)) {
+    return <PlanLoadingScreen busy apps={(progress.questions?.apps ?? []).join(', ')} hobbies={progress.activities ? activitySummary(progress.activities) ?? '' : ''} onSkip={() => undefined} />;
   }
 
   const comparisonCurrent = !!comparison && ready && (comparison.latest?.revision ?? 0) === latestRevision;

@@ -1,6 +1,6 @@
 import { SetupDraft } from './setup-draft';
 import { useState } from 'react';
-import { fireEvent, render, screen } from '@testing-library/react-native';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { FigmaManualPlan } from './figma-manual-plan';
 import { PlanCompletionScreen, PlanSuggestionScreen } from './figma-plan-screens';
 import { starterPlan } from './setup-model';
@@ -70,3 +70,15 @@ it('accepts the displayed suggestion after returning from an edited manual alter
   await fireEvent.press(screen.getByRole('button', { name: 'Go with suggestion' }));
   expect(onSave).toHaveBeenCalledWith(expect.objectContaining({ step: 'review', planDraft }));
 });
+
+it('shows the Figma loading transition before the suggestion for native-target questionnaires', async () => {
+  await render(<SetupDraft progress={{ version: 1, step: 'plan', questionsCompleted: true, selectionRevision: 7,
+    questions: { index: 4, gender: 'Other', age: 25, apps: [], nativeTargetCount: 2, hobbies: ['Reading'] },
+    activities: { selected_activity_ids: ['reading'], custom_text: null } }} busy={false} failed={false}
+    onSave={jest.fn()} onLeave={jest.fn()} onDiscard={jest.fn()} />);
+  expect(screen.getByRole('header', { name: 'We are setting up your plan' })).toBeTruthy();
+  expect(screen.getByText('5 of 7')).toBeTruthy();
+  expect(screen.getByText('2 target apps selected on this device')).toBeTruthy();
+  await waitFor(() => expect(screen.getByRole('button', { name: 'Go with suggestion' })).toBeTruthy(), { timeout: 9000 });
+  expect(screen.getByRole('button', { name: 'Set up on my own' })).toBeTruthy();
+}, 12000);

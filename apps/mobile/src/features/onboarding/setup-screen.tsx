@@ -1,3 +1,5 @@
+import { useIOSSelectionDevice, useNativeOwner } from '@/features/protection/native-owner-boundary';
+import { Questionnaire } from './questionnaire';
 import { PlanCompletionScreen } from './figma-plan-screens';
 import type { SettingsPatch } from '@disconnect/contracts';
 import { useRouter } from 'expo-router';
@@ -24,6 +26,8 @@ import { setupRepository } from './progress-storage';
 
 export function SetupScreen() {
   const router = useRouter();
+  const iosDevice = useIOSSelectionDevice();
+  const nativeOwner = useNativeOwner();
   const theme = useUiTheme();
   const { scope, availability } = useAccountData();
   const project = useAppRuntime()?.nativeNamespace;
@@ -41,7 +45,7 @@ export function SetupScreen() {
   const [profileReceipt, setProfileReceipt] = useState<number>();
 
   useEffect(() => {
-    if (!scope || !repo || !verified) return;
+    if (!scope || !repo || !scope.isCurrent()) return;
     let active = true;
     void repo.read(scope).then(next => {
       if (active && scope.isCurrent()) setResult(next);
@@ -60,7 +64,12 @@ export function SetupScreen() {
         : result.status;
 
   async function update(progress: OnboardingProgress | null, expectedAttempt?: SettingsPatch) {
-    if (writing.current || !repo || !scope || !verified || !scope.isCurrent()) return false;
+    if (writing.current || !repo || !scope || (!verified && progress?.step !== 'questions') || !scope.isCurrent()) return false;
+    // The questionnaire already reviewed iPhone permission. Saving preferences
+    // completes onboarding; it never installs or activates device protection.
+    if (progress?.step === 'permission' && progress.questionsCompleted && iosDevice) {
+      progress = { ...progress, step: 'complete' };
+    }
     writing.current = true;
     setBusy(true);
     setFailed(false);
@@ -118,6 +127,14 @@ export function SetupScreen() {
     );
   }
 
+  if (scope?.isCurrent() && ((progress?.step === 'questions') || (verified && status === 'not_started' && !existing))) {
+    return <Questionnaire key={scope.id} progress={progress ?? { version: 1, step: 'questions', settingsBaseRevision: 0 }} busy={busy} failed={failed} onSave={update} />;
+  }
+
+  if (verified && progress?.step === 'review' && progress.questionsCompleted && (iosDevice || nativeOwner) && progress.settingsRevision === undefined) {
+    return <SetupSettingsReview progress={progress} busy={busy} record={update} autoSave />;
+  }
+
   if (verified && progress && (progress.step === 'preferences' || progress.step === 'plan' ||
     (progress.step === 'review' && progress.settingsRevision === undefined))) {
     return (
@@ -146,6 +163,12 @@ export function SetupScreen() {
   if (verified && progress?.step === 'protection') {
     return <SetupProtection progress={progress} busy={busy} failed={failed} record={update}
       onManage={() => router.push('/(tabs)/settings')} />;
+  }
+
+  if (verified && progress?.step === 'permission' && progress.questionsCompleted && iosDevice) {
+    return <PlanCompletionScreen hobbies={progress.questions?.hobbies ?? []}
+      message="Your preferences are saved. App protection starts only after you apply your plan in Settings."
+      onFinish={() => { void update({ ...progress, step: 'complete' }).then(saved => { if (saved) router.replace('/(tabs)'); }); }} />;
   }
 
   if (verified && progress?.step === 'permission') {

@@ -145,3 +145,9 @@ test('an unconfirmed save remains dirty behind real Router removal and cannot re
   expect(screen.getByRole('button', { name: 'Save activities' })).toBeDisabled();
   expect(app.patch).toHaveBeenCalledTimes(1);
 });
+
+// These existing suites exercise account/native business contracts. Disclosure behavior,
+// draft retention and native access entry are covered separately with the real container.
+jest.mock('@/components/ui/details-panel', () => ({
+  DetailsPanel: ({ children }: { children: import('react').ReactNode }) => children,
+}));

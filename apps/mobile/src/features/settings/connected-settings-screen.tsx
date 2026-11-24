@@ -1,3 +1,9 @@
+import { RestartQuestionnaires } from '@/features/onboarding/restart-questionnaires';
+import { Platform } from 'react-native';
+import { router } from 'expo-router';
+import { DetailsPanel } from '@/components/ui/details-panel';
+import { SettingsRow } from './settings-row';
+import { settingsAssets } from '@/design/settings-assets';
 import { RouteButton } from '@/components/ui/route-button';
 import { useAccountWeeklyPlan } from '@/features/plans/account-weekly-plan';
 import { AccountPlanControls } from '@/features/plans/account-plan-controls';
@@ -35,14 +41,16 @@ export function ConnectedSettingsScreen({
         apps,
       }}
       planDraftOnly
-      planContent={device ? <AccountPlanControls /> : undefined}
+      planContent={device ? <DetailsPanel title="Manage device schedule" description="Review and apply your saved plan"><AccountPlanControls /></DetailsPanel> : undefined}
+      deviceContent={<SettingsRow label={Platform.OS === 'ios' ? "Screen Time access" : "App usage access"}
+        value={{ state: 'ready', text: 'Permissions and selected apps' }} icon={settingsAssets.apps} iconID="settings-device-access"
+        onView={() => router.push('/settings/device')} />}
       accountContent={
         <>
-          <RouteButton href="/(onboarding)/welcome" label="Set up Hoosh" />
-          <ProfileSurface />
-          <AppSignOutAction />
+          <ProfileSurface compact />
         </>
       }
+      accountActions={<><RouteButton href="/(onboarding)/welcome" label="Set up Hoosh" /><RestartQuestionnaires /><AppSignOutAction /></>}
       onOpen={onOpen}
       onRetry={() => {
         void query.refetch();

@@ -16,11 +16,13 @@ import type { SignupNameDraft } from './signup-name-handoff';
 import { useAccountAction } from './use-account-action';
 
 /** Real private consumer: the Auth owner's AccountDataProvider is its only dependency. */
-export function ProfileSurface({ onProfileSaved, onBackToSetup, recordingSetup }: {
+export function ProfileSurface({ onProfileSaved, onBackToSetup, recordingSetup, compact = false }: {
   onProfileSaved?: (revision: number) => void;
   onBackToSetup?: () => void;
   recordingSetup?: boolean;
+  compact?: boolean;
 }) {
+  const [editing, setEditing] = useState(!compact);
   const identity = useIdentityQuery();
   const { availability, controller, scope } = useAccountData();
   const handoff = useAppRuntime()?.signupNameHandoff;
@@ -68,7 +70,8 @@ export function ProfileSurface({ onProfileSaved, onBackToSetup, recordingSetup }
         identity={available ? (identity.data ?? null) : null}
         displayName={available ? editor.displayName : null}
       />
-      <View style={styles.body}>
+      {compact ? <View style={styles.editAction}><Button label={editing ? "Close profile editor" : "Edit profile"} variant="secondary" expanded={editing} disabled={editing && editor.dirty} onPress={() => setEditing(value => !value)} /></View> : null}
+      {editing ? <View style={styles.body}>
         <Text accessibilityRole="header" style={[styles.title, { color: theme.foreground }]}>
           Profile
         </Text>
@@ -166,11 +169,12 @@ export function ProfileSurface({ onProfileSaved, onBackToSetup, recordingSetup }
               else onBackToSetup();
             }} />
         )}
-      </View>
+      </View> : null}
     </View>
   );
 }
 const styles = StyleSheet.create({
+  editAction: { paddingHorizontal: 20, paddingBottom: 20 },
   body: { padding: 20, gap: 16 },
   title: { fontFamily: fonts.bold, fontSize: 16 },
   review: { gap: 12 },

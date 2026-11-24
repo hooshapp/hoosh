@@ -98,3 +98,22 @@ it('rejects a late receipt for a different persisted settings attempt', async ()
     status: 'found', progress: { settingsAttempt: current },
   });
 });
+
+it('retains questionnaire age/avatar/apps across reloads without exposing them to another account', async () => {
+  const { storage, repo } = fixture();
+  const a = scope('a').value;
+  const saved = { version: 1 as const, step: 'questions' as const,
+    questions: { index: 3, gender: 'Other' as const, age: 25, apps: ['Instagram', 'YouTube'], hobbies: ['Reading'] } };
+  await repo.save(a, saved);
+  await expect(createOnboardingProgressRepository(storage, 'fixture').read(a)).resolves.toEqual({ status: 'found', progress: saved });
+  await expect(repo.read(scope('b').value)).resolves.toEqual({ status: 'not_started' });
+});
+
+it('persists native target counts without inventing app names', async () => {
+  const { repo } = fixture(); const a = scope('native').value;
+  const progress = { version: 1 as const, step: 'plan' as const, questionsCompleted: true, selectionRevision: 7,
+    questions: { index: 4, gender: 'Other' as const, age: 25, apps: [], nativeTargetCount: 2, hobbies: ['Reading'] } };
+  await repo.save(a, progress);
+  await expect(repo.read(a)).resolves.toEqual({ status: 'found', progress });
+  await expect(repo.save(a, { ...progress, questions: { ...progress.questions, nativeTargetCount: 0 } })).rejects.toThrow();
+});

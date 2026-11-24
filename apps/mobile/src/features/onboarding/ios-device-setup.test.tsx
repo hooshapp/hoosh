@@ -29,7 +29,7 @@ it('never requests permission on mount and requires access before choosing apps'
 it('rechecks native status on invalidation and displays no active-protection claim', async () => {
   mockStatus.mockResolvedValue({ authorization: 'authorized', status: { state: 'inactive' } });
   await render(<IOSDeviceSetup device={device} />);
-  expect(await screen.findByText(/Saving apps does not enable protection/)).toBeTruthy();
+  expect(await screen.findByText(/Saving apps does not start protection/)).toBeTruthy();
   mockStatus.mockResolvedValue({ authorization: 'denied', status: { state: 'needs_permission' } });
   await act(async () => { invalidate(); });
   expect(await screen.findByText(/Screen Time access is off/)).toBeTruthy();
@@ -40,4 +40,20 @@ it('keeps an authorization request failure visible after readback', async () => 
   mockAuthorize.mockRejectedValueOnce(new Error('entitlement unavailable'));
   await fireEvent.press(screen.getByText('Review Screen Time access'));
   expect(await screen.findByText(/could not be verified/)).toBeTruthy();
+});
+
+it('does not offer repeat authorization when access is already allowed and preserves content while refreshing', async () => {
+  mockStatus.mockResolvedValue({ authorization: 'authorized', status: { state: 'inactive' } });
+  await render(<IOSDeviceSetup device={device} />);
+  await screen.findByText('Screen Time access allowed.');
+  expect(screen.queryByText('Review Screen Time access')).toBeNull();
+  let resolve!: (value: unknown) => void;
+  mockRead.mockReturnValueOnce(new Promise(value => { resolve = value; }));
+  await fireEvent.press(screen.getByText('Check Screen Time again'));
+  expect(screen.getByText('Screen Time access allowed.')).toBeTruthy();
+  expect(screen.getByText('2 apps saved on this device.')).toBeTruthy();
+  expect(screen.getByRole('button', { name: 'Choose apps on this device' })).toBeDisabled();
+  expect(mockAuthorize).not.toHaveBeenCalled();
+  await act(async () => resolve({ revision: 1, selectedAppCount: 2 }));
+  expect(screen.getByRole('button', { name: 'Choose apps on this device' })).toBeEnabled();
 });

@@ -96,6 +96,7 @@ function AppNavigator({ publicOnly = false, previousPrivateGenerationRef }: {
         <Stack.Protected guard={!publicOnly} redirectTo="/(auth)/sign-in">
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="settings/[field]" />
+          <Stack.Screen name="settings/device" />
           <Stack.Screen name="quest/new" />
           <Stack.Screen name="quest/[id]" />
           <Stack.Screen name="(onboarding)" options={{ statusBarStyle: 'light' }} />

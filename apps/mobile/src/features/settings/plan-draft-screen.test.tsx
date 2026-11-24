@@ -421,3 +421,8 @@ test('Settings summaries distinguish accepted partial drafts from missing, activ
   expect(screen.queryByText(/min of planned app time each day/)).toBeNull();
   expect(screen.getByText('Draft: no hours chosen; timezone not set')).toBeVisible();
 });
+
+// Account-draft assertions are independent of the secondary disclosure's presentation.
+jest.mock('@/components/ui/details-panel', () => ({
+  DetailsPanel: ({ children }: { children: import('react').ReactNode }) => children,
+}));

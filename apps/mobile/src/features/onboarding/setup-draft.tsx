@@ -19,7 +19,7 @@ import { useIOSSelectionDevice, useNativeOwner } from '@/features/protection/nat
 import { NativeAppsEditor } from '@/features/preferences/native-apps-editor';
 import { decodeSavedSelection } from '@/infrastructure/native/selection-editor';
 import type { PlanDraft } from '@disconnect/contracts';
-import { useEffect, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
@@ -71,6 +71,8 @@ export function SetupDraft({
       : planDraftInput(progress.planDraft),
   );
   const [manual, setManual] = useState(false);
+  const [preparing, setPreparing] = useState(progress.step === 'plan' && !!progress.questionsCompleted && !!progress.questions?.nativeTargetCount);
+  const finishPreparing = useCallback(() => setPreparing(false), []);
   const [error, setError] = useState<string>();
   const iosDevice = useIOSSelectionDevice();
   const native = useNativeOwner();
@@ -117,6 +119,7 @@ export function SetupDraft({
   }
 
   if (step === 'plan') {
+    if (preparing) return <PlanLoadingScreen onComplete={finishPreparing} step={5} busy apps={`${progress.questions?.nativeTargetCount ?? 0} target apps selected on this device`} hobbies={hobbyLabels} onSkip={onLeave} />;
     if (choosingApps && binding) return <NativeAppsEditor owner={binding.owner} port={binding.port} onBack={() => setChoosingApps(false)} />;
     if (manual) return <FigmaManualPlan input={input} onChange={setInput} onSave={nextFromPlan} onBack={() => setManual(false)}
       busy={busy} error={error ?? (failed ? 'Setup could not be saved. Try again.' : undefined)} appSummary={appSummary}
@@ -135,7 +138,11 @@ export function SetupDraft({
       onManual={() => { setError(undefined); setManual(true); }} onSkip={onLeave} busy={busy}
       error={error ?? (failed ? 'Setup could not be saved. Try again.' : undefined)} />;
     return <PlanSuggestionScreen description={`A starting schedule for your selected apps. Make room for ${hobbyLabels || 'what you love'}.`}
-      apps={[{ name: appCount ? 'Your selected apps' : 'Choose your apps', minutes: appCount ? minutes ?? null : null, caption: appCount && minutes != null ? `${minutes} min per session` : 'Choose apps in device setup',
+      apps={progress.questions?.apps.length ? progress.questions.apps.map(name => ({
+        name, icon: name === 'Instagram' ? 'instagram' as const : name === 'Snapchat' ? 'snapchat' as const : 'apps' as const,
+        minutes: minutes ?? null, caption: minutes == null ? 'Draft schedule' : `${minutes} min per session`,
+        detail: 'Your questionnaire preference. Choose the actual protected apps on this device separately.',
+      })) : [{ name: appCount ? 'Your selected apps' : 'Choose your apps', minutes: appCount ? minutes ?? null : null, caption: appCount && minutes != null ? `${minutes} min per session` : 'Choose apps in device setup',
         detail: count != null && minutes != null ? `${count} sessions per app each day, ${minutes} minutes each. App selection and protection are reviewed separately.` : 'Set your days, hours and sessions before applying protection.' }]}
       estimate={{ label: weeklyLabel, detail: 'Planned weekly access per selected app across your chosen days. This is a draft budget, not measured time saved.' }}
       onAccept={nextFromPlan} onManual={() => { setError(undefined); setManual(true); }} onSkip={onLeave}
