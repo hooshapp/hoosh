@@ -191,6 +191,9 @@ const press = (name: string) =>
 it('connects real editor/hooks/controller to strict server and device receipts without activation on read', async () => {
   const f = setup();
   await f.render();
+  await screen.findByRole('button', { name: 'Protection options' });
+  expect(screen.queryByText('Quest schedule')).toBeNull();
+  await press('Protection options');
   await screen.findByText('Account schedule is stopped.');
   expect(f.calls).toEqual([]);
   await fireEvent.changeText(
@@ -211,6 +214,9 @@ it('connects real editor/hooks/controller to strict server and device receipts w
 it('confirms native Stop before deleting the saved definition and exiting', async () => {
   const f = setup();
   await f.render();
+  await screen.findByRole('button', { name: 'Protection options' });
+  expect(screen.queryByText('Quest schedule')).toBeNull();
+  await press('Protection options');
   await screen.findByText('Account schedule is stopped.');
   await press('Delete saved quest');
   await press('Delete quest');
@@ -220,6 +226,9 @@ it('confirms native Stop before deleting the saved definition and exiting', asyn
 it('does not schedule the saved snapshot while the definition contains unsaved edits', async () => {
   const f = setup();
   await f.render();
+  await screen.findByRole('button', { name: 'Protection options' });
+  expect(screen.queryByText('Quest schedule')).toBeNull();
+  await press('Protection options');
   await screen.findByText('Account schedule is stopped.');
   await fireEvent.changeText(
     screen.getByLabelText('Quest name'),

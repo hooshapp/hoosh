@@ -18,7 +18,7 @@ export function PersonalizationControls({ editor, field, onDone }: {
   const disabled = !form || !['ready', 'error'].includes(form.state);
   return <View style={s.body}>
     {choices.map(([label, detail]) => <Pressable key={label} accessibilityRole="radio" accessibilityLabel={label}
-      accessibilityState={{ selected: form?.draft[field] === label, disabled }} disabled={disabled}
+      accessibilityState={{ checked: form?.draft[field] === label, selected: form?.draft[field] === label, disabled }} disabled={disabled}
       style={[s.choice, form?.draft[field] === label && s.selected]}
       onPress={() => form?.onChange({ ...form.draft, [field]: label } as Personalization)}>
       <View style={s.copy}><Text style={s.label}>{label}</Text>{detail ? <Text style={s.detail}>{detail}</Text> : null}</View>
@@ -34,7 +34,7 @@ export function PersonalizationControls({ editor, field, onDone }: {
   </View>;
 }
 const s = StyleSheet.create({
-  body: { padding: 12, gap: 8 }, choice: { minHeight: 50, padding: 12, borderRadius: 8, flexDirection: 'row', alignItems: 'center', gap: 12 },
+  body: { gap: 8 }, choice: { minHeight: 44, padding: 12, borderRadius: 8, flexDirection: 'row', alignItems: 'center', gap: 12 },
   selected: { backgroundColor: '#F0FAF4' }, copy: { flex: 1 }, label: { fontFamily: fonts.medium, fontSize: 14, color: colors.darkCanvas },
   detail: { fontFamily: fonts.regular, fontSize: 12, color: colors.muted, marginTop: 3 }, radio: { width: 18, height: 18, borderRadius: 9, borderWidth: 1, borderColor: colors.warmOutline },
   radioSelected: { borderWidth: 6, borderColor: colors.success },

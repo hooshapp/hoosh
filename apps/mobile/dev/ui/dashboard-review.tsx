@@ -26,7 +26,8 @@ export function DashboardReview({ width }: { width: number }) {
         page === 'History' ? <HistoryScreen model={historyExample}
           controls={<DetailsPanel title="History settings" description="Sources, selected apps and collection"><Text>Figma sample only. No usage has been measured.</Text></DetailsPanel>} /> :
         <SettingsScreen model={settingsExample} bottomClearance={0}
-          toneContent={<SettingsRow label="Nudge Tone" value={{ state: 'ready', text: 'Supportive' }} icon={settingsAssets.info} iconID="preview-tone" onPress={() => setNotice('Preview only. Installed app offers Supportive, Direct, Playful and Intense tones.')} />}
+          onEdit={Object.fromEntries(['age', 'gender', 'apps', 'activities', 'days', 'hours', 'sessions'].map(field => [field, () => setNotice('Preview only: this opens the account-scoped editor in the installed app.')]))}
+          toneContent={<SettingsRow label="Nudge Tone" value={{ state: 'ready', text: 'Supportive' }} icon={settingsAssets.tone} iconID="preview-tone" inline onPress={() => setNotice('Preview only. Installed app offers Supportive, Direct, Playful and Intense tones.')} />}
           deviceContent={<SettingsRow label="Screen Time access" value={{ state: 'ready', text: 'Permissions and selected apps' }} icon={settingsAssets.apps} iconID="preview-device-access" onView={() => setNotice('In the installed app this opens Screen Time access, then the native app picker.')} />}
           planContent={<DetailsPanel title="Manage device schedule" description="Review and apply your saved plan"><Text>Preview only. Your device schedule is unchanged.</Text></DetailsPanel>}
  />}

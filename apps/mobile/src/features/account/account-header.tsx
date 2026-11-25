@@ -1,7 +1,7 @@
 import type { AuthIdentity } from '@disconnect/contracts';
 import { Image } from 'expo-image';
 import { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { colors, fonts } from '@/design/tokens';
 
@@ -11,13 +11,19 @@ import avatar from '../../../assets/account/settings-avatar.svg';
 export function AccountHeader({
   identity,
   displayName,
+  onEdit,
+  editing = false,
+  editDisabled = false,
 }: {
   identity: AuthIdentity | null;
+  onEdit?: () => void;
+  editing?: boolean;
+  editDisabled?: boolean;
   /** Validated profile name from the owning feature; never inferred from email. */
   displayName?: string | null;
 }) {
   const [imageFailed, setImageFailed] = useState(false);
-  return (
+  const content = (
     <View style={styles.card}>
       <View
         style={styles.avatar}
@@ -48,6 +54,7 @@ export function AccountHeader({
       </View>
     </View>
   );
+  return onEdit ? <Pressable accessibilityRole="button" accessibilityLabel={editing ? 'Close profile editor' : 'Edit profile'} accessibilityState={{ disabled: editDisabled, expanded: editing }} disabled={editDisabled} onPress={onEdit}>{content}</Pressable> : content;
 }
 const styles = StyleSheet.create({
   card: { flexDirection: 'row', alignItems: 'center', padding: 20, gap: 16 },

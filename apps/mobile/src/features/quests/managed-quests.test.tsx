@@ -20,7 +20,7 @@ const signed = (user_id = A, sessionGeneration = 1): AuthSnapshot => ({
   sessionGeneration,
   user: { user_id, email: null },
 });
-function setup(existing = true) {
+function setup(existing = true, interests: string[] = []) {
   let snapshot = signed(),
     stored = existing ? (fixture.quest as QuestView) : null,
     revision = existing ? 1 : 0;
@@ -41,6 +41,11 @@ function setup(existing = true) {
   const request = jest.fn(async (path, options) => {
     const current = snapshot.status === 'signed_in' ? snapshot.user.user_id : B;
     const owner = { user_id: current, sessionGeneration: snapshot.sessionGeneration };
+    if (path === '/v1/settings') return options.decode({ settings: {
+      user_id: current, revision: 1,
+      created_at: fixture.quest.created_at, updated_at: fixture.quest.updated_at,
+      activities: { selected_activity_ids: interests, custom_text: null }, plan_draft: null,
+    } }, { account: owner });
     if (options.method) {
       const expected = options.json.expected_revision;
       if (current !== A || expected !== revision)
@@ -51,7 +56,7 @@ function setup(existing = true) {
       revision++;
       stored =
         options.method === 'PUT'
-          ? ({ ...fixture.quest, revision, definition: options.json.definition } as QuestView)
+          ? ({ ...fixture.quest, quest_id: path.split('/').at(-1), revision, definition: options.json.definition } as QuestView)
           : null;
       const value = options.method === 'PUT' ? { quest: stored } : { quest_id: ID, revision };
       if (lose) {
@@ -137,6 +142,7 @@ test('new editor saves complete fields with a stable fresh ID', async () => {
   await fireEvent.changeText(screen.getByLabelText('Start time (24-hour HH:MM)'), '10:00');
   await press('End time: Choose time');
   await fireEvent.changeText(screen.getByLabelText('End time (24-hour HH:MM)'), '10:30');
+  await press('Protection options');
   await fireEvent.changeText(screen.getByLabelText('Quest time zone'), 'UTC');
   await press('Save quest');
   await screen.findByText('Quest details saved.');
@@ -234,7 +240,7 @@ test('connected list shows actual saved data and removes it when offline', async
   );
   await screen.findByText('Read a chapter');
   expect(screen.getByText('Accepted')).toBeVisible();
-  expect(screen.getByText(/Saved · open to review schedule and device status/)).toBeVisible();
+  expect(screen.getByText('Saved quest')).toBeVisible();
   await press('Edit Read a chapter');
   expect(open).toHaveBeenCalledWith(ID);
   await act(() => onlineManager.setOnline(false));
@@ -288,4 +294,35 @@ test('empty saved collection is distinct from unavailable and paging uses exclus
   expect(screen.queryByText('First page')).toBeNull();
   await press('Previous quests');
   await screen.findByText('First page');
+});
+
+
+test('saved interests populate Figma proposals; Personalize does not save and Accept saves once', async () => {
+  const f = setup(false, ['gym', 'reading']);
+  const create = jest.fn(), open = jest.fn();
+  await render(<AccountDataProvider controller={f.controller}><ConnectedQuestsScreen onCreate={create} onOpen={open} /></AccountDataProvider>);
+  await screen.findByRole('button', { name: 'Accept Evening Gym Session' });
+  expect(screen.getByRole('button', { name: 'Accept Nightly Reading Session' })).toBeEnabled();
+  await press('Personalize Evening Gym Session');
+  expect(create).toHaveBeenCalledWith('gym');
+  expect(f.stored()).toBeNull();
+  await press('Accept Evening Gym Session');
+  await waitFor(() => expect(open).toHaveBeenCalled());
+  expect(f.stored()?.definition.title).toBe('Evening Gym Session');
+  expect(f.stored()?.definition.weekdays).toEqual([0, 2, 4]);
+  expect(f.request.mock.calls.filter(([, options]) => options.method === 'PUT')).toHaveLength(1);
+  expect(f.request.mock.calls.some(([path]) => path.endsWith('/schedule'))).toBe(false);
+});
+
+test('personalizing a proposal pre-fills an unsaved editable draft', async () => {
+  const f = setup(false);
+  await render(<AccountDataProvider controller={f.controller}><ManagedQuestEditor questId={ID} creating initialDraft={{ title: 'Nightly Reading Session', activity: 'Reading', start: '22:00', end: '22:30', nextDay: false, repeat: 'daily', days: [] }} onBack={jest.fn()} /></AccountDataProvider>);
+  await screen.findByDisplayValue('Nightly Reading Session');
+  expect(screen.getByRole('button', { name: 'Save quest' })).toBeEnabled();
+  expect(screen.queryByLabelText('Quest time zone')).toBeNull();
+  expect(screen.queryByText('Quest schedule')).toBeNull();
+  expect(f.stored()).toBeNull();
+  await press('Save quest');
+  await screen.findByText('Quest details saved.');
+  expect(f.stored()?.definition.start_local).toBe('22:00');
 });

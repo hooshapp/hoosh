@@ -72,7 +72,7 @@ export function HistoryDetails({
             {(['week', 'month'] as const).map((value) => (
               <Button
                 key={value}
-                label={value === 'month' ? 'Last 28 days' : 'Last 7 days'}
+                label={value === 'month' ? 'This month' : 'This week'}
                 selected={period === value}
                 accessibilityLabel={`This ${value}`}
                 onPress={() => onPeriodChange(value)}
@@ -173,18 +173,21 @@ export function HistoryDetails({
             <Evidence detail={detail} />
           </>
         )
-      ) : state === 'loading' ? (
-        <InlineStatus state="loading" message="Loading your progress…" />
       ) : (
-        <InlineStatus
-          state={state}
-          message={
-            state === 'error'
-              ? 'Your progress couldn’t be loaded.'
-              : 'Progress for this period isn’t available yet.'
-          }
-          onRetry={state === 'error' ? onRetry : undefined}
-        />
+        <View style={styles.empty}>
+          {reclaimed ? (
+            <View style={styles.circles} accessibilityLabel="Screen time reduction: no measured data yet">
+              {Array.from({ length: 10 }, (_, index) => <DesignArtwork key={index} asset={assets.remainingCircle} />)}
+            </View>
+          ) : null}
+          <View style={styles.divider} />
+          <Text style={styles.paragraph}>Your progress will appear here when comparable usage data is available.</Text>
+          <View style={styles.divider} />
+          <Text style={styles.eyebrow}>{reclaimed ? 'Time reclaimed' : 'Less screen time'}</Text>
+          <Text style={styles.number}>—</Text>
+          <Text style={styles.caption}>No measured data yet</Text>
+          {state === 'loading' ? <InlineStatus state="loading" message="Loading your progress…" /> : state === 'error' ? <InlineStatus state="error" message="Your progress couldn’t be loaded." onRetry={onRetry} /> : null}
+        </View>
       )}
       {controls}
       {onNext && !reclaimed ? (
@@ -357,7 +360,8 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: colors.readableSuccess,
   },
-  evidence: { gap: 4, marginTop: 12 },
+  empty: { gap: 16, minHeight: 330 },
+  evidence: { position: 'absolute', width: 1, height: 1, overflow: 'hidden' },
   evidenceText: {
     fontFamily: fonts.regular,
     fontSize: 12,

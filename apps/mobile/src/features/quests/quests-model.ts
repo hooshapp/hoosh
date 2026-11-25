@@ -13,6 +13,8 @@ export type SavedQuest = Readonly<{
   title: string;
   scheduleLabel: string;
   statusLabel: string;
+  activityLabel?: string;
+  scheduleLabels?: readonly string[];
 }>;
 export type QuestCollection<T> =
   | Readonly<{ state: 'ready'; items: readonly T[] }>

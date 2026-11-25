@@ -1,5 +1,6 @@
 import { useLayoutEffect, useRef, useState } from 'react';
 import { Text, View } from 'react-native';
+import { DetailsPanel } from '@/components/ui/details-panel';
 import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/field';
 import { EmptyCard } from '@/components/ui/empty-card';
@@ -14,7 +15,7 @@ import { QuestExecutionPanel } from './quest-execution-panel';
 import { useIsFocused } from 'expo-router';
 import { useAppRuntime } from '@/features/account/app-runtime-context';
 
-type Props = { questId: string; creating?: boolean; onBack: () => void };
+type Props = { questId: string; creating?: boolean; onBack: () => void; initialDraft?: import('./quest-draft').QuestDraft };
 export function ManagedQuestEditor(props: Props) {
   const owner = useNativeOwner();
   const runtime = useAppRuntime();
@@ -38,9 +39,10 @@ function QuestDefinitionEditor({
   creating = false,
   onBack,
   lifecycle,
+  initialDraft,
 }: Props & { lifecycle?: ReturnType<typeof useQuestLifecycle> }) {
   const exit = useRef(onBack);
-  const editor = useQuestEditor(questId, creating, () => exit.current());
+  const editor = useQuestEditor(questId, creating, () => exit.current(), initialDraft);
   const [scheduleDirty, setScheduleDirty] = useState(false);
   const navigationDirty =
     (editor.form?.navigationDirty ?? false) ||
@@ -109,14 +111,7 @@ function QuestDefinitionEditor({
           />
         </>
       ) : null}
-      {editor.form?.base.quest && lifecycle ? (
-        <QuestExecutionPanel
-          quest={editor.form.base.quest}
-          definitionDirty={editor.form.dirty || editor.form.state !== 'ready'}
-          lifecycle={lifecycle}
-          onDraftDirtyChange={setScheduleDirty}
-        />
-      ) : null}
+
     </View>
   );
   return (
@@ -124,7 +119,7 @@ function QuestDefinitionEditor({
       {guard.confirmation}
       {editor.form ? (
         <QuestEditor
-          mode={editor.form.base.quest ? 'edit' : 'create'}
+          mode={editor.form.base.quest ? 'edit' : initialDraft ? 'personalize' : 'create'}
           draft={editor.form.draft.quest}
           dirty={editor.form.dirty}
           externalIssue={editor.form.issue}
@@ -149,21 +144,26 @@ function QuestDefinitionEditor({
           }
           onDiscard={editor.form.onDiscard}
           onBack={back}
-          restrictionNotice="Saving keeps these details for later. It does not start app interventions or award credits."
-          scheduleContent={
-            <Field
-              label="Quest time zone"
-              hint="For example America/New_York. These are saved time preferences."
-              value={editor.form.draft.timezone}
-              editable={
-                editor.form.state !== 'saving' && !lifecycle?.state.pendingWrite
-              }
-              autoCapitalize="none"
-              autoCorrect={false}
-              onChangeText={(timezone) =>
-                editor.form?.onChange({ ...editor.form.draft, timezone })
-              }
-            />
+          restrictionNotice="Your quest is saved separately from device protection."
+          secondaryContent={
+            <DetailsPanel title="Protection options">
+              <Field
+                label="Quest time zone"
+                value={editor.form.draft.timezone}
+                editable={editor.form.state !== 'saving' && !lifecycle?.state.pendingWrite}
+                autoCapitalize="none"
+                autoCorrect={false}
+                onChangeText={(timezone) => editor.form?.onChange({ ...editor.form.draft, timezone })}
+              />
+              {editor.form.base.quest && lifecycle ? (
+                <QuestExecutionPanel
+                  quest={editor.form.base.quest}
+                  definitionDirty={editor.form.dirty || editor.form.state !== 'ready'}
+                  lifecycle={lifecycle}
+                  onDraftDirtyChange={setScheduleDirty}
+                />
+              ) : null}
+            </DetailsPanel>
           }
           feedback={feedback}
         />

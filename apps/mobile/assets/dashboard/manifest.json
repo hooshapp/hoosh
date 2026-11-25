@@ -2,7 +2,8 @@
   "fileKey": "ukmD2ZidJ9UR2XxUkvdPoJ",
   "frames": [
     "22:4",
-    "88:96"
+    "88:96",
+    "27:157"
   ],
   "assets": [
     {
@@ -58,6 +59,15 @@
       "width": "86",
       "height": "8",
       "viewBox": "0 0 86 8"
+    },
+    {
+      "file": "settings-tone.svg",
+      "node": "10777:241",
+      "sha256": "6cf1d4ab827aa93798efc1bea23ab49fa80931fb6c7d5632d206ca9ad65888a5",
+      "sizeBytes": 616,
+      "width": "18",
+      "height": "18",
+      "viewBox": "0 0 18 18"
     }
   ]
 }

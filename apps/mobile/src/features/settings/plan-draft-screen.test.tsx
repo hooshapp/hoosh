@@ -416,7 +416,7 @@ test('Settings summaries distinguish accepted partial drafts from missing, activ
       <ConnectedSettingsScreen />
     </AccountDataProvider>,
   );
-  await screen.findByText('Plan draft — not active');
+  await screen.findByText('My Plan');
   await screen.findByText('App Sessions');
   expect(screen.queryByText(/min of planned app time each day/)).toBeNull();
   expect(screen.getByText('Active Hours')).toBeVisible();

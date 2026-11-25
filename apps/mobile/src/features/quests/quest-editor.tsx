@@ -34,6 +34,7 @@ export type QuestEditorProps = {
   onDeleteQuest?: () => void;
   scheduleContent?: ReactNode;
   feedback?: ReactNode;
+  secondaryContent?: ReactNode;
   state?: EditorState;
   interestLabel?: string;
   restrictionNotice?: string;
@@ -52,6 +53,7 @@ export function QuestEditor({
   onDeleteQuest,
   scheduleContent,
   feedback,
+  secondaryContent,
   state = 'ready',
   interestLabel,
   restrictionNotice,
@@ -74,7 +76,7 @@ export function QuestEditor({
           ? 'Custom quest'
           : mode === 'personalize'
             ? 'Personalize quest'
-            : 'Edit quest'
+            : 'Personalize quest'
       }
       subtitle={
         mode === 'personalize' ? 'Your suggestion, your way. Change any detail.' : undefined
@@ -109,7 +111,7 @@ export function QuestEditor({
           onChangeText={(activity) => change({ activity })}
         />
         {mode === 'personalize' ? (
-          <Text style={editorStyles.body}>Try anything — even “10 pushups” counts.</Text>
+          <Text style={styles.hint}>Try anything — even “10 pushups” counts.</Text>
         ) : null}
       </Card>
       <Card
@@ -262,6 +264,7 @@ export function QuestEditor({
         }}
         saveLabel="Save quest"
       />
+      {secondaryContent}
       {mode === 'edit' && (onCancelQuest || onDeleteQuest) ? (
         <Button
           ref={cancelTrigger}
@@ -297,7 +300,7 @@ export function QuestEditor({
 function DecoratedField(props: React.ComponentProps<typeof Field>) {
   return (
     <View>
-      <Field {...props} trailingVisual={<DesignArtwork asset={assets.pencil} />} />
+      <Field {...props} appearance="quest" trailingVisual={<DesignArtwork asset={assets.pencil} />} />
     </View>
   );
 }

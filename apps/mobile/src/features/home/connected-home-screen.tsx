@@ -71,6 +71,7 @@ export function ConnectedHomeScreen({
         recommendations.canAct ? recommendations.skip : undefined
       }
       recommendationBusy={recommendations.busy}
+      acceptedQuest={Boolean(recommendations.data?.accepted_quest_id)}
       recommendationFeedback={
         <RecommendationFeedback
           recommendations={recommendations}

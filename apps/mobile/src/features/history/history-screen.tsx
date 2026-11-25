@@ -49,7 +49,7 @@ export function HistoryScreen({
         }
       >
         <Text style={styles.eyebrow}>
-          {model.periodLabel ?? 'Your progress'}
+          {model.periodDays === 28 ? 'This month' : 'This week'}
         </Text>
         <Text accessibilityRole="header" style={styles.title}>
           Your stats
@@ -86,15 +86,12 @@ export function HistoryScreen({
               <Evidence label="Now" metric={comparison.now} />
             </>
           ) : (
-            <ReadingStatus
-              state={
-                model.screenTime.state === 'ready'
-                  ? 'unavailable'
-                  : model.screenTime.state
-              }
-              label="Screen time comparison"
-              onRetry={onRetry}
-            />
+            <View accessibilityLabel="Screen time comparison: no measured data yet" style={styles.comparisonRow}>
+              <View style={styles.comparisonValue}><Text style={styles.eyebrow}>Before</Text><Text style={styles.time}>—</Text><Text style={styles.small}>when you started</Text></View>
+              <View style={styles.arrow}><DesignArtwork asset={historyAssets.comparison} testID="history-comparison" /></View>
+              <View style={styles.comparisonValue}><Text style={styles.eyebrow}>Now</Text><Text style={[styles.time, styles.green]}>—</Text><Text style={styles.small}>No measured data yet</Text></View>
+              {model.screenTime.state === 'error' || model.screenTime.state === 'loading' ? <ReadingStatus state={model.screenTime.state} label="Screen time comparison" onRetry={onRetry} /> : null}
+            </View>
           )}
         </View>
         <View style={styles.divider} />
@@ -148,16 +145,15 @@ function Metric({
   compact: boolean;
   onRetry?: () => void;
 }) {
-  if (
-    reading.state !== 'ready' ||
-    !isUsableMetric(reading.data, label === 'hours')
-  )
+  if (reading.state !== 'ready' || !isUsableMetric(reading.data, label === 'hours'))
     return (
-      <ReadingStatus
-        state={reading.state === 'ready' ? 'unavailable' : reading.state}
-        label={label === 'hours' ? 'Saved time' : 'Turn-offs'}
-        onRetry={onRetry}
-      />
+      <View accessibilityLabel={`${label === 'hours' ? 'Saved time' : 'Turn-offs'}: no measured data yet`}>
+        <View style={[styles.metric, compact && styles.stacked]}>
+          <Text style={styles.number}>—</Text>
+          <View style={styles.metricCaption}><Text style={styles.unit}>{label}</Text><Text style={styles.caption}>No measured data yet</Text></View>
+        </View>
+        {reading.state === 'error' || reading.state === 'loading' ? <ReadingStatus state={reading.state} label={label === 'hours' ? 'Saved time' : 'Turn-offs'} onRetry={onRetry} /> : null}
+      </View>
     );
   return (
     <View>
@@ -166,7 +162,7 @@ function Metric({
         <View style={[styles.metricCaption, compact && styles.compactCaption]}>
           <Text style={styles.unit}>{label}</Text>
           <Text style={styles.caption}>
-            {caption} {reading.data.period}
+            {caption} {reading.data.period.startsWith('20') ? 'this week' : reading.data.period}
           </Text>
         </View>
       </View>
@@ -306,10 +302,7 @@ const styles = StyleSheet.create({
   },
   evidence: {
     fontFamily: fonts.regular,
-    fontSize: 12,
-    lineHeight: 16,
-    color: '#6B6257',
-    marginTop: 4,
+    position: 'absolute', width: 1, height: 1, overflow: 'hidden',
   },
   footer: {
     marginTop: 20,

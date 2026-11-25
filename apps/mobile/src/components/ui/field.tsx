@@ -1,7 +1,7 @@
 import { forwardRef, useId, useState, type ComponentRef, type ReactNode } from 'react';
 import { Platform, StyleSheet, Text, TextInput, View, type TextInputProps } from 'react-native';
 
-import { fonts } from '@/design/tokens';
+import { colors, fonts } from '@/design/tokens';
 
 import { useAnnouncement } from './use-announcement';
 import { useUiTheme } from './theme';
@@ -14,11 +14,12 @@ export type FieldProps = Omit<
   hint?: string;
   error?: string;
   trailingVisual?: ReactNode;
+  appearance?: 'default' | 'quest';
 };
 
 /** Raw values are passed through unchanged. Validation and submit/focus policy belong to the form. */
 export const Field = forwardRef<ComponentRef<typeof TextInput>, FieldProps>(function Field(
-  { label, hint, error, trailingVisual, editable = true, nativeID, onFocus, onBlur, ...props },
+  { label, hint, error, trailingVisual, appearance = 'default', editable = true, nativeID, onFocus, onBlur, ...props },
   ref,
 ) {
   const generatedId = useId();
@@ -79,8 +80,8 @@ export const Field = forwardRef<ComponentRef<typeof TextInput>, FieldProps>(func
             paddingHorizontal: theme.field.paddingHorizontal,
             paddingVertical: theme.field.paddingVertical,
             fontFamily: theme.field.fontFamily,
-            fontSize: theme.field.fontSize,
-            borderColor: error ? theme.error : focused ? theme.focus : theme.field.border,
+            fontSize: appearance === 'quest' ? 14 : theme.field.fontSize,
+            borderColor: error ? theme.error : focused ? theme.focus : appearance === 'quest' ? colors.warmOutline : theme.field.border,
           },
           trailingVisual ? { paddingRight: 40 } : undefined,
           !editable && styles.disabled,

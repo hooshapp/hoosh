@@ -31,7 +31,7 @@ const ready: HistoryModel = {
 test('route exposes unavailable readings with no sample outcomes, forecast and offers an unavailable details flow', async () => {
   await render(<HistoryRoute />);
   expect(screen.getByRole('header', { name: 'Your stats' })).toBeVisible();
-  expect(screen.getByText('Turn-offs isn’t available yet.')).toBeVisible();
+  expect(screen.getByLabelText('Turn-offs: no measured data yet')).toBeVisible();
   expect(screen.queryByText('51')).toBeNull();
   expect(screen.queryByText(/years/)).toBeNull();
   expect(screen.getByRole('button', { name: 'Next history page' })).toBeEnabled();

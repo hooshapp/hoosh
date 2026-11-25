@@ -20,7 +20,7 @@ export function RecommendationFeedback({
           {r.message}
         </Text>
       ) : null}
-      {r.notice ? (
+      {r.notice && !r.notice.startsWith('A fresh suggestion will be available after ') ? (
         <Text style={{ color: colors.muted, fontFamily: fonts.regular }}>
           {r.notice}
         </Text>

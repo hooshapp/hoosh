@@ -130,13 +130,13 @@ function setup(value: HistoryView = historyFixture) {
     lose: () => {
       lose = true;
     },
-    ui: (showHome = false) => (
+    ui: (showHome = false, collectionReview = true) => (
       <AccountDataProvider
         controller={controller}
         fallback={<Text>Signed out</Text>}
       >
         <NativeOwnerContext.Provider value={binding}>
-          <ConnectedHistoryScreen />
+          <ConnectedHistoryScreen collectionReview={collectionReview && Platform.OS === 'android'} />
           {showHome ? <ConnectedHomeScreen /> : null}
         </NativeOwnerContext.Provider>
       </AccountDataProvider>
@@ -385,7 +385,9 @@ test('a pending native read cannot reactivate collection presentation after Stop
   jest.replaceProperty(Platform, 'OS', 'ios');
   const s = setup();
   await render(s.ui());
-  await waitFor(() => expect(screen.getByText(/iPhone usage measurement is unavailable/)).toBeTruthy());
+  await waitFor(() => expect(screen.getByText('6')).toBeTruthy());
+  expect(screen.queryByRole('button', { name: 'History settings' })).toBeNull();
+  expect(screen.queryByText(/Android account summaries/)).toBeNull();
   expect(s.port.historyRead).not.toHaveBeenCalled();
   expect(screen.queryByText('Source: Android selected-app usage estimate.')).toBeNull();
   expect(screen.queryByRole('button', { name: 'Start History' })).toBeNull();
@@ -399,3 +401,16 @@ test('a pending native read cannot reactivate collection presentation after Stop
 jest.mock('@/components/ui/details-panel', () => ({
   DetailsPanel: ({ children }: { children: import('react').ReactNode }) => children,
 }));
+
+
+test('normal History on either platform has no collection disclosure or technical status', async () => {
+  const s = setup();
+  await render(s.ui(false, false));
+  await waitFor(() => expect(screen.getByText('6')).toBeTruthy());
+  expect(screen.queryByRole('button', { name: 'History settings' })).toBeNull();
+  expect(screen.queryByRole('button', { name: 'Check latest History' })).toBeNull();
+  expect(screen.queryByRole('button', { name: 'Last 7 days' })).toBeNull();
+  await press('Next history page');
+  expect(screen.getByRole('button', { name: 'This week' })).toBeVisible();
+  expect(screen.queryByRole('button', { name: 'History settings' })).toBeNull();
+});

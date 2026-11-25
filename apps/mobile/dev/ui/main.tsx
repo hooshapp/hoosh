@@ -1,3 +1,6 @@
+import { HistoryExperience } from '@/features/history/history-experience';
+import { unavailableHistory } from '@/features/history/history-model';
+import { unavailableHistoryPeriods } from '@/features/history/history-details-model';
 import { useState } from 'react';
 import { DashboardReview } from './dashboard-review';
 import { createRoot } from 'react-dom/client';
@@ -113,7 +116,7 @@ const root = document.getElementById('root');
 if (!root) throw new Error('Missing specimen root');
 if (new URLSearchParams(window.location.search).get('view') === 'plan') document.title = 'Hoosh — Plan screens';
 createRoot(root).render(
-  new URLSearchParams(window.location.search).get('review') === 'dashboard' ? <DashboardReview width={width} /> : new URLSearchParams(window.location.search).get('view') === 'plan' ? <PlanDesignReview width={width} /> : new URLSearchParams(window.location.search).get('review') === 'c04' ? <C04BrowserReview /> : <main data-testid="disconnect-ui-specimens" className={largeText ? 'large-text' : undefined}>
+  new URLSearchParams(window.location.search).get('review') === 'history-empty' ? <main><h1>History empty-state review</h1><div className="phone" style={{ width }}><SafeAreaProvider initialMetrics={{ frame: { x: 0, y: 0, width, height: 852 }, insets: { top: 62, right: 0, bottom: 34, left: 0 } }}><HistoryExperience summary={unavailableHistory} periods={unavailableHistoryPeriods} /></SafeAreaProvider></div></main> : new URLSearchParams(window.location.search).get('review') === 'quest-editor' ? <main><QuestEditorSpecimen width={width} /></main> : new URLSearchParams(window.location.search).get('review') === 'dashboard' ? <DashboardReview width={width} /> : new URLSearchParams(window.location.search).get('view') === 'plan' ? <PlanDesignReview width={width} /> : new URLSearchParams(window.location.search).get('review') === 'c04' ? <C04BrowserReview /> : <main data-testid="disconnect-ui-specimens" className={largeText ? 'large-text' : undefined}>
     <h1>Disconnect — shared UI specimens</h1>
     <p>
       Developer-only entry. Use <a href="?width=393">393 px</a>, <a href="?width=320">320 px</a>, or{' '}

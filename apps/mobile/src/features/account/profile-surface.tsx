@@ -67,10 +67,13 @@ export function ProfileSurface({ onProfileSaved, onBackToSetup, recordingSetup, 
         <LeaveConfirmation onKeep={() => setLeaving(false)} onDiscard={onBackToSetup} />
       )}
       <AccountHeader
+        onEdit={compact ? () => setEditing(value => !value) : undefined}
+        editing={editing}
+        editDisabled={editing && editor.dirty}
         identity={available ? (identity.data ?? null) : null}
         displayName={available ? editor.displayName : null}
       />
-      {compact ? <View style={styles.editAction}><Button label={editing ? "Close profile editor" : "Edit profile"} variant="secondary" expanded={editing} disabled={editing && editor.dirty} onPress={() => setEditing(value => !value)} /></View> : null}
+
       {editing ? <View style={styles.body}>
         <Text accessibilityRole="header" style={[styles.title, { color: theme.foreground }]}>
           Profile

@@ -133,17 +133,17 @@ export function SettingsScreen({
             iconID="settings-apps"
             onPress={onEdit.apps} onView={onOpen.apps}
           />
-          {deviceContent}
           {toneContent}
           <SettingsRow
             label="Redirect Me To"
             value={model.activities}
             icon={settingsAssets.activities}
             iconID="settings-activities"
+            green
             onPress={onEdit.activities} onView={onOpen.activities}
           />
         </Section>
-        <Section title={planContent ? "My Plan" : planDraftOnly ? "Plan draft — not active" : "My Plan"}>
+        <Section title="My Plan">
           <SettingsRow
             label="Active Days"
             value={model.days}
@@ -181,7 +181,6 @@ export function SettingsScreen({
               </Text>
             </View>
           </View>
-          {planContent}
         </Section>
         {model.calendars ? (
           <Section title="Calendar Connections">
@@ -201,6 +200,7 @@ export function SettingsScreen({
             />
           </Section>
         ) : null}
+        {deviceContent || planContent ? <Section title="Device settings">{deviceContent}{planContent}</Section> : null}
         {accountActions ? <Section title="Account">{accountActions}</Section> : null}
       </View>
     </Screen>

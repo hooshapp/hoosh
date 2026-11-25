@@ -1,5 +1,3 @@
-import { View } from 'react-native';
-import { Button } from '@/components/ui/button';
 import { useState, type ReactNode } from 'react';
 import { HistoryScreen } from './history-screen';
 import { HistoryDetails } from './history-details';
@@ -29,25 +27,7 @@ export function HistoryExperience({
         model={period === 'month' && monthlySummary ? monthlySummary : summary}
         onNext={() => setPage('progress')}
         onRetry={onRetry}
-        controls={
-          <>
-            {monthlySummary ? (
-              <View style={{ flexDirection: 'row', gap: 8, marginTop: 16 }}>
-                <Button
-                  label="Last 7 days"
-                  selected={period === 'week'}
-                  onPress={() => setPeriod('week')}
-                />
-                <Button
-                  label="Last 28 days"
-                  selected={period === 'month'}
-                  onPress={() => setPeriod('month')}
-                />
-              </View>
-            ) : null}
-            {controls}
-          </>
-        }
+        controls={controls}
       />
     );
   return (

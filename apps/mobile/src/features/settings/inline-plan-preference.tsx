@@ -12,7 +12,7 @@ export function InlinePlanPreference({ field, onDone, onDirty }: { field: PlanFi
   useEffect(() => { if (editor.saved) onDone(); }, [editor.saved, onDone]);
   const draft = form?.draft;
   const actions = { dirty: !!form?.dirty, state: form?.state ?? 'unavailable' as const, onSave: form?.onSave, onDiscard: form?.onDiscard };
-  return <View style={{ padding: 12, gap: 10 }}>
+  return <View style={{ gap: 10 }}>
     {draft && form ? field === 'days' ? <DaysEditor days={draft.weekdays} onChange={weekdays => form.onChange({ ...draft, weekdays })} {...actions} />
       : field === 'hours' ? <HoursEditor draft={draft.hours ?? { start: '', end: '', nextDay: false }} onChange={hours => form.onChange({ ...draft, hours })} {...actions} />
       : <SessionsEditor draft={draft.sessions} onChange={sessions => form.onChange({ ...draft, sessions })} bounds={{ count: { min: 1, max: 1000, step: 1 }, minutes: { min: 1, max: 1440, step: 1 } }} {...actions} /> : null}

@@ -174,7 +174,7 @@ export function HomeOverview({
               aria-live="polite"
               style={styles.saved}
             >
-              {unavailableLabel(weekly.state)}
+              {weekly.state === 'unavailable' ? 'No measured data yet' : unavailableLabel(weekly.state)}
             </Text>
           )}
         </View>

@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
@@ -14,6 +15,8 @@ type Props = {
   onSkip?: (id: string) => void;
   busy?: boolean;
   stacked: boolean;
+  acceptedQuest?: boolean;
+  feedback?: ReactNode;
 };
 /** Temporary recommendation presentation. No accepted quest, reward or installed plan is created. */
 export function HomeRecommendation({
@@ -22,6 +25,8 @@ export function HomeRecommendation({
   onSkip,
   busy = false,
   stacked,
+  acceptedQuest = false,
+  feedback,
 }: Props) {
   const value = recommendation.state === 'ready' ? recommendation.value : undefined;
   return (
@@ -83,26 +88,32 @@ export function HomeRecommendation({
           <>
             <Text accessibilityRole="header" style={styles.title}>
               {recommendation.state === 'empty'
-                ? 'No recommendations right now'
+                ? acceptedQuest
+                  ? 'Your quest is ready'
+                  : 'No recommendations right now'
                 : recommendation.state === 'error'
                   ? 'Couldn’t load recommendations'
                   : 'Make time for what you love'}
             </Text>
             <Text style={styles.description}>
               {recommendation.state === 'empty'
-                ? 'Check back another time for a little inspiration.'
+                ? acceptedQuest
+                  ? 'Continue with the one-time quest you accepted.'
+                  : 'Check back another time for a little inspiration.'
                 : recommendation.state === 'error'
                   ? 'Please try again later.'
                   : 'Recommendations will appear here when they’re available.'}
             </Text>
           </>
         )}
+        {feedback}
       </View>
     </View>
   );
 }
 const styles = StyleSheet.create({
   card: {
+    minHeight: 228,
     borderWidth: 1.5,
     borderColor: colors.warmOutline,
     borderRadius: 24,

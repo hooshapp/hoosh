@@ -108,21 +108,22 @@ export function QuestsScreen({
                 {savedHeading}
               </Text>
               {model.saved.items.map((item) => (
-                <View key={item.id} style={styles.savedCard}>
-                  <View style={styles.savedCardHeader}><Text style={styles.savedStatus}>{item.statusLabel}</Text></View>
-                  <View style={styles.savedCardBody}>
-                  <Text accessibilityRole="header" style={styles.savedTitle}>{item.title}</Text>
-                  <Text style={styles.savedSchedule}>{item.scheduleLabel}</Text>
-                  {onOpenSaved ? (
-                    <Button
-                      label={`Edit ${item.title}`}
-                      variant="secondary"
-                      disabled={busy}
-                      onPress={() => onOpenSaved(item.id)}
-                    />
-                  ) : null}
-                  </View>
-                </View>
+                <QuestCard
+                  key={item.id}
+                  suggestion={{
+                    id: item.id,
+                    title: item.title,
+                    categoryLabel: item.activityLabel ?? 'QUEST',
+                    accent: 'green',
+                    context: item.statusLabel,
+                    scheduleLabels: item.scheduleLabels ?? [item.scheduleLabel],
+                    restrictionNotice: null,
+                  }}
+                  saved
+                  stacked={stacked}
+                  busy={busy}
+                  onPersonalize={onOpenSaved}
+                />
               ))}
             </View>
           ) : showSavedEmpty ? (

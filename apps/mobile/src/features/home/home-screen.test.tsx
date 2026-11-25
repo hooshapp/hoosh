@@ -246,3 +246,16 @@ test('enlarged native font scale stacks even when the content width is sufficien
   await act(() => Dimensions.set({ window: { width: 393, height: 852, scale: 3, fontScale: 2 } }));
   expect(screen.getByTestId('home-overview')).toHaveStyle({ flexDirection: 'column' });
 });
+
+
+test('empty Home keeps the Figma cards without inventing progress', async () => {
+  await render(<HomeScreen model={{ ...unavailableHome, recommendation: { state: 'empty' } }}
+    acceptedQuest recommendationFeedback={<Text>Accepted quest action</Text>} />);
+  expect(screen.getByText('No measured data yet')).toBeVisible();
+  expect(screen.getByText('Your quest is ready')).toBeVisible();
+  expect(screen.getByTestId('home-recommendation')).toContainElement(screen.getByText('Accepted quest action'));
+  expect(screen.getByTestId('home-recommendation')).toHaveStyle({ minHeight: 228 });
+  expect(screen.getByTestId('home-streak')).toHaveProp('accessibilityHint', 'A streak appears after eligible completed days are verified.');
+  expect(screen.queryByText('🔥 0 days')).toBeNull();
+  expect(screen.queryByText('5')).toBeNull();
+});

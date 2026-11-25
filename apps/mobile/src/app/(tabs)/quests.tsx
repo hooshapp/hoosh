@@ -10,7 +10,7 @@ export default function Quests() {
     return (
       <ConnectedQuestsScreen
         key={account.scope.id}
-        onCreate={() => router.push('/quest/new')}
+        onCreate={(template) => router.push({ pathname: '/quest/new', params: template ? { template } : {} })}
         onOpen={(id) => router.push({ pathname: '/quest/[id]', params: { id } })}
       />
     );

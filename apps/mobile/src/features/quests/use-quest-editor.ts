@@ -3,6 +3,7 @@ import { onlineManager } from '@tanstack/react-query';
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { ApiError } from '@/infrastructure/api/errors';
 import { useAccountData } from '@/infrastructure/query/account-data-provider';
+import type { QuestDraft } from './quest-draft';
 import type { EditorState } from '@/features/editors/editor-controls';
 import {
   questForm,
@@ -15,7 +16,7 @@ import { useQuestMutation, useQuestQuery } from './quests-query';
 
 type Local = { base: QuestResponse; draft: ManagedQuestDraft; state: EditorState };
 const subscribe = (notify: () => void) => onlineManager.subscribe(notify);
-export function useQuestEditor(id: string, creating: boolean, onDeleted: () => void) {
+export function useQuestEditor(id: string, creating: boolean, onDeleted: () => void, initialDraft?: QuestDraft) {
   const { scope, availability } = useAccountData();
   const online = useSyncExternalStore(
     subscribe,
@@ -25,7 +26,7 @@ export function useQuestEditor(id: string, creating: boolean, onDeleted: () => v
   const [seed] = useState(() => questForm(null));
   const fresh = (base: QuestResponse): Local => ({
     base,
-    draft: base.quest ? questForm(base.quest.definition) : seed,
+    draft: base.quest ? questForm(base.quest.definition) : initialDraft && base.revision === 0 ? { ...seed, quest: initialDraft } : seed,
     state: 'ready',
   });
   const dirty = (value: Local) =>

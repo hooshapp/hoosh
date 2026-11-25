@@ -12,12 +12,14 @@ export function QuestCard({
   onPersonalize,
   busy = false,
   stacked,
+  saved = false,
 }: {
   suggestion: QuestSuggestion;
   onAccept?: (id: string) => void;
   onPersonalize?: (id: string) => void;
   busy?: boolean;
   stacked: boolean;
+  saved?: boolean;
 }) {
   return (
     <View style={styles.card} testID={`quest-card-${suggestion.id}`}>
@@ -57,7 +59,7 @@ export function QuestCard({
         <View style={[styles.actions, stacked && styles.stacked]}>
           <Button
             label="Personalize"
-            accessibilityLabel={`Personalize ${suggestion.title}`}
+            accessibilityLabel={`${saved ? 'Edit' : 'Personalize'} ${suggestion.title}`}
             variant="secondary"
             busy={busy}
             busyLabel="Working…"
@@ -67,7 +69,7 @@ export function QuestCard({
             labelStyle={[styles.actionLabel, styles.personalizeLabel]}
             onPress={() => onPersonalize?.(suggestion.id)}
           />
-          <Button
+          {saved ? null : <Button
             label="Accept"
             accessibilityLabel={`Accept ${suggestion.title}`}
             busy={busy}
@@ -81,7 +83,7 @@ export function QuestCard({
             style={styles.accept}
             labelStyle={styles.actionLabel}
             onPress={() => onAccept?.(suggestion.id)}
-          />
+          />}
         </View>
       </View>
     </View>

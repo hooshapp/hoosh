@@ -1,3 +1,4 @@
+import tone from '../../assets/dashboard/settings-tone.svg';
 import user from '../../assets/icons/settings/user.svg';
 import gender from '../../assets/icons/settings/gender.svg';
 import apps from '../../assets/icons/settings/apps.svg';
@@ -9,6 +10,7 @@ import info from '../../assets/icons/settings/info.svg';
 import chevron from '../../assets/icons/settings/chevron.svg';
 
 export const settingsAssets = {
+  tone: { source: tone, width: 18, height: 18 },
   user: { source: user, width: 18, height: 18 },
   gender: { source: gender, width: 18, height: 18 },
   apps: { source: apps, width: 18, height: 18 },

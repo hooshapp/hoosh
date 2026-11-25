@@ -14,6 +14,7 @@ function setup() {
   let settings = {
     user_id,
     revision: 1,
+    personalization: { age: 24, gender: 'Male', nudge_tone: 'Supportive' },
     activities: { selected_activity_ids: ['reading'], custom_text: null as string | null },
     plan_draft: {
       weekdays: [0],
@@ -42,6 +43,7 @@ function setup() {
       revision: input.expected_revision + 1,
       ...(input.activities ? { activities: input.activities } : {}),
       ...(Object.hasOwn(input, 'plan_draft') ? { plan_draft: input.plan_draft } : {}),
+      ...(input.personalization ? { personalization: input.personalization } : {}),
     };
     return { settings };
   });
@@ -152,3 +154,32 @@ test('an unconfirmed save remains dirty behind real Router removal and cannot re
 jest.mock('@/components/ui/details-panel', () => ({
   DetailsPanel: ({ children }: { children: import('react').ReactNode }) => children,
 }));
+
+
+test('Gender and Nudge Tone use their inline editors, persist, and reopen with the acknowledged choice', async () => {
+  const app = setup();
+  await mount(app);
+  await userEvent.press(await screen.findByRole('button', { name: /^Gender\./ }));
+  await userEvent.press(screen.getByRole('radio', { name: 'Female' }));
+  await userEvent.press(screen.getByRole('button', { name: 'Done' }));
+  await screen.findByRole('button', { name: 'Gender. Female' });
+  expect(app.patch).toHaveBeenLastCalledWith(expect.objectContaining({ personalization: expect.objectContaining({ gender: 'Female', age: 24 }) }));
+  await userEvent.press(screen.getByRole('button', { name: /^Nudge Tone\./ }));
+  await userEvent.press(screen.getByRole('radio', { name: 'Playful' }));
+  await userEvent.press(screen.getByRole('button', { name: 'Done' }));
+  await screen.findByRole('button', { name: 'Nudge Tone. Playful' });
+  await userEvent.press(screen.getByRole('button', { name: 'Nudge Tone. Playful' }));
+  expect(screen.getByRole('radio', { name: 'Playful' })).toHaveProp('accessibilityState', expect.objectContaining({ checked: true }));
+  expect(app.patch).toHaveBeenLastCalledWith(expect.objectContaining({ personalization: expect.objectContaining({ gender: 'Female', nudge_tone: 'Playful' }) }));
+});
+
+test('App Sessions saves through the inline row and reopening reads the saved values', async () => {
+  const app = setup();
+  await mount(app);
+  await userEvent.press(await screen.findByRole('button', { name: /^App Sessions\./ }));
+  await userEvent.press(screen.getByRole('button', { name: 'Increase sessions per day' }));
+  await userEvent.press(screen.getByRole('button', { name: 'Increase minutes per session' }));
+  await userEvent.press(screen.getByRole('button', { name: 'Save sessions' }));
+  await screen.findByRole('button', { name: /App Sessions\. 1 sessions\/day · 1 min each/ });
+  expect(app.patch).toHaveBeenLastCalledWith(expect.objectContaining({ plan_draft: expect.objectContaining({ session_count: 1, session_minutes: 1, weekdays: [0] }) }));
+});

@@ -30,6 +30,7 @@ export type HomeScreenProps = {
   feeding?: boolean;
   recommendationBusy?: boolean;
   recommendationFeedback?: ReactNode;
+  acceptedQuest?: boolean;
 };
 /** Source Home composition; connected features own policy, freshness and account scoping. */
 export function HomeScreen({
@@ -45,6 +46,7 @@ export function HomeScreen({
   feeding = false,
   recommendationBusy = false,
   recommendationFeedback,
+  acceptedQuest = false,
 }: HomeScreenProps) {
   const model = validateHomeDisplay(input);
   const [contentWidth, setContentWidth] = useState<number>();
@@ -82,15 +84,18 @@ export function HomeScreen({
           onSkip={onSkipRecommendation}
           busy={recommendationBusy}
           stacked={stacked}
+          acceptedQuest={acceptedQuest}
+          feedback={recommendationFeedback}
         />
-        {recommendationFeedback}
-        <View style={styles.streak} testID="home-streak">
+        <View style={styles.streak} testID="home-streak" accessibilityHint={model.streak.state === 'unavailable' ? 'A streak appears after eligible completed days are verified.' : undefined}>
           <View style={styles.streakText}>
             <Text style={styles.streakLabel}>Current streak</Text>
             <Text style={styles.streakValue}>
               {model.streak.state === 'ready'
                 ? `🔥 ${model.streak.value.days} ${model.streak.value.days === 1 ? 'day' : 'days'}`
-                : unavailableLabel(model.streak.state)}
+                : model.streak.state === 'unavailable'
+                  ? '—'
+                  : unavailableLabel(model.streak.state)}
             </Text>
           </View>
           {model.streak.state === 'ready' &&
