@@ -113,7 +113,7 @@ internal object QuestScheduleChecks {
       val d = Memory(); val e = InterventionEngine(d); apply(e)
       val schedule = WeeklySchedule(listOf(0), "09:00", "11:00", false, "UTC")
       val both = e.install(OWNER, 1, 2, SavedSelection(2, setOf(APP)), WeeklySchedules.compile(schedule, before), policy, before, WeeklyInstallation(schedule, setOf(APP)))
-      check(e.needed(both, APP, during, 1, 1).size == 2)
+      check(e.needed(both, APP, during, 1, 1).size == 3)
       val stopped = e.cancel(OWNER, 2, null, during)
       check(e.needed(stopped, APP, during, 1, 1).single().reasonId.startsWith("q_"))
     }

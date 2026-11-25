@@ -17,16 +17,15 @@ enum ProtectionDeviceClock {
     return value
   }
   private static func bootIdentity() throws -> String {
-    var size = 0
-    guard sysctlbyname("kern.bootsessionuuid", nil, &size, nil, 0) == 0, size > 0, size <= 128 else {
-      throw ProtectionStoreError.unavailable
-    }
-    var bytes = [UInt8](repeating: 0, count: size)
-    let result = bytes.withUnsafeMutableBytes { sysctlbyname("kern.bootsessionuuid", $0.baseAddress, &size, nil, 0) }
-    guard result == 0, size <= bytes.count,
-          let uuid = UUID(uuidString: String(decoding: bytes.prefix(size).prefix(while: { $0 != 0 }), as: UTF8.self)) else {
-      throw ProtectionStoreError.unavailable
-    }
-    return uuid.uuidString.lowercased()
+    // Public Darwin boot-time MIB works in the iOS app sandbox; the boot-session
+    // UUID sysctl is not available there. A wall-clock correction can change this
+    // marker and conservatively invalidate an allowance; it never extends one.
+    var boot = timeval()
+    var size = MemoryLayout<timeval>.size
+    var mib: [Int32] = [CTL_KERN, KERN_BOOTTIME]
+    guard sysctl(&mib, u_int(mib.count), &boot, &size, nil, 0) == 0,
+          size == MemoryLayout<timeval>.size, boot.tv_sec > 0,
+          boot.tv_usec >= 0, boot.tv_usec < 1000000 else { throw ProtectionStoreError.unavailable }
+    return "darwin-boot:\(boot.tv_sec):\(boot.tv_usec)"
   }
 }

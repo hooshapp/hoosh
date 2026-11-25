@@ -31,6 +31,7 @@ import NewQuest from '@/app/quest/new';
 import Tabs from '@/app/(tabs)/_layout';
 import Home from '@/app/(tabs)/index';
 import Settings from '@/app/(tabs)/settings';
+import { AccountPlanControls } from './account-plan-controls';
 import Quests from '@/app/(tabs)/quests';
 import History from '@/app/(tabs)/history';
 import PreferenceDetail from '@/app/settings/[field]';
@@ -100,7 +101,9 @@ const routes = {
   'quest/new': NewQuest,
   '(tabs)/_layout': Tabs,
   '(tabs)/index': Home,
-  '(tabs)/settings': Settings,
+  // Explicit harness retains transaction/recovery coverage for the old controls.
+  // These controls are no longer mounted by production Settings.
+  '(tabs)/settings': () => <><Settings /><AccountPlanControls /></>,
   '(tabs)/quests': Quests,
   '(tabs)/history': History,
   'settings/[field]': PreferenceDetail,
@@ -524,26 +527,50 @@ test('an unavailable API identity keeps the signed-in app from binding native st
   expect(f.port.interventionClaimOwner).not.toHaveBeenCalled();
 });
 
-test('saved editor changes update account draft only; explicit Apply then uses the newly acknowledged draft', async () => {
+test('production Settings applies a confirmed Save directly without a separate device schedule section', async () => {
   const f = fixture();
-  await renderRouter(routes, { initialUrl: '/settings' });
-  await screen.findByText('No weekly plan applied');
+  await renderRouter({ ...routes, '(tabs)/settings': Settings }, { initialUrl: '/settings' });
+  await screen.findByRole('button', { name: /^Active Days\./ });
+  expect(screen.queryByText('Manage device schedule')).toBeNull();
+  expect(screen.queryByRole('button', { name: 'Apply saved plan' })).toBeNull();
+  expect(f.port.scheduleApply).not.toHaveBeenCalled();
   await press(/^Active Days\./);
-  await screen.findByRole('checkbox', { name: 'Thursday' });
-  await fireEvent.press(screen.getByRole('checkbox', { name: 'Thursday' }));
+  await fireEvent.press(await screen.findByRole('checkbox', { name: 'Thursday' }));
   await press('Save days');
   await waitFor(() => expect(f.settings.get(A)?.settings?.plan_draft?.weekdays).toEqual([0, 2, 3]));
-  expect(f.port.scheduleApply).not.toHaveBeenCalled();
-  expect(screen).toHavePathname('/settings');
-  await screen.findByRole('button', { name: 'Apply saved plan' });
-  await waitFor(() =>
-    expect(
-      screen.getByRole('button', { name: 'Apply saved plan' }),
-    ).toBeEnabled(),
-  );
-  await press('Apply saved plan');
-  await screen.findByText('Plan applied to this device.');
+  await waitFor(() => expect(f.port.scheduleApply).toHaveBeenCalledTimes(1));
+  await waitFor(() => expect(screen.queryByRole('checkbox', { name: 'Thursday' })).toBeNull());
   expect(f.port.scheduleApply.mock.calls[0][5].weekdays).toEqual([0, 2, 3]);
+  expect(f.port.interventionClaimOwner).not.toHaveBeenCalled();
+  expect(screen).toHavePathname('/settings');
+});
+
+test('Save can activate a server-saved plan even when its fields have no new edits', async () => {
+  const f = fixture();
+  await renderRouter({ ...routes, '(tabs)/settings': Settings }, { initialUrl: '/settings' });
+  await screen.findByRole('button', { name: /^App Sessions\./ });
+  await press(/^App Sessions\./);
+  await screen.findByRole('button', { name: 'Save sessions' });
+  await waitFor(() => expect(screen.getByRole('button', { name: 'Save sessions' })).toBeEnabled());
+  await press('Save sessions');
+  await waitFor(() => expect(f.port.scheduleApply).toHaveBeenCalledTimes(1));
+  expect(f.port.scheduleApply.mock.calls[0][5]).toEqual(SAVED);
+  expect(settingsWrites(f)).toHaveLength(0);
+});
+
+test('a lost native Save receipt stays inline and Retry reads back without a second installation', async () => {
+  const f = fixture(); f.loseApply();
+  await renderRouter({ ...routes, '(tabs)/settings': Settings }, { initialUrl: '/settings' });
+  await screen.findByRole('button', { name: /^Active Days\./ });
+  await press(/^Active Days\./);
+  await fireEvent.press(await screen.findByRole('checkbox', { name: 'Thursday' }));
+  await press('Save days');
+  await screen.findByRole('button', { name: 'Retry plan update' });
+  expect(f.port.scheduleApply).toHaveBeenCalledTimes(1);
+  await press('Retry plan update');
+  await waitFor(() => expect(screen.queryByRole('button', { name: 'Retry plan update' })).toBeNull());
+  expect(f.port.scheduleApply).toHaveBeenCalledTimes(1);
+  expect(f.port.interventionCancel).not.toHaveBeenCalled();
 });
 
 test('offline blocks Preview/Apply but actual installed weekly Stop remains available', async () => {
@@ -1287,7 +1314,7 @@ async function openProtectionReview(progress: object = reviewedProtection) {
   await screen.findByRole('header', { name: 'Review device setup' });
 }
 
-test.each([false, true])('normal sign-in completes a chosen plan, then applies from Settings (manual path: %s)', async manual => {
+test.each([false, true])('normal sign-in applies the chosen plan before completion (manual path: %s)', async manual => {
   // This fixture supplies the Android package-selection port; native iOS picker has separate flow coverage.
   jest.replaceProperty(Platform, 'OS', 'android');
   const f = fixture({ signedOut: true, settingsMissing: true });
@@ -1342,12 +1369,10 @@ test.each([false, true])('normal sign-in completes a chosen plan, then applies f
     expect(saved).toMatchObject({ budget_scope: 'all_selected_apps', session_count: 8, session_minutes: 15 });
     expect(saved?.weekdays).toEqual(manual ? [0, 1, 2, 3, 4, 6] : [0, 1, 2, 3, 4]);
     expect(screen.queryByText('Check latest settings')).toBeNull();
-    expect(f.port.scheduleApply).not.toHaveBeenCalled();
+    expect(f.port.scheduleApply).toHaveBeenCalledTimes(1);
     await fireEvent.press(screen.getByRole('button', { name: 'Let’s start →' }));
     await fireEvent.press(await screen.findByRole('tab', { name: 'Settings' }));
-    await screen.findByText('No weekly plan applied');
-    await pressWhenReady('Apply saved plan');
-    await screen.findByText('Plan applied to this device.');
+    await screen.findByRole('button', { name: /^Active Days\./ });
     expect(f.port.scheduleApply).toHaveBeenCalledWith(`fixture:${A}`, HANDLE, 0, 1, 2, saved);
     expect(settingsWrites(f)).toHaveLength(1);
     expect(f.port.selectionCommit).toHaveBeenCalledTimes(1);

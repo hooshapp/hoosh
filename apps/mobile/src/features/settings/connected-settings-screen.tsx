@@ -7,11 +7,9 @@ import { usePersonalization } from './use-personalization';
 import { PersonalizationControls } from './personalization-controls';
 import { Platform, Text } from 'react-native';
 import { router } from 'expo-router';
-import { DetailsPanel } from '@/components/ui/details-panel';
 import { SettingsRow } from './settings-row';
 import { settingsAssets } from '@/design/settings-assets';
 import { useAccountWeeklyPlan } from '@/features/plans/account-weekly-plan';
-import { AccountPlanControls } from '@/features/plans/account-plan-controls';
 import { ProfileSurface } from '@/features/account/profile-surface';
 import { AppSignOutAction } from '@/features/account/app-runtime-context';
 import { SettingsScreen, type SettingsScreenProps } from './settings-screen';
@@ -65,12 +63,10 @@ export function ConnectedSettingsScreen({
         calendars: { googleCalendar: { state: 'unavailable' }, appleCalendar: { state: 'unavailable' } },
         personalInfo: { age: personalValue(answers?.age?.toString()), gender: personalValue(answers?.gender) },
       }}
-      planDraftOnly
       onEdit={{ age: () => router.push({ pathname: '/settings/[field]', params: { field: 'age' } }), gender: () => toggle('gender'), days: () => toggle('days'), hours: () => toggle('hours'), sessions: () => toggle('sessions') }}
       inlineEditor={expanded === 'days' || expanded === 'hours' || expanded === 'sessions' ? { field: expanded, content: <InlinePlanPreference field={expanded} onDone={closeEditor} onDirty={setPlanDirty} /> } : expanded === 'gender' ? { field: 'gender', content: <PersonalizationControls editor={personal} field="gender" onDone={closeEditor} /> } : undefined}
       toneContent={<>{personal.tonePending ? <Text accessibilityRole="alert">Your tone is saved. It could not yet be applied on this device.</Text> : null}<SettingsRow label="Nudge Tone" value={personalValue(answers?.nudge_tone)} icon={settingsAssets.tone} iconID="settings-tone" inline
         onPress={() => toggle('nudge_tone')} inlineEditor={expanded === 'nudge_tone' ? <PersonalizationControls editor={personal} field="nudge_tone" onDone={closeEditor} /> : undefined} /></>}
-      planContent={device ? <DetailsPanel title="Manage device schedule" description="Review and apply your saved plan"><AccountPlanControls /></DetailsPanel> : undefined}
       deviceContent={<><SettingsRow label={Platform.OS === 'ios' ? "Screen Time access" : "App usage access"}
         value={{ state: 'ready', text: 'Permissions and selected apps' }} icon={settingsAssets.apps} iconID="settings-device-access"
         onView={() => router.push('/settings/device')} />{Platform.OS === 'android' ? <HistoryCollectionSettings /> : null}</>}

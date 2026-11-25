@@ -27,6 +27,15 @@ enum ProtectionRuntimePlanner {
       let values = try ProtectionSchedules.weekly(weekly, now: now, selectionRevision: selection.revision, selection: selection.encodedTokens)
       windows += values
       if let next = values.first { upcoming.append(next) }
+      // Swift entry protection remains on between planned focus windows.
+      // Its daily boundary renews natively and does not reset session history.
+      let day = try ScheduleCalendar.localDay(now, timezone: weekly.timezone_id)
+      if let entry = try ScheduleCalendar.occurrence(day: day,
+        hours: .init(start_local: "00:00", end_local: "00:00", next_day: true),
+        timezone: weekly.timezone_id, reason: "entry_\(ScheduleCalendar.label(day))",
+        selectionRevision: selection.revision, selection: selection.encodedTokens) {
+        windows.append(entry); upcoming.append(entry)
+      }
     }
     for quest in record.quests where quest.enabled {
       for version in quest.versions {
@@ -37,7 +46,9 @@ enum ProtectionRuntimePlanner {
       }
     }
     guard upcoming.count <= 512, Set(windows.map(\.reasonID)).count == windows.count else { throw ScheduleFailure.capacity }
-    result.activeSnapshots = ProtectionSchedules.preserveActive(windows.filter { $0.active(at: now) }, previous: record.activeSnapshots, now: now)
+    let active = windows.filter { $0.active(at: now) }
+    result.activeSnapshots = ProtectionSchedules.preserveActive(active.filter { !$0.reasonID.hasPrefix("entry_") },
+      previous: record.activeSnapshots, now: now) + active.filter { $0.reasonID.hasPrefix("entry_") }
     let prefix = prefix(owner) + "r\(record.revision)."
     let monitors = try upcoming.map { window -> (name: String, envelope: ProtectionMonitorEnvelope) in
       let key = Data("\(window.reasonID):\(window.startsAt):\(window.endsAt)".utf8)

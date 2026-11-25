@@ -14,24 +14,28 @@
 		0C08605F2FBFABD9001B9C60 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 0C08605E2FBFABD9001B9C60 /* FirebaseFirestore */; };
 		0C08606B2FBFAF98001B9C60 /* OpenAI in Frameworks */ = {isa = PBXBuildFile; productRef = 0C08606A2FBFAF98001B9C60 /* OpenAI */; };
 		0C85A4082FE0DE450097BC0D /* Disconnect.appex in Embed ExtensionKit Extensions */ = {isa = PBXBuildFile; fileRef = 0C85A3FC2FE0DE450097BC0D /* Disconnect.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		0ED4F7CDF050C152A19098ED /* SpaceGrotesk_700Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EFBCF4D06FE17381829C8FD8 /* SpaceGrotesk_700Bold.ttf */; };
 		11E305E7D89B8C2DD67C48B9 /* ProtectionNativeEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38D790EABFFACF4FBECBF96 /* ProtectionNativeEngine.swift */; };
 		132A517AE1497DEE7E5F2AF8 /* ProtectionNativeEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38D790EABFFACF4FBECBF96 /* ProtectionNativeEngine.swift */; };
 		158F0A282F1495E4526F924D /* ProtectionOSAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E835DB32CA93799B6AAF631D /* ProtectionOSAdapter.swift */; };
 		1BA69D779B5A3C00EC227F71 /* ProtectionSchedules.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA59518CA0637B15B8F81518 /* ProtectionSchedules.swift */; };
 		1DD2A2AC47DC5B28FBCD3608 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C06B398C2BEDEECDCC263C49 /* ExpoModulesProvider.swift */; };
 		26A5321472B2E8B95C49DFB4 /* ProtectionRuntimeCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44060EB4DAF7970C5DDCF154 /* ProtectionRuntimeCoordinator.swift */; };
+		275CF71E3E10A524BCBF3A98 /* nudge-dino.png in Resources */ = {isa = PBXBuildFile; fileRef = 6E5B8F4FB314F9E7C7DD4F67 /* nudge-dino.png */; };
 		27E1288EFA27EC2277538836 /* ProtectionSessions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C39033201A4ED68E5A550340 /* ProtectionSessions.swift */; };
 		2C86A9FA2E2453A8F9BC8D61 /* ProtectionOSAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E835DB32CA93799B6AAF631D /* ProtectionOSAdapter.swift */; };
 		2E28705A00FD1CE99DBDF39A /* ProtectionNativeEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38D790EABFFACF4FBECBF96 /* ProtectionNativeEngine.swift */; };
 		3F5B2EAA4804A322CAD292B9 /* ProtectionNativeDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC6F4D17326CADACB09C926 /* ProtectionNativeDriver.swift */; };
 		417641FF65B70BDD7FD9EAC7 /* ProtectionRuntimeCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44060EB4DAF7970C5DDCF154 /* ProtectionRuntimeCoordinator.swift */; };
 		46E2C4879A45592E7819C690 /* ProtectionOSAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E835DB32CA93799B6AAF631D /* ProtectionOSAdapter.swift */; };
+		4B8D694D347AF61075D46099 /* SpaceGrotesk-LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 876F5F45292676EFC9680B17 /* SpaceGrotesk-LICENSE.txt */; };
 		4C0ABB143D986F4AC4DBC7C1 /* SharedProtectionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BFAE8A4A548DCB79A82CCB4 /* SharedProtectionStore.swift */; };
 		55CF4D6B30C9733AFCF0B52D /* ProtectionSchedules.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA59518CA0637B15B8F81518 /* ProtectionSchedules.swift */; };
 		592652D8C0833F8B98402CED /* ProtectionSessions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C39033201A4ED68E5A550340 /* ProtectionSessions.swift */; };
 		59AA9E6836EADD320A996F1E /* ProtectionDeviceClock.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBDB6A0A5ABF2530848EC472 /* ProtectionDeviceClock.swift */; };
 		5A2A7BCD4AC4546CA4253E7F /* SharedProtectionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BFAE8A4A548DCB79A82CCB4 /* SharedProtectionStore.swift */; };
 		71D795DEEFA87C07ACA3278F /* ProtectionBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A37A8EBFBDBBE1390900A5 /* ProtectionBridge.swift */; };
+		722C0C845584EDA3F03FB209 /* HooshNudgeContent.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 8F078E7E6EB574A9671C310A /* HooshNudgeContent.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		7B1FCF73EF202A6F96184424 /* ProtectionBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A37A8EBFBDBBE1390900A5 /* ProtectionBridge.swift */; };
 		7F339E737139E099A9378BEC /* ProtectionDeviceClock.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBDB6A0A5ABF2530848EC472 /* ProtectionDeviceClock.swift */; };
 		7FE16228C152FFC950BBA24A /* ProtectionSchedules.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA59518CA0637B15B8F81518 /* ProtectionSchedules.swift */; };
@@ -39,17 +43,20 @@
 		8BCE1DBCFD78155BE8981CAF /* ProtectionCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 758ABE16827A35EF0FD7614D /* ProtectionCommands.swift */; };
 		97ACD39F97C79AD29B7B19E7 /* libPods-DisconnectApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C6193C041AEF6C103BE4DB69 /* libPods-DisconnectApp.a */; };
 		994DC7941F61CEC5F8F52A99 /* ProtectionExpiryPlanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94F3A8F4785DA0905493C536 /* ProtectionExpiryPlanner.swift */; };
+		99E13FC1A1BC9F2F18F3D9DB /* NudgeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A7B3B2D2657A990B0D282DC /* NudgeViewController.swift */; };
 		9EFFF08DAD523614CA5085A0 /* ProtectionTransactions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46F149E04541D8BE72AD78D /* ProtectionTransactions.swift */; };
 		A48A7229C1F82E5890B2309E /* ProtectionNativeDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC6F4D17326CADACB09C926 /* ProtectionNativeDriver.swift */; };
 		A5A5D98A17FA814AD2245B36 /* ProtectionTransactions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46F149E04541D8BE72AD78D /* ProtectionTransactions.swift */; };
 		AA0000130000000000000013 /* DisconnectShieldConfigurationExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = AA0000030000000000000003 /* DisconnectShieldConfigurationExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		AA0000140000000000000014 /* DisconnectShieldActionExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = AA0000040000000000000004 /* DisconnectShieldActionExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		ADF5D37957AADFFDC148B297 /* ProtectionCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 758ABE16827A35EF0FD7614D /* ProtectionCommands.swift */; };
+		B362308B5BA0520332C58174 /* SpaceGrotesk_400Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 13B72AC3068EEA89F6B83EBA /* SpaceGrotesk_400Regular.ttf */; };
 		BB0000100000000000000010 /* DisconnectDeviceActivityMonitorExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = BB0000020000000000000002 /* DisconnectDeviceActivityMonitorExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BEF84CF0719E0BB179C521C9 /* ProtectionBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22A37A8EBFBDBBE1390900A5 /* ProtectionBridge.swift */; };
 		C4DFA5DC4BB5F910CB16655B /* ProtectionRuntimePlanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0DE6EDA97FE26D5FCD49B07 /* ProtectionRuntimePlanner.swift */; };
 		C61B9B084161BDDCA037ABA9 /* ProtectionExpiryPlanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94F3A8F4785DA0905493C536 /* ProtectionExpiryPlanner.swift */; };
 		C8436700FC21350055DDAFD4 /* ProtectionRuntimeCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44060EB4DAF7970C5DDCF154 /* ProtectionRuntimeCoordinator.swift */; };
+		CE377AE28CF478D1B32E0503 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2BC7E2DB86CE40F81C8DA34 /* Foundation.framework */; };
 		DF795F9F2E7CE0D0BCD66F91 /* ProtectionCommands.swift in Sources */ = {isa = PBXBuildFile; fileRef = 758ABE16827A35EF0FD7614D /* ProtectionCommands.swift */; };
 		E0B8933CD876913A754887C5 /* SharedProtectionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BFAE8A4A548DCB79A82CCB4 /* SharedProtectionStore.swift */; };
 		E23DD88B29DFBF2E84B2759D /* ProtectionNativeDriver.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC6F4D17326CADACB09C926 /* ProtectionNativeDriver.swift */; };
@@ -80,6 +87,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 0C85A3FB2FE0DE450097BC0D;
 			remoteInfo = Disconnect;
+		};
+		6E80838C77453C81C4523F35 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0C0860252FBFA948001B9C60 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DBBFB6573173D930692285AC;
+			remoteInfo = HooshNudgeContent;
 		};
 		AA0000150000000000000015 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -125,6 +139,7 @@
 				AA0000130000000000000013 /* DisconnectShieldConfigurationExtension.appex in Embed App Extensions */,
 				AA0000140000000000000014 /* DisconnectShieldActionExtension.appex in Embed App Extensions */,
 				BB0000100000000000000010 /* DisconnectDeviceActivityMonitorExtension.appex in Embed App Extensions */,
+				722C0C845584EDA3F03FB209 /* HooshNudgeContent.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -136,13 +151,18 @@
 		0C08603A2FBFA949001B9C60 /* DisconnectAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DisconnectAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C0860442FBFA949001B9C60 /* DisconnectAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DisconnectAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C85A3FC2FE0DE450097BC0D /* Disconnect.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.extensionkit-extension"; includeInIndex = 0; path = Disconnect.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		13B72AC3068EEA89F6B83EBA /* SpaceGrotesk_400Regular.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = SpaceGrotesk_400Regular.ttf; sourceTree = "<group>"; };
 		22A37A8EBFBDBBE1390900A5 /* ProtectionBridge.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProtectionBridge.swift; path = "../modules/hoosh-screen-time/ios/ProtectionBridge.swift"; sourceTree = SOURCE_ROOT; };
 		44060EB4DAF7970C5DDCF154 /* ProtectionRuntimeCoordinator.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProtectionRuntimeCoordinator.swift; path = "../modules/hoosh-screen-time/ios/ProtectionRuntimeCoordinator.swift"; sourceTree = SOURCE_ROOT; };
 		461A2ED8D9EBA79499DE5376 /* Pods-DisconnectApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DisconnectApp.debug.xcconfig"; path = "Target Support Files/Pods-DisconnectApp/Pods-DisconnectApp.debug.xcconfig"; sourceTree = "<group>"; };
-		6C01F82EAB6F7C0494062376 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		5A7B3B2D2657A990B0D282DC /* NudgeViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NudgeViewController.swift; sourceTree = "<group>"; };
+		6C01F82EAB6F7C0494062376 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		6E5B8F4FB314F9E7C7DD4F67 /* nudge-dino.png */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = image.png; path = "nudge-dino.png"; sourceTree = "<group>"; };
 		758ABE16827A35EF0FD7614D /* ProtectionCommands.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProtectionCommands.swift; path = "../modules/hoosh-screen-time/ios/ProtectionCommands.swift"; sourceTree = SOURCE_ROOT; };
 		7BFAE8A4A548DCB79A82CCB4 /* SharedProtectionStore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SharedProtectionStore.swift; path = "../modules/hoosh-screen-time/ios/SharedProtectionStore.swift"; sourceTree = SOURCE_ROOT; };
+		876F5F45292676EFC9680B17 /* SpaceGrotesk-LICENSE.txt */ = {isa = PBXFileReference; includeInIndex = 1; path = "SpaceGrotesk-LICENSE.txt"; sourceTree = "<group>"; };
 		8BD594DD23C53FF58EBEF3BF /* Pods-DisconnectApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DisconnectApp.release.xcconfig"; path = "Target Support Files/Pods-DisconnectApp/Pods-DisconnectApp.release.xcconfig"; sourceTree = "<group>"; };
+		8F078E7E6EB574A9671C310A /* HooshNudgeContent.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = HooshNudgeContent.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		94F3A8F4785DA0905493C536 /* ProtectionExpiryPlanner.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProtectionExpiryPlanner.swift; path = "../modules/hoosh-screen-time/ios/ProtectionExpiryPlanner.swift"; sourceTree = SOURCE_ROOT; };
 		AA0000030000000000000003 /* DisconnectShieldConfigurationExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = DisconnectShieldConfigurationExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA0000040000000000000004 /* DisconnectShieldActionExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = DisconnectShieldActionExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -153,9 +173,12 @@
 		C38D790EABFFACF4FBECBF96 /* ProtectionNativeEngine.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProtectionNativeEngine.swift; path = "../modules/hoosh-screen-time/ios/ProtectionNativeEngine.swift"; sourceTree = SOURCE_ROOT; };
 		C39033201A4ED68E5A550340 /* ProtectionSessions.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProtectionSessions.swift; path = "../modules/hoosh-screen-time/ios/ProtectionSessions.swift"; sourceTree = SOURCE_ROOT; };
 		C6193C041AEF6C103BE4DB69 /* libPods-DisconnectApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DisconnectApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D216B9DE151D40CC2BDED241 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E2BC7E2DB86CE40F81C8DA34 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		E835DB32CA93799B6AAF631D /* ProtectionOSAdapter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProtectionOSAdapter.swift; path = "../modules/hoosh-screen-time/ios/ProtectionOSAdapter.swift"; sourceTree = SOURCE_ROOT; };
 		EA59518CA0637B15B8F81518 /* ProtectionSchedules.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProtectionSchedules.swift; path = "../modules/hoosh-screen-time/ios/ProtectionSchedules.swift"; sourceTree = SOURCE_ROOT; };
 		EBDB6A0A5ABF2530848EC472 /* ProtectionDeviceClock.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProtectionDeviceClock.swift; path = "../modules/hoosh-screen-time/ios/ProtectionDeviceClock.swift"; sourceTree = SOURCE_ROOT; };
+		EFBCF4D06FE17381829C8FD8 /* SpaceGrotesk_700Bold.ttf */ = {isa = PBXFileReference; includeInIndex = 1; path = SpaceGrotesk_700Bold.ttf; sourceTree = "<group>"; };
 		F0DE6EDA97FE26D5FCD49B07 /* ProtectionRuntimePlanner.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ProtectionRuntimePlanner.swift; path = "../modules/hoosh-screen-time/ios/ProtectionRuntimePlanner.swift"; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -290,6 +313,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		9BC7CD75F2F4F376C844FCA0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CE377AE28CF478D1B32E0503 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AA0000060000000000000006 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -338,6 +369,7 @@
 				4FCAA425492CC08D9F76969E /* Frameworks */,
 				2ACF35F13AC83961B5911503 /* ExpoModulesProviders */,
 				7F228252651B1399DB649CAB /* SharedProductProtection */,
+				D096F05166B9109F4CFE289B /* HooshNudgeContent */,
 			);
 			sourceTree = "<group>";
 		};
@@ -351,6 +383,7 @@
 				0C0860442FBFA949001B9C60 /* DisconnectAppUITests.xctest */,
 				0C85A3FC2FE0DE450097BC0D /* Disconnect.appex */,
 				BB0000020000000000000002 /* DisconnectDeviceActivityMonitorExtension.appex */,
+				8F078E7E6EB574A9671C310A /* HooshNudgeContent.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -367,6 +400,7 @@
 			isa = PBXGroup;
 			children = (
 				C6193C041AEF6C103BE4DB69 /* libPods-DisconnectApp.a */,
+				FFC1EC1D9B8B66A30D0A164F /* iOS */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -377,7 +411,6 @@
 				461A2ED8D9EBA79499DE5376 /* Pods-DisconnectApp.debug.xcconfig */,
 				8BD594DD23C53FF58EBEF3BF /* Pods-DisconnectApp.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -399,6 +432,28 @@
 				22A37A8EBFBDBBE1390900A5 /* ProtectionBridge.swift */,
 			);
 			name = SharedProductProtection;
+			sourceTree = "<group>";
+		};
+		D096F05166B9109F4CFE289B /* HooshNudgeContent */ = {
+			isa = PBXGroup;
+			children = (
+				5A7B3B2D2657A990B0D282DC /* NudgeViewController.swift */,
+				6E5B8F4FB314F9E7C7DD4F67 /* nudge-dino.png */,
+				13B72AC3068EEA89F6B83EBA /* SpaceGrotesk_400Regular.ttf */,
+				EFBCF4D06FE17381829C8FD8 /* SpaceGrotesk_700Bold.ttf */,
+				876F5F45292676EFC9680B17 /* SpaceGrotesk-LICENSE.txt */,
+				D216B9DE151D40CC2BDED241 /* Info.plist */,
+			);
+			name = HooshNudgeContent;
+			path = HooshNudgeContent;
+			sourceTree = "<group>";
+		};
+		FFC1EC1D9B8B66A30D0A164F /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				E2BC7E2DB86CE40F81C8DA34 /* Foundation.framework */,
+			);
+			name = iOS;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -426,6 +481,7 @@
 				AA0000180000000000000018 /* PBXTargetDependency */,
 				0C85A4072FE0DE450097BC0D /* PBXTargetDependency */,
 				BB0000090000000000000009 /* PBXTargetDependency */,
+				8F0C4987DDA17D072F59E903 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				0C08602F2FBFA948001B9C60 /* DisconnectApp */,
@@ -563,6 +619,23 @@
 			productReference = BB0000020000000000000002 /* DisconnectDeviceActivityMonitorExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		DBBFB6573173D930692285AC /* HooshNudgeContent */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 09A8DA5FAC00A23E0161D57F /* Build configuration list for PBXNativeTarget "HooshNudgeContent" */;
+			buildPhases = (
+				7076D2095C84C41A9C82733E /* Sources */,
+				9BC7CD75F2F4F376C844FCA0 /* Frameworks */,
+				3C225AC7DD6F541CE1F06122 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = HooshNudgeContent;
+			productName = HooshNudgeContent;
+			productReference = 8F078E7E6EB574A9671C310A /* HooshNudgeContent.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -623,6 +696,7 @@
 				0C0860432FBFA949001B9C60 /* DisconnectAppUITests */,
 				0C85A3FB2FE0DE450097BC0D /* Disconnect */,
 				BB0000070000000000000007 /* DisconnectDeviceActivityMonitorExtension */,
+				DBBFB6573173D930692285AC /* HooshNudgeContent */,
 			);
 		};
 /* End PBXProject section */
@@ -654,6 +728,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3C225AC7DD6F541CE1F06122 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				275CF71E3E10A524BCBF3A98 /* nudge-dino.png in Resources */,
+				B362308B5BA0520332C58174 /* SpaceGrotesk_400Regular.ttf in Resources */,
+				0ED4F7CDF050C152A19098ED /* SpaceGrotesk_700Bold.ttf in Resources */,
+				4B8D694D347AF61075D46099 /* SpaceGrotesk-LICENSE.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -689,9 +774,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-DisconnectApp/Pods-DisconnectApp-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-DisconnectApp/Pods-DisconnectApp-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -706,9 +795,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-DisconnectApp/Pods-DisconnectApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-DisconnectApp/Pods-DisconnectApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -721,7 +814,11 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
+			inputPaths = (
+			);
 			name = "Bundle React Native code and images";
+			outputPaths = (
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/bash;
 			shellScript = "/bin/bash \"$SRCROOT/bundle-shared-app.sh\"";
@@ -805,6 +902,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7076D2095C84C41A9C82733E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				99E13FC1A1BC9F2F18F3D9DB /* NudgeViewController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AA0000050000000000000005 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -882,6 +987,12 @@
 			isa = PBXTargetDependency;
 			target = 0C85A3FB2FE0DE450097BC0D /* Disconnect */;
 			targetProxy = 0C85A4062FE0DE450097BC0D /* PBXContainerItemProxy */;
+		};
+		8F0C4987DDA17D072F59E903 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = HooshNudgeContent;
+			target = DBBFB6573173D930692285AC /* HooshNudgeContent */;
+			targetProxy = 6E80838C77453C81C4523F35 /* PBXContainerItemProxy */;
 		};
 		AA0000160000000000000016 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1248,6 +1359,34 @@
 			};
 			name = Release;
 		};
+		6EFAD0DC70EEDBBF7923652B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 6;
+				DEVELOPMENT_TEAM = KBW8M9TJN2;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = HooshNudgeContent/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.AnishaDasgupta.DisconnectApp.HooshNudgeContent;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		AA00000C000000000000000C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1418,9 +1557,45 @@
 			};
 			name = Release;
 		};
+		FF761CB2AD0BFF4951939BDC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 6;
+				DEVELOPMENT_TEAM = KBW8M9TJN2;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = HooshNudgeContent/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0.1;
+				PRODUCT_BUNDLE_IDENTIFIER = com.AnishaDasgupta.DisconnectApp.HooshNudgeContent;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		09A8DA5FAC00A23E0161D57F /* Build configuration list for PBXNativeTarget "HooshNudgeContent" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6EFAD0DC70EEDBBF7923652B /* Release */,
+				FF761CB2AD0BFF4951939BDC /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		0C0860282FBFA948001B9C60 /* Build configuration list for PBXProject "DisconnectApp" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -41,14 +41,14 @@ internal object WeeklyScheduleChecks {
     case { val old = TimeZone.getDefault(); try { TimeZone.setDefault(TimeZone.getTimeZone("Asia/Tokyo")); val w = WeeklySchedules.compile(schedule(zone = "America/New_York"), at("2026-11-09T08:00:00Z")).first(); check(w.startsAt == at("2026-11-09T14:00:00Z")) } finally { TimeZone.setDefault(old) } }
     case { val w = WeeklySchedules.compile(schedule(listOf(6), "01:45", "02:30", zone = "Australia/Lord_Howe"), at("2026-10-03T12:00:00Z")).first(); check(w.endsAt > w.startsAt && w.endsAt - w.startsAt == 15 * 60000L) }
     case { val w = WeeklySchedules.compile(schedule(listOf(4), "09:00", "17:00", zone = "Pacific/Apia"), at("2011-12-29T22:00:00Z")); check(w.none { it.reasonId == "weekly_2011-12-30" }) }
-    case { val d = Memory(); val e = InterventionEngine(d); val r = install(e, schedule(), at("2026-11-09T08:00:00Z")); val later = at("2026-12-28T10:00:00Z"); check(e.needed(r, APP, later, 1, 1).single().reasonId == "weekly_2026-12-28"); check(e.read(OWNER)!!.plan.revision == 1) }
-    case { val d = Memory(); val e = InterventionEngine(d); val r = install(e, schedule(), at("2026-11-09T08:00:00Z")); check(e.needed(r, APP, at("2026-11-09T08:59:59Z"), 1, 1).isEmpty()); check(e.needed(r, APP, at("2026-11-09T09:00:00Z"), 1, 1).size == 1); check(e.needed(r, APP, at("2026-11-09T17:00:00Z"), 1, 1).isEmpty()) }
-    case { val d = Memory(); val e = InterventionEngine(d); val now = at("2026-11-09T10:00:00Z"); install(e, schedule(), now); val changed = install(e, schedule(), now + 1000, 1, setOf(OTHER)); check(e.needed(changed, APP, now + 1000, 1, 1).isNotEmpty()); check(e.needed(changed, OTHER, now + 1000, 1, 1).isEmpty()); check(e.needed(changed, OTHER, at("2026-11-16T10:00:00Z"), 1, 1).isNotEmpty()); check(e.needed(changed, APP, at("2026-11-16T10:00:00Z"), 1, 1).isEmpty()) }
-    case { val d = Memory(); val e = InterventionEngine(d); val now = at("2026-12-28T10:00:00Z"); install(e, schedule(), at("2026-11-09T10:00:00Z")); val changed = install(e, schedule(), now, 1, setOf(OTHER)); check(e.needed(changed, APP, now, 1, 1).isNotEmpty()); check(e.needed(changed, OTHER, now, 1, 1).isEmpty()) }
+    case { val d = Memory(); val e = InterventionEngine(d); val r = install(e, schedule(), at("2026-11-09T08:00:00Z")); val later = at("2026-12-28T10:00:00Z"); check(e.needed(r, APP, later, 1, 1).any { it.reasonId == "weekly_2026-12-28" }); check(e.read(OWNER)!!.plan.revision == 1) }
+    case { val d = Memory(); val e = InterventionEngine(d); val r = install(e, schedule(), at("2026-11-09T08:00:00Z")); check(e.needed(r, APP, at("2026-11-09T08:59:59Z"), 1, 1).single().reasonId.startsWith("entry_")); check(e.needed(r, APP, at("2026-11-09T09:00:00Z"), 1, 1).size == 2); check(e.needed(r, APP, at("2026-11-09T17:00:00Z"), 1, 1).single().reasonId.startsWith("entry_")) }
+    case { val d = Memory(); val e = InterventionEngine(d); val now = at("2026-11-09T10:00:00Z"); install(e, schedule(), now); val changed = install(e, schedule(), now + 1000, 1, setOf(OTHER)); check(e.needed(changed, APP, now + 1000, 1, 1).isNotEmpty()); check(e.needed(changed, OTHER, now + 1000, 1, 1).isNotEmpty()); check(e.needed(changed, OTHER, at("2026-11-16T10:00:00Z"), 1, 1).isNotEmpty()); check(e.needed(changed, APP, at("2026-11-16T10:00:00Z"), 1, 1).isEmpty()) }
+    case { val d = Memory(); val e = InterventionEngine(d); val now = at("2026-12-28T10:00:00Z"); install(e, schedule(), at("2026-11-09T10:00:00Z")); val changed = install(e, schedule(), now, 1, setOf(OTHER)); check(e.needed(changed, APP, now, 1, 1).isNotEmpty()); check(e.needed(changed, OTHER, now, 1, 1).isNotEmpty()) }
     case { val d = Memory(); val e = InterventionEngine(d); val now = at("2026-11-09T10:00:00Z"); install(e, schedule(), now); val allowed = e.allow(OWNER, 1, APP, now, 1000, 1); val changed = install(e, schedule(), now + 1000, 1); check(changed.daily == allowed.daily && changed.sessions == allowed.sessions); check(e.needed(changed, APP, now + 1000, 2000, 1).isEmpty()); val stopped = e.cancel(OWNER, 2, null, now + 2000); check(stopped.plan.weekly?.enabled == false && stopped.daily == allowed.daily); check(e.needed(stopped, APP, at("2026-11-16T10:00:00Z"), 1, 1).isEmpty()) }
     case { val d = Memory(); val e = InterventionEngine(d); val now = at("2026-11-09T10:00:00Z"); install(e, schedule(), now); try { install(e, schedule(), now, 0); error("stale") } catch (x: InterventionFailure) { check(x.code == "ERR_INTERVENTION_CONFLICT") }; check(e.read(OWNER)!!.plan.revision == 1) }
     case { val d = Memory(); val e = InterventionEngine(d); val now = at("2026-11-09T10:00:00Z"); install(e, schedule(), now); try { install(e, schedule(zone = "America/New_York"), now, 1); error("zone") } catch (x: InterventionFailure) { check(x.code == "ERR_INTERVENTION_TIMEZONE_MIGRATION") }; check(e.read(OWNER)!!.plan.policy.timezoneId == "UTC") }
-    case { val d = Memory(); val e = InterventionEngine(d); val now = at("2026-11-09T08:00:00Z"); val r = install(e, schedule(), now); val a = InterventionProtectionSnapshot.read(r, true, true, false, now)["status"] as Map<*, *>; val b = InterventionProtectionSnapshot.read(r, true, true, false, at("2026-12-28T10:00:00Z"))["status"] as Map<*, *>; check(a["state"] == "inactive" && b["state"] == "active"); check((b["installedReasonIds"] as List<*>).contains("weekly_2026-12-28")) }
+    case { val d = Memory(); val e = InterventionEngine(d); val now = at("2026-11-09T08:00:00Z"); val r = install(e, schedule(), now); val a = InterventionProtectionSnapshot.read(r, true, true, false, now)["status"] as Map<*, *>; val b = InterventionProtectionSnapshot.read(r, true, true, false, at("2026-12-28T10:00:00Z"))["status"] as Map<*, *>; check(a["state"] == "active" && b["state"] == "active"); check((b["installedReasonIds"] as List<*>).contains("weekly_2026-12-28")) }
     case {
       val d = Memory(); val e = InterventionEngine(d); val now = at("2026-11-09T10:00:00Z")
       val r = install(e, schedule(), now)
@@ -57,6 +57,22 @@ internal object WeeklyScheduleChecks {
       check(!WeeklySchedules.hasOtherInstallation(r.plan.copy(weekly = null, windows = listOf(quest)), listOf(quest)))
       check(WeeklySchedules.hasOtherInstallation(r.plan.copy(weekly = null), listOf(InterventionWindow("diagnostic", now, now + 60000, setOf(APP)))))
       check(!WeeklySchedules.hasOtherInstallation(r.plan, WeeklySchedules.windows(r.plan, now)))
+    }
+    case {
+      val d = Memory(); val e = InterventionEngine(d); val now = at("2026-11-09T16:59:00Z")
+      install(e, schedule(), now)
+      val allowed = e.allow(OWNER, 1, APP, now, 1000, 1, activeUse = true)
+      check(allowed.sessions.single().wallEnd == at("2026-11-10T00:00:00Z"))
+      check(e.needed(allowed, APP, at("2026-11-09T17:01:00Z"), 121000, 1).isEmpty())
+      check(allowed.daily.single().count == 1)
+    }
+    case {
+      val d = Memory(); val e = InterventionEngine(d); val now = at("2026-11-09T08:00:00Z")
+      val record = install(e, schedule(), now)
+      check(e.needed(record, APP, at("2026-11-15T01:00:00Z"), 1000, 1).single().reasonId == "entry_2026-11-15")
+      check(e.needed(record, OTHER, at("2026-11-15T01:00:00Z"), 1000, 1).isEmpty())
+      val stopped = e.cancel(OWNER, 1, null, now)
+      check(e.needed(stopped, APP, at("2026-11-15T01:00:00Z"), 1000, 1).isEmpty())
     }
     return count
   }

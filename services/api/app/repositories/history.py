@@ -70,7 +70,11 @@ def turn_offs(session, owner, start, end, zone):
         at = datetime.fromisoformat(entry.payload["occurred_at"].replace("Z", "+00:00"))
         key = (entry.installation_id, entry.payload["encounter_id"])
         if start_at <= at < end_at and key not in seen:
-            counts[entry.payload["context"]] += 1
+            counts[
+                "mid_session"
+                if entry.payload["context"] == "notification_accept"
+                else entry.payload["context"]
+            ] += 1
             seen.add(key)
     return counts
 

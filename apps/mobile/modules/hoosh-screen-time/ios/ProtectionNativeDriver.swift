@@ -9,6 +9,12 @@ final class ProtectionNativeDriver: ProtectionInstallationDriver {
   let owner: ProtectionOwner
   init(owner: ProtectionOwner) { self.owner = owner }
   var activationAvailable: Bool { ProtectionActivationGate.enabled }
+  // AuthorizationCenter is host-facing; its status is not authoritative in the
+  // shield/monitor sandbox. Extension commands already require the claimed owner,
+  // active installation and OS-supplied token, and still verify every SDK write.
+  private var permissionAvailable: Bool {
+    Bundle.main.bundleURL.pathExtension == "appex" || AuthorizationCenter.shared.authorizationStatus == .approved
+  }
   func resolved(_ target: ProtectionRuntimeRecord) throws -> ProtectionRuntimeRecord {
     let now = target.enabled ? try ProtectionDeviceClock.sample().wall : 0
     return try ProtectionRuntimePlanner.resolve(target, owner: owner, now: now).runtime
@@ -23,7 +29,7 @@ final class ProtectionNativeDriver: ProtectionInstallationDriver {
     for snapshot in plan.runtime.activeSnapshots { _ = try Self.apps(snapshot.selection) }
   }
   func matches(_ target: ProtectionRuntimeRecord, ledger: ProtectionSessionLedger?) throws -> Bool {
-    guard activationAvailable, AuthorizationCenter.shared.authorizationStatus == .approved else { return false }
+    guard activationAvailable, permissionAvailable else { return false }
     let clock = try ProtectionDeviceClock.sample()
     let plan = try ProtectionRuntimePlanner.resolve(target, owner: owner, now: clock.wall)
     guard plan.runtime.monitors == target.monitors, plan.runtime.activeSnapshots == target.activeSnapshots else { return false }
@@ -58,6 +64,7 @@ final class ProtectionNativeDriver: ProtectionInstallationDriver {
   /// An unstable JSON ordering must not spend another allowance for the same app.
   static func key(_ app: ApplicationToken, ledger: ProtectionSessionLedger?) throws -> Data {
     for item in ledger?.daily ?? [] {
+      if item.app == Data("__hoosh_shared_budget_v1__".utf8) { continue }
       guard let saved = try? JSONDecoder().decode(ApplicationToken.self, from: item.app) else { throw ProtectionStoreError.corrupt }
       if saved == app { return item.app }
     }
@@ -84,13 +91,35 @@ final class ProtectionNativeDriver: ProtectionInstallationDriver {
   }
   private func sdkMonitors(_ plan: ProtectionRuntimePlan, ledger: ProtectionSessionLedger?, clock: ProtectionClock) throws -> [ProtectionOSMonitor] {
     let expiry = try ProtectionExpiryPlanner.monitors(runtime: plan.runtime, owner: owner, ledger: ledger, clock: clock)
-    let monitors = sdkMonitors(plan) + expiry.map { ProtectionOSMonitor(name: $0.name, envelope: $0.envelope) }
+    var monitors = sdkMonitors(plan) + expiry.map { ProtectionOSMonitor(name: $0.name, envelope: $0.envelope) }
+    var groups = Set<UUID>()
+    for session in ledger?.sessions ?? [] where session.usageBased && session.live(clock) {
+      guard groups.insert(session.usageGroup).inserted,
+        let startedAt = session.usageStartedAt else { continue }
+      let active = plan.runtime.activeSnapshots.filter { $0.startsAt <= clock.wall && clock.wall < $0.endsAt }
+      guard !active.isEmpty else { continue }
+      let tokens: Set<ApplicationToken>
+      if plan.runtime.policy.sharedBudget {
+        tokens = try active.reduce(into: Set<ApplicationToken>()) { $0.formUnion(try Self.apps($1.selection)) }
+      } else { tokens = [try JSONDecoder().decode(ApplicationToken.self, from: session.app)] }
+      let entryEnd = active.filter { $0.reasonID.hasPrefix("entry_") }.map(\.endsAt).min()
+      let end = min(session.wallEnd, entryEnd ?? active.map(\.endsAt).min()!)
+      let start = min(startedAt, end - 900000)
+      guard start >= 0, end > clock.wall else { continue }
+      let step = max(60, Int(ceil(Double(session.seconds) / 240 / 60)) * 60)
+      let thresholds = Array(Set(Array(stride(from: step, to: session.seconds, by: step)) +
+        ProtectionSessionLedger.nudgeSeconds(duration: session.seconds) + [session.seconds])).sorted()
+      monitors.append(ProtectionOSMonitor(name: ProtectionRuntimePlanner.prefix(owner) +
+        "usage." + session.usageGroup.uuidString.lowercased(),
+        envelope: .init(reasonID: "session_usage", startsAt: start, endsAt: end,
+          businessStartsAt: start, warningSeconds: nil), usageApplications: tokens, usageThresholds: thresholds))
+    }
     guard monitors.count <= 512 else { throw SessionFailure.capacity }
     return monitors
   }
   private func requireActivation() throws {
     guard activationAvailable else { throw ProtectionTransactionError.activationGated }
-    guard AuthorizationCenter.shared.authorizationStatus == .approved else { throw ProtectionStoreError.unavailable }
+    guard permissionAvailable else { throw ProtectionStoreError.unavailable }
   }
 }
 #endif

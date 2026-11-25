@@ -1704,7 +1704,8 @@
                 "enum": [
                   "initial",
                   "expired",
-                  "mid_session"
+                  "mid_session",
+                  "notification_accept"
                 ],
                 "type": "string"
               },

@@ -26,7 +26,7 @@ object RewardPersistence {
       val kind = e.string("kind"); check(kind in setOf("quit", "allowance", "day_closed"))
       val day = e.string("day"); check(java.time.LocalDate.parse(day).toString() == day)
       val encounter = e.optional("encounter"); encounter?.let { QuestSchedules.id(it) }
-      val context = e.optional("context"); check(context == null || context in setOf("initial", "expired", "mid_session"))
+      val context = e.optional("context"); check(context == null || context in setOf("initial", "expired", "mid_session", "notification_accept"))
       val exhausted = if (e.isNull("exhausted")) null else e.bool("exhausted")
       val covered = if (e.isNull("covered")) null else e.bool("covered")
       check(when (kind) {

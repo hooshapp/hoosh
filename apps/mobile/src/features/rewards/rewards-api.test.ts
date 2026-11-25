@@ -80,3 +80,9 @@ describe('native outbox delivery and account fences', () => {
 it.each([[0, 'needsCare'], [25, 'needsCare'], [26, 'feelingLow'], [50, 'feelingLow'], [51, 'doingOkay'], [75, 'doingOkay'], [76, 'happy'], [100, 'happy']])('matches Figma health boundary %s', (health, artwork) => {
   expect(decodeWallet({ ...wallet, health, artwork }, context).artwork).toBe(artwork);
 });
+
+
+it('accepts content-free notification-accept receipts for immediate server-priced credit', () => {
+  const native = { ...batch, events: batch.events.map(e => ({ ...e, kind: 'quit', context: 'notification_accept', encounter_id: I, exhausted: null, covered: null })) };
+  expect(decodeRewardBatch(native).events[0].context).toBe('notification_accept');
+});

@@ -10,13 +10,22 @@ final class ShieldConfigurationExtension: ShieldConfigurationDataSource {
 
     override func configuration(shielding application: Application) -> ShieldConfiguration {
         logger.notice("Requested app shield configuration for \(application.localizedDisplayName ?? "unknown app", privacy: .public)")
-        if let token = application.token, let seconds = ProtectionNativeEngine.remainingSeconds(token) {
+        if let token = application.token, let presentation = ProtectionNativeEngine.presentation(token) {
+            let ink = UIColor(red: 0.24, green: 0.157, blue: 0, alpha: 1)
+            let green = UIColor(red: 0.20, green: 0.776, blue: 0.35, alpha: 1)
+            let minutes = max(1, Int(ceil(Double(presentation.seconds) / 60)))
+            let headline = presentation.expired
+                ? "Time to get back to what matters to you."
+                : "Opened out of habit? You chose this time for yourself."
             return ShieldConfiguration(
-                backgroundBlurStyle: .systemMaterialDark,
-                title: .init(text: "Hoosh protection", color: .white),
-                subtitle: .init(text: "\(ProtectionNativeEngine.nudgeLine()) Up to \(seconds) seconds remain in this session.", color: .white),
-                primaryButtonLabel: .init(text: "Close app", color: .white),
-                secondaryButtonLabel: .init(text: "Continue", color: .white)
+                backgroundBlurStyle: nil,
+                backgroundColor: UIColor(red: 1, green: 0.945, blue: 0.867, alpha: 1),
+                icon: UIImage(named: "HooshCheckpoint"),
+                title: .init(text: "\(application.localizedDisplayName ?? "App") · \(presentation.expired ? "session ended" : "paused")", color: ink),
+                subtitle: .init(text: "\(headline)\n\n\(ProtectionNativeEngine.nudgeLine())\n\n\(presentation.used)/\(presentation.limit) sessions used", color: ink),
+                primaryButtonLabel: .init(text: presentation.rewardPoints > 0 ? "Quit Now · +\(presentation.rewardPoints) ✦" : "Quit Now", color: ink),
+                primaryButtonBackgroundColor: green,
+                secondaryButtonLabel: presentation.canContinue ? .init(text: "Open anyway · \(minutes) min", color: UIColor(white: 0.45, alpha: 1)) : nil
             )
         }
         return makeConfiguration(appName: application.localizedDisplayName ?? "this app")
@@ -43,10 +52,13 @@ final class ShieldConfigurationExtension: ShieldConfigurationDataSource {
             configuration = makeLegacyConfiguration(appName: appName)
         }
         return configuration ?? ShieldConfiguration(
-            backgroundBlurStyle: .systemMaterialDark,
-            title: .init(text: "Hoosh protection", color: .white),
-            subtitle: .init(text: "Open Hoosh to review Screen Time setup.", color: .white),
-            primaryButtonLabel: .init(text: "Close app", color: .white)
+            backgroundBlurStyle: nil,
+            backgroundColor: UIColor(red: 1, green: 0.945, blue: 0.867, alpha: 1),
+            icon: UIImage(named: "HooshCheckpoint"),
+            title: .init(text: "Hoosh · check-point", color: UIColor(red: 0.24, green: 0.157, blue: 0, alpha: 1)),
+            subtitle: .init(text: "Pause for what matters to you. Open Hoosh to review your current plan.", color: .darkGray),
+            primaryButtonLabel: .init(text: "Quit Now", color: .black),
+            primaryButtonBackgroundColor: UIColor(red: 0.20, green: 0.776, blue: 0.35, alpha: 1)
         )
     }
 

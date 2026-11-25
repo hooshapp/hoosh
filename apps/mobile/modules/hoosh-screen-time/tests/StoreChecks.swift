@@ -42,6 +42,13 @@ import Darwin
       state.installedOwner = a
     }
     expect(first.revision == 1, "first atomic revision")
+    // Shield reads must finish even while a writer owns the transaction lock.
+    let rendering = SharedProtectionStore(directory: root, beforeRename: {
+      try expect(try store.presentationSnapshot() == first, "rendering sees the last committed state without waiting on writer lock")
+      throw ProtectionStoreError.unavailable
+    })
+    try fails(.unavailable) { try rendering.update(expectedRevision: 1) { $0.owners[0].coverage = "observed" } }
+    try expect(try store.presentationSnapshot() == first, "rendering cannot commit an interrupted write")
     try fails(.conflict) { try store.update(expectedRevision: nil) { _ in } }
     let leases = ProtectionOwnerLeases()
     let tokenA = leases.begin(a)

@@ -1,6 +1,7 @@
 internal import Expo
 import React
 import ReactAppDependencyProvider
+internal import HooshScreenTime
 
 @main
 class AppDelegate: ExpoAppDelegate, ExpoReactNativeFactoryProvider {
@@ -22,7 +23,9 @@ class AppDelegate: ExpoAppDelegate, ExpoReactNativeFactoryProvider {
 
     // The window is created and React Native is started by `SceneDelegate` under the
     // scene-based life cycle (required by the iOS 27 SDK).
-    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+    let launched = super.application(application, didFinishLaunchingWithOptions: launchOptions)
+    HooshNudgeNotifications.install()
+    return launched
   }
 }
 

@@ -254,7 +254,12 @@ def ingest(session: UserSession, body: RewardBatch, now: datetime):
                 w.last_native_at is None
                 or e.occurred_at >= w.last_native_at + timedelta(seconds=60)
             ):
-                amount = {"initial": 5, "expired": 20, "mid_session": 20}[e.context]
+                amount = {
+                    "initial": 5,
+                    "expired": 20,
+                    "mid_session": 20,
+                    "notification_accept": 30,
+                }[e.context]
                 if w.balance > 9007199254740991 - amount:
                     conflict(w.revision)
                 w.last_native_at = e.occurred_at

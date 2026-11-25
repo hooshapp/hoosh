@@ -43,7 +43,9 @@ final class DeviceActivityMonitorExtension: DeviceActivityMonitor {
     override func eventDidReachThreshold(_ event: DeviceActivityEvent.Name, activity: DeviceActivityName) {
         super.eventDidReachThreshold(event, activity: activity)
         if activity.rawValue.hasPrefix("hoosh.shared.") {
-            ProtectionNativeEngine.monitor(activity.rawValue)
+            if activity.rawValue.contains(".usage.") {
+                ProtectionNativeEngine.usage(activity.rawValue, event: event.rawValue)
+            } else { ProtectionNativeEngine.monitor(activity.rawValue) }
             return
         }
         _ = SharedProtectionExtensionFence.withLegacyAccess {

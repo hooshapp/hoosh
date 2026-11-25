@@ -30,13 +30,13 @@ export function decodeRewardBatch(v: unknown): RewardBatch {
     if (!isRecord(e) || !keys(e, ['event_id', 'sequence', 'occurred_at', 'kind', 'day', 'encounter_id', 'context', 'exhausted', 'covered']) ||
         !isQuestId(e.event_id) || seen.has(e.event_id) || !integer(e.sequence, sequence + 1) || !utcTimestamp(e.occurred_at) ||
         Date.parse(e.occurred_at) < at || !isQuestDate(e.day)) return invalid();
-    const quit = e.kind === 'quit' && isQuestId(e.encounter_id) && ['initial', 'expired', 'mid_session'].includes(e.context as string) && e.exhausted === null && e.covered === null;
+    const quit = e.kind === 'quit' && isQuestId(e.encounter_id) && ['initial', 'expired', 'mid_session', 'notification_accept'].includes(e.context as string) && e.exhausted === null && e.covered === null;
     const allowance = e.kind === 'allowance' && e.encounter_id === null && e.context === null && typeof e.exhausted === 'boolean' && e.covered === null;
     const day = e.kind === 'day_closed' && e.encounter_id === null && e.context === null && typeof e.exhausted === 'boolean' && typeof e.covered === 'boolean';
     if (!quit && !allowance && !day) return invalid();
     seen.add(e.event_id); sequence = e.sequence; at = Date.parse(e.occurred_at);
     return { event_id: e.event_id, sequence: e.sequence, occurred_at: e.occurred_at, kind: e.kind as 'quit' | 'allowance' | 'day_closed', day: e.day,
-      encounter_id: e.encounter_id as string | null, context: e.context as 'initial' | 'expired' | 'mid_session' | null,
+      encounter_id: e.encounter_id as string | null, context: e.context as 'initial' | 'expired' | 'mid_session' | 'notification_accept' | null,
       exhausted: e.exhausted as boolean | null, covered: e.covered as boolean | null };
   });
   return { installation_id: v.installation_id, timezone_id: v.timezone_id, discarded: v.discarded, events };

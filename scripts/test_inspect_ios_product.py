@@ -62,7 +62,7 @@ class ProductFaultChecks(unittest.TestCase):
         result = module.inspect(self.app)
         self.assertTrue(result["hermes_bytecode"])
         self.assertFalse(result["physical_journey_verified"])
-        self.assertEqual(len(result["signing"]), 5)
+        self.assertEqual(len(result["signing"]), len(module.EXTENSIONS) + 1)
         self.assertTrue(all(not v["provisioning_verified"] for v in result["signing"]))
         with self.assertRaises(ValueError):
             module.inspect(self.app, require_device=True)

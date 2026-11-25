@@ -17,7 +17,7 @@ object WeeklySchedules {
     plan != null && plan.weekly == null && windows.any { !QuestSchedules.isReasonId(it.reasonId) }
 
   fun fixed(plan: InterventionPlan): List<InterventionWindow> = plan.windows.filter {
-    !(plan.weekly != null && it.reasonId.matches(Regex("weekly_[0-9]{4}-[0-9]{2}-[0-9]{2}"))) && !QuestSchedules.isReasonId(it.reasonId)
+    !(plan.weekly != null && (it.reasonId.matches(Regex("weekly_[0-9]{4}-[0-9]{2}-[0-9]{2}")) || it.reasonId.startsWith("entry_"))) && !QuestSchedules.isReasonId(it.reasonId)
   }
   fun validate(s: WeeklySchedule) {
     InterventionValidation.require(s.weekdays.isNotEmpty() && s.weekdays.size <= 7 && s.weekdays.distinct().size == s.weekdays.size && s.weekdays.all { it in 0..6 })
@@ -56,6 +56,12 @@ object WeeklySchedules {
       plan.windows.find { it.reasonId == current.reasonId && it.startsAt == current.startsAt && now >= it.startsAt && now < it.endsAt }
         ?.let { current.copy(apps = it.apps) } ?: current
     } else emptyList()
-    return (fixed(plan) + windows + QuestSchedules.windows(plan, now)).sortedBy { it.startsAt }
+    val entry = if (weekly?.enabled == true) {
+      val zone = ZoneId.of(weekly.schedule.timezone)
+      val day = Instant.ofEpochMilli(now).atZone(zone).toLocalDate()
+      listOf(InterventionWindow("entry_$day", day.atStartOfDay(zone).toInstant().toEpochMilli(),
+        day.plusDays(1).atStartOfDay(zone).toInstant().toEpochMilli(), weekly.apps))
+    } else emptyList()
+    return (fixed(plan) + windows + entry + QuestSchedules.windows(plan, now)).sortedBy { it.startsAt }
   }
 }

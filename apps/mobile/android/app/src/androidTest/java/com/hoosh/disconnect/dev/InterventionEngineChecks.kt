@@ -185,6 +185,37 @@ internal object InterventionEngineChecks {
       e.install(A, 1, 2, SavedSelection(1, setOf(APP, OTHER)), listOf(InterventionWindow("one",1000,900000)), SessionPolicy("UTC",1,10,true), 13000)
       failure("ERR_INTERVENTION_EXHAUSTED") { e.allow(A, 2, OTHER, 13000, 12000, 1) }
     }
+    case {
+      val (_, e) = fixture(policy = SessionPolicy("UTC", 2, 60))
+      val first = e.allow(A, 1, APP, 2000, 1000, 1, activeUse = true)
+      e.activeForeground(APP, 3000, 2000, 1)
+      e.activeForeground(null, 4000, 3000, 1)
+      val paused = e.read(A)!!
+      check(paused.sessions.single().remainingMs == 58000L && paused.allowances.isEmpty())
+      e.activeForeground(null, 120000, 119000, 1)
+      check(e.read(A)!!.sessions.single().remainingMs == 58000L)
+      val resumed = e.allow(A, 1, APP, 120000, 119000, 1, activeUse = true)
+      check(resumed.sessions.single().id == first.sessions.single().id && resumed.daily.single().count == 1)
+      check(resumed.sessions.single().remainingMs == 58000L)
+    }
+    case {
+      val (_, e) = fixture(policy = SessionPolicy("UTC", 2, 240))
+      e.allow(A, 1, APP, 2000, 1000, 1, activeUse = true)
+      for (i in 1..60) e.activeForeground(APP, 2000L + i * 1000, 1000L + i * 1000, 1)
+      check(e.nudge(e.read(A)!!, APP, 62000, 61000, 1) != null)
+      e.dismissNudge(A, 1, APP)
+      check(e.nudge(e.read(A)!!, APP, 62000, 61000, 1) == null)
+      for (i in 61..120) e.activeForeground(APP, 2000L + i * 1000, 1000L + i * 1000, 1)
+      check(e.nudge(e.read(A)!!, APP, 122000, 121000, 1) != null)
+    }
+    case {
+      val (_, e) = fixture(policy = SessionPolicy("UTC", 2, 60))
+      e.allow(A, 1, APP, 2000, 1000, 1, activeUse = true)
+      e.activeForeground(APP, 3000, 2000, 1)
+      e.activeForeground(APP, 120000, 119000, 1)
+      check(e.read(A)!!.sessions.single().remainingMs == 59000L)
+      check(e.read(A)!!.allowances.isEmpty())
+    }
     return count
   }
 }

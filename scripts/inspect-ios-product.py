@@ -13,6 +13,7 @@ HOST = "com.AnishaDasgupta.DisconnectApp"
 GROUP = "group.com.AnishaDasgupta.DisconnectApp"
 EXTENSIONS = {
     "Disconnect": "com.apple.deviceactivityui.report-extension",
+    "HooshNudgeContent": "com.apple.usernotifications.content-extension",
     "DisconnectDeviceActivityMonitorExtension": "com.apple.deviceactivity.monitor-extension",
     "DisconnectShieldActionExtension": "com.apple.ManagedSettings.shield-action-service",
     "DisconnectShieldConfigurationExtension": "com.apple.ManagedSettingsUI.shield-configuration-service",
@@ -105,7 +106,7 @@ def inspect(app, require_device=False):
     products = [(app, HOST, True)]
     found = list(app.glob("PlugIns/*.appex")) + list(app.glob("Extensions/*.appex"))
     if len(found) != len(EXTENSIONS):
-        raise ValueError("Expected exactly four embedded Screen Time extensions.")
+        raise ValueError("Expected the Screen Time and nudge content extensions.")
     remaining = set(EXTENSIONS)
     for extension in found:
         item = plistlib.loads((extension / "Info.plist").read_bytes())
@@ -119,7 +120,7 @@ def inspect(app, require_device=False):
         )
         if point != EXTENSIONS[name]:
             raise ValueError("Unexpected Screen Time extension point.")
-        products.append((extension, HOST + "." + name, name != "Disconnect"))
+        products.append((extension, HOST + "." + name, name not in ("Disconnect", "HooshNudgeContent")))
     signing = []
     host_team = None
     for path, identifier, requires_controls in products:

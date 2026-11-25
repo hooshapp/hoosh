@@ -15,9 +15,12 @@ final class ShieldActionExtension: ShieldActionDelegate {
             handleLegacy(action: action, completionHandler: completionHandler)
         }
         guard !handled else { return }
-        if action == .secondaryButtonPressed, ProtectionNativeEngine.allow(application) {
-            completionHandler(.defer)
+        if action == .secondaryButtonPressed {
+            // A failed allowance must keep the shield visible, not behave like Quit.
+            let allowed = ProtectionNativeEngine.allow(application)
+            completionHandler(allowed ? .none : .defer)
         } else {
+            if action == .primaryButtonPressed { ProtectionNativeEngine.quit(application) }
             completionHandler(.close)
         }
     }

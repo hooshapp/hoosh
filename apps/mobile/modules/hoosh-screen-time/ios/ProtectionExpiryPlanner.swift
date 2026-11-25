@@ -12,7 +12,7 @@ enum ProtectionExpiryPlanner {
     let deadlines = Set(ledger.grants.compactMap { grant -> Int64? in
       guard grant.revision == runtime.revision, reasons.contains(grant.reasonID),
         grant.boot == clock.boot, grant.wallEnd > clock.wall, grant.elapsedEnd > clock.elapsed,
-        ledger.sessions.contains(where: { $0.app == grant.app && $0.live(clock) }) else { return nil }
+        ledger.sessions.contains(where: { $0.app == grant.app && !$0.usageBased && $0.live(clock) }) else { return nil }
       return grant.wallEnd
     })
     guard deadlines.count <= 512 else { throw SessionFailure.capacity }

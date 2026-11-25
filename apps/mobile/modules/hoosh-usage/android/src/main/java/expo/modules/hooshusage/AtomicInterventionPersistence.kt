@@ -69,11 +69,16 @@ class AtomicInterventionPersistence(private val path: File) : InterventionPersis
       val events = numbers(root.getJSONArray("events")).map { InterventionEvent(it.strictString("id"), it.strictLong("at"), it.strictString("kind"), if (it.isNull("reason")) null else it.strictString("reason"), it.strictInt("revision"), if (it.isNull("index")) null else it.strictInt("index"), if (it.isNull("exhausted")) null else it.strictBoolean("exhausted")) }
       check(events.size <= 256 && events.map { it.id }.toSet().size == events.size)
       check(events.all { it.id.matches(Regex("[0-9a-f-]{36}")) && it.at >= 0 && it.revision > 0 && it.kind in setOf("rule_activated", "rule_deactivated", "shield_presented", "override_selected", "quit_selected") })
-      val sessions = numbers(root.getJSONArray("sessions")).map { AppSession(it.strictString("app"), it.strictLong("wall"), it.strictLong("elapsed"), it.strictInt("boot"), it.strictInt("seconds"), if (version >= 4) it.strictString("sessionId").also { id -> QuestSchedules.id(id) } else java.util.UUID.randomUUID().toString(), if (version >= 4) it.strictBoolean("nudged") else false) }
+      val sessions = numbers(root.getJSONArray("sessions")).map { AppSession(it.strictString("app"), it.strictLong("wall"), it.strictLong("elapsed"), it.strictInt("boot"), it.strictInt("seconds"), if (version >= 4) it.strictString("sessionId").also { id -> QuestSchedules.id(id) } else java.util.UUID.randomUUID().toString(), if (version >= 4) it.strictBoolean("nudged") else false,
+        if (it.has("remainingMs") && !it.isNull("remainingMs")) it.strictLong("remainingMs") else null,
+        if (it.has("runningSince") && !it.isNull("runningSince")) it.strictLong("runningSince") else null,
+        if (it.has("usageGroup") && !it.isNull("usageGroup")) it.strictString("usageGroup") else null,
+        if (it.has("nudgeQuarter")) it.strictInt("nudgeQuarter") else 0) }
       val daily = numbers(root.getJSONArray("daily")).map { DailySessions(it.strictString("app"), it.strictString("day"), it.strictInt("count")) }
       check(sessions.size <= 512 && daily.size <= 513 && sessions.map { it.app }.toSet().size == sessions.size && daily.map { it.app }.toSet().size == daily.size)
       SelectionDrafts.validateApps((sessions.map { it.app } + daily.filter { it.app != "__hoosh_shared_budget_v1__" }.map { it.app }).toSet())
-      check(sessions.all { it.wallEnd >= 0 && it.elapsedEnd >= 0 && it.seconds in 1..86400 } && daily.all { it.day.matches(Regex("[0-9]{4}-[0-9]{2}-[0-9]{2}")) && it.count > 0 })
+      check(sessions.all { it.wallEnd >= 0 && it.elapsedEnd >= 0 && it.seconds in 1..86400 && (it.remainingMs == null || it.remainingMs in 0..it.seconds * 1000L) &&
+        (it.runningSince == null || (it.remainingMs != null && it.runningSince >= 0)) && it.nudgeQuarter in 0..3 } && daily.all { it.day.matches(Regex("[0-9]{4}-[0-9]{2}-[0-9]{2}")) && it.count > 0 })
       val discarded = if (version < 3) 0 else root.strictInt("discardedEventCount").also { check(it >= 0) }
       return InterventionRecord(plan, allowances, events, sessions, daily, discarded, if (version >= 4) RewardPersistence.decode(root.getJSONObject("rewards")) else RewardState())
     } catch (_: FileNotFoundException) {
@@ -94,7 +99,7 @@ class AtomicInterventionPersistence(private val path: File) : InterventionPersis
     val root = JSONObject().put("version", 4).put("rewards", RewardPersistence.encode(value.rewards)).put("plan", JSONObject().put("owner", p.owner).put("revision", p.revision).put("selectionRevision", p.selectionRevision).put("apps", JSONArray(p.apps.sorted())).put("windows", windows).put("weekly", weekly)
       .put("quests", quests).put("questReceipts", JSONObject(p.questReceipts.mapValues { (_, r) -> JSONObject().put("revision", r.revision).put("requestId", r.requestId).put("enabled", r.enabled) })).put("questCancelled", JSONArray(p.cancelledQuestReasons.sorted()))
       .put("policy", JSONObject().put("timezone", p.policy.timezoneId).put("count", p.policy.sessionsPerDay).put("seconds", p.policy.sessionSeconds).put("sharedBudget", p.policy.sharedBudget))).put("allowances", allowances).put("events", events)
-      .put("sessions", JSONArray(value.sessions.map { JSONObject().put("app", it.app).put("wall", it.wallEnd).put("elapsed", it.elapsedEnd).put("boot", it.boot).put("seconds", it.seconds).put("sessionId", it.id).put("nudged", it.nudged) }))
+      .put("sessions", JSONArray(value.sessions.map { JSONObject().put("app", it.app).put("wall", it.wallEnd).put("elapsed", it.elapsedEnd).put("boot", it.boot).put("seconds", it.seconds).put("sessionId", it.id).put("nudged", it.nudged).put("remainingMs", it.remainingMs ?: JSONObject.NULL).put("runningSince", it.runningSince ?: JSONObject.NULL).put("usageGroup", it.usageGroup ?: JSONObject.NULL).put("nudgeQuarter", it.nudgeQuarter) }))
       .put("discardedEventCount", value.discardedEventCount)
       .put("daily", JSONArray(value.daily.map { JSONObject().put("app", it.app).put("day", it.day).put("count", it.count) }))
     val bytes = root.toString().toByteArray(Charsets.UTF_8)

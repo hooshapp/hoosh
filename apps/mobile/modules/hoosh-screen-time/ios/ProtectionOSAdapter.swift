@@ -2,7 +2,14 @@ import Foundation
 
 /// Deliberate product gate. No preference, environment variable or JS argument
 /// can bypass the outstanding physical-device timing acceptance.
-enum ProtectionActivationGate { static let enabled = false }
+enum ProtectionActivationGate {
+  // Explicitly compiled physical QA build; production remains gated until device acceptance.
+  #if HOOSH_PHYSICAL_NUDGE_QA
+  static let enabled = true
+  #else
+  static let enabled = false
+  #endif
+}
 
 #if os(iOS)
 import DeviceActivity
@@ -12,6 +19,17 @@ import ManagedSettings
 struct ProtectionOSMonitor {
   let name: String
   let envelope: ProtectionMonitorEnvelope
+  var usageApplications: Set<ApplicationToken> = []
+  var usageThresholds: [Int] = []
+  func events() throws -> [DeviceActivityEvent.Name: DeviceActivityEvent] {
+    guard !usageThresholds.isEmpty else { return [:] }
+    guard #available(iOS 17.4, *), !usageApplications.isEmpty, usageThresholds.count <= 244,
+      usageThresholds.allSatisfy({ $0 > 0 && $0 <= 86400 }) else { throw ProtectionTransactionError.invalid }
+    return Dictionary(uniqueKeysWithValues: usageThresholds.map { seconds in
+      (DeviceActivityEvent.Name("usage.\(seconds)"), DeviceActivityEvent(applications: usageApplications,
+        threshold: DateComponents(second: seconds), includesPastActivity: false))
+    })
+  }
   func schedule() throws -> DeviceActivitySchedule {
     guard name.hasPrefix("hoosh.shared."), name.utf8.count <= 256,
           envelope.startsAt >= 0, envelope.endsAt > envelope.startsAt,
@@ -60,7 +78,8 @@ enum ProtectionOSAdapter {
   static func matches(_ monitor: ProtectionOSMonitor) throws -> Bool {
     let expected = try monitor.schedule()
     guard let schedule = center.schedule(for: DeviceActivityName(monitor.name)) else { return false }
-    return schedule == expected && center.events(for: DeviceActivityName(monitor.name)).isEmpty
+    let expectedEvents = try monitor.events()
+    return schedule == expected && center.events(for: DeviceActivityName(monitor.name)) == expectedEvents
   }
   /// Stage new unique names before retiring a confirmed generation. Same-name
   /// conflicting schedules are rejected rather than overwritten in place.
@@ -68,11 +87,11 @@ enum ProtectionOSAdapter {
     try requireActivation()
     guard monitors.count <= 512, Set(monitors.map(\.name)).count == monitors.count,
           previous.allSatisfy({ $0.hasPrefix("hoosh.shared.") && $0.utf8.count <= 256 }) else { throw ProtectionTransactionError.invalid }
-    let plans = try monitors.map { ($0, try $0.schedule()) }
+    let plans = try monitors.map { ($0, try $0.schedule(), try $0.events()) }
     let registered = Set(center.activities.map(\.rawValue))
     var started: [DeviceActivityName] = []
     do {
-      for (monitor, schedule) in plans {
+      for (monitor, schedule, events) in plans {
         if registered.contains(monitor.name) {
           if try !matches(monitor) {
             guard !previous.contains(monitor.name) else { throw ProtectionTransactionError.conflict }
@@ -80,13 +99,14 @@ enum ProtectionOSAdapter {
             center.stopMonitoring([name])
             guard !center.activities.contains(name) else { throw ProtectionTransactionError.unconfirmed }
             started.append(name)
-            try center.startMonitoring(name, during: schedule, events: [:])
+            try center.startMonitoring(name, during: schedule, events: events)
           }
         } else {
-          guard !previous.contains(monitor.name) else { throw ProtectionTransactionError.unconfirmed }
+          // iOS can discard a previously confirmed registration. Recreate this
+          // exact desired monitor; missing OS state is not a conflicting schedule.
           let name = DeviceActivityName(monitor.name)
           started.append(name) // An SDK error can have an uncertain side effect.
-          try center.startMonitoring(name, during: schedule, events: [:])
+          try center.startMonitoring(name, during: schedule, events: events)
         }
       }
       for monitor in monitors { guard try matches(monitor) else { throw ProtectionTransactionError.unconfirmed } }
@@ -122,7 +142,7 @@ enum ProtectionOSAdapter {
   }
   private static func requireActivation() throws {
     guard ProtectionActivationGate.enabled else { throw ProtectionTransactionError.activationGated }
-    guard AuthorizationCenter.shared.authorizationStatus == .approved else { throw ProtectionStoreError.unavailable }
+    guard Bundle.main.bundleURL.pathExtension == "appex" || AuthorizationCenter.shared.authorizationStatus == .approved else { throw ProtectionStoreError.unavailable }
   }
 }
 #endif

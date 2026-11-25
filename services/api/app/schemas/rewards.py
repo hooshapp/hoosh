@@ -16,7 +16,7 @@ class RewardSignal(WireModel):
     occurred_at: AwareDatetime
     kind: Literal["quit", "allowance", "day_closed"]
     encounter_id: UUID | None
-    context: Literal["initial", "expired", "mid_session"] | None
+    context: Literal["initial", "expired", "mid_session", "notification_accept"] | None
     day: date
     exhausted: StrictBool | None
     covered: StrictBool | None

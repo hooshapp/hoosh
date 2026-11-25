@@ -1,3 +1,6 @@
+import { useNativeOwner } from '@/features/protection/native-owner-boundary';
+import { weeklyPort } from '@/features/plans/account-weekly-plan';
+import { activateAcceptedPlan } from './activate-accepted-plan';
 import type { SettingsPatch, SettingsView } from '@disconnect/contracts';
 import { useEffect, useRef, useState } from 'react';
 import { useAccountData } from '@/infrastructure/query/account-data-provider';
@@ -13,12 +16,23 @@ export function SetupPlanSave({ progress, busy, record, onEdit }: {
   onEdit(): void;
 }) {
   const { scope, availability } = useAccountData();
+  const nativeOwner = useNativeOwner();
   const query = useSettingsQuery();
   const [failed, setFailed] = useState(false);
+  const [activationFailed, setActivationFailed] = useState(false);
   const [working, setWorking] = useState(false);
   const started = useRef(false), running = useRef(false);
   const target = { activities: progress.activities, plan_draft: progress.planDraft };
   async function finish(settings: SettingsView | null, attempt?: SettingsPatch) {
+    try {
+      const port = nativeOwner && weeklyPort(nativeOwner);
+      if (!scope?.canRun() || !nativeOwner || !port) throw new Error('Device unavailable');
+      await activateAcceptedPlan({ owner: nativeOwner.owner, port, draft: settings?.plan_draft,
+        selectionRevision: progress.selectionRevision, assertCurrent: () => scope.assertCurrent() });
+    } catch {
+      if (scope?.isCurrent()) { running.current = false; setWorking(false); setFailed(true); setActivationFailed(true); }
+      return;
+    }
     const saved = await record({ ...progress, step: 'permission', activities: settings?.activities,
       planDraft: settings?.plan_draft, settingsRevision: settings?.revision,
       settingsBaseRevision: undefined, settingsAttempt: undefined }, attempt);
@@ -53,10 +67,10 @@ export function SetupPlanSave({ progress, busy, record, onEdit }: {
   });
   if (!failed && !query.isError && availability === 'ready') return <PlanLoadingScreen busy apps="Your selected apps" hobbies="" onSkip={() => undefined} />;
   const plan = progress.planDraft;
-  return <PlanSuggestionScreen description="Your plan is ready. We couldn’t save it yet; your choices are still here."
+  return <PlanSuggestionScreen description={activationFailed ? "Your plan is saved. We couldn’t confirm app protection yet; your choices are still here." : "Your plan is ready. We couldn’t save it yet; your choices are still here."}
     apps={[{ name: 'Your selected apps', minutes: plan?.session_minutes ?? null,
       caption: `${plan?.session_count ?? '—'} sessions per day`, detail: 'The plan you chose.' }]}
     estimate={{ label: 'Your plan', detail: 'Nothing is marked complete until your plan is saved.' }}
-    error="Couldn’t save your plan. Try accepting it again." busy={working || busy}
+    error={activationFailed ? "Couldn’t start app protection. Check Screen Time access and try again." : "Couldn’t save your plan. Try accepting it again."} busy={working || busy}
     onAccept={() => { void save(); }} onManual={onEdit} onSkip={() => undefined} />;
 }

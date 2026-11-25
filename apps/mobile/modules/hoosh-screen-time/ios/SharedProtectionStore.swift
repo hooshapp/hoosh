@@ -142,6 +142,10 @@ final class SharedProtectionStore {
   }
   #endif
   func read() throws -> ProtectionState? { try locked { try readLocked() } }
+  /// Rendering only: writers atomically rename a complete state file. Avoid
+  /// filesystem mutations and waiting on another process's transaction lock.
+  /// Never use this snapshot to authorize or commit an action.
+  func presentationSnapshot() throws -> ProtectionState? { try readLocked() }
   func withSnapshot<T>(_ action: (ProtectionState?) throws -> T) throws -> T {
     try locked { try action(try readLocked()) }
   }
@@ -298,6 +302,8 @@ struct ProtectionRewardEvidence: Codable, Equatable {
   let exhausted: Bool
   let revision: Int
   let evidence: String
+  var encounterID: UUID? = nil
+  var context: String? = nil
 }
 struct ProtectionRewardJournal: Codable, Equatable {
   static let maximum: UInt64 = 9007199254740991
@@ -309,19 +315,23 @@ struct ProtectionRewardJournal: Codable, Equatable {
   var discarded: UInt64 = 0
   var lastTimestamp: Int64 = 0
   var events: [ProtectionRewardEvidence] = []
+  var quitEncounters: [UUID]? = nil
+  var lastQuitAt: Int64? = nil
   init(timezone: String) { self.installationID = UUID(); self.timezone = timezone }
   func validated() throws {
     guard TimeZone(identifier: timezone) != nil, timezone.utf8.count <= 128,
       nextSequence > 0, nextSequence <= Self.maximum,
       acknowledged <= issued, issued < nextSequence, discarded <= Self.maximum,
       lastTimestamp >= 0, lastTimestamp <= 4102444800000,
-      events.count <= 256, Set(events.map(\.id)).count == events.count else { throw ProtectionStoreError.invalidRecord }
+      events.count <= 256, Set(events.map(\.id)).count == events.count,
+      (quitEncounters?.count ?? 0) <= 512 else { throw ProtectionStoreError.invalidRecord }
     var last = acknowledged, timestamp: Int64 = 0
     for event in events {
       guard event.sequence > last, event.sequence < nextSequence, event.occurredAt >= timestamp,
         event.occurredAt <= lastTimestamp, event.occurredAt >= 0,
         event.day == Self.day(event.occurredAt, timezone: timezone),
-        (1...2147483647).contains(event.revision), event.evidence == "allowance_consumed" else { throw ProtectionStoreError.invalidRecord }
+        (1...2147483647).contains(event.revision), ["allowance_consumed", "quit_selected"].contains(event.evidence),
+        event.evidence != "quit_selected" || (event.encounterID != nil && ["initial", "mid_session", "expired", "notification_accept"].contains(event.context ?? "")) else { throw ProtectionStoreError.invalidRecord }
       last = event.sequence; timestamp = event.occurredAt
     }
   }
@@ -346,6 +356,21 @@ struct ProtectionRewardJournal: Codable, Equatable {
     lastTimestamp = clock.wall
     try validated()
   }
+  /// Reward evidence is the explicit Quit action, not an inferred app-exit callback.
+  mutating func appendQuit(encounter: UUID, context: String, revision: Int, clock: ProtectionClock) throws {
+    try clock.validate()
+    guard ["initial", "mid_session", "expired", "notification_accept"].contains(context),
+      !(quitEncounters ?? []).contains(encounter),
+      clock.wall >= lastTimestamp, lastQuitAt.map({ clock.wall - $0 >= 60000 }) ?? true else { return }
+    guard nextSequence < Self.maximum else { throw ProtectionStoreError.oversized }
+    if events.count == 256 { events.removeFirst(); discarded += 1 }
+    events.append(.init(id: UUID(), sequence: nextSequence, occurredAt: clock.wall,
+      day: Self.day(clock.wall, timezone: timezone), exhausted: false, revision: revision,
+      evidence: "quit_selected", encounterID: encounter, context: context))
+    nextSequence += 1; lastTimestamp = clock.wall; lastQuitAt = clock.wall
+    quitEncounters = Array(((quitEncounters ?? []) + [encounter]).suffix(512))
+    try validated()
+  }
   mutating func batch() throws -> [String: Any] {
     try validated()
     let prefix = Array(events.prefix(32))
@@ -355,8 +380,10 @@ struct ProtectionRewardJournal: Codable, Equatable {
       "discarded": discarded, "events": prefix.map { event -> [String: Any] in
         ["event_id": event.id.uuidString.lowercased(), "sequence": event.sequence,
          "occurred_at": formatter.string(from: Date(timeIntervalSince1970: Double(event.occurredAt) / 1000)),
-         "kind": "allowance", "day": event.day, "encounter_id": NSNull(), "context": NSNull(),
-         "exhausted": event.exhausted, "covered": NSNull()]
+         "kind": event.evidence == "quit_selected" ? "quit" : "allowance", "day": event.day,
+         "encounter_id": event.encounterID.map { $0.uuidString.lowercased() as Any } ?? NSNull(),
+         "context": event.context.map { $0 as Any } ?? NSNull(),
+         "exhausted": event.evidence == "quit_selected" ? NSNull() : event.exhausted as Any, "covered": NSNull()]
       }]
   }
   mutating func ack(installation: UUID, sequence: UInt64) throws {

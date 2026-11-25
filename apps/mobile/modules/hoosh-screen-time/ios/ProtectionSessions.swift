@@ -32,8 +32,20 @@ struct ElapsedProtectionSession: Codable, Equatable {
   let elapsedEnd: Int64
   let boot: String
   let seconds: Int
+  var usageConsumedSeconds: Int? = nil
+  var usageStartedAt: Int64? = nil
+  var usageGroupID: UUID? = nil
+  var usageBased: Bool { usageConsumedSeconds != nil }
+  var usageGroup: UUID { usageGroupID ?? id }
+  func remaining(_ clock: ProtectionClock) -> Int {
+    if let used = usageConsumedSeconds { return max(0, seconds - used) }
+    return max(0, Int((min(wallEnd - clock.wall, elapsedEnd - clock.elapsed) + 999) / 1000))
+  }
   func live(_ clock: ProtectionClock) -> Bool {
     guard (1...86400).contains(seconds), clock.wall >= 0, clock.elapsed >= 0 else { return false }
+    if let used = usageConsumedSeconds {
+      return used >= 0 && used < seconds && boot == clock.boot && clock.wall < wallEnd
+    }
     let duration = Int64(seconds) * 1000
     return boot == clock.boot && clock.wall < wallEnd && clock.elapsed < elapsedEnd
       && wallEnd - clock.wall <= duration && elapsedEnd - clock.elapsed <= duration
@@ -85,7 +97,9 @@ struct ProtectionSessionLedger: Codable, Equatable {
           Set(daily.map(\.app)).count == daily.count else { throw SessionFailure.capacity }
     for session in sessions {
       guard (1...86400).contains(session.seconds), !session.app.isEmpty, session.app.count <= 4096,
-            session.wallEnd >= 0, session.elapsedEnd >= 0, !session.boot.isEmpty, session.boot.utf8.count <= 128 else { throw SessionFailure.invalid }
+            session.wallEnd >= 0, session.elapsedEnd >= 0, !session.boot.isEmpty, session.boot.utf8.count <= 128,
+            session.usageConsumedSeconds == nil || ((0...session.seconds).contains(session.usageConsumedSeconds!) && session.usageStartedAt != nil),
+            session.usageStartedAt == nil || (session.usageStartedAt! >= 0 && session.usageStartedAt! < session.wallEnd) else { throw SessionFailure.invalid }
     }
     for grant in grants {
       guard !grant.app.isEmpty, grant.app.count <= 4096, grant.reasonID.range(of: "^[a-z0-9_-]{1,64}$", options: .regularExpression) != nil,
@@ -123,7 +137,17 @@ struct ProtectionSessionLedger: Codable, Equatable {
       }
     }
   }
-  mutating func allow(app: Data, revision: Int, reasons: [ProtectionSessionReason], clock: ProtectionClock) throws -> ProtectionGrantResult {
+  func usedSessions(app: Data, clock: ProtectionClock) throws -> Int {
+    try clock.validate()
+    let today = try day(clock.wall)
+    let sharedKey = Data("__hoosh_shared_budget_v1__".utf8)
+    if policy.sharedBudget {
+      return daily.first(where: { $0.app == sharedKey && $0.day == today })?.count
+        ?? daily.filter { $0.day == today && $0.app != sharedKey }.reduce(0) { $0 + $1.count }
+    }
+    return daily.first(where: { $0.app == app && $0.day == today })?.count ?? 0
+  }
+  mutating func allow(app: Data, revision: Int, reasons: [ProtectionSessionReason], clock: ProtectionClock, usageBased: Bool = false) throws -> ProtectionGrantResult {
     try clock.validate(); try policy.validate()
     guard !app.isEmpty, app.count <= 4096, (1...2147483647).contains(revision),
           !reasons.isEmpty, reasons.count <= 512, Set(reasons.map(\.id)).count == reasons.count,
@@ -144,11 +168,20 @@ struct ProtectionSessionLedger: Codable, Equatable {
     guard !policy.sharedBudget || running != nil || previous < policy.sessionsPerDay else { throw SessionFailure.exhausted }
     let index = previous + 1
     let duration = Int64(policy.sessionSeconds) * 1000
-    let session = running.map { existing in
+    var session = running.map { existing in
       existing.app == app ? existing : ElapsedProtectionSession(id: UUID(), app: app, wallEnd: existing.wallEnd,
-        elapsedEnd: existing.elapsedEnd, boot: existing.boot, seconds: existing.seconds)
+        elapsedEnd: existing.elapsedEnd, boot: existing.boot, seconds: existing.seconds,
+        usageConsumedSeconds: existing.usageConsumedSeconds, usageStartedAt: existing.usageStartedAt,
+        usageGroupID: existing.usageGroup)
     } ?? ElapsedProtectionSession(id: UUID(), app: app, wallEnd: clock.wall + duration,
       elapsedEnd: clock.elapsed + duration, boot: clock.boot, seconds: policy.sessionSeconds)
+    if usageBased && running == nil {
+      // A schedule boundary is a hard cap, not a wall-clock session countdown.
+      let end = reasons.filter { $0.id.hasPrefix("entry_") }.map(\.endsAt).min() ?? reasons.map(\.endsAt).min()!
+      session = ElapsedProtectionSession(id: session.id, app: app, wallEnd: end,
+        elapsedEnd: Int64.max, boot: clock.boot, seconds: policy.sessionSeconds,
+        usageConsumedSeconds: 0, usageStartedAt: (clock.wall / 1000) * 1000)
+    }
     let kept = grants.filter { $0.wallEnd > clock.wall && $0.elapsedEnd > clock.elapsed && $0.boot == clock.boot }
     let newGrants = pending.map { reason in
       ProtectionSessionGrant(app: app, reasonID: reason.id, revision: revision,
@@ -166,6 +199,22 @@ struct ProtectionSessionLedger: Codable, Equatable {
     return ProtectionGrantResult(session: session, startedNewSession: running == nil,
       sessionIndex: running == nil ? index : nil, exhausted: running == nil ? index > policy.sessionsPerDay : nil)
   }
+  /// Idempotent cumulative OS usage checkpoint. Stale or reordered callbacks do not restart time.
+  mutating func recordUsage(group: UUID, seconds: Int, clock: ProtectionClock) throws -> Bool {
+    try clock.validate()
+    guard seconds > 0, let source = sessions.first(where: { $0.usageBased && $0.usageGroup == group }),
+      source.boot == clock.boot, source.wallEnd > clock.wall else { return false }
+    let bounded = min(source.seconds, seconds)
+    guard bounded > (source.usageConsumedSeconds ?? 0) else { return false }
+    for i in sessions.indices where sessions[i].usageBased && sessions[i].usageGroup == group {
+      sessions[i].usageConsumedSeconds = bounded
+    }
+    return true
+  }
+  static func nudgeSeconds(duration: Int) -> [Int] {
+    Array(Set((1...3).map { Int(ceil(Double(duration * $0) / 240)) * 60 })).filter { $0 > 0 && $0 < duration }.sorted()
+  }
+  mutating func pause(app: Data) { grants.removeAll { $0.app == app } }
   mutating func reconcile(revision: Int, remainingReasons: Set<String>) throws {
     guard (1...2147483647).contains(revision), remainingReasons.count <= 512 else { throw SessionFailure.invalid }
     grants = grants.filter { remainingReasons.contains($0.reasonID) }.map { grant in

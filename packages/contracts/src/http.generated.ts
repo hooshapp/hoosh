@@ -950,7 +950,7 @@ export interface components {
         /** RewardSignal */
         RewardSignal: {
             /** Context */
-            context: ("initial" | "expired" | "mid_session") | null;
+            context: ("initial" | "expired" | "mid_session" | "notification_accept") | null;
             /** Covered */
             covered: boolean | null;
             /**

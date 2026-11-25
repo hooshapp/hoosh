@@ -428,3 +428,28 @@ def test_absent_wallet_feed_cannot_spend_a_concurrent_first_credit(
     with resource.transaction(owner) as s:
         assert view(s, NOW).balance == 50
         assert len(s.scalars(select(RewardEntry)).all()) == 1
+
+
+def test_notification_accept_awards_thirty_immediately_once(resource, profile_accounts):
+    account = profile_accounts[0]
+    installation = uuid4()
+    event = signal(context="notification_accept")
+    request = batch([event], installation)
+    with resource.transaction(account) as session:
+        assert ingest(session, request, NOW).wallet.balance == 30
+    with resource.transaction(account) as session:
+        assert ingest(session, request, NOW).wallet.balance == 30
+        assert len(session.scalars(select(RewardEntry)).all()) == 1
+    duplicate_encounter = signal(
+        2,
+        NOW + timedelta(seconds=65),
+        context="notification_accept",
+        encounter_id=event["encounter_id"],
+    )
+    with resource.transaction(account) as session:
+        assert (
+            ingest(
+                session, batch([duplicate_encounter], installation), NOW + timedelta(seconds=65)
+            ).wallet.balance
+            == 30
+        )

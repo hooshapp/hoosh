@@ -44,6 +44,23 @@ import Foundation
     try rollback.append(grant: grant(261), revision: 1, clock: .init(wall: at - 1, elapsed: 1000, boot: "fixture"), timezone: "UTC")
     try rollback.append(grant: grant(262), revision: 1, clock: .init(wall: at + 1000, elapsed: 1000, boot: "fixture"), timezone: "Europe/London")
     guard rollback.discarded == 6, rollback.events == journal.events else { fatalError("clock/zone invented dated evidence") }
+    var choices = ProtectionRewardJournal(timezone: "UTC")
+    let encounter = UUID()
+    try choices.appendQuit(encounter: encounter, context: "initial", revision: 1,
+      clock: .init(wall: at, elapsed: 1, boot: "fixture"))
+    try choices.appendQuit(encounter: encounter, context: "initial", revision: 1,
+      clock: .init(wall: at + 61000, elapsed: 61001, boot: "fixture"))
+    guard choices.events.count == 1 else { fatalError("duplicate Quit rewarded twice") }
+    let choiceBatch = try choices.batch()
+    guard let choiceEvents = choiceBatch["events"] as? [[String: Any]], choiceEvents[0]["kind"] as? String == "quit",
+      choiceEvents[0]["context"] as? String == "initial", choiceEvents[0]["exhausted"] is NSNull else { fatalError("invalid Quit wire evidence") }
+    try choices.ack(installation: choices.installationID, sequence: 1)
+    try choices.appendQuit(encounter: encounter, context: "initial", revision: 1,
+      clock: .init(wall: at + 120000, elapsed: 120001, boot: "fixture"))
+    guard choices.events.isEmpty else { fatalError("ack/restart lost Quit deduplication") }
+    try choices.appendQuit(encounter: UUID(), context: "mid_session", revision: 1,
+      clock: .init(wall: at + 30000, elapsed: 30001, boot: "fixture"))
+    guard choices.events.isEmpty else { fatalError("Quit cooldown bypassed") }
     var malformed = journal; malformed.issued = malformed.nextSequence
     do { try malformed.validated(); fatalError("invalid cursor accepted") } catch ProtectionStoreError.invalidRecord {}
     print("PASS: owner-isolated durable evidence, stable retry/restart, bounded drain/ack, overflow and clock/zone gaps; no invented quit/day/measurement evidence.")

@@ -32,7 +32,7 @@ final class ProtectionRuntimeCoordinator {
   }
 
   func allow(owner: ProtectionOwner, revision: Int, driver: ProtectionInstallationDriver,
-             clock: ProtectionClock,
+             clock: ProtectionClock, usageBased: Bool = false,
              context: (ProtectionRuntimeRecord, ProtectionSessionLedger) throws -> (Data, [ProtectionSessionReason])) throws {
     guard driver.activationAvailable else { throw ProtectionTransactionError.activationGated }
     try clock.validate()
@@ -43,7 +43,7 @@ final class ProtectionRuntimeCoordinator {
       let previous = record.installation!
       let runtime = try driver.resolved(previous)
       guard ProtectionRuntimePlanner.sameIntent(previous, runtime) else { throw ProtectionTransactionError.invalid }
-      try runtime.validated(); try driver.preflight(runtime)
+      try runtime.validated()
       var ledger = try record.sessionLedger ?? ProtectionSessionLedger(policy: runtime.policy)
       try ledger.updatePolicy(runtime.policy)
       try ledger.reconcile(revision: runtime.revision, remainingReasons: Set(runtime.activeSnapshots.map(\.reasonID)))
@@ -52,7 +52,7 @@ final class ProtectionRuntimeCoordinator {
         throw ProtectionTransactionError.invalid
       }
       if try !ledger.needed(app: app, revision: revision, reasons: reasons, clock: clock).isEmpty {
-        let grant = try ledger.allow(app: app, revision: revision, reasons: reasons, clock: clock)
+        let grant = try ledger.allow(app: app, revision: revision, reasons: reasons, clock: clock, usageBased: usageBased)
         var journal = record.rewardJournal ?? ProtectionRewardJournal(timezone: runtime.policy.timezoneId)
         try journal.append(grant: grant, revision: revision, clock: clock, timezone: runtime.policy.timezoneId)
         record.rewardJournal = journal
@@ -61,7 +61,6 @@ final class ProtectionRuntimeCoordinator {
       record.coverage = "partial"
       next.owners[index] = record
     }
-    try refresh(owner: owner, revision: revision, driver: driver)
   }
   private func owned(_ owner: ProtectionOwner, revision: Int) throws -> ProtectionState {
     guard let state = try store.read() else { throw ProtectionStoreError.staleLease }

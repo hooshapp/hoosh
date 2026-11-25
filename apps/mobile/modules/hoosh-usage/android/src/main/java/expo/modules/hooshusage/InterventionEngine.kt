@@ -51,7 +51,8 @@ class InterventionEngine(private val disk: InterventionPersistence) {
     InterventionValidation.windows(snapshots, 512)
     val plan = InterventionPlan(owner, revision, selection.revision, allApps, snapshots, policy, weekly,
       quests, old?.plan?.questReceipts.orEmpty(), old?.plan?.cancelledQuestReasons.orEmpty())
-    val kept = old?.allowances.orEmpty().filter { a -> snapshots.any { w -> w.reasonId == a.reasonId && a.app in w.apps && previousWindows.any { it.reasonId == w.reasonId && it.startsAt == w.startsAt && it.endsAt == w.endsAt } } }.map { it.copy(revision = revision) }
+    val effectiveWindows = WeeklySchedules.windows(plan, now)
+    val kept = old?.allowances.orEmpty().filter { a -> effectiveWindows.any { w -> w.reasonId == a.reasonId && a.app in w.apps && previousWindows.any { it.reasonId == w.reasonId && it.startsAt == w.startsAt && it.endsAt == w.endsAt } } }.map { it.copy(revision = revision) }
     val events = old?.events.orEmpty() + event("rule_activated", null, revision, now)
     return persist(InterventionRecord(plan, allowances = kept, events = events, sessions = old?.sessions.orEmpty(), daily = old?.daily.orEmpty(), discardedEventCount = old?.discardedEventCount ?: 0, rewards = old?.rewards ?: RewardState()))
   }
@@ -130,7 +131,7 @@ class InterventionEngine(private val disk: InterventionPersistence) {
         value.sessions.any { session -> session.app == app && live(session, wall, elapsed, boot) }
     } }
   }
-  fun allow(owner: String, revision: Int, app: String, wall: Long, elapsed: Long, boot: Int): InterventionRecord {
+  fun allow(owner: String, revision: Int, app: String, wall: Long, elapsed: Long, boot: Int, activeUse: Boolean = false): InterventionRecord {
     val old = record(owner); InterventionValidation.require(old.plan.revision == revision, "ERR_INTERVENTION_CONFLICT")
     val reasons = needed(old, app, wall, elapsed, boot); InterventionValidation.require(reasons.isNotEmpty())
     val running = old.sessions.filter { (old.plan.policy.sharedBudget || it.app == app) && live(it, wall, elapsed, boot) }.minByOrNull { it.elapsedEnd }
@@ -146,7 +147,10 @@ class InterventionEngine(private val disk: InterventionPersistence) {
     InterventionValidation.require(!old.plan.policy.sharedBudget || running != null || previousCount < old.plan.policy.sessionsPerDay, "ERR_INTERVENTION_EXHAUSTED")
     val index = previousCount.toInt() + 1
     val seconds = old.plan.policy.sessionSeconds
-    val session = if (running == null) AppSession(app, wall + seconds * 1000L, elapsed + seconds * 1000L, boot, seconds) else if (running.app == app) running else running.copy(app = app, id = UUID.randomUUID().toString())
+    var session = if (running == null) AppSession(app, wall + seconds * 1000L, elapsed + seconds * 1000L, boot, seconds) else if (running.app == app) running else running.copy(app = app, id = UUID.randomUUID().toString())
+    if (activeUse && running == null) session = session.copy(wallEnd = reasons.filter { it.reasonId.startsWith("entry_") }.minOfOrNull { it.endsAt } ?: reasons.minOf { it.endsAt }, elapsedEnd = Long.MAX_VALUE,
+      remainingMs = seconds * 1000L, runningSince = elapsed, usageGroup = session.id)
+    else if (activeUse && session.remainingMs != null) session = session.copy(runningSince = elapsed, usageGroup = session.usageGroup ?: running?.id)
     val keep = old.allowances.filter { it.wallEnd > wall && it.elapsedEnd > elapsed && it.boot == boot }
     val grants = reasons.map { AppAllowance(app, it.reasonId, revision, minOf(it.endsAt, session.wallEnd), session.elapsedEnd, boot) }
     val daily = if (running != null) old.daily else old.daily.filter { it.app != app && it.app != sharedKey } + DailySessions(app, day, (prior?.count ?: 0) + 1) + (if (old.plan.policy.sharedBudget || old.daily.any { it.app == sharedKey }) listOf(DailySessions(sharedKey, day, shared.toInt() + 1)) else emptyList())
@@ -157,8 +161,35 @@ class InterventionEngine(private val disk: InterventionPersistence) {
       .copy(exhausted = rewards.exhausted || index > old.plan.policy.sessionsPerDay)
     return persist(old.copy(allowances = keep + grants, sessions = sessions, daily = daily, events = old.events + signals, rewards = rewards))
   }
-  private fun live(session: AppSession, wall: Long, elapsed: Long, boot: Int) = session.boot == boot && wall < session.wallEnd && elapsed < session.elapsedEnd &&
-    session.wallEnd - wall <= session.seconds * 1000L && session.elapsedEnd - elapsed <= session.seconds * 1000L
+  private fun live(session: AppSession, wall: Long, elapsed: Long, boot: Int): Boolean {
+    if (session.remainingMs != null) return session.boot == boot && wall < session.wallEnd && session.remainingMs > 0
+    return session.boot == boot && wall < session.wallEnd && elapsed < session.elapsedEnd &&
+      session.wallEnd - wall <= session.seconds * 1000L && session.elapsedEnd - elapsed <= session.seconds * 1000L
+  }
+  /** Serialized foreground metadata is the only timer witness; background and lock consume nothing. */
+  fun activeForeground(app: String?, wall: Long, elapsed: Long, boot: Int): InterventionRecord? {
+    val old = disk.read() ?: return null
+    var sessions = old.sessions
+    val pause = mutableSetOf<String>()
+    for (session in old.sessions.filter { it.remainingMs != null && it.runningSince != null }) {
+      val delta = elapsed - session.runningSince!!
+      val continuous = session.boot == boot && delta in 0..5000
+      val activeWindow = WeeklySchedules.windows(old.plan, wall).any { session.app in it.apps && it.startsAt <= wall && wall < it.endsAt }
+      val used = if (continuous) delta else 0L
+      val remaining = maxOf(0, session.remainingMs!! - used)
+      val keepRunning = continuous && app == session.app && activeWindow && remaining > 0
+      val group = session.usageGroup ?: session.id
+      sessions = sessions.map { current ->
+        if (current.remainingMs != null && (current.usageGroup ?: current.id) == group) current.copy(remainingMs = remaining,
+          runningSince = if (current.app == session.app && keepRunning) elapsed else null) else current
+      }
+      if (!keepRunning) pause.add(session.app)
+    }
+    val allowances = old.allowances.filter { it.app !in pause }
+    return if (sessions == old.sessions && allowances == old.allowances) old else persist(old.copy(sessions = sessions, allowances = allowances))
+  }
+  fun remaining(session: AppSession, elapsed: Long): Long = session.remainingMs?.let { maxOf(0, it - (session.runningSince?.let { since -> maxOf(0, elapsed - since) } ?: 0)) }
+    ?: maxOf(0, session.elapsedEnd - elapsed)
 
   fun action(owner: String, revision: Int, kind: String, now: Long): InterventionRecord {
     InterventionValidation.require(kind in setOf("shield_presented", "quit_selected"))
@@ -180,17 +211,24 @@ class InterventionEngine(private val disk: InterventionPersistence) {
   fun running(record: InterventionRecord, app: String, wall: Long, elapsed: Long, boot: Int) =
     record.sessions.find { it.app == app && live(it, wall, elapsed, boot) }
   fun nudge(record: InterventionRecord, app: String, wall: Long, elapsed: Long, boot: Int): AppSession? =
-    running(record, app, wall, elapsed, boot)?.takeIf { WeeklySchedules.windows(record.plan, wall).any { w -> app in w.apps } && !it.nudged && it.elapsedEnd - elapsed <= it.seconds * 500L }
+    running(record, app, wall, elapsed, boot)?.takeIf { session ->
+      WeeklySchedules.windows(record.plan, wall).any { w -> app in w.apps } && if (session.remainingMs != null)
+        (1..3).map { q -> kotlin.math.ceil(session.seconds.toDouble() * q / 240).toLong() * 60000 }
+          .distinct().filter { it > 0 && it < session.seconds * 1000L }.withIndex()
+          .any { (index, threshold) -> index + 1 > session.nudgeQuarter && session.seconds * 1000L - remaining(session, elapsed) >= threshold }
+      else !session.nudged && session.elapsedEnd - elapsed <= session.seconds * 500L
+    }
   fun dismissNudge(owner: String, revision: Int, app: String) {
     val old = record(owner); InterventionValidation.require(old.plan.revision == revision, "ERR_INTERVENTION_CONFLICT")
-    persist(old.copy(sessions = old.sessions.map { if (it.app == app) it.copy(nudged = true) else it }))
+    persist(old.copy(sessions = old.sessions.map { if (it.app == app) it.copy(nudged = true, nudgeQuarter = minOf(3, maxOf(it.nudgeQuarter + 1, ((it.seconds * 1000L - (it.remainingMs ?: 0)) * 4 / (it.seconds * 1000L)).toInt()))) else it }))
   }
   fun quit(owner: String, revision: Int, app: String, encounter: String, context: String, wall: Long): InterventionRecord {
     val old = record(owner); InterventionValidation.require(old.plan.revision == revision, "ERR_INTERVENTION_CONFLICT")
-    QuestSchedules.id(encounter); InterventionValidation.require(context in setOf("initial", "expired", "mid_session"))
+    QuestSchedules.id(encounter); InterventionValidation.require(context in setOf("initial", "expired", "mid_session", "notification_accept"))
     val rewards = RewardSignals.append(old.rewards, wall, "quit", RewardSignals.day(wall, old.plan.policy.timezoneId), encounter, context)
-    return persist(old.copy(rewards = rewards, sessions = if (context == "mid_session") old.sessions.filter { it.app != app } else old.sessions,
-      allowances = if (context == "mid_session") old.allowances.filter { it.app != app } else old.allowances,
+    return persist(old.copy(rewards = rewards, sessions = if (context == "mid_session" && old.sessions.none { it.app == app && it.remainingMs != null }) old.sessions.filter { it.app != app }
+      else old.sessions.map { if (it.app == app && it.remainingMs != null) it.copy(runningSince = null) else it },
+      allowances = old.allowances.filter { it.app != app },
       events = old.events + event("quit_selected", null, revision, wall)))
   }
   fun rewardSnapshot(owner: String, wall: Long): InterventionRecord? {

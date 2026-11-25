@@ -66,8 +66,8 @@ export function SetupScreen() {
 
   async function update(progress: OnboardingProgress | null, expectedAttempt?: SettingsPatch) {
     if (writing.current || !repo || !scope || (!verified && progress?.step !== 'questions') || !scope.isCurrent()) return false;
-    // The questionnaire already reviewed iPhone permission. Saving preferences
-    // completes onboarding; it never installs or activates device protection.
+    // The questionnaire already reviewed permission. SetupPlanSave now verifies
+    // native activation before this accepted-plan completion transition.
     if (progress?.step === 'permission' && progress.questionsCompleted && (iosDevice || nativeOwner)) {
       progress = { ...progress, step: 'complete' };
     }

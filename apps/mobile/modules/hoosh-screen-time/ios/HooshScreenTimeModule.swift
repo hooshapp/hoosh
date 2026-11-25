@@ -2,10 +2,13 @@ import ExpoModulesCore
 import FamilyControls
 import UIKit
 import Combine
+import UserNotifications
 
 public class HooshScreenTimeModule: Module {
   private let leases = ProtectionOwnerLeases()
   private var permissionObserver: AnyCancellable?
+  private var foregroundObserver: NSObjectProtocol?
+  private var notificationDelegate: ProtectionNotificationDelegate?
   private let picker = NativeSelectionPicker()
   private let usageReport = UsageBaselinePresenter()
   private var transactions: SelectionTransactions<FamilyActivitySelection>?
@@ -34,6 +37,51 @@ public class HooshScreenTimeModule: Module {
     catch let failure as SelectionFailure {
       throw Exception(name: "SelectionError", description: "App selection could not be confirmed.", code: failure.rawValue)
     }
+  }
+  // Sanitized physical-QA receipt: never includes identity, app tokens, answers or clock signals.
+  private func writeProtectionDiagnostic(_ owner: ProtectionOwner, stage: String, error: Error? = nil) {
+    #if HOOSH_PHYSICAL_NUDGE_QA
+    var receipt: [String: Any] = ["stage": stage, "activationAvailable": ProtectionActivationGate.enabled,
+      "authorized": AuthorizationCenter.shared.authorizationStatus == .approved,
+      "clockAvailable": (try? ProtectionDeviceClock.sample()) != nil,
+      "monitorCount": ProtectionOSAdapter.scopedMonitorCount]
+    receipt["allowanceFailure"] = UserDefaults(suiteName: SharedProtectionStore.group)?.string(forKey: "hoosh.qa.allowanceFailure")
+    if let state = try? SharedProtectionStore.appGroup().read(),
+       let record = state.owners.first(where: { $0.owner == owner }) {
+      receipt["ownerMatches"] = state.installedOwner == owner
+      receipt["pendingClaim"] = state.pendingClaim != nil
+      receipt["hasSelection"] = record.selection != nil
+      receipt["pendingInstallation"] = record.pendingInstallation != nil
+      if let pending = record.pendingInstallation, var ledger = record.sessionLedger {
+        do { try ledger.updatePolicy(pending.target.policy); receipt["pendingPolicyCompatible"] = true }
+        catch { receipt["pendingPolicyCompatible"] = false }
+      }
+      receipt["hasInstallation"] = record.installation != nil
+      receipt["enabled"] = record.installation?.enabled ?? false
+      receipt["activeReasonCount"] = record.installation?.activeSnapshots.count ?? 0
+      receipt["allowanceSessionCount"] = record.sessionLedger?.sessions.count ?? 0
+      receipt["allowanceGrantCount"] = record.sessionLedger?.grants.count ?? 0
+      let measured = record.sessionLedger?.sessions.filter { $0.usageBased } ?? []
+      receipt["usageSessionCount"] = measured.count
+      receipt["usedUsageSeconds"] = measured.reduce(0) { $0 + ($1.usageConsumedSeconds ?? 0) }
+      receipt["remainingUsageSeconds"] = measured.reduce(0) { $0 + max(0, $1.seconds - ($1.usageConsumedSeconds ?? 0)) }
+    }
+    if let error {
+      if let typed = error as? ProtectionTransactionError { receipt["failure"] = String(describing: typed) }
+      else if let typed = error as? ProtectionStoreError { receipt["failure"] = String(describing: typed) }
+      else if let typed = error as? ScheduleFailure { receipt["failure"] = String(describing: typed) }
+      else { let native = error as NSError; receipt["failure"] = "\(native.domain):\(native.code)" }
+    }
+    if let directory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first {
+      let file = directory.appendingPathComponent("hoosh-protection-diagnostic.json")
+      if stage == "read", let prior = try? Data(contentsOf: file),
+         let saved = (try? JSONSerialization.jsonObject(with: prior)) as? [String: Any],
+         let failure = saved["failure"] as? String { receipt["failure"] = failure }
+      if let data = try? JSONSerialization.data(withJSONObject: receipt, options: [.sortedKeys]) {
+        try? data.write(to: file, options: [.atomic, .completeFileProtection])
+      }
+    }
+    #endif
   }
   public func definition() -> ModuleDefinition {
     Name("HooshScreenTime")
@@ -77,7 +125,33 @@ public class HooshScreenTimeModule: Module {
         "windowDays": result.days, "totalMinutes": result.totalMinutes, "endsBefore": result.endsBefore, "timezone": result.timezone]
     }
     Events("onDeviceStatusChanged")
+    OnDestroy {
+      if let observer = self.foregroundObserver { NotificationCenter.default.removeObserver(observer) }
+    }
     OnCreate {
+      let reconcile: () -> Void = { [weak self] in
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+          ProtectionNativeEngine.pauseForHostReturn()
+          if let state = try? SharedProtectionStore.appGroup().read(), let owner = state.installedOwner {
+            self?.writeProtectionDiagnostic(owner, stage: "foreground")
+          }
+          self?.sendEvent("onDeviceStatusChanged", ["reason": "foreground"])
+        }
+      }
+      self.foregroundObserver = NotificationCenter.default.addObserver(forName: UIApplication.didBecomeActiveNotification, object: nil, queue: nil) { _ in reconcile() }
+      reconcile()
+      let center = UNUserNotificationCenter.current()
+      let delegate = ProtectionNotificationDelegate(previous: center.delegate) { [weak self] in
+        self?.sendEvent("onDeviceStatusChanged", ["reason": "notification_accepted"])
+      }
+      self.notificationDelegate = delegate; center.delegate = delegate
+      center.getNotificationCategories { categories in
+        let category = UNNotificationCategory(identifier: "hoosh.session.nudge", actions: [
+          UNNotificationAction(identifier: "hoosh.nudge.skip", title: "Skip", options: []),
+          UNNotificationAction(identifier: "hoosh.nudge.accept", title: "Accept · +30 ✦", options: [.foreground])
+        ], intentIdentifiers: [], options: [])
+        center.setNotificationCategories(categories.union([category]))
+      }
       self.permissionObserver = AuthorizationCenter.shared.$authorizationStatus.dropFirst().sink { [weak self] _ in
         guard let self else { return }
         self.sendEvent("onDeviceStatusChanged", ["reason": "authorization"])
@@ -114,18 +188,29 @@ public class HooshScreenTimeModule: Module {
     }
     AsyncFunction("runtimeRead") { (namespace: String, userID: String, raw: String, quest: String?) throws -> [String: Any] in
       let (owner, token) = try self.owner(namespace, userID, raw)
+      defer { self.writeProtectionDiagnostic(owner, stage: "read") }
       return try self.leases.withLease(owner, token: token) {
         let id = quest.flatMap(UUID.init(uuidString:))
         guard quest == nil || id != nil else { throw ProtectionTransactionError.invalid }
         return try ProtectionBridge.read(store: .appGroup(), owner: owner, questID: id)
       }
     }
-    AsyncFunction("runtimeApply") { (namespace: String, userID: String, raw: String, json: String) throws -> [String: Any] in
+    AsyncFunction("runtimeApply") { (namespace: String, userID: String, raw: String, json: String) async throws -> [String: Any] in
       let (owner, token) = try self.owner(namespace, userID, raw)
       let (command, canonical) = try ProtectionBridge.command(json)
-      _ = try ProtectionTransactions(store: .appGroup(), leases: self.leases).apply(owner: owner, token: token,
-        requestID: command.requestID, expected: command.expectedRevision, selectionRevision: command.selectionRevision,
-        canonicalCommand: canonical, driver: ProtectionNativeDriver(owner: owner), build: command.build)
+      do {
+        _ = try ProtectionTransactions(store: .appGroup(), leases: self.leases).apply(owner: owner, token: token,
+          requestID: command.requestID, expected: command.expectedRevision, selectionRevision: command.selectionRevision,
+          canonicalCommand: canonical, driver: ProtectionNativeDriver(owner: owner), build: command.build)
+      } catch {
+        self.writeProtectionDiagnostic(owner, stage: "apply_failed", error: error)
+        throw error
+      }
+      self.writeProtectionDiagnostic(owner, stage: "apply_confirmed")
+      if ProtectionActivationGate.enabled {
+        _ = try? await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound])
+      }
+      ProtectionNativeEngine.syncNudges(owner: owner)
       self.sendEvent("onDeviceStatusChanged", ["reason": "installation"])
       return try self.leases.withLease(owner, token: token) {
         try ProtectionBridge.read(store: .appGroup(), owner: owner, questID: command.quest?.questID ?? command.questID)
@@ -134,8 +219,14 @@ public class HooshScreenTimeModule: Module {
     AsyncFunction("runtimeRecover") { (namespace: String, userID: String, raw: String, request: String) throws in
       let (owner, token) = try self.owner(namespace, userID, raw)
       guard let id = UUID(uuidString: request) else { throw ProtectionTransactionError.invalid }
-      _ = try ProtectionTransactions(store: .appGroup(), leases: self.leases).recover(owner: owner, token: token,
-        requestID: id, driver: ProtectionNativeDriver(owner: owner))
+      do {
+        _ = try ProtectionTransactions(store: .appGroup(), leases: self.leases).recover(owner: owner, token: token,
+          requestID: id, driver: ProtectionNativeDriver(owner: owner))
+        self.writeProtectionDiagnostic(owner, stage: "recover_confirmed")
+      } catch {
+        self.writeProtectionDiagnostic(owner, stage: "recover_failed", error: error)
+        throw error
+      }
       self.sendEvent("onDeviceStatusChanged", ["reason": "installation"])
     }
     AsyncFunction("deviceDiagnostics") { (namespace: String, userID: String, raw: String) throws -> [String: Any] in
@@ -194,9 +285,20 @@ public class HooshScreenTimeModule: Module {
     }
     AsyncFunction("claimInstallation") { (namespace: String, userID: String, rawToken: String, revision: String, confirmed: Bool) throws in
       let (owner, token) = try self.owner(namespace, userID, rawToken)
+      let priorState = try SharedProtectionStore.appGroup().read()
+      let priorOwner = priorState?.installedOwner
+      let priorSessions = priorState?.owners.first(where: { $0.owner == priorOwner })?.sessionLedger?.sessions.map { $0.id.uuidString } ?? []
       try ProtectionInstallation(store: .appGroup(), leases: self.leases)
         .claim(owner: owner, token: token, revision: revision, confirmed: confirmed,
                stopAndVerify: ProtectionDeviceTransition.stopAndVerify)
+      if let priorOwner {
+        let prefix = "hoosh.shared.nudge." + ProtectionRuntimePlanner.prefix(priorOwner)
+        UNUserNotificationCenter.current().getPendingNotificationRequests { requests in
+          let ids = requests.filter { request in priorSessions.contains { request.identifier.hasPrefix(prefix + $0 + ".") } }.map(\.identifier)
+          UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ids)
+          UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: ids)
+        }
+      }
       self.invalidateSelections()
       self.sendEvent("onDeviceStatusChanged", ["reason": "installation"])
       Task { @MainActor in self.picker.cancel(lease: token); self.usageReport.cancel() }
@@ -302,5 +404,44 @@ public class HooshScreenTimeModule: Module {
     case .notDetermined: return "not_requested"
     @unknown default: return "unavailable"
     }
+  }
+}
+
+private final class ProtectionNotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
+  private weak var previous: UNUserNotificationCenterDelegate?
+  private let accepted: () -> Void
+  init(previous: UNUserNotificationCenterDelegate?, accepted: @escaping () -> Void) {
+    self.previous = previous; self.accepted = accepted
+  }
+  func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification,
+    withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+    if notification.request.content.categoryIdentifier == "hoosh.session.nudge" { completionHandler([.banner, .sound]); return }
+    if let previous, previous.responds(to: #selector(UNUserNotificationCenterDelegate.userNotificationCenter(_:willPresent:withCompletionHandler:))) {
+      previous.userNotificationCenter?(center, willPresent: notification, withCompletionHandler: completionHandler)
+    } else { completionHandler([]) }
+  }
+  func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse,
+    withCompletionHandler completionHandler: @escaping () -> Void) {
+    if response.notification.request.content.categoryIdentifier == "hoosh.session.nudge" {
+      if response.actionIdentifier == "hoosh.nudge.accept" {
+        ProtectionNativeEngine.acceptNotification(response.notification.request.content.userInfo)
+        accepted()
+      }
+      completionHandler(); return
+    }
+    if let previous, previous.responds(to: #selector(UNUserNotificationCenterDelegate.userNotificationCenter(_:didReceive:withCompletionHandler:))) {
+      previous.userNotificationCenter?(center, didReceive: response, withCompletionHandler: completionHandler)
+    } else { completionHandler() }
+  }
+}
+
+/// Install before React starts so notification Accept also works from a cold launch.
+public enum HooshNudgeNotifications {
+  private static var retainedDelegate: ProtectionNotificationDelegate?
+  public static func install() {
+    let center = UNUserNotificationCenter.current()
+    if center.delegate is ProtectionNotificationDelegate { return }
+    let delegate = ProtectionNotificationDelegate(previous: center.delegate, accepted: {})
+    retainedDelegate = delegate; center.delegate = delegate
   }
 }
