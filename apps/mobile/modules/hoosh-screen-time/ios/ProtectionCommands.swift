@@ -82,8 +82,13 @@ struct ProtectionCommand: Codable {
     default: throw ProtectionTransactionError.invalid
     }
     if kind == "weekly_apply" || kind == "quest_apply" {
-      // Explicit Apply installs the reviewed global selection for future periods.
-      // Planner.preserveActive keeps already-running occurrences' app snapshots.
+      // Refresh the app targets of active schedules without dropping their session ledger.
+      if previous?.selectionRevision != selection.revision {
+        result.activeSnapshots = result.activeSnapshots.map { window in
+          ProtectionOccurrence(reasonID: window.reasonID, startsAt: window.startsAt, endsAt: window.endsAt,
+            selectionRevision: selection.revision, selection: selection.encodedTokens)
+        }
+      }
       if result.weekly != nil { result.weeklySelection = selection }
       result.quests = result.quests.map { value in
         ProtectionQuestRecord(questID: value.questID, remoteRevision: value.remoteRevision,

@@ -14,7 +14,7 @@ class RewardSignal(WireModel):
     event_id: UUID
     sequence: StrictInt = Field(ge=1, le=9007199254740991)
     occurred_at: AwareDatetime
-    kind: Literal["quit", "allowance", "day_closed"]
+    kind: Literal["quit", "allowance", "day_closed", "nudge_skipped"]
     encounter_id: UUID | None
     context: Literal["initial", "expired", "mid_session", "notification_accept"] | None
     day: date
@@ -31,6 +31,9 @@ class RewardSignal(WireModel):
         if self.kind == "quit":
             valid = self.encounter_id is not None and self.context is not None
             valid = valid and self.exhausted is None and self.covered is None
+        elif self.kind == "nudge_skipped":
+            valid = self.encounter_id is not None and self.context is None
+            valid = valid and self.exhausted is None and self.covered is None
         elif self.kind == "allowance":
             valid = self.exhausted is not None and self.context is None
             valid = valid and self.encounter_id is None and self.covered is None
@@ -46,6 +49,7 @@ class RewardBatch(WireModel):
     installation_id: UUID
     timezone_id: str = Field(min_length=1, max_length=128, pattern=r"^[A-Za-z0-9_+/-]+$")
     discarded: StrictInt = Field(ge=0, le=9007199254740991)
+    acknowledged: StrictInt = Field(default=0, ge=0, le=9007199254740991)
     events: list[RewardSignal] = Field(min_length=1, max_length=32)
 
     @field_validator("timezone_id")
@@ -59,6 +63,8 @@ class RewardBatch(WireModel):
 
     @model_validator(mode="after")
     def ordered(self):
+        if self.events[0].sequence <= self.acknowledged:
+            raise ValueError("Acknowledged prefix cannot include queued events")
         if len({e.event_id for e in self.events}) != len(self.events) or any(
             b.sequence <= a.sequence or b.occurred_at < a.occurred_at
             for a, b in zip(self.events, self.events[1:], strict=False)
@@ -78,6 +84,7 @@ class RewardView(WireModel):
     streak_days: int | None
     recent_week_complete: bool
     observed_at: AwareDatetime
+    health_warning_at: AwareDatetime | None = None
     policy_version: Literal[2] = 2
 
 

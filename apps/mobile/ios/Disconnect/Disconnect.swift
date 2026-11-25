@@ -6,6 +6,7 @@
 //
 
 import DeviceActivity
+import ExtensionKit
 import SwiftUI
 
 @main
@@ -15,6 +16,14 @@ struct Disconnect: DeviceActivityReportExtension {
         TotalActivityReport { totalActivity in
             TotalActivityView(totalActivity: totalActivity)
         }
-        // Add more reports here...
+        HooshUsageComparison(context: .init("Hoosh Usage Compact"), days: 7) {
+            UsageComparisonView(comparison: $0, compact: true, days: 7)
+        }
+        HooshUsageComparison(context: .init("Hoosh Usage Week"), days: 7) {
+            UsageComparisonView(comparison: $0, compact: false, days: 7)
+        }
+        HooshUsageComparison(context: .init("Hoosh Usage Month"), days: 28) {
+            UsageComparisonView(comparison: $0, compact: false, days: 28)
+        }
     }
 }

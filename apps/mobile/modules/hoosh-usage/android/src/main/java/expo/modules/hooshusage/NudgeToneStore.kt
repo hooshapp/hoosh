@@ -14,10 +14,28 @@ class NudgeToneStore(context: Context) {
     InterventionValidation.require(tone in setOf("Supportive", "Direct", "Playful", "Intense"))
     InterventionValidation.require(prefs.edit().putString(key(owner), tone).commit(), "ERR_INTERVENTION_STORAGE")
   }
-  fun line(owner: String): String = when (prefs.getString(key(owner), "Supportive")) {
-    "Direct" -> "Pause now. Choose what you want to do next."
-    "Playful" -> "Plot twist: your next chapter is off the feed."
-    "Intense" -> "Protect the time you chose. Make your next move intentional."
-    else -> "A small pause can make room for what matters to you."
+  fun setShieldContext(owner: String, name: String, activity: String) {
+    val ownerKey = key(owner)
+    val displayName = name.filterNot { it.isISOControl() }.trim().take(40)
+    InterventionValidation.require(prefs.edit().putString("$ownerKey.name", displayName)
+      .putString("$ownerKey.activity", activity.takeIf { it in activities }.orEmpty()).commit(), "ERR_INTERVENTION_STORAGE")
   }
+  fun shieldContext(owner: String): Pair<String, String> {
+    val ownerKey = key(owner)
+    return prefs.getString("$ownerKey.name", "").orEmpty() to
+      activities[prefs.getString("$ownerKey.activity", "")].orEmpty()
+  }
+  fun erase(owner: String) {
+    val ownerKey = key(owner)
+    InterventionValidation.require(prefs.edit().remove(ownerKey).remove("$ownerKey.name")
+      .remove("$ownerKey.activity").commit(), "ERR_INTERVENTION_STORAGE")
+  }
+  fun line(owner: String, goal: String): String = when (prefs.getString(key(owner), "Supportive")) {
+    "Direct" -> "Pause now and make time for $goal."
+    "Playful" -> "Plot twist: it’s time for $goal."
+    "Intense" -> "Protect the time you chose for $goal."
+    else -> "Take a little time for $goal."
+  }
+  private val activities = mapOf("reading" to "reading", "gym" to "the gym", "arts_and_crafts" to "arts and crafts",
+    "walking" to "a walk", "music" to "music", "cooking" to "cooking")
 }

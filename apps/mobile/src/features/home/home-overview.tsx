@@ -1,5 +1,5 @@
 import { Image } from 'expo-image';
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { Button } from '@/components/ui/button';
@@ -10,10 +10,18 @@ import { colors, fonts } from '@/design/tokens';
 import { HomeArtwork } from './home-artwork';
 import { unavailableLabel, type HomeModel } from './home-model';
 
+const dinoMoods = {
+  needsCare: { label: 'Needs care', fill: '#d18b6c' },
+  feelingLow: { label: 'Feeling low', fill: '#c4a252' },
+  doingOkay: { label: 'Doing okay', fill: '#0b9968' },
+  happy: { label: 'Happy', fill: colors.action },
+};
+
 type Props = Pick<HomeModel, 'dino' | 'credits' | 'weekly'> & {
   stacked: boolean;
   onFeed?: () => void;
   onOpenHistory?: () => void;
+  usageComparison?: ReactNode;
   feeding?: boolean;
 };
 export function HomeOverview({
@@ -23,6 +31,7 @@ export function HomeOverview({
   stacked,
   onFeed,
   onOpenHistory,
+  usageComparison,
   feeding = false,
 }: Props) {
   const [failedDino, setFailedDino] = useState<unknown>();
@@ -44,11 +53,12 @@ export function HomeOverview({
               style={styles.health}
               accessible
               accessibilityLabel={`Dino health ${dino.value.percent}%`}
+              accessibilityValue={{ text: dinoMoods[dino.value.artwork].label }}
             >
               <HomeArtwork asset={homeAssets.heart} testID="home-heart" />
               <View style={styles.track}>
                 <View
-                  style={[styles.fill, { width: `${dino.value.percent}%` }]}
+                  style={[styles.fill, { width: `${dino.value.percent}%`, backgroundColor: dinoMoods[dino.value.artwork].fill }]}
                 />
               </View>
               <Text style={styles.percent}>{dino.value.percent}%</Text>
@@ -145,6 +155,7 @@ export function HomeOverview({
           <Text style={styles.period}>
             {weekly.state === 'ready' ? weekly.value.periodLabel : 'Time saved'}
           </Text>
+          {usageComparison ?? <>
           <Text style={styles.hours}>
             {weekly.state === 'ready'
               ? Number(weekly.value.hours.toFixed(2))
@@ -177,6 +188,7 @@ export function HomeOverview({
               {weekly.state === 'unavailable' ? 'No measured data yet' : unavailableLabel(weekly.state)}
             </Text>
           )}
+          </>}
         </View>
       </View>
     </View>

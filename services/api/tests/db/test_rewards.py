@@ -9,6 +9,7 @@ from sqlalchemy.exc import ProgrammingError
 
 from app.core.errors import ApiError
 from app.models.rewards import RewardEntry, RewardWallet
+from app.repositories.quests import list_own_quests
 from app.repositories.rewards import feed, ingest, quest_credit, view
 from app.schemas.rewards import FeedPut, RewardBatch
 from tests.support import database
@@ -150,7 +151,7 @@ def test_competing_feed_commands_cannot_double_spend_revision(
         assert view(s, NOW).balance == 40
 
 
-def test_native_batch_replay_cooldown_and_same_encounter(resource, profile_accounts):
+def test_native_batch_replay_and_distinct_quits_within_one_minute(resource, profile_accounts):
     a = profile_accounts[0]
     installation = uuid4()
     first = signal()
@@ -168,7 +169,25 @@ def test_native_batch_replay_cooldown_and_same_encounter(resource, profile_accou
     ]
     with resource.transaction(a) as s:
         result = ingest(s, batch(nexts, installation), NOW + timedelta(seconds=201))
-        assert result.accepted_sequence == 5 and result.wallet.balance == 45
+        assert result.accepted_sequence == 5 and result.wallet.balance == 50
+
+
+def test_restore_acknowledged_prefix_and_apply_health_loss_once(resource, profile_accounts):
+    installation = uuid4()
+    a = profile_accounts[0]
+    events = [
+        signal(11),
+        signal(12, kind="allowance", exhausted=False, context=None, encounter_id=None),
+        signal(13, kind="nudge_skipped", context=None, encounter_id=str(uuid4()), exhausted=None),
+    ]
+    body = batch(events, installation).model_copy(update={"acknowledged": 10})
+    with resource.transaction(a) as s:
+        result = ingest(s, body, NOW)
+        assert result.accepted_sequence == 13
+        assert (result.wallet.balance, result.wallet.health) == (5, 46)
+    with resource.transaction(a) as s:
+        replay = ingest(s, body, NOW)
+        assert (replay.wallet.balance, replay.wallet.health) == (5, 46)
 
 
 def test_bad_sequence_payload_or_clock_rolls_back_whole_batch(resource, profile_accounts):
@@ -440,6 +459,7 @@ def test_notification_accept_awards_thirty_immediately_once(resource, profile_ac
     with resource.transaction(account) as session:
         assert ingest(session, request, NOW).wallet.balance == 30
         assert len(session.scalars(select(RewardEntry)).all()) == 1
+        assert len(list_own_quests(session, None, 5)) == 1
     duplicate_encounter = signal(
         2,
         NOW + timedelta(seconds=65),
@@ -453,3 +473,13 @@ def test_notification_accept_awards_thirty_immediately_once(resource, profile_ac
             ).wallet.balance
             == 30
         )
+
+    with resource.transaction(account) as session:
+        another = signal(3, NOW + timedelta(seconds=120), context="notification_accept")
+        assert (
+            ingest(
+                session, batch([another], installation), NOW + timedelta(seconds=120)
+            ).wallet.balance
+            == 60
+        )
+        assert len(list_own_quests(session, None, 5)) == 1

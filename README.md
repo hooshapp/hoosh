@@ -2,6 +2,10 @@
 
 Shared React Native app and FastAPI service for Disconnect. Product context starts in [project context](<docs/Context (AGENT)/AGENT_START_HERE.md>); pending product answers belong in [PM questions](<docs/Context (AGENT)/PM_QUESTIONS.md>). Detailed development plans and their execution order are in [docs/core_plan/README.md](docs/core_plan/README.md). The [implementation knowledge base](docs/core_plan_implementation_notes/README.md) records the required per-plan, per-commit change notes and how to resume work across agents/chats.
 
+## Working together
+
+Start with the [Hoosh team handoff](docs/team-workflow.md) for Anisha and Ishmum’s work split, the Android QA starting point, and how to merge shared changes.
+
 ## What works now
 
 - Expo / React Native / TypeScript workspace with Home, Quests, History, Settings, auth, and onboarding routes.
@@ -29,7 +33,7 @@ apps/mobile/
   src/app/                  Expo Router routes; route groups separate ownership
     (auth)/                 Anisha: sign-in / account flows
     (onboarding)/           Anisha: onboarding and plan setup
-    (tabs)/                 Ishmum: Home, Quests, History, Settings
+    (tabs)/                 Home, Quests, History, Settings
   src/components/ui/        Shared UI primitives
   src/design/               Figma-derived tokens
   src/features/             Feature integration notes and future domain modules

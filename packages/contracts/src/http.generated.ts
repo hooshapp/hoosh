@@ -344,6 +344,18 @@ export interface components {
              */
             retryable: false;
         };
+        /** DailyInterventions */
+        DailyInterventions: {
+            /**
+             * Day
+             * Format: date
+             */
+            day: string;
+            /** Sessions Started */
+            sessions_started: number;
+            /** Turn Offs */
+            turn_offs: number;
+        };
         /** DraftHours */
         DraftHours: {
             /** End Local */
@@ -487,6 +499,8 @@ export interface components {
              * @constant
              */
             policy_version: 1;
+            /** Recent Interventions */
+            recent_interventions?: components["schemas"]["DailyInterventions"][] | null;
             /** Revision */
             revision: number;
             /** Selected Count */
@@ -924,6 +938,11 @@ export interface components {
         };
         /** RewardBatch */
         RewardBatch: {
+            /**
+             * Acknowledged
+             * @default 0
+             */
+            acknowledged: number;
             /** Discarded */
             discarded: number;
             /** Events */
@@ -971,7 +990,7 @@ export interface components {
              * Kind
              * @enum {string}
              */
-            kind: "quit" | "allowance" | "day_closed";
+            kind: "quit" | "allowance" | "day_closed" | "nudge_skipped";
             /**
              * Occurred At
              * Format: date-time
@@ -1003,6 +1022,8 @@ export interface components {
             feed_health: 20;
             /** Health */
             health: number;
+            /** Health Warning At */
+            health_warning_at?: string | null;
             /**
              * Observed At
              * Format: date-time

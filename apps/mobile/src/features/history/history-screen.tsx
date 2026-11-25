@@ -19,6 +19,7 @@ export type HistoryScreenProps = {
   model: HistoryModel;
   onRetry?: () => void;
   controls?: ReactNode;
+  usageComparison?: ReactNode;
   /** Only supply when the host has a real next page. No invented detail route. */
   onNext?: () => void;
 };
@@ -27,6 +28,7 @@ export function HistoryScreen({
   onRetry,
   onNext,
   controls,
+  usageComparison,
 }: HistoryScreenProps) {
   const [width, setWidth] = useState<number>();
   const { fontScale } = useWindowDimensions();
@@ -69,6 +71,7 @@ export function HistoryScreen({
             ? '28-day screen time'
             : 'Weekly screen time'}
         </Text>
+        {usageComparison ?? <>
         <View style={styles.comparison}>
           {comparison ? (
             <>
@@ -107,6 +110,7 @@ export function HistoryScreen({
           compact={compact}
           onRetry={onRetry}
         />
+        </>}
         {controls}
         {onNext ? (
           <View style={styles.footer}>

@@ -193,6 +193,9 @@ final class ProtectionTransactions {
       // Resolve policy against the latest ledger before touching SDK state.
       var ledger = try record.sessionLedger ?? ProtectionSessionLedger(policy: effective.policy)
       try ledger.updatePolicy(effective.policy)
+      if let previous = record.installation, previous.selectionRevision != effective.selectionRevision {
+        ledger.rebaseUsageMonitoring(selectionRevision: effective.selectionRevision)
+      }
       try ledger.reconcile(revision: effective.revision,
         remainingReasons: Set(effective.activeSnapshots.map(\.reasonID)))
       try driver.preflight(effective)

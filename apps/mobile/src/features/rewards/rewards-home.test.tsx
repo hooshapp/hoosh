@@ -48,7 +48,7 @@ test('real Home shows verified balance/artwork and Feed updates only after serve
   const s = setup(); await render(s.ui());
   await waitFor(() => expect(screen.getByTestId('home-credit-value')).toHaveTextContent('50'));
   expect(screen.getByLabelText('Dino health 50%')).toBeTruthy();
-  expect(screen.getByTestId('home-streak')).toHaveTextContent('Current streakNot available yet');
+  expect(screen.getByTestId('home-streak')).toHaveProp('accessibilityHint', 'A streak appears after eligible completed days are verified.');
   await press('Feed Dino for 10 credits');
   await waitFor(() => expect(screen.getByTestId('home-credit-value')).toHaveTextContent('40'));
   expect(screen.getByLabelText('Dino health 70%')).toBeTruthy();

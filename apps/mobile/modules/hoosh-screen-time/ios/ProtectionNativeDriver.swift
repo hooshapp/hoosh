@@ -52,6 +52,42 @@ final class ProtectionNativeDriver: ProtectionInstallationDriver {
     try ProtectionOSAdapter.retire(stale)
     guard try matches(target, ledger: ledger) else { throw ProtectionTransactionError.unconfirmed }
   }
+  /// The shield delegate waits for the allowance monitor and shield write, so
+  /// leave unrelated weekly/quest monitor readback to normal reconciliation.
+  func applyAllowance(for app: ApplicationToken, runtime: ProtectionRuntimeRecord,
+                      ledger: ProtectionSessionLedger) throws {
+    try requireActivation()
+    let clock = try ProtectionDeviceClock.sample()
+    let plan = try ProtectionRuntimePlanner.resolve(runtime, owner: owner, now: clock.wall)
+    let blocked = try Self.blocked(plan.runtime, ledger: ledger, clock: clock)
+    let key = try Self.key(app, ledger: ledger)
+    guard !blocked.contains(app), let session = ledger.sessions.first(where: {
+      $0.app == key && $0.live(clock)
+    }), ledger.grants.contains(where: { grant in
+      grant.app == key && grant.revision == runtime.revision && grant.wallEnd > clock.wall &&
+        grant.elapsedEnd > clock.elapsed && grant.boot == clock.boot &&
+        plan.runtime.activeSnapshots.contains(where: { $0.reasonID == grant.reasonID })
+    }) else { throw ProtectionTransactionError.unconfirmed }
+    let allowanceMonitors = try sdkMonitors(plan, ledger: ledger, clock: clock).filter {
+      $0.envelope.reasonID == "session_usage" || $0.envelope.reasonID == "session_expiry"
+    }
+    if session.usageBased {
+      let name = Self.usageMonitorName(owner: owner, session: session)
+      guard allowanceMonitors.contains(where: { $0.name == name }) else {
+        throw ProtectionTransactionError.unconfirmed
+      }
+    } else {
+      guard allowanceMonitors.contains(where: { $0.envelope.reasonID == "session_expiry" }) else {
+        throw ProtectionTransactionError.unconfirmed
+      }
+    }
+    try ProtectionOSAdapter.stage(allowanceMonitors, preserving: [])
+    try ProtectionOSAdapter.writeBlockedApps(blocked)
+  }
+  static func usageMonitorName(owner: ProtectionOwner, session: ElapsedProtectionSession) -> String {
+    let base = ProtectionRuntimePlanner.prefix(owner) + "usage." + session.usageGroup.uuidString.lowercased()
+    return session.usageMonitorRevision.map { base + ".s\($0)" } ?? base
+  }
   static func apps(_ bytes: Data) throws -> Set<ApplicationToken> {
     let selection: FamilyActivitySelection
     do { selection = try JSONDecoder().decode(FamilyActivitySelection.self, from: bytes) }
@@ -98,21 +134,25 @@ final class ProtectionNativeDriver: ProtectionInstallationDriver {
         let startedAt = session.usageStartedAt else { continue }
       let active = plan.runtime.activeSnapshots.filter { $0.startsAt <= clock.wall && clock.wall < $0.endsAt }
       guard !active.isEmpty else { continue }
+      let selected = try active.reduce(into: Set<ApplicationToken>()) { $0.formUnion(try Self.apps($1.selection)) }
       let tokens: Set<ApplicationToken>
       if plan.runtime.policy.sharedBudget {
-        tokens = try active.reduce(into: Set<ApplicationToken>()) { $0.formUnion(try Self.apps($1.selection)) }
-      } else { tokens = [try JSONDecoder().decode(ApplicationToken.self, from: session.app)] }
+        tokens = selected
+      } else {
+        let token = try JSONDecoder().decode(ApplicationToken.self, from: session.app)
+        tokens = selected.contains(token) ? [token] : []
+      }
+      guard !tokens.isEmpty else { continue }
       let entryEnd = active.filter { $0.reasonID.hasPrefix("entry_") }.map(\.endsAt).min()
       let end = min(session.wallEnd, entryEnd ?? active.map(\.endsAt).min()!)
       let start = min(startedAt, end - 900000)
       guard start >= 0, end > clock.wall else { continue }
       let step = max(60, Int(ceil(Double(session.seconds) / 240 / 60)) * 60)
       let thresholds = Array(Set(Array(stride(from: step, to: session.seconds, by: step)) +
-        ProtectionSessionLedger.nudgeSeconds(duration: session.seconds) + [session.seconds])).sorted()
-      monitors.append(ProtectionOSMonitor(name: ProtectionRuntimePlanner.prefix(owner) +
-        "usage." + session.usageGroup.uuidString.lowercased(),
+        session.nudgeSeconds + [session.seconds])).filter { $0 > (session.usageOffsetSeconds ?? 0) }.sorted()
+      monitors.append(ProtectionOSMonitor(name: Self.usageMonitorName(owner: owner, session: session),
         envelope: .init(reasonID: "session_usage", startsAt: start, endsAt: end,
-          businessStartsAt: start, warningSeconds: nil), usageApplications: tokens, usageThresholds: thresholds))
+          businessStartsAt: start, warningSeconds: nil), usageApplications: tokens, usageThresholds: thresholds, usageOffsetSeconds: session.usageOffsetSeconds ?? 0))
     }
     guard monitors.count <= 512 else { throw SessionFailure.capacity }
     return monitors

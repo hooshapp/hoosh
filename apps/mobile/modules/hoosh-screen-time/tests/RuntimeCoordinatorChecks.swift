@@ -57,6 +57,20 @@ final class CoordinatorDriver: ProtectionInstallationDriver {
     let confirmed = try store.read()!.owners[0]
     guard confirmed.sessionLedger?.daily.first?.count == 1, confirmed.coverage == "unknown", driver.ledger == confirmed.sessionLedger else { fatalError("retry double charged or ignored SDK readback") }
     guard confirmed.rewardJournal == pending.rewardJournal else { fatalError("retry duplicated consumption evidence") }
+    do {
+      try engine.allow(owner: owner, revision: 1, driver: driver, clock: clock,
+        applyGrant: { _, _ in throw ProtectionTransactionError.unconfirmed }) { _, _ in (Data([9]), [reason]) }
+      fatalError("shield action acknowledged an unconfirmed unlock")
+    } catch ProtectionTransactionError.unconfirmed {}
+    var applied = false
+    try engine.allow(owner: owner, revision: 1, driver: driver, clock: clock,
+      applyGrant: { runtime, ledger in
+        guard runtime.revision == 1, ledger.daily.first?.count == 1 else {
+          fatalError("shield retry used a different revision or consumed a second session")
+        }
+        applied = true
+      }) { _, _ in (Data([9]), [reason]) }
+    guard applied else { fatalError("shield action returned before applying the unlock") }
     do { try engine.refresh(owner: owner, revision: 2, driver: driver); fatalError("stale generation accepted") }
     catch ProtectionStoreError.staleLease {}
     var writes = 0

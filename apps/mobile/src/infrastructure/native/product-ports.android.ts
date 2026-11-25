@@ -39,6 +39,7 @@ function connectedPort(): ProductNativePort | null {
   const bridge = nativeModule;
   return {
     onboardingBaselineRead: bridge.onboardingBaselineRead?.bind(bridge),
+    setAndroidShieldContext: bridge.setAndroidShieldContext?.bind(bridge),
     setNudgeTone: bridge.setNudgeTone?.bind(bridge),
     budgetCapabilities: bridge.budgetCapabilities?.bind(bridge),
     questRead: bridge.questRead.bind(bridge),

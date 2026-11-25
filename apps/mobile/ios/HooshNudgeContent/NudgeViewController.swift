@@ -7,8 +7,11 @@ final class NudgeViewController: UIViewController, UNNotificationContentExtensio
   private let headline = UILabel(), message = UILabel()
   override func viewDidLoad() {
     super.viewDidLoad()
-    view.backgroundColor = UIColor(red: 1, green: 0.980, blue: 0.949, alpha: 1)
-    view.layer.cornerRadius = 24; view.clipsToBounds = true
+    view.backgroundColor = UIColor(red: 1, green: 250.0 / 255, blue: 242.0 / 255, alpha: 1)
+    view.layer.cornerRadius = 24
+    view.layer.borderWidth = 1.5
+    view.layer.borderColor = UIColor(red: 232.0 / 255, green: 213.0 / 255, blue: 176.0 / 255, alpha: 1).cgColor
+    view.clipsToBounds = true
     let header = UIView(); header.backgroundColor = UIColor(red: 1, green: 0.847, blue: 0.631, alpha: 1)
     let dino = UIImageView(image: UIImage(named: "nudge-dino")); dino.contentMode = .scaleAspectFit
     let caption = label("NUDGE", size: 10, bold: true)
@@ -19,7 +22,7 @@ final class NudgeViewController: UIViewController, UNNotificationContentExtensio
     let copy = UIStackView(arrangedSubviews: [caption, recommendation]); copy.axis = .vertical; copy.spacing = 2
     headline.numberOfLines = 0; headline.textColor = UIColor(white: 0.1, alpha: 1); headline.font = font(17, bold: true)
     message.numberOfLines = 0; message.textColor = UIColor(white: 0.4, alpha: 1); message.font = font(14)
-    let notice = label("Your selected apps pause when you accept.", size: 10)
+    let notice = label("Accept to pause this session.", size: 10)
     notice.backgroundColor = UIColor(red: 1, green: 0.941, blue: 0.816, alpha: 1)
     notice.layer.cornerRadius = 12; notice.clipsToBounds = true; notice.textAlignment = .center
     let body = UIStackView(arrangedSubviews: [headline, message, notice]); body.axis = .vertical; body.spacing = 10
@@ -42,10 +45,14 @@ final class NudgeViewController: UIViewController, UNNotificationContentExtensio
   }
   func didReceive(_ notification: UNNotification) {
     let content = notification.request.content
-    let remaining = content.userInfo["remainingSeconds"] as? Int ?? 0
-    headline.text = "\(max(1, Int(ceil(Double(remaining) / 60)))) minutes before your timer ends…"
+    if let remaining = content.userInfo["remainingSeconds"] as? Int, remaining > 0 {
+      let minutes = Int(ceil(Double(remaining) / 60))
+      headline.text = "\(minutes) \(minutes == 1 ? "minute" : "minutes") before your timer ends…"
+    } else {
+      headline.text = "Ready for a break?"
+    }
     let recommendation = content.userInfo["recommendation"] as? String ?? "Make room for what matters to you."
-    message.text = "\(recommendation) Accept a break and earn 30 credits for closing the app now."
+    message.text = "\(recommendation) Accept this break to earn 30 credits."
     view.setNeedsLayout(); view.layoutIfNeeded()
     preferredContentSize = CGSize(width: view.bounds.width, height: max(285, view.systemLayoutSizeFitting(CGSize(width: view.bounds.width, height: 0), withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel).height))
   }

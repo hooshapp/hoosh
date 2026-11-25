@@ -6,6 +6,7 @@ import { requireOptionalNativeModule } from 'expo-modules-core';
 import type { InstallationReview, NativeOwnerSessionPort } from './native-owner-session';
 
 type OwnerModule = IOSRuntimeModule & {
+  setShieldContext?(namespace: string, userID: string, token: string, name: string, activity: string): Promise<void>;
   reviewUsageBaseline?(namespace: string, userID: string, token: string): Promise<unknown>;
   setNudgeTone?(namespace: string, userID: string, token: string, tone: string): Promise<unknown>;
   budgetCapabilities?(): Promise<unknown>;
@@ -70,6 +71,7 @@ export const nativeOwnerSession: NativeOwnerSessionPort | null =
           readStatus: async () => decodeIOSDeviceStatus(await module.deviceStatus(namespace, userID, token), owner),
           reviewUsageBaseline: module.reviewUsageBaseline ? () => module.reviewUsageBaseline!(namespace, userID, token) : undefined,
           setNudgeTone: module.setNudgeTone ? (tone: string) => module.setNudgeTone!(namespace, userID, token, tone) : undefined,
+          setShieldContext: module.setShieldContext ? (name: string, activity: string) => module.setShieldContext!(namespace, userID, token, name, activity) : undefined,
           budgetCapabilities: module.budgetCapabilities ? () => module.budgetCapabilities!() : undefined,
           requestAuthorization: async () => { await module.requestDeviceAuthorization(namespace, userID, token); },
           stop: async () => {

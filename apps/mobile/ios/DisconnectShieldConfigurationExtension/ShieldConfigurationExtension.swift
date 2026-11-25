@@ -7,6 +7,22 @@ import UIKit
 
 final class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     private let logger = Logger(subsystem: "com.AnishaDasgupta.DisconnectApp", category: "ShieldConfiguration")
+    private lazy var checkpointBadge: UIImage? = {
+        guard let dino = UIImage(named: "HooshCheckpoint") else { return nil }
+        let size = CGSize(width: 135, height: 35)
+        return UIGraphicsImageRenderer(size: size).image { _ in
+            let pill = UIBezierPath(roundedRect: CGRect(origin: .zero, size: size).insetBy(dx: 1, dy: 1),
+                                    cornerRadius: 14)
+            UIColor(red: 1, green: 250.0 / 255, blue: 242.0 / 255, alpha: 1).setFill()
+            UIColor(red: 232.0 / 255, green: 213.0 / 255, blue: 176.0 / 255, alpha: 1).setStroke()
+            pill.fill(); pill.lineWidth = 1.5; pill.stroke()
+            dino.draw(in: CGRect(x: 15, y: 6, width: 27, height: 23))
+            ("check-point" as NSString).draw(at: CGPoint(x: 50, y: 10), withAttributes: [
+                .foregroundColor: UIColor(red: 0, green: 153.0 / 255, blue: 102.0 / 255, alpha: 1),
+                .font: UIFont.systemFont(ofSize: 12, weight: .semibold)
+            ])
+        }
+    }()
 
     override func configuration(shielding application: Application) -> ShieldConfiguration {
         logger.notice("Requested app shield configuration for \(application.localizedDisplayName ?? "unknown app", privacy: .public)")
@@ -14,18 +30,28 @@ final class ShieldConfigurationExtension: ShieldConfigurationDataSource {
             let ink = UIColor(red: 0.24, green: 0.157, blue: 0, alpha: 1)
             let green = UIColor(red: 0.20, green: 0.776, blue: 0.35, alpha: 1)
             let minutes = max(1, Int(ceil(Double(presentation.seconds) / 60)))
-            let headline = presentation.expired
-                ? "Time to get back to what matters to you."
-                : "Opened out of habit? You chose this time for yourself."
+            let activities = [
+                "gym": "working out", "reading": "reading", "arts_and_crafts": "arts and crafts",
+                "walking": "walking", "music": "music", "cooking": "cooking"
+            ]
+            let goal = presentation.activity.flatMap { activities[$0] }
+            let headline = presentation.expired ? "Time to get back to \(goal ?? "what matters to you")." : "Opened out of habit?"
+            let greeting = presentation.name.map { "\($0), you" } ?? "You"
+            let reflection = "\(greeting) chose this time for \(goal ?? "yourself")."
+            let action = presentation.resuming ? "Resume session" : "Open anyway"
+            let limitReached = !presentation.canContinue
+            let limitTitle = presentation.name.map { "\($0), you’re out of sessions for today." }
+                ?? "You’re out of sessions for today."
+            let redirect = goal.map { "Try \($0) instead." } ?? "Try spending time on one of your goals instead."
             return ShieldConfiguration(
                 backgroundBlurStyle: nil,
-                backgroundColor: UIColor(red: 1, green: 0.945, blue: 0.867, alpha: 1),
-                icon: UIImage(named: "HooshCheckpoint"),
-                title: .init(text: "\(application.localizedDisplayName ?? "App") · \(presentation.expired ? "session ended" : "paused")", color: ink),
-                subtitle: .init(text: "\(headline)\n\n\(ProtectionNativeEngine.nudgeLine())\n\n\(presentation.used)/\(presentation.limit) sessions used", color: ink),
-                primaryButtonLabel: .init(text: presentation.rewardPoints > 0 ? "Quit Now · +\(presentation.rewardPoints) ✦" : "Quit Now", color: ink),
+                backgroundColor: UIColor(red: 1, green: 241.0 / 255, blue: 221.0 / 255, alpha: 1),
+                icon: checkpointBadge,
+                title: .init(text: limitReached ? limitTitle : headline, color: ink),
+                subtitle: .init(text: "\(limitReached ? redirect : reflection)\n\n\(presentation.used)/\(presentation.limit) sessions used", color: ink),
+                primaryButtonLabel: .init(text: "✓ Quit Now · +\(presentation.rewardPoints) ✦", color: ink),
                 primaryButtonBackgroundColor: green,
-                secondaryButtonLabel: presentation.canContinue ? .init(text: "Open anyway · \(minutes) min", color: UIColor(white: 0.45, alpha: 1)) : nil
+                secondaryButtonLabel: presentation.canContinue ? .init(text: "\(action) · \(minutes) min", color: UIColor(white: 0.40, alpha: 1)) : nil
             )
         }
         return makeConfiguration(appName: application.localizedDisplayName ?? "this app")

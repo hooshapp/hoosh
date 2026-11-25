@@ -65,7 +65,8 @@ export type QuestOutcomeView = components['schemas']['QuestOutcomeView'];
 /** Account-owned rewards; balances and prices come from the server. */
 export type RewardView = components['schemas']['RewardView'];
 export type RewardSignal = components['schemas']['RewardSignal'];
-export type RewardBatch = components['schemas']['RewardBatch'];
+type RewardBatchWire = components['schemas']['RewardBatch'];
+export type RewardBatch = Omit<RewardBatchWire, 'acknowledged'> & Partial<Pick<RewardBatchWire, 'acknowledged'>>;
 export type RewardBatchResult = components['schemas']['RewardBatchResult'];
 export type FeedPut = components['schemas']['FeedPut'];
 export type FeedResult = components['schemas']['FeedResult'];

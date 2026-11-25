@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from '
 import type { RewardView } from '@disconnect/contracts';
 import { ApiError } from '@/infrastructure/api/errors';
 import { useAccountData, useAccountMutation, useAccountQuery } from '@/infrastructure/query/account-data-provider';
-import { useNativeOwner } from '@/features/protection/native-owner-boundary';
+import { useIOSSelectionDevice, useNativeOwner } from '@/features/protection/native-owner-boundary';
 import { feedDino, readFeedReceipt, readWallet } from './rewards-api';
 import { syncRewards } from './reward-sync';
 
@@ -16,6 +16,7 @@ export function useRewards() {
   const { scope, availability } = useAccountData();
   if (!scope) throw new Error('Rewards need a private account');
   const binding = useNativeOwner();
+  const ios = useIOSSelectionDevice();
   const online = useSyncExternalStore(subscribeOnline, getOnline, getOnline);
   const [message, setMessage] = useState('');
   const [syncNotice, setSyncNotice] = useState('');
@@ -38,13 +39,19 @@ export function useRewards() {
   });
   const refetch = query.refetch;
   const refresh = useCallback(() => {
-    if (!busy.current && scope.canRun() && onlineManager.isOnline() && focusManager.isFocused()) void refetch();
+    if (!busy.current && scope.canRun() && onlineManager.isOnline() && focusManager.isFocused()) {
+      void refetch({ cancelRefetch: false });
+    }
   }, [scope, refetch]);
   useEffect(() => {
     const detach = focusManager.subscribe((focused) => { if (focused) refresh(); });
+    const detachDevice = ios?.subscribe(refresh);
     const interval = setInterval(refresh, 30000);
-    return () => { detach(); clearInterval(interval); };
-  }, [refresh]);
+    return () => { detach(); detachDevice?.(); clearInterval(interval); };
+  }, [ios, refresh]);
+  useEffect(() => {
+    if (binding) refresh();
+  }, [binding, refresh]);
   const accept = (wallet: RewardView) => scope.client.setQueryData(scope.key('rewards'), wallet);
   const feed = useAccountMutation({
     execute: async ({ id, revision }: { id: string; revision: number }, op) => {
@@ -74,6 +81,14 @@ export function useRewards() {
   });
   const available = availability === 'ready' && online && !query.isError;
   const wallet = available ? query.data : undefined;
+  const warningAt = wallet?.health_warning_at;
+  const lowHealth = !!wallet && wallet.health <= 25;
+  useEffect(() => {
+    if (scope.isCurrent() && binding && warningAt) {
+      void binding.port.dinoHealthWarning?.(binding.owner, Date.parse(warningAt), lowHealth)
+        .catch(() => undefined);
+    }
+  }, [binding, lowHealth, scope, warningAt]);
   const feeding = feed.isPending || receipt.isPending;
   return {
     wallet, loading: query.isPending && available, refreshing: query.isFetching,

@@ -163,6 +163,11 @@ export function decodeHistory(v: unknown, c: ResponseContext): HistoryView {
     baseline_reported_days: v.baseline_reported_days,
     week,
     month,
+    ...(Array.isArray(v.recent_interventions) && v.recent_interventions.length === 2 &&
+      v.recent_interventions.every(day => isRecord(day) && isQuestDate(day.day) &&
+        integer(day.sessions_started) && integer(day.turn_offs))
+      ? { recent_interventions: v.recent_interventions as NonNullable<HistoryView['recent_interventions']> }
+      : {}),
   };
 }
 export function readHistory({ api, signal }: AccountOperation) {

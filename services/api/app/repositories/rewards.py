@@ -12,6 +12,7 @@ from app.db.session import UserSession, require_user_context
 from app.models.rewards import RewardEntry as Entry
 from app.models.rewards import RewardStream as Stream
 from app.models.rewards import RewardWallet as Wallet
+from app.repositories.recommendations import save_nudge_quest
 from app.schemas.errors import ConflictDetails, ErrorCode, ValidationDetails, ValidationField
 from app.schemas.rewards import (
     FeedPut,
@@ -114,6 +115,9 @@ def view(session: UserSession, now: datetime):
         streak_days=None if unknown else w.streak_days,
         recent_week_complete=week_complete,
         observed_at=now,
+        health_warning_at=(
+            w.health_at + timedelta(days=max(0, (w.health - 25 + 4) // 5)) if w else None
+        ),
     )
 
 
@@ -204,11 +208,18 @@ def ingest(session: UserSession, body: RewardBatch, now: datetime):
         stream = Stream(
             user_id=owner,
             installation_id=body.installation_id,
-            sequence=0,
+            sequence=body.acknowledged,
             discarded=0,
             timezone_id=body.timezone_id,
         )
         session.add(stream)
+        if body.acknowledged:
+            w.streak_unknown = True
+    elif body.acknowledged > stream.sequence:
+        # The device had already removed this server-confirmed prefix before a
+        # restore. Continue at its cursor without fabricating credits or coverage.
+        stream.sequence = body.acknowledged
+        w.streak_unknown = True
     if stream.timezone_id != body.timezone_id or body.discarded < stream.discarded:
         conflict(w.revision)
     gap_budget = body.discarded - stream.discarded
@@ -239,7 +250,8 @@ def ingest(session: UserSession, body: RewardBatch, now: datetime):
         ):
             invalid()
         amount = 0
-        if e.kind == "quit":
+        prior_encounter = None
+        if e.kind in ("quit", "nudge_skipped"):
             encounter = str(e.encounter_id)
             prior_encounter = session.scalar(
                 select(Entry.source)
@@ -250,10 +262,7 @@ def ingest(session: UserSession, body: RewardBatch, now: datetime):
                 )
                 .limit(1)
             )
-            if not prior_encounter and (
-                w.last_native_at is None
-                or e.occurred_at >= w.last_native_at + timedelta(seconds=60)
-            ):
+            if e.kind == "quit" and not prior_encounter:
                 amount = {
                     "initial": 5,
                     "expired": 20,
@@ -263,6 +272,22 @@ def ingest(session: UserSession, body: RewardBatch, now: datetime):
                 if w.balance > 9007199254740991 - amount:
                     conflict(w.revision)
                 w.last_native_at = e.occurred_at
+                if e.context == "notification_accept":
+                    save_nudge_quest(session, e.day, now)
+        if e.kind == "allowance" or (e.kind == "nudge_skipped" and not prior_encounter):
+            cost = 4 if e.exhausted else 2
+            # Apply once for each accepted new session, in addition to time decay.
+            # A delayed event from before the last Feed must not eat that meal.
+            latest_feed = session.scalar(
+                select(Entry.recorded_at)
+                .where(Entry.user_id == owner, Entry.kind == "feed")
+                .order_by(Entry.recorded_at.desc())
+                .limit(1)
+            )
+            if latest_feed is None or e.occurred_at >= latest_feed:
+                value, ticks = health(w, now)
+                w.health = max(0, value - cost)
+                w.health_at += timedelta(days=ticks)
         if e.kind == "allowance" and e.exhausted:
             w.streak_days = 0
             w.streak_day = e.day

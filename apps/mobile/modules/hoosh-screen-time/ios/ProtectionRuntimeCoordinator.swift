@@ -33,6 +33,7 @@ final class ProtectionRuntimeCoordinator {
 
   func allow(owner: ProtectionOwner, revision: Int, driver: ProtectionInstallationDriver,
              clock: ProtectionClock, usageBased: Bool = false,
+             applyGrant: ((ProtectionRuntimeRecord, ProtectionSessionLedger) throws -> Void)? = nil,
              context: (ProtectionRuntimeRecord, ProtectionSessionLedger) throws -> (Data, [ProtectionSessionReason])) throws {
     guard driver.activationAvailable else { throw ProtectionTransactionError.activationGated }
     try clock.validate()
@@ -60,6 +61,19 @@ final class ProtectionRuntimeCoordinator {
       record.installation = runtime; record.sessionLedger = ledger
       record.coverage = "partial"
       next.owners[index] = record
+    }
+    if let applyGrant {
+      try store.withSnapshot { latest in
+        guard let latest else { throw ProtectionStoreError.staleLease }
+        let index = try self.index(latest, owner: owner, revision: revision)
+        let record = latest.owners[index]
+        guard let runtime = record.installation, let ledger = record.sessionLedger else {
+          throw ProtectionStoreError.staleLease
+        }
+        try applyGrant(runtime, ledger)
+      }
+    } else {
+      try refresh(owner: owner, revision: revision, driver: driver)
     }
   }
   private func owned(_ owner: ProtectionOwner, revision: Int) throws -> ProtectionState {

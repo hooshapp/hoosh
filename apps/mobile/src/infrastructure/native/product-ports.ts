@@ -16,6 +16,7 @@ export type ProductNativePort = Partial<
   SelectionOwnerLifecyclePort &
   InterventionProtectionReadPort & {
     onboardingBaselineRead?(owner: string): Promise<unknown>;
+    setAndroidShieldContext?(owner: string, name: string, activity: string): Promise<void>;
     setNudgeTone?(owner: string, tone: string): Promise<unknown>;
     budgetCapabilities?(): Promise<unknown>;
     interventionEndOwner(owner: string, erase: boolean): Promise<unknown>;
@@ -30,6 +31,7 @@ export type ProductNativePort = Partial<
     historyStart?(owner: string, token: string): Promise<unknown>;
     openUsageAccess?(): Promise<unknown>;
     rewardsRead?(owner: string): Promise<unknown>;
+    dinoHealthWarning?(owner: string, warningAt: number, low: boolean): Promise<unknown>;
     rewardsAck?(
       owner: string,
       token: string,

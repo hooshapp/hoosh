@@ -10,17 +10,20 @@ export function HistoryExperience({
   periods,
   onRetry,
   controls,
+  renderUsageComparison,
 }: {
   summary: HistoryModel;
   monthlySummary?: HistoryModel;
   periods: HistoryPeriods;
   onRetry?: () => void;
   controls?: ReactNode;
+  renderUsageComparison?: (period: HistoryPeriod) => ReactNode;
 }) {
   const [page, setPage] = useState<'summary' | 'progress' | 'reclaimed'>(
     'summary',
   );
   const [period, setPeriod] = useState<HistoryPeriod>('week');
+  const usageComparison = renderUsageComparison?.(period);
   if (page === 'summary')
     return (
       <HistoryScreen
@@ -28,6 +31,7 @@ export function HistoryExperience({
         onNext={() => setPage('progress')}
         onRetry={onRetry}
         controls={controls}
+        usageComparison={usageComparison}
       />
     );
   return (
@@ -40,6 +44,7 @@ export function HistoryExperience({
       onNext={() => setPage('reclaimed')}
       onRetry={onRetry}
       controls={controls}
+      usageComparison={usageComparison}
     />
   );
 }

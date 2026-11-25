@@ -52,6 +52,8 @@ struct ProtectionOwnerRecord: Codable, Equatable {
   var sessionLedger: ProtectionSessionLedger?
   var coverage: String = "unknown"
   var nudgeTone: String? = nil
+  var shieldName: String? = nil
+  var shieldActivity: String? = nil
   var rewardJournal: ProtectionRewardJournal?
 }
 struct ProtectionClaim: Codable, Equatable {
@@ -330,7 +332,8 @@ struct ProtectionRewardJournal: Codable, Equatable {
       guard event.sequence > last, event.sequence < nextSequence, event.occurredAt >= timestamp,
         event.occurredAt <= lastTimestamp, event.occurredAt >= 0,
         event.day == Self.day(event.occurredAt, timezone: timezone),
-        (1...2147483647).contains(event.revision), ["allowance_consumed", "quit_selected"].contains(event.evidence),
+        (1...2147483647).contains(event.revision), ["allowance_consumed", "quit_selected", "nudge_skipped"].contains(event.evidence),
+        event.evidence != "nudge_skipped" || (event.encounterID != nil && event.context == nil),
         event.evidence != "quit_selected" || (event.encounterID != nil && ["initial", "mid_session", "expired", "notification_accept"].contains(event.context ?? "")) else { throw ProtectionStoreError.invalidRecord }
       last = event.sequence; timestamp = event.occurredAt
     }
@@ -358,16 +361,20 @@ struct ProtectionRewardJournal: Codable, Equatable {
   }
   /// Reward evidence is the explicit Quit action, not an inferred app-exit callback.
   mutating func appendQuit(encounter: UUID, context: String, revision: Int, clock: ProtectionClock) throws {
+    guard ["initial", "mid_session", "expired", "notification_accept"].contains(context) else { return }
+    try appendChoice(encounter: encounter, context: context, revision: revision, clock: clock)
+  }
+  mutating func appendChoice(encounter: UUID, context: String?, revision: Int, clock: ProtectionClock) throws {
     try clock.validate()
-    guard ["initial", "mid_session", "expired", "notification_accept"].contains(context),
-      !(quitEncounters ?? []).contains(encounter),
-      clock.wall >= lastTimestamp, lastQuitAt.map({ clock.wall - $0 >= 60000 }) ?? true else { return }
+    guard !(quitEncounters ?? []).contains(encounter),
+      clock.wall >= lastTimestamp else { return }
     guard nextSequence < Self.maximum else { throw ProtectionStoreError.oversized }
     if events.count == 256 { events.removeFirst(); discarded += 1 }
     events.append(.init(id: UUID(), sequence: nextSequence, occurredAt: clock.wall,
       day: Self.day(clock.wall, timezone: timezone), exhausted: false, revision: revision,
-      evidence: "quit_selected", encounterID: encounter, context: context))
-    nextSequence += 1; lastTimestamp = clock.wall; lastQuitAt = clock.wall
+      evidence: context == nil ? "nudge_skipped" : "quit_selected", encounterID: encounter, context: context))
+    nextSequence += 1; lastTimestamp = clock.wall
+    if context != nil { lastQuitAt = clock.wall }
     quitEncounters = Array(((quitEncounters ?? []) + [encounter]).suffix(512))
     try validated()
   }
@@ -377,13 +384,13 @@ struct ProtectionRewardJournal: Codable, Equatable {
     if let last = prefix.last { issued = max(issued, last.sequence) }
     let formatter = ISO8601DateFormatter(); formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
     return ["installation_id": installationID.uuidString.lowercased(), "timezone_id": timezone,
-      "discarded": discarded, "events": prefix.map { event -> [String: Any] in
+      "discarded": discarded, "acknowledged": acknowledged, "events": prefix.map { event -> [String: Any] in
         ["event_id": event.id.uuidString.lowercased(), "sequence": event.sequence,
          "occurred_at": formatter.string(from: Date(timeIntervalSince1970: Double(event.occurredAt) / 1000)),
-         "kind": event.evidence == "quit_selected" ? "quit" : "allowance", "day": event.day,
+         "kind": event.evidence == "quit_selected" ? "quit" : event.evidence == "nudge_skipped" ? "nudge_skipped" : "allowance", "day": event.day,
          "encounter_id": event.encounterID.map { $0.uuidString.lowercased() as Any } ?? NSNull(),
          "context": event.context.map { $0 as Any } ?? NSNull(),
-         "exhausted": event.evidence == "quit_selected" ? NSNull() : event.exhausted as Any, "covered": NSNull()]
+         "exhausted": event.evidence == "allowance_consumed" ? event.exhausted as Any : NSNull(), "covered": NSNull()]
       }]
   }
   mutating func ack(installation: UUID, sequence: UInt64) throws {

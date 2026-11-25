@@ -60,7 +60,9 @@ import Foundation
     guard choices.events.isEmpty else { fatalError("ack/restart lost Quit deduplication") }
     try choices.appendQuit(encounter: UUID(), context: "mid_session", revision: 1,
       clock: .init(wall: at + 30000, elapsed: 30001, boot: "fixture"))
-    guard choices.events.isEmpty else { fatalError("Quit cooldown bypassed") }
+    guard choices.events.count == 1, try choices.batch()["acknowledged"] as? UInt64 == 1 else {
+      fatalError("Distinct quit was suppressed or acknowledged cursor was lost")
+    }
     var malformed = journal; malformed.issued = malformed.nextSequence
     do { try malformed.validated(); fatalError("invalid cursor accepted") } catch ProtectionStoreError.invalidRecord {}
     print("PASS: owner-isolated durable evidence, stable retry/restart, bounded drain/ack, overflow and clock/zone gaps; no invented quit/day/measurement evidence.")

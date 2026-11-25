@@ -139,7 +139,7 @@ def test_dst_day_duration_normalization_future_and_impossible_duration(resource,
                 )
 
 
-def test_turnoff_types_dedup_cooldown_and_actual_time_range(resource, profile_accounts):
+def test_turnoff_types_dedup_and_actual_time_range(resource, profile_accounts):
     a = profile_accounts[0]
     inst = uuid4()
     at = NOW - timedelta(days=1)
@@ -149,13 +149,20 @@ def test_turnoff_types_dedup_cooldown_and_actual_time_range(resource, profile_ac
         signal(2, at + timedelta(seconds=10), context="expired"),
         signal(3, at + timedelta(seconds=20), context="mid_session"),
         signal(4, at + timedelta(seconds=90), encounter_id=first["encounter_id"]),
+        signal(5, NOW - timedelta(seconds=1), kind="allowance"),
     ]
     with resource.transaction(a) as s:
-        assert ingest(s, batch(events, inst), NOW).wallet.balance == 5
+        assert ingest(s, batch(events, inst), NOW).wallet.balance == 45
     with resource.transaction(a) as s:
         r = view(s, NOW)
         assert r.week.turn_offs == {"initial": 1, "expired": 1, "mid_session": 1}
         assert r.week.usage_ms is None
+        assert [
+            (day.day, day.sessions_started, day.turn_offs) for day in r.recent_interventions
+        ] == [
+            (NOW.date(), 1, 0),
+            (at.date(), 0, 3),
+        ]
 
 
 def test_real_verified_http_roundtrip_auth_isolation_and_no_admin_key(

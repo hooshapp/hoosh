@@ -5,12 +5,12 @@ import { LeaveConfirmation, type EditorState } from '@/features/editors/editor-c
 import { AppsEditor } from './preference-editors';
 import { decodeSelectionDraft, type SelectionDraft, type SelectionEditorPort } from '@/infrastructure/native/selection-editor';
 
-type Props = { owner: string; generation?: number; port: SelectionEditorPort | null; onBack: () => void };
+type Props = { owner: string; generation?: number; port: SelectionEditorPort | null; onBack: () => void; onApply?(selection: SelectionDraft, assertCurrent: () => void): Promise<boolean> };
 /** Key the scope synchronously so a replacement owner never renders the previous draft. */
 export function NativeAppsEditor(props: Props) {
   return <ScopedNativeAppsEditor key={`${props.owner}:${props.generation ?? 0}:${Boolean(props.port)}`} {...props} />;
 }
-function ScopedNativeAppsEditor({ owner, port, onBack }: Props) {
+function ScopedNativeAppsEditor({ owner, port, onBack, onApply }: Props) {
   const [draft, setDraft] = useState<SelectionDraft | null>(null);
   const [state, setState] = useState<EditorState>('unavailable');
   const [choosing, setChoosing] = useState(false);
@@ -18,6 +18,7 @@ function ScopedNativeAppsEditor({ owner, port, onBack }: Props) {
   const [reload, setReload] = useState(0);
   const [leaving, setLeaving] = useState(false);
   const [notice, setNotice] = useState('Loading saved selection…');
+  const [applyPending, setApplyPending] = useState(false);
   const session = useRef<{ active: boolean; owner: string; draft: SelectionDraft | null } | null>(null);
   const lock = useRef(false);
   useEffect(() => {
@@ -29,7 +30,7 @@ function ScopedNativeAppsEditor({ owner, port, onBack }: Props) {
     };
     void Promise.resolve().then(() => {
       if (!scope.active) throw new Error('Closed editor');
-      setDraft(null); setLoading(true); setState('unavailable'); setChoosing(false); setLeaving(false);
+      setDraft(null); setLoading(true); setState('unavailable'); setChoosing(false); setLeaving(false); setApplyPending(false);
       return port ? port.selectionBegin(owner) : Promise.reject();
     }).then((value) => {
       const next = decodeSelectionDraft(value);
@@ -54,6 +55,22 @@ function ScopedNativeAppsEditor({ owner, port, onBack }: Props) {
     });
     return () => subscription.remove();
   }, [blocked, draft?.dirty, onBack]);
+  const apply = async (saved: SelectionDraft, active: NonNullable<typeof session.current>) => {
+    const assertCurrent = () => {
+      if (!active.active || session.current !== active) throw new Error('Closed app editor');
+    };
+    try {
+      const updated = await onApply?.(saved, assertCurrent);
+      assertCurrent();
+      setApplyPending(false);
+      setNotice(updated ? 'Target apps saved and protection updated.' : 'App selection saved on this device. Protection has not changed.');
+    } catch {
+      if (active.active) {
+        setApplyPending(true);
+        setNotice('Target apps are saved. The protection update could not be confirmed.');
+      }
+    }
+  };
   const run = (kind: 'pick' | 'commit') => {
     const active = session.current;
     if (!port || !active?.active || !active.draft || active.owner !== owner || lock.current) return;
@@ -64,7 +81,7 @@ function ScopedNativeAppsEditor({ owner, port, onBack }: Props) {
       if (!active.active) throw new Error('Closed editor');
       return kind === 'pick' ? port.selectionPick(owner, previous.draftId, previous.draftVersion)
         : port.selectionCommit(owner, previous.draftId, previous.draftVersion);
-    }).then((value) => {
+    }).then(async (value) => {
       const next = decodeSelectionDraft(value);
       if (next.draftId !== previous.draftId || next.draftVersion < previous.draftVersion ||
         next.draftVersion > previous.draftVersion + 1 ||
@@ -74,8 +91,10 @@ function ScopedNativeAppsEditor({ owner, port, onBack }: Props) {
           next.baseRevision > previous.baseRevision + 1))) throw new Error('Invalid selection acknowledgment');
       if (!active.active) return;
       active.draft = next;
-      setDraft(next); setState('ready');
-      setNotice(kind === 'pick' ? 'Your changes are ready to save.' : 'App selection saved on this device. Protection has not changed.');
+      setDraft(next);
+      if (kind === 'commit') await apply(next, active);
+      else setNotice('Your changes are ready to save.');
+      if (active.active) setState('ready');
     }).catch((error: unknown) => {
       if (!active.active) return;
       const code = error && typeof error === 'object' && 'code' in error ? error.code : null;
@@ -107,6 +126,15 @@ function ScopedNativeAppsEditor({ owner, port, onBack }: Props) {
         onDiscard={() => { if (!lock.current) setReload((value) => value + 1); }}
         feedback={<>
           <Text accessibilityLiveRegion="polite">{notice}</Text>
+          {applyPending ? <Button label="Retry protection update" disabled={blocked || !!draft?.dirty} onPress={() => {
+            const active = session.current;
+            if (lock.current || !active?.draft || !active.active || active.draft.dirty) return;
+            lock.current = true;
+            setState('saving');
+            void apply(active.draft, active).finally(() => {
+              if (active.active) { lock.current = false; setState('ready'); }
+            });
+          }} /> : null}
           {(reviewRequired || (!draft && !loading)) ? <Button label="Reload saved choices" variant="secondary" disabled={blocked} onPress={() => setReload((value) => value + 1)} /> : null}
         </>}
       />

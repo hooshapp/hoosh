@@ -25,8 +25,14 @@ errors = {status: {"model": ErrorEnvelope} for status in (401, 403, 409, 413, 42
 
 
 @router.get("", response_model=RewardView, operation_id="get_own_rewards", responses=errors)
-def read(session: UserSessionDependency):
-    return rewards.view(session, datetime.now(UTC))
+def read(request: Request, identity: Annotated[VerifiedIdentity, Depends(verified_identity)]):
+    now = datetime.now(UTC)
+    with database(request).transaction(identity) as session:
+        wallet = rewards.view(session, now)
+        if wallet.revision == 0:
+            rewards.locked(session, now)
+            return rewards.view(session, now)
+        return wallet
 
 
 @router.get(

@@ -15,17 +15,20 @@ export function decodeWallet(v: unknown, context: ResponseContext): RewardView {
   const artwork = v.health <= 25 ? 'needsCare' : v.health <= 50 ? 'feelingLow' : v.health <= 75 ? 'doingOkay' : 'happy';
   if (v.artwork !== artwork || (v.recent_week_complete && (v.streak_days === null || (v.streak_days as number) < 7))) return invalid();
   return { user_id: v.user_id as string, revision: v.revision, balance: v.balance, health: v.health, artwork,
+    ...(utcTimestamp(v.health_warning_at) ? { health_warning_at: v.health_warning_at as string } : {}),
     policy_version: 2, feed_cost: 10, feed_health: 20, streak_days: v.streak_days as number | null,
     recent_week_complete: v.recent_week_complete, observed_at: v.observed_at };
 }
 /** Validate the complete content-free native envelope before sending any evidence. */
 export function decodeRewardBatch(v: unknown): RewardBatch {
-  if (!isRecord(v) || !keys(v, ['installation_id', 'timezone_id', 'discarded', 'events']) || !isQuestId(v.installation_id) ||
+  if (!isRecord(v) || !keys(v, ['installation_id', 'timezone_id', 'discarded', 'events', ...(Object.hasOwn(v, 'acknowledged') ? ['acknowledged'] : [])]) || !isQuestId(v.installation_id) ||
       !integer(v.discarded) || typeof v.timezone_id !== 'string' || v.timezone_id.length > 128 || !/^[A-Za-z0-9_+/-]+$/.test(v.timezone_id) ||
       !Array.isArray(v.events) || v.events.length > 32) return invalid();
   try { new Intl.DateTimeFormat('en', { timeZone: v.timezone_id }); } catch { return invalid(); }
   const seen = new Set<string>();
-  let sequence = 0, at = 0;
+  const acknowledged = v.acknowledged;
+  if (acknowledged !== undefined && !integer(acknowledged)) return invalid();
+  let sequence = acknowledged ?? 0, at = 0;
   const events = v.events.map((e): RewardBatch['events'][number] => {
     if (!isRecord(e) || !keys(e, ['event_id', 'sequence', 'occurred_at', 'kind', 'day', 'encounter_id', 'context', 'exhausted', 'covered']) ||
         !isQuestId(e.event_id) || seen.has(e.event_id) || !integer(e.sequence, sequence + 1) || !utcTimestamp(e.occurred_at) ||
@@ -33,13 +36,15 @@ export function decodeRewardBatch(v: unknown): RewardBatch {
     const quit = e.kind === 'quit' && isQuestId(e.encounter_id) && ['initial', 'expired', 'mid_session', 'notification_accept'].includes(e.context as string) && e.exhausted === null && e.covered === null;
     const allowance = e.kind === 'allowance' && e.encounter_id === null && e.context === null && typeof e.exhausted === 'boolean' && e.covered === null;
     const day = e.kind === 'day_closed' && e.encounter_id === null && e.context === null && typeof e.exhausted === 'boolean' && typeof e.covered === 'boolean';
-    if (!quit && !allowance && !day) return invalid();
+    const skip = e.kind === 'nudge_skipped' && isQuestId(e.encounter_id) && e.context === null && e.exhausted === null && e.covered === null;
+    if (!quit && !allowance && !day && !skip) return invalid();
     seen.add(e.event_id); sequence = e.sequence; at = Date.parse(e.occurred_at);
-    return { event_id: e.event_id, sequence: e.sequence, occurred_at: e.occurred_at, kind: e.kind as 'quit' | 'allowance' | 'day_closed', day: e.day,
+    return { event_id: e.event_id, sequence: e.sequence, occurred_at: e.occurred_at, kind: e.kind as RewardBatch['events'][number]['kind'], day: e.day,
       encounter_id: e.encounter_id as string | null, context: e.context as 'initial' | 'expired' | 'mid_session' | 'notification_accept' | null,
       exhausted: e.exhausted as boolean | null, covered: e.covered as boolean | null };
   });
-  return { installation_id: v.installation_id, timezone_id: v.timezone_id, discarded: v.discarded, events };
+  return { installation_id: v.installation_id, timezone_id: v.timezone_id, discarded: v.discarded,
+    ...(acknowledged === undefined ? {} : { acknowledged }), events };
 }
 export function readWallet({ api, signal }: AccountOperation) {
   return api.request('/v1/rewards', { signal, decode: decodeWallet });

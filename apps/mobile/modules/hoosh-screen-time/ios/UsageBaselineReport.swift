@@ -1,3 +1,4 @@
+import ExpoModulesCore
 import UIKit
 import SwiftUI
 import FamilyControls
@@ -75,5 +76,84 @@ private struct UsageBaselineContent: View {
       .navigationTitle("Your usage").navigationBarTitleDisplayMode(.inline)
       .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done", action: cancel) } }
     }.preferredColorScheme(.light)
+  }
+}
+
+
+/// Hosts a privacy-preserving report without returning any values to React Native.
+final class UsageComparisonHost: ExpoView {
+  static let selectionChanged = Notification.Name("hoosh.usageReportSelectionChanged")
+  var ownerKey = "" { didSet { if oldValue != ownerKey { reload() } } }
+  var compact = true { didSet { if oldValue != compact { reload() } } }
+  var days = 7 { didSet { if oldValue != days { reload() } } }
+  private var hosted: UIHostingController<AnyView>?
+  private var stamp: String?
+
+  required init(appContext: AppContext? = nil) {
+    super.init(appContext: appContext)
+    NotificationCenter.default.addObserver(self, selector: #selector(reload),
+      name: UIApplication.didBecomeActiveNotification, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(reload),
+      name: UIApplication.significantTimeChangeNotification, object: nil)
+    NotificationCenter.default.addObserver(self, selector: #selector(reload),
+      name: Self.selectionChanged, object: nil)
+  }
+
+  override func didMoveToWindow() {
+    super.didMoveToWindow()
+    reload()
+  }
+
+  override func layoutSubviews() {
+    super.layoutSubviews()
+    if hosted == nil, window != nil { reload() }
+    hosted?.view.frame = bounds
+  }
+
+  @objc private func reload() {
+    guard window != nil else { detach(); return }
+    var responder: UIResponder? = self
+    while let item = responder, !(item is UIViewController) { responder = item.next }
+    guard let parent = responder as? UIViewController else { return }
+    let parts = ownerKey.split(separator: ":", maxSplits: 1)
+    let calendar = Calendar.current
+    let today = calendar.startOfDay(for: Date())
+    let span = !compact && days == 28 ? 28 : 7
+    var content = AnyView(Text("No measured data yet").font(.caption).foregroundStyle(Color.black))
+    var identity = "unavailable:\(ownerKey):\(compact)"
+    if parts.count == 2, let id = UUID(uuidString: String(parts[1])),
+      AuthorizationCenter.shared.authorizationStatus == .approved,
+      let state = try? SharedProtectionStore.appGroup().presentationSnapshot(),
+      let owner = state.installedOwner, owner.namespace == String(parts[0]), owner.userID == id,
+      state.pendingClaim == nil,
+      let selected = state.owners.first(where: { $0.owner == owner })?.selection,
+      let selection = try? JSONDecoder().decode(FamilyActivitySelection.self, from: selected.encodedTokens),
+      !selection.applicationTokens.isEmpty,
+      let start = calendar.date(byAdding: .day, value: -2 * span, to: today) {
+      let interval = DateInterval(start: start, end: today)
+      let context = DeviceActivityReport.Context(compact ? "Hoosh Usage Compact" : (span == 28 ? "Hoosh Usage Month" : "Hoosh Usage Week"))
+      let report = DeviceActivityReport(context, filter: .init(segment: .daily(during: interval),
+        users: .all, devices: .init([.iPhone]), applications: selection.applicationTokens))
+      content = AnyView(report)
+      identity = "\(ownerKey):\(selected.revision):\(today):\(compact):\(span)"
+    }
+    guard stamp != identity else { return }
+    detach()
+    let host = UIHostingController(rootView: content)
+    host.view.backgroundColor = .clear
+    host.view.frame = bounds
+    parent.addChild(host)
+    addSubview(host.view)
+    host.didMove(toParent: parent)
+    hosted = host
+    stamp = identity
+  }
+
+  private func detach() {
+    hosted?.willMove(toParent: nil)
+    hosted?.view.removeFromSuperview()
+    hosted?.removeFromParent()
+    hosted = nil
+    stamp = nil
   }
 }

@@ -2,6 +2,7 @@ import { useRecommendations } from '@/features/recommendations/use-recommendatio
 import { RecommendationFeedback } from '@/features/recommendations/recommendation-feedback';
 import type { PreferencesNavigation } from './home-preferences';
 import { HomeScreen } from './home-screen';
+import { useIOSUsageComparison } from '@/features/history/ios-usage-comparison';
 import { useHistory } from '@/features/history/use-history';
 import { historyProjection } from '@/features/history/history-projection';
 import { useRewards } from '@/features/rewards/use-rewards';
@@ -27,6 +28,7 @@ export function ConnectedHomeScreen({
     history.snapshot?.matching ?? false,
   ).weekly;
   const wallet = rewards.wallet;
+  const renderUsage = useIOSUsageComparison();
   const rewardModel: HomeModel = wallet
     ? {
         ...unavailableHome,
@@ -60,6 +62,7 @@ export function ConnectedHomeScreen({
   return (
     <HomeScreen
       model={rewardModel}
+      usageComparison={renderUsage?.(true)}
       onFeed={rewards.canFeed ? rewards.feed : undefined}
       feeding={rewards.feeding}
       onAcceptRecommendation={

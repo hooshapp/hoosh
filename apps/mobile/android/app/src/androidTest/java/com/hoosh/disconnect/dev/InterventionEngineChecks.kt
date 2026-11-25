@@ -40,7 +40,7 @@ internal object InterventionEngineChecks {
     case { val (_, e) = fixture(); val r = e.allow(A, 1, APP, 2000, 1000, 1); check(e.needed(r, OTHER, 3000, 2000, 1).size == 1) }
     case { val (_, e) = fixture(); e.allow(A, 1, APP, 2000, 1000, 1); val r = e.allow(A, 1, OTHER, 3000, 2000, 1); check(r.sessions.size == 2 && r.daily.all { it.count == 1 }); check(r.sessions.first { it.app == APP }.wallEnd == 12000L) }
     case { val (_, e) = fixture(); e.allow(A, 1, APP, 2000, 1000, 1); val r = e.allow(A, 1, APP, 12000, 11000, 1); check(r.daily.single().count == 2); check(r.events.last().exhausted == false) }
-    case { val (_, e) = fixture(); e.allow(A, 1, APP, 2000, 1000, 1); e.allow(A, 1, APP, 12000, 11000, 1); val r = e.allow(A, 1, APP, 22000, 21000, 1); check(r.daily.single().count == 3 && r.events.last().exhausted == true) }
+    case { val (_, e) = fixture(); e.allow(A, 1, APP, 2000, 1000, 1); e.allow(A, 1, APP, 12000, 11000, 1); failure("ERR_INTERVENTION_EXHAUSTED") { e.allow(A, 1, APP, 22000, 21000, 1) }; check(e.read(A)!!.daily.single().count == 2) }
     case { val (_, e) = fixture(); val r = e.allow(A, 1, APP, 2000, 1000, 1); check(e.needed(r, APP, 3000, 2000, 2).size == 1) }
     case { val (_, e) = fixture(); val r = e.allow(A, 1, APP, 2000, 1000, 1); check(e.needed(r, APP, 1500, 2000, 1).size == 1) }
     case { val (_, e) = fixture(); val r = e.allow(A, 1, APP, 2000, 1000, 1); check(e.needed(r, APP, 3000, 11000, 1).size == 1) }
@@ -81,8 +81,10 @@ internal object InterventionEngineChecks {
     }
     case {
       val (_, e) = fixture(listOf(InterventionWindow("day", 0, 172800000)), SessionPolicy("UTC", 1, 1))
-      e.allow(A, 1, APP, 86401000, 1000, 1); val r = e.allow(A, 1, APP, 86399000, 3000, 1)
-      check(r.daily.single().day == "1970-01-02" && r.daily.single().count == 2)
+      e.allow(A, 1, APP, 86401000, 1000, 1)
+      failure("ERR_INTERVENTION_EXHAUSTED") { e.allow(A, 1, APP, 86399000, 3000, 1) }
+      val r = e.read(A)!!
+      check(r.daily.single().day == "1970-01-02" && r.daily.single().count == 1)
     }
     case {
       val (_, e) = fixture(listOf(InterventionWindow("day", 0, 172800000)), SessionPolicy("America/New_York", 1, 1))
@@ -199,14 +201,22 @@ internal object InterventionEngineChecks {
       check(resumed.sessions.single().remainingMs == 58000L)
     }
     case {
-      val (_, e) = fixture(policy = SessionPolicy("UTC", 2, 240))
+      val (_, e) = fixture(policy = SessionPolicy("UTC", 2, 60))
       e.allow(A, 1, APP, 2000, 1000, 1, activeUse = true)
-      for (i in 1..60) e.activeForeground(APP, 2000L + i * 1000, 1000L + i * 1000, 1)
-      check(e.nudge(e.read(A)!!, APP, 62000, 61000, 1) != null)
+      for (i in 1..15) e.activeForeground(APP, 2000L + i * 1000, 1000L + i * 1000, 1)
+      check(e.nudge(e.read(A)!!, APP, 17000, 16000, 1) != null)
       e.dismissNudge(A, 1, APP)
-      check(e.nudge(e.read(A)!!, APP, 62000, 61000, 1) == null)
-      for (i in 61..120) e.activeForeground(APP, 2000L + i * 1000, 1000L + i * 1000, 1)
-      check(e.nudge(e.read(A)!!, APP, 122000, 121000, 1) != null)
+      check(e.nudge(e.read(A)!!, APP, 17000, 16000, 1) == null)
+      for (i in 16..30) e.activeForeground(APP, 2000L + i * 1000, 1000L + i * 1000, 1)
+      check(e.nudge(e.read(A)!!, APP, 32000, 31000, 1) != null)
+      e.activeForeground(null, 32000, 31000, 1)
+      check(e.nudge(e.read(A)!!, APP, 42000, 41000, 1) == null)
+      e.quit(A, 1, APP, java.util.UUID.randomUUID().toString(), "notification_accept", 42000)
+      val resumed = e.allow(A, 1, APP, 42000, 41000, 1, activeUse = true)
+      check(resumed.sessions.single().remainingMs == 30000L && resumed.sessions.single().nudgeQuarter == 2)
+      check(e.nudge(resumed, APP, 42000, 41000, 1) == null)
+      for (i in 1..15) e.activeForeground(APP, 42000L + i * 1000, 41000L + i * 1000, 1)
+      check(e.nudge(e.read(A)!!, APP, 57000, 56000, 1) != null)
     }
     case {
       val (_, e) = fixture(policy = SessionPolicy("UTC", 2, 60))

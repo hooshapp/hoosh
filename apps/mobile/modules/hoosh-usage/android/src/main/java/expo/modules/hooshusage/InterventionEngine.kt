@@ -45,7 +45,8 @@ class InterventionEngine(private val disk: InterventionPersistence) {
       .filter { it.reasonId !in old?.plan?.cancelledQuestReasons.orEmpty() }
     val snapshots = (windows + questWindows).map { w ->
       val previous = previousWindows.find { it.reasonId == w.reasonId && it.startsAt == w.startsAt && now >= it.startsAt && now < it.endsAt }
-      w.copy(apps = previous?.apps ?: selection.apps.toSet())
+      val selectionChanged = weekly != null && old?.plan?.selectionRevision != selection.revision
+      w.copy(apps = if (selectionChanged) selection.apps else previous?.apps ?: selection.apps)
     }
     val allApps = selection.apps + snapshots.flatMap { it.apps }; SelectionDrafts.validateApps(allApps)
     InterventionValidation.windows(snapshots, 512)
@@ -134,7 +135,7 @@ class InterventionEngine(private val disk: InterventionPersistence) {
   fun allow(owner: String, revision: Int, app: String, wall: Long, elapsed: Long, boot: Int, activeUse: Boolean = false): InterventionRecord {
     val old = record(owner); InterventionValidation.require(old.plan.revision == revision, "ERR_INTERVENTION_CONFLICT")
     val reasons = needed(old, app, wall, elapsed, boot); InterventionValidation.require(reasons.isNotEmpty())
-    val running = old.sessions.filter { (old.plan.policy.sharedBudget || it.app == app) && live(it, wall, elapsed, boot) }.minByOrNull { it.elapsedEnd }
+    val running = resumable(old, app, wall, elapsed, boot)
     val today = SimpleDateFormat("yyyy-MM-dd", Locale.US).apply { timeZone = TimeZone.getTimeZone(old.plan.policy.timezoneId) }.format(Date(wall))
     val sharedKey = "__hoosh_shared_budget_v1__"
     val latestDay = old.daily.maxOfOrNull { it.day } ?: today
@@ -144,7 +145,7 @@ class InterventionEngine(private val disk: InterventionPersistence) {
       ?: old.daily.filter { it.day == day && it.app != sharedKey }.sumOf { it.count.toLong() }
     val previousCount = if (old.plan.policy.sharedBudget) shared else (prior?.count ?: 0).toLong()
     InterventionValidation.require(previousCount < Int.MAX_VALUE && shared < Int.MAX_VALUE, "ERR_INTERVENTION_LIMIT")
-    InterventionValidation.require(!old.plan.policy.sharedBudget || running != null || previousCount < old.plan.policy.sessionsPerDay, "ERR_INTERVENTION_EXHAUSTED")
+    InterventionValidation.require(running != null || previousCount < old.plan.policy.sessionsPerDay, "ERR_INTERVENTION_EXHAUSTED")
     val index = previousCount.toInt() + 1
     val seconds = old.plan.policy.sessionSeconds
     var session = if (running == null) AppSession(app, wall + seconds * 1000L, elapsed + seconds * 1000L, boot, seconds) else if (running.app == app) running else running.copy(app = app, id = UUID.randomUUID().toString())
@@ -208,26 +209,43 @@ class InterventionEngine(private val disk: InterventionPersistence) {
     val rewards = if (monitoring) sampled else sampled.copy(covered = false)
     return if (rewards == record.rewards) record else persist(record.copy(rewards = rewards))
   }
+  fun resumable(record: InterventionRecord, app: String, wall: Long, elapsed: Long, boot: Int) =
+    record.sessions.filter { (record.plan.policy.sharedBudget || it.app == app) && live(it, wall, elapsed, boot) }
+      .minByOrNull { it.elapsedEnd }
+
   fun running(record: InterventionRecord, app: String, wall: Long, elapsed: Long, boot: Int) =
     record.sessions.find { it.app == app && live(it, wall, elapsed, boot) }
   fun nudge(record: InterventionRecord, app: String, wall: Long, elapsed: Long, boot: Int): AppSession? =
     running(record, app, wall, elapsed, boot)?.takeIf { session ->
       WeeklySchedules.windows(record.plan, wall).any { w -> app in w.apps } && if (session.remainingMs != null)
-        (1..3).map { q -> kotlin.math.ceil(session.seconds.toDouble() * q / 240).toLong() * 60000 }
-          .distinct().filter { it > 0 && it < session.seconds * 1000L }.withIndex()
-          .any { (index, threshold) -> index + 1 > session.nudgeQuarter && session.seconds * 1000L - remaining(session, elapsed) >= threshold }
+        session.runningSince != null && session.nudgeQuarter < 3 &&
+          session.seconds * 1000L - remaining(session, elapsed) >= session.seconds * 250L * (session.nudgeQuarter + 1)
       else !session.nudged && session.elapsedEnd - elapsed <= session.seconds * 500L
     }
-  fun dismissNudge(owner: String, revision: Int, app: String) {
+  fun dismissNudge(owner: String, revision: Int, app: String, wall: Long? = null, encounter: String? = null) {
     val old = record(owner); InterventionValidation.require(old.plan.revision == revision, "ERR_INTERVENTION_CONFLICT")
-    persist(old.copy(sessions = old.sessions.map { if (it.app == app) it.copy(nudged = true, nudgeQuarter = minOf(3, maxOf(it.nudgeQuarter + 1, ((it.seconds * 1000L - (it.remainingMs ?: 0)) * 4 / (it.seconds * 1000L)).toInt()))) else it }))
+    val rewards = if (wall != null && encounter != null)
+      RewardSignals.append(old.rewards, wall, "nudge_skipped", RewardSignals.day(wall, old.plan.policy.timezoneId), encounter)
+      else old.rewards
+    persist(old.copy(rewards = rewards, sessions = advanceNudge(old.sessions, app)))
+  }
+  private fun advanceNudge(sessions: List<AppSession>, app: String): List<AppSession> {
+    val session = sessions.find { it.app == app } ?: return sessions
+    val reached = ((session.seconds * 1000L - (session.remainingMs ?: 0)) / (session.seconds * 250L)).toInt()
+    val quarter = minOf(3, maxOf(session.nudgeQuarter + 1, reached))
+    return sessions.map {
+      if (it.id == session.id || (session.usageGroup != null && it.usageGroup == session.usageGroup))
+        it.copy(nudged = true, nudgeQuarter = quarter)
+      else it
+    }
   }
   fun quit(owner: String, revision: Int, app: String, encounter: String, context: String, wall: Long): InterventionRecord {
     val old = record(owner); InterventionValidation.require(old.plan.revision == revision, "ERR_INTERVENTION_CONFLICT")
     QuestSchedules.id(encounter); InterventionValidation.require(context in setOf("initial", "expired", "mid_session", "notification_accept"))
     val rewards = RewardSignals.append(old.rewards, wall, "quit", RewardSignals.day(wall, old.plan.policy.timezoneId), encounter, context)
-    return persist(old.copy(rewards = rewards, sessions = if (context == "mid_session" && old.sessions.none { it.app == app && it.remainingMs != null }) old.sessions.filter { it.app != app }
-      else old.sessions.map { if (it.app == app && it.remainingMs != null) it.copy(runningSince = null) else it },
+    val sessions = if (context == "notification_accept") advanceNudge(old.sessions, app) else old.sessions
+    return persist(old.copy(rewards = rewards, sessions = if (context == "mid_session" && sessions.none { it.app == app && it.remainingMs != null }) sessions.filter { it.app != app }
+      else sessions.map { if (it.app == app && it.remainingMs != null) it.copy(runningSince = null) else it },
       allowances = old.allowances.filter { it.app != app },
       events = old.events + event("quit_selected", null, revision, wall)))
   }

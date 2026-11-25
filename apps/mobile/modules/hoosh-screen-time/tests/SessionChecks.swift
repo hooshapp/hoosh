@@ -38,11 +38,14 @@ import Foundation
     _ = try extra.allow(app: app, revision: 1, reasons: [weekly], clock: clock)
     let again = try extra.allow(app: app, revision: 1, reasons: [weekly], clock: .init(wall: wall + 61000, elapsed: 1061000, boot: "boot-a"))
     check(again.exhausted == false && extra.daily[0].day == "2026-11-17", "new day gets its own budget after previous session expires")
-    let beyond = try extra.allow(app: app, revision: 1, reasons: [weekly], clock: .init(wall: wall + 122000, elapsed: 1122000, boot: "boot-a"))
-    check(beyond.sessionIndex == 2 && beyond.exhausted == true, "extra session stays available and is marked exhausted only at start")
-    let beforeRollback = extra.daily[0].count
-    _ = try extra.allow(app: app, revision: 1, reasons: [weekly], clock: .init(wall: wall - 1000, elapsed: 1123000, boot: "boot-a"))
-    check(extra.daily[0].day == "2026-11-17" && extra.daily[0].count == beforeRollback + 1, "rollback does not create a fresh day budget")
+    let capped = extra
+    for time: Int64 in [wall + 122000, wall - 1000] {
+      do {
+        _ = try extra.allow(app: app, revision: 1, reasons: [weekly], clock: .init(wall: time, elapsed: 1123000, boot: "boot-a"))
+        fatalError("daily cap allowed an extra session")
+      } catch SessionFailure.exhausted {}
+    }
+    check(extra == capped, "failed starts leave the existing budget intact")
     let persisted = try JSONDecoder().decode(ProtectionSessionLedger.self, from: JSONEncoder().encode(extra))
     check(persisted == extra, "native record retains counters/deadlines across serialization")
     var corrupt = try JSONSerialization.jsonObject(with: JSONEncoder().encode(extra)) as! [String: Any]
@@ -76,8 +79,14 @@ import Foundation
     let started = try active.allow(app: app, revision: 1, reasons: [activeReason], clock: clock, usageBased: true)
     let away = ProtectionClock(wall: wall + 1800000, elapsed: clock.elapsed + 1800000, boot: clock.boot)
     check(started.session.live(away) && started.session.remaining(away) == 900, "background wall time must not consume active-use allowance")
+    check(started.session.nudgeSeconds == [225, 450, 675], "new sessions nudge at exact active-use quarters")
     let firstUsage = try active.recordUsage(group: started.session.usageGroup, seconds: 225, clock: away)
     check(firstUsage && active.sessions[0].remaining(away) == 675, "OS usage checkpoint consumes only measured activity")
+    var rebased = active
+    rebased.rebaseUsageMonitoring(selectionRevision: 2)
+    check(rebased.sessions[0].usageOffsetSeconds == 225 && rebased.sessions[0].usageMonitorRevision == 2
+      && rebased.sessions[0].remaining(away) == 675 && rebased.daily == active.daily,
+      "changing targets rebases the platform counter without resetting usage or starts")
     let duplicate = try active.recordUsage(group: started.session.usageGroup, seconds: 225, clock: away)
     let stale = try active.recordUsage(group: started.session.usageGroup, seconds: 60, clock: away)
     check(!duplicate && !stale && active.sessions[0].remaining(away) == 675, "duplicate/reordered usage must not double charge or replenish")

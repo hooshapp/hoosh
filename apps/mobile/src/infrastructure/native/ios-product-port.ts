@@ -2,6 +2,7 @@ import type { ProductNativePort } from './product-ports';
 import { decodeSavedSelection } from './selection-editor';
 export type IOSRuntimeModule = {
   rewardsRead?(namespace: string, userID: string, token: string): Promise<unknown>;
+  dinoHealthWarning?(namespace: string, userID: string, token: string, warningAt: number, low: boolean): Promise<unknown>;
   rewardsAck?(namespace: string, userID: string, token: string, installation: string, sequence: number): Promise<unknown>;
   runtimeRead(namespace: string, userID: string, token: string, quest: string | null): Promise<unknown>;
   runtimeApply(namespace: string, userID: string, token: string, command: string): Promise<unknown>;
@@ -47,6 +48,12 @@ export function createIOSProductPort(args: {
   const selectedRevision = async () => decodeSavedSelection(await args.selection.selectionRead(owner), owner).revision;
   return {
     ...args.selection,
+    ...(module.dinoHealthWarning ? {
+      dinoHealthWarning: async (value: string, warningAt: number, low: boolean) => {
+        check(value);
+        await module.dinoHealthWarning!(namespace, userID, token, warningAt, low);
+      },
+    } : {}),
     ...(module.rewardsRead && module.rewardsAck ? {
       rewardsRead: async (value: string) => {
         check(value); const result = await module.rewardsRead!(namespace, userID, token); check(value); return result;

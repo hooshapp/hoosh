@@ -10,6 +10,12 @@ export function RewardsFeedback({ rewards }: { rewards: ReturnType<typeof useRew
     <>
       {!rewards.wallet ? <InlineStatus state={rewards.loading ? 'loading' : 'unavailable'}
         message={rewards.loading ? 'Checking your rewards…' : rewards.unavailable} /> : null}
+      {rewards.wallet && rewards.wallet.health <= 25 ? (
+        <Text style={styles.message}>Dino’s a little droopy. Feed costs 10 credits and restores up to 20 health points.</Text>
+      ) : null}
+      {rewards.wallet && rewards.syncNotice ? (
+        <Text style={styles.policy}>{rewards.syncNotice}</Text>
+      ) : null}
       {rewards.message ? <Text accessibilityLiveRegion="polite" role="status" style={styles.message}>{rewards.message}</Text> : null}
       {rewards.pending ? (
         <Button

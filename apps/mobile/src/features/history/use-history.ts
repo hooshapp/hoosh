@@ -115,8 +115,11 @@ export function useHistory() {
       onlineManager.isOnline() &&
       focusManager.isFocused()
     )
-      void refetch();
+      void refetch({ cancelRefetch: false });
   }, [scope, refetch]);
+  useEffect(() => {
+    if (binding) refresh();
+  }, [binding, refresh]);
   useEffect(() => {
     const detach = focusManager.subscribe((active) => {
       if (active) refresh();

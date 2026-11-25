@@ -25,6 +25,7 @@ export type HomeScreenProps = {
   preferences?: ReactNode;
   onFeed?: () => void;
   onOpenHistory?: () => void;
+  usageComparison?: ReactNode;
   onAcceptRecommendation?: (id: string) => void;
   onSkipRecommendation?: (id: string) => void;
   feeding?: boolean;
@@ -41,6 +42,7 @@ export function HomeScreen({
   preferences,
   onFeed,
   onOpenHistory,
+  usageComparison,
   onAcceptRecommendation,
   onSkipRecommendation,
   feeding = false,
@@ -73,6 +75,7 @@ export function HomeScreen({
           dino={model.dino}
           credits={model.credits}
           weekly={model.weekly}
+          usageComparison={usageComparison}
           stacked={stacked}
           onFeed={onFeed}
           onOpenHistory={onOpenHistory}

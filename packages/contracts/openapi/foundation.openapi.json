@@ -98,6 +98,31 @@
         "title": "ConflictErrorBody",
         "type": "object"
       },
+      "DailyInterventions": {
+        "additionalProperties": false,
+        "properties": {
+          "day": {
+            "format": "date",
+            "title": "Day",
+            "type": "string"
+          },
+          "sessions_started": {
+            "title": "Sessions Started",
+            "type": "integer"
+          },
+          "turn_offs": {
+            "title": "Turn Offs",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "day",
+          "sessions_started",
+          "turn_offs"
+        ],
+        "title": "DailyInterventions",
+        "type": "object"
+      },
       "DraftHours": {
         "additionalProperties": false,
         "properties": {
@@ -479,6 +504,20 @@
             "default": 1,
             "title": "Policy Version",
             "type": "integer"
+          },
+          "recent_interventions": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/DailyInterventions"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recent Interventions"
           },
           "revision": {
             "title": "Revision",
@@ -1634,6 +1673,13 @@
       "RewardBatch": {
         "additionalProperties": false,
         "properties": {
+          "acknowledged": {
+            "default": 0,
+            "maximum": 9007199254740991.0,
+            "minimum": 0.0,
+            "title": "Acknowledged",
+            "type": "integer"
+          },
           "discarded": {
             "maximum": 9007199254740991.0,
             "minimum": 0.0,
@@ -1763,7 +1809,8 @@
             "enum": [
               "quit",
               "allowance",
-              "day_closed"
+              "day_closed",
+              "nudge_skipped"
             ],
             "title": "Kind",
             "type": "string"
@@ -1826,6 +1873,18 @@
           "health": {
             "title": "Health",
             "type": "integer"
+          },
+          "health_warning_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Health Warning At"
           },
           "observed_at": {
             "format": "date-time",

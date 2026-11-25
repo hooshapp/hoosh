@@ -35,7 +35,16 @@ struct ElapsedProtectionSession: Codable, Equatable {
   var usageConsumedSeconds: Int? = nil
   var usageStartedAt: Int64? = nil
   var usageGroupID: UUID? = nil
+  var exactQuarters: Bool? = nil
+  var usageMonitorRevision: UInt64? = nil
+  var usageOffsetSeconds: Int? = nil
   var usageBased: Bool { usageConsumedSeconds != nil }
+  var nudgeSeconds: [Int] {
+    if exactQuarters == true {
+      return Array(Set((1...3).map { (seconds * $0 + 3) / 4 }.filter { $0 < seconds })).sorted()
+    }
+    return ProtectionSessionLedger.nudgeSeconds(duration: seconds)
+  }
   var usageGroup: UUID { usageGroupID ?? id }
   func remaining(_ clock: ProtectionClock) -> Int {
     if let used = usageConsumedSeconds { return max(0, seconds - used) }
@@ -99,6 +108,7 @@ struct ProtectionSessionLedger: Codable, Equatable {
       guard (1...86400).contains(session.seconds), !session.app.isEmpty, session.app.count <= 4096,
             session.wallEnd >= 0, session.elapsedEnd >= 0, !session.boot.isEmpty, session.boot.utf8.count <= 128,
             session.usageConsumedSeconds == nil || ((0...session.seconds).contains(session.usageConsumedSeconds!) && session.usageStartedAt != nil),
+            (0...(session.usageConsumedSeconds ?? 0)).contains(session.usageOffsetSeconds ?? 0),
             session.usageStartedAt == nil || (session.usageStartedAt! >= 0 && session.usageStartedAt! < session.wallEnd) else { throw SessionFailure.invalid }
     }
     for grant in grants {
@@ -165,14 +175,15 @@ struct ProtectionSessionLedger: Codable, Equatable {
       ?? daily.filter { $0.day == bucket && $0.app != sharedKey }.reduce(0) { $0 + $1.count }
     let previous = policy.sharedBudget ? shared : (prior?.count ?? 0)
     guard previous < 2147483647, shared < 2147483647 else { throw SessionFailure.capacity }
-    guard !policy.sharedBudget || running != nil || previous < policy.sessionsPerDay else { throw SessionFailure.exhausted }
+    guard running != nil || previous < policy.sessionsPerDay else { throw SessionFailure.exhausted }
     let index = previous + 1
     let duration = Int64(policy.sessionSeconds) * 1000
     var session = running.map { existing in
       existing.app == app ? existing : ElapsedProtectionSession(id: UUID(), app: app, wallEnd: existing.wallEnd,
         elapsedEnd: existing.elapsedEnd, boot: existing.boot, seconds: existing.seconds,
         usageConsumedSeconds: existing.usageConsumedSeconds, usageStartedAt: existing.usageStartedAt,
-        usageGroupID: existing.usageGroup)
+        usageGroupID: existing.usageGroup, exactQuarters: existing.exactQuarters,
+        usageMonitorRevision: existing.usageMonitorRevision, usageOffsetSeconds: existing.usageOffsetSeconds)
     } ?? ElapsedProtectionSession(id: UUID(), app: app, wallEnd: clock.wall + duration,
       elapsedEnd: clock.elapsed + duration, boot: clock.boot, seconds: policy.sessionSeconds)
     if usageBased && running == nil {
@@ -180,7 +191,7 @@ struct ProtectionSessionLedger: Codable, Equatable {
       let end = reasons.filter { $0.id.hasPrefix("entry_") }.map(\.endsAt).min() ?? reasons.map(\.endsAt).min()!
       session = ElapsedProtectionSession(id: session.id, app: app, wallEnd: end,
         elapsedEnd: Int64.max, boot: clock.boot, seconds: policy.sessionSeconds,
-        usageConsumedSeconds: 0, usageStartedAt: (clock.wall / 1000) * 1000)
+        usageConsumedSeconds: 0, usageStartedAt: (clock.wall / 1000) * 1000, exactQuarters: true)
     }
     let kept = grants.filter { $0.wallEnd > clock.wall && $0.elapsedEnd > clock.elapsed && $0.boot == clock.boot }
     let newGrants = pending.map { reason in
@@ -198,6 +209,13 @@ struct ProtectionSessionLedger: Codable, Equatable {
     daily = nextDaily
     return ProtectionGrantResult(session: session, startedNewSession: running == nil,
       sessionIndex: running == nil ? index : nil, exhausted: running == nil ? index > policy.sessionsPerDay : nil)
+  }
+  /// A changed set of monitored apps needs a new OS counter starting from the last durable usage checkpoint.
+  mutating func rebaseUsageMonitoring(selectionRevision: UInt64) {
+    for index in sessions.indices where sessions[index].usageBased {
+      sessions[index].usageMonitorRevision = selectionRevision
+      sessions[index].usageOffsetSeconds = sessions[index].usageConsumedSeconds
+    }
   }
   /// Idempotent cumulative OS usage checkpoint. Stale or reordered callbacks do not restart time.
   mutating func recordUsage(group: UUID, seconds: Int, clock: ProtectionClock) throws -> Bool {

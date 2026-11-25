@@ -304,7 +304,7 @@ class InterventionRuntime private constructor(val context: Context) {
     try { leases.end(owner, erase) } catch (e: Exception) { reject(promise, e); return }
     call(promise, true) {
     try {
-      if (erase) { persistence.eraseOwner(owner); history.erase(owner); leases.erased(owner) } else engine.read(owner)
+      if (erase) { persistence.eraseOwner(owner); history.erase(owner); NudgeToneStore(context).erase(owner); leases.erased(owner) } else engine.read(owner)
     } catch (e: InterventionFailure) {
       if (e.code == "ERR_INTERVENTION_OWNER") leases.erased(owner) // Never poison a different owner's future scope.
       throw e

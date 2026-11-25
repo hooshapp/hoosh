@@ -22,12 +22,15 @@ import { ActivityPreferencesScreen } from '@/features/settings/activity-preferen
 import { PlanDraftScreen } from '@/features/settings/plan-draft-screen';
 import { isPlanField } from '@/features/plans/plan-draft-model';
 import { NativeAppsEditor } from '@/features/preferences/native-apps-editor';
-import { useAccountWeeklyPlan } from '@/features/plans/account-weekly-plan';
-import { useNativeOwner } from '@/features/protection/native-owner-boundary';
+import { useAccountWeeklyPlan, weeklyPort } from '@/features/plans/account-weekly-plan';
+import { useIOSSelectionDevice, useNativeOwner } from '@/features/protection/native-owner-boundary';
+import { activateAcceptedPlan } from '@/features/onboarding/activate-accepted-plan';
+import { createWeeklyScheduleClient } from '@/features/plans/weekly-schedule';
 export default function PreferenceDetail() {
   const { field } = useLocalSearchParams<{ field: string }>();
   const account = useOptionalAccountData();
   const native = useNativeOwner();
+  const ios = useIOSSelectionDevice();
   const weekly = useAccountWeeklyPlan();
   if (field === 'age' && account?.scope) return <AgePreferenceScreen onBack={() => { if (router.canGoBack()) router.back(); else router.replace('/(tabs)/settings'); }} />;
   if (field === 'apps' && native)
@@ -36,6 +39,36 @@ export default function PreferenceDetail() {
         owner={native.owner}
         generation={native.generation}
         port={native.port}
+        onApply={async (selection, assertEditorCurrent) => {
+          const scope = account?.scope;
+          const port = weeklyPort(native);
+          if (!scope || !port || !weekly) throw new Error('Device protection unavailable');
+          const assertCurrent = () => {
+            assertEditorCurrent();
+            scope.assertCurrent();
+            if (native.generation !== scope.account.sessionGeneration) throw new Error('Account changed');
+          };
+          assertCurrent();
+          const client = createWeeklyScheduleClient(native.owner, port);
+          let installation;
+          try {
+            installation = await client.read();
+            assertCurrent();
+            if (installation.otherInstallation) throw new Error('Device protection unavailable');
+            if (installation.native.pendingRequestID && ios?.recover) {
+              await ios.recover(installation.native.pendingRequestID);
+              assertCurrent();
+              installation = await client.read();
+            }
+          } finally { client.dispose(); }
+          assertCurrent();
+          if (installation.native.pendingRequestID) throw new Error('Device update pending');
+          if (!installation.enabled) return false;
+          await activateAcceptedPlan({ owner: native.owner, port, draft: installation.spec,
+            selectionRevision: selection.baseRevision, assertCurrent, recoverPending: ios?.recover });
+          await weekly.plan.refresh();
+          return true;
+        }}
         onBack={() => {
           void weekly?.plan.refresh();
           if (router.canGoBack()) router.back();

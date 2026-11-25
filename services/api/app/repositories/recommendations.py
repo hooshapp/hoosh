@@ -1,6 +1,7 @@
 """Decision and one-time quest creation commit together; no activation or reward on Accept."""
 
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
+from uuid import NAMESPACE_URL, uuid5
 
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
@@ -117,3 +118,17 @@ def decide(session: UserSession, body: RecommendationAction, now: datetime):
         )
     session.flush()
     return decided_view(session, row, now)
+
+
+def save_nudge_quest(session: UserSession, day: date, now: datetime):
+    """Save one reviewable offline activity per account day, without auto-scheduling it."""
+    owner = require_user_context(session)
+    quest_id = uuid5(NAMESPACE_URL, f"hoosh/nudge-quest/v1/{owner}/{day}")
+    if own_row(session, quest_id):
+        return
+    suggestion = offer(owner, session.get(UserSettings, owner), now, nudge=True)
+    save_own_quest(
+        session,
+        quest_id,
+        QuestPut(expected_revision=0, definition=one_time_definition(suggestion, now)),
+    )

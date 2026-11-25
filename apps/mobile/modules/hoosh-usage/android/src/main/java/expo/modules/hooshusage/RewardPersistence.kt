@@ -23,7 +23,7 @@ object RewardPersistence {
     val array = r.getJSONArray("events"); check(array.length() <= 256)
     val events = (0 until array.length()).map { index -> val e = array.getJSONObject(index)
       val id = e.string("id"); QuestSchedules.id(id)
-      val kind = e.string("kind"); check(kind in setOf("quit", "allowance", "day_closed"))
+      val kind = e.string("kind"); check(kind in setOf("quit", "allowance", "day_closed", "nudge_skipped"))
       val day = e.string("day"); check(java.time.LocalDate.parse(day).toString() == day)
       val encounter = e.optional("encounter"); encounter?.let { QuestSchedules.id(it) }
       val context = e.optional("context"); check(context == null || context in setOf("initial", "expired", "mid_session", "notification_accept"))
@@ -31,6 +31,7 @@ object RewardPersistence {
       val covered = if (e.isNull("covered")) null else e.bool("covered")
       check(when (kind) {
         "quit" -> encounter != null && context != null && exhausted == null && covered == null
+        "nudge_skipped" -> encounter != null && context == null && exhausted == null && covered == null
         "allowance" -> encounter == null && context == null && exhausted != null && covered == null
         else -> encounter == null && context == null && exhausted != null && covered != null
       })

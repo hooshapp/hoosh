@@ -12,6 +12,9 @@ final class DeviceActivityMonitorExtension: DeviceActivityMonitor {
     override func intervalDidStart(for activity: DeviceActivityName) {
         super.intervalDidStart(for: activity)
         if activity.rawValue.hasPrefix("hoosh.shared.") {
+            // The shield action starts usage monitors and applies their grants.
+            // The start callback does not change coverage or usage.
+            if activity.rawValue.contains(".usage.") { return }
             ProtectionNativeEngine.monitor(activity.rawValue)
             return
         }

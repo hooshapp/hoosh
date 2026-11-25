@@ -18,18 +18,20 @@ TEMPLATES = {
 }
 
 
-def offer(owner: UUID, settings, now: datetime) -> RecommendationOffer:
+def offer(owner: UUID, settings, now: datetime, *, nudge=False) -> RecommendationOffer:
     zone = (settings.plan_draft or {}).get("timezone_id") if settings else None
     zone = zone or "UTC"
     local = now.astimezone(ZoneInfo(zone))
     choices = settings.activities.get("selected_activity_ids", []) if settings else []
-    choices = sorted(set(choices) & TEMPLATES.keys())
-    if "reading" in choices and local.hour >= 21:
+    if nudge:
+        selected = choices[0] if choices and choices[0] in TEMPLATES else None
+    elif "reading" in choices and local.hour >= 21:
         selected = "reading"
     elif "walking" in choices and 7 <= local.hour < 20:
         selected = "walking"
     else:
-        selected = choices[local.date().toordinal() % len(choices)] if choices else None
+        supported = sorted(set(choices) & TEMPLATES.keys())
+        selected = supported[local.date().toordinal() % len(supported)] if supported else None
     title, activity, minutes = TEMPLATES.get(
         selected, ("Make room for a little offline time", "Offline break", 10)
     )

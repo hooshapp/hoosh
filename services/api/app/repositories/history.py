@@ -3,15 +3,15 @@
 from datetime import date, datetime, timedelta
 from zoneinfo import ZoneInfo
 
-from sqlalchemy import DateTime, select
+from sqlalchemy import DateTime, func, select
 from sqlalchemy.dialects.postgresql import insert
 
 from app.core.errors import ApiError
 from app.db.session import UserSession, require_user_context
 from app.models.history import HistoryRecord as Record
-from app.models.rewards import RewardEntry
+from app.models.rewards import RewardEntry, RewardStream
 from app.schemas.errors import ConflictDetails, ErrorCode, ValidationDetails, ValidationField
-from app.schemas.history import HistoryPut, HistoryView, HistoryWindow
+from app.schemas.history import DailyInterventions, HistoryPut, HistoryView, HistoryWindow
 
 DAY = 86400000
 
@@ -86,6 +86,35 @@ def view(session: UserSession, now: datetime):
     today = now.astimezone(zone).date()
     baseline = row.baseline if row else None
     days = row.days if row else {}
+    # Activity receipts are independent of the Android measurement series.
+    receipt_zone = session.scalar(
+        select(RewardStream.timezone_id)
+        .where(RewardStream.user_id == owner)
+        .order_by(RewardStream.last_at.desc().nullslast())
+        .limit(1)
+    )
+    activity_zone = ZoneInfo(receipt_zone) if receipt_zone else zone
+    activity_day = now.astimezone(activity_zone).date()
+
+    def daily_interventions(day):
+        end = day + timedelta(days=1)
+        occurred_at = RewardEntry.payload["occurred_at"].astext.cast(DateTime(timezone=True))
+        starts = session.scalar(
+            select(func.count())
+            .select_from(RewardEntry)
+            .where(
+                RewardEntry.user_id == owner,
+                RewardEntry.kind == "native",
+                RewardEntry.payload["kind"].astext == "allowance",
+                occurred_at >= datetime.combine(day, datetime.min.time(), activity_zone),
+                occurred_at < datetime.combine(end, datetime.min.time(), activity_zone),
+            )
+        )
+        return DailyInterventions(
+            day=day,
+            sessions_started=starts,
+            turn_offs=sum(turn_offs(session, owner, day, end, activity_zone).values()),
+        )
 
     def window(count):
         target = closed_days(today, count)
@@ -121,6 +150,12 @@ def view(session: UserSession, now: datetime):
         )
 
     return HistoryView(
+        recent_interventions=[
+            daily_interventions(activity_day),
+            daily_interventions(activity_day - timedelta(days=1)),
+        ]
+        if receipt_zone
+        else None,
         user_id=owner,
         revision=row.revision if row else 0,
         series_id=row.series_id if row else None,

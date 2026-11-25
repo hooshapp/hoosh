@@ -22,6 +22,7 @@ type Props = {
   onRetry?: () => void;
   reclaimed?: boolean;
   controls?: ReactNode;
+  usageComparison?: ReactNode;
 };
 export function HistoryDetails({
   reading,
@@ -32,6 +33,7 @@ export function HistoryDetails({
   onRetry,
   reclaimed = false,
   controls,
+  usageComparison,
 }: Props) {
   const detail =
     reading.state === 'ready' && usableHistoryDetail(reading.data)
@@ -86,12 +88,12 @@ export function HistoryDetails({
             ))}
           </View>
         </>
-      ) : (
+      ) : usageComparison ? null : (
         <Text style={styles.caption}>
           Each circle = 10% of your previous usage
         </Text>
       )}
-      {detail ? (
+      {usageComparison ?? (detail ? (
         reclaimed ? (
           <>
             {detail.percentageAvailable !== false &&
@@ -188,7 +190,7 @@ export function HistoryDetails({
           <Text style={styles.caption}>No measured data yet</Text>
           {state === 'loading' ? <InlineStatus state="loading" message="Loading your progress…" /> : state === 'error' ? <InlineStatus state="error" message="Your progress couldn’t be loaded." onRetry={onRetry} /> : null}
         </View>
-      )}
+      ))}
       {controls}
       {onNext && !reclaimed ? (
         <View style={styles.nextRow}>

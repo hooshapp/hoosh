@@ -21,13 +21,14 @@ struct ProtectionOSMonitor {
   let envelope: ProtectionMonitorEnvelope
   var usageApplications: Set<ApplicationToken> = []
   var usageThresholds: [Int] = []
+  var usageOffsetSeconds = 0
   func events() throws -> [DeviceActivityEvent.Name: DeviceActivityEvent] {
     guard !usageThresholds.isEmpty else { return [:] }
     guard #available(iOS 17.4, *), !usageApplications.isEmpty, usageThresholds.count <= 244,
-      usageThresholds.allSatisfy({ $0 > 0 && $0 <= 86400 }) else { throw ProtectionTransactionError.invalid }
+      usageThresholds.allSatisfy({ $0 > usageOffsetSeconds && $0 <= 86400 }) else { throw ProtectionTransactionError.invalid }
     return Dictionary(uniqueKeysWithValues: usageThresholds.map { seconds in
       (DeviceActivityEvent.Name("usage.\(seconds)"), DeviceActivityEvent(applications: usageApplications,
-        threshold: DateComponents(second: seconds), includesPastActivity: false))
+        threshold: DateComponents(second: seconds - usageOffsetSeconds), includesPastActivity: false))
     })
   }
   func schedule() throws -> DeviceActivitySchedule {

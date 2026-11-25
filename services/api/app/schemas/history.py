@@ -61,6 +61,12 @@ class HistoryWindow(WireModel):
     turn_offs: dict[Literal["initial", "expired", "mid_session"], int]
 
 
+class DailyInterventions(WireModel):
+    day: date
+    sessions_started: int
+    turn_offs: int
+
+
 class HistoryView(WireModel):
     user_id: UUID
     revision: int
@@ -76,3 +82,4 @@ class HistoryView(WireModel):
     baseline_reported_days: int
     week: HistoryWindow
     month: HistoryWindow
+    recent_interventions: list[DailyInterventions] | None = None

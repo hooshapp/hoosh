@@ -9,6 +9,8 @@ public class HooshScreenTimeModule: Module {
   private var permissionObserver: AnyCancellable?
   private var foregroundObserver: NSObjectProtocol?
   private var notificationDelegate: ProtectionNotificationDelegate?
+  private var dinoWarningLease: UUID?
+  private static let dinoWarningID = "hoosh.dino.health"
   private let picker = NativeSelectionPicker()
   private let usageReport = UsageBaselinePresenter()
   private var transactions: SelectionTransactions<FamilyActivitySelection>?
@@ -65,6 +67,11 @@ public class HooshScreenTimeModule: Module {
       receipt["usageSessionCount"] = measured.count
       receipt["usedUsageSeconds"] = measured.reduce(0) { $0 + ($1.usageConsumedSeconds ?? 0) }
       receipt["remainingUsageSeconds"] = measured.reduce(0) { $0 + max(0, $1.seconds - ($1.usageConsumedSeconds ?? 0)) }
+      if let journal = record.rewardJournal {
+        receipt["rewardAcknowledged"] = journal.acknowledged
+        receipt["rewardFirstQueued"] = journal.events.first?.sequence
+        receipt["rewardQueuedCount"] = journal.events.count
+      }
     }
     if let error {
       if let typed = error as? ProtectionTransactionError { receipt["failure"] = String(describing: typed) }
@@ -85,6 +92,7 @@ public class HooshScreenTimeModule: Module {
   }
   public func definition() -> ModuleDefinition {
     Name("HooshScreenTime")
+    Constant("usageComparisonAvailable") { true }
     AsyncFunction("setNudgeTone") { (namespace: String, userID: String, raw: String, tone: String) throws -> [String: Bool] in
       let (owner, token) = try self.owner(namespace, userID, raw)
       guard ["Supportive", "Direct", "Playful", "Intense"].contains(tone) else { throw ProtectionStoreError.invalidRecord }
@@ -97,6 +105,27 @@ public class HooshScreenTimeModule: Module {
         }
       }
       return ["saved": true]
+    }
+    AsyncFunction("setShieldContext") { (namespace: String, userID: String, raw: String, name: String, activity: String) throws in
+      let (owner, token) = try self.owner(namespace, userID, raw)
+      let cleanName = String(name.components(separatedBy: .controlCharacters).joined(separator: " ")
+        .trimmingCharacters(in: .whitespacesAndNewlines).prefix(40))
+      let goal = ["gym", "reading", "arts_and_crafts", "walking", "music", "cooking"].contains(activity) ? activity : nil
+      let displayName: String? = cleanName.isEmpty ? nil : cleanName
+      try self.leases.withLease(owner, token: token) {
+        let store = try SharedProtectionStore.appGroup()
+        try store.update(expectedRevision: nil) { state in
+          if let index = state.owners.firstIndex(where: { $0.owner == owner }) {
+            state.owners[index].shieldName = displayName
+            state.owners[index].shieldActivity = goal
+          } else {
+            var record = ProtectionOwnerRecord(owner: owner)
+            record.shieldName = displayName
+            record.shieldActivity = goal
+            state.owners.append(record)
+          }
+        }
+      }
     }
     AsyncFunction("budgetCapabilities") { ["scope": "all_selected_apps", "policy": "selected_apps_shared_v1"] }
     AsyncFunction("reviewUsageBaseline") { (namespace: String, userID: String, raw: String) async throws -> [String: Any] in
@@ -123,6 +152,12 @@ public class HooshScreenTimeModule: Module {
       return ["state": "confirmed", "source": "user_confirmed_report", "owner": "\(namespace):\(userID.lowercased())",
         "selectionRevision": saved.revision, "selectedAppCount": selection.applicationTokens.count,
         "windowDays": result.days, "totalMinutes": result.totalMinutes, "endsBefore": result.endsBefore, "timezone": result.timezone]
+    }
+    View(UsageComparisonHost.self) {
+      ViewName("UsageComparisonHost")
+      Prop("days") { (view: UsageComparisonHost, days: Int) in view.days = days }
+      Prop("ownerKey") { (view: UsageComparisonHost, key: String) in view.ownerKey = key }
+      Prop("compact") { (view: UsageComparisonHost, compact: Bool) in view.compact = compact }
     }
     Events("onDeviceStatusChanged")
     OnDestroy {
@@ -176,6 +211,38 @@ public class HooshScreenTimeModule: Module {
       let (owner, token) = try self.owner(namespace, userID, raw)
       return try self.leases.withLease(owner, token: token) {
         try SharedProtectionStore.appGroup().rewardsRead(owner: owner)
+      }
+    }
+    AsyncFunction("dinoHealthWarning") { (namespace: String, userID: String, raw: String, warningAt: Double, low: Bool) async throws in
+      let (owner, token) = try self.owner(namespace, userID, raw)
+      guard warningAt.isFinite, warningAt > 0, warningAt <= 4102444800000 else {
+        throw ProtectionStoreError.invalidRecord
+      }
+      let center = UNUserNotificationCenter.current()
+      let authorization = await center.notificationSettings().authorizationStatus
+      guard [.authorized, .provisional, .ephemeral].contains(authorization) else { return }
+      try self.leases.withLease(owner, token: token) {
+        let id = Self.dinoWarningID
+        let key = id + "." + ProtectionRuntimePlanner.prefix(owner)
+        let defaults = UserDefaults.standard
+        let now = Date().timeIntervalSince1970
+        let due = max(now + 1, warningAt / 1000)
+        let scheduled = defaults.double(forKey: key)
+        if self.dinoWarningLease == token {
+          if low && scheduled > 0 && scheduled <= now + 1 { return }
+          if !low && scheduled == due { return }
+        }
+        let content = UNMutableNotificationContent()
+        content.title = "Dino could use a little care"
+        content.body = "Your little friend is feeling droopy. Open Hoosh to check in and give Dino a snack when you have 10 credits."
+        content.categoryIdentifier = id
+        content.sound = .default
+        let request = UNNotificationRequest(identifier: id, content: content,
+          trigger: UNTimeIntervalNotificationTrigger(timeInterval: due - now, repeats: false))
+        if !low { center.removeDeliveredNotifications(withIdentifiers: [id]) }
+        self.dinoWarningLease = token
+        defaults.set(due, forKey: key)
+        center.add(request)
       }
     }
     AsyncFunction("rewardsAck") { (namespace: String, userID: String, raw: String, installation: String, sequence: Double) throws in
@@ -276,6 +343,12 @@ public class HooshScreenTimeModule: Module {
     AsyncFunction("endOwnerSession") { (raw: String) throws in
       guard let token = UUID(uuidString: raw) else { throw ProtectionStoreError.invalidRecord }
       self.leases.end(token)
+      if self.dinoWarningLease == token {
+        self.dinoWarningLease = nil
+        let center = UNUserNotificationCenter.current()
+        center.removePendingNotificationRequests(withIdentifiers: [Self.dinoWarningID])
+        center.removeDeliveredNotifications(withIdentifiers: [Self.dinoWarningID])
+      }
       Task { @MainActor in self.picker.cancel(lease: token); self.usageReport.cancel() }
     }
     AsyncFunction("readInstallation") { (namespace: String, userID: String, rawToken: String) throws -> [String: String] in
@@ -341,6 +414,9 @@ public class HooshScreenTimeModule: Module {
         guard AuthorizationCenter.shared.authorizationStatus == .approved else { throw SelectionFailure.unavailable }
         let result = try self.selections().commit(owner: owner, token: token, id: id, version: version)
         self.sendEvent("onDeviceStatusChanged", ["reason": "selection"])
+        DispatchQueue.main.async {
+          NotificationCenter.default.post(name: UsageComparisonHost.selectionChanged, object: nil)
+        }
         return result
       }
     }
@@ -415,7 +491,9 @@ private final class ProtectionNotificationDelegate: NSObject, UNUserNotification
   }
   func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification,
     withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-    if notification.request.content.categoryIdentifier == "hoosh.session.nudge" { completionHandler([.banner, .sound]); return }
+    if ["hoosh.session.nudge", "hoosh.dino.health"].contains(notification.request.content.categoryIdentifier) {
+      completionHandler([.banner, .sound]); return
+    }
     if let previous, previous.responds(to: #selector(UNUserNotificationCenterDelegate.userNotificationCenter(_:willPresent:withCompletionHandler:))) {
       previous.userNotificationCenter?(center, willPresent: notification, withCompletionHandler: completionHandler)
     } else { completionHandler([]) }
@@ -424,7 +502,10 @@ private final class ProtectionNotificationDelegate: NSObject, UNUserNotification
     withCompletionHandler completionHandler: @escaping () -> Void) {
     if response.notification.request.content.categoryIdentifier == "hoosh.session.nudge" {
       if response.actionIdentifier == "hoosh.nudge.accept" {
-        ProtectionNativeEngine.acceptNotification(response.notification.request.content.userInfo)
+        ProtectionNativeEngine.respondToNotification(response.notification.request.content.userInfo, accept: true)
+        accepted()
+      } else if response.actionIdentifier == "hoosh.nudge.skip" {
+        ProtectionNativeEngine.respondToNotification(response.notification.request.content.userInfo, accept: false)
         accepted()
       }
       completionHandler(); return

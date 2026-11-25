@@ -32,6 +32,9 @@ class HooshUsageModule : Module() {
   override fun definition() = ModuleDefinition {
     Name("HooshUsage")
     AsyncFunction("setNudgeTone") { owner: String, tone: String -> NudgeToneStore(requireNotNull(appContext.reactContext)).set(owner, tone); mapOf("saved" to true) }
+    AsyncFunction("setAndroidShieldContext") { owner: String, name: String, activity: String ->
+      NudgeToneStore(requireNotNull(appContext.reactContext)).setShieldContext(owner, name, activity)
+    }
     AsyncFunction("budgetCapabilities") { mapOf("policy" to "selected_apps_shared_v1", "scope" to "all_selected_apps") }
     AsyncFunction("onboardingBaselineRead") { owner: String -> OnboardingBaseline(requireNotNull(appContext.reactContext)).read(owner) }
     AsyncFunction("probe") { minutes: Int -> reader().probe(minutes) }

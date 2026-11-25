@@ -1,6 +1,8 @@
 import type { IOSSelectionDevice } from '@/infrastructure/native/ios-selection-device';
 import { createContext, type ReactNode, useContext, useEffect, useMemo, useState } from 'react';
-import { useAccountData } from '@/infrastructure/query/account-data-provider';
+import { useAccountData, useAccountQuery } from '@/infrastructure/query/account-data-provider';
+import { readProfile } from '@/features/account/api';
+import { useSettingsQuery } from '@/features/settings/settings-query';
 import { productNativePort, type ProductNativePort } from '@/infrastructure/native/product-ports';
 import { useIdentityQuery } from '@/features/account/identity-query';
 import { useAppRuntime } from '@/features/account/app-runtime-context';
@@ -78,7 +80,26 @@ function VerifiedNativeOwner({ namespace, port, children }: { namespace: string;
   const binding = useMemo(() => owner && scope && scopedPort ? { owner, generation: scope.account.sessionGeneration, port: scopedPort } : null, [owner, scopedPort, scope]);
   return <NativeOwnerContext.Provider value={binding}>
     <IOSSelectionContext.Provider value={iosDevice}>
+      {iosDevice?.setShieldContext || binding?.port.setAndroidShieldContext ? (
+        <ShieldContextSync device={iosDevice} native={binding} />
+      ) : null}
     <NativeInstallationContext.Provider value={installation}>{children}</NativeInstallationContext.Provider>
     </IOSSelectionContext.Provider>
   </NativeOwnerContext.Provider>;
+}
+
+function ShieldContextSync({ device, native }: { device: IOSSelectionDevice | null; native: NativeOwner | null }) {
+  const profile = useAccountQuery(['profile'], readProfile);
+  const settings = useSettingsQuery();
+  const name = profile.data?.profile?.display_name ?? '';
+  const activity = settings.data?.settings?.activities.selected_activity_ids[0] ?? '';
+  const ready = !!profile.data && !!settings.data && !profile.isError && !settings.isError;
+  useEffect(() => {
+    if (!ready) return;
+    const write = device?.setShieldContext
+      ? device.setShieldContext(name, activity)
+      : native?.port.setAndroidShieldContext?.(native.owner, name, activity);
+    void write?.catch(() => undefined);
+  }, [activity, device, name, native, ready]);
+  return null;
 }
