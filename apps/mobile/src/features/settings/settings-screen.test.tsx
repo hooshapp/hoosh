@@ -172,3 +172,22 @@ test('retry reload intent leaves independent supplied values intact', async () =
   expect(screen.getByText('Supplied days')).toBeVisible();
   expect(screen.getByText('Couldn’t load')).toBeVisible();
 });
+
+test('Google Calendar row opens the connection action when supplied by the platform', async () => {
+  const connect = jest.fn();
+  await render(
+    <SettingsScreen
+      model={{
+        ...ready,
+        calendars: {
+          googleCalendar: { state: 'ready', text: 'Use the Google calendars synced to this device' },
+          appleCalendar: { state: 'unavailable' },
+        },
+      }}
+      onEdit={{ googleCalendar: connect }}
+    />,
+  );
+  await userEvent.setup().press(screen.getByRole('button', { name: /Connect Google Calendar/ }));
+  expect(connect).toHaveBeenCalledTimes(1);
+  expect(screen.queryByRole('button', { name: /Connect Apple Calendar/ })).toBeNull();
+});

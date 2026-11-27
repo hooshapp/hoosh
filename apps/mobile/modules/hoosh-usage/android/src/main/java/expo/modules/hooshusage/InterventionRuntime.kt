@@ -293,7 +293,7 @@ class InterventionRuntime private constructor(val context: Context) {
       "discarded" to r.discarded, "events" to r.events.take(32).map { e -> mapOf(
         "event_id" to e.id, "sequence" to e.sequence, "occurred_at" to format.format(Date(e.at)),
         "kind" to e.kind, "day" to e.day, "encounter_id" to e.encounter, "context" to e.context,
-        "exhausted" to e.exhausted, "covered" to e.covered) })
+        "exhausted" to e.exhausted, "covered" to e.covered) + (e.sessionMinutes?.let { mapOf("session_minutes" to it) } ?: emptyMap()) })
   }
   fun rewardsAck(owner: String, token: String, installation: String, sequence: Long, promise: Promise) = call(promise) {
     leases.check(owner, token); engine.acknowledgeRewards(owner, installation, sequence); null

@@ -81,6 +81,10 @@ final class ProtectionNativeDriver: ProtectionInstallationDriver {
         throw ProtectionTransactionError.unconfirmed
       }
     }
+    let usagePrefix = ProtectionRuntimePlanner.prefix(owner) + "usage."
+    let completedMonitors = ProtectionOSAdapter.monitorNames(prefix: usagePrefix)
+      .subtracting(Set(allowanceMonitors.map(\.name)))
+    try ProtectionOSAdapter.retire(completedMonitors)
     try ProtectionOSAdapter.stage(allowanceMonitors, preserving: [])
     try ProtectionOSAdapter.writeBlockedApps(blocked)
   }

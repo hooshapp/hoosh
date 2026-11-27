@@ -88,7 +88,7 @@ export function HistoryDetails({
             ))}
           </View>
         </>
-      ) : usageComparison ? null : (
+      ) : (
         <Text style={styles.caption}>
           Each circle = 10% of your previous usage
         </Text>

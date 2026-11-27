@@ -37,20 +37,23 @@ export function useRecommendations(onAccepted?: (id: string) => void) {
   }, []);
   const query = useAccountQuery(['recommendations'], readRecommendation);
   const refetch = query.refetch;
-  const refresh = useCallback(async () => {
+  const refresh = useCallback(async (manual = false) => {
     if (
       !scope.canRun() ||
       !onlineManager.isOnline() ||
-      !focusManager.isFocused() ||
+      (!manual && !focusManager.isFocused()) ||
       busy.current
     )
       return;
     const result = await refetch();
     scope.commit(() => {
       if (!mounted.current) return;
-      if (!result.isError && !result.isPaused) {
+      if (result.isError || result.isPaused) {
+        if (manual) setMessage("Couldn’t check the latest suggestion. Try again.");
+      } else {
         setReview(false);
         setClock(Date.now());
+        if (manual && !review) setMessage('');
         if (review)
           setMessage(
             result.data?.state === 'accepted'
@@ -154,6 +157,7 @@ export function useRecommendations(onAccepted?: (id: string) => void) {
     canAct,
     busy: mutation.isPending,
     refreshing: query.isFetching,
+    needsRefresh: review || expired || query.isError,
     notice: !online
       ? 'Connect to verify your suggestion and saved choice.'
       : expired
@@ -164,7 +168,7 @@ export function useRecommendations(onAccepted?: (id: string) => void) {
             ? 'Review the latest saved choice before continuing.'
             : '',
     refresh: () => {
-      void refresh();
+      void refresh(true);
     },
     accept: (id: string) => choose('accepted', id),
     skip: (id: string) => choose('skipped', id),

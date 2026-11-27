@@ -12,6 +12,7 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>disconnect-dev</string>
+                <string>$(HOOSH_GOOGLE_CALENDAR_REDIRECT_SCHEME)</string>
 			</array>
 		</dict>
 	</array>
@@ -45,5 +46,13 @@
 			</array>
 		</dict>
 	</dict>
+  <key>NSCalendarsFullAccessUsageDescription</key>
+  <string>Hoosh checks when your next calendar event starts to show a reminder. Event details stay on this device.</string>
+  <key>NSCalendarsUsageDescription</key>
+  <string>Hoosh checks when your next calendar event starts to show a reminder. Event details stay on this device.</string>
+  <key>NSRemindersFullAccessUsageDescription</key>
+  <string>Hoosh reads unfinished reminders to suggest what you can do during a break. Your reminders stay on this device.</string>
+  <key>NSRemindersUsageDescription</key>
+  <string>Hoosh reads unfinished reminders to suggest what you can do during a break. Your reminders stay on this device.</string>
 </dict>
 </plist>

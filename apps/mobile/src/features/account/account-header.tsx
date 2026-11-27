@@ -1,16 +1,21 @@
-import type { AuthIdentity } from '@disconnect/contracts';
+import type { AuthIdentity, Personalization } from '@disconnect/contracts';
 import { Image } from 'expo-image';
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { colors, fonts } from '@/design/tokens';
 
-import avatar from '../../../assets/account/settings-avatar.svg';
+import femaleAvatar from '../../../assets/onboarding/gender-female.svg';
+import maleAvatar from '../../../assets/onboarding/gender-male.svg';
+import otherAvatar from '../../../assets/onboarding/gender-other.svg';
+import neutralAvatar from '../../../assets/onboarding/permission/dinosaur.svg';
 
-/** Figma 10562:136. Decorative brand artwork, never a gender/mood/health assertion. */
+const avatars = { Female: femaleAvatar, Male: maleAvatar, Other: otherAvatar, neutral: neutralAvatar };
+
 export function AccountHeader({
   identity,
   displayName,
+  avatarGender,
   onEdit,
   editing = false,
   editDisabled = false,
@@ -21,8 +26,10 @@ export function AccountHeader({
   editDisabled?: boolean;
   /** Validated profile name from the owning feature; never inferred from email. */
   displayName?: string | null;
+  avatarGender?: Personalization['gender'];
 }) {
-  const [imageFailed, setImageFailed] = useState(false);
+  const variant = avatarGender ?? 'neutral';
+  const [failedVariant, setFailedVariant] = useState<keyof typeof avatars>();
   const content = (
     <View style={styles.card}>
       <View
@@ -31,14 +38,15 @@ export function AccountHeader({
         accessibilityElementsHidden
         importantForAccessibility="no-hide-descendants"
         aria-hidden>
-        {!imageFailed ? (
+        {failedVariant !== variant ? (
           <Image
-            source={avatar}
+            source={avatars[variant]}
+            recyclingKey={variant}
             testID="settings-avatar"
             style={styles.image}
             contentFit="contain"
             accessible={false}
-            onError={() => setImageFailed(true)}
+            onError={() => setFailedVariant(variant)}
           />
         ) : null}
       </View>

@@ -32,6 +32,12 @@ class HooshUsageModule : Module() {
   override fun definition() = ModuleDefinition {
     Name("HooshUsage")
     AsyncFunction("setNudgeTone") { owner: String, tone: String -> NudgeToneStore(requireNotNull(appContext.reactContext)).set(owner, tone); mapOf("saved" to true) }
+    AsyncFunction("googleCalendarNudgeSettings") { owner: String, enabled: Boolean? ->
+      GoogleCalendarNudges(requireNotNull(appContext.reactContext)).status(owner, enabled)
+    }
+    AsyncFunction("questPlanningContext") { owner: String ->
+      GoogleCalendarNudges(requireNotNull(appContext.reactContext)).questPlanningContext(owner)
+    }
     AsyncFunction("setAndroidShieldContext") { owner: String, name: String, activity: String ->
       NudgeToneStore(requireNotNull(appContext.reactContext)).setShieldContext(owner, name, activity)
     }

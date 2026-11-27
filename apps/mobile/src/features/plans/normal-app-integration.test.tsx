@@ -12,7 +12,7 @@ import { AppState, Platform, type AppStateStatus } from 'react-native';
 import { router } from 'expo-router';
 import { renderRouter } from 'expo-router/testing-library';
 import { historyFixture } from '@/features/history/__tests__/history-fixture';
-import { offered } from '@/features/recommendations/__tests__/fixture';
+import { ID as RECOMMENDED_QUEST, offered } from '@/features/recommendations/__tests__/fixture';
 import Root from '@/app/_layout';
 import Index from '@/app/index';
 import AuthLayout from '@/app/(auth)/_layout';
@@ -118,6 +118,7 @@ function fixture({
   signedOut = false,
   recoveryPending = false,
   settingsMissing = false,
+  acceptedRecommendation = false,
 } = {}) {
   let authRevision = 0;
   const makeSession = (id: string) => ({
@@ -252,8 +253,25 @@ function fixture({
       };
     else if (path === '/v1/history')
       result = { ...historyFixture, user_id: account.user_id };
-    else if (path === '/v1/recommendations/current')
-      result = { ...offered(), user_id: account.user_id };
+    else if (path === '/v1/recommendations/current') {
+      const recommendation = { ...offered(), user_id: account.user_id };
+      result = acceptedRecommendation
+        ? { ...recommendation, state: 'accepted', offer: null, accepted_quest_id: RECOMMENDED_QUEST, next_offer_at: new Date(Date.now() + 86400000).toISOString() }
+        : recommendation;
+    } else if (acceptedRecommendation && path === `/v1/quests/${RECOMMENDED_QUEST}`) {
+      const timestamp = new Date().toISOString();
+      result = { revision: 1, quest: {
+        user_id: account.user_id,
+        quest_id: RECOMMENDED_QUEST,
+        revision: 1,
+        created_at: timestamp,
+        updated_at: timestamp,
+        definition: {
+          title: 'Read for a little while', activity: 'Reading', start_local: '18:00',
+          end_local: '18:20', next_day: false, repeat: 'none', weekdays: [], timezone_id: 'UTC',
+        },
+      } };
+    }
     else throw new ApiError('unavailable'); // Unrelated product producers retain their honest unavailable state.
     return options.decode(result, { account });
   });
@@ -682,6 +700,14 @@ test('normal account Home composes actual reward/history/recommendation consumer
   await fireEvent.press(await screen.findByRole('tab', { name: 'Settings' }));
   await fireEvent.press(screen.getByRole('tab', { name: 'History' }));
   await screen.findByText('Your stats');
+});
+
+test('Home opens the saved recommendation in the real quest route', async () => {
+  const f = fixture({ acceptedRecommendation: true });
+  await renderRouter(routes);
+  await fireEvent.press(await screen.findByRole('button', { name: 'Open quest' }));
+  await screen.findByDisplayValue('Read for a little while');
+  expect(f.request.mock.calls.some(([path]) => path === `/v1/quests/${RECOMMENDED_QUEST}`)).toBe(true);
 });
 
 test('app-selection read failure disables Apply without losing the independent native Stop', async () => {

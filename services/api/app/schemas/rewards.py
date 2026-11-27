@@ -14,12 +14,13 @@ class RewardSignal(WireModel):
     event_id: UUID
     sequence: StrictInt = Field(ge=1, le=9007199254740991)
     occurred_at: AwareDatetime
-    kind: Literal["quit", "allowance", "day_closed", "nudge_skipped"]
+    kind: Literal["quit", "allowance", "day_closed", "nudge_skipped", "app_open"]
     encounter_id: UUID | None
     context: Literal["initial", "expired", "mid_session", "notification_accept"] | None
     day: date
     exhausted: StrictBool | None
     covered: StrictBool | None
+    session_minutes: StrictInt | None = Field(default=None, ge=1, le=1440)
 
     @field_validator("occurred_at")
     @classmethod
@@ -34,13 +35,16 @@ class RewardSignal(WireModel):
         elif self.kind == "nudge_skipped":
             valid = self.encounter_id is not None and self.context is None
             valid = valid and self.exhausted is None and self.covered is None
+        elif self.kind == "app_open":
+            valid = self.session_minutes is not None and self.context is None
+            valid = valid and self.encounter_id is None and self.exhausted is None and self.covered is None
         elif self.kind == "allowance":
             valid = self.exhausted is not None and self.context is None
             valid = valid and self.encounter_id is None and self.covered is None
         else:
             valid = self.covered is not None and self.exhausted is not None
             valid = valid and self.encounter_id is None and self.context is None
-        if not valid:
+        if not valid or (self.session_minutes is not None and self.kind not in ("allowance", "app_open")):
             raise ValueError("Signal fields do not match kind")
         return self
 
@@ -80,7 +84,7 @@ class RewardView(WireModel):
     health: int
     artwork: Literal["needsCare", "feelingLow", "doingOkay", "happy"]
     feed_cost: Literal[10] = 10
-    feed_health: Literal[20] = 20
+    feed_health: int = Field(ge=1, le=100)
     streak_days: int | None
     recent_week_complete: bool
     observed_at: AwareDatetime

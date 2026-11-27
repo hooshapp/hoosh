@@ -37,8 +37,7 @@ final class ProtectionRuntimeCoordinator {
              context: (ProtectionRuntimeRecord, ProtectionSessionLedger) throws -> (Data, [ProtectionSessionReason])) throws {
     guard driver.activationAvailable else { throw ProtectionTransactionError.activationGated }
     try clock.validate()
-    let state = try owned(owner, revision: revision)
-    try store.update(expectedRevision: state.revision) { next in
+    try store.updateLatest { next in
       let index = try self.index(next, owner: owner, revision: revision)
       var record = next.owners[index]
       let previous = record.installation!
@@ -55,7 +54,8 @@ final class ProtectionRuntimeCoordinator {
       if try !ledger.needed(app: app, revision: revision, reasons: reasons, clock: clock).isEmpty {
         let grant = try ledger.allow(app: app, revision: revision, reasons: reasons, clock: clock, usageBased: usageBased)
         var journal = record.rewardJournal ?? ProtectionRewardJournal(timezone: runtime.policy.timezoneId)
-        try journal.append(grant: grant, revision: revision, clock: clock, timezone: runtime.policy.timezoneId)
+        try journal.append(grant: grant, revision: revision, clock: clock, timezone: runtime.policy.timezoneId,
+          openMinutes: usageBased ? (runtime.policy.sessionSeconds + 59) / 60 : nil)
         record.rewardJournal = journal
       }
       record.installation = runtime; record.sessionLedger = ledger

@@ -1,6 +1,8 @@
+import { AppState } from 'react-native';
 import type { IOSSelectionDevice } from '@/infrastructure/native/ios-selection-device';
 import { createContext, type ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 import { useAccountData, useAccountQuery } from '@/infrastructure/query/account-data-provider';
+import { ApiError, isRecord } from '@/infrastructure/api/errors';
 import { readProfile } from '@/features/account/api';
 import { useSettingsQuery } from '@/features/settings/settings-query';
 import { productNativePort, type ProductNativePort } from '@/infrastructure/native/product-ports';
@@ -93,13 +95,88 @@ function ShieldContextSync({ device, native }: { device: IOSSelectionDevice | nu
   const settings = useSettingsQuery();
   const name = profile.data?.profile?.display_name ?? '';
   const activity = settings.data?.settings?.activities.selected_activity_ids[0] ?? '';
-  const ready = !!profile.data && !!settings.data && !profile.isError && !settings.isError;
+  const customGoal = settings.data?.settings?.activities.custom_text?.trim();
+  const localGoal = activity || (customGoal ? `custom:${customGoal}` : '');
+  const tone = settings.data?.settings?.personalization?.nudge_tone ?? 'Supportive';
+  const copy = useAccountQuery(['nudge-copy', activity, tone, !!device?.cacheGeneratedNudges], async ({ api, signal }) => {
+    if (!device?.cacheGeneratedNudges || !activity) return null;
+    return api.request(`/v1/recommendations/nudge-copy?activity=${encodeURIComponent(activity)}&tone=${encodeURIComponent(tone)}`, {
+      signal,
+      decode(value) {
+        if (value === null) return null;
+        if (!isRecord(value)) throw new ApiError('invalid_response');
+        const messages = [value.quarter, value.halfway, value.three_quarters];
+        if (!messages.every((line): line is string =>
+          typeof line === 'string' && line.trim().length > 0 && Array.from(line).length <= 100 &&
+          !/[\x00-\x1f\x7f\u2028\u2029]/u.test(line)
+        )) throw new ApiError('invalid_response');
+        return messages;
+      },
+    });
+  });
+  const [holiday, setHoliday] = useState<string | null>(null);
+  const holidayCopy = useAccountQuery(['holiday-nudge', holiday, activity, tone], async ({ api, signal }) => {
+    if (!holiday || !device?.cacheHolidayNudges) return null;
+    return api.request(`/v1/recommendations/nudge-copy?activity=${encodeURIComponent(activity || 'general')}&tone=${encodeURIComponent(tone)}&holiday=${encodeURIComponent(holiday)}`, {
+      signal,
+      decode(value) {
+        if (!isRecord(value)) return null;
+        const lines = [value.quarter, value.halfway, value.three_quarters];
+        return lines.every((line): line is string => typeof line === 'string' && line.length <= 72 &&
+          line.toLocaleLowerCase().includes(holiday.toLocaleLowerCase())) ? lines : null;
+      },
+    });
+  });
+  useEffect(() => {
+    if (holiday && holidayCopy.data) void device?.cacheHolidayNudges?.(holiday, holidayCopy.data).catch(() => undefined);
+  }, [device, holiday, holidayCopy.data]);
+  const refetchCopy = copy.refetch;
+  const updatedAt = copy.dataUpdatedAt;
+  useEffect(() => {
+    if (!device?.calendarNudgeSettings && !device?.cacheGeneratedNudges) return;
+    let current = true;
+    const refresh = () => {
+      void device.calendarNudgeSettings?.().catch(() => undefined);
+      void device.remindersNudgeSettings?.().catch(() => undefined);
+      void device.googleCalendarNudges?.('status').catch(() => undefined);
+      void device.refreshPublicHoliday?.().then(value => { if (current) setHoliday(value); }).catch(() => undefined);
+    };
+    const refreshFromSources = async () => {
+      await device.refreshCalendarSources?.().catch(() => undefined);
+      if (current) refresh();
+    };
+    void refreshFromSources();
+    const removeCalendarListener = device.subscribeCalendar?.(refresh);
+    const listener = AppState.addEventListener('change', state => {
+      if (state !== 'active') return;
+      void refreshFromSources();
+      if (device.cacheGeneratedNudges && activity && Date.now() - updatedAt >= (copy.data ? 6 * 3600_000 : 5 * 60_000)) {
+        void refetchCopy({ cancelRefetch: false });
+      }
+    });
+    return () => {
+      current = false;
+      listener.remove();
+      removeCalendarListener?.();
+    };
+  }, [activity, copy.data, device, refetchCopy, updatedAt]);
+  const ready = !!settings.data && !settings.isError;
   useEffect(() => {
     if (!ready) return;
+    let current = true;
     const write = device?.setShieldContext
-      ? device.setShieldContext(name, activity)
-      : native?.port.setAndroidShieldContext?.(native.owner, name, activity);
-    void write?.catch(() => undefined);
-  }, [activity, device, name, native, ready]);
+      ? device.setShieldContext(name, localGoal)
+      : native?.port.setAndroidShieldContext?.(native.owner, name, localGoal);
+    void write?.then(async () => {
+      if (!current) return;
+      if (device) {
+        await device.setNudgeTone?.(tone);
+        if (current && copy.data) await device.cacheGeneratedNudges?.(activity, tone, copy.data);
+      } else if (native) {
+        await native.port.setNudgeTone?.(native.owner, tone);
+      }
+    }).catch(() => undefined);
+    return () => { current = false; };
+  }, [activity, copy.data, device, localGoal, name, native, ready, tone, updatedAt]);
   return null;
 }

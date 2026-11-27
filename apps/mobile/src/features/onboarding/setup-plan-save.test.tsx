@@ -4,7 +4,7 @@ import { SetupPlanSave } from './setup-plan-save';
 import type { OnboardingProgress } from './progress-repository';
 const mockSubmit = jest.fn(), mockRefetch = jest.fn(), mockActivate = jest.fn();
 jest.mock('./activate-accepted-plan', () => ({ activateAcceptedPlan: (...args: unknown[]) => mockActivate(...args) }));
-jest.mock('@/features/protection/native-owner-boundary', () => ({ useNativeOwner: () => ({ owner: 'qa:00000000-0000-4000-8000-000000000001' }) }));
+jest.mock('@/features/protection/native-owner-boundary', () => ({ useIOSSelectionDevice: () => null, useNativeOwner: () => ({ owner: 'qa:00000000-0000-4000-8000-000000000001' }) }));
 jest.mock('@/features/plans/account-weekly-plan', () => ({ weeklyPort: () => ({}) }));
 let mockSuccess: (response: { settings: SettingsView }, patch: SettingsPatch) => void;
 let mockError: () => void;
@@ -72,4 +72,21 @@ it('a native activation failure keeps the existing suggestion and never complete
   await act(async () => mockSuccess({ settings: saved }, mockSubmit.mock.calls[0][0]));
   expect(screen.getByText('Couldn’t start app protection. Check Screen Time access and try again.')).toBeTruthy();
   expect(record.mock.calls.some(([value]) => value.step === 'permission')).toBe(false);
+});
+
+it('returns to the suggestion if iOS never confirms protection', async () => {
+  jest.useFakeTimers();
+  try {
+    mockActivate.mockImplementationOnce(() => new Promise<void>(() => undefined));
+    const record = jest.fn(async (_next: OnboardingProgress, _attempt?: SettingsPatch) => true);
+    const view = await render(<SetupPlanSave progress={progress} busy={false} record={record} onEdit={jest.fn()} />);
+    await waitFor(() => expect(mockSubmit).toHaveBeenCalledTimes(1));
+    await act(async () => mockSuccess({ settings: saved }, mockSubmit.mock.calls[0][0]));
+    await act(async () => jest.advanceTimersByTime(15000));
+    expect(screen.getByText('Couldn’t start app protection. Check Screen Time access and try again.')).toBeTruthy();
+    expect(record.mock.calls.some(([value]) => value.step === 'permission')).toBe(false);
+    await view.unmount();
+  } finally {
+    jest.useRealTimers();
+  }
 });

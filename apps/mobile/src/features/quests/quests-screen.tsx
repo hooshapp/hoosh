@@ -13,6 +13,7 @@ export type QuestsScreenProps = {
   model: QuestsModel;
   showSavedEmpty?: boolean;
   footer?: ReactNode;
+  suggestionAction?: ReactNode;
   onOpenSaved?: (id: string) => void;
   savedHeading?: string;
   onAccept?: (id: string) => void;
@@ -25,6 +26,7 @@ export type QuestsScreenProps = {
 export function QuestsScreen({
   model,
   footer,
+  suggestionAction,
   showSavedEmpty = false,
   onOpenSaved,
   savedHeading = 'Saved quests',
@@ -61,6 +63,7 @@ export function QuestsScreen({
       >
         <Text style={styles.summary}>{model.interestSummary ?? 'Suggested quests'}</Text>
         <View style={styles.cards}>
+          {suggestionAction}
           {model.suggestions.state === 'ready' ? (
             model.suggestions.items.length ? (
               model.suggestions.items.map((item) => (
@@ -73,12 +76,12 @@ export function QuestsScreen({
                   stacked={stacked}
                 />
               ))
-            ) : (
+            ) : !suggestionAction ? (
               <EmptyCard
                 title="No suggestions right now"
                 description="Check back another time for a little inspiration."
               />
-            )
+            ) : null
           ) : (
             <SuggestionStatus state={model.suggestions.state} onRetry={onRetry} busy={busy} />
           )}

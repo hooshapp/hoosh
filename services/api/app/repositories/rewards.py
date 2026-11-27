@@ -13,6 +13,7 @@ from app.models.rewards import RewardEntry as Entry
 from app.models.rewards import RewardStream as Stream
 from app.models.rewards import RewardWallet as Wallet
 from app.repositories.recommendations import save_nudge_quest
+from app.repositories.settings import read_own_settings
 from app.schemas.errors import ConflictDetails, ErrorCode, ValidationDetails, ValidationField
 from app.schemas.rewards import (
     FeedPut,
@@ -63,6 +64,12 @@ def health(wallet, now):
     return max(0, wallet.health - ticks * 5), ticks
 
 
+def feed_health(session: UserSession) -> int:
+    settings = read_own_settings(session)
+    minutes = (settings.plan_draft or {}).get("session_minutes") if settings else None
+    return min(minutes, 100) if type(minutes) is int and minutes > 0 else 20
+
+
 def view(session: UserSession, now: datetime):
     owner = require_user_context(session)
     w = session.get(Wallet, owner)
@@ -103,6 +110,7 @@ def view(session: UserSession, now: datetime):
         revision=w.revision if w else 0,
         balance=w.balance if w else 0,
         health=value,
+        feed_health=feed_health(session),
         artwork=(
             "needsCare"
             if value <= 25
@@ -164,7 +172,7 @@ def feed(session: UserSession, request_id: UUID, body: FeedPut, now: datetime):
     value, ticks = health(w, now)
     if w.balance < 10 or value == 100:
         conflict(w.revision)
-    added = min(20, 100 - value)
+    added = min(feed_health(session), 100 - value)
     w.balance -= 10
     w.health = value + added
     w.health_at += timedelta(days=ticks)
@@ -229,6 +237,8 @@ def ingest(session: UserSession, body: RewardBatch, now: datetime):
     for e in body.events:
         source = f"native:{body.installation_id}:{e.event_id}"
         payload = e.model_dump(mode="json")
+        if e.session_minutes is None:
+            payload.pop("session_minutes", None)
         old = session.get(Entry, (owner, source))
         if old:
             if old.payload != payload or old.sequence != e.sequence:
@@ -274,8 +284,8 @@ def ingest(session: UserSession, body: RewardBatch, now: datetime):
                 w.last_native_at = e.occurred_at
                 if e.context == "notification_accept":
                     save_nudge_quest(session, e.day, now)
-        if e.kind == "allowance" or (e.kind == "nudge_skipped" and not prior_encounter):
-            cost = 4 if e.exhausted else 2
+        if e.kind in ("allowance", "app_open"):
+            cost = e.session_minutes if e.session_minutes is not None else (4 if e.exhausted else 2)
             # Apply once for each accepted new session, in addition to time decay.
             # A delayed event from before the last Feed must not eat that meal.
             latest_feed = session.scalar(

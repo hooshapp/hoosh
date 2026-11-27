@@ -25,20 +25,56 @@ final class ShieldConfigurationExtension: ShieldConfigurationDataSource {
     }()
 
     override func configuration(shielding application: Application) -> ShieldConfiguration {
-        logger.notice("Requested app shield configuration for \(application.localizedDisplayName ?? "unknown app", privacy: .public)")
+        #if HOOSH_PHYSICAL_NUDGE_QA
+        recordShieldDiagnostic("requested")
+        logger.notice("Hoosh app shield request received")
+        #endif
+        let result = appConfiguration(application)
+        #if HOOSH_PHYSICAL_NUDGE_QA
+        recordShieldDiagnostic("returned")
+        #endif
+        return result
+    }
+
+    #if HOOSH_PHYSICAL_NUDGE_QA
+    private func recordShieldDiagnostic(_ stage: String) {
+        guard let group = FileManager.default.containerURL(
+            forSecurityApplicationGroupIdentifier: SharedProtectionStore.group) else { return }
+        let seconds = String(Date().timeIntervalSince1970)
+        try? Data(seconds.utf8).write(to: group.appendingPathComponent("hoosh-shield-\(stage).qa"), options: .atomic)
+    }
+    #endif
+
+    private func appConfiguration(_ application: Application) -> ShieldConfiguration {
         if let token = application.token, let presentation = ProtectionNativeEngine.presentation(token) {
+            logger.notice("Hoosh shield configured. Session ended: \(presentation.expired, privacy: .public)")
+            #if HOOSH_PHYSICAL_NUDGE_QA
+            if presentation.expired {
+                recordShieldDiagnostic("expired")
+            }
+            #endif
+            if presentation.expired {
+                DispatchQueue.global(qos: .utility).async { ProtectionNativeEngine.suppressExpiryNotice() }
+            }
             let ink = UIColor(red: 0.24, green: 0.157, blue: 0, alpha: 1)
             let green = UIColor(red: 0.20, green: 0.776, blue: 0.35, alpha: 1)
             let minutes = max(1, Int(ceil(Double(presentation.seconds) / 60)))
-            let activities = [
-                "gym": "working out", "reading": "reading", "arts_and_crafts": "arts and crafts",
-                "walking": "walking", "music": "music", "cooking": "cooking"
-            ]
-            let goal = presentation.activity.flatMap { activities[$0] }
-            let headline = presentation.expired ? "Time to get back to \(goal ?? "what matters to you")." : "Opened out of habit?"
+            if presentation.allowanceApplied {
+                return ShieldConfiguration(
+                    backgroundBlurStyle: nil,
+                    backgroundColor: UIColor(red: 1, green: 241.0 / 255, blue: 221.0 / 255, alpha: 1),
+                    icon: checkpointBadge,
+                    title: .init(text: "Session ready", color: .label),
+                    subtitle: .init(text: "Reopen this app to use your remaining time.", color: .secondaryLabel),
+                    primaryButtonLabel: .init(text: "Back to Home", color: .black),
+                    primaryButtonBackgroundColor: green
+                )
+            }
+            let goal = presentation.activity
+            let headline = presentation.expired ? "Session complete" : "Opened out of habit?"
             let greeting = presentation.name.map { "\($0), you" } ?? "You"
             let reflection = "\(greeting) chose this time for \(goal ?? "yourself")."
-            let action = presentation.resuming ? "Resume session" : "Open anyway"
+            let action = presentation.resuming ? "Resume session" : presentation.expired ? "Start another session" : "Open anyway"
             let limitReached = !presentation.canContinue
             let limitTitle = presentation.name.map { "\($0), you’re out of sessions for today." }
                 ?? "You’re out of sessions for today."
@@ -46,20 +82,22 @@ final class ShieldConfigurationExtension: ShieldConfigurationDataSource {
             return ShieldConfiguration(
                 backgroundBlurStyle: nil,
                 backgroundColor: UIColor(red: 1, green: 241.0 / 255, blue: 221.0 / 255, alpha: 1),
-                icon: checkpointBadge,
+                icon: presentation.expired ? UIImage(named: "HooshCheckpoint") : checkpointBadge,
                 title: .init(text: limitReached ? limitTitle : headline, color: ink),
-                subtitle: .init(text: "\(limitReached ? redirect : reflection)\n\n\(presentation.used)/\(presentation.limit) sessions used", color: ink),
+                subtitle: .init(text: "\(presentation.generatedLine ?? (limitReached ? redirect : reflection))\n\n\(presentation.used)/\(presentation.limit) sessions used\(presentation.resuming ? " · 1 in progress" : "")", color: ink),
                 primaryButtonLabel: .init(text: "✓ Quit Now · +\(presentation.rewardPoints) ✦", color: ink),
                 primaryButtonBackgroundColor: green,
                 secondaryButtonLabel: presentation.canContinue ? .init(text: "\(action) · \(minutes) min", color: UIColor(white: 0.40, alpha: 1)) : nil
             )
         }
+        #if HOOSH_PHYSICAL_NUDGE_QA
+        UserDefaults(suiteName: SharedProtectionStore.group)?.set(Date().timeIntervalSince1970, forKey: "hoosh.qa.appShieldFallbackAt")
+        #endif
         return makeConfiguration(appName: application.localizedDisplayName ?? "this app")
     }
 
     override func configuration(shielding application: Application, in category: ActivityCategory) -> ShieldConfiguration {
-        logger.notice("Requested category app shield configuration for \(application.localizedDisplayName ?? "unknown app", privacy: .public)")
-        return makeConfiguration(appName: application.localizedDisplayName ?? "this app")
+        return configuration(shielding: application)
     }
 
     override func configuration(shielding webDomain: WebDomain) -> ShieldConfiguration {

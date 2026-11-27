@@ -158,8 +158,10 @@ class InterventionEngine(private val disk: InterventionPersistence) {
     val sessions = old.sessions.filter { it.app != app && live(it, wall, elapsed, boot) } + session
     val signals = listOf(event("override_selected", null, revision, wall).copy(sessionIndex = if (running == null) index else null, exhausted = if (running == null) index > old.plan.policy.sessionsPerDay else null))
     var rewards = RewardSignals.pulse(old.rewards, wall, elapsed, boot, old.plan.policy.timezoneId)
-    if (running == null) rewards = RewardSignals.append(rewards, wall, "allowance", RewardSignals.day(wall, old.plan.policy.timezoneId), exhausted = index > old.plan.policy.sessionsPerDay)
+    if (running == null) rewards = RewardSignals.append(rewards, wall, "allowance", RewardSignals.day(wall, old.plan.policy.timezoneId), exhausted = index > old.plan.policy.sessionsPerDay, sessionMinutes = (seconds + 59) / 60)
       .copy(exhausted = rewards.exhausted || index > old.plan.policy.sessionsPerDay)
+    else if (activeUse) rewards = RewardSignals.append(rewards, wall, "app_open",
+      RewardSignals.day(wall, old.plan.policy.timezoneId), sessionMinutes = (seconds + 59) / 60)
     return persist(old.copy(allowances = keep + grants, sessions = sessions, daily = daily, events = old.events + signals, rewards = rewards))
   }
   private fun live(session: AppSession, wall: Long, elapsed: Long, boot: Int): Boolean {

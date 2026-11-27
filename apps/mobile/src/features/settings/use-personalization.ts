@@ -11,14 +11,18 @@ const empty: Personalization = { age: null, gender: null, nudge_tone: 'Supportiv
 export function usePersonalization() {
   const { scope } = useAccountData();
   const project = useAppRuntime()?.nativeNamespace;
-  const [seed, setSeed] = useState(empty);
+  const [localAnswers, setLocalAnswers] = useState<{ scopeID: number; values: Personalization }>();
+  const seed = localAnswers && localAnswers.scopeID === scope?.id ? localAnswers.values : empty;
   useEffect(() => {
     if (!scope || !project) return;
     let active = true;
     void setupRepository(project).read(scope).then(result => {
       if (!active || !scope.isCurrent() || result.status !== 'found') return;
       const answers = result.progress.questions;
-      if (answers?.age && answers.gender) setSeed({ age: answers.age, gender: answers.gender, nudge_tone: 'Supportive' });
+      if (answers?.gender) setLocalAnswers({
+        scopeID: scope.id,
+        values: { age: answers.age ?? null, gender: answers.gender, nudge_tone: 'Supportive' },
+      });
     }).catch(() => undefined);
     return () => { active = false; };
   }, [scope, project]);
@@ -39,5 +43,6 @@ export function usePersonalization() {
     if (operation) void operation.then(() => { if (active) setTonePending(false); }).catch(() => { if (active) setTonePending(true); });
     return () => { active = false; };
   }, [tone, native, ios, scope]);
-  return { ...editor, tonePending };
+  const savedGender = (editor.query.data?.settings?.personalization ?? seed).gender;
+  return { ...editor, savedGender, tonePending };
 }

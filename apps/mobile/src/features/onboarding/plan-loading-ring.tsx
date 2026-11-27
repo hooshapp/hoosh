@@ -15,6 +15,15 @@ export function PlanLoadingRing({ onComplete }: { onComplete?: () => void }) {
     return () => { active = false; listener.remove(); };
   }, []);
   useEffect(() => {
+    if (!onComplete) {
+      progress.setValue(reducedMotion ? 1 : 0);
+      if (reducedMotion) return;
+      const loop = Animated.loop(Animated.timing(progress, {
+        toValue: 1, duration: 1800, easing: Easing.linear, useNativeDriver: true, isInteraction: false,
+      }));
+      loop.start();
+      return () => loop.stop();
+    }
     let active = true;
     const started = Date.now();
     let completionTimer: ReturnType<typeof setTimeout> | undefined;

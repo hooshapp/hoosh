@@ -65,15 +65,23 @@ struct ProtectionOSMonitor {
 /// is exposed. Second alignment is required instead of silently rounding deadlines.
 enum ProtectionOSAdapter {
   private static var center: DeviceActivityCenter { DeviceActivityCenter() }
-  private static var settings: ManagedSettingsStore { ManagedSettingsStore(named: .init("hoosh.shared.protection.v1")) }
+  // A named store is shared by the host, monitor and shield action.
+  private static let settings = ManagedSettingsStore(named: .init("hoosh.shared.protection.v1"))
+  private static let previousSettings = ManagedSettingsStore()
   static var scopedMonitorCount: Int { center.activities.filter { $0.rawValue.hasPrefix("hoosh.shared.") }.count }
   static func monitorNames(prefix: String) -> Set<String> {
     guard prefix.hasPrefix("hoosh.shared.") else { return [] }
     return Set(center.activities.map(\.rawValue).filter { $0.hasPrefix(prefix) })
   }
+  static func isBlocked(_ application: ApplicationToken) -> Bool {
+    settings.shield.applications?.contains(application) == true ||
+      previousSettings.shield.applications?.contains(application) == true
+  }
   static func matchesBlockedApps(_ applications: Set<ApplicationToken>) -> Bool {
-    let store = settings
-    return (store.shield.applications ?? []) == applications && store.shield.applicationCategories == nil
+    matches(settings, applications: applications) && matches(previousSettings, applications: [])
+  }
+  private static func matches(_ store: ManagedSettingsStore, applications: Set<ApplicationToken>) -> Bool {
+    (store.shield.applications ?? []) == applications && store.shield.applicationCategories == nil
       && (store.shield.webDomains?.isEmpty ?? true) && store.shield.webDomainCategories == nil
   }
   static func matches(_ monitor: ProtectionOSMonitor) throws -> Bool {
@@ -128,18 +136,36 @@ enum ProtectionOSAdapter {
     if !removing.isEmpty { center.stopMonitoring(removing) }
     guard Set(center.activities.map(\.rawValue)).isDisjoint(with: names) else { throw ProtectionTransactionError.unconfirmed }
   }
+  /// The expiry callback runs while iOS is presenting a shield to the foreground app.
+  /// Apply the set to the shared named store after preparing the view. The full
+  /// store verification and migration run when applying or reconciling the plan.
+  static func reapplyExpiredSessionShield(_ applications: Set<ApplicationToken>) throws {
+    try requireActivation()
+    guard !applications.isEmpty, applications.count <= 512 else {
+      throw ProtectionTransactionError.invalid
+    }
+    settings.shield.applications = applications
+  }
+
   static func writeBlockedApps(_ applications: Set<ApplicationToken>) throws {
     try requireActivation()
     guard applications.count <= 512 else { throw ProtectionTransactionError.invalid }
+    (try? SharedProtectionStore.appGroup())?.clearExpiryPresentation()
     let store = settings
     store.shield.applications = applications.isEmpty ? nil : applications
     store.shield.applicationCategories = nil
     store.shield.webDomains = nil
     store.shield.webDomainCategories = nil
-    guard (store.shield.applications ?? []) == applications,
-          store.shield.applicationCategories == nil,
-          store.shield.webDomains?.isEmpty ?? true,
-          store.shield.webDomainCategories == nil else { throw ProtectionTransactionError.unconfirmed }
+    guard matches(store, applications: applications) else { throw ProtectionTransactionError.unconfirmed }
+    // Establish protection in the shared store before retiring the unnamed one.
+    let previous = previousSettings
+    if !matches(previous, applications: []) {
+      previous.shield.applications = nil
+      previous.shield.applicationCategories = nil
+      previous.shield.webDomains = nil
+      previous.shield.webDomainCategories = nil
+    }
+    guard matchesBlockedApps(applications) else { throw ProtectionTransactionError.unconfirmed }
   }
   private static func requireActivation() throws {
     guard ProtectionActivationGate.enabled else { throw ProtectionTransactionError.activationGated }

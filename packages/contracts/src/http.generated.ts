@@ -228,6 +228,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/v1/recommendations/nudge-copy": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Nudge Copy */
+        get: operations["nudge_copy_v1_recommendations_nudge_copy_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/v1/rewards": {
         parameters: {
             query?: never;
@@ -571,6 +588,17 @@ export interface components {
              * Format: uuid
              */
             user_id: string;
+        };
+        /** NudgeCopy */
+        NudgeCopy: {
+            /** Halfway */
+            halfway: string;
+            /** Quarter */
+            quarter: string;
+            /** Quest Title */
+            quest_title: string;
+            /** Three Quarters */
+            three_quarters: string;
         };
         /** Personalization */
         Personalization: {
@@ -990,7 +1018,7 @@ export interface components {
              * Kind
              * @enum {string}
              */
-            kind: "quit" | "allowance" | "day_closed" | "nudge_skipped";
+            kind: "quit" | "allowance" | "day_closed" | "nudge_skipped" | "app_open";
             /**
              * Occurred At
              * Format: date-time
@@ -998,6 +1026,8 @@ export interface components {
             occurred_at: string;
             /** Sequence */
             sequence: number;
+            /** Session Minutes */
+            session_minutes?: number | null;
         };
         /** RewardView */
         RewardView: {
@@ -1014,12 +1044,8 @@ export interface components {
              * @constant
              */
             feed_cost: 10;
-            /**
-             * Feed Health
-             * @default 20
-             * @constant
-             */
-            feed_health: 20;
+            /** Feed Health */
+            feed_health: number;
             /** Health */
             health: number;
             /** Health Warning At */
@@ -2599,6 +2625,120 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RecommendationView"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    "WWW-Authenticate": "Bearer";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Forbidden */
+            403: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Request Entity Too Large */
+            413: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Unprocessable Entity */
+            422: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Safe unexpected failure */
+            500: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+            /** @description Service Unavailable */
+            503: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ErrorEnvelope"];
+                };
+            };
+        };
+    };
+    nudge_copy_v1_recommendations_nudge_copy_get: {
+        parameters: {
+            query: {
+                activity: string;
+                tone: "Supportive" | "Direct" | "Playful" | "Intense";
+                holiday?: string | null;
+                quest_minutes?: ("5" | "10" | "15" | "20") | null;
+                quest_task?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    "Cache-Control": "no-store";
+                    /** @description Server-generated UUID; matches error.request_id on failures. */
+                    "X-Request-ID": string;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NudgeCopy"] | null;
                 };
             };
             /** @description Unauthorized */

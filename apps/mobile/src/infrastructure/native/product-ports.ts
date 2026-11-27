@@ -16,6 +16,10 @@ export type ProductNativePort = Partial<
   SelectionOwnerLifecyclePort &
   InterventionProtectionReadPort & {
     onboardingBaselineRead?(owner: string): Promise<unknown>;
+    questPlanningContext?(owner: string): Promise<unknown>;
+    googleCalendarNudgeSettings?(owner: string, enabled: boolean | null): Promise<
+      'off' | 'connected' | 'permission' | 'sync_required' | 'unavailable'
+    >;
     setAndroidShieldContext?(owner: string, name: string, activity: string): Promise<void>;
     setNudgeTone?(owner: string, tone: string): Promise<unknown>;
     budgetCapabilities?(): Promise<unknown>;

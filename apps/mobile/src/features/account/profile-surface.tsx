@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import type { Personalization } from '@disconnect/contracts';
 import { Text, View, StyleSheet } from 'react-native';
 import { Button } from '@/components/ui/button';
 import { InlineStatus } from '@/components/ui/inline-status';
@@ -16,11 +17,12 @@ import type { SignupNameDraft } from './signup-name-handoff';
 import { useAccountAction } from './use-account-action';
 
 /** Real private consumer: the Auth owner's AccountDataProvider is its only dependency. */
-export function ProfileSurface({ onProfileSaved, onBackToSetup, recordingSetup, compact = false }: {
+export function ProfileSurface({ onProfileSaved, onBackToSetup, recordingSetup, compact = false, avatarGender }: {
   onProfileSaved?: (revision: number) => void;
   onBackToSetup?: () => void;
   recordingSetup?: boolean;
   compact?: boolean;
+  avatarGender?: Personalization['gender'];
 }) {
   const [editing, setEditing] = useState(!compact);
   const identity = useIdentityQuery();
@@ -72,6 +74,7 @@ export function ProfileSurface({ onProfileSaved, onBackToSetup, recordingSetup, 
         editDisabled={editing && editor.dirty}
         identity={available ? (identity.data ?? null) : null}
         displayName={available ? editor.displayName : null}
+        avatarGender={available ? avatarGender : null}
       />
 
       {editing ? <View style={styles.body}>

@@ -80,6 +80,35 @@ def test_atomic_feed_replay_and_request_payload_reuse(resource, profile_accounts
             feed(s, id, FeedPut(expected_revision=replay.wallet.revision), NOW)
 
 
+@pytest.mark.parametrize(("minutes", "starting_health", "gain"), [(5, 83, 5), (10, 83, 10), (5, 98, 2)])
+def test_feed_restores_one_health_point_per_session_minute(
+    resource, profile_accounts, minutes, starting_health, gain
+):
+    from app.repositories.settings import save_own_settings
+    from app.schemas.settings import SettingsPatch
+
+    owner = profile_accounts[0]
+    fund(resource, owner)
+    request_id = uuid4()
+    with resource.transaction(owner) as session:
+        save_own_settings(session, SettingsPatch.model_validate({
+            "expected_revision": 0,
+            "plan_draft": {"weekdays": [1], "hours": None, "timezone_id": "UTC",
+                           "session_count": 3, "session_minutes": minutes},
+        }))
+        wallet = session.get(RewardWallet, owner.user_id)
+        wallet.health = starting_health
+        session.flush()
+        before = view(session, NOW)
+        assert before.feed_health == minutes
+        result = feed(session, request_id, FeedPut(expected_revision=before.revision), NOW)
+        assert result.health_added == gain
+        assert result.wallet.health == starting_health + gain
+        assert result.wallet.balance == before.balance - 10
+    with resource.transaction(owner) as session:
+        assert feed(session, request_id, FeedPut(expected_revision=before.revision), NOW) == result
+
+
 def test_insufficient_funds_full_health_and_stale_revision_do_not_charge(
     resource, profile_accounts
 ):
@@ -172,22 +201,39 @@ def test_native_batch_replay_and_distinct_quits_within_one_minute(resource, prof
         assert result.accepted_sequence == 5 and result.wallet.balance == 50
 
 
-def test_restore_acknowledged_prefix_and_apply_health_loss_once(resource, profile_accounts):
+@pytest.mark.parametrize("session_minutes, expected_health", [(None, 48), (5, 45), (10, 40)])
+def test_restore_acknowledged_prefix_and_apply_health_loss_once(resource, profile_accounts, session_minutes, expected_health):
     installation = uuid4()
     a = profile_accounts[0]
     events = [
         signal(11),
-        signal(12, kind="allowance", exhausted=False, context=None, encounter_id=None),
+        signal(12, kind="allowance", exhausted=False, context=None, encounter_id=None, session_minutes=session_minutes),
         signal(13, kind="nudge_skipped", context=None, encounter_id=str(uuid4()), exhausted=None),
     ]
     body = batch(events, installation).model_copy(update={"acknowledged": 10})
     with resource.transaction(a) as s:
         result = ingest(s, body, NOW)
         assert result.accepted_sequence == 13
-        assert (result.wallet.balance, result.wallet.health) == (5, 46)
+        assert (result.wallet.balance, result.wallet.health) == (5, expected_health)
     with resource.transaction(a) as s:
         replay = ingest(s, body, NOW)
-        assert (replay.wallet.balance, replay.wallet.health) == (5, 46)
+        assert (replay.wallet.balance, replay.wallet.health) == (5, expected_health)
+
+
+def test_reopening_same_session_costs_health_once_without_a_new_allowance(resource, profile_accounts):
+    owner = profile_accounts[0]
+    events = [
+        signal(1, kind="allowance", encounter_id=None, context=None, session_minutes=5),
+        signal(2, kind="app_open", encounter_id=None, context=None, exhausted=None, session_minutes=5),
+    ]
+    body = batch(events, uuid4())
+    with resource.transaction(owner) as session:
+        assert ingest(session, body, NOW).wallet.health == 40
+    with resource.transaction(owner) as session:
+        assert ingest(session, body, NOW).wallet.health == 40
+        assert [row.payload["kind"] for row in session.scalars(
+            select(RewardEntry).order_by(RewardEntry.sequence)
+        )] == ["allowance", "app_open"]
 
 
 def test_bad_sequence_payload_or_clock_rolls_back_whole_batch(resource, profile_accounts):

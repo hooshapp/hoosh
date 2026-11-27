@@ -115,7 +115,7 @@ export function SetupScreen() {
   if (verified && reviewProfile && progress?.step === 'review' && !progress.settingsAttempt) {
     return (
       <Screen title="Review your profile">
-        <ProfileSurface recordingSetup={busy} onBackToSetup={() => setReviewProfile(false)} onProfileSaved={revision => {
+        <ProfileSurface avatarGender={progress.questions?.gender} recordingSetup={busy} onBackToSetup={() => setReviewProfile(false)} onProfileSaved={revision => {
           setProfileReceipt(revision);
           void update({ ...progress, profileRevision: revision });
         }} />

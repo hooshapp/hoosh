@@ -138,3 +138,17 @@ it('failed device assignment does not open the picker or grant continuation', as
   expect(mockPick).not.toHaveBeenCalled();
   expect(screen.getByRole('button', { name: 'Next →' })).toBeDisabled();
 });
+
+it('lets Back leave a pending picker and ignores a late selection result', async () => {
+  mockRead.mockResolvedValue({ authorization: 'authorized' });
+  let finish!: (value: typeof draft) => void;
+  mockPick.mockImplementationOnce(() => new Promise(resolve => { finish = resolve; }));
+  const back = jest.fn();
+  await render(<QuestionnairePermission selectionQuestion busy={false} onBack={back} onContinue={jest.fn()} />);
+  await fireEvent.press(await screen.findByRole('button', { name: 'Choose apps to target' }));
+  expect(mockPick).toHaveBeenCalled();
+  await fireEvent.press(screen.getByRole('button', { name: 'Back' }));
+  expect(back).toHaveBeenCalledTimes(1);
+  await act(async () => finish({ ...draft, draftVersion: 1, selectedAppCount: 2, dirty: true }));
+  expect(mockCommit).not.toHaveBeenCalled();
+});

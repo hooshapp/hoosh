@@ -159,10 +159,14 @@ jest.mock('@/components/ui/details-panel', () => ({
 test('Gender and Nudge Tone use their inline editors, persist, and reopen with the acknowledged choice', async () => {
   const app = setup();
   await mount(app);
-  await userEvent.press(await screen.findByRole('button', { name: /^Gender\./ }));
+  const genderRow = await screen.findByRole('button', { name: 'Gender. Male' });
+  await waitFor(() => expect(screen.getByTestId('settings-avatar', { includeHiddenElements: true })).toHaveProp('recyclingKey', 'Male'));
+  await userEvent.press(genderRow);
   await userEvent.press(screen.getByRole('radio', { name: 'Female' }));
+  expect(screen.getByTestId('settings-avatar', { includeHiddenElements: true })).toHaveProp('recyclingKey', 'Male');
   await userEvent.press(screen.getByRole('button', { name: 'Done' }));
   await screen.findByRole('button', { name: 'Gender. Female' });
+  await waitFor(() => expect(screen.getByTestId('settings-avatar', { includeHiddenElements: true })).toHaveProp('recyclingKey', 'Female'));
   expect(app.patch).toHaveBeenLastCalledWith(expect.objectContaining({ personalization: expect.objectContaining({ gender: 'Female', age: 24 }) }));
   await userEvent.press(screen.getByRole('button', { name: /^Nudge Tone\./ }));
   await userEvent.press(screen.getByRole('radio', { name: 'Playful' }));

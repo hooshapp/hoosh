@@ -169,15 +169,6 @@ export function HomeOverview({
                   ? 'increased usage'
                   : 'est. saved 🧠'}
               </Text>
-              {onOpenHistory ? (
-                <Button
-                  label=">"
-                  accessibilityLabel="View time saved in History"
-                  onPress={onOpenHistory}
-                  style={styles.arrow}
-                  labelStyle={styles.arrowLabel}
-                />
-              ) : null}
             </>
           ) : (
             <Text
@@ -189,6 +180,15 @@ export function HomeOverview({
             </Text>
           )}
           </>}
+          {onOpenHistory && (usageComparison || weekly.state === 'ready') ? (
+            <Button
+              label=">"
+              accessibilityLabel="View time saved in History"
+              onPress={onOpenHistory}
+              style={styles.arrow}
+              labelStyle={styles.arrowLabel}
+            />
+          ) : null}
         </View>
       </View>
     </View>

@@ -11,6 +11,7 @@ final class NativeSelectionPicker: NSObject, UIAdaptivePresentationControllerDel
 
   @MainActor func pick(_ initial: FamilyActivitySelection, lease: UUID, presenter: UIViewController) async throws -> FamilyActivitySelection {
     guard finish == nil, presenter.viewIfLoaded?.window != nil,
+          !presenter.isBeingDismissed, !presenter.isBeingPresented, presenter.presentedViewController == nil,
           UIApplication.shared.applicationState == .active else { throw SelectionFailure.unavailable }
     return try await withCheckedThrowingContinuation { continuation in
       self.lease = lease
@@ -27,6 +28,13 @@ final class NativeSelectionPicker: NSObject, UIAdaptivePresentationControllerDel
           MainActor.assumeIsolated { self?.complete(.failure(SelectionFailure.cancelled)) }
         }
       presenter.present(host, animated: true)
+      // UIKit can decline a presentation without throwing or calling its completion.
+      // Give the transition time to settle, then release JS if no sheet is visible.
+      DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self, weak host] in
+        guard let self, let host, self.controller === host,
+              host.viewIfLoaded?.window == nil else { return }
+        self.complete(.failure(SelectionFailure.unavailable))
+      }
     }
   }
   @MainActor func cancel(lease: UUID? = nil) {

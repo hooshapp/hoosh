@@ -16,11 +16,14 @@ final class ShieldActionExtension: ShieldActionDelegate {
         }
         guard !handled else { return }
         if action == .secondaryButtonPressed {
-            // A failed allowance must keep the shield visible, not behave like Quit.
-            let allowed = ProtectionNativeEngine.allow(application)
-            completionHandler(allowed ? .none : .defer)
+            // Ask iOS to redraw any shield still visible after the settings write.
+            _ = ProtectionNativeEngine.allow(application)
+            completionHandler(.defer)
         } else {
-            if action == .primaryButtonPressed { ProtectionNativeEngine.quit(application) }
+            if action == .primaryButtonPressed,
+               ProtectionNativeEngine.presentation(application)?.allowanceApplied != true {
+                ProtectionNativeEngine.quit(application)
+            }
             completionHandler(.close)
         }
     }

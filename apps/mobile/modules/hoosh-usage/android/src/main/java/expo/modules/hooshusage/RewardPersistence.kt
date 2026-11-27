@@ -15,7 +15,7 @@ object RewardPersistence {
     .put("events", JSONArray(r.events.map { e -> JSONObject().put("id", e.id).put("sequence", e.sequence)
       .put("at", e.at).put("kind", e.kind).put("day", e.day).put("encounter", e.encounter ?: JSONObject.NULL)
       .put("context", e.context ?: JSONObject.NULL).put("exhausted", e.exhausted ?: JSONObject.NULL)
-      .put("covered", e.covered ?: JSONObject.NULL) }))
+      .put("covered", e.covered ?: JSONObject.NULL).put("sessionMinutes", e.sessionMinutes ?: JSONObject.NULL) }))
   fun decode(r: JSONObject): RewardState {
     val installation = r.string("installation"); QuestSchedules.id(installation)
     val next = r.long("next"); val discarded = r.long("discarded")
@@ -23,7 +23,7 @@ object RewardPersistence {
     val array = r.getJSONArray("events"); check(array.length() <= 256)
     val events = (0 until array.length()).map { index -> val e = array.getJSONObject(index)
       val id = e.string("id"); QuestSchedules.id(id)
-      val kind = e.string("kind"); check(kind in setOf("quit", "allowance", "day_closed", "nudge_skipped"))
+      val kind = e.string("kind"); check(kind in setOf("quit", "allowance", "day_closed", "nudge_skipped", "app_open"))
       val day = e.string("day"); check(java.time.LocalDate.parse(day).toString() == day)
       val encounter = e.optional("encounter"); encounter?.let { QuestSchedules.id(it) }
       val context = e.optional("context"); check(context == null || context in setOf("initial", "expired", "mid_session", "notification_accept"))
@@ -32,10 +32,13 @@ object RewardPersistence {
       check(when (kind) {
         "quit" -> encounter != null && context != null && exhausted == null && covered == null
         "nudge_skipped" -> encounter != null && context == null && exhausted == null && covered == null
+        "app_open" -> encounter == null && context == null && exhausted == null && covered == null
         "allowance" -> encounter == null && context == null && exhausted != null && covered == null
         else -> encounter == null && context == null && exhausted != null && covered != null
       })
-      RewardSignal(id, e.long("sequence"), e.long("at"), kind, day, encounter, context, exhausted, covered)
+      val minutes = if (e.isNull("sessionMinutes")) null else e.long("sessionMinutes").also { check(kind in setOf("allowance", "app_open") && it in 1..1440) }.toInt()
+      check(kind != "app_open" || minutes != null)
+      RewardSignal(id, e.long("sequence"), e.long("at"), kind, day, encounter, context, exhausted, covered, minutes)
     }
     check(events.all { it.sequence in 1 until next && it.at >= 0 } && events.map { it.id }.distinct().size == events.size)
     check(events.zipWithNext().all { (a,b) -> a.sequence < b.sequence && a.at <= b.at })

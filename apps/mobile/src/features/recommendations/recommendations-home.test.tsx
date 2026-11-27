@@ -158,8 +158,9 @@ test('actual Home shows interest template, completion-only reward and Accept ope
     s.request.mock.calls.find(([, o]) => o.method === 'PUT')?.[1].json,
   ).toEqual({ offer_id: ID, action: 'accepted' });
   expect(
-    screen.getByRole('button', { name: 'Review one-time quest' }),
+    screen.getByRole('button', { name: 'Open quest' }),
   ).toBeTruthy();
+  expect(screen.queryByRole('button', { name: 'Check latest suggestion' })).toBeNull();
 });
 test('Skip persists without accepting, navigating, activating or awarding', async () => {
   const s = setup();
@@ -191,10 +192,10 @@ test('lost committed Accept response cannot auto-repeat; fresh read recovers rev
   await press('Check latest suggestion');
   await waitFor(() =>
     expect(
-      screen.getByRole('button', { name: 'Review one-time quest' }),
+      screen.getByRole('button', { name: 'Open quest' }),
     ).toBeTruthy(),
   );
-  await press('Review one-time quest');
+  await press('Open quest');
   expect(s.open).toHaveBeenCalledWith(ID);
   expect(
     s.request.mock.calls.filter(([, o]) => o.method === 'PUT'),
@@ -257,7 +258,7 @@ test('a replay acknowledged after quest deletion never claims a new save or navi
   );
   expect(s.open).not.toHaveBeenCalled();
   expect(
-    screen.queryByRole('button', { name: 'Review one-time quest' }),
+    screen.queryByRole('button', { name: 'Open quest' }),
   ).toBeNull();
 });
 

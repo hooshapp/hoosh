@@ -1,3 +1,12 @@
+export type IOSGoogleCalendarStatus = {
+  status: 'off' | 'connected' | 'permission' | 'sync_required' | 'choose';
+  calendarLabel?: string;
+  nextEventStartsAt?: number;
+  activeEvent?: boolean;
+  tasks?: 'off' | 'connected' | 'unavailable';
+  calendars?: { id: string; label: string }[];
+};
+export type IOSGoogleCalendarAction = 'status' | 'choose' | 'connect' | 'disconnect' | 'connect_tasks' | 'disconnect_tasks';
 import type { SelectionEditorPort, SavedSelectionSummary } from './selection-editor';
 import type { ProtectionRead } from '@/features/protection/status-model';
 export type IOSSelectionDevice = {
@@ -10,6 +19,16 @@ export type IOSSelectionDevice = {
   readStatus(): Promise<Extract<ProtectionRead, { phase: 'ready' }>>;
   reviewUsageBaseline?(): Promise<unknown>;
   setNudgeTone?(tone: string): Promise<unknown>;
+  refreshCalendarSources?(): Promise<void>;
+  refreshPublicHoliday?(): Promise<string | null>;
+  cacheHolidayNudges?(name: string, messages: string[]): Promise<void>;
+  subscribeCalendar?(listener: () => void): () => void;
+  googleCalendarDirect?: boolean;
+  googleCalendarNudges?(action: IOSGoogleCalendarAction, calendarID?: string): Promise<IOSGoogleCalendarStatus>;
+  calendarNudgeSettings?(enabled?: boolean): Promise<boolean>;
+  remindersNudgeSettings?(enabled?: boolean): Promise<boolean>;
+  questPlanningContext?(): Promise<unknown>;
+  cacheGeneratedNudges?(activity: string, tone: string, messages: string[]): Promise<void>;
   setShieldContext?(name: string, activity: string): Promise<void>;
   budgetCapabilities?(): Promise<unknown>;
   requestAuthorization(): Promise<void>;

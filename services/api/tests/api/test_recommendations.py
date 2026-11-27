@@ -73,3 +73,71 @@ def test_auth_and_bounded_json_before_database(monkeypatch):
             ).status_code
             == 422
         )
+
+
+def test_nudge_copy_requires_auth_and_preserves_offline_fallback(monkeypatch):
+    app, headers = authenticated_app(monkeypatch, settings())
+    endpoint = "/v1/recommendations/nudge-copy?activity=reading&tone=Playful"
+    with TestClient(app) as client:
+        assert client.get(endpoint).status_code == 401
+        response = client.get(endpoint, headers=headers)
+        assert response.status_code == 200 and response.json() is None
+
+
+def test_nudge_generation_is_shared_and_bounded_to_known_preferences(monkeypatch):
+    from app.core.config import Settings
+    from app.domain import ai_nudges
+
+    config = Settings(_env_file=None, openai_api_key="synthetic", openai_nudge_model="example")
+    calls = []
+
+    def generate(client, *, api_key, model, activity_id, tone):
+        calls.append((activity_id, tone))
+        return ai_nudges.NudgeCopy(
+            quarter="Set your book nearby.",
+            halfway="Put your phone down and open your book.",
+            three_quarters="Read the first paragraph.",
+            quest_title="Read one page",
+        )
+
+    monkeypatch.setattr(ai_nudges, "generate_nudge_copy", generate)
+    ai_nudges._daily_pack.cache_clear()
+    try:
+        first = ai_nudges.cached_nudge_copy(config, "reading", "Playful")
+        assert first is not None and first.quest_title == "Read one page"
+        assert ai_nudges.cached_nudge_copy(config, "reading", "Playful") == first
+        assert ai_nudges.cached_nudge_copy(config, "unsupported", "Playful") is None
+        assert calls == [("reading", "Playful")]
+    finally:
+        ai_nudges._daily_pack.cache_clear()
+
+
+def test_holiday_prompt_combines_public_label_with_goal_and_tone():
+    import json
+
+    from app.domain.ai_nudges import TEMPLATES, nudge_request
+
+    request = nudge_request("example", "reading", "Playful", "New Year's Day")
+    assert json.loads(request["input"]) == {
+        "activity": TEMPLATES["reading"][1],
+        "tone": "Playful",
+        "holiday": "New Year's Day",
+    }
+    assert "Mention the holiday" in request["instructions"]
+
+
+def test_quest_prompt_uses_a_bounded_duration_and_no_personal_calendar_text(monkeypatch):
+    import json
+
+    from app.domain.ai_nudges import nudge_request
+
+    body = nudge_request("example", "reading", "Playful", quest_minutes=10, quest_task=True)
+    assert "within 10 minutes" in body["instructions"]
+    assert "add the task name locally" in body["instructions"]
+    assert json.loads(body["input"]) == {"activity": "an unfinished task", "tone": "Playful"}
+    app, headers = authenticated_app(monkeypatch, settings())
+    endpoint = "/v1/recommendations/nudge-copy?activity=reading&tone=Playful&quest_task=true"
+    with TestClient(app) as client:
+        response = client.get(endpoint + "&quest_minutes=10", headers=headers)
+        assert response.status_code == 200 and response.json() is None
+        assert client.get(endpoint + "&quest_minutes=60", headers=headers).status_code == 422

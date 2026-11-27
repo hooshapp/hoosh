@@ -1,4 +1,6 @@
+import type { IOSGoogleCalendarStatus } from './ios-selection-device';
 import { uuid } from 'expo';
+import { directGoogleCalendar, directGoogleCalendarAvailable } from './direct-google-calendar';
 import { createIOSProductPort, type IOSRuntimeModule } from './ios-product-port';
 import { decodeSavedSelection } from './selection-editor';
 import { decodeIOSDeviceStatus } from './ios-device-status';
@@ -6,6 +8,15 @@ import { requireOptionalNativeModule } from 'expo-modules-core';
 import type { InstallationReview, NativeOwnerSessionPort } from './native-owner-session';
 
 type OwnerModule = IOSRuntimeModule & {
+  refreshCalendarSources?(namespace: string, userID: string, token: string): Promise<void>;
+  refreshPublicHoliday?(namespace: string, userID: string, token: string): Promise<string | null>;
+  cacheHolidayNudges?(namespace: string, userID: string, token: string, name: string, messages: string[]): Promise<void>;
+  setDirectGoogleCalendarContext?(namespace: string, userID: string, token: string, context: string, replaceSynced: boolean): Promise<void>;
+  googleCalendarNudges?(namespace: string, userID: string, token: string, action: string, calendarID: string | null): Promise<IOSGoogleCalendarStatus>;
+  calendarNudgeSettings?(namespace: string, userID: string, token: string, enabled: boolean | null): Promise<boolean>;
+  remindersNudgeSettings?(namespace: string, userID: string, token: string, enabled: boolean | null): Promise<boolean>;
+  questPlanningContext?(namespace: string, userID: string, token: string, directConnected: boolean): Promise<unknown>;
+  cacheGeneratedNudges?(namespace: string, userID: string, token: string, activity: string, tone: string, messages: string[]): Promise<void>;
   setShieldContext?(namespace: string, userID: string, token: string, name: string, activity: string): Promise<void>;
   reviewUsageBaseline?(namespace: string, userID: string, token: string): Promise<unknown>;
   setNudgeTone?(namespace: string, userID: string, token: string, tone: string): Promise<unknown>;
@@ -71,6 +82,44 @@ export const nativeOwnerSession: NativeOwnerSessionPort | null =
           readStatus: async () => decodeIOSDeviceStatus(await module.deviceStatus(namespace, userID, token), owner),
           reviewUsageBaseline: module.reviewUsageBaseline ? () => module.reviewUsageBaseline!(namespace, userID, token) : undefined,
           setNudgeTone: module.setNudgeTone ? (tone: string) => module.setNudgeTone!(namespace, userID, token, tone) : undefined,
+          refreshCalendarSources: module.refreshCalendarSources
+            ? () => module.refreshCalendarSources!(namespace, userID, token) : undefined,
+          refreshPublicHoliday: module.refreshPublicHoliday
+            ? () => module.refreshPublicHoliday!(namespace, userID, token) : undefined,
+          cacheHolidayNudges: module.cacheHolidayNudges
+            ? (name, messages) => module.cacheHolidayNudges!(namespace, userID, token, name, messages) : undefined,
+          subscribeCalendar: listener => {
+            const subscription = module.addListener('onCalendarChanged', listener);
+            return () => subscription.remove();
+          },
+          googleCalendarDirect: directGoogleCalendarAvailable && !!module.setDirectGoogleCalendarContext,
+          googleCalendarNudges: directGoogleCalendarAvailable && module.setDirectGoogleCalendarContext
+            ? (action) => directGoogleCalendar(owner, action,
+              (context, replaceSynced) => module.setDirectGoogleCalendarContext!(namespace, userID, token, JSON.stringify(context), replaceSynced ?? false))
+            : module.googleCalendarNudges
+            ? (action, calendarID) => module.googleCalendarNudges!(namespace, userID, token, action, calendarID ?? null)
+            : undefined,
+          calendarNudgeSettings: module.calendarNudgeSettings
+            ? enabled => module.calendarNudgeSettings!(namespace, userID, token, enabled ?? null)
+            : undefined,
+          remindersNudgeSettings: module.remindersNudgeSettings
+            ? enabled => module.remindersNudgeSettings!(namespace, userID, token, enabled ?? null)
+            : undefined,
+          questPlanningContext: module.questPlanningContext
+            ? async () => {
+              const direct = directGoogleCalendarAvailable && module.setDirectGoogleCalendarContext
+                ? directGoogleCalendar(owner, 'status', (context) =>
+                  module.setDirectGoogleCalendarContext!(namespace, userID, token, JSON.stringify(context), false))
+                : null;
+              const [google] = await Promise.all([
+                direct?.catch(() => undefined),
+                module.remindersNudgeSettings?.(namespace, userID, token, null).catch(() => false),
+              ]);
+              return module.questPlanningContext!(namespace, userID, token, google?.status === 'connected');
+            } : undefined,
+          cacheGeneratedNudges: module.cacheGeneratedNudges
+            ? (activity, tone, messages) => module.cacheGeneratedNudges!(namespace, userID, token, activity, tone, messages)
+            : undefined,
           setShieldContext: module.setShieldContext ? (name: string, activity: string) => module.setShieldContext!(namespace, userID, token, name, activity) : undefined,
           budgetCapabilities: module.budgetCapabilities ? () => module.budgetCapabilities!() : undefined,
           requestAuthorization: async () => { await module.requestDeviceAuthorization(namespace, userID, token); },

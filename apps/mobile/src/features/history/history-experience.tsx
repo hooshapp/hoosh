@@ -17,13 +17,13 @@ export function HistoryExperience({
   periods: HistoryPeriods;
   onRetry?: () => void;
   controls?: ReactNode;
-  renderUsageComparison?: (period: HistoryPeriod) => ReactNode;
+  renderUsageComparison?: (period: HistoryPeriod, page: "summary" | "progress" | "reclaimed") => ReactNode;
 }) {
   const [page, setPage] = useState<'summary' | 'progress' | 'reclaimed'>(
     'summary',
   );
   const [period, setPeriod] = useState<HistoryPeriod>('week');
-  const usageComparison = renderUsageComparison?.(period);
+  const usageComparison = renderUsageComparison?.(period, page);
   if (page === 'summary')
     return (
       <HistoryScreen

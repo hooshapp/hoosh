@@ -54,6 +54,8 @@ class Settings(BaseSettings):
     supabase_jwt_audience: str | None = Field(default=None, min_length=1, max_length=256)
     supabase_jwt_algorithms: tuple[SigningAlgorithm, ...] | None = None
     database_url: SecretStr | None = Field(default=None, repr=False)
+    openai_api_key: SecretStr | None = Field(default=None, repr=False)
+    openai_nudge_model: str | None = None
     db_pool_size: int = Field(default=2, ge=1, le=5)
     db_pool_timeout_seconds: float = Field(default=2, ge=0.05, le=10, allow_inf_nan=False)
     db_connect_timeout_seconds: int = Field(default=5, ge=1, le=10)

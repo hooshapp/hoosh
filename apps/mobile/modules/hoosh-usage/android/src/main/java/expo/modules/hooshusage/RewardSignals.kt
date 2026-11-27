@@ -10,7 +10,7 @@ import java.util.Calendar
 /** Business evidence is independent from the lossy diagnostic journal. No app IDs on the wire. */
 data class RewardSignal(val id: String, val sequence: Long, val at: Long, val kind: String,
   val day: String, val encounter: String? = null, val context: String? = null,
-  val exhausted: Boolean? = null, val covered: Boolean? = null)
+  val exhausted: Boolean? = null, val covered: Boolean? = null, val sessionMinutes: Int? = null)
 data class RewardState(val installation: String = UUID.randomUUID().toString(), val next: Long = 1,
   val discarded: Long = 0, val events: List<RewardSignal> = emptyList(), val day: String? = null,
   val wall: Long = 0, val elapsed: Long = 0, val boot: Int = -1,
@@ -25,9 +25,9 @@ object RewardSignals {
     return day(calendar.timeInMillis, zone)
   }
   fun append(state: RewardState, wall: Long, kind: String, day: String, encounter: String? = null,
-    context: String? = null, exhausted: Boolean? = null, covered: Boolean? = null): RewardState {
+    context: String? = null, exhausted: Boolean? = null, covered: Boolean? = null, sessionMinutes: Int? = null): RewardState {
     InterventionValidation.require(state.next in 1..9007199254740990L, "ERR_REWARD_LIMIT")
-    val event = RewardSignal(UUID.randomUUID().toString(), state.next, maxOf(wall, state.events.lastOrNull()?.at ?: 0), kind, day, encounter, context, exhausted, covered)
+    val event = RewardSignal(UUID.randomUUID().toString(), state.next, maxOf(wall, state.events.lastOrNull()?.at ?: 0), kind, day, encounter, context, exhausted, covered, sessionMinutes)
     val all = state.events + event
     val dropped = maxOf(0, all.size - 256)
     return state.copy(next = state.next + 1, discarded = state.discarded + dropped, events = all.takeLast(256))

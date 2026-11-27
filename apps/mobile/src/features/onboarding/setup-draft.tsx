@@ -137,7 +137,8 @@ export function SetupDraft({
   }
   function nextFromPlan() {
     setError(draft.error);
-    if (draft.error === undefined) onSave({ ...progress, step: 'review', planDraft: draft.value });
+    if (draft.error === undefined) onSave({ ...progress, step: 'review', planDraft: draft.value,
+      selectionRevision: binding && selection?.owner === binding.owner ? selection.revision : progress.selectionRevision });
   }
   function back() {
     setError(undefined);
@@ -169,7 +170,7 @@ export function SetupDraft({
             const current = await binding?.read();
             if (!current || current.revision !== currentBudget.selectionRevision || current.selectedAppCount !== currentBudget.selectedAppCount || expectedBaseline().endsBefore !== currentBudget.baselineEndsBefore || !proposed.value) throw new Error('changed');
             if (liveBaselineOwner.current !== currentBudget.owner) return;
-            onSave({ ...progress, step: 'review', planDraft: proposed.value });
+            onSave({ ...progress, step: 'review', planDraft: proposed.value, selectionRevision: current.revision });
           } catch { setBudget(undefined); }
           finally { acceptingBudget.current = false; }
         }} onManual={() => { if (proposed.value) setInput(planDraftInput(proposed.value)); setError(undefined); setManual(true); }} onSkip={onLeave} error={error ?? (failed ? 'Setup could not be saved. Try again.' : undefined)} />;
@@ -182,7 +183,8 @@ export function SetupDraft({
       try {
         completeSchedule(suggestion.planDraft);
         setError(undefined);
-        onSave({ ...progress, step: 'review', planDraft: suggestion.planDraft });
+        onSave({ ...progress, step: 'review', planDraft: suggestion.planDraft,
+          selectionRevision: binding && selection?.owner === binding.owner ? selection.revision : progress.selectionRevision });
       } catch { setError('The suggested schedule needs review. Set up on your own.'); }
     }}
       onManual={() => { setError(undefined); setManual(true); }} onSkip={onLeave} busy={busy}

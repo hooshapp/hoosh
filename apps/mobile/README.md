@@ -39,3 +39,26 @@ the repository root and scan its QR to interact with populated shared components
 and local drafts on a phone. This is separate from the actual app on port 8081;
 its ordinary routes retain unavailable values. RN-10c records physical Pixel 8 Pro / Android 16 checks; see the QA record for
 remaining TalkBack and signed-build/platform acceptance.
+
+### Direct Google Calendar on iPhone
+
+Direct connection is enabled by an iOS OAuth client for the signed app's bundle
+identifier. In that Google Cloud project, enable the Google Calendar API, add
+the Calendar events read-only scope to the consent screen, and enroll any test
+accounts while the project is in testing. For the signed build, set
+`EXPO_PUBLIC_GOOGLE_CALENDAR_IOS_CLIENT_ID` to the public iOS client ID and
+`HOOSH_GOOGLE_CALENDAR_REDIRECT_SCHEME` to the iOS URL scheme shown beside it in
+Google Cloud. The callback uses that scheme with the `/oauth2redirect` path.
+Both values identify the client and neither is a client secret.
+
+The setting uses Google's consent screen and reads the primary calendar. For
+optional Google Tasks reminders, also enable the Google Tasks API and add
+`https://www.googleapis.com/auth/tasks.readonly` to the project's OAuth data
+access. Users can choose **Connect Google Tasks** from the connected Google
+Calendar row in Settings and authorize read-only access separately.
+
+Hoosh keeps refresh tokens in device-only Keychain storage. The Screen Time
+extension reads a small local snapshot of event titles and times and eligible
+unfinished task titles. Calendar and task snapshots refresh when Hoosh comes
+to the foreground. Without the iOS client configuration, Settings offers the
+device-synced Google Calendar.

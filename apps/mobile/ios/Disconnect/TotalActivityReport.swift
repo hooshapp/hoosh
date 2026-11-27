@@ -91,35 +91,86 @@ struct UsageComparisonView: View {
     let comparison: UsageComparison
     let compact: Bool
     let days: Int
-    private let ink = Color(red: 0.043, green: 0.2, blue: 0.126)
+    enum Page { case summary, progress, reclaimed }
+    var page: Page = .summary
+    private let ink = Color(red: 0.23, green: 0.15, blue: 0)
+    private let green = Color(red: 0.04, green: 0.60, blue: 0.40)
     private let cream = Color(red: 1, green: 0.945, blue: 0.867)
 
     var body: some View {
-        VStack(alignment: .leading, spacing: compact ? 6 : 9) {
-            if let change = comparison.reduction {
-                Text(hours(abs(change)))
-                    .font(.system(compact ? .title2 : .title, design: .monospaced, weight: .bold))
-                    .foregroundStyle(compact ? cream : ink)
-                Text(change == 0 ? "No change" : change > 0 ? "Less time · last \(days) days" : "More time · last \(days) days")
-                if !compact, let recent = comparison.recent, let previous = comparison.previous {
-                    Text("\(hours(recent)) in the last \(days) days · \(hours(previous)) in the previous \(days)")
-                    if previous > 0 {
-                        Text("\(abs(change / previous).formatted(.percent.precision(.fractionLength(0)))) \(change >= 0 ? "less" : "more") screen time")
-                    }
-                }
-            } else if compact {
-                Text("—").font(.system(.title, weight: .bold)).foregroundStyle(cream)
-                Text("No measured comparison yet")
+        VStack(alignment: .leading, spacing: compact ? 6 : 14) {
+            if compact {
+                Text(comparison.reduction.map { hours(abs($0)) } ?? "—")
+                    .font(.title2.bold()).foregroundStyle(cream)
+                Text(comparison.reduction.map { $0 == 0 ? "No change" : $0 > 0 ? "Less time · last 7 days" : "More time · last 7 days" }
+                    ?? "No measured comparison yet")
             } else {
-                Text("Collecting comparable Screen Time days")
-            }
-            if !compact, let yesterday = comparison.yesterday {
-                Text("Yesterday · \(hours(yesterday))")
+                report
+                if page == .summary, let yesterday = comparison.yesterday {
+                    Text("Yesterday · \(hours(yesterday))").font(.caption)
+                }
             }
         }
-        .font(.system(compact ? .caption : .subheadline))
+        .font(compact ? .caption : .subheadline)
         .foregroundStyle(ink)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        .padding(.vertical, compact ? 0 : 8)
+        .fixedSize(horizontal: false, vertical: true)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: compact ? .leading : .topLeading)
+    }
+
+    @ViewBuilder private var report: some View {
+        let recent = comparison.recent
+        let previous = comparison.previous
+        let change = comparison.reduction
+        let percent = previous.flatMap { baseline in change.flatMap { baseline > 0 ? $0 / baseline : nil } }
+        switch page {
+        case .summary:
+            HStack(alignment: .center, spacing: 12) {
+                comparisonValue("BEFORE", duration: previous, caption: "Previous \(days) days", color: ink.opacity(0.7))
+                Image(systemName: "arrow.right").foregroundStyle(green).accessibilityHidden(true)
+                comparisonValue("NOW", duration: recent, caption: "Last \(days) days", color: green)
+            }
+            Divider()
+            Text(change.map { hours(abs($0)) } ?? "—").font(.system(size: 40, weight: .bold)).foregroundStyle(green)
+            Text(change.map { $0 >= 0 ? "Time saved · last \(days) days" : "Additional use · last \(days) days" }
+                ?? "No measured comparison yet")
+        case .progress:
+            Divider()
+            if let previous, let recent {
+                Text("Screen time went from \(hours(previous)) to \(hours(recent)) over two \(days)-day periods.")
+            } else {
+                Text("Your progress will appear when there are enough comparable Screen Time days.")
+            }
+            Divider()
+            Text(percent.map { $0 >= 0 ? "LESS SCREEN TIME" : "MORE SCREEN TIME" } ?? "SCREEN TIME CHANGE").font(.caption.bold())
+            Text(percent.map { abs($0).formatted(.percent.precision(.fractionLength(0))) } ?? "—")
+                .font(.system(size: 58, weight: .bold)).foregroundStyle(green)
+            Text("Compared with the previous \(days) days").font(.caption)
+        case .reclaimed:
+            let filled = min(10, max(0, Int((percent ?? 0) * 10)))
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: 5), spacing: 10) {
+                ForEach(0..<10) { index in
+                    Circle().fill(index < filled ? green : ink.opacity(0.12)).aspectRatio(1, contentMode: .fit)
+                }
+            }
+            .accessibilityLabel(percent == nil ? "No measured reduction yet" : "\(filled) of 10 circles filled")
+            Text(percent == nil ? "No measured comparison yet" : "\(filled) of 10 · time freed").font(.caption)
+            Divider()
+            Text("LOOK AHEAD · NEXT YEAR").font(.caption.bold())
+            Text(change.flatMap { $0 > 0 ? hours($0 / Double(days) * 365) : nil } ?? "—")
+                .font(.system(size: 32, weight: .bold)).foregroundStyle(green)
+            Text("Illustrative · Assumes the same pace").font(.caption)
+        }
+    }
+
+    private func comparisonValue(_ label: String, duration: TimeInterval?, caption: String, color: Color) -> some View {
+        VStack(alignment: .leading, spacing: 5) {
+            Text(label).font(.caption2.bold())
+            Text(duration.map(hours) ?? "—").font(.title2.bold()).foregroundStyle(color)
+            Text(caption).font(.caption)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityElement(children: .combine)
     }
 
     private func hours(_ seconds: TimeInterval) -> String {

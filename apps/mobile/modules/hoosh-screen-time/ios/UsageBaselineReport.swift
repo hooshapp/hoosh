@@ -85,6 +85,7 @@ final class UsageComparisonHost: ExpoView {
   static let selectionChanged = Notification.Name("hoosh.usageReportSelectionChanged")
   var ownerKey = "" { didSet { if oldValue != ownerKey { reload() } } }
   var compact = true { didSet { if oldValue != compact { reload() } } }
+  var page = "summary" { didSet { if oldValue != page { reload() } } }
   var days = 7 { didSet { if oldValue != days { reload() } } }
   private var hosted: UIHostingController<AnyView>?
   private var stamp: String?
@@ -131,11 +132,11 @@ final class UsageComparisonHost: ExpoView {
       !selection.applicationTokens.isEmpty,
       let start = calendar.date(byAdding: .day, value: -2 * span, to: today) {
       let interval = DateInterval(start: start, end: today)
-      let context = DeviceActivityReport.Context(compact ? "Hoosh Usage Compact" : (span == 28 ? "Hoosh Usage Month" : "Hoosh Usage Week"))
+      let context = DeviceActivityReport.Context(compact ? "Hoosh Usage Compact" : "Hoosh History \(page) \(span)")
       let report = DeviceActivityReport(context, filter: .init(segment: .daily(during: interval),
         users: .all, devices: .init([.iPhone]), applications: selection.applicationTokens))
       content = AnyView(report)
-      identity = "\(ownerKey):\(selected.revision):\(today):\(compact):\(span)"
+      identity = "\(ownerKey):\(selected.revision):\(today):\(compact):\(span):\(page)"
     }
     guard stamp != identity else { return }
     detach()

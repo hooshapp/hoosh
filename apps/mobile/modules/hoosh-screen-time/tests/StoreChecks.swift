@@ -36,6 +36,153 @@ import Darwin
     let store = SharedProtectionStore(directory: root)
     let a = ProtectionOwner(namespace: "project-a", userID: UUID())
     let b = ProtectionOwner(namespace: "project-a", userID: UUID())
+    var context = ProtectionOwnerRecord(owner: a)
+    context.shieldActivity = "reading"
+    let localLines = (0..<3).map { context.contextualLine($0, turn: 0) }
+    expect(Set(localLines).count == 3 && localLines.allSatisfy { $0.contains("reading") },
+      "local checkpoints vary and remember the goal")
+    context.generatedNudges = .init(activity: "reading", tone: "Supportive",
+      messages: ["Put your book nearby.", "Open the book.", "Read a page."],
+      expiresAt: Date().addingTimeInterval(3600))
+    expect(context.contextualLine(0, turn: 0) == "Put your book nearby.", "AI copy is automatic")
+    expect(context.contextualLine(0, turn: 1).contains("50 credits"), "quest copy is automatic")
+    expect(context.contextualLine(0, turn: 2) == "Put your book nearby.", "disconnected Calendar uses goal copy")
+    expect(context.contextualLine(0, turn: 4).contains("Dino"), "occasional healthy Dino reminder")
+    context.dinoLowUntil = Date().addingTimeInterval(3600)
+    let lowCycle = (0..<6).map { context.contextualLine(0, turn: $0) }
+    expect(lowCycle.enumerated().allSatisfy { $0.element.contains("Dino") == ($0.offset % 2 == 0) },
+      "low health gets every other turn")
+    context.dinoLowUntil = nil
+    context.dinoWarningAt = Date().addingTimeInterval(-1)
+    expect(context.contextualLine(0, turn: 0).contains("Dino"), "scheduled health decay still prioritizes Dino")
+    context.dinoWarningAt = Date().addingTimeInterval(3600)
+    context.googleCalendarID = "synced-calendar"
+    context.googleCalendarEventAt = Date().addingTimeInterval(300)
+    expect(context.contextualLine(0, turn: 2).contains("Google Calendar"), "Google Calendar works with Apple Calendar off")
+    context.calendarNudges = true
+    context.calendarEventAt = Date().addingTimeInterval(120)
+    expect(context.contextualLine(0, turn: 2).contains("Apple Calendar"), "Apple Calendar gets its own turn")
+    expect(context.contextualLine(0, turn: 10).contains("Google Calendar"), "Google Calendar gets the next turn")
+    context.calendarNudges = false
+    let testNow = ISO8601DateFormatter().date(from: "2026-11-27T16:00:00Z")!
+    let eastern = TimeZone(identifier: "America/New_York")!
+    var calendarContext = ProtectionOwnerRecord(owner: a)
+    calendarContext.googleCalendarID = "synced-calendar"
+    calendarContext.googleCalendarEventAt = testNow.addingTimeInterval(3 * 3600)
+    let holiday = calendarContext.nextNotificationLine(checkpoint: 0, now: testNow, region: "US", timeZone: eastern)
+    expect(holiday.contains("Google Calendar in 3h") && holiday.contains("Black Friday"),
+      "Black Friday and a real Google event several hours away can appear together")
+    func nudgeKinds(_ lines: [String]) -> [String] {
+      lines.map { line in
+        if line.contains("Calendar") { return "calendar" }
+        if line.contains("Dino") { return "dino" }
+        if line.contains("50 credits") { return "quest" }
+        return "goal"
+      }
+    }
+    func orderedNudges(google: Bool, apple: Bool, low: Bool, tomorrow: Bool = false) -> [String] {
+      var record = ProtectionOwnerRecord(owner: a)
+      let start = testNow.addingTimeInterval(tomorrow ? 18 * 3600 : 3600)
+      if google { record.googleCalendarID = "synced-calendar"; record.googleCalendarEventAt = start }
+      if apple { record.calendarNudges = true; record.calendarEventAt = start }
+      if low { record.dinoLowUntil = testNow.addingTimeInterval(3600) }
+      let group = UUID()
+      return nudgeKinds((0..<6).map { checkpoint in
+        record.nextNotificationLine(checkpoint: checkpoint, session: group,
+          now: testNow, region: nil, timeZone: eastern)
+      })
+    }
+    let calendarLow = ["calendar", "dino", "goal"]
+    let calendarHealthy = ["calendar", "dino", "quest"]
+    let noCalendarLow = ["dino", "goal", "quest"]
+    let noCalendarHealthy = ["goal", "quest", "dino"]
+    for (google, apple, low, tomorrow, expected) in [
+      (true, true, true, false, calendarLow), (true, false, true, false, calendarLow),
+      (false, true, true, false, calendarLow), (true, false, false, false, calendarHealthy),
+      (false, true, false, false, calendarHealthy), (true, true, false, false, calendarHealthy),
+      (false, false, true, false, noCalendarLow), (false, false, false, false, noCalendarHealthy),
+      (true, false, true, true, noCalendarLow), (true, false, false, true, noCalendarHealthy),
+    ] {
+      expect(orderedNudges(google: google, apple: apple, low: low, tomorrow: tomorrow) == expected + expected,
+        "each session starts with the required order and repeats it for additional checkpoints")
+    }
+    calendarContext.googleCalendarID = nil
+    expect(!calendarContext.contextualLine(0, turn: 2, now: testNow).contains("Google Calendar"),
+      "a disconnected calendar cannot supply a nudge")
+    var liveCalendar = ProtectionOwnerRecord(owner: a)
+    let begins = testNow.addingTimeInterval(960)
+    let ends = begins.addingTimeInterval(3600)
+    liveCalendar.directGoogleCalendarEvents = [
+      ProtectionCalendarEvent(startsAt: begins, endsAt: ends, title: "Homework"),
+    ]
+    liveCalendar.googleTaskTitles = ["Submit essay", "Call the library"]
+    liveCalendar.googleTasksRefreshedAt = testNow
+    liveCalendar.shieldActivity = "reading"
+    func firstNudge(_ now: Date) -> String {
+      liveCalendar.nextNotificationLine(checkpoint: 0, session: UUID(), now: now, region: nil, timeZone: eastern)
+    }
+    expect(firstNudge(testNow).contains("Homework starts in 16m."), "timed Google nudge names the event")
+    expect(firstNudge(begins).contains("Submit essay is still open."), "a task gets a turn with an overlapping event")
+    expect(firstNudge(ends.addingTimeInterval(-1)).contains("Homework is on now."), "the event stays eligible until its end")
+    expect(firstNudge(ends).contains("Call the library is still open."), "the ended event stops and the next pending task gets a turn")
+    expect(firstNudge(ends.addingTimeInterval(1)).contains("Submit essay"), "unfinished tasks are eligible across sessions")
+    liveCalendar.googleTaskTitles = []
+    expect(firstNudge(ends.addingTimeInterval(2)).contains("reading"), "completed tasks are dropped and the goal order returns")
+    var appleContext = ProtectionOwnerRecord(owner: a)
+    appleContext.calendarNudges = true
+    appleContext.appleCalendarEvents = [
+      ProtectionCalendarEvent(startsAt: begins, endsAt: ends, title: "Study group"),
+    ]
+    appleContext.appleRemindersEnabled = true
+    appleContext.appleRemindersRefreshedAt = testNow
+    appleContext.appleReminders = [
+      ProtectionAppleReminder(title: "Submit lab", dueDate: testNow.addingTimeInterval(1800)),
+      ProtectionAppleReminder(title: "Tomorrow’s lab", dueDate: testNow.addingTimeInterval(86400)),
+      ProtectionAppleReminder(title: "Pick up a book", dueDate: nil),
+    ]
+    func appleNudge(_ now: Date) -> String {
+      appleContext.nextNotificationLine(checkpoint: 0, session: UUID(), now: now, region: nil, timeZone: eastern)
+    }
+    expect(appleNudge(testNow).contains("Study group starts in 16m."), "Apple and Google both give the first turn to a timed event")
+    expect(appleNudge(begins).contains("Submit lab"), "a reminder due today takes the next calendar slot while the event is active")
+    expect(appleNudge(ends.addingTimeInterval(-1)).contains("Study group is on now."), "ongoing Apple Calendar events keep their turn up to the end")
+    expect(appleNudge(ends).contains("Pick up a book"), "the ended event and tomorrow's reminder are ineligible, and undated reminders keep rotating")
+    appleContext.appleReminders = [ProtectionAppleReminder(title: "Tomorrow’s lab", dueDate: testNow.addingTimeInterval(86400))]
+    expect(!appleNudge(ends).contains("Pick up a book"), "a completed Apple Reminder drops out on refresh")
+    appleContext.appleReminders = [ProtectionAppleReminder(title: "Pick up a book", dueDate: nil)]
+    appleContext.appleRemindersEnabled = false
+    expect(!appleNudge(ends).contains("Pick up a book"), "disabling Reminders excludes any cached titles")
+    var holidayContext = ProtectionOwnerRecord(owner: a)
+    let newYear = ProtectionPublicHoliday(name: "New Year's Day", startsAt: testNow.addingTimeInterval(-3600),
+      endsAt: testNow.addingTimeInterval(3600))
+    holidayContext.publicHoliday = newYear
+    holidayContext.holidayNudgeMessages = ["New Year's Day: send a warm note to a friend."]
+    expect(holidayContext.nextNotificationLine(checkpoint: 0, now: testNow, region: nil)
+      .contains("send a warm note"), "use prepared AI copy for a calendar holiday")
+    holidayContext.nudgeTurn = 0
+    expect(!holidayContext.nextNotificationLine(checkpoint: 0, now: testNow, region: nil)
+      .contains(newYear.name), "holiday copy does not repeat on every checkpoint")
+    holidayContext.lastHolidayNudge = nil
+    holidayContext.holidayNudgeMessages = nil
+    holidayContext.nudgeTurn = 0
+    expect(holidayContext.nextNotificationLine(checkpoint: 0, now: testNow, region: nil)
+      .contains(newYear.name), "offline holiday copy preserves the holiday name")
+    context.googleCalendarID = nil
+    expect(context.contextualLine(0, turn: 2) == "Put your book nearby.", "Google disconnect removes it from rotation")
+    var delivered: [String] = []
+    for checkpoint in 0..<30 {
+      // Round-trip between notifications to simulate the extension restarting.
+      context = try JSONDecoder().decode(ProtectionOwnerRecord.self, from: JSONEncoder().encode(context))
+      let line = context.nextNotificationLine(checkpoint: checkpoint % 3, region: nil)
+      expect(delivered.last != line, "avoid immediate repetition while keeping the category")
+      delivered.append(line)
+    }
+    expect(delivered.contains("Put your book nearby.") && delivered.contains { $0.contains("50 credits") },
+      "rotation retains AI and quest copy")
+    context.nudgeTone = "Direct"
+    expect(context.contextualLine(0, turn: 0) == "Pick one next step for reading.", "tone changes immediately without a new pack")
+    context.shieldActivity = "custom:sketching"
+    expect(context.contextualLine(0, turn: 0) == "Pick one next step for sketching.", "custom goals remain local and personalized")
     try expect(try store.read() == nil, "missing must stay missing")
     let first = try store.update(expectedRevision: nil) { state in
       state.owners = [ProtectionOwnerRecord(owner: a)]
@@ -43,6 +190,21 @@ import Darwin
     }
     expect(first.revision == 1, "first atomic revision")
     // Shield reads must finish even while a writer owns the transaction lock.
+    let preparedAt = Date()
+    let target = Data("target-token".utf8)
+    let expiredCard = ProtectionShieldPresentation(name: nil, activity: "reading",
+      generatedLine: nil, expired: true, resuming: false, seconds: 300, canContinue: false,
+      allowanceApplied: false, used: 3, limit: 3, rewardPoints: 20)
+    try store.saveExpiryPresentation(.init(preparedAt: preparedAt, apps: [target: expiredCard]))
+    expect(store.expiryPresentation(for: target, now: preparedAt.addingTimeInterval(1)) == expiredCard,
+      "expiry presentation reads independently of the owner ledger and preserves the cap")
+    expect(store.expiryPresentation(for: Data("different-token".utf8), now: preparedAt) == nil,
+      "expiry presentation belongs to the exact shielded app")
+    expect(store.expiryPresentation(for: target, now: preparedAt.addingTimeInterval(30)) == nil,
+      "expiry handoff never serves stale presentation")
+    store.clearExpiryPresentation()
+    expect(store.expiryPresentation(for: target, now: preparedAt) == nil,
+      "an allowance or plan change can invalidate the old view")
     let rendering = SharedProtectionStore(directory: root, beforeRename: {
       try expect(try store.presentationSnapshot() == first, "rendering sees the last committed state without waiting on writer lock")
       throw ProtectionStoreError.unavailable

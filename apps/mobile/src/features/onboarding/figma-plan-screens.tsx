@@ -119,7 +119,7 @@ export function PlanSuggestionScreen({ apps, description, estimate, onAccept, on
 function PositionedArt({ name, x, y, size, height = size }: { name: AssetName; x: number; y: number; size: number; height?: number }) {
   return <View style={{ position: 'absolute', left: x, top: y }}><PlanArt name={name} width={size} height={height} /></View>;
 }
-export function PlanLoadingScreen({ apps, hobbies, onSkip, busy = false, step = 6, onComplete }: { onComplete?: () => void; step?: number; apps: string; hobbies: string; onSkip(): void; busy?: boolean }) {
+export function PlanLoadingScreen({ apps, hobbies, onSkip, busy = false, step = 6, onComplete, saving = false }: { saving?: boolean; onComplete?: () => void; step?: number; apps: string; hobbies: string; onSkip(): void; busy?: boolean }) {
   return <PlanFrame step={step} onSkip={onSkip} busy={busy}>
     <Text accessibilityRole="header" style={s.title}>We are setting up your plan</Text>
     <Text style={s.description}>A little less scrolling. A little more time for what you love.</Text>
@@ -131,16 +131,16 @@ export function PlanLoadingScreen({ apps, hobbies, onSkip, busy = false, step = 
       <PositionedArt name="loadingStar" x={149} y={20} size={14} />
       <PositionedArt name="loadingSparkle" x={36} y={41} size={10} />
 
-    </View><View style={s.loadingMessage}><Text style={s.loadingLabel}>Putting your plan together</Text><PlanArt name="dots" width={15} height={3} /></View></View>
+    </View><View style={s.loadingMessage}><Text style={s.loadingLabel}>{saving ? "Saving and applying your plan" : "Putting your plan together"}</Text><PlanArt name="dots" width={15} height={3} /></View></View>
     <View style={s.stages}>{[
       [apps ? 'Your apps are chosen' : 'App selection is next', apps || 'Choose apps in device setup'],
       ['Your hobbies are chosen', hobbies || 'Choose your activities'],
-      ['Preparing your suggestion', 'Making room for what you love'],
+      saving ? ['Applying your plan', 'Confirming protection on this device'] : ['Preparing your suggestion', 'Making room for what you love'],
     ].map(([label, detail], index) => <View key={label} style={[s.stage, index < 2 && s.stageBorder]}>
       <PlanArt name={index === 2 || (index === 0 && !apps) ? 'preparing' : 'done'} width={28} /><View style={s.flex}>
         <Text style={[s.stageTitle, index === 2 && s.greenText]}>{label}</Text><Text style={s.stageDetail}>{detail}</Text>
       </View></View>)}</View>
-    <View style={s.loadingFooter}><Text style={s.loadingFooterTitle}>Your suggestion is up next.</Text><Text style={s.loadingFooterNote}>You can always change your plan later.</Text></View>
+    <View style={s.loadingFooter}><Text style={s.loadingFooterTitle}>{saving ? "You’re almost done." : "Your suggestion is up next."}</Text><Text style={s.loadingFooterNote}>You can always change your plan later.</Text></View>
   </PlanFrame>;
 }
 export function PlanCompletionScreen({ hobbies, onFinish, message = 'Your preferences are ready. You can adjust them anytime in Settings.' }: {

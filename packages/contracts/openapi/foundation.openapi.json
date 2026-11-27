@@ -739,6 +739,43 @@
         "title": "MeResponse",
         "type": "object"
       },
+      "NudgeCopy": {
+        "additionalProperties": false,
+        "properties": {
+          "halfway": {
+            "maxLength": 72,
+            "minLength": 1,
+            "title": "Halfway",
+            "type": "string"
+          },
+          "quarter": {
+            "maxLength": 72,
+            "minLength": 1,
+            "title": "Quarter",
+            "type": "string"
+          },
+          "quest_title": {
+            "maxLength": 65,
+            "minLength": 1,
+            "title": "Quest Title",
+            "type": "string"
+          },
+          "three_quarters": {
+            "maxLength": 72,
+            "minLength": 1,
+            "title": "Three Quarters",
+            "type": "string"
+          }
+        },
+        "required": [
+          "quarter",
+          "halfway",
+          "three_quarters",
+          "quest_title"
+        ],
+        "title": "NudgeCopy",
+        "type": "object"
+      },
       "Personalization": {
         "additionalProperties": false,
         "properties": {
@@ -1810,7 +1847,8 @@
               "quit",
               "allowance",
               "day_closed",
-              "nudge_skipped"
+              "nudge_skipped",
+              "app_open"
             ],
             "title": "Kind",
             "type": "string"
@@ -1825,6 +1863,19 @@
             "minimum": 1.0,
             "title": "Sequence",
             "type": "integer"
+          },
+          "session_minutes": {
+            "anyOf": [
+              {
+                "maximum": 1440.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Session Minutes"
           }
         },
         "required": [
@@ -1865,8 +1916,8 @@
             "type": "integer"
           },
           "feed_health": {
-            "const": 20,
-            "default": 20,
+            "maximum": 100.0,
+            "minimum": 1.0,
             "title": "Feed Health",
             "type": "integer"
           },
@@ -1928,6 +1979,7 @@
           "balance",
           "health",
           "artwork",
+          "feed_health",
           "streak_days",
           "recent_week_complete",
           "observed_at"
@@ -5791,6 +5843,327 @@
           }
         ],
         "summary": "Decide",
+        "tags": [
+          "recommendations"
+        ]
+      }
+    },
+    "/v1/recommendations/nudge-copy": {
+      "get": {
+        "operationId": "nudge_copy_v1_recommendations_nudge_copy_get",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "activity",
+            "required": true,
+            "schema": {
+              "title": "Activity",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "tone",
+            "required": true,
+            "schema": {
+              "enum": [
+                "Supportive",
+                "Direct",
+                "Playful",
+                "Intense"
+              ],
+              "title": "Tone",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "holiday",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Holiday"
+            }
+          },
+          {
+            "in": "query",
+            "name": "quest_minutes",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "5",
+                    "10",
+                    "15",
+                    "20"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Quest Minutes"
+            }
+          },
+          {
+            "in": "query",
+            "name": "quest_task",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Quest Task",
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "anyOf": [
+                    {
+                      "$ref": "#/components/schemas/NudgeCopy"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ],
+                  "title": "Response Nudge Copy V1 Recommendations Nudge Copy Get"
+                }
+              }
+            },
+            "description": "Successful Response",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unauthorized",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "WWW-Authenticate": {
+                "required": true,
+                "schema": {
+                  "const": "Bearer",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Forbidden",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Conflict",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "413": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Request Entity Too Large",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Unprocessable Entity",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Safe unexpected failure",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "503": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorEnvelope"
+                }
+              }
+            },
+            "description": "Service Unavailable",
+            "headers": {
+              "Cache-Control": {
+                "required": true,
+                "schema": {
+                  "const": "no-store",
+                  "type": "string"
+                }
+              },
+              "X-Request-ID": {
+                "description": "Server-generated UUID; matches error.request_id on failures.",
+                "required": true,
+                "schema": {
+                  "format": "uuid",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "SupabaseAccessToken": []
+          }
+        ],
+        "summary": "Nudge Copy",
         "tags": [
           "recommendations"
         ]

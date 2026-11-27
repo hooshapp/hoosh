@@ -2,11 +2,12 @@ import type { AuthSessionPort, AuthSnapshot, SettingsView } from '@disconnect/co
 import { act, fireEvent, render, screen, waitFor } from '@testing-library/react-native';
 import { onlineManager } from '@tanstack/react-query';
 import { router } from 'expo-router';
-import { Text } from 'react-native';
+import { ActionSheetIOS, Text } from 'react-native';
 import { createAccountDataController } from '@/infrastructure/query/account-controller';
 import { AccountDataProvider } from '@/infrastructure/query/account-data-provider';
 import type { AccountApi } from '@/infrastructure/query/account-scope';
 import { ConnectedSettingsScreen } from '@/features/settings/connected-settings-screen';
+import * as nativeOwner from '@/features/protection/native-owner-boundary';
 import { ConnectedHomeScreen } from './connected-home-screen';
 
 jest.mock('@/features/editors/use-route-draft-guard', () => ({
@@ -137,6 +138,42 @@ test('Settings retains account preference access without onboarding replay short
   expect(screen.queryByText('Set up Hoosh')).toBeNull();
   expect(screen.getByText('Nudge Tone')).toBeTruthy();
   expect(app.patch).not.toHaveBeenCalled();
+});
+
+test('the Apple Calendar arrow can connect Reminders independently', async () => {
+  const app = setup();
+  const calendarNudgeSettings = jest.fn(async () => false);
+  const remindersNudgeSettings = jest.fn(async (enabled?: boolean) => enabled === true);
+  const device = jest.spyOn(nativeOwner, 'useIOSSelectionDevice').mockReturnValue({
+    owner: A,
+    generation: 1,
+    selection: {
+      selectionBegin: jest.fn(),
+      selectionPick: jest.fn(),
+      selectionCommit: jest.fn(),
+      selectionRelease: jest.fn(),
+    },
+    readSelection: jest.fn(),
+    readStatus: jest.fn(),
+    requestAuthorization: jest.fn(),
+    stop: jest.fn(),
+    subscribe: jest.fn(),
+    calendarNudgeSettings, remindersNudgeSettings,
+  });
+  const sheet = jest.spyOn(ActionSheetIOS, 'showActionSheetWithOptions').mockImplementation((_options, select) => select(1));
+  try {
+    await render(<AccountDataProvider controller={app.controller} fallback={<Text>Closed</Text>}><ConnectedSettingsScreen /></AccountDataProvider>);
+    await fireEvent.press(await screen.findByRole('button', { name: /Connect Apple Calendar.*Connect Calendar or Reminders/ }));
+    expect(sheet).toHaveBeenCalledWith(expect.objectContaining({
+      options: ['Connect Apple Calendar', 'Connect Apple Reminders', 'Cancel'],
+    }), expect.any(Function));
+    await screen.findByRole('button', { name: /Connect Apple Calendar.*Reminders connected/ });
+    expect(remindersNudgeSettings).toHaveBeenCalledWith(true);
+    expect(calendarNudgeSettings).not.toHaveBeenCalledWith(true);
+  } finally {
+    device.mockRestore();
+    sheet.mockRestore();
+  }
 });
 
 test('tone Done saves the account preference while leaving the plan unchanged', async () => {

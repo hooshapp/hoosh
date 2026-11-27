@@ -32,6 +32,7 @@ import android.widget.TextView
 
 /** Only window package metadata; never requests nodes, contents, gestures or text. Native schedule evaluation in every build. */
 class InterventionAccessibilityService : AccessibilityService() {
+  private val googleCalendar by lazy { GoogleCalendarNudges(this) }
   private lateinit var runtime: InterventionRuntime
   private val main = Handler(Looper.getMainLooper())
   private var foreground: String? = null
@@ -94,10 +95,12 @@ class InterventionAccessibilityService : AccessibilityService() {
         val record = runtime.engine.checkpoint(System.currentTimeMillis(), SystemClock.elapsedRealtime(), runtime.boot())
         val needed = if (app == null) emptyList() else record?.let { runtime.engine.needed(it, app, System.currentTimeMillis(), SystemClock.elapsedRealtime(), runtime.boot()) }.orEmpty()
         val nudge = if (app == null) null else record?.let { runtime.engine.nudge(it, app, System.currentTimeMillis(), SystemClock.elapsedRealtime(), runtime.boot()) }
+        val calendarLine = if (record != null && (needed.isNotEmpty() || nudge != null))
+          googleCalendar.reminder(record.plan.owner, wall) else null
         main.post {
           finishRead()
           if (token != generation || epoch != runtime.epoch.get() || foreground != app || runtime.service !== this || !runtime.unlocked()) return@post
-          if (app == null || record == null || (needed.isEmpty() && nudge == null)) hide() else show(record, app, needed, nudge)
+          if (app == null || record == null || (needed.isEmpty() && nudge == null)) hide() else show(record, app, needed, nudge, calendarLine)
         }
         if (record != null) runtime.history.capture(record.plan.owner, System.currentTimeMillis())
       } catch (_: Exception) { runtime.failure = "ERR_INTERVENTION_STORAGE"; main.post { finishRead(); if (token == generation) hide() } }
@@ -111,7 +114,7 @@ class InterventionAccessibilityService : AccessibilityService() {
     val old = overlay; overlay = null; overlayKey = null
     if (old != null) try { getSystemService(WindowManager::class.java).removeView(old) } catch (_: Exception) { runtime.failure = "ERR_INTERVENTION_OVERLAY"; disableSelf() }
   }
-  private fun show(record: InterventionRecord, app: String, reasons: List<InterventionWindow>, nudge: AppSession?) {
+  private fun show(record: InterventionRecord, app: String, reasons: List<InterventionWindow>, nudge: AppSession?, calendarLine: String?) {
     val mid = reasons.isEmpty() && nudge != null
     val key = "${record.plan.owner}:${record.plan.revision}:$app:${if (mid) nudge?.id else reasons.joinToString { it.reasonId }}"
     if (key == overlayKey) return
@@ -235,11 +238,12 @@ class InterventionAccessibilityService : AccessibilityService() {
       mid -> "${durationLabel(session?.let { runtime.engine.remaining(it, SystemClock.elapsedRealtime()) } ?: 0)} left in this session"
       exhausted -> "You’re out of sessions for today$address. Make time for $goal."
       context == "expired" -> "Time to get back to $goal$address."
+      calendarLine != null && used % 2 == 0 -> calendarLine
       else -> "Opened out of habit? You chose this time for $goal$address."
     }
     if (mid) {
       text(message, 17f, true)
-      text("${copy.line(record.plan.owner, goal)} Earn 30 credits for closing the app now.", 14f)
+      text("${calendarLine?.takeIf { nudge?.nudgeQuarter == 1 } ?: copy.line(record.plan.owner, goal, nudge?.nudgeQuarter ?: 1)} Earn 30 credits for closing the app now.", 14f)
     } else {
       val headline = label(message, 45f, regular, ink).apply {
         setLineSpacing(dp(3f).toFloat(), 1f)

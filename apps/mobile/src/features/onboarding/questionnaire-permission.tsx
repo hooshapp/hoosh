@@ -25,7 +25,7 @@ export function QuestionnairePermission({ busy: saving, onContinue, onBack, sele
   const [error, setError] = useState(false);
   const [selectionReviewed, setSelectionReviewed] = useState(false);
   const [selectionError, setSelectionError] = useState(false);
-  const active = useRef(true), lock = useRef(false), readID = useRef(0);
+  const active = useRef(true), lock = useRef(false), readID = useRef(0), pickID = useRef(0);
   useEffect(() => { active.current = true; return () => { active.current = false; }; }, []);
   const refresh = useCallback(async () => {
     if (!active.current) return;
@@ -70,6 +70,8 @@ export function QuestionnairePermission({ busy: saving, onContinue, onBack, sele
   async function chooseApps() {
     if (!device || lock.current || saving || AppState.currentState !== 'active' || (!selectionQuestion && (!state?.authorized || (Platform.OS === 'ios' && state.review?.status !== 'owned')))) return;
     lock.current = true; setBusy(true); setSelectionError(false); setSelectionReviewed(false);
+    const attempt = ++pickID.current;
+    const current = () => active.current && pickID.current === attempt;
     let draftID: string | undefined;
     try {
       if (selectionQuestion) {
@@ -77,48 +79,50 @@ export function QuestionnairePermission({ busy: saving, onContinue, onBack, sele
         if (Platform.OS === 'ios') {
           if (!installation || !iosDevice) throw new Error('Native setup unavailable');
           const review = await installation.read();
-          if (!active.current) return;
+          if (!current()) return;
           if (review.status !== 'owned') await installation.claim(review.revision);
-          if (!active.current || (await installation.read()).status !== 'owned') throw new Error('Account setup unconfirmed');
+          if (!current() || (await installation.read()).status !== 'owned') throw new Error('Account setup unconfirmed');
+          if (!current()) return;
         }
         const before = await device.readStatus();
-        if (!active.current) return;
+        if (!current()) return;
         if (before.authorization !== 'authorized') {
           if (Platform.OS === 'ios') await iosDevice!.requestAuthorization();
           else if (deviceProtectionIntegration.availability === 'connected') await deviceProtectionIntegration.service.requestAuthorization();
           else throw new Error('Native access unavailable');
         }
-        if (!active.current) return;
+        if (!current()) return;
         const status = await device.readStatus();
         await refresh();
-        if (!active.current || status.authorization !== 'authorized') return;
+        if (!current() || status.authorization !== 'authorized') return;
       }
+      if (!current()) return;
       const draft = decodeSelectionDraft(await device.selection.selectionBegin(device.owner));
       draftID = draft.draftId;
-      if (!active.current) return;
+      if (!current()) return;
       const picked = decodeSelectionDraft(await device.selection.selectionPick(device.owner, draft.draftId, draft.draftVersion));
-      if (!active.current) return;
+      if (!current()) return;
       if (picked.draftId !== draft.draftId || picked.baseRevision !== draft.baseRevision ||
         picked.draftVersion < draft.draftVersion || picked.draftVersion > draft.draftVersion + 1 ||
         picked.savedAppCount !== draft.savedAppCount || !picked.selectedAppCount) throw new Error('Review apps');
       const committed = decodeSelectionDraft(await device.selection.selectionCommit(device.owner, picked.draftId, picked.draftVersion));
-      if (!active.current) return;
+      if (!current()) return;
       if (committed.draftId !== picked.draftId || committed.dirty || committed.draftVersion !== picked.draftVersion ||
         committed.selectedAppCount !== picked.selectedAppCount || committed.baseRevision < picked.baseRevision ||
         committed.baseRevision > picked.baseRevision + 1) throw new Error('Unconfirmed selection');
       const [status, saved] = await Promise.all([device.readStatus(), device.readSelection()]);
-      if (!active.current) return;
+      if (!current()) return;
       if (status.authorization !== 'authorized' || saved.needsReselection || saved.selectedAppCount !== committed.selectedAppCount || saved.revision !== committed.baseRevision) throw new Error('Unconfirmed selection');
       setState(current => ({ ...current, authorized: true, count: saved.selectedAppCount, revision: saved.revision }));
       setSelectionReviewed(true);
     } catch (error: unknown) {
-      if (active.current) {
+      if (current()) {
         const code = error && typeof error === 'object' && 'code' in error ? error.code : null;
         if (code !== 'ERR_SELECTION_CANCELLED') setSelectionError(true);
       }
     } finally {
       if (draftID) void device.selection.selectionRelease(device.owner, draftID).catch(() => undefined);
-      lock.current = false; if (active.current) setBusy(false);
+      if (current()) { lock.current = false; setBusy(false); }
     }
   }
   function prepare() {
@@ -148,7 +152,12 @@ export function QuestionnairePermission({ busy: saving, onContinue, onBack, sele
     <View style={styles.selectionActions}>
       <Button label="Next →" busy={saving} disabled={busy || !state?.authorized || !targetsReady || !state.count}
         onPress={() => onContinue(false, state?.revision, state?.count)} />
-      {onBack ? <Button label="Back" variant="secondary" disabled={saving || busy} onPress={onBack} /> : null}
+      {onBack ? <Button label="Back" variant="secondary" disabled={saving} onPress={() => {
+        pickID.current++;
+        lock.current = false;
+        setBusy(false);
+        onBack();
+      }} /> : null}
     </View>
   </View>;
   return <>

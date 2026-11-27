@@ -35,16 +35,11 @@ struct ElapsedProtectionSession: Codable, Equatable {
   var usageConsumedSeconds: Int? = nil
   var usageStartedAt: Int64? = nil
   var usageGroupID: UUID? = nil
-  var exactQuarters: Bool? = nil
   var usageMonitorRevision: UInt64? = nil
   var usageOffsetSeconds: Int? = nil
+  var usageStartedElapsed: Int64? = nil
   var usageBased: Bool { usageConsumedSeconds != nil }
-  var nudgeSeconds: [Int] {
-    if exactQuarters == true {
-      return Array(Set((1...3).map { (seconds * $0 + 3) / 4 }.filter { $0 < seconds })).sorted()
-    }
-    return ProtectionSessionLedger.nudgeSeconds(duration: seconds)
-  }
+  var nudgeSeconds: [Int] { ProtectionSessionLedger.nudgeSeconds(duration: seconds) }
   var usageGroup: UUID { usageGroupID ?? id }
   func remaining(_ clock: ProtectionClock) -> Int {
     if let used = usageConsumedSeconds { return max(0, seconds - used) }
@@ -149,13 +144,17 @@ struct ProtectionSessionLedger: Codable, Equatable {
   }
   func usedSessions(app: Data, clock: ProtectionClock) throws -> Int {
     try clock.validate()
-    let today = try day(clock.wall)
+    return try usedSessions(app: app, wall: clock.wall)
+  }
+  func usedSessions(app: Data, wall: Int64) throws -> Int {
+    let today = try day(wall)
+    let bucket = max(today, daily.map(\.day).max() ?? today)
     let sharedKey = Data("__hoosh_shared_budget_v1__".utf8)
     if policy.sharedBudget {
-      return daily.first(where: { $0.app == sharedKey && $0.day == today })?.count
-        ?? daily.filter { $0.day == today && $0.app != sharedKey }.reduce(0) { $0 + $1.count }
+      return daily.first(where: { $0.app == sharedKey && $0.day == bucket })?.count
+        ?? daily.filter { $0.day == bucket && $0.app != sharedKey }.reduce(0) { $0 + $1.count }
     }
-    return daily.first(where: { $0.app == app && $0.day == today })?.count ?? 0
+    return daily.first(where: { $0.app == app && $0.day == bucket })?.count ?? 0
   }
   mutating func allow(app: Data, revision: Int, reasons: [ProtectionSessionReason], clock: ProtectionClock, usageBased: Bool = false) throws -> ProtectionGrantResult {
     try clock.validate(); try policy.validate()
@@ -182,8 +181,8 @@ struct ProtectionSessionLedger: Codable, Equatable {
       existing.app == app ? existing : ElapsedProtectionSession(id: UUID(), app: app, wallEnd: existing.wallEnd,
         elapsedEnd: existing.elapsedEnd, boot: existing.boot, seconds: existing.seconds,
         usageConsumedSeconds: existing.usageConsumedSeconds, usageStartedAt: existing.usageStartedAt,
-        usageGroupID: existing.usageGroup, exactQuarters: existing.exactQuarters,
-        usageMonitorRevision: existing.usageMonitorRevision, usageOffsetSeconds: existing.usageOffsetSeconds)
+        usageGroupID: existing.usageGroup,
+        usageMonitorRevision: existing.usageMonitorRevision, usageOffsetSeconds: existing.usageOffsetSeconds, usageStartedElapsed: existing.usageStartedElapsed)
     } ?? ElapsedProtectionSession(id: UUID(), app: app, wallEnd: clock.wall + duration,
       elapsedEnd: clock.elapsed + duration, boot: clock.boot, seconds: policy.sessionSeconds)
     if usageBased && running == nil {
@@ -191,7 +190,7 @@ struct ProtectionSessionLedger: Codable, Equatable {
       let end = reasons.filter { $0.id.hasPrefix("entry_") }.map(\.endsAt).min() ?? reasons.map(\.endsAt).min()!
       session = ElapsedProtectionSession(id: session.id, app: app, wallEnd: end,
         elapsedEnd: Int64.max, boot: clock.boot, seconds: policy.sessionSeconds,
-        usageConsumedSeconds: 0, usageStartedAt: (clock.wall / 1000) * 1000, exactQuarters: true)
+        usageConsumedSeconds: 0, usageStartedAt: (clock.wall / 1000) * 1000, usageStartedElapsed: clock.elapsed)
     }
     let kept = grants.filter { $0.wallEnd > clock.wall && $0.elapsedEnd > clock.elapsed && $0.boot == clock.boot }
     let newGrants = pending.map { reason in
@@ -224,8 +223,17 @@ struct ProtectionSessionLedger: Codable, Equatable {
       source.boot == clock.boot, source.wallEnd > clock.wall else { return false }
     let bounded = min(source.seconds, seconds)
     guard bounded > (source.usageConsumedSeconds ?? 0) else { return false }
+    // The OS cannot have counted more foreground use than total time since the grant.
+    if bounded == source.seconds, let start = source.usageStartedElapsed,
+      clock.elapsed - start + 1000 < Int64(bounded) * 1000 {
+      return false
+    }
     for i in sessions.indices where sessions[i].usageBased && sessions[i].usageGroup == group {
       sessions[i].usageConsumedSeconds = bounded
+    }
+    if bounded == source.seconds {
+      let finishedApps = Set(sessions.filter { $0.usageBased && $0.usageGroup == group }.map(\.app))
+      grants.removeAll { finishedApps.contains($0.app) }
     }
     return true
   }

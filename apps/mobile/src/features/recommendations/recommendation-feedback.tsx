@@ -10,6 +10,7 @@ export function RecommendationFeedback({
   recommendations: ReturnType<typeof useRecommendations>;
   onOpen?: (id: string) => void;
 }) {
+  const questId = r.data?.accepted_quest_id;
   return (
     <View style={{ gap: 10 }}>
       {r.message ? (
@@ -25,14 +26,14 @@ export function RecommendationFeedback({
           {r.notice}
         </Text>
       ) : null}
-      {r.data?.accepted_quest_id && onOpen ? (
+      {questId && onOpen ? (
         <Button
-          label="Review one-time quest"
+          label="Open quest"
           variant="secondary"
-          onPress={() => onOpen(r.data!.accepted_quest_id!)}
+          onPress={() => onOpen(questId)}
         />
       ) : null}
-      {r.message || r.recommendation.state === 'error' || r.notice.includes('expired') ? <Button
+      {r.needsRefresh ? <Button
         label="Check latest suggestion"
         variant="secondary"
         disabled={!r.canRefresh}

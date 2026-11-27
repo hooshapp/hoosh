@@ -1,6 +1,4 @@
 import { InlineStatus } from '@/components/ui/inline-status';
-import { Text, View } from 'react-native';
-import { colors, fonts } from '@/design/tokens';
 import { HistoryCollectionControls } from './history-collection-settings';
 import { HistoryExperience } from './history-experience';
 import { historyProjection } from './history-projection';
@@ -19,18 +17,9 @@ export function ConnectedHistoryScreen({ collectionReview = false }: { collectio
       summary={projection.summary}
       monthlySummary={projection.monthlySummary}
       periods={projection.periods}
-      renderUsageComparison={renderUsage ? period => renderUsage(false, period === 'month' ? 28 : 7) : undefined}
+      renderUsageComparison={renderUsage ? (period, page) => renderUsage(false, period === 'month' ? 28 : 7, page) : undefined}
       onRetry={history.refresh}
-      controls={collectionReview ? <HistoryCollectionControls history={history} /> : history.loading ? <InlineStatus state="loading" message="Loading History…" /> : !snapshot || !history.online ? <InlineStatus state="error" message="History could not be loaded." onRetry={history.refresh} /> : snapshot.view.recent_interventions ? (
-        <View style={{ gap: 6 }}>
-          <Text accessibilityRole="header" style={{ color: colors.warmForeground, fontFamily: fonts.bold }}>Synced session activity</Text>
-          {snapshot.view.recent_interventions.map(day => (
-            <Text key={day.day} style={{ color: colors.warmForeground, fontFamily: fonts.regular }}>
-              {day.day} · {day.sessions_started} started · {day.turn_offs} turn-offs
-            </Text>
-          ))}
-        </View>
-      ) : null}
+      controls={collectionReview ? <HistoryCollectionControls history={history} /> : history.loading ? <InlineStatus state="loading" message="Loading History…" /> : !snapshot || !history.online ? <InlineStatus state="error" message="History could not be loaded." onRetry={history.refresh} /> : null}
     />
   );
 }

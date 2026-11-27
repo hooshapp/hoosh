@@ -19,11 +19,23 @@ struct Disconnect: DeviceActivityReportExtension {
         HooshUsageComparison(context: .init("Hoosh Usage Compact"), days: 7) {
             UsageComparisonView(comparison: $0, compact: true, days: 7)
         }
-        HooshUsageComparison(context: .init("Hoosh Usage Week"), days: 7) {
-            UsageComparisonView(comparison: $0, compact: false, days: 7)
+        HooshUsageComparison(context: .init("Hoosh History summary 7"), days: 7) {
+            UsageComparisonView(comparison: $0, compact: false, days: 7, page: .summary)
         }
-        HooshUsageComparison(context: .init("Hoosh Usage Month"), days: 28) {
-            UsageComparisonView(comparison: $0, compact: false, days: 28)
+        HooshUsageComparison(context: .init("Hoosh History summary 28"), days: 28) {
+            UsageComparisonView(comparison: $0, compact: false, days: 28, page: .summary)
+        }
+        HooshUsageComparison(context: .init("Hoosh History progress 7"), days: 7) {
+            UsageComparisonView(comparison: $0, compact: false, days: 7, page: .progress)
+        }
+        HooshUsageComparison(context: .init("Hoosh History progress 28"), days: 28) {
+            UsageComparisonView(comparison: $0, compact: false, days: 28, page: .progress)
+        }
+        HooshUsageComparison(context: .init("Hoosh History reclaimed 7"), days: 7) {
+            UsageComparisonView(comparison: $0, compact: false, days: 7, page: .reclaimed)
+        }
+        HooshUsageComparison(context: .init("Hoosh History reclaimed 28"), days: 28) {
+            UsageComparisonView(comparison: $0, compact: false, days: 28, page: .reclaimed)
         }
     }
 }

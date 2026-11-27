@@ -12,14 +12,32 @@ enum ProtectionNativeEngine {
     guard ProtectionActivationGate.enabled, name.hasPrefix("hoosh.shared.") else { return }
     do {
       let store = try SharedProtectionStore.appGroup()
-      let (owner, revision) = try current(store)
+      // startMonitoring may invoke the extension before the installer releases
+      // the state lock. The installer applies the current shield itself.
+      guard let snapshot = try store.presentationSnapshot(), let claimed = snapshot.installedOwner,
+        snapshot.pendingClaim == nil,
+        let installed = snapshot.owners.first(where: { $0.owner == claimed }),
+        installed.pendingInstallation == nil, installed.installation?.enabled == true else { return }
       if name.contains(".usage.") {
-        guard let label = name.components(separatedBy: ".usage.").last?.split(separator: ".").first.map(String.init), let group = UUID(uuidString: label),
-          let state = try store.read(),
-          state.owners.first(where: { $0.owner == owner })?.sessionLedger?.sessions.contains(where: { $0.usageBased && $0.usageGroup == group }) == true,
-          name == ProtectionRuntimePlanner.prefix(owner) + "usage." + group.uuidString.lowercased() else { return }
-      } else {
+        // Retiring the completed monitor can generate intervalDidEnd while the
+        // next grant holds the store lock. Ignore closed monitors from the
+        // committed snapshot before entering the locked reconciliation path.
+        let clock = try ProtectionDeviceClock.sample()
+        guard let ledger = installed.sessionLedger,
+          ledger.sessions.contains(where: { session in
+            session.usageBased && session.live(clock) &&
+              name == ProtectionNativeDriver.usageMonitorName(owner: claimed, session: session) &&
+              ledger.grants.contains { grant in
+                grant.app == session.app && grant.boot == clock.boot &&
+                  grant.wallEnd > clock.wall && grant.elapsedEnd > clock.elapsed
+              }
+          }) else { return }
+      }
+      let (owner, revision) = try current(store)
+      if !name.contains(".usage.") {
         guard name.hasPrefix(ProtectionRuntimePlanner.prefix(owner) + "r\(revision).") else { return }
+      } else if owner != claimed {
+        return
       }
       try ProtectionRuntimeCoordinator(store: store).refresh(owner: owner, revision: revision,
         driver: ProtectionNativeDriver(owner: owner))
@@ -35,10 +53,11 @@ enum ProtectionNativeEngine {
     do {
       let store = try SharedProtectionStore.appGroup()
       let (owner, revision) = try current(store)
-      guard let before = try store.read() else { return }
       let clock = try ProtectionDeviceClock.sample()
+      var reachedEnd = false
       var reminderRemaining: Int?
-      _ = try store.update(expectedRevision: before.revision) { next in
+      var reminderLine: String?
+      _ = try store.updateLatest { next in
         guard next.installedOwner == owner, next.pendingClaim == nil,
           let index = next.owners.firstIndex(where: { $0.owner == owner }),
           next.owners[index].pendingInstallation == nil,
@@ -52,28 +71,97 @@ enum ProtectionNativeEngine {
             grant.wallEnd > clock.wall && grant.elapsedEnd > clock.elapsed &&
             ledger.sessions.contains { $0.app == grant.app && $0.usageGroup == group }
         }
-        if try ledger.recordUsage(group: group, seconds: seconds, clock: clock), hasActiveGrant,
-          session.nudgeSeconds.contains(seconds) {
+        guard hasActiveGrant, try ledger.recordUsage(group: group, seconds: seconds, clock: clock) else { return }
+        reachedEnd = seconds == session.seconds
+        if session.nudgeSeconds.contains(seconds) {
           reminderRemaining = session.seconds - seconds
+          let checkpoint = session.nudgeSeconds.firstIndex(of: seconds) ?? 0
+          reminderLine = next.owners[index].nextNotificationLine(checkpoint: checkpoint, session: group,
+            now: Date(timeIntervalSince1970: Double(clock.wall) / 1000))
         }
         next.owners[index].sessionLedger = ledger
       }
-      try ProtectionRuntimeCoordinator(store: store).refresh(owner: owner, revision: revision,
-        driver: ProtectionNativeDriver(owner: owner))
-      syncNudges(owner: owner) // Cancels obsolete wall-clock notifications.
-      if let remaining = reminderRemaining, remaining > 0 {
+      if reachedEnd {
+        // Prepare presentation after committing the usage checkpoint, before
+        // the foreground app receives the re-applied restriction.
+        let applied = try store.withSnapshot { latest -> Bool in
+          guard let latest, latest.installedOwner == owner, latest.pendingClaim == nil,
+            let record = latest.owners.first(where: { $0.owner == owner }),
+            record.pendingInstallation == nil, let runtime = record.installation,
+            let ledger = record.sessionLedger,
+            runtime.enabled, runtime.revision == revision else { return false }
+          let clock = try ProtectionDeviceClock.sample()
+          let blocked = try ProtectionNativeDriver.blocked(runtime, ledger: ledger, clock: clock)
+          guard !blocked.isEmpty else { return false }
+          let now = Date(timeIntervalSince1970: Double(clock.wall) / 1000)
+          let completed = ledger.sessions.filter {
+            $0.usageBased && $0.usageGroup == group && $0.usageConsumedSeconds == $0.seconds
+          }.compactMap { try? JSONDecoder().decode(ApplicationToken.self, from: $0.app) }
+            .filter { blocked.contains($0) }
+          // A newer grant may have replaced the finished session meanwhile.
+          guard !completed.isEmpty else { return false }
+          var cards: [Data: ProtectionShieldPresentation] = [:]
+          for app in completed {
+            guard let card = try? presentation(app, record: record, runtime: runtime, now: clock.wall),
+              card.expired, let key = try? presentationKey(app) else { continue }
+            cards[key] = card
+          }
+          // A presentation I/O error must never prevent the block.
+          let snapshotWritten: Bool
+          do {
+            try store.saveExpiryPresentation(.init(preparedAt: now, apps: cards))
+            snapshotWritten = true
+          } catch {
+            store.clearExpiryPresentation()
+            snapshotWritten = false
+          }
+          try ProtectionOSAdapter.reapplyExpiredSessionShield(blocked)
+          #if HOOSH_PHYSICAL_NUDGE_QA
+          let qa = UserDefaults(suiteName: SharedProtectionStore.group)
+          qa?.set(Date().timeIntervalSince1970, forKey: "hoosh.qa.expiryShieldSubmittedAt")
+          qa?.set(seconds, forKey: "hoosh.qa.expiryDurationSeconds")
+          qa?.set(snapshotWritten ? cards.count : 0, forKey: "hoosh.qa.expiryPreparedAppCount")
+          #endif
+          queueExpiryNotice(owner: owner)
+          return true
+        }
+        // Match the Swift per-app implementation's order. A stopped monitor
+        // may call back, so retire it after the shield write and outside the lock.
+        if applied { try? ProtectionOSAdapter.retire([name]) }
+      }
+      if let remaining = reminderRemaining, remaining > 0, let recommendation = reminderLine {
         let content = UNMutableNotificationContent()
-        content.title = "NUDGE · Recommendation for you"
-        let recommendation = nudgeLine()
-        content.body = "\(max(1, Int(ceil(Double(remaining) / 60)))) minutes of app time left. \(recommendation) Accept a break now and earn 30 credits."
+        content.title = "Tap to pause · +30 credits"
+        let time = "\(max(1, (remaining + 59) / 60)) min left"
+        content.body = "\(time) · \(recommendation)"
         content.categoryIdentifier = "hoosh.session.nudge"
-        content.userInfo = ["ownerTag": ProtectionRuntimePlanner.prefix(owner), "group": group.uuidString, "checkpoint": seconds, "remainingSeconds": remaining, "recommendation": recommendation]
+        content.userInfo = ["ownerTag": ProtectionRuntimePlanner.prefix(owner), "group": group.uuidString, "checkpoint": seconds, "remainingSeconds": remaining, "recommendation": recommendation, "tapToPause": true]
         content.sound = .default
         UNUserNotificationCenter.current().add(UNNotificationRequest(
           identifier: "hoosh.shared.nudge." + ProtectionRuntimePlanner.prefix(owner) + group.uuidString + ".\(seconds)",
           content: content, trigger: nil))
       }
     } catch { /* Keep the persisted checkpoint; retry never consumes another session. */ }
+  }
+
+  private static func expiryNoticeID(owner: ProtectionOwner) -> String {
+    "hoosh.session.complete." + ProtectionRuntimePlanner.prefix(owner)
+  }
+
+  private static func queueExpiryNotice(owner: ProtectionOwner) {
+    let content = UNMutableNotificationContent()
+    content.title = "Hoosh · Session complete"
+    content.body = "Your app time is up. Tap to return to Hoosh."
+    let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 3, repeats: false)
+    UNUserNotificationCenter.current().add(UNNotificationRequest(
+      identifier: expiryNoticeID(owner: owner), content: content, trigger: trigger))
+  }
+
+  static func suppressExpiryNotice() {
+    guard let state = try? SharedProtectionStore.appGroup().presentationSnapshot(),
+      let owner = state.installedOwner, state.pendingClaim == nil else { return }
+    UNUserNotificationCenter.current().removePendingNotificationRequests(
+      withIdentifiers: [expiryNoticeID(owner: owner)])
   }
 
   static func pauseForHostReturn() {
@@ -138,26 +226,12 @@ enum ProtectionNativeEngine {
     } catch { /* Stale notification cannot grant credit or change another owner. */ }
   }
 
-  static func nudgeLine() -> String {
+  static func nudgeLine(index: Int? = nil, turn: Int? = nil) -> String {
     let record = (try? SharedProtectionStore.appGroup().presentationSnapshot()).flatMap { state in
       state.installedOwner.flatMap { owner in state.owners.first(where: { $0.owner == owner }) }
     }
-    let goals = ["reading": "reading", "gym": "the gym", "walking": "a walk",
-      "arts_and_crafts": "arts and crafts", "music": "music", "cooking": "cooking"]
-    if let activity = record?.shieldActivity, let goal = goals[activity] {
-      switch record?.nudgeTone {
-      case "Direct": return "Pause now and make time for \(goal)."
-      case "Playful": return "Plot twist: it’s time for \(goal)."
-      case "Intense": return "Protect the time you chose for \(goal)."
-      default: return "Take a little time for \(goal)."
-      }
-    }
-    switch record?.nudgeTone {
-    case "Direct": return "Pause now. Choose what you want to do next."
-    case "Playful": return "Plot twist: your next chapter is off the feed."
-    case "Intense": return "Protect the time you chose. Make your next move intentional."
-    default: return "A small pause can make room for what matters to you."
-    }
+    if let index, let line = record?.contextualLine(index, turn: turn ?? index) { return line }
+    return record?.goalLine(index ?? 0) ?? "Take a breath and choose what to do next."
   }
 
   static func quit(_ app: ApplicationToken) {
@@ -259,56 +333,55 @@ enum ProtectionNativeEngine {
     } catch { return nil }
   }
 
-  struct ShieldPresentation {
-    let name: String?
-    let activity: String?
-    let expired: Bool
-    let resuming: Bool
-    let seconds: Int
-    let canContinue: Bool
-    let used: Int
-    let limit: Int
-    let rewardPoints: Int
+  private static func presentationKey(_ app: ApplicationToken) throws -> Data {
+    let encoder = JSONEncoder()
+    encoder.outputFormatting = [.sortedKeys]
+    return try encoder.encode(app)
   }
-  static func presentation(_ app: ApplicationToken) -> ShieldPresentation? {
-    // Shield rendering has a strict OS deadline. Never resolve recurrence, call
-    // DeviceActivityCenter, or sample kernel clocks from this UI callback.
+
+  static func presentation(_ app: ApplicationToken) -> ProtectionShieldPresentation? {
     guard ProtectionActivationGate.enabled else { return nil }
     do {
-      let state = try SharedProtectionStore.appGroup().presentationSnapshot()
-      guard let state, let owner = state.installedOwner, state.pendingClaim == nil,
+      let store = try SharedProtectionStore.appGroup()
+      let now = Date()
+      if let prepared = store.expiryPresentation(for: try presentationKey(app), now: now) {
+        return prepared
+      }
+      guard let state = try store.presentationSnapshot(), let owner = state.installedOwner,
+        state.pendingClaim == nil,
         let record = state.owners.first(where: { $0.owner == owner }),
         let runtime = record.installation, runtime.enabled else { return nil }
-      let now = Int64(Date().timeIntervalSince1970 * 1000)
-      let reasons = try runtime.activeSnapshots.filter {
-        guard $0.startsAt <= now && now < $0.endsAt else { return false }
-        return try ProtectionNativeDriver.apps($0.selection).contains(app)
-      }
-      guard !reasons.isEmpty else { return nil }
-      let key = try ProtectionNativeDriver.key(app, ledger: record.sessionLedger)
-      let ledger = record.sessionLedger
-      let currentStart = reasons.map(\.startsAt).min() ?? now
-      let prior = ledger?.sessions.first(where: { $0.app == key && $0.wallEnd > currentStart })
-      let expired = prior.map { $0.usageBased ? ($0.usageConsumedSeconds ?? 0) >= $0.seconds || $0.wallEnd <= now : $0.wallEnd <= now } ?? false
-      let remaining = prior.flatMap { $0.usageBased && !expired ? max(0, $0.seconds - ($0.usageConsumedSeconds ?? 0)) : nil }
-      // Daily display is read-only; the allowance action remains authoritative.
-      var calendar = Calendar(identifier: .gregorian)
-      calendar.timeZone = TimeZone(identifier: runtime.policy.timezoneId) ?? .current
-      let parts = calendar.dateComponents([.year, .month, .day], from: Date(timeIntervalSince1970: Double(now) / 1000))
-      let day = String(format: "%04d-%02d-%02d", parts.year!, parts.month!, parts.day!)
-      let budgetDay = max(day, ledger?.daily.map(\.day).max() ?? day)
-      let daily = ledger?.daily.filter { $0.day == budgetDay } ?? []
-      let shared = Data("__hoosh_shared_budget_v1__".utf8)
-      let used = runtime.policy.sharedBudget
-        ? daily.first(where: { $0.app == shared })?.count ?? daily.filter { $0.app != shared }.reduce(0) { $0 + $1.count }
-        : daily.first(where: { $0.app == key })?.count ?? 0
-      let canResume = remaining.map { $0 > 0 } == true
-      return ShieldPresentation(name: record.shieldName, activity: record.shieldActivity,
-        expired: expired, resuming: canResume,
-        seconds: remaining ?? runtime.policy.sessionSeconds,
-        canContinue: canResume || used < runtime.policy.sessionsPerDay,
-        used: min(used, runtime.policy.sessionsPerDay), limit: runtime.policy.sessionsPerDay, rewardPoints: prior == nil ? 5 : 20)
+      return try presentation(app, record: record, runtime: runtime,
+        now: Int64(now.timeIntervalSince1970 * 1000))
     } catch { return nil }
+  }
+
+  private static func presentation(_ app: ApplicationToken, record: ProtectionOwnerRecord,
+                                   runtime: ProtectionRuntimeRecord, now: Int64) throws -> ProtectionShieldPresentation? {
+    let reasons = try runtime.activeSnapshots.filter {
+      guard $0.startsAt <= now && now < $0.endsAt else { return false }
+      return try ProtectionNativeDriver.apps($0.selection).contains(app)
+    }
+    guard !reasons.isEmpty else { return nil }
+    let key = try ProtectionNativeDriver.key(app, ledger: record.sessionLedger)
+    let ledger = record.sessionLedger
+    let currentStart = reasons.map(\.startsAt).min() ?? now
+    let prior = ledger?.sessions.first(where: { $0.app == key && $0.wallEnd > currentStart })
+    let expired = prior.map { $0.usageBased ? ($0.usageConsumedSeconds ?? 0) >= $0.seconds || $0.wallEnd <= now : $0.wallEnd <= now } ?? false
+    let remaining = prior.flatMap { $0.usageBased && !expired ? max(0, $0.seconds - ($0.usageConsumedSeconds ?? 0)) : nil }
+    let used = try ledger?.usedSessions(app: key, wall: now) ?? 0
+    let canResume = remaining.map { $0 > 0 } == true
+    let granted = canResume && reasons.allSatisfy { reason in
+      ledger?.grants.contains {
+        $0.app == key && $0.revision == runtime.revision && $0.reasonID == reason.reasonID && $0.wallEnd > now
+      } == true
+    }
+    let allowanceApplied = granted && !ProtectionOSAdapter.isBlocked(app)
+    return ProtectionShieldPresentation(name: record.shieldName, activity: record.goalLabel,
+      generatedLine: record.contextualLine(expired ? 2 : (canResume ? 1 : 0), turn: used + (canResume ? 1 : 0), isShield: true), expired: expired, resuming: canResume,
+      seconds: remaining ?? runtime.policy.sessionSeconds,
+      canContinue: canResume || used < runtime.policy.sessionsPerDay,
+      allowanceApplied: allowanceApplied, used: min(max(0, used - (canResume ? 1 : 0)), runtime.policy.sessionsPerDay), limit: runtime.policy.sessionsPerDay, rewardPoints: prior == nil ? 5 : 20)
   }
   /// Standard iOS notifications; no content/scroll inspection and no fabricated rewards.
   static func syncNudges(owner: ProtectionOwner) {
@@ -325,8 +398,8 @@ enum ProtectionNativeEngine {
     for session in ledger?.sessions ?? [] where runtime?.enabled == true && !session.usageBased && session.live(clock) {
       guard ledger?.grants.contains(where: { $0.app == session.app && reasons.contains($0.reasonID) && $0.wallEnd > clock.wall }) == true else { continue }
       let reasonEnd = ledger?.grants.filter { $0.app == session.app && reasons.contains($0.reasonID) }.map(\.wallEnd).min() ?? clock.wall
-      for quarter in 1...3 {
-        let deadline = session.wallEnd - Int64(session.seconds) * 1000 + Int64(session.seconds * quarter) * 250
+      for checkpoint in session.nudgeSeconds {
+        let deadline = session.wallEnd - Int64(session.seconds - checkpoint) * 1000
         let delay = Double(deadline - clock.wall) / 1000
         guard delay >= 1, deadline < reasonEnd else { continue }
         let content = UNMutableNotificationContent()
@@ -334,7 +407,7 @@ enum ProtectionNativeEngine {
         let minutes = max(1, Int(ceil(Double(session.wallEnd - deadline) / 60000)))
         content.body = "About \(minutes) min left in this session. \(nudgeLine()) Open Hoosh when you’re ready to pause."
         content.sound = .default
-        let id = prefix + session.id.uuidString + ".\(quarter)"
+        let id = prefix + session.id.uuidString + ".\(checkpoint)"
         requests.append(UNNotificationRequest(identifier: id, content: content,
           trigger: UNTimeIntervalNotificationTrigger(timeInterval: delay, repeats: false)))
       }
