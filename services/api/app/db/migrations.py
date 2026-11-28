@@ -239,7 +239,9 @@ def verify(connection: Connection) -> dict:
 # PG17 deparsed check definitions are pinned after review against the frozen migration
 # and model. Exact fingerprints detect weakened expressions, not merely renamed checks.
 SETTINGS_CHECK_FINGERPRINTS = {
-    "ck_user_settings_personalization_shape": "41b6db51cc35e7f20ed90956ead8d8446808230dfbe61035eca6884a1d394826",
+    "ck_user_settings_personalization_shape": (
+        "41b6db51cc35e7f20ed90956ead8d8446808230dfbe61035eca6884a1d394826"
+    ),
     "ck_user_settings_activities_shape": (
         "ea191c017fb920c89e73fe6e014e5d9e" + "869018455ab442f322b5aa8e9e8a9c9e"
     ),
@@ -252,7 +254,9 @@ SETTINGS_CHECK_FINGERPRINTS = {
     "ck_user_settings_hours_valid": (
         "7db1dc90a81bce6e1b305f83b9d069bd" + "48f458f8b570150d81029a34383d735a"
     ),
-    "ck_user_settings_plan_draft_shape": ("3faeac90f46457b01d881a1649b50a70dcc23e94e63e1765f8101b374c760f65"),
+    "ck_user_settings_plan_draft_shape": (
+        "3faeac90f46457b01d881a1649b50a70dcc23e94e63e1765f8101b374c760f65"
+    ),
     "ck_user_settings_revision_positive": (
         "734367bcd98f308d31796dc121a196c4" + "4de1e0adfb565fc8f724bc6f078ca6ea"
     ),
@@ -565,7 +569,9 @@ EXECUTION_CONSTRAINT_FINGERPRINTS.update(
             ),
         },
         "reward_entries": {
-            "ck_reward_entries_amount_range": ("d1fe3affb4c55c4538b5a77ad3ad1ba22738ef4024aca3f20dbe25e48df467a3"),
+            "ck_reward_entries_amount_range": (
+                "d1fe3affb4c55c4538b5a77ad3ad1ba22738ef4024aca3f20dbe25e48df467a3"
+            ),
             "ck_reward_entries_kind_choice": (
                 "1d409778369bf24981494358ecbb80a6070edc417bf749c66a09c644050f05c9"
             ),
