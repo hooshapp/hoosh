@@ -27,6 +27,18 @@ object InterventionValidation {
     require(value.timezoneId in java.util.TimeZone.getAvailableIDs().toSet())
     require(value.sessionsPerDay in 1..1000 && value.sessionSeconds in 1..86400)
   }
+  fun questPolicy(fields: Map<*, *>): SessionPolicy {
+    require(fields.keys - "budgetScope" == setOf("timezoneId", "sessionsPerDay", "sessionSeconds"))
+    val scope = fields["budgetScope"]
+    require(scope == null || scope == "all_selected_apps")
+    val timezone = fields["timezoneId"] as? String ?: throw InterventionFailure("ERR_INTERVENTION_INVALID")
+    fun integer(key: String, max: Int): Int {
+      val number = (fields[key] as? Number)?.toDouble() ?: throw InterventionFailure("ERR_INTERVENTION_INVALID")
+      require(number in 1.0..max.toDouble() && number == number.toInt().toDouble())
+      return number.toInt()
+    }
+    return SessionPolicy(timezone, integer("sessionsPerDay", 1000), integer("sessionSeconds", 86400), scope == "all_selected_apps").also(::policy)
+  }
   fun windows(values: List<InterventionWindow>, limit: Int = 32) {
     require(values.size <= limit && values.map { it.reasonId }.toSet().size == values.size)
     values.forEach {

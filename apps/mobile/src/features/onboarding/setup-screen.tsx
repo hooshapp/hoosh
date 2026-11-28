@@ -4,7 +4,7 @@ import { PlanCompletionScreen } from './figma-plan-screens';
 import type { SettingsPatch } from '@disconnect/contracts';
 import { useRouter } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { Text } from 'react-native';
+import { Platform, Text } from 'react-native';
 
 import { Button } from '@/components/ui/button';
 import { Screen } from '@/components/ui/screen';
@@ -29,6 +29,7 @@ export function SetupScreen() {
   const router = useRouter();
   const iosDevice = useIOSSelectionDevice();
   const nativeOwner = useNativeOwner();
+  const usesScreenTime = Platform.OS === 'ios' && Boolean(iosDevice || nativeOwner);
   const theme = useUiTheme();
   const { scope, availability } = useAccountData();
   const project = useAppRuntime()?.nativeNamespace;
@@ -66,9 +67,8 @@ export function SetupScreen() {
 
   async function update(progress: OnboardingProgress | null, expectedAttempt?: SettingsPatch) {
     if (writing.current || !repo || !scope || (!verified && progress?.step !== 'questions') || !scope.isCurrent()) return false;
-    // The questionnaire already reviewed permission. SetupPlanSave now verifies
-    // native activation before this accepted-plan completion transition.
-    if (progress?.step === 'permission' && progress.questionsCompleted && (iosDevice || nativeOwner)) {
+    // Older iOS progress may already have reviewed Screen Time in the questionnaire.
+    if (progress?.step === 'permission' && progress.questionsCompleted && usesScreenTime) {
       progress = { ...progress, step: 'complete' };
     }
     writing.current = true;
@@ -108,7 +108,9 @@ export function SetupScreen() {
     return <PlanCompletionScreen hobbies={hobbies} message={progress.settingsDeferred
       ? 'Your draft is saved on this device. Finish account and device setup from Settings.'
       : progress.permissionDeferred
-      ? 'Your choices are saved. Screen Time setup is still pending. You can continue from Settings.'
+      ? Platform.OS === 'android'
+        ? 'Your choices are saved. App protection setup is still pending. You can continue from Settings.'
+        : 'Your choices are saved. Screen Time setup is still pending. You can continue from Settings.'
       : 'Your preferences are saved. You can adjust them anytime in Settings.'}
       onFinish={() => router.replace('/(tabs)')} />;
   }
@@ -171,7 +173,7 @@ export function SetupScreen() {
       onManage={() => router.push('/(tabs)/settings')} />;
   }
 
-  if (verified && progress?.step === 'permission' && progress.questionsCompleted && (iosDevice || nativeOwner)) {
+  if (verified && progress?.step === 'permission' && progress.questionsCompleted && usesScreenTime) {
     return <PlanCompletionScreen hobbies={progress.questions?.hobbies ?? []}
       message="Your preferences are saved. App protection starts only after you apply your plan in Settings."
       onFinish={() => { void update({ ...progress, step: 'complete' }).then(saved => { if (saved) router.replace('/(tabs)'); }); }} />;

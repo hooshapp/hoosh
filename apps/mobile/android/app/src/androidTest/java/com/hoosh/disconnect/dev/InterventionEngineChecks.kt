@@ -28,6 +28,14 @@ internal object InterventionEngineChecks {
   fun run(): Int {
     var count = 0; lastCase = 0
     fun case(action: () -> Unit) { lastCase = count + 1; action(); count++ }
+    case {
+      val legacy = mapOf("timezoneId" to "UTC", "sessionsPerDay" to 2.0, "sessionSeconds" to 60.0)
+      check(InterventionValidation.questPolicy(legacy) == SessionPolicy("UTC", 2, 60))
+      check(InterventionValidation.questPolicy(legacy + ("budgetScope" to "all_selected_apps")) == SessionPolicy("UTC", 2, 60, sharedBudget = true))
+      failure("ERR_INTERVENTION_INVALID") { InterventionValidation.questPolicy(legacy + ("budgetScope" to "global")) }
+      failure("ERR_INTERVENTION_INVALID") { InterventionValidation.questPolicy(legacy + ("sessionSeconds" to 60.5)) }
+      failure("ERR_INTERVENTION_INVALID") { InterventionValidation.questPolicy(legacy + ("unexpected" to true)) }
+    }
     case { val (_, e) = fixture(); check(e.read(A)!!.plan.revision == 1 && e.read(A)!!.plan.apps.size == 2) }
     case { val (_, e) = fixture(); failure("ERR_INTERVENTION_CONFLICT") { e.install(A, 0, 2, SavedSelection(1, setOf(APP)), emptyList(), SessionPolicy("UTC", 2, 10), 1000) }; check(e.read(A)!!.plan.revision == 1) }
     case { val (_, e) = fixture(); failure("ERR_INTERVENTION_OWNER") { e.read(B) }; failure("ERR_INTERVENTION_OWNER") { e.erase(B) }; check(e.read(A) != null) }
@@ -225,6 +233,21 @@ internal object InterventionEngineChecks {
       e.activeForeground(APP, 120000, 119000, 1)
       check(e.read(A)!!.sessions.single().remainingMs == 59000L)
       check(e.read(A)!!.allowances.isEmpty())
+    }
+    case {
+      val leases = InterventionLeases()
+      val bridge = leases.bridge()
+      leases.setShieldCopy(bridge, A, " QA name\n ", "reading")
+      check(leases.shieldCopy(A) == InterventionLeases.ShieldCopy("QA name", "reading"))
+      check(leases.shieldCopy(B) == null)
+      leases.end(A, false)
+      check(leases.shieldCopy(A) == null)
+      leases.setShieldCopy(bridge, B, "Second QA", "walking")
+      leases.end(A, false)
+      check(leases.shieldCopy(B)?.activity == "walking")
+      leases.close(bridge)
+      check(leases.shieldCopy(B) == null)
+      failure("ERR_INTERVENTION_LEASE_EXPIRED") { leases.setShieldCopy(bridge, B, "Stale", "reading") }
     }
     return count
   }

@@ -1,6 +1,12 @@
 import type { PlanDraft } from '@disconnect/contracts';
 import { completeSchedule, createWeeklyScheduleClient, sameSchedule, type WeeklySchedulePort } from '../plans/weekly-schedule';
 
+export class AndroidProtectionAccessRequired extends Error {
+  constructor() {
+    super('Review Android app protection access');
+  }
+}
+
 /** The existing Accept/Save action authorizes this exact plan, not later draft edits. */
 export async function activateAcceptedPlan({ owner, port, draft, selectionRevision, assertCurrent, recoverPending }: {
   owner: string; port: WeeklySchedulePort; draft: PlanDraft | null | undefined;
@@ -20,6 +26,10 @@ export async function activateAcceptedPlan({ owner, port, draft, selectionRevisi
       assertCurrent();
       before = await client.read();
       assertCurrent();
+    }
+    if (before.native.platform !== 'ios' && before.native.state === 'needs_permission' &&
+      !before.otherInstallation && !before.native.pendingRequestID) {
+      throw new AndroidProtectionAccessRequired();
     }
     if (before.otherInstallation || before.native.pendingRequestID ||
       (before.native.platform === 'ios' && !before.native.activationAvailable) || before.native.state === 'needs_permission') {

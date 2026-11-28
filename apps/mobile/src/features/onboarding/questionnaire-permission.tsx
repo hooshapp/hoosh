@@ -4,6 +4,8 @@ import { Image } from 'expo-image';
 import { Button } from '@/components/ui/button';
 import { colors, fonts } from '@/design/tokens';
 import { useIOSSelectionDevice, useNativeInstallation, useNativeOwner } from '@/features/protection/native-owner-boundary';
+import { AndroidDeviceAccountReview } from '@/features/protection/android-device-account-review';
+import { useAccountWeeklyPlan } from '@/features/plans/account-weekly-plan';
 import { deviceProtectionIntegration } from '@/infrastructure/native/protection-integration';
 import { decodeSavedSelection, decodeSelectionDraft } from '@/infrastructure/native/selection-editor';
 import type { InstallationReview } from '@/infrastructure/native/native-owner-session';
@@ -14,6 +16,8 @@ export function QuestionnairePermission({ busy: saving, onContinue, onBack, sele
 }) {
   const iosDevice = useIOSSelectionDevice();
   const androidOwner = useNativeOwner();
+  const planRead = useAccountWeeklyPlan()?.plan.read;
+  const needsAndroidClaim = Platform.OS === 'android' && planRead?.phase === 'error' && planRead.otherAccount;
   const device = useMemo(() => Platform.OS === 'ios' ? iosDevice : androidOwner && deviceProtectionIntegration.availability === 'connected' ? {
     owner: androidOwner.owner, selection: androidOwner.port,
     readSelection: async () => decodeSavedSelection(await androidOwner.port.selectionRead(androidOwner.owner), androidOwner.owner),
@@ -139,14 +143,15 @@ export function QuestionnairePermission({ busy: saving, onContinue, onBack, sele
   const needsReview = Platform.OS === 'ios' && state?.review && state.review.status !== 'owned';
   if (selectionQuestion) return <View style={styles.selectionStep}>
     <Text style={styles.intro}>Allow {Platform.OS === 'ios' ? 'Screen Time' : 'Usage'} access when asked, then choose the apps you want to spend less time on.</Text>
+    {Platform.OS === 'android' ? <AndroidDeviceAccountReview /> : null}
     {needsReview ? <Text style={styles.footnote}>Choosing apps replaces the previous Hoosh setup on this device. Account history stays private.</Text> : null}
-    <Button label={targetsReady ? 'Change targeted apps' : 'Choose apps to target'} busy={busy} disabled={saving || !supported || !state}
+    <Button label={targetsReady ? 'Change targeted apps' : 'Choose apps to target'} busy={busy} disabled={saving || !supported || !state || !!needsAndroidClaim}
       onPress={() => { void chooseApps(); }} />
     {targetsReady ? <Text accessibilityLiveRegion="polite" style={styles.footnote}>{state?.count} apps selected to target on this device.</Text> : null}
     {(error || selectionError) ? <Text accessibilityRole="alert" style={styles.error}>Allow access and choose at least one app to continue. Your selection has not been confirmed.</Text> : null}
     {!supported ? <Text accessibilityRole="alert" style={styles.error}>App selection is unavailable in this build.</Text> : null}
     <View style={styles.selectionActions}>
-      <Button label="Next →" busy={saving} disabled={busy || !state?.authorized || !targetsReady || !state.count}
+      <Button label="Next →" busy={saving} disabled={busy || !state?.authorized || !targetsReady || !state.count || !!needsAndroidClaim}
         onPress={() => onContinue(false, state?.revision, state?.count)} />
       {onBack ? <Button label="Back" variant="secondary" disabled={saving || busy} onPress={onBack} /> : null}
     </View>

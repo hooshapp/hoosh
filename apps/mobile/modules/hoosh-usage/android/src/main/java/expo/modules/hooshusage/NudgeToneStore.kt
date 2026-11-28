@@ -14,23 +14,13 @@ class NudgeToneStore(context: Context) {
     InterventionValidation.require(tone in setOf("Supportive", "Direct", "Playful", "Intense"))
     InterventionValidation.require(prefs.edit().putString(key(owner), tone).commit(), "ERR_INTERVENTION_STORAGE")
   }
-  fun setShieldContext(owner: String, name: String, activity: String) {
-    val ownerKey = key(owner)
-    val displayName = name.filterNot { it.isISOControl() }.trim().take(40)
-    InterventionValidation.require(prefs.edit().putString("$ownerKey.name", displayName)
-      .putString("$ownerKey.activity", activity.takeIf { it in activities }.orEmpty()).commit(), "ERR_INTERVENTION_STORAGE")
-  }
-  fun shieldContext(owner: String): Pair<String, String> {
-    val ownerKey = key(owner)
-    return prefs.getString("$ownerKey.name", "").orEmpty() to
-      activities[prefs.getString("$ownerKey.activity", "")].orEmpty()
-  }
+  fun activityLabel(activity: String?) = activity?.let(activities::get).orEmpty()
   fun erase(owner: String) {
     val ownerKey = key(owner)
     InterventionValidation.require(prefs.edit().remove(ownerKey).remove("$ownerKey.name")
       .remove("$ownerKey.activity").commit(), "ERR_INTERVENTION_STORAGE")
   }
-  fun line(owner: String, goal: String): String = when (prefs.getString(key(owner), "Supportive")) {
+  fun line(owner: String?, goal: String): String = when (owner?.let { prefs.getString(key(it), "Supportive") }) {
     "Direct" -> "Pause now and make time for $goal."
     "Playful" -> "Plot twist: it’s time for $goal."
     "Intense" -> "Protect the time you chose for $goal."

@@ -135,6 +135,11 @@ Pretty much full app, atleast everything seen visually in the figma design.
   - Supersedes: earlier unapproved recommendations only where explicitly stated; no earlier PM answer existed.
   - Documents updated: [ADR](../architecture/pm-decisions-2026-11-09.md), [decision register](OPEN_DECISIONS.yaml), PRD/TSD and affected core-plan gates. No runtime behavior changed.
 
+- Recorded: 2026-11-28
+  - Source: Ishmum's direction during Android integration acceptance after reviewing the discrepancy with the shared implementation.
+  - Type: Current engineering direction for the integration candidate.
+  - Decision: Keep the current all-day entry shield while the weekly plan is enabled, including outside the configured days and hours. Preserve the original PM answer above for product review. Android QA should expect the entry shield outside the scheduled window. See the [combined Android QA notes](../integration_notes/android_four_passes_notes.md#november-28-follow-up--shared-budget-settings-and-android-recovery).
+
 ### Q06 — Intentional pause triggers and suggested-plan meaning
 
 **Question:** When should the intentional pause appear? Every selected-app opening, only outside an allowance, or under another condition? What does “10-minute break” mean in the suggested plan?

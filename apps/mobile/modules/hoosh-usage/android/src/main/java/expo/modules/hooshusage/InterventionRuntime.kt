@@ -68,6 +68,13 @@ class InterventionRuntime private constructor(val context: Context) {
   // A handle reveals no installation data. All reads/writes still enforce stored ownership;
   // a different account can only take over through the explicitly confirmed claim command.
   fun open(bridge: String, owner: String, promise: Promise) = call(promise) { leases.open(bridge, owner) }
+  fun setShieldContext(bridge: String, owner: String, name: String, activity: String, promise: Promise) {
+    try {
+      leases.setShieldCopy(bridge, owner, name, activity)
+      notifyService()
+      promise.resolve()
+    } catch (e: Exception) { reject(promise, e) }
+  }
   fun claimOwner(owner: String, token: String, stopPrevious: Boolean, promise: Promise) {
     try { leases.retainForClaim(owner, token) } catch (e: Exception) { reject(promise, e); return }
     call(promise, true) {
@@ -248,9 +255,7 @@ class InterventionRuntime private constructor(val context: Context) {
     InterventionValidation.require(cancelled.size <= 256)
     val policy = if (!enabled) previous!!.plan.policy else {
       val p = spec["policy"] as? Map<*, *> ?: throw InterventionFailure("ERR_INTERVENTION_INVALID")
-      InterventionValidation.require(p.keys == setOf("timezoneId", "sessionsPerDay", "sessionSeconds"))
-      check(p["budgetScope"] == null || p["budgetScope"] == "all_selected_apps")
-      SessionPolicy(string(p["timezoneId"]), whole(p["sessionsPerDay"], 1000).toInt(), whole(p["sessionSeconds"], 86400).toInt(), p["budgetScope"] == "all_selected_apps")
+      InterventionValidation.questPolicy(p)
     }
     engine.applyQuest(owner, expected, selection, questId, remote, requestId, enabled, versions, cancelled.map { string(it) }.toSet(), policy, System.currentTimeMillis())
     questSummary(owner, questId)
@@ -302,6 +307,7 @@ class InterventionRuntime private constructor(val context: Context) {
     // Retain native reasons/event ownership at sign-out; full account deletion must coordinate all stores.
     // Fence synchronously at bridge entry, before queued worker mutations can check their handles.
     try { leases.end(owner, erase) } catch (e: Exception) { reject(promise, e); return }
+    notifyService()
     call(promise, true) {
     try {
       if (erase) { persistence.eraseOwner(owner); history.erase(owner); NudgeToneStore(context).erase(owner); leases.erased(owner) } else engine.read(owner)

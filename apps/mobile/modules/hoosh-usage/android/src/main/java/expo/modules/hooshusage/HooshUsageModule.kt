@@ -32,9 +32,6 @@ class HooshUsageModule : Module() {
   override fun definition() = ModuleDefinition {
     Name("HooshUsage")
     AsyncFunction("setNudgeTone") { owner: String, tone: String -> NudgeToneStore(requireNotNull(appContext.reactContext)).set(owner, tone); mapOf("saved" to true) }
-    AsyncFunction("setAndroidShieldContext") { owner: String, name: String, activity: String ->
-      NudgeToneStore(requireNotNull(appContext.reactContext)).setShieldContext(owner, name, activity)
-    }
     AsyncFunction("budgetCapabilities") { mapOf("policy" to "selected_apps_shared_v1", "scope" to "all_selected_apps") }
     AsyncFunction("onboardingBaselineRead") { owner: String -> OnboardingBaseline(requireNotNull(appContext.reactContext)).read(owner) }
     AsyncFunction("probe") { minutes: Int -> reader().probe(minutes) }
@@ -48,6 +45,9 @@ class HooshUsageModule : Module() {
         if (value == null) p.reject("ERR_INTERVENTION_UNAVAILABLE", "Android interventions are unavailable.", null)
         return value
       }
+      AsyncFunction("setAndroidShieldContext") { owner: String, name: String, activity: String, p: Promise ->
+        interventions(p)?.setShieldContext(owner, name, activity, p)
+      }.runOnQueue(Queues.MAIN)
       AsyncFunction("interventionOpen") { owner: String, p: Promise -> interventions(p)?.open(owner, p) }.runOnQueue(Queues.MAIN)
       AsyncFunction("interventionRelease") { owner: String, token: String, p: Promise -> interventions(p)?.release(owner, token, p) }.runOnQueue(Queues.MAIN)
       AsyncFunction("interventionProtectionRead") { owner: String, p: Promise -> interventions(p)?.protectionRead(owner, p) }.runOnQueue(Queues.MAIN)

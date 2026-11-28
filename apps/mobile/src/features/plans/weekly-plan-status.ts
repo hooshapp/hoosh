@@ -8,7 +8,8 @@ export type WeeklyPlanRead =
       selectedAppCount: number;
       selectionAvailable?: boolean;
     }>
-  | Readonly<{ phase: 'checking' | 'error' | 'stale' | 'unavailable' }>;
+  | Readonly<{ phase: 'error'; otherAccount?: true }>
+  | Readonly<{ phase: 'checking' | 'stale' | 'unavailable' }>;
 export type WeeklyPlanStatus = Readonly<{
   kind:
     | 'checking'

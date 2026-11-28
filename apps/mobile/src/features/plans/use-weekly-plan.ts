@@ -23,6 +23,7 @@ import {
   completeSchedule,
   createWeeklyScheduleClient,
   sameSchedule,
+  ScheduleError,
   type WeeklySchedulePort,
 } from './weekly-schedule';
 import {
@@ -185,9 +186,10 @@ export function useWeeklyPlan(
         } finally {
           if (selection) await port.selectionRelease(owner, selection.draftId);
         }
-      } catch {
+      } catch (error) {
         if (s.active && allowedRef.current && s.epoch === epoch) {
-          setTicket({ key, read: { phase: 'error' } });
+          const otherAccount = error instanceof ScheduleError && error.code === 'other_account';
+          setTicket({ key, read: otherAccount ? { phase: 'error', otherAccount: true } : { phase: 'error' } });
         }
       } finally {
         s.lock = false;

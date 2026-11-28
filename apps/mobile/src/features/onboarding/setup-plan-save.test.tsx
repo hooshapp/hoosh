@@ -3,7 +3,10 @@ import type { SettingsPatch, SettingsView } from '@disconnect/contracts';
 import { SetupPlanSave } from './setup-plan-save';
 import type { OnboardingProgress } from './progress-repository';
 const mockSubmit = jest.fn(), mockRefetch = jest.fn(), mockActivate = jest.fn();
-jest.mock('./activate-accepted-plan', () => ({ activateAcceptedPlan: (...args: unknown[]) => mockActivate(...args) }));
+jest.mock('./activate-accepted-plan', () => ({
+  ...jest.requireActual('./activate-accepted-plan'),
+  activateAcceptedPlan: (...args: unknown[]) => mockActivate(...args),
+}));
 jest.mock('@/features/protection/native-owner-boundary', () => ({ useNativeOwner: () => ({ owner: 'qa:00000000-0000-4000-8000-000000000001' }) }));
 jest.mock('@/features/plans/account-weekly-plan', () => ({ weeklyPort: () => ({}) }));
 let mockSuccess: (response: { settings: SettingsView }, patch: SettingsPatch) => void;
@@ -28,7 +31,7 @@ it('saves the chosen plan once and advances directly to completion checkpoint af
   await waitFor(() => expect(mockSubmit).toHaveBeenCalledTimes(1));
   const patch = mockSubmit.mock.calls[0][0];
   await act(async () => mockSuccess({ settings: saved }, patch));
-  expect(record).toHaveBeenLastCalledWith(expect.objectContaining({ step: 'permission', settingsRevision: 1, settingsAttempt: undefined }), patch);
+  expect(record).toHaveBeenLastCalledWith(expect.objectContaining({ step: 'complete', settingsRevision: 1, settingsAttempt: undefined }), patch);
   expect(screen.queryByText('Check latest settings')).toBeNull();
   expect(screen.queryByText('Latest account settings')).toBeNull();
 });
@@ -37,7 +40,7 @@ it('readback of an uncertain committed save completes without repeating its writ
   const attempt = { expected_revision: 0, activities: progress.activities, plan_draft: plan };
   const record = jest.fn(async (_next: OnboardingProgress, _attempt?: SettingsPatch) => true);
   await render(<SetupPlanSave progress={{ ...progress, settingsAttempt: attempt }} busy={false} record={record} onEdit={jest.fn()} />);
-  await waitFor(() => expect(record).toHaveBeenCalledWith(expect.objectContaining({ step: 'permission' }), attempt));
+  await waitFor(() => expect(record).toHaveBeenCalledWith(expect.objectContaining({ step: 'complete' }), attempt));
   expect(mockSubmit).not.toHaveBeenCalled();
 });
 it('a rejected save stays on the existing suggestion and never claims completion', async () => {
@@ -47,7 +50,7 @@ it('a rejected save stays on the existing suggestion and never claims completion
   await act(async () => mockError());
   expect(screen.getByRole('button', { name: 'Go with suggestion' })).toBeTruthy();
   expect(screen.queryByText('Check latest settings')).toBeNull();
-  expect(record.mock.calls.some(([value]) => value.step === 'permission')).toBe(false);
+  expect(record).toHaveBeenCalledTimes(1);
   await fireEvent.press(screen.getByRole('button', { name: 'Go with suggestion' }));
   await waitFor(() => expect(mockSubmit).toHaveBeenCalledTimes(2));
 });
@@ -60,9 +63,9 @@ it('does not show completion until native activation is verified', async () => {
   await waitFor(() => expect(mockSubmit).toHaveBeenCalledTimes(1));
   await act(async () => mockSuccess({ settings: saved }, mockSubmit.mock.calls[0][0]));
   expect(mockActivate).toHaveBeenCalledWith(expect.objectContaining({ draft: plan, selectionRevision: 3 }));
-  expect(record.mock.calls.some(([value]) => value.step === 'permission')).toBe(false);
+  expect(record).toHaveBeenCalledTimes(1);
   await act(async () => confirm());
-  expect(record.mock.calls.some(([value]) => value.step === 'permission')).toBe(true);
+  expect(record.mock.calls.some(([value]) => value.step === 'complete')).toBe(true);
 });
 it('a native activation failure keeps the existing suggestion and never completes', async () => {
   mockActivate.mockRejectedValueOnce(new Error('Device unavailable'));
@@ -70,6 +73,6 @@ it('a native activation failure keeps the existing suggestion and never complete
   await render(<SetupPlanSave progress={progress} busy={false} record={record} onEdit={jest.fn()} />);
   await waitFor(() => expect(mockSubmit).toHaveBeenCalledTimes(1));
   await act(async () => mockSuccess({ settings: saved }, mockSubmit.mock.calls[0][0]));
-  expect(screen.getByText('Couldn’t start app protection. Check Screen Time access and try again.')).toBeTruthy();
-  expect(record.mock.calls.some(([value]) => value.step === 'permission')).toBe(false);
+  expect(screen.getByText(/Couldn’t start app protection/)).toBeTruthy();
+  expect(record).toHaveBeenCalledTimes(1);
 });

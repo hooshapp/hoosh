@@ -416,11 +416,13 @@ test('Settings summaries distinguish accepted partial drafts from missing, activ
       <ConnectedSettingsScreen />
     </AccountDataProvider>,
   );
-  await screen.findByText('My Plan');
-  await screen.findByText('App Sessions');
+  await waitFor(() => {
+    expect(screen.getByLabelText('Active Days. Not set')).toBeVisible();
+    expect(screen.getByLabelText('Active Hours. Not set')).toBeVisible();
+    expect(screen.getByLabelText('App Sessions. Not set')).toBeVisible();
+  });
   expect(screen.queryByText(/min of planned app time each day/)).toBeNull();
-  expect(screen.getByText('Active Hours')).toBeVisible();
-  expect(screen.getAllByText('Not set').length).toBeGreaterThanOrEqual(2);
+  expect(screen.getByText('My Plan')).toBeVisible();
 });
 
 // Account-draft assertions are independent of the secondary disclosure's presentation.

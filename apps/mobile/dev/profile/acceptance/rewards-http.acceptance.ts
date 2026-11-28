@@ -39,10 +39,14 @@ if (fixture.phase === 'write') {
   });
   test('lost Feed response is checked by GET and same-ID replay cannot charge twice', async () => {
     const before = await a.scope().read(readWallet); a.lose();
+    expect(before.feed_cost).toBe(10);
     await expect(a.scope().write((op) => feedDino(ID, before.revision, op))).rejects.toMatchObject({ requestMayHaveCommitted: true });
     const receipt = await a.scope().read((op) => readFeedReceipt(ID, op));
-    expect(receipt.recorded).toBe(true); expect(receipt.wallet.balance).toBe(30);
-    expect((await a.scope().write((op) => feedDino(ID, before.revision, op))).wallet.balance).toBe(30);
+    expect(receipt.recorded).toBe(true);
+    expect(receipt.wallet.balance).toBe(40);
+    const replay = await a.scope().write((op) => feedDino(ID, before.revision, op));
+    expect(replay.charged_credits).toBe(10);
+    expect(replay.wallet.balance).toBe(40);
     expect(a.writes).toHaveLength(2);
     expect((await b.scope().read((op) => readFeedReceipt(ID, op))).recorded).toBe(false);
   });
@@ -51,12 +55,12 @@ if (fixture.phase === 'write') {
     const body = { installation_id: INSTALL, timezone_id: 'UTC', discarded: 0, events: [{ event_id: ID, sequence: 1,
       occurred_at: now.toISOString(), kind: 'quit' as const, day: now.toISOString().slice(0, 10), encounter_id: INSTALL,
       context: 'initial' as const, exhausted: null, covered: null }] };
-    for (let i = 0; i < 2; i++) expect((await a.scope().write((op) => ingestRewards(body, op))).wallet.balance).toBe(35);
+    for (let i = 0; i < 2; i++) expect((await a.scope().write((op) => ingestRewards(body, op))).wallet.balance).toBe(45);
     expect((await b.scope().read(readWallet)).balance).toBe(0);
   });
 } else {
   test('actual API process restart preserves wallet and Feed receipt without replay', async () => {
-    expect((await a.scope().read(readWallet)).balance).toBe(35);
+    expect((await a.scope().read(readWallet)).balance).toBe(45);
     expect((await a.scope().read((op) => readFeedReceipt(ID, op))).recorded).toBe(true);
     expect((await b.scope().read(readWallet)).balance).toBe(0);
     expect(a.writes).toHaveLength(0);

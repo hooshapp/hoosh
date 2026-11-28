@@ -40,6 +40,7 @@ class InterventionAccessibilityService : AccessibilityService() {
   private var readPending = false
   @Volatile private var overlay: View? = null
   private var overlayKey: String? = null
+  private var overlayCopy: InterventionLeases.ShieldCopy? = null
   val visible get() = overlay != null
   private val receiver = object : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) { switchForeground(null); reconcile() }
@@ -108,13 +109,15 @@ class InterventionAccessibilityService : AccessibilityService() {
     if (readPending) { readPending = false; main.post { reconcile() } }
   }
   private fun hide() {
-    val old = overlay; overlay = null; overlayKey = null
+    val old = overlay; overlay = null; overlayKey = null; overlayCopy = null
     if (old != null) try { getSystemService(WindowManager::class.java).removeView(old) } catch (_: Exception) { runtime.failure = "ERR_INTERVENTION_OVERLAY"; disableSelf() }
   }
   private fun show(record: InterventionRecord, app: String, reasons: List<InterventionWindow>, nudge: AppSession?) {
     val mid = reasons.isEmpty() && nudge != null
     val key = "${record.plan.owner}:${record.plan.revision}:$app:${if (mid) nudge?.id else reasons.joinToString { it.reasonId }}"
-    if (key == overlayKey) return
+    val shieldCopy = runtime.leases.shieldCopy(record.plan.owner)
+    val sameEncounter = key == overlayKey
+    if (sameEncounter && shieldCopy == overlayCopy) return
     hide()
     fun dp(value: Float) = (value * resources.displayMetrics.density + 0.5f).toInt()
     val cream = 0xfffff1dd.toInt()
@@ -210,15 +213,44 @@ class InterventionAccessibilityService : AccessibilityService() {
     } catch (_: Exception) {}
     checkpoint.addView(label("check-point", 12f, bold, deepGreen))
     if (mid) {
-      val header = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL
-        setBackgroundColor(0xffffd8a1.toInt()); setPadding((16 * resources.displayMetrics.density).toInt(), (12 * resources.displayMetrics.density).toInt(), (16 * resources.displayMetrics.density).toInt(), (12 * resources.displayMetrics.density).toInt()) }
-      header.addView(ImageView(this).apply { setImageBitmap(assets.open("hoosh-nudge-dino.png").use { BitmapFactory.decodeStream(it) }); scaleType = ImageView.ScaleType.FIT_CENTER },
-        LinearLayout.LayoutParams((151 * resources.displayMetrics.density).toInt(), (136 * resources.displayMetrics.density).toInt()))
-      header.addView(TextView(this).apply { text = "NUDGE\nRecommendation for you\n+30 ✦"; textSize = 13f; typeface = bold; setTextColor(ink) }, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+      val amber = 0xffffd8a1.toInt()
+      val header = LinearLayout(this).apply {
+        orientation = LinearLayout.HORIZONTAL
+        gravity = Gravity.CENTER_VERTICAL
+        setBackgroundColor(amber)
+        setPadding(dp(16f), dp(12f), dp(16f), dp(12f))
+      }
+      header.addView(ImageView(this).apply {
+        setImageBitmap(assets.open("hoosh-nudge-dino.png").use { BitmapFactory.decodeStream(it) })
+        scaleType = ImageView.ScaleType.FIT_CENTER
+      }, LinearLayout.LayoutParams(dp(151f), dp(136f)).apply { marginEnd = dp(10f) })
+      val reward = label("+30 ✦", 10f, bold, amber).apply {
+        setPadding(dp(10f), dp(4f), dp(10f), dp(4f))
+        background = capsule(0xff1a1a1a.toInt(), 12f)
+      }
+      val headerCopy = LinearLayout(this).apply {
+        orientation = LinearLayout.VERTICAL
+        minimumHeight = dp(136f)
+        addView(reward, LinearLayout.LayoutParams(
+          LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT,
+        ).apply { gravity = Gravity.END; topMargin = dp(12f) })
+        val copy = LinearLayout(this@InterventionAccessibilityService).apply {
+          orientation = LinearLayout.VERTICAL
+          gravity = Gravity.CENTER_VERTICAL
+          setPadding(0, dp(4f), 0, dp(24f))
+          addView(label("NUDGE", 10f, bold, ink))
+          addView(label("Recommendation for you", 13f, bold, ink), LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT,
+          ).apply { topMargin = dp(2f) })
+        }
+        addView(copy, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f))
+      }
+      header.addView(headerCopy, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
       body.addView(header)
     } else center(checkpoint, 24f, 24f)
     val copy = NudgeToneStore(this)
-    val (name, activity) = copy.shieldContext(record.plan.owner)
+    val name = shieldCopy?.name.orEmpty()
+    val activity = copy.activityLabel(shieldCopy?.activity)
     val address = name.takeIf { it.isNotBlank() }?.let { ", $it" }.orEmpty()
     val goal = activity.ifBlank { "what matters to you" }
     fun durationLabel(milliseconds: Long): String {
@@ -239,7 +271,7 @@ class InterventionAccessibilityService : AccessibilityService() {
     }
     if (mid) {
       text(message, 17f, true)
-      text("${copy.line(record.plan.owner, goal)} Earn 30 credits for closing the app now.", 14f)
+      text("${copy.line(record.plan.owner.takeIf { shieldCopy != null }, goal)} Earn 30 credits for closing the app now.", 14f)
     } else {
       val headline = label(message, 45f, regular, ink).apply {
         setLineSpacing(dp(3f).toFloat(), 1f)
@@ -267,7 +299,7 @@ class InterventionAccessibilityService : AccessibilityService() {
         val start = SystemClock.uptimeMillis()
         val duration = if (context == "expired") 3800L else 4300L
         fun reveal() {
-          if (overlayKey != key) return
+          if (overlayKey != key || overlayCopy != shieldCopy) return
           val elapsed = SystemClock.uptimeMillis() - start
           val index = (((elapsed - 250).coerceIn(0, duration) * message.length) / duration).toInt()
           headline.text = revealed(index, elapsed < duration + 700 && elapsed / 450 % 2 == 0L)
@@ -388,7 +420,8 @@ class InterventionAccessibilityService : AccessibilityService() {
       if (mid) WindowManager.LayoutParams.WRAP_CONTENT else WindowManager.LayoutParams.MATCH_PARENT,
       WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY, WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN or (if (mid) WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL else 0), if (mid) PixelFormat.TRANSLUCENT else PixelFormat.OPAQUE).apply { gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL; if (mid) y = (56 * resources.displayMetrics.density).toInt(); title = "Hoosh pause" }
     try {
-      getSystemService(WindowManager::class.java).addView(content, params); overlay = content; overlayKey = key; safe.requestFocus()
+      getSystemService(WindowManager::class.java).addView(content, params); overlay = content; overlayKey = key; overlayCopy = shieldCopy; safe.requestFocus()
+      if (sameEncounter) return
       runtime.execute {
         try { runtime.engine.action(record.plan.owner, record.plan.revision, "shield_presented", System.currentTimeMillis()) }
         catch (error: Exception) {

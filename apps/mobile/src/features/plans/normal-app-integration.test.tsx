@@ -322,7 +322,7 @@ function fixture({
   });
   const port = {
     scheduleRead: jest.fn(async () => {
-      if (ownerLocked) throw Error('private owner');
+      if (ownerLocked) throw Object.assign(new Error('Private owner'), { code: 'ERR_INTERVENTION_OWNER' });
       return installation();
     }),
     schedulePreview: jest.fn(async () => ({ windows })),
@@ -613,8 +613,9 @@ test('lost committed Apply requires readback and never replays the write', async
 });
 
 test('device account takeover needs an explicit confirmation and never installs a schedule', async () => {
+  jest.replaceProperty(Platform, 'OS', 'android');
   const f = fixture({ locked: true });
-  await renderRouter(routes, { initialUrl: '/settings' });
+  await renderRouter(routes, { initialUrl: '/settings/device' });
   await pressWhenReady('Use this account on this device');
   await press('Keep current setup');
   expect(f.port.interventionClaimOwner).not.toHaveBeenCalled();
@@ -622,7 +623,7 @@ test('device account takeover needs an explicit confirmation and never installs 
   await press('Use this account on this device');
   await screen.findByRole('button', { name: 'Confirm device account' });
   await press('Confirm device account');
-  await screen.findByText('No weekly plan applied');
+  await screen.findByText(/This account can manage this device/);
   expect(f.port.interventionClaimOwner).toHaveBeenCalledWith(
     `fixture:${A}`,
     HANDLE,
@@ -633,6 +634,31 @@ test('device account takeover needs an explicit confirmation and never installs 
     HANDLE,
   );
   expect(f.port.scheduleApply).not.toHaveBeenCalled();
+});
+
+test('Android onboarding offers device account review before choosing targets on a different owner’s installation', async () => {
+  jest.replaceProperty(Platform, 'OS', 'android');
+  const f = fixture({ locked: true, settingsMissing: true });
+  f.usagePermission(true);
+  await AsyncStorage.setItem(setupKey, JSON.stringify({
+    version: 1,
+    step: 'questions',
+    questions: { index: 2, gender: 'Other', age: 25, apps: [], hobbies: [] },
+  }));
+  try {
+    await renderRouter(routes, { initialUrl: '/welcome' });
+    await pressWhenReady('Use this account on this device');
+    await press('Keep current setup');
+    expect(screen.getByRole('button', { name: 'Choose apps to target' })).toBeDisabled();
+    expect(f.port.interventionClaimOwner).not.toHaveBeenCalled();
+    await press('Use this account on this device');
+    await press('Confirm device account');
+    await waitFor(() => expect(screen.getByRole('button', { name: 'Choose apps to target' })).toBeEnabled());
+    expect(f.port.interventionClaimOwner).toHaveBeenCalledTimes(1);
+    expect(f.port.scheduleApply).not.toHaveBeenCalled();
+  } finally {
+    await AsyncStorage.clear();
+  }
 });
 
 test('account replacement during an opened selection fences the prior Apply and hides its draft', async () => {
@@ -1308,6 +1334,40 @@ const reviewedProtection = {
   version: 1, step: 'protection', settingsRevision: 1, selectionRevision: 1, planDraft: SAVED,
 };
 
+test('Android resumes a saved onboarding plan at the protection permission review without rewriting it', async () => {
+  jest.replaceProperty(Platform, 'OS', 'android');
+  const f = fixture();
+  f.usagePermission(true);
+  f.permission(false);
+  const saved = f.settings.get(A)!.settings!;
+  await AsyncStorage.setItem(setupKey, JSON.stringify({
+    ...reviewedSetup,
+    questionsCompleted: true,
+    questions: { index: 4, age: 25, gender: 'Other', apps: [], nativeTargetCount: 1, hobbies: ['Reading'] },
+    selectionRevision: 1,
+    activities: saved.activities,
+    settingsAttempt: { expected_revision: 0, activities: saved.activities, plan_draft: SAVED },
+  }));
+  try {
+    await renderRouter(routes, { initialUrl: '/welcome' });
+    await screen.findByRole('header', { name: 'Preferences reviewed' });
+    await screen.findByText('Usage Access allowed.');
+    await screen.findByText(/Accessibility access is off/);
+    await screen.findByText('1 app saved on this device.');
+    expect(screen.getByRole('button', { name: 'Review Accessibility access' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: 'Continue to protection review' })).toBeDisabled();
+    expect(JSON.parse((await AsyncStorage.getItem(setupKey))!)).toMatchObject({
+      step: 'permission', settingsRevision: 1, selectionRevision: 1,
+    });
+    await press('Finish for now');
+    await screen.findByText(/App protection setup is still pending/);
+    expect(settingsWrites(f)).toHaveLength(0);
+    expect(f.port.scheduleApply).not.toHaveBeenCalled();
+  } finally {
+    await AsyncStorage.clear();
+  }
+});
+
 async function openProtectionReview(progress: object = reviewedProtection) {
   await AsyncStorage.setItem(setupKey, JSON.stringify(progress));
   await renderRouter(routes, { initialUrl: '/welcome' });
@@ -1498,4 +1558,16 @@ test('normal Settings opens device access directly and returns without applying 
   expect(f.port.scheduleApply).not.toHaveBeenCalled();
   await press('Back to Settings');
   expect(screen).toHavePathname('/settings');
+});
+
+test('Android device access can stop its installed weekly plan and retain account settings', async () => {
+  jest.replaceProperty(Platform, 'OS', 'android');
+  const f = fixture({ installed: true });
+  await renderRouter(routes, { initialUrl: '/settings/device' });
+  await pressWhenReady('Stop weekly plan');
+  await screen.findByText('Schedule stopped. Settings and allowance history retained.');
+  expect(f.port.interventionCancel).toHaveBeenCalledWith(`fixture:${A}`, HANDLE, 3, null);
+  expect(f.installation().enabled).toBe(false);
+  expect(f.port.scheduleApply).not.toHaveBeenCalled();
+  expect(settingsWrites(f)).toHaveLength(0);
 });

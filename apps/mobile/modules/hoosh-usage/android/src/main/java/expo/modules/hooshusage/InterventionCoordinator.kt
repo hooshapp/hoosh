@@ -9,6 +9,7 @@ interface InterventionCoordinator {
   fun release(owner: String, token: String, promise: Promise)
   fun cancelReview()
   fun close()
+  fun setShieldContext(owner: String, name: String, activity: String, promise: Promise)
   fun protectionRead(owner: String, promise: Promise)
   fun status(owner: String, promise: Promise)
   fun reviewAccess(activity: Activity, promise: Promise)

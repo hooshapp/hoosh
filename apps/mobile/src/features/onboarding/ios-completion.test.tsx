@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react-native';
-import { Button as MockNativeButton } from 'react-native';
+import { Button as MockNativeButton, Platform } from 'react-native';
 import { SetupScreen } from './setup-screen';
 let mockPlatform = 'ios';
 const mockRead = jest.fn(), mockSave = jest.fn(), mockReplace = jest.fn();
@@ -15,9 +15,14 @@ jest.mock('@/features/settings/settings-query', () => ({ useSettingsQuery: () =>
 jest.mock('./progress-storage', () => ({ setupRepository: () => mockRepo }));
 jest.mock('./setup-draft', () => ({ SetupDraft: ({ reviewActions }: { reviewActions: import('react').ReactNode }) => reviewActions }));
 jest.mock('./setup-plan-save', () => ({ SetupPlanSave: ({ record }: { record: (p: object) => void }) => {
-  return <MockNativeButton title="Save test account preferences" onPress={() => record({ version: 1, step: 'permission', questionsCompleted: true })} />;
+  return <MockNativeButton title="Save test account preferences" onPress={() => record({ version: 1, step: 'complete', questionsCompleted: true })} />;
 } }));
-beforeEach(() => { mockPlatform = 'ios'; mockSave.mockResolvedValue(undefined); });
+beforeEach(() => {
+  mockPlatform = 'ios';
+  jest.replaceProperty(Platform, 'OS', 'ios');
+  mockSave.mockResolvedValue(undefined);
+});
+afterEach(() => { jest.restoreAllMocks(); });
 it('shows congratulations for an existing iPhone questionnaire permission checkpoint without repeating permission UI', async () => {
   mockRead.mockResolvedValue({ status: 'found', progress: { version: 1, step: 'permission', questionsCompleted: true, questions: { hobbies: ['Reading'] } } });
   await render(<SetupScreen />);
@@ -28,8 +33,9 @@ it('shows congratulations for an existing iPhone questionnaire permission checkp
   await waitFor(() => expect(mockReplace).toHaveBeenCalledWith('/(tabs)'));
   expect(mockSave).toHaveBeenCalledWith(mockScope, expect.objectContaining({ step: 'complete' }), undefined);
 });
-it.each(['ios', 'android'])('saving a reviewed %s questionnaire completes setup without permission or settings review', async platform => {
+it.each(['ios', 'android'] as const)('confirmed activation completes the reviewed %s questionnaire', async platform => {
   mockPlatform = platform;
+  jest.replaceProperty(Platform, 'OS', platform);
   mockRead.mockResolvedValue({ status: 'found', progress: { version: 1, step: 'review', questionsCompleted: true } });
   await render(<SetupScreen />);
   await fireEvent.press(await screen.findByRole('button', { name: /save test account preferences/i }));

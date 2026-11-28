@@ -12,7 +12,7 @@ export interface WeeklySchedulePort extends Pick<InterventionCoordinatorPort, 'i
 export type ScheduleInstallation = Readonly<{ observedAt: number; native: InterventionStatus; spec: PlanDraft | null; enabled: boolean;
   otherInstallation: boolean; windows: readonly InterventionWindow[] }>;
 export class ScheduleError extends Error {
-  constructor(public readonly code: 'invalid' | 'unconfirmed' | 'closed' | 'busy') {
+  constructor(public readonly code: 'invalid' | 'unconfirmed' | 'closed' | 'busy' | 'other_account') {
     super('The schedule could not be confirmed.'); this.name = 'ScheduleError';
   }
 }
@@ -80,7 +80,14 @@ export function createWeeklyScheduleClient(owner: string, port: WeeklySchedulePo
       finally { writing = false; }
     }
   };
-  const read = () => invoke(() => port.scheduleRead(owner), decodeScheduleInstallation);
+  const read = () => invoke(async () => {
+    try {
+      return await port.scheduleRead(owner);
+    } catch (error) {
+      if (object(error) && error.code === 'ERR_INTERVENTION_OWNER') throw new ScheduleError('other_account');
+      throw error;
+    }
+  }, decodeScheduleInstallation);
   return {
     read,
     preview: async (draft: PlanDraft) => {

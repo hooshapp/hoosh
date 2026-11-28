@@ -18,13 +18,15 @@ export function useIOSUsageComparison() {
     return undefined;
   }
   const NativeReport = Report;
-  return (compact: boolean, days = 7) => (
-    <NativeReport
-      key={`${device.owner}:${device.generation}:${days}`}
-      ownerKey={device.owner}
-      compact={compact}
-      days={days}
-      style={{ width: '100%', height: compact ? 95 : 132 }}
-    />
-  );
+  return function renderUsageComparison(compact: boolean, days = 7) {
+    return (
+      <NativeReport
+        key={`${device.owner}:${device.generation}:${days}`}
+        ownerKey={device.owner}
+        compact={compact}
+        days={days}
+        style={{ width: '100%', height: compact ? 95 : 132 }}
+      />
+    );
+  };
 }

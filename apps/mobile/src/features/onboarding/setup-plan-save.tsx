@@ -1,8 +1,9 @@
 import { useNativeOwner } from '@/features/protection/native-owner-boundary';
 import { weeklyPort } from '@/features/plans/account-weekly-plan';
-import { activateAcceptedPlan } from './activate-accepted-plan';
+import { activateAcceptedPlan, AndroidProtectionAccessRequired } from './activate-accepted-plan';
 import type { SettingsPatch, SettingsView } from '@disconnect/contracts';
 import { useEffect, useRef, useState } from 'react';
+import { Platform } from 'react-native';
 import { useAccountData } from '@/infrastructure/query/account-data-provider';
 import { useSettingsQuery, useSettingsMutation } from '@/features/settings/settings-query';
 import { changedSettings, hasSettingsChanges } from './setup-model';
@@ -24,16 +25,21 @@ export function SetupPlanSave({ progress, busy, record, onEdit }: {
   const started = useRef(false), running = useRef(false);
   const target = { activities: progress.activities, plan_draft: progress.planDraft };
   async function finish(settings: SettingsView | null, attempt?: SettingsPatch) {
+    let step: 'complete' | 'permission' = 'complete';
     try {
       const port = nativeOwner && weeklyPort(nativeOwner);
       if (!scope?.canRun() || !nativeOwner || !port) throw new Error('Device unavailable');
       await activateAcceptedPlan({ owner: nativeOwner.owner, port, draft: settings?.plan_draft,
         selectionRevision: progress.selectionRevision, assertCurrent: () => scope.assertCurrent() });
-    } catch {
-      if (scope?.isCurrent()) { running.current = false; setWorking(false); setFailed(true); setActivationFailed(true); }
-      return;
+    } catch (error) {
+      if (error instanceof AndroidProtectionAccessRequired) {
+        step = 'permission';
+      } else {
+        if (scope?.isCurrent()) { running.current = false; setWorking(false); setFailed(true); setActivationFailed(true); }
+        return;
+      }
     }
-    const saved = await record({ ...progress, step: 'permission', activities: settings?.activities,
+    const saved = await record({ ...progress, step, activities: settings?.activities,
       planDraft: settings?.plan_draft, settingsRevision: settings?.revision,
       settingsBaseRevision: undefined, settingsAttempt: undefined }, attempt);
     if (!saved && scope?.isCurrent()) { running.current = false; setWorking(false); setFailed(true); }
@@ -44,7 +50,7 @@ export function SetupPlanSave({ progress, busy, record, onEdit }: {
   });
   async function save() {
     if (!scope?.canRun() || running.current || busy) return;
-    running.current = true; setWorking(true); setFailed(false);
+    running.current = true; setWorking(true); setFailed(false); setActivationFailed(false);
     try {
       const result = await query.refetch({ cancelRefetch: false });
       if (!scope.isCurrent()) return;
@@ -71,6 +77,9 @@ export function SetupPlanSave({ progress, busy, record, onEdit }: {
     apps={[{ name: 'Your selected apps', minutes: plan?.session_minutes ?? null,
       caption: `${plan?.session_count ?? '—'} sessions per day`, detail: 'The plan you chose.' }]}
     estimate={{ label: 'Your plan', detail: 'Nothing is marked complete until your plan is saved.' }}
-    error={activationFailed ? "Couldn’t start app protection. Check Screen Time access and try again." : "Couldn’t save your plan. Try accepting it again."} busy={working || busy}
+    error={activationFailed ? (Platform.OS === 'android'
+      ? "Couldn’t start app protection. Check device access and try again."
+      : "Couldn’t start app protection. Check Screen Time access and try again.")
+      : "Couldn’t save your plan. Try accepting it again."} busy={working || busy}
     onAccept={() => { void save(); }} onManual={onEdit} onSkip={() => undefined} />;
 }
