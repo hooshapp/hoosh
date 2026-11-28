@@ -202,11 +202,13 @@ Verification passed for 124 JVM engine cases, 106 component cases across Android
 | #10 Recommendation Skip | Account A is in cooldown. Account B has no existing decision. Manual sign-in to B is the remaining prerequisite. |
 | #11 History soak | Calculator-only collection is approved in principle. Waiting for on-device confirmation and then actual elapsed measurement days. |
 | #12 Device recovery | Permission loss passed again. Shield after user regrant is pending. |
-| #13 Usability and handoff | Keyboard and Back were used to edit a real quest. Earlier compact/large-text coverage is documented in [the RN-10 layout run](../qa/android-layout-coverage.md). The integrated large-text and dirty-edit checks remain open. TalkBack remains deferred. The branch is pushed. PR creation is pending authenticated GitHub access. |
+| #13 Usability and handoff | On the signed-in APK at font scale 2.0, opened the quest editor, typed with the software keyboard, used Back to close it, and verified that **Keep editing** and **Discard and leave** both worked. Restored font scale to 1.15. Wider final-build route coverage remains open. Earlier compact-screen coverage is in [the RN-10 layout run](../qa/android-layout-coverage.md). TalkBack stays deferred. PR creation is pending authenticated GitHub access. |
 
-The Pixel locked with Disconnect protection off and only QA overlap A installed until 03:45 Eastern. Its scheduled window will expire without user action. Account A remains signed in with Calculator selected. The local QA API is available over USB.
+The Pixel locked before the stopped QA overlap B could be deleted. Disconnect protection is off, and only QA overlap A remained installed until 03:45 Eastern. Its scheduled window expires without user action. Account A remains signed in with Calculator selected. The local QA API is available over USB.
 
 All three [GitHub Foundation checks](https://github.com/hooshapp/hoosh/actions/runs/46124259184) passed on `8b8577a`. Local verification also passed 707 mobile unit tests, 1,087 mobile component tests with two skipped, 691 API unit tests and the signed Android build. GitHub PR creation targets `integration/shared-product`. Chrome automation could not attach and the local Git credential only supports SSH pushes.
+
+The notes-only snapshot `d6445c4` also passed [all three GitHub jobs](https://github.com/hooshapp/hoosh/actions/runs/46125249850). The final evidence addendum changes only this Markdown file.
 
 ### Changes in this continuation
 
