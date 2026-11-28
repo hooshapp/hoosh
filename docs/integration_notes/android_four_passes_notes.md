@@ -184,10 +184,29 @@ Verification passed for 124 JVM engine cases, 106 component cases across Android
 ## November 28 continuation — Remaining Android integration checks
 
 - **#2 Auth deferred to Anisha by Ishmum.** Provider sign-in, email confirmation and password recovery remain real-account cases. The existing email/password journey and interrupted onboarding evidence still stand. Reran the requested routes' mobile component suites, including Auth, onboarding, account plan, quests, Settings, recommendations, Home and History. The run passed 542 tests in 62 suites.
+- **#2 manual setup.** The normal-root component suite exercised the manual plan edit, explicit Save and account plan readback on both renderers. The physical manual-plan route still needs a disposable account at the setup screen.
 - **#3 permission loss during Settings selection reproduced.** Staged Clock alongside Calculator. While the editor was open, backgrounded Hoosh, temporarily set its Android Usage Access app-op to `ignore`, then returned and explicitly saved. Android allowed the Settings editor to persist the launcher selection, showing two apps and **Protection has not changed**. The picker uses launcher discovery. Usage Access gates measurement and onboarding authorization independently. This differs from the older A03.5 expectation of a refused Save. Restored Usage Access to `allow`, removed Clock and verified Calculator-only selection. First-time denial in onboarding remains a separate live case.
 - **#8 schedule policy resolved for this candidate.** Ishmum chose to keep the current all-day entry shield. The earlier out-of-window observation is expected under that direction. Saved days and hours still define the weekly schedule reason. Retained the original product answer and recorded the integration decision in [PM questions](../Context%20(AGENT)/PM_QUESTIONS.md#q05--behavior-outside-active-days-and-hours). No protection timing logic changed.
 - **#9 shared-budget quest regression fixed.** Saved a custom Calculator-only quest. The account accepted its schedule but the native bridge rejected `budgetScope` even though the decoder tried to read it. The signed replacement APK `2e226de6fe40fc55ab87108a0da616cac9c55a6386b7a0962a6a9fc8e638e083` upgraded the Pixel in place with the matching certificate. Applied the existing account schedule through **Apply saved schedule to this device**. The device showed a Calculator pause during the window and the account retained one enabled schedule revision. A second custom quest scheduled directly on the new APK.
 - **#9 overlapping windows and scoped Stop.** With weekly protection stopped, QA overlap A ran 02:49–03:45 and QA overlap B ran 03:02–03:45 Eastern. Each had one enabled account schedule and a confirmed native installation. Calculator showed a native shield after 03:02. Stopped B and observed its account and device Stop acknowledgement. A still shielded Calculator.
+- **#12 permission loss retested on the fixed build.** The device owner switched Disconnect protection off while A remained installed. Android reported the service off and Calculator opened without a shield. The in-app disclosure was presented for regrant. No Apply or Stop was issued after the revocation.
+
+### Handoff and pending device checks
+
+| Original item | State at handoff |
+|---|---|
+| #2 Account and onboarding | Auth goes to Anisha. Manual setup passed in the combined app component suite and still needs the phone run. |
+| #3 Permissions and picker | Revoked Usage Access was verified during a Settings edit and restored. First-time denial in onboarding remains open. |
+| #8 Active days, hours and tone | Save and readback passed. All-day shielding is the selected behavior for this candidate. |
+| #9 Custom quests | Shared-budget scheduling and Stop isolation passed. Final Stop, deletion and associated dirty-edit checks are pending. |
+| #10 Recommendation Skip | Account A is in cooldown. Account B has no existing decision. Manual sign-in to B is the remaining prerequisite. |
+| #11 History soak | Calculator-only collection is approved in principle. Waiting for on-device confirmation and then actual elapsed measurement days. |
+| #12 Device recovery | Permission loss passed again. Shield after user regrant is pending. |
+| #13 Usability and handoff | Keyboard and Back were used to edit a real quest. Earlier compact/large-text coverage is documented in [the RN-10 layout run](../qa/android-layout-coverage.md). The integrated large-text and dirty-edit checks remain open. TalkBack remains deferred. The branch is pushed. PR creation is pending authenticated GitHub access. |
+
+The Pixel locked with Disconnect protection off and only QA overlap A installed until 03:45 Eastern. Its scheduled window will expire without user action. Account A remains signed in with Calculator selected. The local QA API is available over USB.
+
+All three [GitHub Foundation checks](https://github.com/hooshapp/hoosh/actions/runs/46124259184) passed on `8b8577a`. Local verification also passed 707 mobile unit tests, 1,087 mobile component tests with two skipped, 691 API unit tests and the signed Android build. GitHub PR creation targets `integration/shared-product`. Chrome automation could not attach and the local Git credential only supports SSH pushes.
 
 ### Changes in this continuation
 
