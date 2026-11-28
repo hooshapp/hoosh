@@ -208,7 +208,7 @@ The Pixel locked before the stopped QA overlap B could be deleted. Disconnect pr
 
 All three [GitHub Foundation checks](https://github.com/hooshapp/hoosh/actions/runs/46124259184) passed on `8b8577a`. Local verification also passed 707 mobile unit tests, 1,087 mobile component tests with two skipped, 691 API unit tests and the signed Android build. GitHub PR creation targets `integration/shared-product`. Chrome automation could not attach and the local Git credential only supports SSH pushes.
 
-The notes-only snapshot `d6445c4` also passed [all three GitHub jobs](https://github.com/hooshapp/hoosh/actions/runs/46125249850). The final evidence addendum changes only this Markdown file.
+The notes-only snapshot `d6445c4` also passed [all three GitHub jobs](https://github.com/hooshapp/hoosh/actions/runs/46125249850). The final addendum changes only this Markdown file. The [branch comparison](https://github.com/hooshapp/hoosh/compare/integration/shared-product...ishmum/android-shield-qa?expand=1) selects the intended PR base and head.
 
 ### Changes in this continuation
 
